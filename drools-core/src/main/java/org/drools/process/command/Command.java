@@ -2,8 +2,8 @@ package org.drools.process.command;
 
 import org.drools.WorkingMemory;
 
-public interface Command {
+public interface Command<T> {
 	
-	Object execute(WorkingMemory workingMemory);
+	T execute(WorkingMemory workingMemory);
 	
 }

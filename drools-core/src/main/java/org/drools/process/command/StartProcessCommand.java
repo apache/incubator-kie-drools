@@ -7,7 +7,7 @@ import java.util.Map;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.WorkingMemory;
 
-public class StartProcessCommand implements Command {
+public class StartProcessCommand implements Command<ProcessInstance> {
 	
 	private String processId;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -37,7 +37,7 @@ public class StartProcessCommand implements Command {
 		this.data = data;
 	}
 
-	public Object execute(WorkingMemory workingMemory) {
+	public ProcessInstance execute(WorkingMemory workingMemory) {
 		if (data != null) {
 			for (Object o: data) {
 				workingMemory.insert(o);

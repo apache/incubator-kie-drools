@@ -12,7 +12,7 @@ public class AsynchronousCommandService implements CommandService {
 		this.workingMemory = workingMemory;
 	}
 	
-	public Object execute(final Command command) {
+	public <T> T execute(final Command<T> command) {
 		new Thread(new Runnable() {
 			public void run() {
 				command.execute(workingMemory);	

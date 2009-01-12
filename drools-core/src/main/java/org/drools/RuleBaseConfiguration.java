@@ -826,6 +826,7 @@ public class RuleBaseConfiguration
             System.err.println( "Error occured while loading work definitions " + location );
             System.err.println( "Continuing without reading these work definitions" );
             t.printStackTrace();
+            throw new RuntimeException("Could not parse work definitions " + location + ": " + t.getMessage());
         }
     }
 

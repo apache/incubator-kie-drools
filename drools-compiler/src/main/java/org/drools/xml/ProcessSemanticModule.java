@@ -24,6 +24,7 @@ import org.drools.xml.processes.ProcessHandler;
 import org.drools.xml.processes.RuleSetNodeHandler;
 import org.drools.xml.processes.SplitNodeHandler;
 import org.drools.xml.processes.StartNodeHandler;
+import org.drools.xml.processes.StateNodeHandler;
 import org.drools.xml.processes.SubProcessNodeHandler;
 import org.drools.xml.processes.SwimlaneHandler;
 import org.drools.xml.processes.TimerHandler;
@@ -107,5 +108,7 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                 		   new TimerHandler() );
         addHandler( "trigger",
      		               new TriggerHandler() );
+        addHandler( "state",
+     		        new StateNodeHandler() );        
     }
 }

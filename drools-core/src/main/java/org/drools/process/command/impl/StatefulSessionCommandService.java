@@ -18,14 +18,14 @@ public class StatefulSessionCommandService implements CommandService {
 		this.session = session;
 	}
 	
-	public Object execute(Command command) {
+	public <T> T execute(Command<T> command) {
 		Persister<StatefulSession> persister =
 			new MemoryPersister<StatefulSession>(new StatefulSessionSnapshotter(session));
 		persister.save();
 		Transaction transaction = persister.getTransaction();
 		try {
 			transaction.start();
-			Object result = command.execute(session);
+			T result = command.execute(session);
 			transaction.commit();
 			return result;
 		} catch (Throwable t) {

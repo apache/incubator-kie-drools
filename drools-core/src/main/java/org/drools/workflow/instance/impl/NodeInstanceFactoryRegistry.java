@@ -17,6 +17,7 @@ import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
@@ -35,6 +36,7 @@ import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
 import org.drools.workflow.instance.node.SplitInstance;
 import org.drools.workflow.instance.node.StartNodeInstance;
+import org.drools.workflow.instance.node.StateNodeInstance;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
 import org.drools.workflow.instance.node.TimerNodeInstance;
 import org.drools.workflow.instance.node.WorkItemNodeInstance;
@@ -80,6 +82,8 @@ public class NodeInstanceFactoryRegistry {
                   new CreateNewNodeFactory( ForEachNodeInstance.class ) );
         register( EventNode.class,
                   new CreateNewNodeFactory( EventNodeInstance.class ) );
+        register( StateNode.class,
+                  new CreateNewNodeFactory( StateNodeInstance.class ) );
     }
 
     public void register(Class< ? extends Node> cls,
