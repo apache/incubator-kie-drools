@@ -53,6 +53,7 @@
   <xi:include href="Chapter-GettingStarted/Chapter-GettingStarted.xml" />
   <xi:include href="Chapter-Flow/Chapter-RuleFlow.xml" />
   <xi:include href="Chapter-API/Chapter-API.xml" />
+  <xi:include href="Chapter-Persistence/Chapter-Persistence.xml" />
   <xi:include href="Chapter-ProcessModel/Chapter-ProcessModel.xml" />
   <xi:include href="Chapter-RulesAndProcesses/Chapter-RulesAndProcesses.xml" />
   <xi:include href="Chapter-DomainSpecificProcesses/Chapter-DomainSpecificProcesses.xml" />
