@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.Receiver;
 import org.drools.runtime.rule.FactHandle;
 
 public class StatefulKnowledgeSessionInsertStage extends BaseEmitter
     implements
-    Receiver {
+    KnowledgeRuntimeCommand {
 
     public void receive(Object object,
                         PipelineContext context) {

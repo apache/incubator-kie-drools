@@ -9,7 +9,7 @@ import org.drools.runtime.pipeline.PipelineFactory;
 public class CallableTest extends TestCase {
     public void testCallable() {
         MockClass mock = new MockClass();
-        Callable callable = PipelineFactory.newCallable();
+        Callable callable = new CallableImpl();
         Action action = PipelineFactory.newMvelAction( "this.set = true" );
         callable.setReceiver( action );
         action.setReceiver( callable );

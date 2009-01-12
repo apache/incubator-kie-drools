@@ -30,7 +30,12 @@ import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
+import org.drools.runtime.pipeline.Pipeline;
+import org.drools.runtime.pipeline.PipelineFactory;
 import org.drools.runtime.pipeline.ResultHandler;
+import org.drools.runtime.pipeline.Stage;
+import org.drools.runtime.pipeline.impl.ExecuteResultHandler;
 import org.drools.runtime.pipeline.impl.MvelAction;
 import org.drools.runtime.pipeline.impl.StatefulKnowledgeSessionPipelineImpl;
 import org.drools.runtime.pipeline.impl.StatefulKnowledgeSessionInsertStage;
@@ -45,12 +50,12 @@ public class StatefulKnowledgeSessionPipelineTest extends TestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
-        StatefulKnowledgeSessionInsertStage stage1 = new StatefulKnowledgeSessionInsertStage();
-        MvelAction mvelAction = new MvelAction( "context.resultHandler.handleResult( context.handles )");
-        stage1.setReceiver( mvelAction );
+        KnowledgeRuntimeCommand insertStage = PipelineFactory.newStatefulKnowledgeSessionInsert();
+        ExecuteResultHandler resultHandlerStage = new ExecuteResultHandler();
+        insertStage.setReceiver( resultHandlerStage );
         
-        StatefulKnowledgeSessionPipelineImpl pipeline = new StatefulKnowledgeSessionPipelineImpl(ksession);
-        pipeline.setReceiver( stage1 );
+        Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline(ksession);
+        pipeline.setReceiver( insertStage );
         
         assertEquals( 0, ksession.getObjects().size() );
         

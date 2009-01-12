@@ -2,13 +2,14 @@ package org.drools.runtime.pipeline.impl;
 
 import org.drools.impl.ParametersImpl;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
+import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.Receiver;
 import org.drools.runtime.pipeline.StatelessKnowledgeSessionPipelineContext;
 
 public class StatelessKnowledgeSessionExecuteStage extends BaseEmitter
     implements
-    Receiver {
+    KnowledgeRuntimeCommand {
 
     public void receive(Object object,
                         PipelineContext context) {

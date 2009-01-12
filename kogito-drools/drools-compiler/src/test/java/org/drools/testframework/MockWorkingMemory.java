@@ -303,7 +303,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public Object getObject(FactHandle handle) {
+    public Object getObject(org.drools.runtime.rule.FactHandle handle) {
         // TODO Auto-generated method stub
         return null;
     }

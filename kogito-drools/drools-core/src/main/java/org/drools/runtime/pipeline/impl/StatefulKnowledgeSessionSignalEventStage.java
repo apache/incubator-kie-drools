@@ -1,12 +1,13 @@
 package org.drools.runtime.pipeline.impl;
 
+import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.Receiver;
 import org.drools.runtime.pipeline.StatefulKnowledgeSessionPipelineContext;
 
 public class StatefulKnowledgeSessionSignalEventStage extends BaseEmitter
     implements
-    Receiver {
+    KnowledgeRuntimeCommand {
     private long   id;
     private String eventType;
 

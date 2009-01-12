@@ -18,7 +18,7 @@ public class MvelExpressionTest extends TestCase {
     public void testExpression() {
         MockClass mock = new MockClass();
                
-        Callable callable = PipelineFactory.newCallable();
+        Callable callable = new CallableImpl();
         Action action = PipelineFactory.newMvelAction( "this.setValues( [0, 1, 2, 3, 4] ) " );
         callable.setReceiver( action );
         Expression expr = PipelineFactory.newMvelExpression( "this.values" );

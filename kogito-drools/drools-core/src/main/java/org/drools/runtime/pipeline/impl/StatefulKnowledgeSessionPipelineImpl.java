@@ -3,6 +3,7 @@ package org.drools.runtime.pipeline.impl;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.pipeline.Pipeline;
 import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
