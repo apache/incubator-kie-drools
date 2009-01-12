@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.drools.WorkingMemory;
 
-public class CompleteWorkItemCommand implements Command {
+public class CompleteWorkItemCommand implements Command<Object> {
 	
 	private long workItemId;
 	private Map<String, Object> results = new HashMap<String, Object>();

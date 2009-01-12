@@ -2,6 +2,6 @@ package org.drools.process.command;
 
 public interface CommandService {
 	
-	Object execute(Command command);
+	<T> T execute(Command<T> command);
 
 }

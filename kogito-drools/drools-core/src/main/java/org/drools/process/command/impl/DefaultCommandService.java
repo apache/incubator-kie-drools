@@ -12,7 +12,7 @@ public class DefaultCommandService implements CommandService {
 		this.workingMemory = workingMemory;
 	}
 	
-	public Object execute(Command command) {
+	public <T> T execute(Command<T> command) {
 		return command.execute(workingMemory);
 	}
 

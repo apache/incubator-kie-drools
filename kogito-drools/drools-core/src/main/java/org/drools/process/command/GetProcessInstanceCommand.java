@@ -1,8 +1,9 @@
 package org.drools.process.command;
 
 import org.drools.WorkingMemory;
+import org.drools.process.instance.ProcessInstance;
 
-public class GetProcessInstanceCommand implements Command {
+public class GetProcessInstanceCommand implements Command<ProcessInstance> {
 	
 	private Long processInstanceId;
 	
@@ -14,7 +15,7 @@ public class GetProcessInstanceCommand implements Command {
 		this.processInstanceId = processInstanceId;
 	}
 	
-	public Object execute(WorkingMemory workingMemory) {
+	public ProcessInstance execute(WorkingMemory workingMemory) {
 		if (processInstanceId == null) {
 			return null;
 		}

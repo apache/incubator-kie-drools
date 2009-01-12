@@ -8,6 +8,7 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
     
     private String nodeId;
     private String nodeName;
+    private String nodeInstanceId;
 
     /**
      * Create a new ruleflow node log event.
@@ -19,24 +20,28 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
     public RuleFlowNodeLogEvent(final int type,
                                 final String nodeId,
                                 final String nodeName,
+                                final String nodeInstanceId,
                                 final String processId,
                                 final String processName,
                                 final long processInstanceId) {
         super( type, processId, processName, processInstanceId );
         this.nodeId = nodeId;
         this.nodeName = nodeName;
+        this.nodeInstanceId = nodeInstanceId;
     }
     
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        nodeId    = (String)in.readObject();
-        nodeName    = (String)in.readObject();
+        nodeId = (String) in.readObject();
+        nodeName = (String) in.readObject();
+        nodeInstanceId = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(nodeId);
         out.writeObject(nodeName);
+        out.writeObject(nodeInstanceId);
     }
 
     public String getNodeId() {
@@ -45,6 +50,10 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
     
     public String getNodeName() {
         return nodeName;
+    }
+    
+    public String getNodeInstanceId() {
+        return nodeInstanceId;
     }
     
     public String toString() {

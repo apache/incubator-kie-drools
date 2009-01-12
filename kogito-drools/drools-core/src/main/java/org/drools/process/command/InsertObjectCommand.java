@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 
-public class InsertObjectCommand implements Command {
+public class InsertObjectCommand implements Command<Object> {
 	
 	private List<Object> objects;
 	
