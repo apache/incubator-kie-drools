@@ -550,7 +550,7 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
 
       <!-- HUMAN TASK -->
       <listitem>
-        <para><emphasis role="strong">Human Task</emphasis>: Processes can also involve tasks that need to executed by human actors.  A task node represents an atomic task that needs to be executed by a human actor.  A human task node should have one incoming connection and one outgoing connection.  Human task nodes can be used in combination with swimlanes to assign multiple human tasks to the similar actors. For more detail, check the 'human tasks' chapter.  A human task node is actually nothing more than a specific type of work item node (of type "Human Task").  A human task node contains the following properties:</para>
+        <para><emphasis role="strong">Human Task</emphasis>: Processes can also involve tasks that need to executed by human actors.  A task node represents an atomic task that needs to be executed by a human actor.  A human task node should have one incoming connection and one outgoing connection.  Human task nodes can be used in combination with swimlanes to assign multiple human tasks to similar actors. For more detail, check the 'human tasks' chapter.  A human task node is actually nothing more than a specific type of work item node (of type "Human Task").  A human task node contains the following properties:</para>
         <itemizedlist>
           <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
           <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
@@ -559,10 +559,12 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
           <listitem><para><emphasis>Comment</emphasis>: A comment associated with the human task.</para></listitem>
           <listitem><para><emphasis>ActorId</emphasis>: The actor id that is responsible for executing the human task.  A list of actor id's can be specified using a comma (',') as separator.</para></listitem>
           <listitem><para><emphasis>Skippable</emphasis>: Specifies whether the human task can be skipped (i.e. the actor decides not to execute the human task).</para></listitem>
+          <listitem><para><emphasis>Content</emphasis>: The data associated with this task.</para></listitem>
+          <listitem><para><emphasis>Swimlane</emphasis>: The swimlane this human task node is part of.  Swimlanes make it easy to assign multiple human tasks to the same actor.  See the human tasks chapter for more detail on how to use swimlanes.</para></listitem>
           <listitem><para><emphasis>Wait for completion</emphasis>: If this property is true, the human task node will only continue if the human task has been terminated (i.e. completed or any other terminal state); otherwise it will continue immediately after creating the human task.</para></listitem>
           <listitem><para><emphasis>On entry/exit actions</emphasis>: Actions that are executed upon entry / exit of this node.</para></listitem>
           <listitem><para><emphasis>Parameter mapping</emphasis>: Allows copying the value of process variables to parameters of the human task.  Upon creation of the human tasks, the values will be copied.</para></listitem>
-          <listitem><para><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the human task to a process variable.  Upon completion of the human task, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.</para></listitem>
+          <listitem><para><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the human task to a process variable.  Upon completion of the human task, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.  A human task has a result variable "Result" that contains the data returned by the human actor.  The variable "ActorId" contains the id of the actor that actually executed the task.</para></listitem>
           <listitem><para><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</para></listitem>
         </itemizedlist>
       </listitem>
@@ -604,7 +606,7 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
           <listitem><para><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the work item to a process variable.  Each type of work can define result parameters that will (potentially) be returned after the work item has been completed.  A result mapping can be used to copy the value of the given result parameter to the given variable in this process.  For example, the "FileFinder" work item returns a list of files that match the given search criteria as a result parameter 'Files'.  This list of files can then be bound to a process variable for use within the process. Upon completion of the work item, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.</para></listitem>
           <listitem><para><emphasis>On entry/exit actions</emphasis>: Actions that are executed upon entry / exit of this node.</para></listitem>
           <listitem><para><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</para></listitem>
-          <listitem><para><emphasis>Additional parameters</emphasis>: Each type of work item can define additional parameters that are relevant for that type of work.  For example, the "Email" work item defines additional parameters like 'From', 'To', 'Subject' and 'Body'.  The user can either fill in values for these parameters directly, or define a parameter mapping that will copy the value of the given variable in this process to the given parameter (if both are specified, the mapping will have precedence).  Parameters of type String can use the #{variableName} to embed the value of a variable in the String.  The value of the variable will be retrieved when creating the work item and the #{...} will be replaced by the toString() value of the variable.</para></listitem>
+          <listitem><para><emphasis>Additional parameters</emphasis>: Each type of work item can define additional parameters that are relevant for that type of work.  For example, the "Email" work item defines additional parameters like 'From', 'To', 'Subject' and 'Body'.  The user can either fill in values for these parameters directly, or define a parameter mapping that will copy the value of the given variable in this process to the given parameter (if both are specified, the mapping will have precedence).  Parameters of type String can use #{expression} to embed a value in the String.  The value will be retrieved when creating the work item and the #{...} will be replaced by the toString() value of the variable.  The expression could simply be the name of a variable (in which case it will be resolved to the value of the variable), but more advanced MVEL expressions are possible as well, like #{person.name.firstname}.</para></listitem>
         </itemizedlist>
       </listitem>
 
@@ -639,15 +641,16 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
         invoking the startProcess method.  These parameters will be set as variables on the process scope.</listitem>
         <listitem>Actions can read/write variables through the process context using
         <programlisting>Object value = context.getVariable(variableName);</programlisting> and
-        <programlisting>context.setVariable(variableName, value);</programlisting></listitem>
+        <programlisting>context.setVariable(variableName, value);</programlisting>.  When using the MVEL dialect,
+        you can even access the variables directly using the variable name.</listitem>
         <listitem>Work items and sub-flows can pass the value of parameters to the outside world by mapping the variable to one
-        of the work item parameters (either using a parameter mapping or by using #{variableName} directly inside
+        of the work item parameters (either using a parameter mapping or by using #{expression} directly inside
         a String parameter.  The results of a work item can also be copied to a variable using a result mapping.</listitem>
-        <listitem>Sub-processes can also mapWork items can pass the value of parameters to the outside world by mapping the variable to one
-        of the work item parameters (either using a parameter mapping or by using #{variableName} directly inside
-        a String parameter.  The results of a work item can also be copied to a variable using a result mapping.</listitem>
+        <listitem>Various other nodes can also access data.  For example, event nodes can store the data associated
+        to the event in a variable, exception handlers can read error data from a specific variable, etc.  Check the
+        properties of the different node types for more information.</listitem>
       </itemizedlist>
-manipulating data: parameters when starting process, parameter mapping (sub-flow, work item, etc.) actions (context.get/setParameter()), various nodes do automatic mapping of data to a variable (event node, exception handler)</para>
+    </para>
 
     <para>globals, data in working memory, etc</para>
   </section>
@@ -678,11 +681,12 @@ manipulating data: parameters when starting process, parameter mapping (sub-flow
     </para>
 
     <para>Actions have access to globals that are defined for
-    the process and the context variable.  The context variable can be used for
+    the process and the 'kcontext' variable.  This variable is of type org.drools.runtime.process.ProcessContext and can be used for
       <itemizedlist>
         <listitem>Getting the current node instance (if applicable).  The node instance could be queried for data (name, type).  You can also cancel the current node instance.</listitem>
-        <listitem>Getting the current process instance.  This process instance could be queried for data (name, id, processId, etc.), abort process instance.</listitem>
-        <listitem>Signalling events: internal or external</listitem>
+        <listitem>Getting the current process instance.  This process instance could be queried for data (name, id, processId, etc.), abort process instance, signal events (internal).</listitem>
+        <listitem>Data: getting or setting the value of variables</listitem>
+        <listitem>Accessing the KnowledgeRuntime: this allows you do things like starting a process, signalling events (external), inserting data, etc.</listitem>
       </itemizedlist>
     </para>
   </section>
