@@ -19,6 +19,7 @@
   <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.0.3/jaxb-impl-2.0.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-xjc/2.0.3/jaxb-xjc-2.0.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.0.1/jmock-2.5.0.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/jms/jms/1.1/jms-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jsr173_api/1.0/jsr173_api-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sf/jxls/jxls-reader/0.9.6/jxls-reader-0.9.6.jar"/>
