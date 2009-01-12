@@ -673,7 +673,7 @@ public abstract class AbstractWorkingMemory
      *            <code>Object</code> lookup
      * 
      */
-    public Object getObject(final FactHandle handle) {
+    public Object getObject(final org.drools.runtime.rule.FactHandle handle) {
         return this.objectStore.getObjectForHandle( (InternalFactHandle) handle );
     }
 

@@ -132,7 +132,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The associated object.
      */
-    Object getObject(FactHandle handle);
+    Object getObject(org.drools.runtime.rule.FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> associated with an Object.

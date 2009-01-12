@@ -201,6 +201,10 @@ public class StatefulKnowledgeSessionImpl
     public FactHandle getFactHandle(Object object) {
         return this.session.getFactHandle( object );
     }
+    
+    public Object getObject(FactHandle factHandle) {
+        return this.session.getObject( factHandle );
+    }
 
     public ProcessInstance getProcessInstance(long id) {
         return this.session.getProcessInstance( id );

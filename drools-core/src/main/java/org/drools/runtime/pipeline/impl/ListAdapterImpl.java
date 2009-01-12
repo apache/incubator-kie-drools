@@ -8,17 +8,17 @@ import org.drools.runtime.pipeline.PipelineContext;
 public class ListAdapterImpl extends BaseStage
     implements
     ListAdapter {
-    private List<Object> list;
+    private List list;
     private boolean      syncAccessor;
 
-    public ListAdapterImpl(List<Object> list,
+    public ListAdapterImpl(List list,
                            boolean syncAccessor) {
         super();
         this.list = list;
         this.syncAccessor = syncAccessor;
     }
 
-    public List<Object> getList() {
+    public List getList() {
         if ( this.syncAccessor ) {
             synchronized ( this ) {
                 return list;
@@ -28,7 +28,7 @@ public class ListAdapterImpl extends BaseStage
         }
     }
 
-    public void setList(List<Object> list) {
+    public void setList(List list) {
         if ( this.syncAccessor ) {
             synchronized ( this ) {
                 this.list = list;

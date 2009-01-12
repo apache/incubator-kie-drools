@@ -26,7 +26,7 @@ public class IterateSplitterTest extends TestCase {
         Splitter splitter = PipelineFactory.newIterateSplitter();
         expr.setReceiver( splitter );
         
-        ListAdapter listAdapter = PipelineFactory.newListAdapter( list, true );        
+        ListAdapter listAdapter = new ListAdapterImpl( list, true );        
         splitter.setReceiver( listAdapter );
         
         assertNull( mock.getValues() );

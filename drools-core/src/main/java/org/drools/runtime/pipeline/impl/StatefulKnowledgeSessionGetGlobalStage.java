@@ -4,13 +4,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.Receiver;
 import org.drools.runtime.pipeline.StatefulKnowledgeSessionPipelineContext;
 
 public class StatefulKnowledgeSessionGetGlobalStage extends BaseEmitter
     implements
-    Receiver {
+    KnowledgeRuntimeCommand {
 
     public StatefulKnowledgeSessionGetGlobalStage() {
     }
