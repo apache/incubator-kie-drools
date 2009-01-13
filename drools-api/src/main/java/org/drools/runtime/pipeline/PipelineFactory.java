@@ -55,7 +55,11 @@ public class PipelineFactory {
         return getCorePipelineProvider().newStatefulKnowledgeSessionSetGlobal();
     }
 
-    KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal(String identifier) {
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetObject() {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionGetObject();
+    }
+
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal(String identifier) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionSetGlobal( identifier );
     }
 
@@ -72,18 +76,18 @@ public class PipelineFactory {
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String eventType) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionStartProcess( eventType );
     }
-    
+
     public static Action newAssignObjectAsResult() {
         return getCorePipelineProvider().newAssignObjectAsResult();
     }
-    
+
     public static Action newExecuteResultHandler() {
         return getCorePipelineProvider().newExecuteResultHandler();
     }
-    
+
     public static Action newMvelAction(String action) {
         return getCorePipelineProvider().newMvelAction( action );
-    }    
+    }
 
     public static Expression newMvelExpression(String expression) {
         return getCorePipelineProvider().newMvelExpression( expression );
@@ -91,24 +95,32 @@ public class PipelineFactory {
 
     public static Splitter newIterateSplitter() {
         return getCorePipelineProvider().newIterateSplitter();
-    }    
-    
+    }
+
     public static Join newListCollectJoin() {
         return getCorePipelineProvider().newListCollectJoin();
     }
 
-    public static Transformer newSmooksTransformer(Smooks smooks,
-                                                   String rootId) {
-        return getSmooksPipelineProvider().newSmooksTransformer( smooks,
-                                                                 rootId );
+    public static Transformer newSmooksFromSourceTransformer(Smooks smooks,
+                                                             String rootId) {
+        return getSmooksPipelineProvider().newSmooksFromSourceTransformer( smooks,
+                                                                           rootId );
+    }
+
+    public static Transformer newSmooksToSourceTransformer(Smooks smooks) {
+        return getSmooksPipelineProvider().newSmooksToSourceTransformer( smooks );
     }
 
     public static Transformer newJaxbTransformer(Unmarshaller unmarshaller) {
         return getJaxbPipelineProvider().newJaxbTransformer( unmarshaller );
     }
 
-    public static Transformer newXStreamTransformer(XStream xstream) {
-        return getXStreamTransformerProvider().newXStreamTransformer( xstream );
+    public static Transformer newXStreamFromXmlTransformer(XStream xstream) {
+        return getXStreamTransformerProvider().newXStreamFromXmlTransformer( xstream );
+    }
+
+    public static Transformer newXStreamToXmlTransformer(XStream xstream) {
+        return getXStreamTransformerProvider().newXStreamToXmlTransformer( xstream );
     }
 
     public static Transformer newJxlsTransformer(XLSReader xlsReader,
@@ -172,10 +184,10 @@ public class PipelineFactory {
 
     private static void loadSmooksTransformerProvider() {
         try {
-            Class<SmooksTransformerProvider> cls = (Class<SmooksTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksTransformerProviderImpl" );
+            Class<SmooksTransformerProvider> cls = (Class<SmooksTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.SmooksTransformerProviderImpl" );
             setSmooksTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksTransformerProviderImpl could not be set.",
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }
@@ -193,10 +205,10 @@ public class PipelineFactory {
 
     private static void loadXStreamTransformerProvider() {
         try {
-            Class<XStreamTransformerProvider> cls = (Class<XStreamTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamTransformerProviderImpl" );
+            Class<XStreamTransformerProvider> cls = (Class<XStreamTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.XStreamTransformerProviderImpl" );
             setXStreamTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamTransformerProviderImpl could not be set.",
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }
