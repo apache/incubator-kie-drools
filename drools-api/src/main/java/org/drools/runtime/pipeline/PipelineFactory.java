@@ -1,6 +1,7 @@
 package org.drools.runtime.pipeline;
 
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -25,6 +26,8 @@ public class PipelineFactory {
     private static XStreamTransformerProvider xstreamPipelineProvider;
 
     private static JxlsTransformerProvider    jxlsPipelineProvider;
+
+    private static JmsMessengerProvider       jmsMessengerProvider;
 
     public static Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionPipeline( ksession );
@@ -102,6 +105,16 @@ public class PipelineFactory {
         return getCorePipelineProvider().newListCollectJoin();
     }
 
+    public static Service newJmsMessenger(Pipeline pipeline,
+                                          Properties properties,
+                                          String destinationName,
+                                          ResultHandlerFactory resultHandlerFactory) {
+        return getJmsMessengerProvider().newJmsMessenger( pipeline,
+                                                          properties,
+                                                          destinationName,
+                                                          resultHandlerFactory );
+    }
+
     public static Transformer newSmooksFromSourceTransformer(Smooks smooks,
                                                              String rootId) {
         return getSmooksPipelineProvider().newSmooksFromSourceTransformer( smooks,
@@ -115,10 +128,10 @@ public class PipelineFactory {
     public static Transformer newJaxbFromXmlTransformer(Unmarshaller unmarshaller) {
         return getJaxbPipelineProvider().newJaxbFromXmlTransformer( unmarshaller );
     }
-    
+
     public static Transformer newJaxbToXmlTransformer(Marshaller marshaller) {
         return getJaxbPipelineProvider().newJaxbToXmlTransformer( marshaller );
-    }    
+    }
 
     public static Transformer newXStreamFromXmlTransformer(XStream xstream) {
         return getXStreamTransformerProvider().newXStreamFromXmlTransformer( xstream );
@@ -235,6 +248,27 @@ public class PipelineFactory {
             setJxlsTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
             throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JxlsTransformer$JxlsTransformerProviderImpl could not be set.",
+                                                       e2 );
+        }
+    }
+
+    private static synchronized void setJmsMessengerProvider(JmsMessengerProvider provider) {
+        PipelineFactory.jmsMessengerProvider = provider;
+    }
+
+    private static synchronized JmsMessengerProvider getJmsMessengerProvider() {
+        if ( jmsMessengerProvider == null ) {
+            loadJmsMessengerProvider();
+        }
+        return jmsMessengerProvider;
+    }
+
+    private static void loadJmsMessengerProvider() {
+        try {
+            Class<JmsMessengerProvider> cls = (Class<JmsMessengerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JmsMessengerProviderImpl" );
+            setJmsMessengerProvider( cls.newInstance() );
+        } catch ( Exception e2 ) {
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JmsMessengerProviderImpl could not be set.",
                                                        e2 );
         }
     }
