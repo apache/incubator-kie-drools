@@ -8,24 +8,17 @@ import org.drools.persistence.Transaction;
 import org.drools.persistence.memory.MemoryPersister;
 import org.drools.persistence.session.StatefulSessionSnapshotter;
 import org.drools.process.command.Command;
-import org.drools.process.command.CommandService;
 
-public class StatefulSessionCommandService implements CommandService {
+public class TransactionInterceptor extends AbstractInterceptor {
 
-	private StatefulSession session;
-	
-	public StatefulSessionCommandService(StatefulSession session) {
-		this.session = session;
-	}
-	
 	public <T> T execute(Command<T> command) {
 		Persister<StatefulSession> persister =
-			new MemoryPersister<StatefulSession>(new StatefulSessionSnapshotter(session));
+			new MemoryPersister<StatefulSession>(new StatefulSessionSnapshotter(getSession()));
 		persister.save();
 		Transaction transaction = persister.getTransaction();
 		try {
 			transaction.start();
-			T result = command.execute(session);
+			T result = super.executeNext(command);
 			transaction.commit();
 			return result;
 		} catch (Throwable t) {

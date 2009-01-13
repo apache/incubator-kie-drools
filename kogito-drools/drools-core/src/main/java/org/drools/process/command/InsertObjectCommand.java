@@ -3,7 +3,7 @@ package org.drools.process.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
 
 public class InsertObjectCommand implements Command<Object> {
 	
@@ -18,11 +18,23 @@ public class InsertObjectCommand implements Command<Object> {
 		this.objects = objects;
 	}
 	
-	public Object execute(WorkingMemory workingMemory) {
+	public Object execute(StatefulSession session) {
 		for (Object object: objects) {
-			workingMemory.insert(object);
+			session.insert(object);
 		}
 		return null;
+	}
+
+	public String toString() {
+		String result = "";
+		int i = 0;
+		for (Object object: objects) {
+			if (i++ > 0) {
+				result += "\n";
+			}
+			result += "session.insert(" + object + ");";
+		}
+		return result;
 	}
 
 }

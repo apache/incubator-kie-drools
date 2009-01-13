@@ -1,6 +1,8 @@
 package org.drools.process.command;
 
-import org.drools.WorkingMemory;
+import java.util.Map;
+
+import org.drools.StatefulSession;
 import org.drools.process.instance.ProcessInstance;
 
 public class GetProcessInstanceCommand implements Command<ProcessInstance> {
@@ -15,11 +17,15 @@ public class GetProcessInstanceCommand implements Command<ProcessInstance> {
 		this.processInstanceId = processInstanceId;
 	}
 	
-	public ProcessInstance execute(WorkingMemory workingMemory) {
+	public ProcessInstance execute(StatefulSession session) {
 		if (processInstanceId == null) {
 			return null;
 		}
-		return workingMemory.getProcessInstance(processInstanceId);
+		return session.getProcessInstance(processInstanceId);
+	}
+
+	public String toString() {
+		return "session.getProcessInstance(" + processInstanceId + ");";
 	}
 
 }

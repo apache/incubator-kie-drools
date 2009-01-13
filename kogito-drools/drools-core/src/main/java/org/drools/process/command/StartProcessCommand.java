@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.StatefulSession;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.WorkingMemory;
 
 public class StartProcessCommand implements Command<ProcessInstance> {
 	
@@ -37,15 +37,30 @@ public class StartProcessCommand implements Command<ProcessInstance> {
 		this.data = data;
 	}
 
-	public ProcessInstance execute(WorkingMemory workingMemory) {
+	public ProcessInstance execute(StatefulSession session) {
 		if (data != null) {
 			for (Object o: data) {
-				workingMemory.insert(o);
+				session.insert(o);
 			}
 		}
-		ProcessInstance processInstance = ( ProcessInstance ) workingMemory.startProcess(processId, parameters);
-		workingMemory.fireAllRules();
+		ProcessInstance processInstance = (ProcessInstance) session.startProcess(processId, parameters);
+		session.fireAllRules();
 		return processInstance;
+	}
+
+	public String toString() {
+		String result = "session.startProcess(" + processId + ", [";
+		if (parameters != null) {
+			int i = 0;
+			for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+				if (i++ > 0) {
+					result += ", ";
+				}
+				result += entry.getKey() + "=" + entry.getValue();
+			}
+		}
+		result += "]);";
+		return result;
 	}
 
 }

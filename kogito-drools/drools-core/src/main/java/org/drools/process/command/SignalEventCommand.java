@@ -1,7 +1,7 @@
 package org.drools.process.command;
 
+import org.drools.StatefulSession;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.WorkingMemory;
 
 public class SignalEventCommand implements Command<Object> {
 	
@@ -33,16 +33,24 @@ public class SignalEventCommand implements Command<Object> {
 		this.event = event;
 	}
 
-	public Object execute(WorkingMemory workingMemory) {
+	public Object execute(StatefulSession session) {
 		if (processInstanceId == -1) {
-			workingMemory.getSignalManager().signalEvent(eventType, event);
+			session.getSignalManager().signalEvent(eventType, event);
 		} else {
-			ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance(processInstanceId);
+			ProcessInstance processInstance = session.getProcessInstance(processInstanceId);
 			if (processInstance != null) {
 				processInstance.signalEvent(eventType, processInstance);
 			}
 		}
 		return null;
+	}
+
+	public String toString() {
+		if (processInstanceId == -1) {
+			return "session.getSignalManager().signalEvent(" + eventType + ", " + event + ");";
+		} else {
+			return "processInstance.signalEvent(" + eventType + ", " + event + ");";
+		}
 	}
 
 }
