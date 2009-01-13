@@ -19,6 +19,8 @@ public interface CorePipelineProvider {
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetGlobal();
 
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal();
+    
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetObject(); 
 
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal(String identifier);
 
