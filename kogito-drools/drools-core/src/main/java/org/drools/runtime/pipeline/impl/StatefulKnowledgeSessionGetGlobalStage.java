@@ -22,8 +22,6 @@ public class StatefulKnowledgeSessionGetGlobalStage extends BaseEmitter
         StatefulKnowledgeSession ksession = kContext.getStatefulKnowledgeSession();
         Object result = ksession.getGlobal( (String) object );
         
-        context.setResult( result );
-        
         emit( result,
               kContext );
     }
