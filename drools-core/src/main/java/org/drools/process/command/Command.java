@@ -1,9 +1,9 @@
 package org.drools.process.command;
 
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
 
 public interface Command<T> {
 	
-	T execute(WorkingMemory workingMemory);
+	T execute(StatefulSession session);
 	
 }
