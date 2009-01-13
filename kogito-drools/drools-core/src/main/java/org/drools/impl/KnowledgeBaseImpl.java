@@ -130,7 +130,7 @@ public class KnowledgeBaseImpl
                                                  this );
     }
     
-    public StatefulKnowledgeSession newStatefulSession(KnowledgeSessionConfiguration conf) {        
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf) {        
         ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf );
         return new StatefulKnowledgeSessionImpl( session,
                                                  this );
