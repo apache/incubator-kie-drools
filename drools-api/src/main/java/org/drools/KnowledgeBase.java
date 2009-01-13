@@ -74,17 +74,17 @@ public interface KnowledgeBase
     void removeProcess(String processId);
 
     /**
-     * Create a new StatefulKnolwedgeSession using the given session configuration.
+     * Create a new StatefulKnowledgeSession using the given session configuration.
      * Don't forget to dispose() session when you are done.
      * 
      * @param conf
      * @return
      *     The StatefulKnowledgeSession.
      */
-    StatefulKnowledgeSession newStatefulSession(KnowledgeSessionConfiguration conf);
+    StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf);
 
     /**
-     * Create a new StatefulKnolwedgeSession using the default session configuration.
+     * Create a new StatefulKnowledgeSession using the default session configuration.
      * Don't forget to dispose() session when you are done.
      * 
      * @param conf
@@ -94,7 +94,7 @@ public interface KnowledgeBase
     StatefulKnowledgeSession newStatefulKnowledgeSession();
 
     /**
-     * Create a new StatelessKnolwedgeSession using the given session configuration.
+     * Create a new StatelessKnowledgeSession using the given session configuration.
      * You do not need to call dispose() on this.
      * 
      * @param conf
@@ -104,7 +104,7 @@ public interface KnowledgeBase
     StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf);
 
     /**
-     * Create a new StatelessKnolwedgeSession using the default session configuration.
+     * Create a new StatelessKnowledgeSession using the default session configuration.
      * You do not need to call dispose() on this.
      * 
      * @param conf
