@@ -114,6 +114,10 @@ public class PipelineFactory {
                                                           destinationName,
                                                           resultHandlerFactory );
     }
+    
+    public static Action newJmsUnwrapMessageObject() {
+        return getJmsMessengerProvider().newJmsUnwrapMessageObject();
+    }
 
     public static Transformer newSmooksFromSourceTransformer(Smooks smooks,
                                                              String rootId) {
