@@ -2,6 +2,7 @@ package org.drools.runtime.pipeline;
 
 import java.util.List;
 
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import net.sf.jxls.reader.XLSReader;
@@ -111,9 +112,13 @@ public class PipelineFactory {
         return getSmooksPipelineProvider().newSmooksToSourceTransformer( smooks );
     }
 
-    public static Transformer newJaxbTransformer(Unmarshaller unmarshaller) {
-        return getJaxbPipelineProvider().newJaxbTransformer( unmarshaller );
+    public static Transformer newJaxbFromXmlTransformer(Unmarshaller unmarshaller) {
+        return getJaxbPipelineProvider().newJaxbFromXmlTransformer( unmarshaller );
     }
+    
+    public static Transformer newJaxbToXmlTransformer(Marshaller marshaller) {
+        return getJaxbPipelineProvider().newJaxbToXmlTransformer( marshaller );
+    }    
 
     public static Transformer newXStreamFromXmlTransformer(XStream xstream) {
         return getXStreamTransformerProvider().newXStreamFromXmlTransformer( xstream );
@@ -163,10 +168,10 @@ public class PipelineFactory {
 
     private static void loadJaxbTransformerProvider() {
         try {
-            Class<JaxbTransformerProvider> cls = (Class<JaxbTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JaxbTransformer$JaxbTransformerProviderImpl" );
+            Class<JaxbTransformerProvider> cls = (Class<JaxbTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JaxbTransformerProviderImpl" );
             setJaxbTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JaxbTransformer$JaxbTransformerProviderImpl could not be set.",
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JaxbTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }
