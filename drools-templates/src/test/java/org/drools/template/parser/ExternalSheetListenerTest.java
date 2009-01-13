@@ -327,7 +327,11 @@ public class ExternalSheetListenerTest extends TestCase {
                 	return 0;
                 }
 
-				public GlobalResolver getGlobalResolver() {
+                public Object getObject(org.drools.runtime.rule.FactHandle handle) {
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+
+                public GlobalResolver getGlobalResolver() {
                     
                     return null;
                 }
