@@ -7,4 +7,6 @@ public interface JmsMessengerProvider {
                             Properties properties,
                             String destinationName,
                             ResultHandlerFactory resultHandlerFactory);
+    
+    Action newJmsUnwrapMessageObject();
 }
