@@ -185,4 +185,33 @@ public class FactTemplateFieldExtractor
         return isNullValue( null,
                             object );
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((factTemplate == null) ? 0 : factTemplate.hashCode());
+        result = prime * result + fieldIndex;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        FactTemplateFieldExtractor other = (FactTemplateFieldExtractor) obj;
+        
+        if ( factTemplate == null ) {
+            if ( other.factTemplate != null ) return false;
+        } else if ( !factTemplate.equals( other.factTemplate ) ) {
+            return false;
+        }
+        
+        if ( fieldIndex != other.fieldIndex ) {
+            return false;
+        }
+        return true;
+    }
+   
 }
