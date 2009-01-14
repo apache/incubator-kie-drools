@@ -231,7 +231,6 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
                                               false );
         setDefaultDialect( (String) dialectProperties.remove( "drools.dialect.default" ) );
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         for ( Iterator it = dialectProperties.entrySet().iterator(); it.hasNext(); ) {
             Entry entry = (Entry) it.next();
             String str = (String) entry.getKey();
