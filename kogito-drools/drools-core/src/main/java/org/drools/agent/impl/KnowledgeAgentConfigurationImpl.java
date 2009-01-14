@@ -16,10 +16,10 @@ public class KnowledgeAgentConfigurationImpl
     implements
     KnowledgeAgentConfiguration {
 
-    private boolean scanResources;
-    private boolean scanDirectories;
-    private boolean monitorChangeSetEvents;
-    private boolean newInstance;
+    private boolean scanResources          = true;
+    private boolean scanDirectories        = true;
+    private boolean monitorChangeSetEvents = true;
+    private boolean newInstance            = true;
 
     public KnowledgeAgentConfigurationImpl() {
 
@@ -41,20 +41,20 @@ public class KnowledgeAgentConfigurationImpl
 
         if ( name.equals( "drools.agent.monitorChangeSetEvents" ) ) {
             setMonitorChangeSetEvents( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
-        }  else if ( name.equals( "drools.agent.scanDirectories" ) ) {
+        } else if ( name.equals( "drools.agent.scanDirectories" ) ) {
             boolean bool = StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value );
-            setScanDirectories(  bool );
+            setScanDirectories( bool );
             if ( bool ) {
                 setScanResources( true );
                 setMonitorChangeSetEvents( true );
-            }            
+            }
         } else if ( name.equals( "drools.agent.scanResources" ) ) {
             boolean bool = StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value );
-            setScanResources(  bool );
+            setScanResources( bool );
             if ( bool ) {
                 setMonitorChangeSetEvents( true );
-            }            
-        }else if ( name.equals( "drools.agent.newInstance" ) ) {
+            }
+        } else if ( name.equals( "drools.agent.newInstance" ) ) {
             setNewInstance( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
         }
     }
@@ -74,7 +74,7 @@ public class KnowledgeAgentConfigurationImpl
         } else if ( name.equals( "drools.agent.newInstance" ) ) {
             return Boolean.toString( this.newInstance );
         }
-        
+
         return null;
     }
 
@@ -85,7 +85,7 @@ public class KnowledgeAgentConfigurationImpl
     public void setScanResources(boolean scanResources) {
         this.scanResources = scanResources;
     }
-    
+
     public boolean isScanDirectories() {
         return scanDirectories;
     }

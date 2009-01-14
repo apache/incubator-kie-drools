@@ -20,7 +20,7 @@ public class KnowledgeAgentProviderImpl implements KnowledgeAgentProvider {
 
     public KnowledgeAgent newKnowledgeAgent(String name,
                                             KnowledgeBase kbase) {
-        return new KnowledgeAgentImpl(name, kbase, null);
+        return new KnowledgeAgentImpl(name, kbase, new KnowledgeAgentConfigurationImpl() );
     }
 
     public KnowledgeAgent newKnowledgeAgent(String name,
