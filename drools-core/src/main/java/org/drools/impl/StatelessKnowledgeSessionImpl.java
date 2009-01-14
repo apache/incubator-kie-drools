@@ -28,6 +28,7 @@ import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.Parameters;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
@@ -51,12 +52,15 @@ public class StatelessKnowledgeSessionImpl
     public WorkingMemoryEventSupport                                          workingMemoryEventSupport = new WorkingMemoryEventSupport();
     public AgendaEventSupport                                                 agendaEventSupport        = new AgendaEventSupport();
     public RuleFlowEventSupport                                               ruleFlowEventSupport      = new RuleFlowEventSupport();
+    
+    private KnowledgeSessionConfiguration conf;
 
     public StatelessKnowledgeSessionImpl() {
     }
 
-    public StatelessKnowledgeSessionImpl(final InternalRuleBase ruleBase) {
+    public StatelessKnowledgeSessionImpl(final InternalRuleBase ruleBase, final KnowledgeSessionConfiguration conf) {
         this.ruleBase = ruleBase;
+        this.conf = ( conf != null ) ? conf : new SessionConfiguration() ;
     }
 
     public InternalRuleBase getRuleBase() {
@@ -67,7 +71,7 @@ public class StatelessKnowledgeSessionImpl
         synchronized ( this.ruleBase.getPackagesMap() ) {
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                                 this.ruleBase,
-                                                                new SessionConfiguration() );
+                                                                (SessionConfiguration) this.conf );
 
             DelegatingGlobalResolver resolver = new DelegatingGlobalResolver();
             resolver.setDelegate( this.sessionGlobals );
