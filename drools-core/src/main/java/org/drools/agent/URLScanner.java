@@ -56,12 +56,15 @@ public class URLScanner extends PackageProvider {
             }
             this.localCacheFileScanner = new FileScanner();
             this.localCacheFileScanner.setFiles( getFiles( urls, localCacheDir ) );
+            this.localCacheFileScanner.setAgentListener( this.listener );
         }
     }
     
     public void setAgentListener(AgentEventListener listener) {
         super.setAgentListener( listener );
-        this.localCacheFileScanner.setAgentListener( listener );
+        if ( this.localCacheFileScanner != null ) {
+            this.localCacheFileScanner.setAgentListener( listener );
+        }
     }    
 
     File[] getFiles(URL[] urls, File cacheDir) {
