@@ -4435,33 +4435,10 @@ public class MiscTest extends TestCase {
     public static class Foo {
         public String aValue = "";
         
-    }
+    }    
     
-    public void testMacroSupportWithStrings() {
-        Map<String, Object> vars = new HashMap<String, Object>();
-        Foo foo = new Foo();
-        vars.put("foo", foo);
-
-        Map<String, Macro> macros = new HashMap<String, Macro>();
-
-        macros.put("modify", new Macro() {
-            public String doMacro() {
-                return "drools.modify";
-            }
-        });
-       
-        assertEquals( "", foo.aValue);
-        
-        ExpressionCompiler compiler = new ExpressionCompiler(parseMacros("\"This is an modify()\"", macros));
-
-        ParserContext ctx = new ParserContext(null, null, null);
-        ctx.setSourceFile("test.mv");
-        ctx.setDebugSymbols(true);
-
-        assertEquals( "\"This is an modify()\"", executeExpression(compiler.compile(ctx), null, vars) );
-    }
-    
-    public void testFunctionReplacement() {
+    // @FIXME see JBRULES-1808
+    public void FIXME_testFunctionReplacement() {
         String str = "";
         str += "package org.simple \n";
         str += "global java.util.List list \n";
