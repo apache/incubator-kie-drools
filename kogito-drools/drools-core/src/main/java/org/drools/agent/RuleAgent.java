@@ -426,7 +426,7 @@ public class RuleAgent {
 
                 default :
                     if ( !inquotes && (c == ' ' || c == '\n' || c == '\r' || c == '\t') ) {
-                        if ( current.trim() != "" ) {
+                        if ( !"".equals(current.trim()) ) { 
                             items.add( current );
                             current = "";
                         }
@@ -436,7 +436,7 @@ public class RuleAgent {
                     break;
             }
         }
-        if ( current.trim() != "" ) {
+        if ( !"".equals(current.trim()) ) { 
             items.add( current );
         }
 
