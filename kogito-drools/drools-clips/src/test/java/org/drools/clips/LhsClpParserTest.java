@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -329,18 +330,18 @@ public class LhsClpParserTest extends TestCase {
     public void testRuleHeader() throws Exception {
         RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).defrule();
         
-        List attributes = rule.getAttributes();
-        AttributeDescr module = ( AttributeDescr ) attributes.get( 0 );
+        Map attributes = rule.getAttributes();
+        AttributeDescr module = ( AttributeDescr ) attributes.get( "agenda-group" );
         assertEquals( "agenda-group", module.getName() );
         assertEquals( "MAIN", module.getValue() );
         
         assertEquals("name", rule.getName() );
         
-        AttributeDescr dialect = ( AttributeDescr ) attributes.get( 1 );
+        AttributeDescr dialect = ( AttributeDescr ) attributes.get( "dialect" );
         assertEquals( "dialect", dialect.getName() );
         assertEquals( "clips", dialect.getValue() );        
         
-        AttributeDescr salience = ( AttributeDescr ) attributes.get( 2 );
+        AttributeDescr salience = ( AttributeDescr ) attributes.get( "salience" );
         assertEquals( "salience", salience.getName() );
         assertEquals( "-100", salience.getValue() );
         
