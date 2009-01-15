@@ -16,6 +16,7 @@ package org.drools.lang;
  * limitations under the License.
  */
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -322,7 +323,7 @@ public class DrlDumper extends ReflectiveVisitor
 
         	final RuleDescr ruleDescr = (RuleDescr) ruleobj;
             String rule = "rule \"" + ruleDescr.getName() + "\" " + DrlDumper.eol;
-            final String attribute = processAttribute( ruleDescr.getAttributes() );
+            final String attribute = processAttribute( ruleDescr.getAttributes().values() );
             String lhs = "";
             if ( !ruleDescr.getLhs().getDescrs().isEmpty() ) {
                 lhs = "\t when" + DrlDumper.eol + processDescrList( ruleDescr.getLhs().getDescrs() ) + DrlDumper.eol;
@@ -453,11 +454,10 @@ public class DrlDumper extends ReflectiveVisitor
         return functionList + DrlDumper.eol;
     }
 
-    private String processAttribute(final List attributes) {
+    private String processAttribute(final Collection<AttributeDescr> attributes) {
 
         String attributeList = "";
-        for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
-            final AttributeDescr attributeDescr = (AttributeDescr) it.next();
+        for ( final AttributeDescr attributeDescr : attributes) {
             visit( attributeDescr );
             attributeList += this.template;
         }

@@ -293,13 +293,13 @@ public class MVELConsequenceBuilderTest extends TestCase {
         ExpressionCompiler compiler = new ExpressionCompiler( expr );
 
         ParserContext context = new ParserContext();
+        context.setDebugSymbols( true );
         context.addImport( "System",
                            System.class );
         context.setStrictTypeEnforcement( true );
         //context.setDebugSymbols( true );
         context.setSourceFile( "mysource" );
 
-        compiler.setDebugSymbols( true );
 
         Serializable compiledExpression = compiler.compile( context );
 

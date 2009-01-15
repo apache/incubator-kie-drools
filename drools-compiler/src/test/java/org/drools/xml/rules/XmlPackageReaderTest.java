@@ -405,7 +405,7 @@ public class XmlPackageReaderTest extends TestCase {
 
         assertEquals( 4,
                       ruleDescr.getAttributes().size() );
-        final AttributeDescr attributeDescr = (AttributeDescr) ruleDescr.getAttributes().get( 0 );
+        final AttributeDescr attributeDescr = (AttributeDescr) ruleDescr.getAttributes().get( "salience" );
         assertEquals( "salience",
                       attributeDescr.getName() );
         assertEquals( "10",

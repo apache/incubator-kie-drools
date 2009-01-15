@@ -628,7 +628,7 @@ public class PackageBuilder {
                     ruleDescr.setNamespace( this.defaultNamespace );
                 }
                 if ( isEmpty( ruleDescr.getDialect() ) ) {
-                    ruleDescr.setDialect( pkgRegistry.getDialect() );
+                    ruleDescr.addAttribute( new AttributeDescr( "dialect", pkgRegistry.getDialect() ) );
                 }
                 addRule( ruleDescr );
             }
@@ -1145,12 +1145,7 @@ public class PackageBuilder {
     }
 
     private void addRule(final RuleDescr ruleDescr) {
-        // this.dialect.init( ruleDescr );
         ruleDescr.setResource( resource );
-
-        if ( ruleDescr instanceof QueryDescr ) {
-            // ruleDescr.getLhs().insertDescr( 0, baseDescr );
-        }
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
 

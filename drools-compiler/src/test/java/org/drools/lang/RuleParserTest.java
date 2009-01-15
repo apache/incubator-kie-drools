@@ -369,7 +369,7 @@ public class RuleParserTest extends TestCase {
 		assertNotNull(rule);
 
 		assertEquals("rule1", rule.getName());
-		final AttributeDescr att = (AttributeDescr) rule.getAttributes().get(0);
+		final AttributeDescr att = (AttributeDescr) rule.getAttributes().get("no-loop");
 		assertEquals("false", att.getValue());
 		assertEquals("no-loop", att.getName());
 	}
@@ -381,7 +381,7 @@ public class RuleParserTest extends TestCase {
 		assertNotNull(rule);
 
 		assertEquals("rule1", rule.getName());
-		final AttributeDescr att = (AttributeDescr) rule.getAttributes().get(0);
+		final AttributeDescr att = (AttributeDescr) rule.getAttributes().get("auto-focus");
 		assertEquals("true", att.getValue());
 		assertEquals("auto-focus", att.getName());
 	}
@@ -393,7 +393,7 @@ public class RuleParserTest extends TestCase {
 		assertNotNull(rule);
 
 		assertEquals("rule1", rule.getName());
-		final AttributeDescr att = (AttributeDescr) rule.getAttributes().get(0);
+		final AttributeDescr att = (AttributeDescr) rule.getAttributes().get("ruleflow-group");
 		assertEquals("a group", att.getValue());
 		assertEquals("ruleflow-group", att.getName());
 	}
@@ -1769,30 +1769,30 @@ public class RuleParserTest extends TestCase {
 		assertEquals("simple_rule", rule.getName());
 		assertEqualsIgnoreWhitespace("bar();", (String) rule.getConsequence());
 
-		final List attrs = rule.getAttributes();
+		final Map<String, AttributeDescr> attrs = rule.getAttributes();
 		assertEquals(6, attrs.size());
 
-		AttributeDescr at = (AttributeDescr) attrs.get(0);
+		AttributeDescr at = (AttributeDescr) attrs.get("salience");
 		assertEquals("salience", at.getName());
 		assertEquals("42", at.getValue());
 
-		at = (AttributeDescr) attrs.get(1);
+		at = (AttributeDescr) attrs.get("agenda-group");
 		assertEquals("agenda-group", at.getName());
 		assertEquals("my_group", at.getValue());
 
-		at = (AttributeDescr) attrs.get(2);
+		at = (AttributeDescr) attrs.get("no-loop");
 		assertEquals("no-loop", at.getName());
 		assertEquals("true", at.getValue());
 
-		at = (AttributeDescr) attrs.get(3);
+		at = (AttributeDescr) attrs.get("duration");
 		assertEquals("duration", at.getName());
 		assertEquals("42", at.getValue());
 
-		at = (AttributeDescr) attrs.get(4);
+		at = (AttributeDescr) attrs.get("activation-group");
 		assertEquals("activation-group", at.getName());
 		assertEquals("my_activation_group", at.getValue());
 
-		at = (AttributeDescr) attrs.get(5);
+		at = (AttributeDescr) attrs.get("lock-on-active");
 		assertEquals("lock-on-active", at.getName());
 		assertEquals("true", at.getValue());
 	}
@@ -1803,18 +1803,18 @@ public class RuleParserTest extends TestCase {
 		assertEquals("simple_rule", rule.getName());
 		assertEqualsIgnoreWhitespace("bar();", (String) rule.getConsequence());
 
-		final List attrs = rule.getAttributes();
+		final Map<String, AttributeDescr> attrs = rule.getAttributes();
 		assertEquals(3, attrs.size());
 
-		AttributeDescr at = (AttributeDescr) attrs.get(0);
+		AttributeDescr at = (AttributeDescr) attrs.get("enabled");
 		assertEquals("enabled", at.getName());
 		assertEquals("( 1 + 1 == 2 )", at.getValue());
 
-		at = (AttributeDescr) attrs.get(1);
+		at = (AttributeDescr) attrs.get("salience");
 		assertEquals("salience", at.getName());
 		assertEquals("( 1+2 )", at.getValue());
 
-		at = (AttributeDescr) attrs.get(2);
+		at = (AttributeDescr) attrs.get("lock-on-active");
 		assertEquals("lock-on-active", at.getName());
 		assertEquals("true", at.getValue());
 	}
@@ -1825,30 +1825,30 @@ public class RuleParserTest extends TestCase {
 		assertEquals("simple_rule", rule.getName());
 		assertEqualsIgnoreWhitespace("bar();", (String) rule.getConsequence());
 
-		final List attrs = rule.getAttributes();
+		final Map<String, AttributeDescr> attrs = rule.getAttributes();
 		assertEquals(6, attrs.size());
 
-		AttributeDescr at = (AttributeDescr) attrs.get(0);
+		AttributeDescr at = (AttributeDescr) attrs.get("salience");
 		assertEquals("salience", at.getName());
 		assertEquals("42", at.getValue());
 
-		at = (AttributeDescr) attrs.get(1);
+		at = (AttributeDescr) attrs.get("agenda-group");
 		assertEquals("agenda-group", at.getName());
 		assertEquals("my_group", at.getValue());
 
-		at = (AttributeDescr) attrs.get(2);
+		at = (AttributeDescr) attrs.get("no-loop");
 		assertEquals("no-loop", at.getName());
 		assertEquals("true", at.getValue());
 
-		at = (AttributeDescr) attrs.get(3);
+		at = (AttributeDescr) attrs.get("lock-on-active");
 		assertEquals("lock-on-active", at.getName());
 		assertEquals("true", at.getValue());
 
-		at = (AttributeDescr) attrs.get(4);
+		at = (AttributeDescr) attrs.get("duration");
 		assertEquals("duration", at.getName());
 		assertEquals("42", at.getValue());
 
-		at = (AttributeDescr) attrs.get(5);
+		at = (AttributeDescr) attrs.get("activation-group");
 		assertEquals("activation-group", at.getName());
 		assertEquals("my_activation_group", at.getValue());
 	}
@@ -1906,19 +1906,19 @@ public class RuleParserTest extends TestCase {
 
 		RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
 		assertEquals("bar", rule.getName());
-		at = (AttributeDescr) rule.getAttributes().get(0);
+		at = (AttributeDescr) rule.getAttributes().get("agenda-group");
 		assertEquals("agenda-group", at.getName());
 		assertEquals("x", at.getValue());
-		at = (AttributeDescr) rule.getAttributes().get(1);
+		at = (AttributeDescr) rule.getAttributes().get("dialect");
 		assertEquals("dialect", at.getName());
 		assertEquals("java", at.getValue());
 
 		rule = (RuleDescr) pkg.getRules().get(1);
 		assertEquals("baz", rule.getName());
-		at = (AttributeDescr) rule.getAttributes().get(0);
+		at = (AttributeDescr) rule.getAttributes().get("dialect");
 		assertEquals("dialect", at.getName());
 		assertEquals("mvel", at.getValue());
-		at = (AttributeDescr) rule.getAttributes().get(1);
+		at = (AttributeDescr) rule.getAttributes().get("agenda-group");
 		assertEquals("agenda-group", at.getName());
 		assertEquals("x", at.getValue());
 

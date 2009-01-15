@@ -1,6 +1,7 @@
 package org.drools.lang.descr;
 
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -25,11 +26,9 @@ public class PackageDescrTest extends TestCase {
         assertEquals("default", ((AttributeDescr)pkgAts.get( 1 )).getValue());
         
         
-        List ruleAts = rule.getAttributes();
-        assertEquals("overridden", ((AttributeDescr)ruleAts.get( 0 )).getValue());
-        assertEquals("default", ((AttributeDescr)ruleAts.get( 1 )).getValue());
-        
-        
+        Map<String, AttributeDescr> ruleAts = rule.getAttributes();
+        assertEquals("overridden", ((AttributeDescr)ruleAts.get( "foo" )).getValue());
+        assertEquals("default", ((AttributeDescr)ruleAts.get( "foo2" )).getValue());
         
     }
     

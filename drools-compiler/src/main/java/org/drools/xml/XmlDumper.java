@@ -16,6 +16,7 @@ package org.drools.xml;
  * limitations under the License.
  */
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -252,7 +253,7 @@ public class XmlDumper extends ReflectiveVisitor
         for ( final Iterator iterator = rules.iterator(); iterator.hasNext(); ) {
             final RuleDescr ruleDescr = (RuleDescr) iterator.next();
             String rule = "<rule name=\"" + ruleDescr.getName() + "\">" + XmlDumper.eol;
-            final String attribute = processAttribute( ruleDescr.getAttributes() );
+            final String attribute = processAttribute( ruleDescr.getAttributes().values() );
             String lhs = "";
             if ( ruleDescr.getLhs().getDescrs() != Collections.EMPTY_LIST ) {
                 lhs = "<lhs>" + processDescrList( ruleDescr.getLhs().getDescrs() ) + "</lhs>";
@@ -315,11 +316,10 @@ public class XmlDumper extends ReflectiveVisitor
         return functionList + XmlDumper.eol;
     }
 
-    private String processAttribute(final List attributes) {
+    private String processAttribute(final Collection<AttributeDescr> attributes ) {
 
         String attributeList = "";
-        for ( final Iterator iterator = attributes.iterator(); iterator.hasNext(); ) {
-            final AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
+        for ( final AttributeDescr attributeDescr : attributes) {
             visit( attributeDescr );
             attributeList += this.template;
         }

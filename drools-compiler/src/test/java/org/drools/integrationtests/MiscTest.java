@@ -1579,14 +1579,14 @@ public class MiscTest extends TestCase {
                       packageAttrs.size() );
 
         RuleDescr rule = (RuleDescr) desc.getRules().get( 0 );
-        List ruleAttrs = rule.getAttributes();
+        Map<String, AttributeDescr> ruleAttrs = rule.getAttributes();
         assertEquals( 1,
                       ruleAttrs.size() );
 
         assertEquals( "mvel",
-                      ((AttributeDescr) ruleAttrs.get( 0 )).getValue() );
+                      ((AttributeDescr) ruleAttrs.get( "dialect" )).getValue() );
         assertEquals( "dialect",
-                      ((AttributeDescr) ruleAttrs.get( 0 )).getName() );
+                      ((AttributeDescr) ruleAttrs.get( "dialect" )).getName() );
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
@@ -4475,11 +4475,6 @@ public class MiscTest extends TestCase {
         assertEquals( 2, list.size() );
         assertEquals( "This is an update()", list.get( 0 ) );
         assertEquals( "This is an update($fact)", list.get( 1 ) );
-        
-        
-        
-        
-        
     }
 
     public void testRuleReplacement() throws Exception {

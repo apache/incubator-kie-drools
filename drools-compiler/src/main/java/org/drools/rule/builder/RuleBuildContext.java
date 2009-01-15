@@ -80,13 +80,7 @@ public class RuleBuildContext extends PackageBuildContext {
             this.rule = new Rule( ruleDescr.getName() );
         }        
         this.rule.setPackage( pkg.getName() );
-        
-      
-
-        // Assign attributes
-        setAttributes( this.rule,
-                       ruleDescr,
-                       ruleDescr.getAttributes() );
+        this.rule.setDialect( ruleDescr.getDialect() );
         
         init(pkgBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule );
         
@@ -150,70 +144,5 @@ public class RuleBuildContext extends PackageBuildContext {
         return this.buildStack;
     }
 
-    /**
-     * Sets rule Attributes
-     * 
-     * @param rule
-     * @param attributes
-     */
-    public static void setAttributes(final Rule rule,
-                                     final RuleDescr ruleDescr,
-                                     final List attributes) {
-
-        for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
-            final AttributeDescr attributeDescr = (AttributeDescr) it.next();
-            final String name = attributeDescr.getName();
-            if ( name.equals( "salience" ) ) {
-                try {
-                    ruleDescr.setSalience( attributeDescr.getValue() );
-                } catch ( Exception e ) {
-
-                }
-            } else if ( name.equals( "no-loop" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setNoLoop( true );
-                } else {
-                    rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }
-            } else if ( name.equals( "auto-focus" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setAutoFocus( true );
-                } else {
-                    rule.setAutoFocus( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }
-            } else if ( name.equals( "agenda-group" ) ) {
-                rule.setAgendaGroup( attributeDescr.getValue() );
-            } else if ( name.equals( "activation-group" ) ) {
-                rule.setActivationGroup( attributeDescr.getValue() );
-            } else if ( name.equals( "ruleflow-group" ) ) {
-                rule.setRuleFlowGroup( attributeDescr.getValue() );
-            } else if ( name.equals( "lock-on-active" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setLockOnActive( true );
-                } else {
-                    rule.setLockOnActive( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }
-            } else if ( name.equals( "duration" ) ) {
-                rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
-                rule.setAgendaGroup( "" );
-            } else if ( name.equals( "enabled" ) ) {
-                if ( attributeDescr.getValue() == null || "true".equalsIgnoreCase( attributeDescr.getValue() )  ) {
-                    rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
-                } else if( "false".equalsIgnoreCase( attributeDescr.getValue() ) ) {
-                    rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
-                }
-            } else if ( name.equals( "date-effective" ) ) {
-                final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
-                rule.setDateEffective( cal );
-            } else if ( name.equals( "date-expires" ) ) {
-                final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
-                rule.setDateExpires( cal );
-            } else if ( name.equals( "dialect" ) ) {
-                rule.setDialect( attributeDescr.getValue() );
-            }
-        }
-    }
 
 }

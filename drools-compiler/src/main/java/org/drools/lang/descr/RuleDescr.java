@@ -19,10 +19,9 @@ package org.drools.lang.descr;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.io.Resource;
@@ -34,25 +33,23 @@ public class RuleDescr extends BaseDescr
     Dialectable,
     Namespaceable {
 
-    private static final long    serialVersionUID = 400L;
-    private String               namespace;
-    private String               name;
-    private String 				 parentName;
-    private String               dialect;
-    private String               documentation;
-    private Map<String, String>  metaAttributes;
+    private static final long           serialVersionUID = 400L;
+    private String                      namespace;
+    private String                      name;
+    private String                      parentName;
+    private String                      documentation;
+    private Map<String, String>         metaAttributes;
+    private Map<String, AttributeDescr> attributes;
 
-    private AndDescr             lhs;
-    private Object               consequence;
-    private int                  consequenceLine;
-    private int                  consequencePattern;
-    private int                  offset;
-    private List<AttributeDescr> attributes       = Collections.EMPTY_LIST;
-    private String               salience;
+    private AndDescr                    lhs;
+    private Object                      consequence;
+    private int                         consequenceLine;
+    private int                         consequencePattern;
+    private int                         offset;
 
-    private String               className;
-    
-    private Resource             resource;
+    private String                      className;
+
+    private Resource                    resource;
 
     public RuleDescr() {
     }
@@ -66,26 +63,26 @@ public class RuleDescr extends BaseDescr
                      final String documentation) {
         this.name = ruleName;
         this.documentation = documentation;
-        this.metaAttributes = new HashMap<String, String>();
+        this.metaAttributes = new LinkedHashMap<String, String>();
+        this.attributes = new LinkedHashMap<String, AttributeDescr>();
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
         namespace = (String) in.readObject();
         name = (String) in.readObject();
         parentName = (String) in.readObject();
-        dialect = (String) in.readObject();
         documentation = (String) in.readObject();
         consequence = in.readObject();
         lhs = (AndDescr) in.readObject();
         consequenceLine = in.readInt();
         consequencePattern = in.readInt();
         offset = in.readInt();
-        attributes = (List<AttributeDescr>) in.readObject();
-        salience = (String) in.readObject();
+        attributes = (Map<String, AttributeDescr>) in.readObject();
         className = (String) in.readObject();
-        resource = ( Resource ) in.readObject();
+        resource = (Resource) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -93,7 +90,6 @@ public class RuleDescr extends BaseDescr
         out.writeObject( namespace );
         out.writeObject( name );
         out.writeObject( parentName );
-        out.writeObject( dialect );
         out.writeObject( documentation );
         out.writeObject( consequence );
         out.writeObject( lhs );
@@ -101,7 +97,6 @@ public class RuleDescr extends BaseDescr
         out.writeInt( consequencePattern );
         out.writeInt( offset );
         out.writeObject( attributes );
-        out.writeObject( salience );
         out.writeObject( className );
         out.writeObject( resource );
     }
@@ -112,7 +107,7 @@ public class RuleDescr extends BaseDescr
 
     public String getNamespace() {
         return this.namespace;
-    }        
+    }
 
     public Resource getResource() {
         return resource;
@@ -127,19 +122,13 @@ public class RuleDescr extends BaseDescr
     }
 
     public String getDialect() {
-        return this.dialect;
-    }
-
-    public void setDialect(String dialect) {
-        this.dialect = dialect;
+        AttributeDescr dialect = this.attributes.get( "dialect" );
+        return dialect != null ? dialect.getValue() : null;
     }
 
     public String getSalience() {
-        return salience;
-    }
-
-    public void setSalience(String salience) {
-        this.salience = salience;
+        AttributeDescr salience = this.attributes.get( "salience" );
+        return salience != null ? salience.getValue() : null;
     }
 
     public String getClassName() {
@@ -181,31 +170,19 @@ public class RuleDescr extends BaseDescr
      * Returns the attribute map
      * @return
      */
+    @SuppressWarnings("unchecked")
     public Map<String, String> getMetaAttributes() {
         return this.metaAttributes != null ? this.metaAttributes : Collections.EMPTY_MAP;
     }
 
-    public List<AttributeDescr> getAttributes() {
+    public Map<String, AttributeDescr> getAttributes() {
         return this.attributes;
     }
 
     public void addAttribute(final AttributeDescr attribute) {
         if ( attribute != null ) {
-            if ( this.attributes == Collections.EMPTY_LIST ) {
-                this.attributes = new ArrayList();
-            }
-
-            if ( "dialect".equals( attribute.getName() ) ) {
-                // set dialect specifically as its to drive the build process.
-                this.dialect = attribute.getValue();
-            }
-
-            this.attributes.add( attribute );
+            this.attributes.put( attribute.getName(), attribute );
         }
-    }
-
-    public void setAttributes(final List<AttributeDescr> attributes) {
-        this.attributes = new ArrayList<AttributeDescr>( attributes );
     }
 
     public AndDescr getLhs() {
@@ -247,25 +224,19 @@ public class RuleDescr extends BaseDescr
     }
 
     public String getEnabled() {
-        String enabled = "true";
-        for( AttributeDescr attr : this.attributes ) {
-            if( "enabled".equals( attr.getName() ) ) {
-                enabled = attr.getValue();
-                break;
-            }
-        }
-        return enabled;
+        AttributeDescr enabled = this.attributes.get( "enabled" );
+        return enabled != null ? enabled.getValue() : null;
     }
 
-	public void setParentName(String parentName) {
-		this.parentName = parentName;
-	}
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
 
-	public String getParentName() {
-		return parentName;
-	}
-	
-	public String toString() {
-	    return "[Rule name='" + this.name + "']";
-	}
+    public String getParentName() {
+        return parentName;
+    }
+
+    public String toString() {
+        return "[Rule name='" + this.name + "']";
+    }
 }

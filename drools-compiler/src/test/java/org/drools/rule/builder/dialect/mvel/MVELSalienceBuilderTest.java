@@ -15,6 +15,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
@@ -25,14 +26,14 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 
 public class MVELSalienceBuilderTest extends TestCase {
+    
     public void testSimpleExpression() {        
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
-        ruleDescr.setSalience( "(p.age + 20)/2" );
+        ruleDescr.addAttribute( new AttributeDescr( "salience", "(p.age + 20)/2" ) );
         ruleDescr.setConsequence( "" );
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = ( MVELDialect ) dialectRegistry.getDialect( "mvel" );
 

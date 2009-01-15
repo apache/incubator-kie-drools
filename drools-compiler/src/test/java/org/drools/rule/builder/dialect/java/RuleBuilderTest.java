@@ -17,16 +17,14 @@
 package org.drools.rule.builder.dialect.java;
 
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.base.ClassTypeResolver;
+import org.drools.base.EnabledBoolean;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
@@ -39,15 +37,25 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.rule.TimeMachine;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.util.DateUtils;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 
 /**
  * @author etirelli
  *
  */
 public class RuleBuilderTest extends TestCase {
+    // mock factory
+    private Mockery mockery = new Mockery() {
+                                {
+                                    // need to set this to be able to mock concrete classes
+                                    setImposteriser( ClassImposteriser.INSTANCE );
+                                }
+                            };
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -68,23 +76,22 @@ public class RuleBuilderTest extends TestCase {
      */
     public void testBuild() throws Exception {
         final DrlParser parser = new DrlParser();
-        
+
         final PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( new PackageDescr( "org.drools"  ) );
+        pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
         Package pkg = pkgBuilder.getPackage();
-        
+
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
         // just checking there is no parsing errors
         Assert.assertFalse( parser.getErrors().toString(),
                             parser.hasErrors() );
 
-
-
         final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
         final String ruleClassName = "RuleClassName.java";
         ruleDescr.setClassName( ruleClassName );
-        ruleDescr.addAttribute( new AttributeDescr("dialect", "java") );
+        ruleDescr.addAttribute( new AttributeDescr( "dialect",
+                                                    "java" ) );
 
         final TypeResolver typeResolver = new ClassTypeResolver( new HashSet(),
                                                                  this.getClass().getClassLoader() );
@@ -92,14 +99,18 @@ public class RuleBuilderTest extends TestCase {
         typeResolver.addImport( pkgDescr.getName() + ".*" );
         typeResolver.addImport( "java.lang.*" );
 
-        final RuleBuilder builder = new RuleBuilder( );
+        final RuleBuilder builder = new RuleBuilder();
 
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();        
+
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         Dialect dialect = dialectRegistry.getDialect( "java" );
 
-        RuleBuildContext context = new RuleBuildContext(pkgBuilder, ruleDescr, dialectRegistry, pkg, dialect);
+        RuleBuildContext context = new RuleBuildContext( pkgBuilder,
+                                                         ruleDescr,
+                                                         dialectRegistry,
+                                                         pkg,
+                                                         dialect );
 
         builder.build( context );
 
@@ -132,51 +143,66 @@ public class RuleBuilderTest extends TestCase {
     }
 
     public void testBuildAttributes() throws Exception {
-        Rule rule = new Rule( "my rule" );
+        // creates mock objects
+        final RuleBuildContext context = mockery.mock( RuleBuildContext.class );
+        final Rule rule = mockery.mock( Rule.class );
 
-        List attributes = new ArrayList();
+        // creates input object
+        final RuleDescr ruleDescr = new RuleDescr( "my rule" );
+        ruleDescr.addAttribute( new AttributeDescr( "no-loop",
+                                                    "true" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "auto-focus",
+                                                    "false" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "agenda-group",
+                                                    "my agenda" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "activation-group",
+                                                    "my activation" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "ruleflow-group",
+                                                    "mygroup" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "lock-on-active",
+                                                    "" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "enabled",
+                                                    "false" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "duration",
+                                                    "60" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "date-effective",
+                                                    "10-Jul-1974" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "date-expires",
+                                                    "10-Jul-2040" ) );
 
-        attributes.add( new AttributeDescr("dialect", "java") );
-        attributes.add( new AttributeDescr( "no-loop",
-                                            "true" ) );
-        attributes.add( new AttributeDescr( "enabled",
-                                            "false" ) );
-        attributes.add( new AttributeDescr( "ruleflow-group",
-                                            "mygroup" ) );
+        // creates expected results
+        final Calendar effective = Calendar.getInstance();
+        effective.setTime( DateUtils.parseDate( "10-Jul-1974" ) );
+        final Calendar expires = Calendar.getInstance();
+        expires.setTime( DateUtils.parseDate( "10-Jul-2040" ) );
 
-        RuleBuildContext.setAttributes( rule, null, attributes );
+        // defining expectations on the mock object
+        mockery.checking( new Expectations() {
+            {
+                // return values for the context
+                allowing( context ).getRule(); will( returnValue( rule ) );
+                allowing( context ).getRuleDescr(); will( returnValue( ruleDescr ) );
 
-        assertTrue( rule.isNoLoop() );
-        assertFalse( rule.isEffective(new TimeMachine(), null, null) );
-        assertEquals( "mygroup",
-                      rule.getRuleFlowGroup() );
+                // expected values for the rule object
+                oneOf( rule ).setNoLoop( true );
+                oneOf( rule ).setAutoFocus( false );
+                oneOf( rule ).setAgendaGroup( "my agenda" );
+                oneOf( rule ).setActivationGroup( "my activation" );
+                oneOf( rule ).setRuleFlowGroup( "mygroup" );
+                oneOf( rule ).setLockOnActive( true );
+                oneOf( rule ).setEnabled( EnabledBoolean.ENABLED_FALSE );
+                oneOf( rule ).setDuration( 60 );
+                oneOf( rule ).setDateEffective( effective );
+                oneOf( rule ).setDateExpires( expires );
+            }
+        } );
 
-        attributes = new ArrayList();
-        attributes.add( new AttributeDescr( "date-effective",
-                                            "10-Jul-1974" ) );
-        attributes.add( new AttributeDescr( "date-expires",
-                                            "10-Jul-2040" ) );
+        // calling the build method
+        RuleBuilder builder = new RuleBuilder();
+        builder.buildAttributes( context );
 
-        rule = new Rule( "myrule" );
-
-        RuleBuildContext.setAttributes( rule, null, attributes );
-
-        final Field eff = rule.getClass().getDeclaredField( "dateEffective" );
-        eff.setAccessible( true );
-        final Calendar effectiveDate = (Calendar) eff.get( rule );
-        assertNotNull( effectiveDate );
-
-        assertEquals( 1974,
-                      effectiveDate.get( Calendar.YEAR ) );
-
-        final Field exp = rule.getClass().getDeclaredField( "dateExpires" );
-        exp.setAccessible( true );
-        final Calendar expiryDate = (Calendar) exp.get( rule );
-
-        assertEquals( 2040,
-                      expiryDate.get( Calendar.YEAR ) );
-
-        assertNotNull( expiryDate );
+        // check expectations
+        mockery.assertIsSatisfied();
 
     }
 

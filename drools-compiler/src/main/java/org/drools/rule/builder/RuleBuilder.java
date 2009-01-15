@@ -16,14 +16,19 @@ package org.drools.rule.builder;
  * limitations under the License.
  */
 
+import java.util.Calendar;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Pattern;
+import org.drools.rule.Rule;
 import org.drools.spi.Salience;
+import org.drools.util.DateUtils;
 
 /**
  * This builds the rule structure from an AST.
@@ -44,27 +49,33 @@ public class RuleBuilder {
      */
     public void build(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
-        
+
         //Query and get object instead of using String
-        if(null != ruleDescr.getParentName() && null != context.getPkg().getRule(ruleDescr.getParentName())){
-        	context.getRule().setParent(context.getPkg().getRule(ruleDescr.getParentName()));
+        if ( null != ruleDescr.getParentName() && null != context.getPkg().getRule( ruleDescr.getParentName() ) ) {
+            context.getRule().setParent( context.getPkg().getRule( ruleDescr.getParentName() ) );
         }
-        context.getRule().getMetaAttributes().putAll(ruleDescr.getMetaAttributes());
-        
+        // add all the rule's meta attributes
+        context.getRule().getMetaAttributes().putAll( ruleDescr.getMetaAttributes() );
+
         final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
             Pattern prefixPattern = null;
             if ( context.getRuleDescr() instanceof QueryDescr ) {
-                prefixPattern = context.getDialect().getQueryBuilder().build( context, ( QueryDescr ) context.getRuleDescr() );
+                prefixPattern = context.getDialect().getQueryBuilder().build( context,
+                                                                              (QueryDescr) context.getRuleDescr() );
             }
             final GroupElement ce = (GroupElement) builder.build( context,
                                                                   ruleDescr.getLhs(),
                                                                   prefixPattern );
-            
+
             context.getRule().setLhs( ce );
         } else {
             throw new RuntimeDroolsException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
         }
+
+        // build all the rule's attributes
+        // must be after building LHS because some attributes require bindings from the LHS
+        buildAttributes( context );
 
         // Build the consequence and generate it's invoker/s
         // generate the main rule from the previously generated s.
@@ -73,31 +84,96 @@ public class RuleBuilder {
 
             context.getDialect().getConsequenceBuilder().build( context );
         }
-        
-        String salienceText = context.getRuleDescr().getSalience();
-        
-        try {
-            // First see if its an Integer
-            if ( salienceText != null && !salienceText.equals( "" )) {
-                Salience salience = new SalienceInteger( Integer.parseInt( salienceText ) );
-                context.getRule().setSalience( salience );
+
+    }
+
+    public void buildAttributes(final RuleBuildContext context) {
+        final Rule rule = context.getRule();
+        final RuleDescr ruleDescr = context.getRuleDescr();
+
+        for ( final AttributeDescr attributeDescr : ruleDescr.getAttributes().values() ) {
+            final String name = attributeDescr.getName();
+            if ( name.equals( "no-loop" ) ) {
+                rule.setNoLoop( getBooleanValue( attributeDescr,
+                                                 true ) );
+            } else if ( name.equals( "auto-focus" ) ) {
+                rule.setAutoFocus( getBooleanValue( attributeDescr,
+                                                    true ) );
+            } else if ( name.equals( "agenda-group" ) ) {
+                rule.setAgendaGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "activation-group" ) ) {
+                rule.setActivationGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "ruleflow-group" ) ) {
+                rule.setRuleFlowGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "lock-on-active" ) ) {
+                rule.setLockOnActive( getBooleanValue( attributeDescr,
+                                                       true ) );
+            } else if ( name.equals( "duration" ) ) {
+                rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
+            } else if ( name.equals( "date-effective" ) ) {
+                final Calendar cal = Calendar.getInstance();
+                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
+                rule.setDateEffective( cal );
+            } else if ( name.equals( "date-expires" ) ) {
+                final Calendar cal = Calendar.getInstance();
+                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
+                rule.setDateExpires( cal );
             }
-        } catch (Exception e) {
-            // It wasn't an integer, so build as an expression
-            context.getDialect().getSalienceBuilder().build( context );    
-        }     
-        
-       
-        
+        }
+
+        buildSalience( context );
+
+        buildEnabled( context );
+
+        //        buildDuration( context );
+    }
+
+    private boolean getBooleanValue(final AttributeDescr attributeDescr,
+                                    final boolean defaultValue) {
+        return (attributeDescr.getValue() == null || "".equals( attributeDescr.getValue().trim() )) ? defaultValue : Boolean.valueOf( attributeDescr.getValue() ).booleanValue();
+    }
+
+    //    private void buildDuration(final RuleBuildContext context) {
+    //        String durationText = context.getRuleDescr().getDuration();
+    //        try {
+    //            // First see if its an Integer
+    //            if ( durationText != null && !durationText.equals( "" )) {
+    //                Duration duration = new DurationInteger( Integer.parseInt( durationText ) );
+    //                context.getRule().setDuration( duration );
+    //            }
+    //        } catch (Exception e) {
+    //            // It wasn't an integer, so build as an expression
+    //            context.getDialect().getDurationBuilder().build( context );    
+    //        }
+    //    }
+
+    private void buildEnabled(final RuleBuildContext context) {
         String enabledText = context.getRuleDescr().getEnabled();
-        if( "true".equalsIgnoreCase( enabledText.trim() ) || "false".equalsIgnoreCase( enabledText.trim() ) ) {
-            if( Boolean.parseBoolean( enabledText ) ) {
-                context.getRule().setEnabled( EnabledBoolean.ENABLED_TRUE );
+        if ( enabledText != null ) {
+            if ( "true".equalsIgnoreCase( enabledText.trim() ) || "false".equalsIgnoreCase( enabledText.trim() ) ) {
+                if ( Boolean.parseBoolean( enabledText ) ) {
+                    context.getRule().setEnabled( EnabledBoolean.ENABLED_TRUE );
+                } else {
+                    context.getRule().setEnabled( EnabledBoolean.ENABLED_FALSE );
+                }
             } else {
-                context.getRule().setEnabled( EnabledBoolean.ENABLED_FALSE );
+                context.getDialect().getEnabledBuilder().build( context );
             }
-        } else {
-            context.getDialect().getEnabledBuilder().build( context );
         }
     }
+
+    private void buildSalience(final RuleBuildContext context) {
+        String salienceText = context.getRuleDescr().getSalience();
+        if ( salienceText != null && !salienceText.equals( "" ) ) {
+            try {
+                // First check if it is an Integer
+                Salience salience = new SalienceInteger( Integer.parseInt( salienceText ) );
+                context.getRule().setSalience( salience );
+            } catch ( Exception e ) {
+                // It wasn't an integer, so build as an expression
+                context.getDialect().getSalienceBuilder().build( context );
+            }
+        }
+    }
+
 }
