@@ -31,6 +31,7 @@ import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PropagationQueuingNode;
+import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
@@ -73,9 +74,9 @@ public class PatternBuilder
         // Set pattern offset to the appropriate value
         pattern.setOffset( context.getCurrentPatternOffset() );
 
-        final List alphaConstraints = new LinkedList();
-        final List betaConstraints = new LinkedList();
-        final List behaviors = new LinkedList();
+        final List<Constraint> alphaConstraints = new LinkedList<Constraint>();
+        final List<Constraint> betaConstraints = new LinkedList<Constraint>();
+        final List<Behavior> behaviors = new LinkedList<Behavior>();
 
         this.createConstraints( context,
                                 utils,
@@ -125,26 +126,22 @@ public class PatternBuilder
         // last thing to do is increment the offset, since if the pattern has a source,
         // offset must be overriden
         context.incrementCurrentPatternOffset();
-        
-//        if( pattern.getObjectType().isEvent() ) {
-//            long delay = context.getTemporalDistance().getExpirationOffset( pattern );
-//        }
     }
 
     private void createConstraints(BuildContext context,
                                    BuildUtils utils,
                                    Pattern pattern,
-                                   List alphaConstraints,
-                                   List betaConstraints) {
+                                   List<Constraint> alphaConstraints,
+                                   List<Constraint> betaConstraints) {
 
-        final List constraints = pattern.getConstraints();
+        final List<?> constraints = pattern.getConstraints();
 
         // check if cross products for identity patterns should be disabled
         checkRemoveIdentities( context,
                                pattern,
                                betaConstraints );
 
-        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+        for ( final Iterator<?> it = constraints.iterator(); it.hasNext(); ) {
             final Object object = it.next();
             // Check if its a declaration
             if ( object instanceof Declaration ) {
@@ -200,7 +197,7 @@ public class PatternBuilder
     public void attachAlphaNodes(final BuildContext context,
                                  final BuildUtils utils,
                                  final Pattern pattern,
-                                 List alphaConstraints) throws InvalidPatternException {
+                                 List<Constraint> alphaConstraints) throws InvalidPatternException {
 
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
         //so need to preserve, so we can restore after this node is added. LeftMemory  and Terminal remain the same once set.
@@ -244,7 +241,7 @@ public class PatternBuilder
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   otn ) );
 
-        for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
+        for ( final Iterator<Constraint> it = alphaConstraints.iterator(); it.hasNext(); ) {
             final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();
 
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
@@ -267,15 +264,14 @@ public class PatternBuilder
      */
     private void checkRemoveIdentities(final BuildContext context,
                                        final Pattern pattern,
-                                       final List betaConstraints) {
+                                       final List<Constraint> betaConstraints) {
         if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
-            List patterns = null;
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
-            final Class thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            for ( final Iterator it = context.getObjectType().iterator(); it.hasNext(); ) {
-                final Pattern previousPattern = (Pattern) it.next();
-                final Class previousClass = ((ClassObjectType) previousPattern.getObjectType()).getClassType();
+            final Class<?> thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
+            for ( final Iterator<Pattern> it = context.getObjectType().iterator(); it.hasNext(); ) {
+                final Pattern previousPattern = it.next();
+                final Class<?> previousClass = ((ClassObjectType) previousPattern.getObjectType()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
                     betaConstraints.add( new InstanceNotEqualsConstraint( previousPattern ) );
                 }

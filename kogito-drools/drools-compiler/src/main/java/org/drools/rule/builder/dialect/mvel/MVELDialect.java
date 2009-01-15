@@ -515,10 +515,6 @@ public class MVELDialect
 
         ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
 
-        if ( MVELDebugHandler.isDebugMode() ) {
-            compiler.setDebugSymbols( true );
-        }
-
         synchronized ( COMPILER_LOCK ) {
             ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
 
@@ -681,6 +677,10 @@ public class MVELDialect
         final ParserContext parserContext = new ParserContext( this.imports,
                                                                null,
                                                                name );
+        if ( MVELDebugHandler.isDebugMode() ) {
+            parserContext.setDebugSymbols( true );
+        }
+
         // getRuleDescr().getClassName() );
 
         for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {

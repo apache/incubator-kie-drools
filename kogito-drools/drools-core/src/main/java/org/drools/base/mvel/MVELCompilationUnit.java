@@ -343,7 +343,7 @@ public class MVELCompilationUnit
         ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
 
         if ( MVELDebugHandler.isDebugMode() ) {
-            compiler.setDebugSymbols( true );
+            parserContext.setDebugSymbols( true );
         }
 
         synchronized ( COMPILER_LOCK ) {
