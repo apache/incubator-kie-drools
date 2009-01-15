@@ -16,6 +16,9 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
+import static org.mvel2.MVEL.executeExpression;
+import static org.mvel2.MVEL.parseMacros;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -127,6 +130,13 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
+import org.mvel2.Macro;
+import org.mvel2.ParserContext;
+import org.mvel2.ast.ASTNode;
+import org.mvel2.ast.WithNode;
+import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.integration.Interceptor;
+import org.mvel2.integration.VariableResolverFactory;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -4420,6 +4430,79 @@ public class MiscTest extends TestCase {
 
         assertEquals( "rule1 for the package2",
                       results.get( 0 ) );
+    }
+    
+    public static class Foo {
+        public String aValue = "";
+        
+    }
+    
+    public void testMacroSupportWithStrings() {
+        Map<String, Object> vars = new HashMap<String, Object>();
+        Foo foo = new Foo();
+        vars.put("foo", foo);
+
+        Map<String, Macro> macros = new HashMap<String, Macro>();
+
+        macros.put("modify", new Macro() {
+            public String doMacro() {
+                return "drools.modify";
+            }
+        });
+       
+        assertEquals( "", foo.aValue);
+        
+        ExpressionCompiler compiler = new ExpressionCompiler(parseMacros("\"This is an modify()\"", macros));
+
+        ParserContext ctx = new ParserContext(null, null, null);
+        ctx.setSourceFile("test.mv");
+        ctx.setDebugSymbols(true);
+
+        assertEquals( "\"This is an modify()\"", executeExpression(compiler.compile(ctx), null, vars) );
+    }
+    
+    public void testFunctionReplacement() {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  no-loop true ";        
+        str += "when \n";
+        str += "  $fact : String() \n";
+        str += "then \n";
+        str += "  list.add(\"This is an update()\"); \n";
+        str += "  list.add(\"This is an update($fact)\"); \n";
+        str += "  update($fact); \n";
+        str += "end  \n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {            
+                System.out.println( kbuilder.getErrors() );
+                assertTrue( kbuilder.hasErrors() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        ksession.insert( "hello" );
+        ksession.fireAllRules();
+        
+        ksession.dispose();
+        
+        assertEquals( 2, list.size() );
+        assertEquals( "This is an update()", list.get( 0 ) );
+        assertEquals( "This is an update($fact)", list.get( 1 ) );
+        
+        
+        
+        
+        
     }
 
     public void testRuleReplacement() throws Exception {
