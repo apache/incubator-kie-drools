@@ -102,7 +102,7 @@ public class RuleBaseConfigurationTest extends TestCase {
     public void testWorkItemHandlers() {
     	Properties properties = new Properties();
         properties.setProperty( "drools.workItemHandlers", "WorkItemHandlers1.conf WorkItemHandlers2.conf" );
-        RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
+        SessionConfiguration cfg = new SessionConfiguration(properties);
         assertEquals(cfg.getWorkItemHandlers().size(), 3);
         assertEquals(cfg.getWorkItemHandlers().get("MyWork").getClass(), SystemOutWorkItemHandler.class);
         assertEquals(cfg.getWorkItemHandlers().get("UIWork").getClass(), SystemOutWorkItemHandler.class);

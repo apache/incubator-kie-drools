@@ -269,13 +269,13 @@ public abstract class AbstractWorkingMemory
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
-        this.processInstanceManager = conf.getProcessInstanceManagerFactory().createProcessInstanceManager( this );
+        this.processInstanceManager = config.getProcessInstanceManagerFactory().createProcessInstanceManager( this );
         this.timeMachine = new TimeMachine();
 
         TimerService timerService = TimerServiceFactory.getTimerService( this.config.getClockType() );
         this.timerManager = new TimerManager( this,
                                               timerService );
-        this.signalManager = conf.getSignalManagerFactory().createSignalManager( this );
+        this.signalManager = config.getSignalManagerFactory().createSignalManager( this );
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
@@ -1581,8 +1581,8 @@ public abstract class AbstractWorkingMemory
 
     public WorkItemManager getWorkItemManager() {
         if ( workItemManager == null ) {
-            workItemManager = ruleBase.getConfiguration().getWorkItemManagerFactory().createWorkItemManager( this );
-            Map<String, WorkItemHandler> workItemHandlers = ((InternalRuleBase) getRuleBase()).getConfiguration().getWorkItemHandlers();
+            workItemManager = config.getWorkItemManagerFactory().createWorkItemManager( this );
+            Map<String, WorkItemHandler> workItemHandlers = config.getWorkItemHandlers();
             if ( workItemHandlers != null ) {
                 for ( Map.Entry<String, WorkItemHandler> entry : workItemHandlers.entrySet() ) {
                     workItemManager.registerWorkItemHandler( entry.getKey(),

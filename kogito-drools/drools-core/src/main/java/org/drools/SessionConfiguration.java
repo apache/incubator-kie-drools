@@ -20,11 +20,20 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
+import org.drools.process.command.CommandService;
+import org.drools.process.instance.ProcessInstanceManagerFactory;
+import org.drools.process.instance.WorkItemManagerFactory;
+import org.drools.process.instance.event.SignalManagerFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.process.WorkItemHandler;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ConfFileUtils;
 import org.drools.util.StringUtils;
+import org.mvel2.MVEL;
 
 /**
  * SessionConfiguration
@@ -57,6 +66,12 @@ public class SessionConfiguration
     private boolean           keepReference;
 
     private ClockType         clockType;
+
+    private Map<String, WorkItemHandler>   workItemHandlers;
+    private ProcessInstanceManagerFactory  processInstanceManagerFactory;
+    private SignalManagerFactory           processSignalManagerFactory;
+    private WorkItemManagerFactory         workItemManagerFactory;
+    private CommandService                 commandService; 
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
@@ -91,7 +106,7 @@ public class SessionConfiguration
     private void init(Properties properties) {
         this.immutable = false;
 
-        this.chainedProperties = new ChainedProperties( "rulebase.conf" );
+        this.chainedProperties = new ChainedProperties( "session.conf" );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
@@ -174,4 +189,190 @@ public class SessionConfiguration
         this.clockType = clockType;
     }
 
+    public Map<String, WorkItemHandler> getWorkItemHandlers() {
+        if ( this.workItemHandlers == null ) {
+            initWorkItemHandlers();
+        }
+        return this.workItemHandlers;
+
+    }
+
+    private void initWorkItemHandlers() {
+        this.workItemHandlers = new HashMap<String, WorkItemHandler>();
+
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "drools.workItemHandlers",
+                                                                 "" ).split( "\\s" );
+
+        // load each SemanticModule
+        for ( String factoryLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            factoryLocation = factoryLocation.trim();
+            if ( factoryLocation.startsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 1 );
+            }
+            if ( factoryLocation.endsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 0,
+                                                             factoryLocation.length() - 1 );
+            }
+            if ( !factoryLocation.equals( "" ) ) {
+                loadWorkItemHandlers( factoryLocation );
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadWorkItemHandlers(String location) {
+        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
+                                                                                  null,
+                                                                                  RuleBaseConfiguration.class ) );
+        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content,
+                                                                                                  new HashMap() );
+        this.workItemHandlers.putAll( workItemHandlers );
+    }
+
+    public ProcessInstanceManagerFactory getProcessInstanceManagerFactory() {
+        if ( this.processInstanceManagerFactory == null ) {
+            initProcessInstanceManagerFactory();
+        }
+        return this.processInstanceManagerFactory;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initProcessInstanceManagerFactory() {
+        String className = this.chainedProperties.getProperty( "drools.processInstanceManagerFactory",
+                                                               "org.drools.process.instance.impl.DefaultProcessInstanceManagerFactory" );
+        Class<ProcessInstanceManagerFactory> clazz = null;
+        try {
+            clazz = (Class<ProcessInstanceManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = (Class<ProcessInstanceManagerFactory>) SessionConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                this.processInstanceManagerFactory = clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate process instance manager factory '" + className + "'" );
+            }
+        } else {
+            throw new IllegalArgumentException( "Process instance manager factory '" + className + "' not found" );
+        }
+    }
+
+    public SignalManagerFactory getSignalManagerFactory() {
+        if ( this.processSignalManagerFactory == null ) {
+            initSignalManagerFactory();
+        }
+        return this.processSignalManagerFactory;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initSignalManagerFactory() {
+        String className = this.chainedProperties.getProperty( "drools.processSignalManagerFactory",
+                                                               "org.drools.process.instance.event.DefaultSignalManagerFactory" );
+        Class<SignalManagerFactory> clazz = null;
+        try {
+            clazz = (Class<SignalManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = (Class<SignalManagerFactory>) SessionConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                this.processSignalManagerFactory = clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate signal manager factory '" + className + "'" );
+            }
+        } else {
+            throw new IllegalArgumentException( "Signal manager factory '" + className + "' not found" );
+        }
+    }
+
+    public WorkItemManagerFactory getWorkItemManagerFactory() {
+        if ( this.workItemManagerFactory == null ) {
+            initWorkItemManagerFactory();
+        }
+        return this.workItemManagerFactory;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initWorkItemManagerFactory() {
+        String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
+                                                               "org.drools.process.instance.impl.DefaultWorkItemManagerFactory" );
+        Class<WorkItemManagerFactory> clazz = null;
+        try {
+            clazz = (Class<WorkItemManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = (Class<WorkItemManagerFactory>) SessionConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                this.workItemManagerFactory = clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate work item manager factory '" + className + "'",
+                                                    e );
+            }
+        } else {
+            throw new IllegalArgumentException( "Work item manager factory '" + className + "' not found" );
+        }
+    }
+    
+    public CommandService getCommandService(RuleBase ruleBase) {
+        if ( this.commandService == null ) {
+            initCommandService(ruleBase);
+        }
+        return this.commandService;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initCommandService(RuleBase ruleBase) {
+        String className = this.chainedProperties.getProperty( "drools.commandService", null );
+        if (className == null) {
+        	return;
+        }
+        
+        Class<CommandService> clazz = null;
+        try {
+            clazz = (Class<CommandService>) Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = (Class<CommandService>) SessionConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                this.commandService = clazz.getConstructor(RuleBase.class, SessionConfiguration.class).newInstance(ruleBase, this);
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate work item manager factory '" + className + "'",
+                                                    e );
+            }
+        } else {
+            throw new IllegalArgumentException( "Command service '" + className + "' not found" );
+        }
+    }
 }
