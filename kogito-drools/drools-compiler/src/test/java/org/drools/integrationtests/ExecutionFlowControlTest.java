@@ -240,6 +240,33 @@ public class ExecutionFlowControlTest extends TestCase {
                              list.size() );
 
     }
+    
+    public void testNoLoopWithModify() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop_with_modify.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese brie = new Cheese( "brie",
+                                        12 );
+        workingMemory.insert( brie );
+
+        workingMemory.fireAllRules();
+
+        Assert.assertEquals( "Should not loop  and thus size should be 1",
+                             1,
+                             list.size() );
+        assertEquals( 50, brie.getPrice() );
+
+    }    
 
     public void testLockOnActive() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
