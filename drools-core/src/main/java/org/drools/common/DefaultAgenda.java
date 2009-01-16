@@ -147,7 +147,7 @@ public class DefaultAgenda
         this.activationGroups = new HashMap<String, ActivationGroup>();
         this.ruleFlowGroups = new HashMap<String, RuleFlowGroup>();
         this.focusStack = new LinkedList<AgendaGroup>();
-
+        this.scheduledActivations = new org.drools.util.LinkedList();
         this.agendaGroupFactory = rb.getConfiguration().getAgendaGroupFactory();
 
         if ( initMain ) {
@@ -282,10 +282,6 @@ public class DefaultAgenda
         // FIXME: should not use a static singleton
         Scheduler.getInstance().scheduleAgendaItem( item,
                                                     this );
-
-        if ( this.scheduledActivations == null ) {
-            this.scheduledActivations = new org.drools.util.LinkedList();
-        }
         this.scheduledActivations.add( item );
 
         // adds item to activation group if appropriate
@@ -672,7 +668,7 @@ public class DefaultAgenda
         this.focusStack.add( this.main );
 
         // reset scheduled activations
-        if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
+        if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
                 Scheduler.getInstance().removeAgendaItem( item );
             }
@@ -705,7 +701,7 @@ public class DefaultAgenda
         }
 
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
+        if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
                 Scheduler.getInstance().removeAgendaItem( item );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
