@@ -2,6 +2,8 @@ package org.drools;
 
 import java.util.Properties;
 
+import org.drools.runtime.KnowledgeSessionConfiguration;
+
 /**
  * <p>
  * This factory will create and return a KnowledgeBase instance, an optional KnowledgeBaseConfiguration
@@ -63,6 +65,24 @@ public class KnowledgeBaseFactory {
                                                                            ClassLoader classLoader) {
         return getKnowledgeBaseProvider().newKnowledgeBaseConfiguration( properties,
                                                                          classLoader );
+    }
+
+    /**
+     * Create a KnowledgeSessionConfiguration on which properties can be set.
+     * @return
+     *     The KnowledgeSessionConfiguration.
+     */
+    public static KnowledgeSessionConfiguration newKnowledgeSessionConfiguration() {
+        return getKnowledgeBaseProvider().newKnowledgeSessionConfiguration();
+    }
+
+    /**
+     * Create a KnowledgeSessionConfiguration on which properties can be set.
+     * @return
+     *     The KnowledgeSessionConfiguration.
+     */
+    public static KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
+        return getKnowledgeBaseProvider().newKnowledgeSessionConfiguration( properties );
     }
 
     private static synchronized void setKnowledgeBaseProvider(KnowledgeBaseProvider provider) {
