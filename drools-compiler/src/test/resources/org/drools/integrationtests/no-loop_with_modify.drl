@@ -1,0 +1,17 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list
+
+rule "Do  not loop  forever"
+	no-loop true
+    when
+    	cheese : Cheese( )
+    then     
+    	list.add( cheese );
+    	if ( list.size() > 2 ) {
+    	    throw new Exception( "this should not loop" );
+    	}
+		modify( cheese ) { setPrice( 50 ) };
+end  
