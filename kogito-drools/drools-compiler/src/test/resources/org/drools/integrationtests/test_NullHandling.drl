@@ -4,6 +4,8 @@ import org.drools.Cheese;
 import org.drools.Person;
 
 global java.util.List list;
+
+global java.lang.String str;
  
 rule "simple rule"
     when
@@ -24,4 +26,12 @@ rule "number not null"
      	Person( name== "whee", bigDecimal != 3 )
     then
     	list.add( new Integer(7) );
-end     	
+end   
+
+rule "global is null"
+    when
+        p : Person( name == str )
+    then
+        // str is null, we are just testing we don't get a null pointer
+        list.add( p );
+end  	
