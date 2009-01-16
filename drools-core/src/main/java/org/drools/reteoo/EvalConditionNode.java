@@ -264,7 +264,7 @@ public class EvalConditionNode extends LeftTupleSource
         
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                BetaMemory memory = ( BetaMemory ) workingMemories[i].getNodeMemory( this );
+                EvalMemory memory = ( EvalMemory ) workingMemories[i].getNodeMemory( this );
                 Iterator it = memory.getLeftTupleMemory().iterator();
                 for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
                     leftTuple.unlinkFromLeftParent();
@@ -341,6 +341,10 @@ public class EvalConditionNode extends LeftTupleSource
 
         public EvalMemory() {
 
+        }
+
+        public LeftTupleList getLeftTupleMemory() {
+            return this.tupleMemory;
         }
 
         public EvalMemory(final boolean tupleMemoryEnabled,
