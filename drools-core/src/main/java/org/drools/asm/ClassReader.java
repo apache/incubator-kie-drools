@@ -276,15 +276,28 @@ public class ClassReader {
         if ( is == null ) {
             throw new IOException( "Class not found" );
         }
-        byte[] b = new byte[is.available()];
-        int len = 0;
-        while ( true ) {
-            final int n = is.read( b,
-                                   len,
-                                   b.length - len );
-            if ( n == -1 ) {
-                if ( len < b.length ) {
-                    final byte[] c = new byte[len];
+        try {
+            byte[] b = new byte[is.available()];
+            int len = 0;
+            while ( true ) {
+                final int n = is.read( b,
+                                       len,
+                                       b.length - len );
+                if ( n == -1 ) {
+                    if ( len < b.length ) {
+                        final byte[] c = new byte[len];
+                        System.arraycopy( b,
+                                          0,
+                                          c,
+                                          0,
+                                          len );
+                        b = c;
+                    }
+                    return b;
+                }
+                len += n;
+                if ( len == b.length ) {
+                    final byte[] c = new byte[b.length + 1000];
                     System.arraycopy( b,
                                       0,
                                       c,
@@ -292,18 +305,14 @@ public class ClassReader {
                                       len );
                     b = c;
                 }
-                return b;
             }
-            len += n;
-            if ( len == b.length ) {
-                final byte[] c = new byte[b.length + 1000];
-                System.arraycopy( b,
-                                  0,
-                                  c,
-                                  0,
-                                  len );
-                b = c;
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException e ) {
+                throw new RuntimeException( "Unable to close InputStream", e);
             }
+
         }
     }
 

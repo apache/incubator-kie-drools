@@ -96,8 +96,8 @@ public class RuleAgent {
                                                                  URLScanner.class );
                                                         }
                                                     };
-                                                    
-    String               name;
+
+    String                        name;
 
     /**
      * This is true if the rulebase is created anew each time.
@@ -284,7 +284,7 @@ public class RuleAgent {
                              listener,
                              ruleBaseConfiguration );
     }
-    
+
     public void setName(String name) {
         this.name = name;
         if ( this.listener != null ) {
@@ -298,11 +298,20 @@ public class RuleAgent {
         try {
             props.load( in );
             return props;
-
         } catch ( IOException e ) {
             throw new RuntimeDroolsException( "Unable to load properties. Needs to be the path and name of a config file on your classpath.",
                                               e );
+        } finally {
+            if ( null != in ) {
+                try {
+                    in.close();
+                } catch ( IOException e ) {
+                    throw new RuntimeDroolsException( "Unable to load properties. Could not close InputStream.",
+                                                      e );
+                }
+            }
         }
+
     }
 
     /**
@@ -426,7 +435,7 @@ public class RuleAgent {
 
                 default :
                     if ( !inquotes && (c == ' ' || c == '\n' || c == '\r' || c == '\t') ) {
-                        if ( !"".equals(current.trim()) ) { 
+                        if ( !"".equals( current.trim() ) ) {
                             items.add( current );
                             current = "";
                         }
@@ -436,7 +445,7 @@ public class RuleAgent {
                     break;
             }
         }
-        if ( !"".equals(current.trim()) ) { 
+        if ( !"".equals( current.trim() ) ) {
             items.add( current );
         }
 
@@ -570,7 +579,7 @@ public class RuleAgent {
             }
 
             public void warning(String message,
-                                Object object) { 
+                                Object object) {
             }
 
         };
