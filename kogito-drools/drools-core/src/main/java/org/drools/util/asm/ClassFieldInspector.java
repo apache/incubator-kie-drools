@@ -75,6 +75,7 @@ public class ClassFieldInspector {
             processClassWithoutByteCode( clazz,
                                          includeFinalMethods );
         }
+        stream.close();
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
@@ -99,6 +100,7 @@ public class ClassFieldInspector {
                 processClassWithoutByteCode( clazz.getSuperclass(),
                                              includeFinalMethods );
             }
+            parentStream.close();
         }
         if ( clazz.isInterface() ) {
             final Class< ? >[] interfaces = clazz.getInterfaces();
@@ -113,6 +115,7 @@ public class ClassFieldInspector {
                     processClassWithoutByteCode( interfaces[i],
                                                  includeFinalMethods );
                 }
+                parentStream.close();
             }
         }
     }
