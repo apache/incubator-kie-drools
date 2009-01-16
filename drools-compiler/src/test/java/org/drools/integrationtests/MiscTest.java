@@ -943,7 +943,7 @@ public class MiscTest extends TestCase {
 
         session.insert( notNullPerson );
 
-        final Person nullPerson = new Person( "whee" );
+        Person nullPerson = new Person( "whee" );
         nullPerson.setBigDecimal( null );
 
         session.insert( nullPerson );
@@ -954,6 +954,13 @@ public class MiscTest extends TestCase {
         System.out.println( ((List) session.getGlobal( "list" )).get( 0 ) );
         assertEquals( 3,
                       ((List) session.getGlobal( "list" )).size() );
+        
+        nullPerson = new Person( null );
+
+        session.insert( nullPerson );     
+        session.fireAllRules();
+        assertEquals( 4,
+                      ((List) session.getGlobal( "list" )).size() );        
 
     }
 
