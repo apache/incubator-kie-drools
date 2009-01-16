@@ -260,7 +260,9 @@ public class ChainedProperties
         }
         Properties properties = new Properties();
         try {
-            properties.load( confURL.openStream() );
+            java.io.InputStream is = confURL.openStream();
+            properties.load( is );
+            is.close();
             chain.add( properties );
         } catch ( IOException e ) {
             //throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
