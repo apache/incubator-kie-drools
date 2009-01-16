@@ -20,6 +20,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
@@ -311,4 +312,66 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         assertLength( 1,
                       sink2.getAsserted() );
     }
+    
+    /**
+     * If a eval allows an incoming Object, then the Object MUST be
+     * propagated. This tests that the memory is updated
+     * 
+     * @throws FactException
+     */
+    public void testDoRemove() throws FactException {
+        final MockEvalCondition eval = new MockEvalCondition( true );
+        
+        final EvalConditionNode parent = new EvalConditionNode( 1,
+                                                              new MockTupleSource( 15 ),
+                                                              eval,
+                                                              buildContext );
+
+        // Create a test node that always returns false 
+        final EvalConditionNode node = new EvalConditionNode( 2,
+                                                              parent,
+                                                              eval,
+                                                              buildContext );
+        
+        parent.addTupleSink( node );
+
+        final MockLeftTupleSink sink = new MockLeftTupleSink();
+        node.addTupleSink( sink );
+
+        // Create the Tuple
+        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
+                                                            "stilton" );
+        final LeftTuple tuple0 = new LeftTuple( f0, sink,
+                                                true );
+
+        // Tuple should pass and propagate 
+        node.assertLeftTuple( tuple0,
+                          this.context,
+                          this.workingMemory );
+
+        // Check memory was populated
+        EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
+
+        assertEquals( 1,
+                      memory.tupleMemory.size() );
+
+        assertTrue( memory.tupleMemory.contains( tuple0 ) );
+
+        // make sure assertions were propagated
+        assertEquals( 1,
+                      sink.getAsserted().size() );
+        
+        RuleRemovalContext removalContext = new RuleRemovalContext();
+        InternalWorkingMemory[] workingMemories = new InternalWorkingMemory[] { this.workingMemory};
+        
+        // This use to throw ClassCastException JBRULES-1719
+        node.remove( removalContext, this.ruleBase.getReteooBuilder(), sink,  workingMemories);       
+        
+        memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
+
+        assertEquals( 0,
+                      memory.tupleMemory.size() );
+
+        assertFalse( memory.tupleMemory.contains( tuple0 ) );
+    }    
 }
