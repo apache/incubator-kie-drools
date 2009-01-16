@@ -1877,5 +1877,15 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
     }
+    
+    public void testNullErrorOnGetScheduledActivations() { 
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        try {
+            ((DefaultAgenda) workingMemory.getAgenda()).getScheduledActivations();
+        } catch ( NullPointerException e ) {
+            fail( "Exception Should not have been thrown" );
+        }
+        
+    }
 
 }
