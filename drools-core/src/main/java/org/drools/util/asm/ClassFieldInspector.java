@@ -68,14 +68,17 @@ public class ClassFieldInspector {
         final InputStream stream = clazz.getResourceAsStream( name );
 
         if ( stream != null ) {
+            try {
             processClassWithByteCode( clazz,
                                       stream,
                                       includeFinalMethods );
+            } finally {
+                stream.close();
+            }
         } else {
             processClassWithoutByteCode( clazz,
                                          includeFinalMethods );
         }
-        stream.close();
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
@@ -93,14 +96,17 @@ public class ClassFieldInspector {
             final String name = getResourcePath( clazz.getSuperclass() );
             final InputStream parentStream = clazz.getResourceAsStream( name );
             if ( parentStream != null ) {
+                try {
                 processClassWithByteCode( clazz.getSuperclass(),
                                           parentStream,
                                           includeFinalMethods );
+                } finally {
+                    parentStream.close();
+                }
             } else {
                 processClassWithoutByteCode( clazz.getSuperclass(),
                                              includeFinalMethods );
             }
-            parentStream.close();
         }
         if ( clazz.isInterface() ) {
             final Class< ? >[] interfaces = clazz.getInterfaces();
@@ -108,14 +114,17 @@ public class ClassFieldInspector {
                 final String name = getResourcePath( interfaces[i] );
                 final InputStream parentStream = clazz.getResourceAsStream( name );
                 if ( parentStream != null ) {
-                    processClassWithByteCode( interfaces[i],
-                                              parentStream,
-                                              includeFinalMethods );
+                    try {
+                        processClassWithByteCode( interfaces[i],
+                                                  parentStream,
+                                                  includeFinalMethods );
+                    } finally {
+                        parentStream.close();
+                    }
                 } else {
                     processClassWithoutByteCode( interfaces[i],
                                                  includeFinalMethods );
                 }
-                parentStream.close();
             }
         }
     }
