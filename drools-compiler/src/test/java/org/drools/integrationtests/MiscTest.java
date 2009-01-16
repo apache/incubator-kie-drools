@@ -4438,7 +4438,7 @@ public class MiscTest extends TestCase {
     }    
     
     // @FIXME see JBRULES-1808
-    public void FIXME_testFunctionReplacement() {
+    public void FIXME_testKnowledgeHelperFixerInStrings() {
         String str = "";
         str += "package org.simple \n";
         str += "global java.util.List list \n";
