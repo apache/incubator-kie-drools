@@ -5623,7 +5623,9 @@ public class MiscTest extends TestCase {
     public void testOrCE() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCE.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        Package pkg = builder.getPackage();
+        
+        pkg = SerializationHelper.serializeObject( pkg );
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
