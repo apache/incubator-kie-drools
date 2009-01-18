@@ -314,6 +314,82 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( 1,
                       group2.size() );
     }
+    
+    public void testLockOnActiveForMain() {
+        String str = "";
+        str += "package org.drools \n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    lock-on-active true \n";
+        str += "when \n";
+        str += "    $str : String() \n";
+        str += "then \n";
+        str += "    list.add( $str ); \n";
+        str += "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        assertFalse( kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.insert( "hello1" );
+        ksession.insert( "hello2" );
+        ksession.insert( "hello3" );
+        
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
+        
+        ksession.insert( "hello4" );
+        ksession.insert( "hello5" );
+        ksession.insert( "hello6" );
+        
+        ksession.fireAllRules();
+        assertEquals( 6, list.size() );                
+    }
+    
+    public void testLockOnActiveForMainWithHalt() {
+        String str = "";
+        str += "package org.drools \n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    lock-on-active true \n";
+        str += "when \n";
+        str += "    $str : String() \n";
+        str += "then \n";
+        str += "    list.add( $str ); \n";
+        str += "    if ( list.size() == 2 ) drools.halt();\n";
+        str += "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        assertFalse( kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.insert( "hello1" );
+        ksession.insert( "hello2" );
+        ksession.insert( "hello3" );
+        
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+        
+        // because we have halted, the next 3 will be ignored, but it will still fire the remaing 3rd activation from previous asserts
+        ksession.insert( "hello4" );
+        ksession.insert( "hello5" );
+        ksession.insert( "hello6" );
+        
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );                
+    }    
 
     public void testLockOnActiveWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
