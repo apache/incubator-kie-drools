@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -99,6 +100,43 @@ public class MVELTest extends TestCase {
         assertEquals( 1, list.size() );
         assertEquals( 10, list.get( 0 ) );
     }
+    
+    public void testEvalWithBigDecimal() throws Exception {        
+        String str = "";
+        str += "package org.drools \n";
+        str += "import java.math.BigDecimal; \n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    dialect \"mvel\" \n";
+        str += "when \n";
+        str += "    $bd : BigDecimal() \n";
+        str += "    eval( $bd.compareTo( BigDecimal.ZERO ) > 0 ) \n";        
+        str += "then \n";
+        str += "    list.add( $bd ); \n";
+        str += "end \n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            System.err.println( kbuilder.getErrors() );
+        }
+        assertFalse( kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.insert( new BigDecimal( 1.5 ) );        
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 1, list.size() );
+        assertEquals( new BigDecimal( 1.5 ), list.get( 0 ) );
+    }      
 
     public void testLocalVariableMVELConsequence() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
