@@ -62,6 +62,10 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint
         this.restrictions.replaceDeclaration( oldDecl,
                                               newDecl );
     }
+    
+    public boolean isTemporal() {
+        return restrictions.isTemporal();
+    }
 
     public String toString() {
         return "[MultiRestrictionConstraint fieldExtractor=" + this.readAccessor + " restrictions =" + this.restrictions + "]";

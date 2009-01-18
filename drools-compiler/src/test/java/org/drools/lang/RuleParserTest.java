@@ -23,7 +23,6 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,6 +105,16 @@ public class RuleParserTest extends TestCase {
 		assertFalse(parser.hasErrors());
 
 	}
+
+    public void testRuleWithoutEnd() throws Exception {
+        String source = "rule \"Invalid customer id\" \n"
+                + " when \n"
+                + " o: Order( ) \n"
+                + " then \n"
+                + " System.err.println(\"Invalid customer id found!\"); \n";
+        parse("compilation_unit", "compilation_unit", source);
+        assertTrue(parser.hasErrors());
+    }
 
     public void testOrWithSpecialBind() throws Exception {
         String source = "rule \"A and (B or C or D)\" \n" +
@@ -439,7 +448,7 @@ public class RuleParserTest extends TestCase {
         
         FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get( 0 ); 
         assertEquals( "location", field.getFieldName() );
-        System.out.println(field.getRestriction().getRestrictions().get( 0 ).getText());
+        //System.out.println(field.getRestriction().getRestrictions().get( 0 ).getText());
         assertEquals( "atlanta\\\"", field.getRestriction().getRestrictions().get( 0 ).getText() );
     }
 
@@ -1818,6 +1827,24 @@ public class RuleParserTest extends TestCase {
 		assertEquals("lock-on-active", at.getName());
 		assertEquals("true", at.getValue());
 	}
+
+    public void testDurationExpression() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",
+                "rule_duration_expression.drl");
+        assertEquals("simple_rule", rule.getName());
+        assertEqualsIgnoreWhitespace("bar();", (String) rule.getConsequence());
+
+        final Map<String, AttributeDescr> attrs = rule.getAttributes();
+        assertEquals(2, attrs.size());
+
+        AttributeDescr at = (AttributeDescr) attrs.get("duration");
+        assertEquals("duration", at.getName());
+        assertEquals("( 1h30m )", at.getValue());
+
+        at = (AttributeDescr) attrs.get("lock-on-active");
+        assertEquals("lock-on-active", at.getName());
+        assertEquals("true", at.getValue());
+    }
 
 	public void testAttributes_alternateSyntax() throws Exception {
 		final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",

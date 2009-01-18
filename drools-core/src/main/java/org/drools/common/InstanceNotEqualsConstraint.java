@@ -67,6 +67,10 @@ public class InstanceNotEqualsConstraint
         return this.otherPattern;
     }
 
+    public boolean isTemporal() {
+        return false;
+    }
+
     public ContextEntry createContextEntry() {
         return new InstanceNotEqualsConstraintContextEntry( this.otherPattern );
     }

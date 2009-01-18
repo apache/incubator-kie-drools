@@ -67,10 +67,14 @@ public class GroupElementBuilder
         final GroupElement ge = (GroupElement) rce;
 
         final ReteooComponentBuilder builder = (ReteooComponentBuilder) this.geBuilders.get( ge.getType() );
+        
+        context.push( ge );
 
         builder.build( context,
                        utils,
                        rce );
+        
+        context.pop();
     }
 
     /**
@@ -213,7 +217,6 @@ public class GroupElementBuilder
             // NOT must save some context info to restore it later
             final int currentPatternIndex = context.getCurrentPatternOffset();
             final LeftTupleSource tupleSource = context.getTupleSource();
-            final long delay = context.getDelay();
 
             // get child
             final RuleConditionElement child = (RuleConditionElement) not.getChildren().get( 0 );
@@ -266,7 +269,6 @@ public class GroupElementBuilder
 
             // restore pattern index
             context.setCurrentPatternOffset( currentPatternIndex );
-            context.setDelay( Math.max( context.getDelay(), delay ) );
         }
 
         public boolean requiresLeftActivation(final BuildUtils utils,

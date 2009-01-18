@@ -330,7 +330,7 @@ public class LhsClpParserTest extends TestCase {
     public void testRuleHeader() throws Exception {
         RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).defrule();
         
-        Map attributes = rule.getAttributes();
+        Map<String, AttributeDescr> attributes = rule.getAttributes();
         AttributeDescr module = ( AttributeDescr ) attributes.get( "agenda-group" );
         assertEquals( "agenda-group", module.getName() );
         assertEquals( "MAIN", module.getValue() );

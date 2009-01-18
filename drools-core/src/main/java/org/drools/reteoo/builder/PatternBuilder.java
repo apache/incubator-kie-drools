@@ -156,10 +156,20 @@ public class PatternBuilder
                 utils.checkUnboundDeclarations( context,
                                                 constraint.getRequiredDeclarations() );
                 betaConstraints.add( constraint );
+                
+                if( pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
+                    checkDelaying( context );
+                }
+                
             } else {
                 throw new RuntimeDroolsException( "Unknown constraint type: "+constraint.getType()+". This is a bug. Please contact development team.");
             }
         }
+    }
+
+    private void checkDelaying( final BuildContext context ) {
+        //if( context.get)
+        
     }
 
     public static ObjectTypeNode attachObjectTypeNode(BuildContext context,

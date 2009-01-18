@@ -62,6 +62,13 @@ public interface Constraint
     public ConstraintType getType();
     
     /**
+     * Returns true in case this constraint is a temporal constraint
+     * 
+     * @return
+     */
+    public boolean isTemporal();
+    
+    /**
      * An enum for Constraint Types
      */
     public static enum ConstraintType {

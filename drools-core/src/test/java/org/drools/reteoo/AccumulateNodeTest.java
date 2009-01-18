@@ -34,7 +34,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
@@ -45,17 +44,16 @@ import org.drools.spi.PropagationContext;
  */
 public class AccumulateNodeTest extends DroolsTestCase {
 
-    Rule                rule;
-    PropagationContext  context;
-    ReteooWorkingMemory workingMemory;
-    MockObjectSource    objectSource;
-    MockTupleSource     tupleSource;
-    MockLeftTupleSink   sink;
-    BetaNode            node;
-    BetaMemory          memory;
-    MockConstraint      constraint = new MockConstraint();
-    MockAccumulator     accumulator;
-    Accumulate          accumulate;
+    Rule                    rule;
+    PropagationContext      context;
+    ReteooWorkingMemory     workingMemory;
+    MockObjectSource        objectSource;
+    MockTupleSource         tupleSource;
+    MockLeftTupleSink       sink;
+    BetaNode                node;
+    BetaMemory              memory;
+    MockAccumulator         accumulator;
+    Accumulate              accumulate;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -67,7 +65,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null,
-                                                   null);
+                                                   null );
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
@@ -481,7 +479,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null,
                                                                                                                   null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0, null,
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                null,
                                                 true );
 
         this.node.assertObject( f0,
@@ -504,7 +503,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.accumulator.getMatchingObjects().size() );
 
         // assert tuple, should not add left memory 
-        final LeftTuple tuple1 = new LeftTuple( f1, null,
+        final LeftTuple tuple1 = new LeftTuple( f1,
+                                                null,
                                                 true );
         this.node.assertLeftTuple( tuple1,
                                    this.context,

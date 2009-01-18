@@ -781,8 +781,10 @@ agenda_group
 	;
 
 duration
-	:	duration_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} INT
-	{	emit($INT, DroolsEditorType.NUMERIC_CONST );	}
+	:	duration_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} 
+	    ( INT {	emit($INT, DroolsEditorType.NUMERIC_CONST );	}
+	    | paren_chunk
+	    )
 	;	
 	
 dialect

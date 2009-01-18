@@ -238,7 +238,7 @@ public class BuildUtils {
                                          final Declaration[] declarations) throws InvalidPatternException {
         final List<String> list = new ArrayList<String>();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            for ( final ListIterator<RuleConditionElement> it = (ListIterator<RuleConditionElement>) context.stackIterator(); it.hasPrevious(); ) {
+            for ( final ListIterator<RuleConditionElement> it = context.stackIterator(); it.hasPrevious(); ) {
                 final RuleConditionElement rce = it.previous();
                 final Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
                 if ( decl == null || decl.getPattern().getOffset() > declarations[i].getPattern().getOffset() ) {

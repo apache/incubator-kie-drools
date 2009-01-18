@@ -37,6 +37,13 @@ public interface Restriction
     void replaceDeclaration(Declaration oldDecl,
                             Declaration newDecl);
 
+    /**
+     * Returns true if this is a temporal restriction
+     * 
+     * @return
+     */
+    public boolean isTemporal();
+
     public Object clone();
 
 }

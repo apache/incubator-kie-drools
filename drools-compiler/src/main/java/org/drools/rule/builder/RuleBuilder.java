@@ -28,6 +28,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.spi.Salience;
+import org.drools.time.TimeUtils;
 import org.drools.util.DateUtils;
 
 /**
@@ -109,7 +110,11 @@ public class RuleBuilder {
                 rule.setLockOnActive( getBooleanValue( attributeDescr,
                                                        true ) );
             } else if ( name.equals( "duration" ) ) {
-                rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
+                String duration = attributeDescr.getValue();
+                if( duration.indexOf( '(' ) >=0 ) {
+                    duration = duration.substring( duration.indexOf( '(' )+1, duration.lastIndexOf( ')' ) );
+                }
+                rule.setDuration( TimeUtils.parseTimeString( duration ) );
             } else if ( name.equals( "date-effective" ) ) {
                 final Calendar cal = Calendar.getInstance();
                 cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );

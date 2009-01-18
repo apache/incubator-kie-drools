@@ -39,6 +39,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.time.TimeUtils;
 import org.drools.util.DateUtils;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -206,4 +207,34 @@ public class RuleBuilderTest extends TestCase {
 
     }
 
+    public void testBuildDurationExpression() throws Exception {
+        // creates mock objects
+        final RuleBuildContext context = mockery.mock( RuleBuildContext.class );
+        final Rule rule = mockery.mock( Rule.class );
+
+        // creates input object
+        final RuleDescr ruleDescr = new RuleDescr( "my rule" );
+        ruleDescr.addAttribute( new AttributeDescr( "duration",
+                                                    "( 1h30m )" ) );
+
+        // defining expectations on the mock object
+        mockery.checking( new Expectations() {
+            {
+                // return values for the context
+                allowing( context ).getRule(); will( returnValue( rule ) );
+                allowing( context ).getRuleDescr(); will( returnValue( ruleDescr ) );
+
+                // expected values for the rule object
+                oneOf( rule ).setDuration( TimeUtils.parseTimeString( "1h30m" ) );
+            }
+        } );
+
+        // calling the build method
+        RuleBuilder builder = new RuleBuilder();
+        builder.buildAttributes( context );
+
+        // check expectations
+        mockery.assertIsSatisfied();
+
+    }
 }

@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2008-11-24 22:04:05
+// $ANTLR 3.1.1 src/main/resources/org/drools/lang/DRL.g 2009-01-15 19:47:14
 
 	package org.drools.lang;
 
@@ -179,17 +179,17 @@ public class DRLLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "/Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g"; }
+    public String getGrammarFileName() { return "src/main/resources/org/drools/lang/DRL.g"; }
 
     // $ANTLR start "WS"
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1684:9: ( ( ' ' | '\\t' | '\\f' | EOL )+ )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1684:17: ( ' ' | '\\t' | '\\f' | EOL )+
+            // src/main/resources/org/drools/lang/DRL.g:1686:9: ( ( ' ' | '\\t' | '\\f' | EOL )+ )
+            // src/main/resources/org/drools/lang/DRL.g:1686:17: ( ' ' | '\\t' | '\\f' | EOL )+
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1684:17: ( ' ' | '\\t' | '\\f' | EOL )+
+            // src/main/resources/org/drools/lang/DRL.g:1686:17: ( ' ' | '\\t' | '\\f' | EOL )+
             int cnt1=0;
             loop1:
             do {
@@ -221,28 +221,28 @@ public class DRLLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1684:19: ' '
+            	    // src/main/resources/org/drools/lang/DRL.g:1686:19: ' '
             	    {
             	    match(' '); if (state.failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1685:19: '\\t'
+            	    // src/main/resources/org/drools/lang/DRL.g:1687:19: '\\t'
             	    {
             	    match('\t'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 3 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1686:19: '\\f'
+            	    // src/main/resources/org/drools/lang/DRL.g:1688:19: '\\f'
             	    {
             	    match('\f'); if (state.failed) return ;
 
             	    }
             	    break;
             	case 4 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1687:19: EOL
+            	    // src/main/resources/org/drools/lang/DRL.g:1689:19: EOL
             	    {
             	    mEOL(); if (state.failed) return ;
 
@@ -276,10 +276,10 @@ public class DRLLexer extends Lexer {
     // $ANTLR start "EOL"
     public final void mEOL() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1693:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1694:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // src/main/resources/org/drools/lang/DRL.g:1695:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
+            // src/main/resources/org/drools/lang/DRL.g:1696:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1694:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // src/main/resources/org/drools/lang/DRL.g:1696:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             int alt2=3;
             int LA2_0 = input.LA(1);
 
@@ -304,7 +304,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1694:14: ( '\\r\\n' )=> '\\r\\n'
+                    // src/main/resources/org/drools/lang/DRL.g:1696:14: ( '\\r\\n' )=> '\\r\\n'
                     {
                     match("\r\n"); if (state.failed) return ;
 
@@ -312,14 +312,14 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1695:25: '\\r'
+                    // src/main/resources/org/drools/lang/DRL.g:1697:25: '\\r'
                     {
                     match('\r'); if (state.failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1696:25: '\\n'
+                    // src/main/resources/org/drools/lang/DRL.g:1698:25: '\\n'
                     {
                     match('\n'); if (state.failed) return ;
 
@@ -342,10 +342,10 @@ public class DRLLexer extends Lexer {
         try {
             int _type = INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:2: ( ( '-' )? ( '0' .. '9' )+ )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:4: ( '-' )? ( '0' .. '9' )+
+            // src/main/resources/org/drools/lang/DRL.g:1703:2: ( ( '-' )? ( '0' .. '9' )+ )
+            // src/main/resources/org/drools/lang/DRL.g:1703:4: ( '-' )? ( '0' .. '9' )+
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:4: ( '-' )?
+            // src/main/resources/org/drools/lang/DRL.g:1703:4: ( '-' )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -354,7 +354,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt3) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:5: '-'
+                    // src/main/resources/org/drools/lang/DRL.g:1703:5: '-'
                     {
                     match('-'); if (state.failed) return ;
 
@@ -363,7 +363,7 @@ public class DRLLexer extends Lexer {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:10: ( '0' .. '9' )+
+            // src/main/resources/org/drools/lang/DRL.g:1703:10: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -377,7 +377,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:11: '0' .. '9'
+            	    // src/main/resources/org/drools/lang/DRL.g:1703:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (state.failed) return ;
 
@@ -410,10 +410,10 @@ public class DRLLexer extends Lexer {
         try {
             int _type = FLOAT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:2: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // src/main/resources/org/drools/lang/DRL.g:1707:2: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // src/main/resources/org/drools/lang/DRL.g:1707:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:4: ( '-' )?
+            // src/main/resources/org/drools/lang/DRL.g:1707:4: ( '-' )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -422,7 +422,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:5: '-'
+                    // src/main/resources/org/drools/lang/DRL.g:1707:5: '-'
                     {
                     match('-'); if (state.failed) return ;
 
@@ -431,7 +431,7 @@ public class DRLLexer extends Lexer {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:10: ( '0' .. '9' )+
+            // src/main/resources/org/drools/lang/DRL.g:1707:10: ( '0' .. '9' )+
             int cnt6=0;
             loop6:
             do {
@@ -445,7 +445,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:11: '0' .. '9'
+            	    // src/main/resources/org/drools/lang/DRL.g:1707:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (state.failed) return ;
 
@@ -463,7 +463,7 @@ public class DRLLexer extends Lexer {
             } while (true);
 
             match('.'); if (state.failed) return ;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:26: ( '0' .. '9' )+
+            // src/main/resources/org/drools/lang/DRL.g:1707:26: ( '0' .. '9' )+
             int cnt7=0;
             loop7:
             do {
@@ -477,7 +477,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:27: '0' .. '9'
+            	    // src/main/resources/org/drools/lang/DRL.g:1707:27: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (state.failed) return ;
 
@@ -510,7 +510,7 @@ public class DRLLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:5: ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) )
+            // src/main/resources/org/drools/lang/DRL.g:1711:5: ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) )
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -529,13 +529,13 @@ public class DRLLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+                    // src/main/resources/org/drools/lang/DRL.g:1711:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
                     {
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:9: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
+                    // src/main/resources/org/drools/lang/DRL.g:1711:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+                    // src/main/resources/org/drools/lang/DRL.g:1711:9: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
                     {
                     match('\"'); if (state.failed) return ;
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:13: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
+                    // src/main/resources/org/drools/lang/DRL.g:1711:13: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
                     loop8:
                     do {
                         int alt8=3;
@@ -551,14 +551,14 @@ public class DRLLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:15: EscapeSequence
+                    	    // src/main/resources/org/drools/lang/DRL.g:1711:15: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (state.failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:32: ~ ( '\\\\' | '\"' )
+                    	    // src/main/resources/org/drools/lang/DRL.g:1711:32: ~ ( '\\\\' | '\"' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -587,13 +587,13 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+                    // src/main/resources/org/drools/lang/DRL.g:1712:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
                     {
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:9: '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\''
+                    // src/main/resources/org/drools/lang/DRL.g:1712:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+                    // src/main/resources/org/drools/lang/DRL.g:1712:9: '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\''
                     {
                     match('\''); if (state.failed) return ;
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:14: ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )*
+                    // src/main/resources/org/drools/lang/DRL.g:1712:14: ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )*
                     loop9:
                     do {
                         int alt9=3;
@@ -609,14 +609,14 @@ public class DRLLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:16: EscapeSequence
+                    	    // src/main/resources/org/drools/lang/DRL.g:1712:16: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (state.failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:33: ~ ( '\\\\' | '\\'' )
+                    	    // src/main/resources/org/drools/lang/DRL.g:1712:33: ~ ( '\\\\' | '\\'' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -657,8 +657,8 @@ public class DRLLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1714:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1714:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // src/main/resources/org/drools/lang/DRL.g:1716:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // src/main/resources/org/drools/lang/DRL.g:1716:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -682,7 +682,7 @@ public class DRLLexer extends Lexer {
     // $ANTLR start "EscapeSequence"
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1718:5: ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' ) | UnicodeEscape | OctalEscape )
+            // src/main/resources/org/drools/lang/DRL.g:1720:5: ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' ) | UnicodeEscape | OctalEscape )
             int alt11=3;
             int LA11_0 = input.LA(1);
 
@@ -769,7 +769,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1718:9: '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' )
+                    // src/main/resources/org/drools/lang/DRL.g:1720:9: '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' )
                     {
                     match('\\'); if (state.failed) return ;
                     if ( input.LA(1)=='\"'||input.LA(1)=='$'||(input.LA(1)>='&' && input.LA(1)<='+')||(input.LA(1)>='-' && input.LA(1)<='.')||input.LA(1)=='?'||(input.LA(1)>='A' && input.LA(1)<='B')||(input.LA(1)>='D' && input.LA(1)<='E')||input.LA(1)=='G'||input.LA(1)=='Q'||input.LA(1)=='S'||input.LA(1)=='W'||(input.LA(1)>='Z' && input.LA(1)<='^')||(input.LA(1)>='a' && input.LA(1)<='f')||(input.LA(1)>='n' && input.LA(1)<='p')||(input.LA(1)>='r' && input.LA(1)<='t')||(input.LA(1)>='w' && input.LA(1)<='x')||(input.LA(1)>='z' && input.LA(1)<='}') ) {
@@ -786,14 +786,14 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1722:9: UnicodeEscape
+                    // src/main/resources/org/drools/lang/DRL.g:1724:9: UnicodeEscape
                     {
                     mUnicodeEscape(); if (state.failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1723:9: OctalEscape
+                    // src/main/resources/org/drools/lang/DRL.g:1725:9: OctalEscape
                     {
                     mOctalEscape(); if (state.failed) return ;
 
@@ -810,7 +810,7 @@ public class DRLLexer extends Lexer {
     // $ANTLR start "OctalEscape"
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // src/main/resources/org/drools/lang/DRL.g:1730:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt12=3;
             int LA12_0 = input.LA(1);
 
@@ -858,25 +858,25 @@ public class DRLLexer extends Lexer {
             }
             switch (alt12) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1730:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (state.failed) return ;
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:14: ( '0' .. '3' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:15: '0' .. '3'
+                    // src/main/resources/org/drools/lang/DRL.g:1730:14: ( '0' .. '3' )
+                    // src/main/resources/org/drools/lang/DRL.g:1730:15: '0' .. '3'
                     {
                     matchRange('0','3'); if (state.failed) return ;
 
                     }
 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:25: ( '0' .. '7' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:26: '0' .. '7'
+                    // src/main/resources/org/drools/lang/DRL.g:1730:25: ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1730:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (state.failed) return ;
 
                     }
 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:36: ( '0' .. '7' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1728:37: '0' .. '7'
+                    // src/main/resources/org/drools/lang/DRL.g:1730:36: ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1730:37: '0' .. '7'
                     {
                     matchRange('0','7'); if (state.failed) return ;
 
@@ -886,18 +886,18 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1729:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1731:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (state.failed) return ;
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1729:14: ( '0' .. '7' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1729:15: '0' .. '7'
+                    // src/main/resources/org/drools/lang/DRL.g:1731:14: ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1731:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (state.failed) return ;
 
                     }
 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1729:25: ( '0' .. '7' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1729:26: '0' .. '7'
+                    // src/main/resources/org/drools/lang/DRL.g:1731:25: ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1731:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (state.failed) return ;
 
@@ -907,11 +907,11 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1730:9: '\\\\' ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1732:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); if (state.failed) return ;
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1730:14: ( '0' .. '7' )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1730:15: '0' .. '7'
+                    // src/main/resources/org/drools/lang/DRL.g:1732:14: ( '0' .. '7' )
+                    // src/main/resources/org/drools/lang/DRL.g:1732:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (state.failed) return ;
 
@@ -931,8 +931,8 @@ public class DRLLexer extends Lexer {
     // $ANTLR start "UnicodeEscape"
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1735:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1735:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // src/main/resources/org/drools/lang/DRL.g:1737:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // src/main/resources/org/drools/lang/DRL.g:1737:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); if (state.failed) return ;
             match('u'); if (state.failed) return ;
@@ -954,10 +954,10 @@ public class DRLLexer extends Lexer {
         try {
             int _type = BOOL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1739:2: ( ( 'true' | 'false' ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1739:4: ( 'true' | 'false' )
+            // src/main/resources/org/drools/lang/DRL.g:1741:2: ( ( 'true' | 'false' ) )
+            // src/main/resources/org/drools/lang/DRL.g:1741:4: ( 'true' | 'false' )
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1739:4: ( 'true' | 'false' )
+            // src/main/resources/org/drools/lang/DRL.g:1741:4: ( 'true' | 'false' )
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -976,7 +976,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt13) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1739:5: 'true'
+                    // src/main/resources/org/drools/lang/DRL.g:1741:5: 'true'
                     {
                     match("true"); if (state.failed) return ;
 
@@ -984,7 +984,7 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1739:12: 'false'
+                    // src/main/resources/org/drools/lang/DRL.g:1741:12: 'false'
                     {
                     match("false"); if (state.failed) return ;
 
@@ -1010,8 +1010,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = ACCUMULATE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1743:2: ( 'accumulate' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1743:4: 'accumulate'
+            // src/main/resources/org/drools/lang/DRL.g:1745:2: ( 'accumulate' )
+            // src/main/resources/org/drools/lang/DRL.g:1745:4: 'accumulate'
             {
             match("accumulate"); if (state.failed) return ;
 
@@ -1031,8 +1031,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = COLLECT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1747:2: ( 'collect' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1747:4: 'collect'
+            // src/main/resources/org/drools/lang/DRL.g:1749:2: ( 'collect' )
+            // src/main/resources/org/drools/lang/DRL.g:1749:4: 'collect'
             {
             match("collect"); if (state.failed) return ;
 
@@ -1052,8 +1052,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = END;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1750:5: ( 'end' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1750:7: 'end'
+            // src/main/resources/org/drools/lang/DRL.g:1752:5: ( 'end' )
+            // src/main/resources/org/drools/lang/DRL.g:1752:7: 'end'
             {
             match("end"); if (state.failed) return ;
 
@@ -1073,8 +1073,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = FROM;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1754:2: ( 'from' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1754:4: 'from'
+            // src/main/resources/org/drools/lang/DRL.g:1756:2: ( 'from' )
+            // src/main/resources/org/drools/lang/DRL.g:1756:4: 'from'
             {
             match("from"); if (state.failed) return ;
 
@@ -1094,8 +1094,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = INIT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1758:2: ( 'init' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1758:4: 'init'
+            // src/main/resources/org/drools/lang/DRL.g:1760:2: ( 'init' )
+            // src/main/resources/org/drools/lang/DRL.g:1760:4: 'init'
             {
             match("init"); if (state.failed) return ;
 
@@ -1115,8 +1115,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = NULL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1762:2: ( 'null' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1762:4: 'null'
+            // src/main/resources/org/drools/lang/DRL.g:1764:2: ( 'null' )
+            // src/main/resources/org/drools/lang/DRL.g:1764:4: 'null'
             {
             match("null"); if (state.failed) return ;
 
@@ -1136,8 +1136,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = OVER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1766:2: ( 'over' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1766:4: 'over'
+            // src/main/resources/org/drools/lang/DRL.g:1768:2: ( 'over' )
+            // src/main/resources/org/drools/lang/DRL.g:1768:4: 'over'
             {
             match("over"); if (state.failed) return ;
 
@@ -1157,8 +1157,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = THEN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1770:2: ( 'then' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1770:4: 'then'
+            // src/main/resources/org/drools/lang/DRL.g:1772:2: ( 'then' )
+            // src/main/resources/org/drools/lang/DRL.g:1772:4: 'then'
             {
             match("then"); if (state.failed) return ;
 
@@ -1178,8 +1178,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = WHEN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1774:2: ( 'when' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1774:4: 'when'
+            // src/main/resources/org/drools/lang/DRL.g:1776:2: ( 'when' )
+            // src/main/resources/org/drools/lang/DRL.g:1776:4: 'when'
             {
             match("when"); if (state.failed) return ;
 
@@ -1199,8 +1199,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = GRAVE_ACCENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1778:2: ( '`' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1778:4: '`'
+            // src/main/resources/org/drools/lang/DRL.g:1780:2: ( '`' )
+            // src/main/resources/org/drools/lang/DRL.g:1780:4: '`'
             {
             match('`'); if (state.failed) return ;
 
@@ -1219,8 +1219,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = AT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1781:4: ( '@' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1781:6: '@'
+            // src/main/resources/org/drools/lang/DRL.g:1783:4: ( '@' )
+            // src/main/resources/org/drools/lang/DRL.g:1783:6: '@'
             {
             match('@'); if (state.failed) return ;
 
@@ -1239,8 +1239,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = EQUALS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1785:2: ( '=' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1785:4: '='
+            // src/main/resources/org/drools/lang/DRL.g:1787:2: ( '=' )
+            // src/main/resources/org/drools/lang/DRL.g:1787:4: '='
             {
             match('='); if (state.failed) return ;
 
@@ -1259,8 +1259,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = SEMICOLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1789:2: ( ';' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1789:4: ';'
+            // src/main/resources/org/drools/lang/DRL.g:1791:2: ( ';' )
+            // src/main/resources/org/drools/lang/DRL.g:1791:4: ';'
             {
             match(';'); if (state.failed) return ;
 
@@ -1279,8 +1279,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = DOT_STAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1793:2: ( '.*' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1793:4: '.*'
+            // src/main/resources/org/drools/lang/DRL.g:1795:2: ( '.*' )
+            // src/main/resources/org/drools/lang/DRL.g:1795:4: '.*'
             {
             match(".*"); if (state.failed) return ;
 
@@ -1300,8 +1300,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1797:2: ( ':' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1797:4: ':'
+            // src/main/resources/org/drools/lang/DRL.g:1799:2: ( ':' )
+            // src/main/resources/org/drools/lang/DRL.g:1799:4: ':'
             {
             match(':'); if (state.failed) return ;
 
@@ -1320,8 +1320,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = EQUAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1801:2: ( '==' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1801:4: '=='
+            // src/main/resources/org/drools/lang/DRL.g:1803:2: ( '==' )
+            // src/main/resources/org/drools/lang/DRL.g:1803:4: '=='
             {
             match("=="); if (state.failed) return ;
 
@@ -1341,8 +1341,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = NOT_EQUAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1805:2: ( '!=' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1805:4: '!='
+            // src/main/resources/org/drools/lang/DRL.g:1807:2: ( '!=' )
+            // src/main/resources/org/drools/lang/DRL.g:1807:4: '!='
             {
             match("!="); if (state.failed) return ;
 
@@ -1362,8 +1362,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = GREATER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1809:2: ( '>' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1809:4: '>'
+            // src/main/resources/org/drools/lang/DRL.g:1811:2: ( '>' )
+            // src/main/resources/org/drools/lang/DRL.g:1811:4: '>'
             {
             match('>'); if (state.failed) return ;
 
@@ -1382,8 +1382,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = GREATER_EQUAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1813:2: ( '>=' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1813:4: '>='
+            // src/main/resources/org/drools/lang/DRL.g:1815:2: ( '>=' )
+            // src/main/resources/org/drools/lang/DRL.g:1815:4: '>='
             {
             match(">="); if (state.failed) return ;
 
@@ -1403,8 +1403,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = LESS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1817:2: ( '<' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1817:4: '<'
+            // src/main/resources/org/drools/lang/DRL.g:1819:2: ( '<' )
+            // src/main/resources/org/drools/lang/DRL.g:1819:4: '<'
             {
             match('<'); if (state.failed) return ;
 
@@ -1423,8 +1423,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = LESS_EQUAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1821:2: ( '<=' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1821:4: '<='
+            // src/main/resources/org/drools/lang/DRL.g:1823:2: ( '<=' )
+            // src/main/resources/org/drools/lang/DRL.g:1823:4: '<='
             {
             match("<="); if (state.failed) return ;
 
@@ -1444,8 +1444,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = ARROW;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1825:2: ( '->' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1825:4: '->'
+            // src/main/resources/org/drools/lang/DRL.g:1827:2: ( '->' )
+            // src/main/resources/org/drools/lang/DRL.g:1827:4: '->'
             {
             match("->"); if (state.failed) return ;
 
@@ -1465,7 +1465,7 @@ public class DRLLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1829:2: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )* | '%' ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )+ '%' )
+            // src/main/resources/org/drools/lang/DRL.g:1831:2: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )* | '%' ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )+ '%' )
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1484,7 +1484,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt16) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1829:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
+                    // src/main/resources/org/drools/lang/DRL.g:1831:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
                     {
                     if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
                         input.consume();
@@ -1496,7 +1496,7 @@ public class DRLLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1829:50: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
+                    // src/main/resources/org/drools/lang/DRL.g:1831:50: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
                     loop14:
                     do {
                         int alt14=2;
@@ -1509,7 +1509,7 @@ public class DRLLexer extends Lexer {
 
                         switch (alt14) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:
+                    	    // src/main/resources/org/drools/lang/DRL.g:
                     	    {
                     	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
                     	        input.consume();
@@ -1534,7 +1534,7 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1830:4: '%' ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )+ '%'
+                    // src/main/resources/org/drools/lang/DRL.g:1832:4: '%' ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )+ '%'
                     {
                     match('%'); if (state.failed) return ;
                     if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
@@ -1547,7 +1547,7 @@ public class DRLLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1830:54: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )+
+                    // src/main/resources/org/drools/lang/DRL.g:1832:54: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )+
                     int cnt15=0;
                     loop15:
                     do {
@@ -1561,7 +1561,7 @@ public class DRLLexer extends Lexer {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:
+                    	    // src/main/resources/org/drools/lang/DRL.g:
                     	    {
                     	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
                     	        input.consume();
@@ -1609,8 +1609,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = LEFT_PAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1835:9: ( '(' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1835:11: '('
+            // src/main/resources/org/drools/lang/DRL.g:1837:9: ( '(' )
+            // src/main/resources/org/drools/lang/DRL.g:1837:11: '('
             {
             match('('); if (state.failed) return ;
 
@@ -1629,8 +1629,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = RIGHT_PAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1839:9: ( ')' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1839:11: ')'
+            // src/main/resources/org/drools/lang/DRL.g:1841:9: ( ')' )
+            // src/main/resources/org/drools/lang/DRL.g:1841:11: ')'
             {
             match(')'); if (state.failed) return ;
 
@@ -1649,8 +1649,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = LEFT_SQUARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1843:9: ( '[' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1843:11: '['
+            // src/main/resources/org/drools/lang/DRL.g:1845:9: ( '[' )
+            // src/main/resources/org/drools/lang/DRL.g:1845:11: '['
             {
             match('['); if (state.failed) return ;
 
@@ -1669,8 +1669,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = RIGHT_SQUARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1847:9: ( ']' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1847:11: ']'
+            // src/main/resources/org/drools/lang/DRL.g:1849:9: ( ']' )
+            // src/main/resources/org/drools/lang/DRL.g:1849:11: ']'
             {
             match(']'); if (state.failed) return ;
 
@@ -1689,8 +1689,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = LEFT_CURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1851:9: ( '{' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1851:11: '{'
+            // src/main/resources/org/drools/lang/DRL.g:1853:9: ( '{' )
+            // src/main/resources/org/drools/lang/DRL.g:1853:11: '{'
             {
             match('{'); if (state.failed) return ;
 
@@ -1709,8 +1709,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = RIGHT_CURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1855:9: ( '}' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1855:11: '}'
+            // src/main/resources/org/drools/lang/DRL.g:1857:9: ( '}' )
+            // src/main/resources/org/drools/lang/DRL.g:1857:11: '}'
             {
             match('}'); if (state.failed) return ;
 
@@ -1729,8 +1729,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1858:7: ( ',' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1858:9: ','
+            // src/main/resources/org/drools/lang/DRL.g:1860:7: ( ',' )
+            // src/main/resources/org/drools/lang/DRL.g:1860:9: ','
             {
             match(','); if (state.failed) return ;
 
@@ -1749,8 +1749,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1861:5: ( '.' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1861:7: '.'
+            // src/main/resources/org/drools/lang/DRL.g:1863:5: ( '.' )
+            // src/main/resources/org/drools/lang/DRL.g:1863:7: '.'
             {
             match('.'); if (state.failed) return ;
 
@@ -1769,8 +1769,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = DOUBLE_AMPER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1865:2: ( '&&' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1865:4: '&&'
+            // src/main/resources/org/drools/lang/DRL.g:1867:2: ( '&&' )
+            // src/main/resources/org/drools/lang/DRL.g:1867:4: '&&'
             {
             match("&&"); if (state.failed) return ;
 
@@ -1790,8 +1790,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = DOUBLE_PIPE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1869:2: ( '||' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1869:4: '||'
+            // src/main/resources/org/drools/lang/DRL.g:1871:2: ( '||' )
+            // src/main/resources/org/drools/lang/DRL.g:1871:4: '||'
             {
             match("||"); if (state.failed) return ;
 
@@ -1811,11 +1811,11 @@ public class DRLLexer extends Lexer {
         try {
             int _type = SH_STYLE_SINGLE_LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1873:2: ( '#' ( options {greedy=false; } : . )* EOL )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1873:4: '#' ( options {greedy=false; } : . )* EOL
+            // src/main/resources/org/drools/lang/DRL.g:1875:2: ( '#' ( options {greedy=false; } : . )* EOL )
+            // src/main/resources/org/drools/lang/DRL.g:1875:4: '#' ( options {greedy=false; } : . )* EOL
             {
             match('#'); if (state.failed) return ;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1873:8: ( options {greedy=false; } : . )*
+            // src/main/resources/org/drools/lang/DRL.g:1875:8: ( options {greedy=false; } : . )*
             loop17:
             do {
                 int alt17=2;
@@ -1834,7 +1834,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1873:35: .
+            	    // src/main/resources/org/drools/lang/DRL.g:1875:35: .
             	    {
             	    matchAny(); if (state.failed) return ;
 
@@ -1866,12 +1866,12 @@ public class DRLLexer extends Lexer {
         try {
             int _type = C_STYLE_SINGLE_LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1879:2: ( '//' ( options {greedy=false; } : . )* EOL )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1879:4: '//' ( options {greedy=false; } : . )* EOL
+            // src/main/resources/org/drools/lang/DRL.g:1881:2: ( '//' ( options {greedy=false; } : . )* EOL )
+            // src/main/resources/org/drools/lang/DRL.g:1881:4: '//' ( options {greedy=false; } : . )* EOL
             {
             match("//"); if (state.failed) return ;
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1879:9: ( options {greedy=false; } : . )*
+            // src/main/resources/org/drools/lang/DRL.g:1881:9: ( options {greedy=false; } : . )*
             loop18:
             do {
                 int alt18=2;
@@ -1890,7 +1890,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1879:36: .
+            	    // src/main/resources/org/drools/lang/DRL.g:1881:36: .
             	    {
             	    matchAny(); if (state.failed) return ;
 
@@ -1922,12 +1922,12 @@ public class DRLLexer extends Lexer {
         try {
             int _type = MULTI_LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1884:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1884:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // src/main/resources/org/drools/lang/DRL.g:1886:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // src/main/resources/org/drools/lang/DRL.g:1886:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); if (state.failed) return ;
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1884:9: ( options {greedy=false; } : . )*
+            // src/main/resources/org/drools/lang/DRL.g:1886:9: ( options {greedy=false; } : . )*
             loop19:
             do {
                 int alt19=2;
@@ -1952,7 +1952,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt19) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1884:35: .
+            	    // src/main/resources/org/drools/lang/DRL.g:1886:35: .
             	    {
             	    matchAny(); if (state.failed) return ;
 
@@ -1985,8 +1985,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = MISC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1888:7: ( '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '?' | '/' | '\\'' | '\\\\' | '|' | '&' )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:
+            // src/main/resources/org/drools/lang/DRL.g:1890:7: ( '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '?' | '/' | '\\'' | '\\\\' | '|' | '&' )
+            // src/main/resources/org/drools/lang/DRL.g:
             {
             if ( input.LA(1)=='!'||(input.LA(1)>='$' && input.LA(1)<='\'')||(input.LA(1)>='*' && input.LA(1)<='+')||input.LA(1)=='-'||input.LA(1)=='/'||input.LA(1)=='?'||input.LA(1)=='\\'||(input.LA(1)>='^' && input.LA(1)<='_')||input.LA(1)=='|' ) {
                 input.consume();
@@ -2010,299 +2010,299 @@ public class DRLLexer extends Lexer {
     // $ANTLR end "MISC"
 
     public void mTokens() throws RecognitionException {
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:8: ( WS | INT | FLOAT | STRING | BOOL | ACCUMULATE | COLLECT | END | FROM | INIT | NULL | OVER | THEN | WHEN | GRAVE_ACCENT | AT | EQUALS | SEMICOLON | DOT_STAR | COLON | EQUAL | NOT_EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | ARROW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC )
+        // src/main/resources/org/drools/lang/DRL.g:1:8: ( WS | INT | FLOAT | STRING | BOOL | ACCUMULATE | COLLECT | END | FROM | INIT | NULL | OVER | THEN | WHEN | GRAVE_ACCENT | AT | EQUALS | SEMICOLON | DOT_STAR | COLON | EQUAL | NOT_EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | ARROW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC )
         int alt20=42;
         alt20 = dfa20.predict(input);
         switch (alt20) {
             case 1 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:10: WS
+                // src/main/resources/org/drools/lang/DRL.g:1:10: WS
                 {
                 mWS(); if (state.failed) return ;
 
                 }
                 break;
             case 2 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:13: INT
+                // src/main/resources/org/drools/lang/DRL.g:1:13: INT
                 {
                 mINT(); if (state.failed) return ;
 
                 }
                 break;
             case 3 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:17: FLOAT
+                // src/main/resources/org/drools/lang/DRL.g:1:17: FLOAT
                 {
                 mFLOAT(); if (state.failed) return ;
 
                 }
                 break;
             case 4 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:23: STRING
+                // src/main/resources/org/drools/lang/DRL.g:1:23: STRING
                 {
                 mSTRING(); if (state.failed) return ;
 
                 }
                 break;
             case 5 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:30: BOOL
+                // src/main/resources/org/drools/lang/DRL.g:1:30: BOOL
                 {
                 mBOOL(); if (state.failed) return ;
 
                 }
                 break;
             case 6 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:35: ACCUMULATE
+                // src/main/resources/org/drools/lang/DRL.g:1:35: ACCUMULATE
                 {
                 mACCUMULATE(); if (state.failed) return ;
 
                 }
                 break;
             case 7 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:46: COLLECT
+                // src/main/resources/org/drools/lang/DRL.g:1:46: COLLECT
                 {
                 mCOLLECT(); if (state.failed) return ;
 
                 }
                 break;
             case 8 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:54: END
+                // src/main/resources/org/drools/lang/DRL.g:1:54: END
                 {
                 mEND(); if (state.failed) return ;
 
                 }
                 break;
             case 9 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:58: FROM
+                // src/main/resources/org/drools/lang/DRL.g:1:58: FROM
                 {
                 mFROM(); if (state.failed) return ;
 
                 }
                 break;
             case 10 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:63: INIT
+                // src/main/resources/org/drools/lang/DRL.g:1:63: INIT
                 {
                 mINIT(); if (state.failed) return ;
 
                 }
                 break;
             case 11 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:68: NULL
+                // src/main/resources/org/drools/lang/DRL.g:1:68: NULL
                 {
                 mNULL(); if (state.failed) return ;
 
                 }
                 break;
             case 12 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:73: OVER
+                // src/main/resources/org/drools/lang/DRL.g:1:73: OVER
                 {
                 mOVER(); if (state.failed) return ;
 
                 }
                 break;
             case 13 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:78: THEN
+                // src/main/resources/org/drools/lang/DRL.g:1:78: THEN
                 {
                 mTHEN(); if (state.failed) return ;
 
                 }
                 break;
             case 14 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:83: WHEN
+                // src/main/resources/org/drools/lang/DRL.g:1:83: WHEN
                 {
                 mWHEN(); if (state.failed) return ;
 
                 }
                 break;
             case 15 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:88: GRAVE_ACCENT
+                // src/main/resources/org/drools/lang/DRL.g:1:88: GRAVE_ACCENT
                 {
                 mGRAVE_ACCENT(); if (state.failed) return ;
 
                 }
                 break;
             case 16 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:101: AT
+                // src/main/resources/org/drools/lang/DRL.g:1:101: AT
                 {
                 mAT(); if (state.failed) return ;
 
                 }
                 break;
             case 17 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:104: EQUALS
+                // src/main/resources/org/drools/lang/DRL.g:1:104: EQUALS
                 {
                 mEQUALS(); if (state.failed) return ;
 
                 }
                 break;
             case 18 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:111: SEMICOLON
+                // src/main/resources/org/drools/lang/DRL.g:1:111: SEMICOLON
                 {
                 mSEMICOLON(); if (state.failed) return ;
 
                 }
                 break;
             case 19 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:121: DOT_STAR
+                // src/main/resources/org/drools/lang/DRL.g:1:121: DOT_STAR
                 {
                 mDOT_STAR(); if (state.failed) return ;
 
                 }
                 break;
             case 20 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:130: COLON
+                // src/main/resources/org/drools/lang/DRL.g:1:130: COLON
                 {
                 mCOLON(); if (state.failed) return ;
 
                 }
                 break;
             case 21 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:136: EQUAL
+                // src/main/resources/org/drools/lang/DRL.g:1:136: EQUAL
                 {
                 mEQUAL(); if (state.failed) return ;
 
                 }
                 break;
             case 22 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:142: NOT_EQUAL
+                // src/main/resources/org/drools/lang/DRL.g:1:142: NOT_EQUAL
                 {
                 mNOT_EQUAL(); if (state.failed) return ;
 
                 }
                 break;
             case 23 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:152: GREATER
+                // src/main/resources/org/drools/lang/DRL.g:1:152: GREATER
                 {
                 mGREATER(); if (state.failed) return ;
 
                 }
                 break;
             case 24 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:160: GREATER_EQUAL
+                // src/main/resources/org/drools/lang/DRL.g:1:160: GREATER_EQUAL
                 {
                 mGREATER_EQUAL(); if (state.failed) return ;
 
                 }
                 break;
             case 25 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:174: LESS
+                // src/main/resources/org/drools/lang/DRL.g:1:174: LESS
                 {
                 mLESS(); if (state.failed) return ;
 
                 }
                 break;
             case 26 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:179: LESS_EQUAL
+                // src/main/resources/org/drools/lang/DRL.g:1:179: LESS_EQUAL
                 {
                 mLESS_EQUAL(); if (state.failed) return ;
 
                 }
                 break;
             case 27 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:190: ARROW
+                // src/main/resources/org/drools/lang/DRL.g:1:190: ARROW
                 {
                 mARROW(); if (state.failed) return ;
 
                 }
                 break;
             case 28 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:196: ID
+                // src/main/resources/org/drools/lang/DRL.g:1:196: ID
                 {
                 mID(); if (state.failed) return ;
 
                 }
                 break;
             case 29 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:199: LEFT_PAREN
+                // src/main/resources/org/drools/lang/DRL.g:1:199: LEFT_PAREN
                 {
                 mLEFT_PAREN(); if (state.failed) return ;
 
                 }
                 break;
             case 30 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:210: RIGHT_PAREN
+                // src/main/resources/org/drools/lang/DRL.g:1:210: RIGHT_PAREN
                 {
                 mRIGHT_PAREN(); if (state.failed) return ;
 
                 }
                 break;
             case 31 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:222: LEFT_SQUARE
+                // src/main/resources/org/drools/lang/DRL.g:1:222: LEFT_SQUARE
                 {
                 mLEFT_SQUARE(); if (state.failed) return ;
 
                 }
                 break;
             case 32 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:234: RIGHT_SQUARE
+                // src/main/resources/org/drools/lang/DRL.g:1:234: RIGHT_SQUARE
                 {
                 mRIGHT_SQUARE(); if (state.failed) return ;
 
                 }
                 break;
             case 33 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:247: LEFT_CURLY
+                // src/main/resources/org/drools/lang/DRL.g:1:247: LEFT_CURLY
                 {
                 mLEFT_CURLY(); if (state.failed) return ;
 
                 }
                 break;
             case 34 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:258: RIGHT_CURLY
+                // src/main/resources/org/drools/lang/DRL.g:1:258: RIGHT_CURLY
                 {
                 mRIGHT_CURLY(); if (state.failed) return ;
 
                 }
                 break;
             case 35 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:270: COMMA
+                // src/main/resources/org/drools/lang/DRL.g:1:270: COMMA
                 {
                 mCOMMA(); if (state.failed) return ;
 
                 }
                 break;
             case 36 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:276: DOT
+                // src/main/resources/org/drools/lang/DRL.g:1:276: DOT
                 {
                 mDOT(); if (state.failed) return ;
 
                 }
                 break;
             case 37 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:280: DOUBLE_AMPER
+                // src/main/resources/org/drools/lang/DRL.g:1:280: DOUBLE_AMPER
                 {
                 mDOUBLE_AMPER(); if (state.failed) return ;
 
                 }
                 break;
             case 38 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:293: DOUBLE_PIPE
+                // src/main/resources/org/drools/lang/DRL.g:1:293: DOUBLE_PIPE
                 {
                 mDOUBLE_PIPE(); if (state.failed) return ;
 
                 }
                 break;
             case 39 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:305: SH_STYLE_SINGLE_LINE_COMMENT
+                // src/main/resources/org/drools/lang/DRL.g:1:305: SH_STYLE_SINGLE_LINE_COMMENT
                 {
                 mSH_STYLE_SINGLE_LINE_COMMENT(); if (state.failed) return ;
 
                 }
                 break;
             case 40 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:334: C_STYLE_SINGLE_LINE_COMMENT
+                // src/main/resources/org/drools/lang/DRL.g:1:334: C_STYLE_SINGLE_LINE_COMMENT
                 {
                 mC_STYLE_SINGLE_LINE_COMMENT(); if (state.failed) return ;
 
                 }
                 break;
             case 41 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:362: MULTI_LINE_COMMENT
+                // src/main/resources/org/drools/lang/DRL.g:1:362: MULTI_LINE_COMMENT
                 {
                 mMULTI_LINE_COMMENT(); if (state.failed) return ;
 
                 }
                 break;
             case 42 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:381: MISC
+                // src/main/resources/org/drools/lang/DRL.g:1:381: MISC
                 {
                 mMISC(); if (state.failed) return ;
 
@@ -2315,8 +2315,8 @@ public class DRLLexer extends Lexer {
 
     // $ANTLR start synpred1_DRL
     public final void synpred1_DRL_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1694:14: ( '\\r\\n' )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1694:16: '\\r\\n'
+        // src/main/resources/org/drools/lang/DRL.g:1696:14: ( '\\r\\n' )
+        // src/main/resources/org/drools/lang/DRL.g:1696:16: '\\r\\n'
         {
         match("\r\n"); if (state.failed) return ;
 
@@ -2359,14 +2359,14 @@ public class DRLLexer extends Lexer {
         "\1\60\1\155\1\145\1\uffff\4\60\2\uffff\1\60\1\uffff\1\165\1\143"+
         "\4\uffff\1\154\1\164\1\141\1\60\1\164\1\uffff\1\145\1\60\1\uffff";
     static final String DFA20_maxS =
-        "\1\u00ff\1\uffff\1\76\1\71\1\uffff\1\uffff\2\162\1\143\1\157\2\156"+
-        "\1\165\1\166\1\150\2\uffff\1\75\1\uffff\1\52\1\uffff\3\75\1\uffff"+
-        "\1\u00ff\7\uffff\1\46\1\174\1\uffff\1\57\5\uffff\1\165\1\145\1\154"+
-        "\1\157\1\143\1\154\1\144\1\151\1\154\2\145\15\uffff\1\145\1\156"+
-        "\1\163\1\155\1\165\1\154\1\u00ff\1\164\1\154\1\162\1\156\2\u00ff"+
-        "\1\145\1\u00ff\1\155\1\145\1\uffff\4\u00ff\2\uffff\1\u00ff\1\uffff"+
-        "\1\165\1\143\4\uffff\1\154\1\164\1\141\1\u00ff\1\164\1\uffff\1\145"+
-        "\1\u00ff\1\uffff";
+        "\1\u00ff\1\uffff\1\76\1\71\1\uffff\1\uffff\2\162\1\143\1\157\2"+
+        "\156\1\165\1\166\1\150\2\uffff\1\75\1\uffff\1\52\1\uffff\3\75\1"+
+        "\uffff\1\u00ff\7\uffff\1\46\1\174\1\uffff\1\57\5\uffff\1\165\1\145"+
+        "\1\154\1\157\1\143\1\154\1\144\1\151\1\154\2\145\15\uffff\1\145"+
+        "\1\156\1\163\1\155\1\165\1\154\1\u00ff\1\164\1\154\1\162\1\156\2"+
+        "\u00ff\1\145\1\u00ff\1\155\1\145\1\uffff\4\u00ff\2\uffff\1\u00ff"+
+        "\1\uffff\1\165\1\143\4\uffff\1\154\1\164\1\141\1\u00ff\1\164\1\uffff"+
+        "\1\145\1\u00ff\1\uffff";
     static final String DFA20_acceptS =
         "\1\uffff\1\1\2\uffff\1\4\12\uffff\1\17\1\20\1\uffff\1\22\1\uffff"+
         "\1\24\3\uffff\1\34\1\uffff\1\35\1\36\1\37\1\40\1\41\1\42\1\43\2"+
@@ -2377,11 +2377,11 @@ public class DRLLexer extends Lexer {
     static final String DFA20_specialS =
         "\5\uffff\1\0\145\uffff}>";
     static final String[] DFA20_transitionS = {
-            "\2\1\1\uffff\2\1\22\uffff\1\1\1\25\1\4\1\43\1\30\1\31\1\41\1"+
-            "\5\1\32\1\33\2\46\1\40\1\2\1\23\1\44\12\3\1\24\1\22\1\27\1\21"+
-            "\1\26\1\46\1\20\32\45\1\34\1\46\1\35\1\46\1\30\1\17\1\10\1\45"+
-            "\1\11\1\45\1\12\1\7\2\45\1\13\4\45\1\14\1\15\4\45\1\6\2\45\1"+
-            "\16\3\45\1\36\1\42\1\37\102\uffff\100\45",
+            "\2\1\1\uffff\2\1\22\uffff\1\1\1\25\1\4\1\43\1\30\1\31\1\41"+
+            "\1\5\1\32\1\33\2\46\1\40\1\2\1\23\1\44\12\3\1\24\1\22\1\27\1"+
+            "\21\1\26\1\46\1\20\32\45\1\34\1\46\1\35\1\46\1\30\1\17\1\10"+
+            "\1\45\1\11\1\45\1\12\1\7\2\45\1\13\4\45\1\14\1\15\4\45\1\6\2"+
+            "\45\1\16\3\45\1\36\1\42\1\37\102\uffff\100\45",
             "",
             "\12\3\4\uffff\1\47",
             "\1\51\1\uffff\12\3",
@@ -2406,8 +2406,8 @@ public class DRLLexer extends Lexer {
             "\1\72",
             "\1\74",
             "",
-            "\1\45\34\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\1\45\34\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             "",
             "",
             "",
@@ -2454,34 +2454,34 @@ public class DRLLexer extends Lexer {
             "\1\120",
             "\1\121",
             "\1\122",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             "\1\124",
             "\1\125",
             "\1\126",
             "\1\127",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             "\1\132",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             "\1\134",
             "\1\135",
             "",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             "",
             "",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             "",
             "\1\142",
             "\1\143",
@@ -2492,13 +2492,13 @@ public class DRLLexer extends Lexer {
             "\1\144",
             "\1\145",
             "\1\146",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             "\1\150",
             "",
             "\1\151",
-            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff\100"+
-            "\45",
+            "\12\45\7\uffff\32\45\4\uffff\1\45\1\uffff\32\45\105\uffff"+
+            "\100\45",
             ""
     };
 
