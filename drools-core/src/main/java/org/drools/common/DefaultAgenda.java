@@ -1052,6 +1052,10 @@ public class DefaultAgenda
             fireLimit = updateFireLimit( fireLimit );
             this.workingMemory.executeQueuedActions();
         }
+        if ( this.focusStack.size() == 1 && this.main.isEmpty() ) {
+            // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
+            this.main.setActive( false );
+        }
         return fireCount;
     }
 
