@@ -81,6 +81,10 @@ public class TupleStartEqualsConstraint
                                    Declaration newDecl) {
     }
 
+    public boolean isTemporal() {
+        return false;
+    }
+
     public ContextEntry createContextEntry() {
         return new TupleStartEqualsConstraintContextEntry();
     }

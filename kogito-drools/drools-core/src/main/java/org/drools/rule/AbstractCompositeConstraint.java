@@ -66,6 +66,20 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
     public BetaNodeFieldConstraint[] getBetaConstraints() {
         return betaConstraints;
     }
+    
+    public boolean isTemporal() {
+        for( AlphaNodeFieldConstraint c : this.alphaConstraints ) {
+            if( c.isTemporal() ) {
+                return true;
+            }
+        }
+        for( BetaNodeFieldConstraint c : this.betaConstraints ) {
+            if( c.isTemporal() ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Adds an alpha constraint to the multi field OR constraint

@@ -195,6 +195,10 @@ public class PredicateConstraint extends MutableTypeConstraint
     public PredicateExpression getPredicateExpression() {
         return this.expression;
     }
+    
+    public boolean isTemporal() {
+        return false;
+    }
 
     public String toString() {
         return "[PredicateConstraint previousDeclarations=" + this.previousDeclarations + " localDeclarations=" + this.localDeclarations + "]";

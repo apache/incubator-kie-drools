@@ -150,4 +150,8 @@ public class LiteralConstraint
     public ConstraintType getType() {
         return Constraint.ConstraintType.ALPHA;
     }
+
+    public boolean isTemporal() {
+        return this.restriction.isTemporal();
+    }
 }

@@ -25,35 +25,61 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
+import org.drools.rule.ContextEntry;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
 
 /**
  * @author etirelli
  *
  */
 public class ExistsNodeTest extends DroolsTestCase {
-    Rule                  rule;
-    PropagationContext    context;
-    ReteooWorkingMemory   workingMemory;
-    MockObjectSource      objectSource;
-    MockTupleSource       tupleSource;
-    MockLeftTupleSink         sink;
-    ExistsNode            node;
-    RightInputAdapterNode ria;
-    BetaMemory            memory;
-    MockConstraint        constraint = new MockConstraint();
+    private final Mockery   mockery = new Mockery();
+
+    Rule                    rule;
+    PropagationContext      context;
+    ReteooWorkingMemory     workingMemory;
+    MockObjectSource        objectSource;
+    MockTupleSource         tupleSource;
+    MockLeftTupleSink       sink;
+    ExistsNode              node;
+    RightInputAdapterNode   ria;
+    BetaMemory              memory;
+    BetaNodeFieldConstraint constraint;
 
     /**
      * Setup the BetaNode used in each of the tests
      * @throws IntrospectionException 
      */
     public void setUp() throws IntrospectionException {
+        // create mock objects
+        constraint = mockery.mock( BetaNodeFieldConstraint.class );
+        final ContextEntry c = mockery.mock( ContextEntry.class );
+
+        // set mock objects expectations
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).createContextEntry();
+                will( returnValue( c ) );
+
+                allowing( c ).updateFromFactHandle( with( any( InternalWorkingMemory.class ) ),
+                                                    with( any( InternalFactHandle.class ) ) );
+                allowing( c ).updateFromTuple( with( any( InternalWorkingMemory.class ) ),
+                                               with( any( LeftTuple.class ) ) );
+                allowing( c ).resetTuple();
+                allowing( c ).resetFactHandle();
+            }
+        } );
+
         this.rule = new Rule( "test-rule" );
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
@@ -90,6 +116,20 @@ public class ExistsNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void testExistsStandard() throws FactException {
+        // set mock objects expectations
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
+
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
@@ -185,7 +225,18 @@ public class ExistsNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void testExistsWithConstraints() throws FactException {
-        this.constraint.isAllowed = false;
+        // set mock objects expectations
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( false ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( false ) );
+            }
+        } );
 
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
@@ -246,6 +297,19 @@ public class ExistsNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void testExistsMemoryManagement() throws FactException {
+        // set mock objects expectations
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
+
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );

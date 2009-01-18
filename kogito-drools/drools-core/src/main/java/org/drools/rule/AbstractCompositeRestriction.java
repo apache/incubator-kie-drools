@@ -56,6 +56,17 @@ public abstract class AbstractCompositeRestriction
                                                      newDecl );
         }
     }
+    
+    public boolean isTemporal() {
+        boolean temporal = false;
+        for( Restriction r : restrictions ) {
+            if( r.isTemporal() ) {
+                temporal = true;
+                break;
+            }
+        }
+        return temporal;
+    }
 
     private static int hashCode(final Object[] array) {
         final int PRIME = 31;

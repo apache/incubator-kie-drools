@@ -90,6 +90,10 @@ public class ReturnValueConstraint extends MutableTypeConstraint
     public Evaluator getEvaluator() {
         return this.restriction.getEvaluator();
     }
+    
+    public boolean isTemporal() {
+        return this.restriction.isTemporal();
+    }
 
     public String toString() {
         return "[ReturnValueConstraint fieldExtractor=" + this.readAccessor + " evaluator=" + getEvaluator() + " declarations=" + getRequiredDeclarations() + "]";

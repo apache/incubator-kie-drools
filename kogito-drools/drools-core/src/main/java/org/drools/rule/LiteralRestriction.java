@@ -124,6 +124,10 @@ public class LiteralRestriction
                                    Declaration newDecl) {
     }
 
+    public boolean isTemporal() {
+        return evaluator.isTemporal();
+    }
+
     public String toString() {
         return "[LiteralRestriction evaluator=" + this.evaluator + " value=" + this.field + "]";
     }

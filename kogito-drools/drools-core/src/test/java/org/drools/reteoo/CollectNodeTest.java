@@ -35,7 +35,6 @@ import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
@@ -54,7 +53,6 @@ public class CollectNodeTest extends DroolsTestCase {
     MockLeftTupleSink   sink;
     BetaNode            node;
     CollectMemory       memory;
-    MockConstraint      constraint = new MockConstraint();
     Collect             collect;
 
     /* (non-Javadoc)
