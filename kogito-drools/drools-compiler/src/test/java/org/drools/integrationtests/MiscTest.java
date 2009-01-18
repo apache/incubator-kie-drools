@@ -524,7 +524,44 @@ public class MiscTest extends TestCase {
         
         assertEquals( 1, list.size() );
         assertEquals( 10, list.get( 0 ) );
-    }    
+    }   
+    
+    public void testEvalWithBigDecimal() throws Exception {        
+        String str = "";
+        str += "package org.drools \n";
+        str += "import java.math.BigDecimal; \n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    dialect \"java\" \n";
+        str += "when \n";
+        str += "    $bd : BigDecimal() \n";
+        str += "    eval( $bd.compareTo( BigDecimal.ZERO ) > 0 ) \n";        
+        str += "then \n";
+        str += "    list.add( $bd ); \n";
+        str += "end \n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            System.err.println( kbuilder.getErrors() );
+        }
+        assertFalse( kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.insert( new BigDecimal( 1.5 ) );        
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 1, list.size() );
+        assertEquals( new BigDecimal( 1.5 ), list.get( 0 ) );
+    }     
 
     public void testCustomGlobalResolver() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
