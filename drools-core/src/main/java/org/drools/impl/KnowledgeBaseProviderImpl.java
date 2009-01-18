@@ -8,6 +8,7 @@ import org.drools.KnowledgeBaseProvider;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
 public class KnowledgeBaseProviderImpl implements KnowledgeBaseProvider {
@@ -34,5 +35,9 @@ public class KnowledgeBaseProviderImpl implements KnowledgeBaseProvider {
 	
     public KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase( ( RuleBaseConfiguration ) conf ) );
-    }	
+    }
+
+	public Environment newEnvironment() {
+		return EnvironmentFactory.newEnvironment();
+	}
 }
