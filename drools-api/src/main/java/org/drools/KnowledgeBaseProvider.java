@@ -2,6 +2,7 @@ package org.drools;
 
 import java.util.Properties;
 
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
 /**
@@ -71,5 +72,13 @@ public interface KnowledgeBaseProvider {
      *     The KnowledgeBase
      */
     KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf);
+
+    /**
+     * Instantiate and return an Environment
+     * 
+     * @return
+     *      The Environment
+     */
+    Environment newEnvironment();
 
 }

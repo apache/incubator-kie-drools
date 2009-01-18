@@ -2,6 +2,7 @@ package org.drools;
 
 import java.util.Properties;
 
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
 /**
@@ -85,6 +86,10 @@ public class KnowledgeBaseFactory {
         return getKnowledgeBaseProvider().newKnowledgeSessionConfiguration( properties );
     }
 
+    public static Environment newEnvironment() {
+        return getKnowledgeBaseProvider().newEnvironment();
+    }
+
     private static synchronized void setKnowledgeBaseProvider(KnowledgeBaseProvider provider) {
         KnowledgeBaseFactory.provider = provider;
     }
@@ -96,7 +101,8 @@ public class KnowledgeBaseFactory {
         return provider;
     }
 
-    private static void loadProvider() {
+    @SuppressWarnings("unchecked")
+	private static void loadProvider() {
         try {
             // we didn't find anything in properties so lets try and us reflection
             Class<KnowledgeBaseProvider> cls = (Class<KnowledgeBaseProvider>) Class.forName( "org.drools.impl.KnowledgeBaseProviderImpl" );
