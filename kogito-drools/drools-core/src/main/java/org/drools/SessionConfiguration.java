@@ -368,7 +368,7 @@ public class SessionConfiguration
             try {
                 this.commandService = clazz.getConstructor(RuleBase.class, SessionConfiguration.class).newInstance(ruleBase, this);
             } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to instantiate work item manager factory '" + className + "'",
+                throw new IllegalArgumentException( "Unable to instantiate command service '" + className + "'",
                                                     e );
             }
         } else {

@@ -1,6 +1,8 @@
 package org.drools.process.command.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
@@ -10,9 +12,12 @@ import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.process.command.AbortWorkItemCommand;
 import org.drools.process.command.CommandService;
 import org.drools.process.command.CompleteWorkItemCommand;
+import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.GetProcessInstanceCommand;
+import org.drools.process.command.InsertObjectCommand;
 import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
+import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.GlobalResolver;
 import org.drools.runtime.ObjectFilter;
@@ -147,7 +152,14 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 	}
 
 	public Collection<?> getObjects() {
-		throw new UnsupportedOperationException();
+		Collection<Object> result = new ArrayList<Object>();
+		Iterator<?> iterator = commandService.execute(new GetObjectsCommand());
+		if (iterator != null) {
+			while (iterator.hasNext()) {
+				result.add(iterator.next());
+			}
+		}
+		return result;
 	}
 
 	public Collection<?> getObjects(ObjectFilter filter) {
@@ -167,7 +179,7 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 	}
 
 	public FactHandle insert(Object object) {
-		throw new UnsupportedOperationException();
+		return commandService.execute(new InsertObjectCommand(object));
 	}
 
 	public void retract(FactHandle handle) {
@@ -219,6 +231,10 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 	}
 
 	public Object getObject(FactHandle factHandle) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Environment getEnvironment() {
 		throw new UnsupportedOperationException();
 	}
 
