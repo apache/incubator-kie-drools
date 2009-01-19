@@ -789,7 +789,7 @@ then
   &lt;metadataList/&gt;
   &lt;lhs&gt;
     &lt;dslSentence&gt;
-      &lt;sentence&gt;When the applicant dates is after {20-Oct-2008:DATE:20-Oct-2008}&lt;/sentence&gt;
+      &lt;sentence&gt;When the applicant dates is after {20-Oct-2008:DATE:default}&lt;/sentence&gt;
     &lt;/dslSentence&gt;
   &lt;/lhs&gt;
   &lt;rhs/&gt;
