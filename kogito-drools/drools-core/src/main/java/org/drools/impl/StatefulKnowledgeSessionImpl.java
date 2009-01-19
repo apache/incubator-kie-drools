@@ -36,6 +36,7 @@ import org.drools.event.process.impl.ProcessCompletedEventImpl;
 import org.drools.event.process.impl.ProcessNodeLeftEventImpl;
 import org.drools.event.process.impl.ProcessNodeTriggeredEventImpl;
 import org.drools.event.process.impl.ProcessStartedEventImpl;
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.event.rule.impl.ActivationCancelledEventImpl;
@@ -444,7 +445,8 @@ public class StatefulKnowledgeSessionImpl
                                         WorkingMemory workingMemory) {
 
             listener.activationCancelled( new ActivationCancelledEventImpl( event.getActivation(),
-                                          ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
+                                          ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime(),
+                                          event.getCause() ) );
 
         }
 

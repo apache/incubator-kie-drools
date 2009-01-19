@@ -40,6 +40,7 @@ import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -164,15 +165,34 @@ public class AgendaEventSupportTest extends TestCase {
         ActivationCreatedEvent createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
         assertSame( cheddar,
                     createdEvent.getActivation().getTuple().get( 0 ).getObject() );
+        
+        // clear the agenda to check CLEAR events occur
+        wm.clearAgenda();        
+        ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 1 );        
+        assertEquals( ActivationCancelledCause.CLEAR, cancelledEvent.getCause() );
+        
         agendaList.clear();
 
+        // update results in an ActivationCreatedEvent
+        cheddar.setPrice( 14 );
+        wm.update( cheddarHandle,
+                   cheddar );
+        assertEquals( 1,
+                      agendaList.size() );
+        createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
+        assertSame( cheddar,
+                    createdEvent.getActivation().getTuple().get( 0 ).getObject() );
+        agendaList.clear();
+        
         // update results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable
         cheddar.setPrice( 14 );
         wm.update( cheddarHandle,
                    cheddar );
         assertEquals( 2,
-                      agendaList.size() );
-        ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
+                      agendaList.size() );        
+        
+        cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
+        assertEquals( ActivationCancelledCause.WME_CHANGE, cancelledEvent.getCause() );
         assertSame( cheddar,
                     cancelledEvent.getActivation().getTuple().get( 0 ).getObject() );
         createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );

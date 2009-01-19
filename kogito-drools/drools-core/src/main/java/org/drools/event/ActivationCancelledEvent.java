@@ -16,18 +16,25 @@ package org.drools.event;
  * limitations under the License.
  */
 
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.spi.Activation;
 
 public class ActivationCancelledEvent extends ActivationEvent {
-       
+    private ActivationCancelledCause cause;
+    
     /**
      * 
      */
     private static final long serialVersionUID = 400L;
 
-    public ActivationCancelledEvent(final Activation activation) {
+    public ActivationCancelledEvent(final Activation activation, ActivationCancelledCause cause) {
         super( activation );
+        this.cause = cause;
     }
+    
+    public ActivationCancelledCause getCause() {
+        return cause;
+    }      
 
     public String toString() {
         return "<==[ActivationCancelled(" + getActivation().getActivationNumber() + "): rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";

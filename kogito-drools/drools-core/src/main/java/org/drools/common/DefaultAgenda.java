@@ -33,6 +33,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.LeftTuple;
@@ -705,7 +706,8 @@ public class DefaultAgenda
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
                 Scheduler.getInstance().removeAgendaItem( item );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                              this.workingMemory );
+                                                                              this.workingMemory,
+                                                                              ActivationCancelledCause.CLEAR );
             }
         }
 
@@ -763,7 +765,8 @@ public class DefaultAgenda
             }
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                          this.workingMemory );
+                                                                          this.workingMemory,
+                                                                          ActivationCancelledCause.CLEAR );
         }
         ((InternalAgendaGroup) agendaGroup).clear();
     }
@@ -803,7 +806,8 @@ public class DefaultAgenda
                 }
 
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                              this.workingMemory );
+                                                                              this.workingMemory,
+                                                                              ActivationCancelledCause.CLEAR);
             }
         }
         activationGroup.clear();
@@ -832,7 +836,8 @@ public class DefaultAgenda
             }
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                          this.workingMemory );
+                                                                          this.workingMemory,
+                                                                          ActivationCancelledCause.CLEAR );
         }
 
         ((InternalRuleFlowGroup) ruleFlowGroup).clear();
@@ -865,6 +870,12 @@ public class DefaultAgenda
 
         if ( filter == null || filter.accept( item ) ) {
             fireActivation( item );
+        } else {
+            final EventSupport eventsupport = (EventSupport) this.workingMemory;
+            
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                          this.workingMemory,
+                                                                          ActivationCancelledCause.FILTER );
         }
 
         return true;

@@ -32,6 +32,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -302,7 +303,8 @@ public final class RuleTerminalNode extends BaseNode
                 }
 
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                                workingMemory );
+                                                                                                workingMemory,
+                                                                                                ActivationCancelledCause.WME_CHANGE );
                 ((InternalAgenda) workingMemory.getAgenda()).decreaseActiveActivations();
             }
         } else {
@@ -360,7 +362,8 @@ public final class RuleTerminalNode extends BaseNode
                 if ( activation.isActivated() ) {
                     activation.remove();
                     ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                                    workingMemory );
+                                                                                                    workingMemory,
+                                                                                                    ActivationCancelledCause.CLEAR );
                 }
 
                 final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),

@@ -39,6 +39,10 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.AgendaEventSupport;
+import org.drools.event.DefaultAgendaEventListener;
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
@@ -178,6 +182,18 @@ public class AgendaTest extends DroolsTestCase {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
+        
+        final Boolean[] filtered = new Boolean[] { false };
+        
+        workingMemory.addEventListener( new DefaultAgendaEventListener() {
+         
+            public void activationCancelled(ActivationCancelledEvent event,
+                                            WorkingMemory workingMemory) {
+                if ( event.getCause() == ActivationCancelledCause.FILTER ) {
+                    filtered[0] = true;
+                }
+            }
+        });
 
         final Rule rule = new Rule( "test-rule" );
         final RuleTerminalNode node = new RuleTerminalNode( 3,
@@ -248,11 +264,13 @@ public class AgendaTest extends DroolsTestCase {
         // make sure it also fired
         assertEquals( new Boolean( true ),
                       results.get( "fired" ) );
+        
+        assertEquals( false, filtered[0].booleanValue() );
 
         // clear the agenda and the result map
         agenda.clearAndCancel();
         results.clear();
-
+        
         // False filter, activations should always be denied
         final AgendaFilter filterFalse = new AgendaFilter() {
             public boolean accept(Activation item) {
@@ -276,6 +294,8 @@ public class AgendaTest extends DroolsTestCase {
 
         // check the consequence never fired
         assertNull( results.get( "fired" ) );
+        
+        assertEquals( true, filtered[0].booleanValue() );
     }
 
     public void testFocusStack() throws ConsequenceException {
