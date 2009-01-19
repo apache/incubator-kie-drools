@@ -1,5 +1,6 @@
 package org.drools.event.rule.impl;
 
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.Activation;
@@ -22,9 +23,15 @@ import org.drools.runtime.rule.Activation;
 
 
 public class ActivationCancelledEventImpl extends ActivationEventImpl implements ActivationCancelledEvent {
-
-    public ActivationCancelledEventImpl(Activation activation, KnowledgeRuntime kruntime) {
-        super( activation, kruntime );
+    private ActivationCancelledCause cause;
+    
+    public ActivationCancelledEventImpl(Activation activation, KnowledgeRuntime kruntime, ActivationCancelledCause cause) {
+        super( activation, kruntime);
+        this.cause = cause;
     }
+
+    public ActivationCancelledCause getCause() {
+        return cause;
+    }        
 
 }

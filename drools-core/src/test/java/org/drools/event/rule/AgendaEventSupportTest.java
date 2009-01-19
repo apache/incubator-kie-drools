@@ -66,9 +66,9 @@ public class AgendaEventSupportTest extends TestCase {
         registry.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
     }
 
-//    public void testIsSerializable() {
-//        assertTrue( Serializable.class.isAssignableFrom( AgendaEventSupport.class ) );
-//    }
+    //    public void testIsSerializable() {
+    //        assertTrue( Serializable.class.isAssignableFrom( AgendaEventSupport.class ) );
+    //    }
 
     public void testAgendaEventListener() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -114,14 +114,13 @@ public class AgendaEventSupportTest extends TestCase {
             }
         } );
         pkg.addRule( rule );
-        
-                
+
         List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
         pkgs.add( new KnowledgePackageImp( pkg ) );
         kbase.addKnowledgePackages( pkgs );
 
         // create a new working memory and add an AgendaEventListener
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         final List agendaList = new ArrayList();
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
@@ -150,12 +149,12 @@ public class AgendaEventSupportTest extends TestCase {
                 agendaList.add( event );
             }
         };
-        session.addEventListener( agendaEventListener );
+        ksession.addEventListener( agendaEventListener );
 
         // assert the cheese fact
         final Cheese cheddar = new Cheese( "cheddar",
                                            15 );
-        FactHandle cheddarHandle = session.insert( cheddar );
+        FactHandle cheddarHandle = ksession.insert( cheddar );
 
         // should be one ActivationCreatedEvent
         assertEquals( 1,
@@ -163,35 +162,54 @@ public class AgendaEventSupportTest extends TestCase {
         ActivationCreatedEvent createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
         assertSame( cheddarHandle,
                     createdEvent.getActivation().getFactHandles().toArray()[0] );
+
+        // clear the agenda to check CLEAR events occur
+        ksession.getAgenda().clear();
+        ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 1 );
+        assertEquals( ActivationCancelledCause.CLEAR,
+                      cancelledEvent.getCause() );
+
+        agendaList.clear();
+
+        // update results in an ActivationCreatedEvent
+        cheddar.setPrice( 14 );
+        ksession.update( cheddarHandle,
+                         cheddar );
+        assertEquals( 1,
+                      agendaList.size() );
+        createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
+        assertSame( cheddarHandle,
+                    createdEvent.getActivation().getFactHandles().toArray()[0] );
         agendaList.clear();
 
         // update results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable
         cheddar.setPrice( 14 );
-        session.update( cheddarHandle,
-                   cheddar );
+        ksession.update( cheddarHandle,
+                         cheddar );
         assertEquals( 2,
                       agendaList.size() );
-        ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
+        cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
+        assertEquals( ActivationCancelledCause.WME_CHANGE, cancelledEvent.getCause() );
         assertSame( cheddarHandle,
                     cancelledEvent.getActivation().getFactHandles().toArray()[0] );
         createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );
         assertSame( cheddarHandle,
-                    createdEvent.getActivation().getFactHandles().toArray()[0]);
+                    createdEvent.getActivation().getFactHandles().toArray()[0] );
         agendaList.clear();
 
         // retract results in a ActivationCancelledEvent, note the object is not resolveable now as it no longer exists
-        session.retract( cheddarHandle );
+        ksession.retract( cheddarHandle );
         assertEquals( 1,
                       agendaList.size() );
         cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
-        assertNull( ((InternalFactHandle)cancelledEvent.getActivation().getFactHandles().toArray()[0]).getObject() );
+        assertNull( ((InternalFactHandle) cancelledEvent.getActivation().getFactHandles().toArray()[0]).getObject() );
 
         // re-assert the fact so we can test the agenda group events
-        cheddarHandle = session.insert( cheddar );
+        cheddarHandle = ksession.insert( cheddar );
         agendaList.clear();
 
         // setFocus results in an AgendaGroupPushedEvent
-        session.getAgenda().getAgendaGroup( "test group" ).setFocus();
+        ksession.getAgenda().getAgendaGroup( "test group" ).setFocus();
         assertEquals( 1,
                       agendaList.size() );
         final AgendaGroupPushedEvent pushedEvent = (AgendaGroupPushedEvent) agendaList.get( 0 );
@@ -201,7 +219,7 @@ public class AgendaEventSupportTest extends TestCase {
 
         // fireAllRules results in a BeforeActivationFiredEvent and an AfterActivationFiredEvent
         // the AgendaGroup becomes empty, which results in a popped event.
-        session.fireAllRules();
+        ksession.fireAllRules();
         assertEquals( 3,
                       agendaList.size() );
         final BeforeActivationFiredEvent beforeEvent = (BeforeActivationFiredEvent) agendaList.get( 0 );

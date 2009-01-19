@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalWorkingMemory;
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
@@ -88,16 +89,18 @@ public class AgendaEventSupport
     }
 
     public void fireActivationCancelled(final Activation activation,
-                                        final WorkingMemory workingMemory) {
+                                        final WorkingMemory workingMemory,
+                                        final ActivationCancelledCause cause) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final ActivationCancelledEvent event = new ActivationCancelledEvent( activation );
+        final ActivationCancelledEvent event = new ActivationCancelledEvent( activation,
+                                                                             cause );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event,
-                                                                                 workingMemory );
+                                                                                 workingMemory);
         }
     }
 
