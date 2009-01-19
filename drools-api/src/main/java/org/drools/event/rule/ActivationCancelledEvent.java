@@ -19,4 +19,5 @@ package org.drools.event.rule;
 public interface ActivationCancelledEvent
     extends
     ActivationEvent {
+    ActivationCancelledCause getCause();
 }
