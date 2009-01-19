@@ -163,7 +163,10 @@ public class PatternBuilder
                 alphaConstraints.add( constraint );
             } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
                 betaConstraints.add( constraint );
-                if( isNegative && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
+                if( isNegative && 
+                    context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingMode.STREAM && 
+                    pattern.getObjectType().isEvent() && 
+                    constraint.isTemporal() ) {
                     checkDelaying( context, constraint );
                 }
             } else {
