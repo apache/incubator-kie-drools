@@ -548,6 +548,14 @@ public class DefaultAgenda
     public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
         return this.agendaGroups;
     }
+    
+    public InternalAgendaGroup getMainAgendaGroup() {
+        if ( this.main ==  null ) {
+            this.main = (InternalAgendaGroup) getAgendaGroup( AgendaGroup.MAIN );
+        }
+        
+        return this.main;
+    }
 
     /*
      * (non-Javadoc)
@@ -666,7 +674,7 @@ public class DefaultAgenda
     public void clear() {
         // reset focus stack
         this.focusStack.clear();
-        this.focusStack.add( this.main );
+        this.focusStack.add( getMainAgendaGroup() );
 
         // reset scheduled activations
         if ( !this.scheduledActivations.isEmpty() ) {
@@ -1063,9 +1071,9 @@ public class DefaultAgenda
             fireLimit = updateFireLimit( fireLimit );
             this.workingMemory.executeQueuedActions();
         }
-        if ( this.focusStack.size() == 1 && this.main.isEmpty() ) {
+        if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
             // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
-            this.main.setActive( false );
+            getMainAgendaGroup().setActive( false );
         }
         return fireCount;
     }
