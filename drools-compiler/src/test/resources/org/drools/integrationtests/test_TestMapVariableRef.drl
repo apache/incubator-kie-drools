@@ -1,0 +1,18 @@
+package testListOfMaps;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+
+dialect "mvel"
+    
+rule "check message"
+    when
+    	list : List()
+    	Map( $msg: this['MSG'] ) from list
+    	Map( this['MSGTWO']== $msg) from list
+    then
+		Map result = new HashMap();
+		list.add(result);
+    end
+    

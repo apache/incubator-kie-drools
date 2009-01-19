@@ -5906,6 +5906,37 @@ public class MiscTest extends TestCase {
 		assertEquals("Hello World", list.get(0));
     }
 
+    //FIXME
+    public void testListOfMaps(){
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		kbuilder.add(ResourceFactory.newClassPathResource("test_TestMapVariableRef.drl", getClass()), ResourceType.DRL);
+		KnowledgeBuilderErrors errors = kbuilder.getErrors();
+		if (errors.size() > 0) {
+			for (KnowledgeBuilderError error: errors) {
+				System.err.println(error);
+			}
+			throw new IllegalArgumentException("Could not parse knowledge.");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		
+		Map mapOne = new HashMap<String,Object>();
+		Map mapTwo = new HashMap<String,Object>();
+		
+		mapOne.put("MSG", "testMessage");
+		mapTwo.put("MSGTWO", "testMessage");
+		
+		list.add(mapOne);
+		list.add(mapTwo);
+		ksession.insert(list);
+		ksession.fireAllRules();
+		
+		assertEquals(3, list.size());
+		
+    }
+    
     public void testKnowledgeContextMVEL() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newClassPathResource("test_KnowledgeContextMVEL.drl", getClass()), ResourceType.DRL);
@@ -5926,5 +5957,7 @@ public class MiscTest extends TestCase {
 		assertEquals(1, list.size());
 		assertEquals("Hello World", list.get(0));
     }
+    
+
 
 }
