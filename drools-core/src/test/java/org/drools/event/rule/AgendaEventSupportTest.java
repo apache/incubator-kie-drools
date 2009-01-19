@@ -189,7 +189,7 @@ public class AgendaEventSupportTest extends TestCase {
         assertEquals( 2,
                       agendaList.size() );
         cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
-        assertEquals( ActivationCancelledCause.WME_CHANGE, cancelledEvent.getCause() );
+        assertEquals( ActivationCancelledCause.WME_MODIFY, cancelledEvent.getCause() );
         assertSame( cheddarHandle,
                     cancelledEvent.getActivation().getFactHandles().toArray()[0] );
         createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );
