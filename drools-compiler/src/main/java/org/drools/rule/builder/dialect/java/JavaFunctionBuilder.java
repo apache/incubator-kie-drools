@@ -55,7 +55,7 @@ public class JavaFunctionBuilder
         final List staticImports = new LinkedList();
         for( Iterator it = pkg.getStaticImports().iterator(); it.hasNext(); ) {
             final String staticImport = (String) it.next();
-            if( ! staticImport.startsWith( functionDescr.getClassName() ) ) {
+            if( ! staticImport.endsWith( functionDescr.getName() ) ) {
                 staticImports.add( staticImport );
             }
         }
