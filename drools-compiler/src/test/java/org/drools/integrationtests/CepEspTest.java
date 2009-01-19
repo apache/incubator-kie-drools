@@ -26,9 +26,10 @@ import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.CompositeMaxDuration;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.PseudoClockScheduler;
 
@@ -873,7 +874,7 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void FIXME_testDelayingNot() throws Exception {
+    public void testDelayingNot() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_DelayingNot.drl" ) );
         final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
@@ -881,6 +882,9 @@ public class CepEspTest extends TestCase {
         final RuleBase ruleBase = loadRuleBase( reader,
                                                 rbconf );
 
+        final Rule rule = ruleBase.getPackage( "org.drools" ).getRule( "Delaying Not" );
+        assertEquals( 10000,  rule.getDuration().getDuration( null ) );
+        
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
         StatefulSession wm = ruleBase.newStatefulSession( conf );

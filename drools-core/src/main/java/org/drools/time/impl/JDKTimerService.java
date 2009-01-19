@@ -43,7 +43,7 @@ public class JDKTimerService
     private ScheduledThreadPoolExecutor scheduler;
 
     public JDKTimerService() {
-        this( 3 );
+        this( 1 );
     }
 
     public JDKTimerService(int size) {
@@ -66,7 +66,7 @@ public class JDKTimerService
                                  Trigger trigger) {
         JDKJobHandle jobHandle = new JDKJobHandle();
 
-        Date date = trigger.getNextFireTime();
+        Date date = trigger.nextFireTime();
 
         if ( date != null ) {
             JDKCallableJob callableJob = new JDKCallableJob( job,
@@ -132,7 +132,7 @@ public class JDKTimerService
             this.job.execute( this.ctx );
 
             // our triggers allow for flexible rescheduling
-            Date date = this.trigger.getNextFireTime();
+            Date date = this.trigger.nextFireTime();
             if ( date != null ) {
                 ScheduledFuture<Void> future = schedule( date,
                                                          this,

@@ -238,12 +238,17 @@ public class BuildUtils {
                                          final Declaration[] declarations) throws InvalidPatternException {
         final List<String> list = new ArrayList<String>();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
+            boolean resolved = false;
             for ( final ListIterator<RuleConditionElement> it = context.stackIterator(); it.hasPrevious(); ) {
                 final RuleConditionElement rce = it.previous();
                 final Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
-                if ( decl == null || decl.getPattern().getOffset() > declarations[i].getPattern().getOffset() ) {
-                    list.add( declarations[i].getIdentifier() );
+                if ( decl != null && decl.getPattern().getOffset() <= declarations[i].getPattern().getOffset() ) {
+                    resolved = true;
+                    break;
                 }
+            }
+            if( ! resolved ) {
+                list.add( declarations[i].getIdentifier() );                
             }
         }
 
@@ -255,7 +260,7 @@ public class BuildUtils {
                 buffer.append( ", " + list.get( i ) );
             }
 
-            throw new InvalidPatternException( "Required Declarations not bound: '" + buffer );
+            throw new InvalidPatternException( "Required Declarations not bound: '" + buffer + "'");
         }
     }
 
