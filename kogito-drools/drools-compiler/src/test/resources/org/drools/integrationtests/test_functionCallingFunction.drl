@@ -39,12 +39,20 @@ function int f9(int i) {
 }
 
 function int f10(int i) {
+    return checkHierachy( i+ 1 );
+}
+
+function int checkHierachy(int i) {
+        return checkHierachyRecursive( i+ 1 );
+}
+
+function int checkHierachyRecursive(int i) {
     return i+1;
 }
 
 rule "X"
 when
-    eval( f1(0) == 10 )
+    eval( f1(0) == 12 )
 then
     results.add( new Integer( f1(0) ) );
 end

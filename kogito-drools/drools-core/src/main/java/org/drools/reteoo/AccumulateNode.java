@@ -457,6 +457,13 @@ public class AccumulateNode extends BetaNode {
 
     }
 
+//    public static class AccumulatePropagationCallBack {
+//        private Object            workingMemoryContext;
+//        private AccumulateContext accctx;
+//        private LeftTuple         leftTuple;
+//
+//    }
+
     /**
      * Evaluate result constraints and propagate assert in case they are true
      * 

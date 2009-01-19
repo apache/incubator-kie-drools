@@ -4368,7 +4368,7 @@ public class MiscTest extends TestCase {
         assertEquals( 1,
                       list.size() );
 
-        assertEquals( 10,
+        assertEquals( 12,
                       ((Integer) list.get( 0 )).intValue() );
     }
 
@@ -4394,7 +4394,7 @@ public class MiscTest extends TestCase {
         assertEquals( 1,
                       list.size() );
 
-        assertEquals( 10,
+        assertEquals( 12,
                       ((Integer) list.get( 0 )).intValue() );
     }
 
