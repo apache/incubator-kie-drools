@@ -29,6 +29,7 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.rule.Behavior;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.time.TemporalDependencyMatrix;
 
@@ -53,6 +54,9 @@ public class BuildContext {
 
     // rule base to add rules to
     private InternalRuleBase                 rulebase;
+    
+    // rule being added at this moment
+    private Rule                             rule;
 
     // working memories attached to the given rulebase
     private InternalWorkingMemory[]          workingMemories;
@@ -96,6 +100,7 @@ public class BuildContext {
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
+        this.rule = rule;
 
         this.idGenerator = idGenerator;
 
@@ -278,7 +283,7 @@ public class BuildContext {
         if ( this.buildstack == null ) {
             this.buildstack = new LinkedList<RuleConditionElement>();
         }
-        return this.buildstack.listIterator();
+        return this.buildstack.listIterator( this.buildstack.size() );
     }
 
     /**
@@ -414,6 +419,18 @@ public class BuildContext {
 
     public TemporalDependencyMatrix getTemporalDistance() {
         return this.temporal;
+    }
+
+    public LinkedList<RuleConditionElement> getBuildStack() {
+        return this.buildstack;
+    }
+
+    public Rule getRule() {
+        return rule;
+    }
+
+    public void setRule(Rule rule) {
+        this.rule = rule;
     }
 
 }

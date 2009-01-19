@@ -110,36 +110,37 @@ public class JDKTimerServiceTest extends TestCase {
 	}
 	
 	public static class DelayedTrigger implements Trigger {
-	    public Stack<Long> stack;
+	    private Stack<Date> stack;
 	    
 	    public DelayedTrigger(long delay) {
 	        this( new long[] { delay } );
 	    }
 	    
         public DelayedTrigger(long[] delay) {
-            this.stack = new Stack<Long>();
+            this.stack = new Stack<Date>();
             for( int i = delay.length-1; i >= 0; i-- ) {
-                this.stack.push( delay[i] );
+                this.stack.push( new Date( delay[i] ) );
             }
         }	    
 
-        public Date getNextFireTime() {
-            if ( !this.stack.isEmpty() ) {
-                return new Date( this.stack.pop() );    
-            } else {
-                return null;
-            }
+        public Date hasNextFireTime() {
+            return this.stack.isEmpty() ? null : this.stack.peek();
+        }
+        
+        public Date nextFireTime() {
+            return this.stack.isEmpty() ? null : this.stack.pop();
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
+            // FIXME : not safe, since timestamps will be wrong
+            this.stack = (Stack<Date>) in.readObject();
             
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-            
+            // FIXME : not safe, since timestamps will be wrong
+            out.writeObject( stack );
         }
 	    
 	}

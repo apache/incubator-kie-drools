@@ -40,7 +40,6 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.time.Interval;
 import org.drools.time.TemporalDependencyMatrix;
 
 /**
@@ -103,6 +102,7 @@ public class ReteooRuleBuilder {
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( rulebase,
                                                            idGenerator );
+            context.setRule( rule );
             
             // if running in STREAM mode, calculate temporal distance for events
             if( EventProcessingMode.STREAM.equals( rulebase.getConfiguration().getEventProcessingMode() ) ) {

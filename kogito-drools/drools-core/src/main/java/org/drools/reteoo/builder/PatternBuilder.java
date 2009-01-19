@@ -19,6 +19,7 @@ package org.drools.reteoo.builder;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.RuleBaseConfiguration.EventProcessingMode;
@@ -32,15 +33,20 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.rule.Behavior;
+import org.drools.rule.CompositeMaxDuration;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.FixedDuration;
+import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.TypeDeclaration;
+import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
+import org.drools.spi.Duration;
 import org.drools.spi.ObjectType;
 
 /**
@@ -141,6 +147,9 @@ public class PatternBuilder
                                pattern,
                                betaConstraints );
 
+        // checks if this pattern is nested inside a NOT CE
+        final boolean isNegative = isNegative( context );
+        
         for ( final Iterator<?> it = constraints.iterator(); it.hasNext(); ) {
             final Object object = it.next();
             // Check if its a declaration
@@ -153,23 +162,47 @@ public class PatternBuilder
             if ( constraint.getType().equals( Constraint.ConstraintType.ALPHA ) ) {
                 alphaConstraints.add( constraint );
             } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
-                utils.checkUnboundDeclarations( context,
-                                                constraint.getRequiredDeclarations() );
                 betaConstraints.add( constraint );
-                
-                if( pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
-                    checkDelaying( context );
+                if( isNegative && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
+                    checkDelaying( context, constraint );
                 }
-                
             } else {
                 throw new RuntimeDroolsException( "Unknown constraint type: "+constraint.getType()+". This is a bug. Please contact development team.");
             }
         }
     }
 
-    private void checkDelaying( final BuildContext context ) {
-        //if( context.get)
-        
+    private void checkDelaying( final BuildContext context, final Constraint constraint ) {
+        if( constraint instanceof VariableConstraint ) {
+            // variable constraints always require a single declaration
+            Declaration target = constraint.getRequiredDeclarations()[0];
+            if( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
+                long uplimit = ((VariableConstraint) constraint).getInterval().getUpperBound();
+                Duration dur = context.getRule().getDuration();
+                Duration newDur = new FixedDuration( uplimit ); 
+                if( dur instanceof CompositeMaxDuration ) {
+                    ((CompositeMaxDuration)dur).addDuration( newDur );
+                } else {
+                    if( dur == null ) {
+                        dur = newDur;
+                    } else {
+                        dur = new CompositeMaxDuration( dur );
+                        ((CompositeMaxDuration)dur).addDuration( newDur );
+                    }
+                    context.getRule().setDuration( dur );
+                }
+            }
+        }
+    }
+
+    private boolean isNegative(final BuildContext context) {
+        for( ListIterator<RuleConditionElement> it = context.stackIterator(); it.hasPrevious(); ) {
+            RuleConditionElement rce = it.previous();
+            if( rce instanceof GroupElement && ((GroupElement)rce).isNot() ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static ObjectTypeNode attachObjectTypeNode(BuildContext context,

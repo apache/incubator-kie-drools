@@ -34,14 +34,15 @@ public class PointInTimeTrigger
     public PointInTimeTrigger(long timestamp) {
         this.timestamp = new Date( timestamp );
     }
+    
+    public Date hasNextFireTime() {
+        return this.timestamp;
+    }
 
-    public Date getNextFireTime() {
-        if( timestamp != null) {
-            Date next = timestamp;
-            this.timestamp = null;
-            return next;
-        }
-        return null;
+    public Date nextFireTime() {
+        Date next = timestamp;
+        this.timestamp = null;
+        return next;
     }
 
     public void readExternal(ObjectInput in) throws IOException,

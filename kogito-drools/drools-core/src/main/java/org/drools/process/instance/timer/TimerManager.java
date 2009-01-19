@@ -45,7 +45,8 @@ public class TimerManager {
 
         JobHandle jobHandle = this.timerService.scheduleJob( processJob,
                                                              ctx,
-                                                             new TimerTrigger( timer.getDelay(),
+                                                             new TimerTrigger( timerService.getCurrentTime(),
+                                                                               timer.getDelay(),
                                                                                timer.getPeriod() ) );
         timer.setJobHandle( jobHandle );
         timers.put(timer.getId(), timer);
@@ -74,7 +75,9 @@ public class TimerManager {
 			}
 		}
 		JobHandle jobHandle = this.timerService.scheduleJob(
-			processJob, ctx, new TimerTrigger(delay, timer.getPeriod()));
+			processJob, ctx, new TimerTrigger(timerService.getCurrentTime(),
+                                              delay, 
+                                              timer.getPeriod()));
 		timer.setJobHandle(jobHandle);
 		timers.put(timer.getId(), timer);
 	}
@@ -142,43 +145,44 @@ public class TimerManager {
     public static class TimerTrigger
         implements
         Trigger {
-        private long delay;
+        private Date next;
         private long period;
-        private int  count;
 
         public TimerTrigger() {
             
         }
         
-        public TimerTrigger(long delay,
+        public TimerTrigger(long currentTS,
+                            long delay,
                             long period) {
-            this.delay = delay;
+            this.next = new Date( currentTS + delay  );
             this.period = period;
         }
 
-        public Date getNextFireTime() {
-            Date date = null;
-            if ( count == 0 ) {
-                // initial delay before first fire
-                date = new Date( System.currentTimeMillis() + this.delay  );
-            } else if ( this.period != 0 ) {
+        public Date hasNextFireTime() {
+            return next;
+        }
+        
+        public Date nextFireTime() {
+            Date date = next;
+            if ( this.period != 0 ) {
                 // repeated fires for the given period
-                date = new Date( System.currentTimeMillis() + this.period );                
+                // FIXME: this is not safe for serialization
+                next = new Date( next.getTime() + this.period );                
+            } else {
+                next = null;
             }
-            count++;
             return date;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            this.delay = in.readLong();
+            this.next = (Date) in.readObject();
             this.period = in.readLong();
-            this.count = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeLong( this.delay );
+            out.writeObject( this.next );
             out.writeLong( this.period );
-            out.writeInt(  this.count );
         }
 
     }

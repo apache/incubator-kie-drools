@@ -17,13 +17,12 @@ package org.drools.common;
  */
 
 import org.drools.Agenda;
-import org.drools.ClockType;
 import org.drools.process.instance.timer.TimerManager.TimerTrigger;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
-import org.drools.time.TimerService;
-import org.drools.time.TimerServiceFactory;
+import org.drools.time.Trigger;
+import org.drools.time.impl.PointInTimeTrigger;
 
 /**
  * Scheduler for rules requiring truth duration.
@@ -32,42 +31,12 @@ import org.drools.time.TimerServiceFactory;
  */
 final class Scheduler {
     // ------------------------------------------------------------
-    // Class members
-    // ------------------------------------------------------------
-
-    /** Singleton instance. */
-    private static final Scheduler INSTANCE = new Scheduler();
-
-    // ------------------------------------------------------------
-    // Class methods
-    // ------------------------------------------------------------
-
-    /**
-     * Retrieve the singleton instance.
-     * 
-     * @return The singleton instance.
-     */
-    static Scheduler getInstance() {
-        return Scheduler.INSTANCE;
-    }
-
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
-
-    /** Alarm manager. */
-    private final TimerService timerService;
-
-    // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-
     /**
      * Construct.
      */
     private Scheduler() {
-        // FIXME: must use the session timer service
-        this.timerService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK );
     }
 
     /**
@@ -78,18 +47,19 @@ final class Scheduler {
      * @param workingMemory
      *            The working memory session.
      */
-    void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda) {
+    public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda) {
         DuractionJob job = new DuractionJob();        
         DuractionJobContext ctx = new DuractionJobContext( item, agenda );
-        TimerTrigger trigger = new TimerTrigger( item.getRule().getDuration().getDuration( item.getTuple() ), 0);
+        Trigger trigger = new PointInTimeTrigger( item.getRule().getDuration().getDuration( item.getTuple() ) +
+                                                       ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime());
         
         
-        JobHandle jobHandle = this.timerService.scheduleJob( job, ctx, trigger );
+        JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
         item.setJobHandle( jobHandle );
     }
     
-    public void removeAgendaItem(final ScheduledAgendaItem item) {
-        this.timerService.removeJob( item.getJobHandle() );
+    public static void removeAgendaItem(final ScheduledAgendaItem item, final InternalAgenda agenda) {
+        ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().removeJob( item.getJobHandle() );
     }    
     
     public static class DuractionJob implements Job {

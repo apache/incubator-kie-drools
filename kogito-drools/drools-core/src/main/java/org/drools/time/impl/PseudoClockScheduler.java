@@ -63,6 +63,7 @@ public class PseudoClockScheduler
         this.session = session;
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         timer = in.readLong();
@@ -98,7 +99,7 @@ public class PseudoClockScheduler
                                  JobContext ctx,
                                  Trigger trigger) {
 
-        Date date = trigger.getNextFireTime();
+        Date date = trigger.hasNextFireTime();
 
         if ( date != null ) {
             ScheduledJob callableJob = new ScheduledJob( job,
@@ -157,9 +158,11 @@ public class PseudoClockScheduler
 
     private void runCallBacks() {
         ScheduledJob item = queue.peek();
-        while ( item != null && item.getTrigger().getNextFireTime().getTime() <= this.timer ) {
+        while ( item != null && ( item.getTrigger().hasNextFireTime().getTime() <= this.timer ) ) {
             // remove the head
             queue.remove();
+            // updates the trigger
+            item.getTrigger().nextFireTime();
             try {
                 // execute the call
                 item.call();
@@ -204,7 +207,7 @@ public class PseudoClockScheduler
         }
 
         public int compareTo(ScheduledJob o) {
-            return this.trigger.getNextFireTime().compareTo( o.getTrigger().getNextFireTime() );
+            return this.trigger.hasNextFireTime().compareTo( o.getTrigger().hasNextFireTime() );
         }
 
         public Void call() throws Exception {

@@ -280,9 +280,9 @@ public class DefaultAgenda
      *            The item to schedule.
      */
     public void scheduleItem(final ScheduledAgendaItem item) {
-        // FIXME: should not use a static singleton
-        Scheduler.getInstance().scheduleAgendaItem( item,
-                                                    this );
+
+        Scheduler.scheduleAgendaItem( item,
+                                      this );
         this.scheduledActivations.add( item );
 
         // adds item to activation group if appropriate
@@ -418,8 +418,8 @@ public class DefaultAgenda
 
     public void removeScheduleItem(final ScheduledAgendaItem item) {
         this.scheduledActivations.remove( item );
-        // FIXME: should not use a static singleton
-        Scheduler.getInstance().removeAgendaItem( item );
+        Scheduler.removeAgendaItem( item,
+                                    this );
     }
 
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
@@ -679,7 +679,8 @@ public class DefaultAgenda
         // reset scheduled activations
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
-                Scheduler.getInstance().removeAgendaItem( item );
+                Scheduler.removeAgendaItem( item,
+                                            this );
             }
         }
 
@@ -712,7 +713,8 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
-                Scheduler.getInstance().removeAgendaItem( item );
+                Scheduler.removeAgendaItem( item,
+                                            this );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                               this.workingMemory,
                                                                               ActivationCancelledCause.CLEAR );
@@ -944,14 +946,14 @@ public class DefaultAgenda
         }
 
         // if the tuple contains expired events 
-        for( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-            if( tuple.getLastHandle().isEvent() ) {
+        for ( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+            if ( tuple.getLastHandle().isEvent() ) {
                 EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
                 // handles "expire" only in stream mode.
-                if( handle.isExpired() ) {
+                if ( handle.isExpired() ) {
                     // decrease the activation count for the event
                     handle.decreaseActivationsCount();
-                    if( handle.getActivationsCount() == 0 ) {
+                    if ( handle.getActivationsCount() == 0 ) {
                         // and if no more activations, retract the handle
                         handle.getEntryPoint().retract( handle );
                     }
@@ -992,38 +994,39 @@ public class DefaultAgenda
      * @inheritDoc
      */
     public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
-                                                  String ruleName,
-                                                  long processInstanceId) {
+                                               String ruleName,
+                                               long processInstanceId) {
 
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
         for ( Iterator<RuleFlowGroupNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
             Activation activation = activations.next().getActivation();
             if ( ruleName.equals( activation.getRule().getName() ) ) {
-            	if (checkProcessInstance(activation, processInstanceId)) {
-            		return true;
-            	}
+                if ( checkProcessInstance( activation,
+                                           processInstanceId ) ) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    private boolean checkProcessInstance(Activation activation, long processInstanceId) {
-    	final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
-        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
+    private boolean checkProcessInstance(Activation activation,
+                                         long processInstanceId) {
+        final Map< ? , ? > declarations = activation.getSubRule().getOuterDeclarations();
+        for ( Iterator< ? > it = declarations.values().iterator(); it.hasNext(); ) {
             Declaration declaration = (Declaration) it.next();
-            if ("processInstance".equals(declaration.getIdentifier())) {
-            	Object value = declaration.getValue(
-        			workingMemory,
-        			((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
-            	if (value instanceof ProcessInstance) {
-            		return ((ProcessInstance) value).getId() == processInstanceId;
-            	}
-        	}
+            if ( "processInstance".equals( declaration.getIdentifier() ) ) {
+                Object value = declaration.getValue( workingMemory,
+                                                     ((InternalFactHandle) activation.getTuple().get( declaration )).getObject() );
+                if ( value instanceof ProcessInstance ) {
+                    return ((ProcessInstance) value).getId() == processInstanceId;
+                }
+            }
         }
         return true;
     }
-    
+
     public void addRuleFlowGroupListener(String ruleFlowGroup,
                                          RuleFlowGroupListener listener) {
         InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( ruleFlowGroup );

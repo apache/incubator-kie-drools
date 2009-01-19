@@ -100,6 +100,12 @@ public interface InternalWorkingMemory
     
     public InternalFactHandle getInitialFactHandle();       
     
+    /**
+     * Returns the TimerService instance (session clock) for this
+     * session.
+     * 
+     * @return
+     */
     public TimerService getTimerService();
 
     /**

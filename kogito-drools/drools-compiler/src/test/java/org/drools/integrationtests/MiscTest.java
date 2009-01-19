@@ -16,9 +16,6 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
-import static org.mvel2.MVEL.executeExpression;
-import static org.mvel2.MVEL.parseMacros;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -130,13 +127,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
-import org.mvel2.Macro;
-import org.mvel2.ParserContext;
-import org.mvel2.ast.ASTNode;
-import org.mvel2.ast.WithNode;
-import org.mvel2.compiler.ExpressionCompiler;
-import org.mvel2.integration.Interceptor;
-import org.mvel2.integration.VariableResolverFactory;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -5957,7 +5947,4 @@ public class MiscTest extends TestCase {
 		assertEquals(1, list.size());
 		assertEquals("Hello World", list.get(0));
     }
-    
-
-
 }
