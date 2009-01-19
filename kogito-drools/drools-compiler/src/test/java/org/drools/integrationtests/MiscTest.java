@@ -5907,7 +5907,7 @@ public class MiscTest extends TestCase {
     }
 
     //FIXME
-    public void testListOfMaps(){
+    public void FIXME_testListOfMaps(){
 //    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 //		kbuilder.add(ResourceFactory.newClassPathResource("test_TestMapVariableRef.drl", getClass()), ResourceType.DRL);
 //		KnowledgeBuilderErrors errors = kbuilder.getErrors();
