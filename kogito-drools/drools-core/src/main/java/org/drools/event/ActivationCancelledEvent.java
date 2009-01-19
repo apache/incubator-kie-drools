@@ -19,6 +19,7 @@ package org.drools.event;
 import org.drools.spi.Activation;
 
 public class ActivationCancelledEvent extends ActivationEvent {
+       
     /**
      * 
      */
