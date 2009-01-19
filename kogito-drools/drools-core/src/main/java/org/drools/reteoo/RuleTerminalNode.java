@@ -304,7 +304,7 @@ public final class RuleTerminalNode extends BaseNode
 
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                                 workingMemory,
-                                                                                                ActivationCancelledCause.WME_CHANGE );
+                                                                                                ActivationCancelledCause.WME_MODIFY );
                 ((InternalAgenda) workingMemory.getAgenda()).decreaseActiveActivations();
             }
         } else {
