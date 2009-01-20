@@ -18,6 +18,10 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.Parameters;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
+import org.drools.runtime.pipeline.Action;
+import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
+import org.drools.runtime.pipeline.Pipeline;
+import org.drools.runtime.pipeline.PipelineFactory;
 import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.pipeline.impl.MvelAction;
 import org.drools.runtime.pipeline.impl.StatefulKnowledgeSessionInsertStage;
@@ -265,19 +269,19 @@ public class StatelessKnowledgeSessionPipelineTest extends TestCase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
         
-    MvelAction mvelAction1 = new MvelAction( "context.setIterable( this )");
-        MvelAction mvelAction2 = new MvelAction( "context.parameters.globalParams.setInOut( ['list' : new java.util.ArrayList()] )");
+        Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
         
-        mvelAction1.setReceiver( mvelAction2 );
+        KnowledgeRuntimeCommand execute = PipelineFactory.newStatelessKnowledgeSessionExecute();
+        execute.setReceiver( executeResultHandler );
         
-        StatelessKnowledgeSessionExecuteStage stage1 = new StatelessKnowledgeSessionExecuteStage();
-        mvelAction2.setReceiver( stage1 );
+        Action assignParameters = PipelineFactory.newMvelAction( "context.parameters.globalParams.setInOut( ['list' : new java.util.ArrayList()] )");
+        assignParameters.setReceiver( execute );
         
-        MvelAction mvelAction3 = new MvelAction( "context.resultHandler.handleResult( context.result )");
-        stage1.setReceiver( mvelAction3 );
-        
-        StatelessKnowledgeSessionPipelineImpl pipeline = new StatelessKnowledgeSessionPipelineImpl(ksession);
-        pipeline.setReceiver( mvelAction1 );
+        Action assignIterable = PipelineFactory.newMvelAction( "context.setIterable( this )");                
+        assignIterable.setReceiver( assignParameters );
+                
+        Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline(ksession);
+        pipeline.setReceiver( assignIterable );
         
         ResultHandlerImpl handler = new ResultHandlerImpl();
         
