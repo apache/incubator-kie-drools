@@ -5,6 +5,6 @@ import javax.xml.bind.Unmarshaller;
 
 public interface JaxbTransformerProvider {
     Transformer newJaxbFromXmlTransformer(Unmarshaller unmarshaller);
-    
+
     Transformer newJaxbToXmlTransformer(Marshaller marshaller);
 }

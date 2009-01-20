@@ -102,13 +102,14 @@ public class KnowledgeBaseFactory {
     }
 
     @SuppressWarnings("unchecked")
-	private static void loadProvider() {
+    private static void loadProvider() {
         try {
             // we didn't find anything in properties so lets try and us reflection
             Class<KnowledgeBaseProvider> cls = (Class<KnowledgeBaseProvider>) Class.forName( "org.drools.impl.KnowledgeBaseProviderImpl" );
             setKnowledgeBaseProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider org.drools.impl.KnowledgeBaseProviderImpl could not be set.", e );
+            throw new ProviderInitializationException( "Provider org.drools.impl.KnowledgeBaseProviderImpl could not be set.",
+                                                       e );
         }
     }
 }

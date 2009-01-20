@@ -5,7 +5,7 @@ package org.drools;
  *
  */
 public interface PropertiesConfiguration {
-    
+
     /**
      * Sets a property value
      * 

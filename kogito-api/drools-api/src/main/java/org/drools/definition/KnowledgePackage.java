@@ -23,7 +23,7 @@ public interface KnowledgePackage {
      * The collection is immutable.
      * 
      * @return
-     */   
+     */
     Collection<Rule> getRules();
 
     /**

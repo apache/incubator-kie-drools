@@ -2,7 +2,9 @@ package org.drools.definition.process;
 
 import org.drools.definition.KnowledgeDefinition;
 
-public interface Process  extends KnowledgeDefinition {
+public interface Process
+    extends
+    KnowledgeDefinition {
 
     String getId();
 

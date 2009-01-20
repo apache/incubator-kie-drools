@@ -10,7 +10,7 @@ import org.drools.runtime.StatelessKnowledgeSessionResults;
  * @see org.drools.runtime.StatelessKnowledgeSession
  */
 public interface StatelessRuleSession {
-    
+
     /**
      * Execute a StatelessKnowledSession inserting just a single object. If a collection (or any other Iterable) or an array is used here, it will be inserted as-is,
      * It will not be iterated and it's internal elements inserted.

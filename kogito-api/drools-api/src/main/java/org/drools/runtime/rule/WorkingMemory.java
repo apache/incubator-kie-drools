@@ -2,7 +2,7 @@ package org.drools.runtime.rule;
 
 import java.util.Collection;
 
-import org.drools.event.rule.WorkingMemoryEventManager;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.runtime.ObjectFilter;
 import org.drools.time.SessionClock;
 
@@ -48,7 +48,7 @@ public interface WorkingMemory
      * @see KnowledgeBaseConfiguration
      */
     FactHandle getFactHandle(Object object);
-    
+
     /**
      * Returns the object associated with the given FactHandle.
      * 
@@ -96,7 +96,7 @@ public interface WorkingMemory
      * @return
      */
     Agenda getAgenda();
-    
+
     /**
      * Returns the WorkingMemoryEntryPoint instance associated with the given name.
      * 

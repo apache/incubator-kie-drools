@@ -102,7 +102,7 @@
                     <breakiterator>true</breakiterator>
                     <excludePackageNames>org.drools.util*
                     </excludePackageNames>
-                    <overview>target/classes/overview.html</overview>
+                    <overview>src/main/java/overview.html</overview>
                     <groups>
                         <group><title>Knowledge Base API</title> <packages>org.drools</packages></group>
                         <group><title>Builder API</title> <packages>org.drools.builder</packages></group>

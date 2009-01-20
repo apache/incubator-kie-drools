@@ -8,7 +8,7 @@ import org.drools.KnowledgeBase;
  * KnowledgeBuilderProvider is used by the KnowledgeBuilderFacotry to "provide" it's concrete implementation.
  * 
  * This class is not considered stable and may change, the user is protected from this change by using 
- * the Factory api, which is consiered stable.
+ * the Factory api, which is considered stable.
  *
  */
 public interface KnowledgeBuilderProvider {

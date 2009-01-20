@@ -1,5 +1,5 @@
 package org.drools.runtime.pipeline;
 
-public interface ResultHandlerFactory {    
+public interface ResultHandlerFactory {
     ResultHandler newResultHandler();
 }

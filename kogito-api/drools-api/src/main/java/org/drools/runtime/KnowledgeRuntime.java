@@ -18,7 +18,7 @@ public interface KnowledgeRuntime
      */
     void setGlobal(String identifier,
                    Object object);
-    
+
     Object getGlobal(String identifier);
 
     /**
@@ -33,8 +33,9 @@ public interface KnowledgeRuntime
      * @return
      */
     KnowledgeBase getKnowledgeBase();
-    
-    void registerExitPoint(String name, ExitPoint exitPoint);
-    
+
+    void registerExitPoint(String name,
+                           ExitPoint exitPoint);
+
     void unregisterExitPoint(String name);
 }

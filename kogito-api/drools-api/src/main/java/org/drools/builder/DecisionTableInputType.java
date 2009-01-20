@@ -1,6 +1,5 @@
 package org.drools.builder;
 
-
 /**
  * <p>
  * Specifies the type of decision table resource.

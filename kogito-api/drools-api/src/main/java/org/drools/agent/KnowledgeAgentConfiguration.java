@@ -11,6 +11,8 @@ import org.drools.PropertiesConfiguration;
  * @see org.drools.agent.KnowledgeAgent
  * @see org.drools.agent.KnowledgeAgentConfiguration 
  */
-public interface KnowledgeAgentConfiguration extends PropertiesConfiguration {
+public interface KnowledgeAgentConfiguration
+    extends
+    PropertiesConfiguration {
 
 }

@@ -7,9 +7,9 @@ import org.drools.ProviderInitializationException;
 
 /**
  * <p>
- * The KnowlegeAgent is created by the KnowlegeAgentFactory. It's role is to provide a cached
- * KnowlegeBase and to update or rebuild this KnowlegeBase as the resources it uses are changed.
- * The strategy for this is determined by the configuration given to the factory, but it is 
+ * The KnowlegeAgent is created by the KnowlegeAgentFactory. The KnowlegeAgent provides automatic loading, caching and 
+ * re-loading, of resources and is configured from a properties files. The KnowledgeAgent can update or rebuild this KnowlegeBase 
+ * as the resources it uses are changed. The strategy for this is determined by the configuration given to the factory, but it is 
  * typically pull based using regular polling. We hope to add push based updates and rebuilds in future
  * versions.
  * </p>
@@ -52,24 +52,27 @@ import org.drools.ProviderInitializationException;
  */
 public class KnowledgeAgentFactory {
     private static KnowledgeAgentProvider provider;
-    
+
     public static KnowledgeAgentConfiguration newKnowledgeAgentConfiguration() {
         return getKnowledgeAgentProvider().newKnowledgeAgentConfiguration();
     }
-    
+
     public static KnowledgeAgentConfiguration newKnowledgeAgentConfiguration(Properties properties) {
         return getKnowledgeAgentProvider().newKnowledgeAgentConfiguration( properties );
-    }    
+    }
 
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    KnowledgeBase kbase) {
-        return getKnowledgeAgentProvider().newKnowledgeAgent( name, kbase );
+        return getKnowledgeAgentProvider().newKnowledgeAgent( name,
+                                                              kbase );
     }
-    
+
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    KnowledgeBase kbase,
                                                    KnowledgeAgentConfiguration configuration) {
-        return getKnowledgeAgentProvider().newKnowledgeAgent( name, kbase, configuration );
+        return getKnowledgeAgentProvider().newKnowledgeAgent( name,
+                                                              kbase,
+                                                              configuration );
     }
 
     private static synchronized void setKnowledgeAgentProvider(KnowledgeAgentProvider provider) {

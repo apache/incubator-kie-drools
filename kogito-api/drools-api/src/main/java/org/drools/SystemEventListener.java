@@ -19,15 +19,17 @@ public interface SystemEventListener {
      * For general info messages
      */
     public void info(String message);
-    
-    public void info(String message, Object object);
+
+    public void info(String message,
+                     Object object);
 
     /**
      * For a warning (useful when tracking down problems).
      */
     public void warning(String message);
-    
-    public void warning(String message, Object object);
+
+    public void warning(String message,
+                        Object object);
 
     /**
      * An exception occurred.
@@ -38,6 +40,7 @@ public interface SystemEventListener {
      * These should not be logged, just shown if needed.
      */
     public void debug(String message);
-    
-    public void debug(String message, Object object);
+
+    public void debug(String message,
+                      Object object);
 }

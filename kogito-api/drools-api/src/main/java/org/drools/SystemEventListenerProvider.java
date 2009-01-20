@@ -8,18 +8,18 @@ package org.drools;
  *
  */
 public interface SystemEventListenerProvider {
-    
+
     /**
      * Set the SystemEventListener
      * 
      * @param listener
-     */    
+     */
     void setSystemEventListener(SystemEventListener listener);
-    
+
     /**
      * Get the SystemEventListener
      * @return
-     */    
+     */
     SystemEventListener getSystemEventListener();
-    
+
 }

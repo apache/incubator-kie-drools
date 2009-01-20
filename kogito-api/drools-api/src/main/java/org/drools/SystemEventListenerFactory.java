@@ -9,7 +9,7 @@ package org.drools;
  */
 public class SystemEventListenerFactory {
     private static SystemEventListenerProvider provider;
-    
+
     /**
      * Set the SystemEventListener
      * 
@@ -18,7 +18,7 @@ public class SystemEventListenerFactory {
     public static void setSystemEventListener(SystemEventListener listener) {
         getSystemEventListenerProvider().setSystemEventListener( listener );
     }
-    
+
     /**
      * Get the SystemEventListener
      * @return
@@ -26,7 +26,7 @@ public class SystemEventListenerFactory {
     public static SystemEventListener getSystemEventListener() {
         return getSystemEventListenerProvider().getSystemEventListener();
     }
-    
+
     private static synchronized void setSystemEventListenerProvider(SystemEventListenerProvider provider) {
         SystemEventListenerFactory.provider = provider;
     }
@@ -44,7 +44,8 @@ public class SystemEventListenerFactory {
             Class<SystemEventListenerProvider> cls = (Class<SystemEventListenerProvider>) Class.forName( "org.drools.impl.SystemEventListenerProviderImpl" );
             setSystemEventListenerProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider org.drools.impl.SystemEventListenerProviderImpl could not be set.", e );
+            throw new ProviderInitializationException( "Provider org.drools.impl.SystemEventListenerProviderImpl could not be set.",
+                                                       e );
         }
-    }    
+    }
 }
