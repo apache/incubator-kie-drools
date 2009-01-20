@@ -8,7 +8,7 @@ public interface CorePipelineProvider {
     Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession);
 
     Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession,
-                                                String entryPointName);
+                                                 String entryPointName);
 
     Pipeline newStatelessKnowledgeSessionPipelineImpl(StatelessKnowledgeSession ksession);
 
@@ -19,27 +19,27 @@ public interface CorePipelineProvider {
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetGlobal();
 
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal();
-    
-    KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetObject(); 
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetObject();
 
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal(String identifier);
 
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType);
 
     KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType,
-                                                        long id);
+                                                                   long id);
 
-    KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String eventType);
-    
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String id);
+
     Action newAssignObjectAsResult();
-    
+
     Action newExecuteResultHandler();
 
     Action newMvelAction(String action);
-    
+
     Expression newMvelExpression(String expression);
 
     Splitter newIterateSplitter();
-    
+
     Join newListCollectJoin();
 }

@@ -1,7 +1,5 @@
 package org.drools.builder;
 
-import java.io.Reader;
-import java.net.URL;
 import java.util.Collection;
 
 import org.drools.definition.KnowledgePackage;

@@ -22,15 +22,17 @@ public interface ResourceChangeMonitor {
      * @param notifier
      * @param resource
      */
-    void subscribeNotifier(ResourceChangeNotifier notifier, Resource resource);
-    
+    void subscribeNotifier(ResourceChangeNotifier notifier,
+                           Resource resource);
+
     /**
      * Unsubscribe the notifier for the given resource.
      * 
      * @param notifier
      * @param resource
      */
-    void unsubscribeNotifier(ResourceChangeNotifier notifier, Resource resource);
-    
+    void unsubscribeNotifier(ResourceChangeNotifier notifier,
+                             Resource resource);
+
     public void setSystemEventListener(SystemEventListener listener);
 }

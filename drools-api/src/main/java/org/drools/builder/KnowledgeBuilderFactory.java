@@ -36,14 +36,16 @@ public class KnowledgeBuilderFactory {
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
         return getKnowledgeBuilderProvider().newKnowledgeBuilder( conf );
     }
-    
+
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
         return getKnowledgeBuilderProvider().newKnowledgeBuilder( kbase );
     }
-    
-    public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase, KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderProvider().newKnowledgeBuilder( kbase, conf );
-    }    
+
+    public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
+                                                       KnowledgeBuilderConfiguration conf) {
+        return getKnowledgeBuilderProvider().newKnowledgeBuilder( kbase,
+                                                                  conf );
+    }
 
     /**
      * Create a KnowledgeBuilderConfiguration on which properties can be set.

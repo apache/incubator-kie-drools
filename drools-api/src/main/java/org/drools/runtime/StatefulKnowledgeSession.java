@@ -1,6 +1,5 @@
 package org.drools.runtime;
 
-import org.drools.KnowledgeBase;
 import org.drools.runtime.process.StatefulProcessSession;
 import org.drools.runtime.rule.StatefulRuleSession;
 
@@ -63,7 +62,6 @@ public interface StatefulKnowledgeSession
     StatefulRuleSession,
     StatefulProcessSession,
     KnowledgeRuntime {
-
 
     /**
      * Releases all the current session resources, setting up the session for garbage collection.

@@ -18,10 +18,10 @@ public enum ResourceType {
 
     /** Decision Table */
     DTABLE,
-    
+
     /** Binary Package */
     PKG,
-    
+
     /** ChangeSet */
     ChangeSet;
 }

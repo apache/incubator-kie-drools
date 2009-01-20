@@ -17,12 +17,12 @@ public interface Resource {
      * @throws IOException
      */
     InputStream getInputStream() throws IOException;
-    
+
     /**
      * Opens a Reader to the resource, the user most close this when finished.
      * @return
      * @throws IOException
      */
     public Reader getReader() throws IOException;
-      
+
 }

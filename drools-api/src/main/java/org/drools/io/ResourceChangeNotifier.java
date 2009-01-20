@@ -27,7 +27,7 @@ public interface ResourceChangeNotifier {
 
     void unsubscribeResourceChangeListener(ResourceChangeListener listener,
                                            Resource resource);
-    
+
     /**
      * When a ResourceChangeMonitor is asked to monitor a directory, it needs a way to tell the ResourceChangeNotifier of any newly added Resources.
      * 
@@ -36,7 +36,8 @@ public interface ResourceChangeNotifier {
      * @param child
      *     The discovered child resource
      */
-    void subscribeChildResource(Resource directory, Resource child);    
+    void subscribeChildResource(Resource directory,
+                                Resource child);
 
     /** 
      * Add a ResourceChangeMonitor, which will receive all Resource subscriptions.
@@ -57,7 +58,7 @@ public interface ResourceChangeNotifier {
      * @return
      */
     Collection<ResourceChangeMonitor> getResourceChangeMonitors();
-    
+
     /**
      * Called by the added ResourceChangeMonitors to inform this ResourceChangeNotifier of resource changes.
      * The ResourceChangeMontior must have a reference to the ResourceChangeNotifiers they are added to,
@@ -65,9 +66,9 @@ public interface ResourceChangeNotifier {
      * @param changeSet
      */
     void publishChangeSet(ChangeSet changeSet);
-    
+
     public void setSystemEventListener(SystemEventListener listener);
-    
+
     /**
      * Start the service, this will create a new Thread.
      */
@@ -76,5 +77,5 @@ public interface ResourceChangeNotifier {
     /**
      * Stop the service.
      */
-    void stop();    
+    void stop();
 }

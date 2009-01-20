@@ -2,12 +2,16 @@ package org.drools.runtime.pipeline;
 
 import java.util.Properties;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReader;
 
 import org.drools.ProviderInitializationException;
+import org.drools.builder.help.KnowledgeBuilderHelper;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.milyn.Smooks;
@@ -121,7 +125,7 @@ import com.thoughtworks.xstream.XStream;
  * 
  * <p>
  * While the above example is for loading a resource from disk it is also possible to work from a running messaging service. Drools currently
- * provides a single Service for JMS, called JmsMessenger. Other Services will be added later. Look at the JmsMessenger for more details, but below shows
+ * provides a single Service for JMS, called JmsMessenger. Other Services will be added later. Look at the factory method for JmsMessenger for more details, but below shows
  * part of a unit test:
  * </p>
  * 
@@ -172,82 +176,244 @@ public class PipelineFactory {
 
     private static JmsMessengerProvider       jmsMessengerProvider;
 
+    /**
+     * Construct a new Pipeline to be used when interacting with a StatefulKnowledgeSession.
+     * It assumes that the default entry point will be used for any insertions.
+     * 
+     * @param ksession
+     * @return
+     */
     public static Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionPipeline( ksession );
     }
 
+    /**
+     * Construct a new Pipeline to be used when interacting with a StatefulKnowledgeSession. The entry point
+     * to be used is specified as s String.
+     * 
+     * @param ksession
+     * @param entryPointName
+     * @return
+     */
     public static Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession,
                                                                String entryPointName) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionPipeline( ksession,
                                                                               entryPointName );
     }
 
+    /**
+     * Construct a new Pipeline to be used when interacting with StatelessKnowledgeSessions.
+     * @param ksession
+     * @return
+     */
     public static Pipeline newStatelessKnowledgeSessionPipeline(StatelessKnowledgeSession ksession) {
         return getCorePipelineProvider().newStatelessKnowledgeSessionPipelineImpl( ksession );
     }
 
+    /**
+     * Insert the payload into the StatefulKnowledgeSesssion referenced in the context. This stage
+     * expects the returned FactHandles to be stored in a HashMap of the PipelineContext result property.
+     * @return
+     */
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionInsert() {
         return getCorePipelineProvider().newStatefulKnowledgeSessionInsert();
     }
 
+    /**
+     * Executes a StatelessKnowledgeSession. StatelessKnowledgeSessions sessions have four possible execution. Execute against an object
+     * and execute against an Iterable and both with and without Paramters. See StatelessKnowledgeSession for more details on what those 
+     * mean. To control which execution method is used the StatelessKnowledgeSessionPipelineContext has three properties; object, iterable
+     * and parameters. These can be assigned using an MVEL action stage, which has access to that context, the "this" object is assumed 
+     * to be the propagating payload object. If no properties are set it will call executeObject against the propagating payload. The same
+     * is true if just the object property is assigned. If the Iterable property is assigned it all call executeIterable. Finally the WithParamaters
+     * method will be called for each of those if the parameters property is set.
+     * 
+     * <pre>
+     * Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
+     *   
+     * KnowledgeRuntimeCommand execute = PipelineFactory.newStatelessKnowledgeSessionExecute();
+     * execute.setReceiver( executeResultHandler );
+     *   
+     * Action assignParameters = PipelineFactory.newMvelAction( "context.parameters.globalParams.setInOut( ['list' : new java.util.ArrayList()] )");
+     * assignParameters.setReceiver( execute );
+     *   
+     * Action assignIterable = PipelineFactory.newMvelAction( "context.setIterable( this )");                
+     * assignIterable.setReceiver( assignParameters );
+     *           
+     * Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline(ksession);
+     * pipeline.setReceiver( assignIterable );
+     *   
+     * ResultHandlerImpl handler = new ResultHandlerImpl();
+     *     
+     * pipeline.insert( object, handler );
+     * </pre>
+     * @return
+     */
     public static KnowledgeRuntimeCommand newStatelessKnowledgeSessionExecute() {
         return getCorePipelineProvider().newStatelessKnowledgeSessionExecute();
     }
 
+    /**
+     * The payload here is expected to be a String and the global will be set on the PipelineContext result property. The propagating
+     * object will also be switched to the results.
+     * @return
+     */
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetGlobal() {
         return getCorePipelineProvider().newStatefulKnowledgeSessionGetGlobal();
     }
 
+    /**
+     * Expects the payload to be a Map<String, Object> which it will iterate and set each global on the StatefulKnowledgeSession
+     * .
+     * @return
+     */
+    
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal() {
         return getCorePipelineProvider().newStatefulKnowledgeSessionSetGlobal();
     }
 
+    /**
+     * Expects the payload to be a FactHandle, the associated insert object will be set on the PipelineContext result property and
+     * the result itself will also be propagated.
+     * @return
+     */
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetObject() {
         return getCorePipelineProvider().newStatefulKnowledgeSessionGetObject();
     }
 
+    /**
+     * Expects the payload to be any object, that object will be set as a global using the given identifier.
+     * @param identifier
+     * @return
+     */
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal(String identifier) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionSetGlobal( identifier );
     }
 
+    /**
+     * The payload is inserted as a Signal of a given event type.
+     * 
+     * @param eventType
+     * @return
+     */
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionSignalEvent( eventType );
     }
 
+    /**
+     * The payload is inserted as a Signal of a given event type for a specific process instance.
+     * @param eventType
+     * @param id
+     * @return
+     */
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType,
                                                                                  long id) {
         return getCorePipelineProvider().newStatefulKnowledgeSessionSignalEvent( eventType,
                                                                                  id );
     }
 
-    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String eventType) {
-        return getCorePipelineProvider().newStatefulKnowledgeSessionStartProcess( eventType );
+    /**
+     * Start a process of the given id. The payload is expected to be a Map and is used for the process variables.
+     * @param id
+     * @return
+     */
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String id) {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionStartProcess( id );
     }
 
+    /**
+     * This assigns the propagating payload object to the PipelineContext.result property
+     * @return
+     */
     public static Action newAssignObjectAsResult() {
         return getCorePipelineProvider().newAssignObjectAsResult();
     }
 
+    /**
+     * When inserting into a Pipeline a ResultHandler may be passed. This stage will execute the user implemented class.
+     * @return
+     */
     public static Action newExecuteResultHandler() {
         return getCorePipelineProvider().newExecuteResultHandler();
     }
 
+    /**
+     * Create a new MVEL action
+     * @param action
+     * @return
+     */
     public static Action newMvelAction(String action) {
         return getCorePipelineProvider().newMvelAction( action );
     }
 
+    /**
+     * Creat a new MVEL expression, the payload will be set to the results of the expression.
+     * @param expression
+     * @return
+     */
     public static Expression newMvelExpression(String expression) {
         return getCorePipelineProvider().newMvelExpression( expression );
     }
 
+    /**
+     * Iterates the Iterable object and propagate each element in turn.
+     * @return
+     */
     public static Splitter newIterateSplitter() {
         return getCorePipelineProvider().newIterateSplitter();
     }
 
+    /**
+     * Collect each propagated item into a list, this is used as part of a Splitter.
+     * The Join should be set on the splitter using the setJoin method, this allows the Splitter
+     * to signal the join when it has propagated all the elements of the Iterable object.
+     * @return
+     */
     public static Join newListCollectJoin() {
         return getCorePipelineProvider().newListCollectJoin();
     }
 
+    /**
+     * Creates a new JmsMessenger which runs as a service in it's own thread. It expects an existing JNDI entry for "ConnectionFactory"
+     * Which will be used to create the MessageConsumer which will feed into the specified pipeline.
+     * 
+     * <pre>
+     * // as this is a service, it's more likely the results will be logged or sent as a return message 
+     * Action resultHandlerStage = PipelineFactory.newExecuteResultHandler();
+     *
+     * // Insert the transformed object into the session associated with the PipelineContext
+     * KnowledgeRuntimeCommand insertStage = PipelineFactory.newStatefulKnowledgeSessionInsert();
+     * insertStage.setReceiver( resultHandlerStage );
+     *
+     * // Create the transformer instance and create the Transformer stage, where we are going from Xml to Pojo. Jaxb needs an array of the available classes
+     * JAXBContext jaxbCtx = KnowledgeBuilderHelper.newJAXBContext( classNames,
+     *                                                              kbase );
+     * Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
+     * Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
+     * transformer.setReceiver( insertStage );
+     *
+     * // payloads for JMS arrive in a Message wrapper, we need to unwrap this object
+     * Action unwrapObjectStage = PipelineFactory.newJmsUnwrapMessageObject();
+     * unwrapObjectStage.setReceiver( transformer );
+     *
+     * // Create the start adapter Pipeline for StatefulKnowledgeSessions
+     * Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline( ksession );
+     * pipeline.setReceiver( unwrapObjectStage );
+     *
+     * // Services, like JmsMessenger take a ResultHandlerFactory implementation, this is because a result handler must be created for each incoming message.
+     * ResultHandleFactoryImpl factory = new ResultHandleFactoryImpl();
+     * Service messenger = PipelineFactory.newJmsMessenger( pipeline,
+     *                                                      props,
+     *                                                      destinationName,
+     *                                                      factory );
+     * messenger.start();
+     * </pre>
+     * @param pipeline
+     * @param properties
+     * @param destinationName
+     * @param resultHandlerFactory
+     * @return
+     */
     public static Service newJmsMessenger(Pipeline pipeline,
                                           Properties properties,
                                           String destinationName,
@@ -258,36 +424,149 @@ public class PipelineFactory {
                                                           resultHandlerFactory );
     }
 
+    /**
+     * Unwrap the payload from the JMS Message and propagate it as the payload object.
+     * @return
+     */
     public static Action newJmsUnwrapMessageObject() {
         return getJmsMessengerProvider().newJmsUnwrapMessageObject();
     }
 
+    /**
+     * Transforms from Source to Pojo using Smooks, the resulting pojo is set as the propagating object. 
+     * 
+     * <pre>
+     * // Instantiate Smooks with the config...
+     * Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+     *
+     * Transformer transformer = PipelineFactory.newSmooksFromSourceTransformer( smooks,
+     *                                                                           "orderItem" );
+     * transformer.setReceiver( insertStage );
+     * </pre>
+     * 
+     * @param smooks
+     * @param rootId
+     * @return
+     */
     public static Transformer newSmooksFromSourceTransformer(Smooks smooks,
                                                              String rootId) {
         return getSmooksPipelineProvider().newSmooksFromSourceTransformer( smooks,
                                                                            rootId );
     }
 
+    /**
+     * Transforms from Pojo to Source using Smooks, the resulting Source is set as the propagating object
+     * 
+     * <pre>
+     * // Instantiate Smooks with the config...
+     * Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+     *
+     * Transformer transformer = PipelineFactory.newSmooksToSourceTransformer( smooks );
+     * transformer.setReceiver( receiver );
+     * </pre>
+     * 
+     * @param smooks
+     * @param rootId
+     * @return
+     */    
     public static Transformer newSmooksToSourceTransformer(Smooks smooks) {
         return getSmooksPipelineProvider().newSmooksToSourceTransformer( smooks );
     }
 
+    /**
+     * Transforms from XML to Pojo using JAXB, the resulting pojo is set as the propagating object. 
+     * 
+     * <pre>
+     * JAXBContext jaxbCtx = KnowledgeBuilderHelper.newJAXBContext( classNames,
+     *                                                                kbase );
+     * Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
+     * Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
+     * transformer.setReceiver( receiver );
+     * </pre>
+     *
+     * Don't forget the XSD model must be generated, using XJC at runtime into the KnowledgeBase first,
+     * Using KnowledgeBuilderHelper.addXsdModel:
+     * <pre>
+     * Options xjcOpts = new Options();
+     * xjcOpts.setSchemaLanguage( Language.XMLSCHEMA );
+     * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+     *
+     * String[] classNames = KnowledgeBuilderHelper.addXsdModel( ResourceFactory.newClassPathResource( "order.xsd",
+     *                                                                                                 getClass() ),
+     *                                                           kbuilder,
+     *                                                           xjcOpts,
+     *                                                           "xsd" );
+     * </pre>
+     * @param unmarshaller
+     * @return
+     */
     public static Transformer newJaxbFromXmlTransformer(Unmarshaller unmarshaller) {
         return getJaxbPipelineProvider().newJaxbFromXmlTransformer( unmarshaller );
     }
 
+    /**
+     * Transforms from Pojo to XML using JAXB, the resulting XML is set as the propagating object. 
+     * <pre>
+     *  JAXBContext jaxbCtx = KnowledgeBuilderHelper.newJAXBContext( classNames,
+     *                                                               kbase );
+     *  Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
+     *  Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
+     *  transformer.setReceiver( receiver );
+     *
+     * 
+     * @param marshaller
+     * @return
+     */
     public static Transformer newJaxbToXmlTransformer(Marshaller marshaller) {
         return getJaxbPipelineProvider().newJaxbToXmlTransformer( marshaller );
     }
 
+    /**
+     * Transforms from XML to Pojo using XStream, the resulting Pojo is set as the propagating object. 
+     * 
+     * <pre>
+     * XStream xstream = new XStream();
+     * Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
+     * transformer.setReceiver( receiver );
+     * </pre>
+     * @param xstream
+     * @return
+     */
     public static Transformer newXStreamFromXmlTransformer(XStream xstream) {
         return getXStreamTransformerProvider().newXStreamFromXmlTransformer( xstream );
     }
 
+    /**
+     * Transforms from Pojo to XML using XStream, the resulting XML is set as the propagating object. 
+     * 
+     * <pre>
+     * XStream xstream = new XStream();
+     * Transformer transformer = PipelineFactory.newXStreamToXmlTransformer( xstream );
+     * transformer.setReceiver( receiver );
+     * </pre>
+     * @param xstream
+     * @return
+     */    
     public static Transformer newXStreamToXmlTransformer(XStream xstream) {
         return getXStreamTransformerProvider().newXStreamToXmlTransformer( xstream );
     }
 
+    /**
+     * Transforms from an Excel spread to a Map of pojos pojos using jXLS, the resulting map is set as the propagating object.
+     * You may need to use splitters and MVEL expressions to split up the transformation to insert individual pojos.
+     * 
+     * Note you must provde an XLSReader, which references the mapping file and also an MVEL string which will instantiate the map.
+     * The mvel expression is pre-compiled but executedon each usage of the transformation.
+     * 
+     * <pre>
+     * XLSReader mainReader = ReaderBuilder.buildFromXML( ResourceFactory.newClassPathResource( "departments.xml", getClass() ).getInputStream() );
+     * Transformer transformer = PipelineFactory.newJxlsTransformer(mainReader, "[ 'departments' : new java.util.ArrayList(), 'company' : new org.drools.runtime.pipeline.impl.Company() ]");
+     * </pre>
+     * 
+     * @param xlsReader
+     * @param text
+     * @return
+     */
     public static Transformer newJxlsTransformer(XLSReader xlsReader,
                                                  String text) {
         return getJxlsTransformerProvider().newJxlsTransformer( xlsReader,

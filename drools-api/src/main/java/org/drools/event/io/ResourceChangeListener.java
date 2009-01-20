@@ -15,7 +15,7 @@ import org.drools.ChangeSet;
  * the KnowledgeAgent will use them, when rebuilding the KnowledgeBase.
  */
 public interface ResourceChangeListener {
-    
+
     /**
      * The Resource has changed, the ResourceChangeNotifier will call this method and execute the user implemented code.
      * 

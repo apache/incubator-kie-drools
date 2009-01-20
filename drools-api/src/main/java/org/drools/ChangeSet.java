@@ -42,13 +42,13 @@ public interface ChangeSet {
     /**
      * Returns an immutable Collection of added Resources for this ChangeSet
      * @return
-     */    
+     */
     public Collection<Resource> getResourcesAdded();
-    
+
     /**
      * Returns an immutable Collection of modified Resources for this ChangeSet
      * @return
-     */    
+     */
     public Collection<Resource> getResourcesModified();
 
 }
