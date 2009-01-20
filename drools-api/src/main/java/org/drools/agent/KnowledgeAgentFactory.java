@@ -29,16 +29,16 @@ import org.drools.ProviderInitializationException;
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  *
  * KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
- *       aconf.setProperty( "drools.agent.scanDirectories",
- *                          "true" ); // we want to scan directories, not just files, turning this on turns on file scanning
- *       aconf.setProperty( "drools.agent.newInstance",
- *                          "true" ); // resource changes results in a new instance of the KnowledgeBase being built, 
- *                                    // this cannot currently be set to false for incremental building
+ * aconf.setProperty( "drools.agent.scanDirectories",
+ *                    "true" ); // we want to scan directories, not just files, turning this on turns on file scanning
+ * aconf.setProperty( "drools.agent.newInstance",
+ *                    "true" ); // resource changes results in a new instance of the KnowledgeBase being built, 
+ *                              // this cannot currently be set to false for incremental building
  *       
- *       KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
- *                                                                        kbase, // the rulebase to use, the Agent will also monitor any exist knowledge definitions
- *                                                                        aconf );
- *       kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
+ * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
+ *                                                                  kbase, // the rulebase to use, the Agent will also monitor any exist knowledge definitions
+ *                                                                  aconf );
+ * kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
  * </pre>
  * 
  * KnowledgeAgents can take a empty KnowledgeBase or a populated one. If a populated KnowledgeBase is provided, the KnowledgeAgent
