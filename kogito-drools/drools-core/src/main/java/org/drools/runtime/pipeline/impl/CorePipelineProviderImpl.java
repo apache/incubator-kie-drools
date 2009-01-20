@@ -66,8 +66,8 @@ public class CorePipelineProviderImpl
                                                              id );
     }
 
-    public KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String eventType) {
-        return new StatefulKnowledgeSessionSignalEventStage( eventType );
+    public KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String id) {
+        return new StatefulKnowledgeSessionStartProcessStage( id );
     }
     
     public Action newAssignObjectAsResult() {
