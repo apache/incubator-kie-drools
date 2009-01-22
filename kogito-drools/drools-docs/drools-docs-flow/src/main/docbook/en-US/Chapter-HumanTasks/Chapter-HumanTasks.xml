@@ -194,6 +194,13 @@
     <section>
       <title>Interacting with the task management component</title>
 
+      <para>The task management component exposes various methods to manage the life cycle of the tasks through a Java API.
+      This allows clients to integrate (at a low level) with the task management component.  Note that end users should probably
+      not interact with this low-level API directly but rather use one of the task list clients.  These clients interact with
+      the task management component using this API.</para>
+
+      <para></para>
+
     </section>
 
   </section>
@@ -205,6 +212,12 @@
 
     <section>
       <title>Eclipse integration</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Web-based task view</title>
 
       <para></para>
     </section>

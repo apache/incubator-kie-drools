@@ -44,21 +44,132 @@
     Note that these binary blobs usually are relatively small, as they only contain the
     minimal execution state of the process instance.  For a simple process instance, this
     usually contains one or a few node instances (i.e. a node that is currently executing)
-    and possibly some variables.</para>
-
+    and possibly some variable values.</para>
     </section>
 
     <section>
       <title>Safe points</title>
 
-    <para>The state of a process instance is stored a so-called "safe points" during the
-    execution of the process engine.  Whenever a process instance is started (or continued
-    after receiving an internal trigger it was waiting for), the engine executed the process
-    instance until no more actions can be performed.  At that point, the engine has reached
-    the next safe state and the state of the process instance (and all other process instances
-    that might have been affected) is stored persistently.</para>
-
+    <para>The state of a process instance is stored at so-called "safe points" during the
+    execution of the process engine.  Whenever a process instance is executed (for example by
+    starting it, or by continuing after receiving a trigger it was waiting for), the engine
+    continues execution of the process instance until no more actions can be performed.  At
+    that point, the engine has reached the next safe state and the state of the process
+    instance (and all other process instances that might have been affected) is stored
+    persistently.</para>
     </section>
+
+    <section>
+      <title>Configuring persistence</title>
+
+    <para>By default, the engine does automatically persist the runtime data.  It is however
+    pretty straightforward to configure the engine to do this, by adding a config file and
+    the necessary dependencies.  The persistence itself is based on the Java Persistence API
+    (JPA) and can thus work with several persistence mechanisms.  We are using Hibernate by
+    default (but feel free to check out other alternatives).  We're using the H2 database
+    underneath to store the data (but again you're free to choose your own alternative).</para>
+
+    <para>First of all, you need to add the necessary dependencies to your classpath.  If you're
+    using the Eclipse IDE, you can do that by adding the jars to your Drools runtime directory
+    (see the chapter on the Eclipse IDE), or by manually adding these dependencies to your project.
+    First of all you need the drools-process-enterprise jar, as that contains the necessary code
+    to persist the runtime state whenever necessary.  Next, you also need various other dependencies,
+    but these are different depending on the persistence solution and database you are using.  In
+    our case (using Hibernate and the H2 database), the following list of dependencies is needed:
+      <orderedlist>
+        <listitem>drools-process-enterprise (org.drools)</listitem>
+        <listitem>persistence-api-1.0.jar (javax.persistence)</listitem>
+        <listitem>hibernate-entitymanager-3.4.0.GA.jar (org.hibernate)</listitem>
+        <listitem>hibernate-annotations-3.4.0.GA.jar (org.hibernate)</listitem>
+        <listitem>hibernate-commons-annotations-3.1.0.GA.jar (org.hibernate)</listitem>
+        <listitem>hibernate-core-3.3.0.SP1.jar (org.hibernate)</listitem>
+        <listitem>dom4j-1.6.1.jar (dom4j)</listitem>
+        <listitem>jta-1.0.1B.jar (javax.transaction)</listitem>
+        <listitem>javassist-3.4.GA.jar (javassist)</listitem>
+        <listitem>slf4j-api-1.5.2.jar (org.slf4j)</listitem>
+        <listitem>slf4j-jdk14-1.5.2.jar (org.slf4j)</listitem>
+        <listitem>h2-1.0.77.jar (com.h2database)</listitem>
+        <listitem>commons-collections-3.2.jar (commons-collections)</listitem>
+        <listitem>antlr-2.7.6.jar (antlr)</listitem>
+      </orderedlist>
+    </para>
+
+    <para>Next, you need to configure the Drools engine to persist the state of the engine whenever
+    necessary.  You can do this by simply specifying this in your session configuration.  There are
+    various ways to do this, but using a simple drools.session.conf file in a META-INF directory
+    on your classpath is probably the easiest way (check the documentation for other ways of configuring
+    your session, for example by providing a KnowledgeSessionConfiguration when first creating your
+    session).  In this config file you need to do two things: tell the engine that it needs to use
+    a command service underneath (as commands are used to determine safe points during the execution of
+    the engine), and use the JPA-based implementations of 3 internal components (the process instance
+    manager, the work item manager and the signal manager), as these components will then be able to
+    look up the necessary information from persistence using JPA.  The drools.session.conf file should
+    thus look like this:</para>
+
+    <programlisting>
+drools.commandService = org.drools.persistence.session.SingleSessionCommandService
+drools.processInstanceManagerFactory = org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory
+drools.workItemManagerFactory = org.drools.persistence.processinstance.JPAWorkItemManagerFactory
+drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPASignalManagerFactory</programlisting>
+
+    <para>By default, the drools-process-enterprise jar contains a configuration file that configures
+    JPA to use hibernate and the H2 database, called persistence.xml in the META-INF directory, as shown below.
+    You will need to override these if you want to change the default.  We refer to the JPA and Hibernate
+    documentation for more information on how to do this.</para>
+
+    <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;persistence
+  version="1.0"
+  xsi:schemaLocation=
+    "http://java.sun.com/xml/ns/persistence
+     http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
+     http://java.sun.com/xml/ns/persistence/orm 
+     http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+  xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://java.sun.com/xml/ns/persistence"&gt;
+
+  &lt;persistence-unit name="org.drools.persistence.jpa"&gt;
+    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
+    &lt;class&gt;org.drools.persistence.jpa.ByteArrayObject&lt;/class&gt;
+
+    &lt;properties&gt;
+      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
+      &lt;property name="hibernate.connection.driver_class" value="org.h2.Driver"/&gt;	        
+      &lt;property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" /&gt;
+      &lt;property name="hibernate.connection.username" value="sa"/&gt;
+      &lt;property name="hibernate.connection.password" value="sasa"/&gt;	
+      &lt;property name="hibernate.connection.autocommit" value="false" /&gt; 	               
+      &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
+      &lt;property name="hibernate.hbm2ddl.auto" value="update" /&gt;
+      &lt;property name="hibernate.show_sql" value="false" /&gt;		    
+    &lt;/properties&gt;        
+  &lt;/persistence-unit&gt;
+&lt;/persistence&gt;</programlisting>
+
+    <para>After adding the necessary dependencies and the configuration file to your project, you can simply
+    use the StatelessKnowledgeSession just the way you used to do.  The engine will underneath translate your
+    invocations to commands that will persist the state of the engine after each successful execution of a
+    command.  For example, the following code snippet shows how to create a session and start a process.  Note
+    that this snippet does not show anything about persistence (as the config file configures all that for you,
+    and the engine takes care of it automatically), so the example looks just like normal Drools code.  You
+    can however always destroy your session and create a new one (or one session could continue the work
+    that was started in another session), as the runtime state is persisted safely in a database, and can be
+    retrieved whenever necessary.</para>
+
+    <programlisting>
+  StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+  long processInstanceId = session.startProcess("org.drools.test.TestProcess").getId();
+  session.dispose();</programlisting>
+
+    <para>Note that we only persist the minimal state that is needed to continue execution of the process
+    instance at some later point.  This for example means that it does not contain information about already
+    executed nodes if that information is no longer relevant, or that process instances that have been
+    completed or aborted are removed from the database.  If you however want to search for history-related
+    information, you should use the history log, as explained later.</para>
+   </section>
+
 
   </section>
 
