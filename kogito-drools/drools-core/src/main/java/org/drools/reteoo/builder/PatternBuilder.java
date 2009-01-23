@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.SystemEventListener;
+import org.drools.SystemEventListenerFactory;
 import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
@@ -57,6 +59,8 @@ import org.drools.spi.ObjectType;
 public class PatternBuilder
     implements
     ReteooComponentBuilder {
+    
+    SystemEventListener listener = SystemEventListenerFactory.getSystemEventListener();
 
     /**
      * @inheritDoc
@@ -183,6 +187,7 @@ public class PatternBuilder
                 long uplimit = ((VariableConstraint) constraint).getInterval().getUpperBound();
                 Duration dur = context.getRule().getDuration();
                 Duration newDur = new FixedDuration( uplimit ); 
+                listener.info( context.getRule() + " : new delay added " + uplimit + "ms" );
                 if( dur instanceof CompositeMaxDuration ) {
                     ((CompositeMaxDuration)dur).addDuration( newDur );
                 } else {
@@ -281,7 +286,10 @@ public class PatternBuilder
             }
             if( expirationOffset == 0) {
                 otn.setExpirationOffset( context.getTemporalDistance().getExpirationOffset( pattern ) );
+            } else {
+                otn.setExpirationOffset( expirationOffset );
             }
+            listener.info(otn + " : setting expiration offset to: " + otn.getExpirationOffset()+ "ms" );
         }
 
         context.setObjectSource( (ObjectSource) utils.attachNode( context,

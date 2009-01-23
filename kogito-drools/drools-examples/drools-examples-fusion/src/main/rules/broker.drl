@@ -16,7 +16,7 @@ dialect "mvel"
 # policy will be 2 minutes 
 declare StockTick
     @role( event )
-    @expires( 1m )
+    @expires( 2m )
 end 
 
 # One can even declare helper facts to make rules easier and
@@ -27,7 +27,6 @@ declare Statistics
 end
  
 rule "Setup statistics"
-   agenda-group "setup"
 when
    $c : Company( $s : symbol )
    not( Statistics( symbol == $s ) )
@@ -42,10 +41,9 @@ end
 # present in the working memory
 rule "Update stock price"
     agenda-group "evaluation"
-    auto-focus true
 when
-    $st : StockTick( $sb : symbol, $pr : price ) from entry-point "StockTick stream"
-    $cp : Company( symbol == $sb )
+    $cp : Company( $sb : symbol )
+    $st : StockTick( symbol == $sb, $pr : price ) from entry-point "StockTick stream"
 then
     // This shows an update on working memory facts with data from joined events
     $cp.currentPrice = $pr;
@@ -59,7 +57,6 @@ end
 
 rule "average over last minute"
     agenda-group "evaluation"
-    auto-focus true
     lock-on-active
 when
     $stat : Statistics( $symbol : symbol )
@@ -68,18 +65,29 @@ when
                                                     from entry-point "StockTick stream",
          average( $p ) )
 then
-    System.out.println($symbol +": $"+$av );
+    //System.out.println($symbol +": $"+$av );
     modify( $stat ) {
          average = $av
     } 
 end
 
+rule "evaluation done"
+    agenda-group "evaluation"
+    salience -10
+when
+    StockTick( ) from entry-point "StockTick stream"
+then
+    drools.setFocus( "report" );
+end
+
 rule "sudden drop"
+    agenda-group "report"
 when
     $st : StockTick( $sb : symbol, $ts : timestamp, $pr : price ) from entry-point "StockTick stream"
     not( StockTick( symbol == $sb, timestamp > $ts ) from entry-point "StockTick stream" )
-    Statistics( symbol == $sb, $av : average > ( $pr * 1.02 ) )
+    Statistics( symbol == $sb, $av : average > ( $pr * 1.05 ) )
 then
+    System.out.println( "Drop +5%: "+$sb+" avg: $"+$av+" price: $"+$pr );
     services.log( "Drop +5%: "+$sb+" avg: $"+$av+" price: $"+$pr );
 end
 

@@ -37,7 +37,6 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public void propagateRetractLeftTuple( final LeftTuple leftTuple, final PropagationContext context,
                                            final InternalWorkingMemory workingMemory ) {
         LeftTuple child = leftTuple.getBetaChildren();
-        // TODO: shouldn't there be a single child tuple? so no need for iteration, right??
         while( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
             doPropagateRetractLeftTuple( context, workingMemory, child, child.getLeftTupleSink() );
@@ -50,7 +49,6 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public void propagateRetractLeftTupleDestroyRightTuple( final LeftTuple leftTuple, final PropagationContext context,
                                                             final InternalWorkingMemory workingMemory ) {
         LeftTuple child = leftTuple.getBetaChildren();
-        // TODO: shouldn't there be a single child tuple? so no need for iteration, right??
         while( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
             doPropagateRetractLeftTuple( context, workingMemory, child, child.getLeftTupleSink() );
@@ -64,7 +62,6 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public void propagateRetractRightTuple( final RightTuple rightTuple, final PropagationContext context,
                                             final InternalWorkingMemory workingMemory ) {
         LeftTuple child = rightTuple.getBetaChildren();
-        // TODO: shouldn't there be a single child tuple? so no need for iteration, right??
         while( child != null ) {
             LeftTuple temp = child.getRightParentNext();
             doPropagateRetractLeftTuple( context, workingMemory, child, child.getLeftTupleSink() );

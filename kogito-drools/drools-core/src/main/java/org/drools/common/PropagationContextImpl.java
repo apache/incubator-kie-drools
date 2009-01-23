@@ -213,4 +213,8 @@ public class PropagationContextImpl
     public void setEntryPoint(EntryPoint entryPoint) {
         this.entryPoint = entryPoint;
     }
+
+    public void setFactHandle(InternalFactHandle factHandle) {
+        this.factHandle = factHandle;
+    }
 }

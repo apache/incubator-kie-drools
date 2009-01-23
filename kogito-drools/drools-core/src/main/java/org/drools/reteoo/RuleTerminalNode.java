@@ -287,7 +287,7 @@ public final class RuleTerminalNode extends BaseNode
             }
 
             // on fact expiration, we don't remove the activation, but let it fire
-            if( context.getType() == PropagationContext.EXPIRATION ) {
+            if( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
                 EventFactHandle efh = (EventFactHandle) context.getFactHandleOrigin();
                 efh.increaseActivationsCount();
             } else {

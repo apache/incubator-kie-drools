@@ -48,6 +48,8 @@ public class SlidingTimeWindow
     Behavior {
 
     private long size;
+    // stateless job
+    private final BehaviorJob job = new BehaviorJob();
 
     public SlidingTimeWindow() {
         this( 0 );
@@ -191,7 +193,6 @@ public class SlidingTimeWindow
             JobContext jobctx = new BehaviorJobContext( workingMemory,
                                                         this,
                                                         context );
-            BehaviorJob job = new BehaviorJob();
             JobHandle handle = clock.scheduleJob( job,
                                                   jobctx,
                                                   new PointInTimeTrigger( nextTimestamp ) );
