@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -836,6 +837,22 @@ public class AccumulateTest extends TestCase {
         execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPatternMVEL.drl" );
     }
 
+    public void testAccumulateCollectListJava() throws Exception {
+        execTestAccumulateCollectList( "test_AccumulateCollectList.drl" );
+    }
+
+    public void testAccumulateCollectListMVEL() throws Exception {
+        execTestAccumulateCollectList( "test_AccumulateCollectListMVEL.drl" );
+    }
+
+    public void testAccumulateCollectSetJava() throws Exception {
+        execTestAccumulateCollectSet( "test_AccumulateCollectSet.drl" );
+    }
+
+    public void testAccumulateCollectSetMVEL() throws Exception {
+        execTestAccumulateCollectSet( "test_AccumulateCollectSetMVEL.drl" );
+    }
+
     public void execTestAccumulateSum(String fileName) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
@@ -1206,6 +1223,123 @@ public class AccumulateTest extends TestCase {
 
         // should not have fired as per constraint
         Assert.assertEquals( 2,
+                             results.size() );
+
+    }
+
+    public void execTestAccumulateCollectList(String fileName) throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                         4 ), new Cheese( "stilton",
+                                                                          2 ), new Cheese( "stilton",
+                                                                                           3 ), new Cheese( "brie",
+                                                                                                            15 ), new Cheese( "brie",
+                                                                                                                              17 ), new Cheese( "provolone",
+                                                                                                                                                8 )};
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = wm.insert( cheese[i] );
+        }
+
+        // ---------------- 1st scenario
+        wm.fireAllRules();
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 6,
+                             ((List) results.get( results.size() - 1 )).size() );
+
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setPrice( 9 );
+        wm.update( cheeseHandles[index],
+                   cheese[index] );
+        wm.fireAllRules();
+
+        // fire again
+        Assert.assertEquals( 2,
+                             results.size() );
+        Assert.assertEquals( 6,
+                             ((List) results.get( results.size() - 1 )).size() );
+
+        // ---------------- 3rd scenario
+        wm.retract( cheeseHandles[3] );
+        wm.retract( cheeseHandles[4] );
+        wm.fireAllRules();
+
+        // should not have fired as per constraint
+        Assert.assertEquals( 2,
+                             results.size() );
+
+    }
+
+    public void execTestAccumulateCollectSet(String fileName) throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                         4 ), new Cheese( "stilton",
+                                                                          2 ), new Cheese( "stilton",
+                                                                                           3 ), new Cheese( "brie",
+                                                                                                            15 ), new Cheese( "brie",
+                                                                                                                              17 ), new Cheese( "provolone",
+                                                                                                                                                8 )};
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = wm.insert( cheese[i] );
+        }
+
+        // ---------------- 1st scenario
+        wm.fireAllRules();
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Set) results.get( results.size() - 1 )).size() );
+
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setPrice( 9 );
+        wm.update( cheeseHandles[index],
+                   cheese[index] );
+        wm.fireAllRules();
+
+        // fire again
+        Assert.assertEquals( 2,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Set) results.get( results.size() - 1 )).size() );
+
+        // ---------------- 3rd scenario
+        wm.retract( cheeseHandles[3] );
+        wm.fireAllRules();
+        // fire again
+        Assert.assertEquals( 3,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Set) results.get( results.size() - 1 )).size() );
+
+
+        // ---------------- 4rd scenario
+        wm.retract( cheeseHandles[4] );
+        wm.fireAllRules();
+
+        // should not have fired as per constraint
+        Assert.assertEquals( 3,
                              results.size() );
 
     }

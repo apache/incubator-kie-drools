@@ -18,7 +18,6 @@
 package org.drools.base.accumulators;
 
 import java.io.Externalizable;
-import java.io.Serializable;
 
 /**
  * An interface for accumulate external function implementations

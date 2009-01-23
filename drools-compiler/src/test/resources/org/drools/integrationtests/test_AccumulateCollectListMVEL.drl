@@ -1,0 +1,16 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+import java.util.List;
+
+global List results;
+
+rule "External Function" salience 80
+    dialect "mvel"
+    when
+    	$list : List( size >= 5 ) 
+    	        from accumulate( Cheese( $type : type ),
+                                 collectList( $type ) );
+    then
+        results.add( $list );
+end  
