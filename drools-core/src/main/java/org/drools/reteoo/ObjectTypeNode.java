@@ -330,7 +330,7 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public String toString() {
-        return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.source).getEntryPoint() + " objectType=" + this.objectType + "]";
+        return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.source).getEntryPoint() + " objectType=" + this.objectType + " expiration="+this.expirationOffset+"ms ]";
     }
 
     /**

@@ -43,7 +43,7 @@ public class EventGenerator {
         // 20 minutes
         long timespam = 20 * 60 * 1000;
         // interval between events: [200ms,2s]
-        long[] interval = new long[]{ 1000, 3000 };
+        long[] interval = new long[]{ 200, 2000 };
         // price changes: +- 10%
         double[] priceChanges = new double[] { -0.1, 0.1 };
         // starting price range
@@ -53,6 +53,8 @@ public class EventGenerator {
         // persister helper
         StockTickPersister persister = new StockTickPersister();
         persister.openForSave( new FileWriter( DATA_FILE ) );
+        
+        System.out.print("Generating data for 20 min...");
 
         // initializing starting prices
         for( Company company : companies ) {
@@ -74,6 +76,8 @@ public class EventGenerator {
             companies[company].setCurrentPrice( price );
         }
         persister.close();
+        
+        System.out.println("done.");
     }
 
     private static double nextStartingPrice(double[] startingPrices) {

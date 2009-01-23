@@ -17,7 +17,9 @@
 package org.drools.examples.broker;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.RuleBaseConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -28,6 +30,8 @@ import org.drools.examples.broker.model.CompanyRegistry;
 import org.drools.examples.broker.model.StockTick;
 import org.drools.examples.broker.ui.BrokerWindow;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
@@ -58,6 +62,7 @@ public class Broker implements EventReceiver, BrokerServices {
         StockTick tick = ((Event<StockTick>)event).getObject();
         Company company = this.companies.getCompany( tick.getSymbol() );
         this.tickStream.insert( tick );
+        this.session.getAgenda().getAgendaGroup( "evaluation" ).setFocus();
         this.session.fireAllRules();
         window.updateCompany( company.getSymbol() );
         window.updateTick( tick );
@@ -66,10 +71,12 @@ public class Broker implements EventReceiver, BrokerServices {
     private StatefulKnowledgeSession createSession() {
         KnowledgeBase kbase = loadRuleBase();
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        //KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newConsoleLogger( session );
         session.setGlobal( "services", this );
         for( Company company : this.companies.getCompanies() ) {
             session.insert( company );
         }
+        session.fireAllRules();
         return session;
     }
 
@@ -81,7 +88,10 @@ public class Broker implements EventReceiver, BrokerServices {
         } catch ( Exception e ) {
             e.printStackTrace();
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setProperty( "drools.eventProcessingMode", "stream" );
+        //System.out.println(((RuleBaseConfiguration)conf).getEventProcessingMode());
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
         return kbase;
     }
@@ -89,6 +99,4 @@ public class Broker implements EventReceiver, BrokerServices {
     public void log(String message) {
         window.log( message );
     }
-    
-    
 }

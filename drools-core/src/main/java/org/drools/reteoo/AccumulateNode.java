@@ -23,11 +23,13 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
@@ -226,10 +228,13 @@ public class AccumulateNode extends BetaNode {
         }
 
         if ( accctx.propagated ) {
-            // if tuple was previously propagated, retract it
+            // if tuple was previously propagated, retract it and destroy result fact handle
             this.sink.propagateRetractLeftTupleDestroyRightTuple( leftTuple,
                                                                   context,
                                                                   workingMemory );
+        } else {
+            // if not propagated, just destroy the result fact handle
+            workingMemory.getFactHandleFactory().destroyFactHandle( accctx.result.getFactHandle() );
         }
     }
 
@@ -307,6 +312,10 @@ public class AccumulateNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+        final InternalFactHandle origin = (InternalFactHandle) context.getFactHandleOrigin();
+        if( context.getType() == PropagationContext.EXPIRATION ) {
+            ((PropagationContextImpl)context).setFactHandle( null );
+        }
 
         behavior.retractRightTuple( memory.betaMemory.getBehaviorContext(),
                                     rightTuple,
@@ -338,6 +347,10 @@ public class AccumulateNode extends BetaNode {
                                       workingMemory );
             }
             childTuple = tmp;
+        }
+        
+        if( context.getType() == PropagationContext.EXPIRATION ) {
+            ((PropagationContextImpl)context).setFactHandle( origin );
         }
 
     }
