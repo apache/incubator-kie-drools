@@ -473,18 +473,19 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     }
 
     public void addAccumulateFunction(String identifier,
-                                      Class clazz) {
+                                      Class<? extends AccumulateFunction> clazz) {
         this.accumulateFunctions.put( identifier,
                                       clazz.getName() );
     }
 
+    @SuppressWarnings("unchecked")
     public AccumulateFunction getAccumulateFunction(String identifier) {
         String className = this.accumulateFunctions.get( identifier );
         if ( className == null ) {
             throw new RuntimeDroolsException( "No accumulator function found for identifier: " + identifier );
         }
         try {
-            Class clazz = this.classLoader.loadClass( className );
+            Class<? extends AccumulateFunction> clazz = (Class<? extends AccumulateFunction>)this.classLoader.loadClass( className );
             return (AccumulateFunction) clazz.newInstance();
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
