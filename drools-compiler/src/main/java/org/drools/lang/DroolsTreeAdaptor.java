@@ -30,7 +30,7 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 			tree.setStartCharOffset(((CommonToken) token).getStartIndex());
 			tree.setEndCharOffset(((CommonToken) token).getStopIndex());
 
-			if (token.getType() == DRLLexer.END
+			if (token.getType() == DRLLexer.VK_END
 					|| token.getType() == DRLLexer.VK_EVAL
 					|| token.getType() == DRLLexer.THEN
 					|| token.getType() == DRLLexer.WHEN
@@ -56,7 +56,7 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_GLOBAL
 					|| token.getType() == DRLLexer.VK_IMPORT
 					|| token.getType() == DRLLexer.VK_IN
-					|| token.getType() == DRLLexer.INIT
+					|| token.getType() == DRLLexer.VK_INIT
 					|| token.getType() == DRLLexer.VK_LOCK_ON_ACTIVE
 					|| token.getType() == DRLLexer.VK_NO_LOOP
 					|| token.getType() == DRLLexer.VK_NOT

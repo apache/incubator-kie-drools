@@ -246,9 +246,7 @@ public class RuleParserTest extends TestCase {
         assertNotNull( rule.getConsequence() );
     }
 
-    // FIXME Keywords END and THEN should not be used as identifiers: try to
-    // enable it
-    public void FIXME_testKeywordCollisions() throws Exception {
+    public void testKeywordCollisions() throws Exception {
         parseResource( "compilation_unit",
                        "compilation_unit",
                        "eol_funny_business.drl" );

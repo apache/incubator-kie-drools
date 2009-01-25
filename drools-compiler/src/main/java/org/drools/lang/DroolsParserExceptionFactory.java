@@ -292,8 +292,6 @@ public class DroolsParserExceptionFactory {
 			return "null";
 		case DRLLexer.THEN:
 			return "then";
-		case DRLLexer.END:
-			return "end";
 		case DRLLexer.GRAVE_ACCENT:
 			return "`";
 		case DRLLexer.SEMICOLON:

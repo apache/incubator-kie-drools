@@ -1,8 +1,5 @@
 package org.drools.lang;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.Operator;
 
@@ -58,6 +55,8 @@ public class DroolsSoftKeywords {
 	public static final String ACTION = "action";
 	public static final String REVERSE = "reverse";
 	public static final String RESULT = "result";
+    public static final String END = "end";
+    public static final String INIT = "init";
 	
 	public static boolean isOperator( final String operator, final boolean negated ) {
 	    try {

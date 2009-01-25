@@ -1,4 +1,4 @@
-package test.dialect.rule.when.end.package.mine;
+package test.dialect.rule.end.package.mine;
 
 global java.lang.String rule;
 

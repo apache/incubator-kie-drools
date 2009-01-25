@@ -18,6 +18,7 @@ public class DRLIncompleteCodeTest extends TestCase {
 		String input = "package a.b.c import a.b.c.* query MyQuery rule MyRule when Class ( property memberOf collexction ";
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
+		System.out.println(parser.getErrors());
 
 		assertNotNull(descr);
 		assertEquals("a.b.c", descr.getNamespace());
