@@ -90,6 +90,8 @@ tokens {
 	VK_REVERSE;
 	VK_RESULT;
 	VK_OPERATOR;
+	VK_END;
+	VK_INIT;
 }
 
 @parser::header {
@@ -523,10 +525,9 @@ query
 		parameters? 
 	{	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);	}
 		normal_lhs_block 
-		END SEMICOLON?
-	{	emit($END, DroolsEditorType.KEYWORD);
-		emit($SEMICOLON, DroolsEditorType.SYMBOL);	}
-		-> ^(query_key query_id parameters? normal_lhs_block END)
+		end=end_key SEMICOLON?
+	{	emit($SEMICOLON, DroolsEditorType.SYMBOL);	}
+		-> ^(query_key query_id parameters? normal_lhs_block end_key)
 	;
 
 query_id
@@ -560,9 +561,8 @@ type_declaration
 	:	declare_key  type_declare_id
 		decl_metadata*
 		decl_field*
-		END
-	{	emit($END, DroolsEditorType.KEYWORD);	}
-		-> ^(declare_key type_declare_id decl_metadata* decl_field* END)
+		end_key
+		-> ^(declare_key type_declare_id decl_metadata* decl_field* end_key)
 	;
 
 type_declare_id
@@ -604,10 +604,9 @@ template
 		semi1=SEMICOLON?
 	{	emit($semi1, DroolsEditorType.SYMBOL);	}
 		template_slot+
-		END semi2=SEMICOLON?
-	{	emit($END, DroolsEditorType.KEYWORD);
-		emit($semi2, DroolsEditorType.SYMBOL);	}
-		-> ^(template_key template_id template_slot+ END)
+		end=end_key semi2=SEMICOLON?
+	{	emit($semi2, DroolsEditorType.SYMBOL);	}
+		-> ^(template_key template_id template_slot+ end_key)
 	;
 
 template_id
@@ -962,7 +961,7 @@ accumulate_statement
 accumulate_init_clause
 @init  { boolean isFailed = true;	}
 @after { isFailed = false;	}
-	:	INIT {	emit($INIT, DroolsEditorType.KEYWORD);	}
+	:	init_key 
 	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT);	}
 		pc1=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] cm1=COMMA? {	emit($cm1, DroolsEditorType.SYMBOL);	} 
 	{	if (pc1 != null && ((DroolsTree) pc1.getTree()).getText() != null) emit(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION);	}
@@ -977,7 +976,7 @@ accumulate_init_clause
 		}	
 	}
 		res1=result_key {	emit($res1.start, DroolsEditorType.KEYWORD);	} pc4=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE]
-	-> ^(VT_ACCUMULATE_INIT_CLAUSE ^(INIT $pc1) ^(action_key $pc2) ^(reverse_key $pc3)? ^(result_key $pc4))
+	-> ^(VT_ACCUMULATE_INIT_CLAUSE ^(init_key $pc1) ^(action_key $pc2) ^(reverse_key $pc3)? ^(result_key $pc4))
 	;
 finally { 
 	if (isEditorInterfaceEnabled && isFailed && input.LA(1) == ID && validateLT(1, DroolsSoftKeywords.RESULT)) {
@@ -1366,8 +1365,8 @@ rhs_chunk_data
 			emit($THEN, DroolsEditorType.KEYWORD);
 			emit(Location.LOCATION_RHS);
 		}	}
-			( any=~END { emit($any, DroolsEditorType.CODE_CHUNK); } )* 
-		end1=END {	emit($end1, DroolsEditorType.KEYWORD);	}
+			not_end_key* 
+		end_key 
 		SEMICOLON? {	emit($SEMICOLON, DroolsEditorType.KEYWORD);	}
 	;
 
@@ -1682,6 +1681,22 @@ result_key
 		->	VK_RESULT[$id]
 	;
 
+end_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.END))}?=>  id=ID
+	{	emit($id, DroolsEditorType.KEYWORD);	}
+		->	VK_END[$id]
+	;
+
+not_end_key
+	:	{!(validateIdentifierKey(DroolsSoftKeywords.END))}?=>  any=.
+	{	emit($any, DroolsEditorType.CODE_CHUNK);	}
+	;
+
+init_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.INIT))}?=>  id=ID
+	{	emit($id, DroolsEditorType.KEYWORD);	}
+		->	VK_INIT[$id]
+	;
 
 WS      :       (	' '
                 |	'\t'
@@ -1749,15 +1764,8 @@ COLLECT
 	:	'collect'
 	;
 
-END	:	'end'
-	;
-
 FROM
 	:	'from'
-	;
-
-INIT
-	:	'init'
 	;
 
 NULL	

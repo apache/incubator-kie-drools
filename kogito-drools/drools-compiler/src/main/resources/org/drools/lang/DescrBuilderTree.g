@@ -114,7 +114,7 @@ template returns [FactTemplateDescr factTemplateDescr]
 @init{
 	List slotList = new LinkedList<FieldTemplateDescr>();
 }	:	^(start=VK_TEMPLATE id=VT_TEMPLATE_ID
-			( ts=template_slot {slotList.add($ts.fieldTemplateDescr);})+ end=END)
+			( ts=template_slot {slotList.add($ts.fieldTemplateDescr);})+ end=VK_END)
 	{	$factTemplateDescr = factory.createFactTemplate($start, $id, slotList, $end);	}
 	;
 
@@ -124,7 +124,7 @@ template_slot returns [FieldTemplateDescr fieldTemplateDescr]
 	;
 
 query returns [QueryDescr queryDescr]
-	:	^(start=VK_QUERY id=VT_QUERY_ID params=parameters? lb=lhs_block end=END)
+	:	^(start=VK_QUERY id=VT_QUERY_ID params=parameters? lb=lhs_block end=VK_END)
 	{	$queryDescr = factory.createQuery($start, $id, $params.paramList, $lb.andDescr, $end);	}
 	;
 
@@ -170,7 +170,7 @@ type_declaration returns [TypeDeclarationDescr declaration]
 		List<TypeFieldDescr> declFieldList = new LinkedList<TypeFieldDescr>(); }
 	:	^(VK_DECLARE id=VT_TYPE_DECLARE_ID 
 			(dm=decl_metadata {declMetadaList.add($dm.attData);	})* 
-			(df=decl_field {declFieldList.add($df.fieldDescr);	})* END)
+			(df=decl_field {declFieldList.add($df.fieldDescr);	})* VK_END)
 	{	$declaration = factory.createTypeDeclr($id, declMetadaList, declFieldList);	}
 	;
 
@@ -264,7 +264,7 @@ accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr
 
 accumulate_init_clause [PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] 
 	:	^(VT_ACCUMULATE_INIT_CLAUSE 
-			^(start=INIT pc1=VT_PAREN_CHUNK) 
+			^(start=VK_INIT pc1=VT_PAREN_CHUNK) 
 			^(VK_ACTION pc2=VT_PAREN_CHUNK) 
 			rev=accumulate_init_reverse_clause?
 			^(VK_RESULT pc3=VT_PAREN_CHUNK))
