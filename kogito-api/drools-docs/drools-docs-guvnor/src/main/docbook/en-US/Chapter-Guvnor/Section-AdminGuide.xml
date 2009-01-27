@@ -18,22 +18,22 @@
   <section>
     <title>Installation</title>
 
-    <para>Installation for most people is very simple. The BRMS application is
+    <para>Installation for most people is very simple. The Guvnor application is
     deployed as a .war file, which can be deployed in application servers or
     servlet containers with little or no configuration if you are happy with
     the defaults.</para>
 
-    <para>When you have downloaded the BRMS distribution (which you can get
+    <para>When you have downloaded the Guvnor distribution (which you can get
     from http://www.jboss.org/drools), you will find the
     drools-jbrms.war file in the zip file. Copy the WAR file into the
     deployment directory of you app server, and then start your app server. If
     you need to customize some settings, you can first "explode" (unzip) the
     war file, and change any configuration settings, and then either zip it
-    up, or deploy it "exploded".</para>
+    up, or deploy it "exploded". (Note in the JBoss Application Server you will need to make sure the exploded folder name ends in ".war")</para>
 
-    <para>Once the drools-jbrms.war has been placed in the deployment
+    <para>Once the drools-guvnor.war has been placed in the deployment
     directory, and the application server started, you should navigate to
-    http://localhost/drools-jbrms and check that the BRMS appears. (Obviously
+    http://localhost/drools-jbrms and check that Guvnor appears. (Obviously
     substitute the URL for what your application server is configured
     to).</para>
 
@@ -42,38 +42,17 @@
     <section>
       <title>Supported and recommended platforms</title>
 
-      <para>The BRMS is capable of running in any application server that
+      <para>Guvnor is capable of running in any application server that
       supports Java SE5 (JEE 5 is not required) - this includes servlet
       containers like tomcat.</para>
 
-      <para>It is actively tested on JBoss platforms, and these are
+      <para>It is actively teste/developed on JBoss app server platforms, and these are
       recommended if you are able to use them, or don't have any existing
       infrastructure. However, it is possible to use any container/app server,
       in some cases with minor configuration tweaks (consult the wiki for
-      specific tips).</para>
+      specific tips - many in the community have been able to make it run on various platforms).</para>
 
-      <para>The following are a list of recommended platforms (all freely
-      available), in all cases, you can substitute newer versions of the same
-      and it should work (as time may have passed since this was
-      written):</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>JBoss Application Server 4.2.x</para>
-
-          <para>This is recommended as a general application server solution,
-          if you need to run other applications alongside the BRMS.</para>
-        </listitem>
-
-        <listitem>
-          <para>JBoss Web 1.0.1</para>
-
-          <para>This is an ideal solution if you need a "lighter" server to
-          run just the BRMS (perhaps stand alone).</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>You can of course download these from www.jboss.com for every
+      <para>You can of course download these app servers from www.jboss.com for every
       operating system.</para>
 
       <para>Deployment into JBoss platforms: If you are installing a new JBoss
@@ -87,7 +66,7 @@
   <section>
     <title>Database configuration</title>
 
-    <para>The BRMS uses the JCR standard for storing assets (such as rules).
+    <para>Guvnor uses the JCR standard for storing assets (such as rules).
     The default implementation is Apache Jackrabbit
     (http://jackrabbit.apache.org/). This includes an out of the box storage
     engine/database, which you can use as is, or configure to use an existing
@@ -96,7 +75,7 @@
     <section>
       <title>Changing the location of the data store</title>
 
-      <para>When you run the BRMS for the first time (starting up the app
+      <para>When you run Guvnor for the first time (starting up the app
       server), it will create a database in the [app server directory]/bin/
       directory (assuming you used on of the JBoss platforms). There is a
       repository.xml file, and a repository directory that are automatically
@@ -105,7 +84,7 @@
       <para>The location of the data store should be a secure location, that
       is backed up. The default location may not be suitable for this, so the
       easiest way is to set a more suitable location. If you want to change
-      this, please make sure you have stopped the BRMS (ie stopped the app
+      this, please make sure you have stopped Guvnor (ie stopped the app
       server or undeployed the application).</para>
 
       <para>To change the location, unzip the WAR file, and locate the
@@ -135,7 +114,7 @@
       location that you set in the components.xml.</para>
 
       <para>If there is no repository at the location specified (or in the
-      default location) then the BRMS will create a new empty one.</para>
+      default location) then Guvnor will create a new empty one.</para>
 
       <para>There are many more options which can be configured in the
       repository.xml, but for the most part, it is not recommended to change
@@ -143,12 +122,12 @@
     </section>
 
     <section>
-      <title>Configuring the BRMS to use an external RDBMS</title>
+      <title>Configuring Guvnor to use an external RDBMS</title>
 
       <para>In some cases it may be a requirement that you use an external
       RDBMS, such as Oracle, MySQL, or Microsoft SQL Server as the data store
       - this is permitted. In this case, the easiest thing to do is to start
-      up the BRMS with defaults (or with a suitable home directory as
+      up Guvnor with defaults (or with a suitable home directory as
       specified above) to let it generate the default repository.xml
       scaffolding.</para>
 
@@ -164,7 +143,7 @@
       uses the specific DDL to create the table structure (all major databases
       are supported).</para>
 
-      <para>The BRMS will create the tables the first time it is started up if
+      <para>Guvnor will create the tables the first time it is started up if
       it is running against a fresh (empty) RDBMS - so its important to note
       that the user credentials supplied have permissions to create tables (at
       least initially, on first run, after that they could be locked
@@ -186,7 +165,7 @@
 
       <para>Lucene is used to provide indexing across the semi structured
       data, and across versions. This indexing is generally best stored on a
-      filesystem, local to the BRMS (as per the default in the repository.xml)
+      filesystem, local to Guvnor (as per the default in the repository.xml)
       - in most cases the default is fine.</para>
     </section>
   </section>
@@ -194,9 +173,9 @@
   <section>
     <title>Security - Authentication and basic access</title>
 
-    <para>Please note that giving someone access to the BRMS indicates a level
+    <para>Please note that giving someone access to Guvnor indicates a level
     of trust. Being able to editing and build rules is providing a great deal
-    of power to a user. Thus you should not open up the BRMS to your entire
+    of power to a user. Thus you should not open up Guvnor to your entire
     organisation - but instead to a select few. Use https (http with TLS/SSL)
     whereever possible (even internally in a companies network this is a good
     idea). Use this power wisely - this not a "run of the mill" application
@@ -212,7 +191,7 @@
     authorization mechanism, the upshot of which means its very flexable and
     able to integrate into most existing environments.</para>
 
-    <para>Out of the box, the BRMS shows a login screen, but no security
+    <para>Out of the box, Guvnor shows a login screen, but no security
     credentials are enforced - the user name is used, but no password check is
     performed. To enforce authentication, you need to configure it to use an
     appropriate user directory (you may have Active Directory or similar
@@ -285,7 +264,7 @@
 &lt;/application-policy&gt;</programlisting>
 
       <para>To use the above, you would put jaas-config-name="brms" in the
-      security:identity tag in the components.xml for the BRMS.</para>
+      security:identity tag in the components.xml for Guvnor.</para>
 
       <para>Similar configuration examples can be found for other directory
       services.</para>
@@ -425,7 +404,7 @@
       be). Restoring it is simply a matter of copying across the repository
       directory.</para>
 
-      <para>Ideally you will either stop the BRMS application while a file
+      <para>Ideally you will either stop Guvnor application while a file
       backup is being done, or ensure that no one is using it.</para>
 
       <para>In the case of using an external database (eg Oracle, MySQL), then
@@ -439,7 +418,7 @@
     <section>
       <title>Asset list customization</title>
 
-      <para>In a few places in the BRMS there is an asset list: this list can
+      <para>In a few places in Guvnor there is an asset list: this list can
       be customized by looking for the AssetListTable.properties file. You can
       then set the header names and the "getter" methods that are used to
       populate the columns. eg you could add in getCreator, or
@@ -456,7 +435,7 @@
       server.</para>
 
       <para>To configure a selector, you will need to "explode" the war file
-      for the BRMS, and locate the selectors.properties file (note you can
+      for Guvnor, and locate the selectors.properties file (note you can
       also put your own selectors.properties file in the system classpath if
       you like). In this file, you will find details on how you can configure
       a custom selector. The options are to use a drl file, or the name of a
@@ -468,7 +447,7 @@
     </section>
 
     <section>
-      <title>Adding your own logos or styles to the BRMS web GUI</title>
+      <title>Adding your own logos or styles to Guvnor web GUI</title>
 
       <para>Everyone loves having their own logo on screen - this is to ensure
       that the people using the application don't forget who they work for or
@@ -481,7 +460,7 @@
       <programlisting>
 &lt;html&gt;
 &lt;head&gt;
-  &lt;meta name='gwt:module' content='org.drools.brms.JBRMS'&gt;
+  &lt;meta name='gwt:module' content='org.drools.guvnor.Guvnor'&gt;
   &lt;link rel='stylesheet' href='JBRMS.css'&gt;
   &lt;title&gt;JBoss Business Rules Management System&lt;/title&gt;
      &lt;link rel="shortcut icon" href="images/drools.gif" type="image/gif"&gt;
@@ -495,16 +474,16 @@
 &lt;/body&gt;
 &lt;/html&gt;</programlisting>
 
-      <para>The above is the contents of the JBRMS.html file - it is fairly
+      <para>The above is the contents of the Guvnor.html file - it is fairly
       empty (as most of the work is done by the GWT - the GUI is built
       dynamically in the browser). The parts you can customise are the style
-      sheet - you can either edit the JBRMS.css (or better yet, take a copy,
+      sheet - you can either edit the Guvnor.css (or better yet, take a copy,
       and change the style to be what you need), the "shortcut icon" (its what
       shows in the address bar in the browser etc - also change the "icon"
       link to be the same so it works in IE), and the header logo. The rest
       should be left as is, to allow the GWT components to be loaded and
       attached to the page. This html page is loaded only once by the browser
-      when the user accesses the BRMS web GUI.</para>
+      when the user accesses Guvnor web GUI.</para>
 
       <para>The best way to customize is to take a copy of the JBRMS.html -
       and then edit. You can also change the URL by editing the web.xml via
