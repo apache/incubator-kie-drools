@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
   <title>Introduction</title>
 
   <para>This section introduces the BRMS. See the other relevant sections for
@@ -16,8 +16,9 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Guvnor/NewMainScreen.png" format="PNG"
-                   scalefit="1" />
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewMainScreen.png"
+                   format="PNG" scalefit="1"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -27,41 +28,44 @@
 
     <para>BRMS stands for Business Rules Management System.</para>
 
-    <para>This is the component of JBoss Rules which covers rule management,
-    storage, editing and deployment. A Web based user interface is provided so
-    this tool can be used by people who don't work in IDEs or text editors,
-    but it is intended for a wide audience.</para>
-
     <para>A BRMS allows people to manage rules in a multi user environment, it
     is a single point of truth for your business rules, allowing change in a
     controlled fashion, with user friendly interfaces.</para>
 
-    <section>
-      <title>When to use a BRMS</title>
+    <para>Guvnor is the name of the web and network related components for
+    managing rules with drools. This combined with the core drools engine and
+    other tools forms "a BRMS". </para>
 
-      <para>You should consider a BRMS if any of the following apply to you:
+    <section>
+      <title>When to use Guvnor</title>
+
+      <para>You should consider Guvnor if any of the following apply to you:
       You need to manage versions/deployment of rules, you need to let
       multiple users of different skill levels access and edit rules, you
       don't have any existing infrastructure to manage rules, you have lots of
       "business" rules (as opposed to technical rules as part of an
-      application). </para>
+      application).</para>
 
-      <para>A BRMS can be used on its own, or with the IDE tooling (often both
-      together). </para>
+      <para>Guvnor can be used on its own, or with the IDE tooling (often both
+      together).</para>
 
-      <para>A BRMS can be "branded" and made part of your application, or it
+      <para>Guvnor can be "branded" and made part of your application, or it
       can be a central rule repository.</para>
 
       <section>
-        <title>When to not use a BRMS</title>
+        <title>When to not use Guvnor</title>
 
-        <para>In some situations applications may exist which have
-        the rules in a database (for instance as part of an existing application), 
-        and no new application is needed to manage the rules. </para>
+        <para>In some situations applications may exist which have the rules
+        in a database (for instance as part of an existing application), and
+        no new application is needed to manage the rules.</para>
 
-        <para>Otherwise, perhaps an existing rule management system and user interface
-        already exists (and is tailored to your environment already) - in this
-        case migrating to the BRMS may not be necessary.</para>
+        <para>In this case, the drools-template library is worth a look - you
+        can define templates for rules to be generated from any tablular data
+        source.</para>
+
+        <para>Otherwise, perhaps an existing rule management system and user
+        interface already exists (and is tailored to your environment already)
+        - in this case migrating to Guvnor may not be necessary.</para>
 
         <para>If you are using rules to solve complex algorithmic problems,
         and the rules are essentially an integral part of the application (and
@@ -70,14 +74,15 @@
     </section>
 
     <section>
-      <title>Who uses a BRMS</title>
+      <title>Who uses Guvnor</title>
 
       <para>The main roles of people who would use a BRMS are: Business
-      Analyst, Rule expert, Developer, Administrators (rule administrators etc).
-      </para>
+      Analyst, Rule expert, Developer, Administrators (rule administrators
+      etc).</para>
 
-      <para>The BRMS is designed in such a way as these different roles can be
-      accommodated, it can be controlled how much is exposed to different users in a safe fashion.</para>
+      <para>Guvnor is designed in such a way as these different roles can be
+      accommodated, it can be controlled how much is exposed to different
+      users in a safe fashion.</para>
     </section>
   </section>
 
@@ -88,22 +93,22 @@
       <listitem>
         <para>Multiple types of rule editors (GUI, text)</para>
       </listitem>
+
       <listitem>
         <para>Version control (historical assets)</para>
       </listitem>
+
       <listitem>
         <para>Categorization</para>
       </listitem>
+
       <listitem>
         <para>Build and deploy</para>
       </listitem>
+
       <listitem>
         <para>Store multiple rule "assets" together as a package</para>
       </listitem>
-      
-      
-      
-      
     </itemizedlist>
   </section>
 </section>
