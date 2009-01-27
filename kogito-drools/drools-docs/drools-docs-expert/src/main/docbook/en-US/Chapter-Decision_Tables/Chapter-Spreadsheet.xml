@@ -542,6 +542,24 @@
             </row>
 
             <row>
+              <entry>AGENDA-GROUP</entry>
+
+              <entry>Cell values in this column mean that the rule-row belongs
+              to the given agenda group (that is one way of controlling flow between groups of rules - see also "rule flow").</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>RULEFLOW-GROUP</entry>
+
+              <entry>Cell values in this column mean that the rule-row belongs
+              to the given rule-flow group.</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
               <entry>Worksheet</entry>
 
               <entry>By default, the first worksheet is only looked at for
@@ -553,8 +571,13 @@
         </tgroup>
       </table>
 
+      <para>
+	Below you will find examples of using the HEADER keywords, which effects the rules generated for each row.
+	Note that the header name is what is important in most cases. If no value appears in the cells below it, then the attribute will not apply (it will be ignored) for that specific row.
+      </para>
+
       <screenshot>
-        <screeninfo>Example usage of keywords for imports, functions
+        <screeninfo>Example usage of keywords for imports, headers etc..
         etc.</screeninfo>
 
         <mediaobject>
@@ -564,8 +587,12 @@
         </mediaobject>
       </screenshot>
 
+      <para>
+	The following is an example of Import (comma delimited), Variables (gloabls) - also comma delimited, and a function block (can be multiple functions - just the usual drl syntax). This can appear in the same column as the "RuleSet" keyword, and can be below all the rule rows if you desire.
+      </para>
+
       <screenshot>
-        <screeninfo>Example usage of keywords for imports, functions
+        <screeninfo>Example usage of keywords forfunctions
         etc.</screeninfo>
 
         <mediaobject>
