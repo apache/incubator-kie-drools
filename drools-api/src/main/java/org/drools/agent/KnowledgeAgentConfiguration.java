@@ -3,11 +3,12 @@ package org.drools.agent;
 import org.drools.PropertiesConfiguration;
 
 /**
- * drools.agent.scanResources = <true|false>
- * drools.agent.scanDirectories = <true|false>
- * drools.agent.newInstance = <true|false> // currently this is hard coded to true
- * drools.agent.monitorChangeSetEvents = <true|false>
- *
+ * <p>
+ * drools.agent.scanResources = &lt;true|false&gt;<br/>
+ * drools.agent.scanDirectories = &lt;true|false&gt;<br/>
+ * drools.agent.newInstance = &lt;true|false&gt; // currently this is hard coded to true<br/>
+ * drools.agent.monitorChangeSetEvents = &lt;true|false&gt;<br/>
+ * </p>
  * @see org.drools.agent.KnowledgeAgent
  * @see org.drools.agent.KnowledgeAgentConfiguration 
  */
