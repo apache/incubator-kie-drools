@@ -3,6 +3,7 @@ package org.drools.agent;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.ProviderInitializationException;
 
 /**
@@ -60,6 +61,11 @@ public class KnowledgeAgentFactory {
     public static KnowledgeAgentConfiguration newKnowledgeAgentConfiguration(Properties properties) {
         return getKnowledgeAgentProvider().newKnowledgeAgentConfiguration( properties );
     }
+    
+    public static KnowledgeAgent newKnowledgeAgent(String name) {
+        return getKnowledgeAgentProvider().newKnowledgeAgent( name,
+                                                              KnowledgeBaseFactory.newKnowledgeBase() );
+    }    
 
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    KnowledgeBase kbase) {
@@ -67,6 +73,13 @@ public class KnowledgeAgentFactory {
                                                               kbase );
     }
 
+    public static KnowledgeAgent newKnowledgeAgent(String name,
+                                                   KnowledgeAgentConfiguration configuration) {
+        return getKnowledgeAgentProvider().newKnowledgeAgent( name,
+                                                              KnowledgeBaseFactory.newKnowledgeBase(),
+                                                              configuration );
+    }    
+    
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    KnowledgeBase kbase,
                                                    KnowledgeAgentConfiguration configuration) {
