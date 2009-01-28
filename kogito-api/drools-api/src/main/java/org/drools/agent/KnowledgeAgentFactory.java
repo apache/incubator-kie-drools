@@ -37,7 +37,7 @@ import org.drools.ProviderInitializationException;
  *                              // this cannot currently be set to false for incremental building
  *       
  * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
- *                                                                  kbase, // the rulebase to use, the Agent will also monitor any exist knowledge definitions
+ *                                                                  kbase, // the KnowledgeBase to use, the Agent will also monitor any exist knowledge definitions
  *                                                                  aconf );
  * kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
  * </pre>
