@@ -110,7 +110,39 @@ Indexed terms:
 
 Citations:
 ---------
-TODO
+<para>To quote a Drools mailing list regular: 
+<blockquote>
+  <attribution>Dave Hamu</attribution>
+  <para>It seems to me
+    that in the excitement of working with rules engines, that people forget
+    that a rules engine is only one piece of a complex application or
+    solution. Rules engines are not really intended to handle workflow or
+    process executions nor are workflow engines or process management tools
+    designed to do rules. Use the right tool for the job. Sure, a pair of
+    pliers can be used as a hammering tool in a pinch, but that's not what
+    it's designed for.</para>
+  </blockquote>
+</para>
+
+You can see the effect of the above example code here:
+https://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/docs/drools-expert/html/ch01.html#d0e231
+
+
+Show source of reference:
+-------------------------
+<para>The term "Production Rule" originates from formal grammar - where it
+    is described as "an abstract structure that describes a formal language
+    precisely, i.e., a set of rules that mathematically delineates a (usually
+    infinite) set of finite-length strings over a (usually finite) alphabet"
+    (<ulink url="http://en.wikipedia.org/wiki/Formal_grammar">
+    <citetitle>wikipedia</citetitle>
+    </ulink>).
+</para>
+
+You can see the the effect of the above example code here:
+https://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/docs/drools-expert/html/ch01.html#d0e41
+
+You can of course combine the <blockquote>, <ulink> and <citetitle> together.
 
 
 Footnotes:
