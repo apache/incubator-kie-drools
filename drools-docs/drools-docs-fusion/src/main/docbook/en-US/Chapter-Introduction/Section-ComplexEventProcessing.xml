@@ -9,28 +9,31 @@
   <title>Complex Event Processing</title>
 
   <para>Although several tries were made, there isn't up to date any broadly
-  accepted definition on the term &lt;indexterm&gt;&lt;primary&gt;Complex
-  Event Processing&lt;/primary&gt;&lt;/indexterm&gt;. The term
-  &lt;indexterm&gt;&lt;primary&gt;Event&lt;/primary&gt;&lt;/indexterm&gt; by
-  itself is frequently overloaded and used to refer to several different
-  things, depending on the context it is used. Defining terms is not the goal
-  of this guide and as so, lets adopt a loose definition that, although not
-  formal, will allow us to proceed with a common understanding. </para>
+  accepted definition on the term Complex Event Processing. The term Event
+  by itself is frequently overloaded and used to refer to
+  several different things, depending on the context it is used. Defining
+  terms is not the goal of this guide and as so, lets adopt a loose definition
+  that, although not formal, will allow us to proceed with a common
+  understanding.</para>
+
+  <para>So, in the scope of this guide:</para>
 
   <important>
-    <para><emphasis role="bold">Event</emphasis>, in the scope of this guide,
-    is a record of a significant change of state. For instance, on a Stock
-    Broker application, when a sell operation is executed, it causes a change
-    of state in the domain. This change of state can be observed on several
-    entities in the domain, like the price of the securities that changed to
-    match the value of the operation, the owner of the individual traded
-    assets that change from the seller to the buyer, the balance of the
-    accounts from both seller and buyer that are credited and debited, etc.
-    Depending on how the domain is modelled, this change of state may be
-    represented by a single event, multiple atomic events or even hierarchies
-    of correlated events. In any case, in the context of this guide, Event is
-    the record of the change on a particular data in the domain.</para>
+    <para><indexterm><primary>Event</primary></indexterm>
+    <emphasis role="bold">Event</emphasis>, is a record of a significant
+    change of state in the application domain.</para>
   </important>
+
+  <para>For instance, on a Stock Broker application, when a sell operation is
+  executed, it causes a change of state in the domain. This change of state
+  can be observed on several entities in the domain, like the price of the
+  securities that changed to match the value of the operation, the owner of
+  the individual traded assets that change from the seller to the buyer, the
+  balance of the accounts from both seller and buyer that are credited and
+  debited, etc. Depending on how the domain is modelled, this change of state
+  may be represented by a single event, multiple atomic events or even
+  hierarchies of correlated events. In any case, in the context of this guide,
+  Event is the record of the change on a particular data in the domain.</para>
 
   <para>Events are processed by computer systems since they were invented, and
   throughout the history, systems responsible for that were given different
@@ -57,17 +60,21 @@
   field of research, but sets a very highlevel and common understanding for
   the concepts this guide will introduce.</para>
 
-  <para>Wikipedia defines Complex Event Processing as:</para>
+  <para>The current understanding of what Complex Event Processing is may be
+  briefly described as the following quote from Wikipedia:</para>
 
-  <blockquote>
-    <para>"Complex Event Processing, or CEP, is primarily an event processing
-    concept that deals with the task of processing multiple events with the
-    goal of identifying the meaningful events within the event cloud. CEP
-    employs techniques such as detection of complex patterns of many events,
-    event correlation and abstraction, event hierarchies, and relationships
-    between events such as causality, membership, and timing, and event-driven
-    processes."</para>
-  </blockquote>
+  <important>
+    <para>"<indexterm><primary>Complex Event Processing</primary></indexterm>
+    <emphasis role="bold">Complex Event Processing</emphasis>, or CEP,
+    is primarily an event processing concept that deals with the task of
+    processing multiple events with the goal of identifying the meaningful
+    events within the event cloud. CEP employs techniques such as detection of
+    complex patterns of many events, event correlation and abstraction, event
+    hierarchies, and relationships between events such as causality,
+    membership, and timing, and event-driven processes."</para>
+  </important>
 
-  <para></para>
+  <para>In other words, CEP is about detecting and selecting the interesting 
+  events (and only them), finding their relationships and infering new data from them 
+  and their relationships.</para>
 </section>
