@@ -24,8 +24,8 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  * 
- * StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
- * session.executeIterable( collection );
+ * StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+ * ksession.executeIterable( collection );
  * </pre>
  * 
  * <p>
@@ -40,9 +40,9 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * 
  * <p>code snippet for setting a global:</p>
  * <pre>
- * StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
- * session.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
- * session.executeIterable( collection ); // this will now execute and will be able to resolve the "hbnSession" identifier.
+ * StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+ * ksession.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
+ * ksession.executeIterable( collection ); // this will now execute and will be able to resolve the "hbnSession" identifier.
  * </pre>
  * 
  * <p>
@@ -53,7 +53,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * 
  * <p>This example shows the setting of both an in and an out global, as well as both an in and an out fact.</p>
  * <pre>
- * Parameters parameters = session.newParameters();
+ * Parameters parameters = ksession.newParameters();
  * Map<String, Object> globalsIn = new HashMap<String, Object>();
  * globalsIn.put( "inString", "string" );
  * parameters.getGlobalParams().setIn( globalsIn );        
@@ -64,7 +64,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * parameters.getFactParams().setIn( factIn );
  * parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );         
  * 
- * StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( collection, // these facts are anonymous
+ * StatelessKnowledgeSessionResults results = ksession.executeObjectWithParameters( collection, // these facts are anonymous
  *                                                                                 parameters );
  * </pre>
  * <p>
