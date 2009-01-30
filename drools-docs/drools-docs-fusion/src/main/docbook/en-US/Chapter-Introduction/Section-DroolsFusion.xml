@@ -17,7 +17,7 @@
   <itemizedlist>
     <listitem>
       <para>Business rules are frequently defined based on the occurrence of
-      scenarios triggered by events. Examples could be: </para>
+      scenarios triggered by events. Examples could be:</para>
 
       <itemizedlist>
         <listitem>
@@ -63,10 +63,129 @@
   born appart and although the industry evolved and one can find good products
   on the market, they either focus on event processing or on business rules
   management. That is due not only because of historical reasons but also
-  because, even overlapping in part, use cases do have some differences and
-  different requirements.</para>
+  because, even overlapping in part, use cases do have some different
+  requirements.</para>
 
-  <para></para>
+  <important>
+    <para>Drools was also born as a rules engine several years ago, but
+    following the vision of becoming a single platform for behavioral
+    modelling, it soon realized that it could only achieve this goal by
+    crediting the same importante to the three complementary business
+    modelling techniques:</para>
 
-  <para></para>
+    <itemizedlist>
+      <listitem>
+        <para>Business Rules Management</para>
+      </listitem>
+
+      <listitem>
+        <para>Business Processes Management</para>
+      </listitem>
+
+      <listitem>
+        <para>Complex Event Processing</para>
+      </listitem>
+    </itemizedlist>
+  </important>
+
+  <para>In this context, Drools Fusion is the module responsible for adding
+  event processing capabilities into the platform. </para>
+
+  <para>Supporting Complex Event Processing, though, is much more than simply
+  understanding what an event is. CEP scenarios share several common and
+  distiguishing characteristics:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Usually required to process huge volumes of events, but only a
+      small percentage of the events are of real interest.</para>
+    </listitem>
+
+    <listitem>
+      <para>Events are usually immutable, since they are a record of state
+      change.</para>
+    </listitem>
+
+    <listitem>
+      <para>Usually the rules and queries on events must run in reactive
+      modes, i.e., react to the detection of event patterns.</para>
+    </listitem>
+
+    <listitem>
+      <para>Usually there are strong temporal relationships between related
+      events.</para>
+    </listitem>
+
+    <listitem>
+      <para>Individual events are usually not important. The system is
+      concerned about patterns of related events and their
+      relationships.</para>
+    </listitem>
+
+    <listitem>
+      <para>Usually, the system is required to perform composition and
+      aggregation of events.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Based on this general common characteristics, Drools Fusion defined a
+  set of goals to be achieved in order to support Complex Event Processing
+  appropriately:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Support Events, with their propper semantics, as first class
+      citizens.</para>
+    </listitem>
+
+    <listitem>
+      <para>Allow detection, correlation, aggregation and composition of
+      events.</para>
+    </listitem>
+
+    <listitem>
+      <para>Support processing of Streams of events.</para>
+    </listitem>
+
+    <listitem>
+      <para>Support temporal constraints in order to model the temporal
+      relationships between events.</para>
+    </listitem>
+
+    <listitem>
+      <para>Support sliding windows of interesting events.</para>
+    </listitem>
+
+    <listitem>
+      <para>Support a session scoped unified clock.</para>
+    </listitem>
+
+    <listitem>
+      <para>Support the required volumes of events for CEP use cases.</para>
+    </listitem>
+
+    <listitem>
+      <para>Support to (re)active rules.</para>
+    </listitem>
+
+    <listitem>
+      <para>Support adapters for event input into the engine
+      (pipeline).</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>The above list of goals are based on the requirements not covered by
+  Drools Expert itself, since in a unified platform, all features of one
+  module are leveraged by the other modules. This way, Drools Fusion is born
+  with enterprise grade features like Pattern Matching, that is paramount to a
+  CEP product, but that is already provided by Drools Expert. In the same way,
+  all features provided by Drools Fusion are leveraged by Drools Flow (and
+  vice-versa) making process management aware of event processing and
+  vice-versa.</para>
+
+  <para>For the remaining of this guide, we will go through each of the
+  features Drools Fusion adds to the platform. All these features are
+  available to support different use cases in the CEP world, and the user is
+  free to select and use the ones that will help him model his business use
+  case.</para>
 </section>
