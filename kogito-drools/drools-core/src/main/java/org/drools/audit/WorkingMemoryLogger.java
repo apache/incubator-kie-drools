@@ -74,6 +74,7 @@ import org.drools.event.RuleFlowStartedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
+import org.drools.process.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.rule.Declaration;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
@@ -132,6 +133,13 @@ public abstract class WorkingMemoryLogger
     		((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
     		((StatelessKnowledgeSessionImpl) session).ruleFlowEventSupport.addEventListener( this );
     		((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
+    	} else if (session instanceof CommandBasedStatefulKnowledgeSession) {
+    		WorkingMemoryEventManager eventManager = 
+    			((CommandBasedStatefulKnowledgeSession) session).getCommandService().getSession();
+    		eventManager.addEventListener( (WorkingMemoryEventListener) this );
+    		eventManager.addEventListener( (AgendaEventListener) this );
+    		eventManager.addEventListener( (RuleFlowEventListener) this );
+    		eventManager.addEventListener( (RuleBaseEventListener) this );
     	} else {
     		throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
     	}

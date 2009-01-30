@@ -1,0 +1,37 @@
+package org.drools.process.command;
+
+import org.drools.StatefulSession;
+import org.drools.runtime.process.WorkItemHandler;
+
+public class RegisterWorkItemHandlerCommand implements Command<Object> {
+	
+	private WorkItemHandler handler;
+	private String workItemName;
+	
+	public WorkItemHandler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(WorkItemHandler handler) {
+		this.handler = handler;
+	}
+
+	public String getWorkItemName() {
+		return workItemName;
+	}
+
+	public void setWorkItemName(String workItemName) {
+		this.workItemName = workItemName;
+	}
+
+	public Object execute(StatefulSession session) {
+		session.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
+		return null;
+	}
+
+	public String toString() {
+		return "session.getWorkItemManager().registerWorkItemHandler("
+			+ workItemName + ", " + handler +  ");";
+	}
+
+}

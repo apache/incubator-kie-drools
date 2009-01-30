@@ -6,6 +6,7 @@ import org.drools.process.instance.timer.TimerInstance;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.TimerNode;
+import org.drools.workflow.instance.WorkflowProcessInstance;
 
 public class TimerNodeInstance extends EventBasedNodeInstance implements EventListener {
 
@@ -79,7 +80,7 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((ProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
     }
 
 }

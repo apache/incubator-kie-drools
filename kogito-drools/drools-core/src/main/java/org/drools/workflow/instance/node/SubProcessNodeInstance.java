@@ -119,12 +119,12 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
     }
     
     private void addProcessListener() {
-    	((ProcessInstance) getProcessInstance()).addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
+    	getProcessInstance().addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((ProcessInstance) getProcessInstance()).removeEventListener("processInstanceCompleted:" + processInstanceId, this, true);
+        getProcessInstance().removeEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
 
 	public void signalEvent(String type, Object event) {

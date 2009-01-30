@@ -47,10 +47,6 @@ public interface ProcessInstance extends org.drools.runtime.process.ProcessInsta
     
     void start();
 
-    void addEventListener(String type, EventListener eventListener, boolean external);
-    
-    void removeEventListener(String type, EventListener eventListener, boolean external);
-    
     void signalEvent(String type, Object event);
 
 }

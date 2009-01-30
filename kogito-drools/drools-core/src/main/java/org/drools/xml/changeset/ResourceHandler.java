@@ -62,7 +62,7 @@ public class ResourceHandler extends BaseAbstractHandler
             resource = new UrlResource( src );
         }
         
-        resource.setResourceType( ResourceType.valueOf( type ) );
+        resource.setResourceType( ResourceType.getResourceType( type ) );
         
         return resource;
     }

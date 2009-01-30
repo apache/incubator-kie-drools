@@ -17,14 +17,11 @@ package org.drools.compiler;
  */
 
 import java.beans.IntrospectionException;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,7 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
@@ -44,8 +40,8 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
+import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.definition.process.Process;
@@ -59,9 +55,7 @@ import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.ReaderResource;
-import org.drools.io.impl.UrlResource;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -71,7 +65,6 @@ import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
@@ -454,81 +447,72 @@ public class PackageBuilder {
                                      ResourceType type,
                                      ResourceConfiguration configuration) {
         try {
-            switch ( type ) {
-                case DRL : {
-                    ((InternalResource) resource).setResourceType( type );
-                    addPackageFromDrl( resource );
-                    break;
+            if ( ResourceType.DRL.equals( type )) {
+               ((InternalResource) resource).setResourceType( type );
+                addPackageFromDrl( resource );
+            } else if ( ResourceType.DSLR.equals( type )) {
+                ((InternalResource) resource).setResourceType( type );
+                addPackageFromDslr( resource );
+            } else if ( ResourceType.DSL.equals( type )) {
+                ((InternalResource) resource).setResourceType( type );
+                addDsl( resource );
+            } else if ( ResourceType.XDRL.equals( type )) {
+                ((InternalResource) resource).setResourceType( type );
+                addPackageFromXml( resource );
+            } else if ( ResourceType.DRF.equals( type )) {
+                ((InternalResource) resource).setResourceType( type );
+                addProcessFromXml( resource );
+            } else if ( ResourceType.DTABLE.equals( type )) {
+                ((InternalResource) resource).setResourceType( type );
+                DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
 
+                String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
+                                                                          dtableConfiguration );
+                addPackageFromDrl( new StringReader( string ) );
+            } else if ( ResourceType.PKG.equals( type )) {
+                InputStream is = resource.getInputStream();
+                Package pkg = (Package) DroolsStreamUtils.streamIn( is );
+                is.close();
+                addPackage( pkg );
+            } else if ( ResourceType.ChangeSet.equals( type )) {
+                ((InternalResource) resource).setResourceType( type );
+                XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+                if ( resource instanceof ClassPathResource ) {
+                    reader.setClassLoader( ((ClassPathResource) resource).getClassLoader() );
+                } else {
+                    reader.setClassLoader( this.configuration.getClassLoader() );
                 }
-                case DSLR : {
-                    ((InternalResource) resource).setResourceType( type );
-                    addPackageFromDslr( resource );
-                    break;
+                ChangeSet chageSet = reader.read( resource.getReader() );
+                if ( chageSet == null ) {
+                    // @TODO should log an error
                 }
-                case DSL : {
-                    ((InternalResource) resource).setResourceType( type );
-                    addDsl( resource );
-                    break;
-                }
-                case XDRL : {
-                    ((InternalResource) resource).setResourceType( type );
-                    addPackageFromXml( resource );
-                    break;
-                }
-                case DRF : {
-                    ((InternalResource) resource).setResourceType( type );
-                    addProcessFromXml( resource );
-                    break;
-                }
-                case DTABLE : {
-                    ((InternalResource) resource).setResourceType( type );
-                    DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
-
-                    String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
-                                                                              dtableConfiguration );
-                    addPackageFromDrl( new StringReader( string ) );
-                    break;
-                }
-                case PKG : {
-                    InputStream is = resource.getInputStream();
-                    Package pkg = (Package) DroolsStreamUtils.streamIn( is );
-                    is.close();
-                    addPackage( pkg );
-                    break;
-                }
-                case ChangeSet : {
-                    ((InternalResource) resource).setResourceType( type );
-                    XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
-                    if ( resource instanceof ClassPathResource ) {
-                        reader.setClassLoader( ((ClassPathResource) resource).getClassLoader() );
-                    } else {
-                        reader.setClassLoader( this.configuration.getClassLoader() );
-                    }
-                    ChangeSet chageSet = reader.read( resource.getReader() );
-                    if ( chageSet == null ) {
-                        // @TODO should log an error
-                    }
-                    for ( Resource nestedResource : chageSet.getResourcesAdded() ) {
-                        InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-                        if ( iNestedResourceResource.isDirectory() ) {
-                            this.resourceDirectories.add( iNestedResourceResource );
-                            for ( Resource childResource : iNestedResourceResource.listResources() ) {
-                                if ( ((InternalResource) childResource).isDirectory() ) {
-                                    continue; // ignore sub directories
-                                }
-                                ((InternalResource) childResource).setResourceType( iNestedResourceResource.getResourceType() );
-                                addKnowledgeResource( childResource,
-                                                      iNestedResourceResource.getResourceType(),
-                                                      iNestedResourceResource.getConfiguration() );
+                for ( Resource nestedResource : chageSet.getResourcesAdded() ) {
+                    InternalResource iNestedResourceResource = (InternalResource) nestedResource;
+                    if ( iNestedResourceResource.isDirectory() ) {
+                        this.resourceDirectories.add( iNestedResourceResource );
+                        for ( Resource childResource : iNestedResourceResource.listResources() ) {
+                            if ( ((InternalResource) childResource).isDirectory() ) {
+                                continue; // ignore sub directories
                             }
-                        } else {
-                            addKnowledgeResource( iNestedResourceResource,
+                            ((InternalResource) childResource).setResourceType( iNestedResourceResource.getResourceType() );
+                            addKnowledgeResource( childResource,
                                                   iNestedResourceResource.getResourceType(),
                                                   iNestedResourceResource.getConfiguration() );
                         }
+                    } else {
+                        addKnowledgeResource( iNestedResourceResource,
+                                              iNestedResourceResource.getResourceType(),
+                                              iNestedResourceResource.getConfiguration() );
                     }
                 }
+            } else {
+            	ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder(type);
+            	if (builder != null) {
+	            	builder.setPackageBuilder(this);
+	            	builder.addKnowledgeResource(resource, type, configuration);
+            	} else {
+            		throw new RuntimeException("Unknown resource type: " + type);
+            	}
             }
         } catch ( RuntimeException e ) {
             throw e;
