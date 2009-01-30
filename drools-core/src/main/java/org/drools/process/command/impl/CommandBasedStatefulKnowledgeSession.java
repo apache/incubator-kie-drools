@@ -15,6 +15,7 @@ import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.GetProcessInstanceCommand;
 import org.drools.process.command.InsertObjectCommand;
+import org.drools.process.command.RegisterWorkItemHandlerCommand;
 import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.runtime.Environment;
@@ -46,6 +47,10 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 		return commandService.execute(command);
 	}
 
+	public CommandService getCommandService() {
+		return commandService;
+	}
+	
 	public Collection<ProcessInstance> getProcessInstances() {
 		throw new UnsupportedOperationException();
 	}
@@ -65,7 +70,10 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 					commandService.execute(command);
 				}
 				public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
-					throw new UnsupportedOperationException();
+					RegisterWorkItemHandlerCommand command = new RegisterWorkItemHandlerCommand();
+					command.setWorkItemName(workItemName);
+					command.setHandler(handler);
+					commandService.execute(command);
 				}
 			};
 		}

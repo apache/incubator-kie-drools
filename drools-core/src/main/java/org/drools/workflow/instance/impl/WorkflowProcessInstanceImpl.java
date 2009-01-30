@@ -153,13 +153,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		this.nodeInstanceCounter = nodeInstanceCounter;
 	}
 
-	public Agenda getAgenda() {
-		if (getWorkingMemory() == null) {
-			return null;
-		}
-		return getWorkingMemory().getAgenda();
-	}
-
 	public WorkflowProcess getWorkflowProcess() {
 		return (WorkflowProcess) getProcess();
 	}

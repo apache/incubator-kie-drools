@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.Agenda;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -100,6 +101,13 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         return this.workingMemory;
     }
     
+	public Agenda getAgenda() {
+		if (getWorkingMemory() == null) {
+			return null;
+		}
+		return getWorkingMemory().getAgenda();
+	}
+
     public ContextContainer getContextContainer() {
         return ( ContextContainer ) getProcess();
     }
