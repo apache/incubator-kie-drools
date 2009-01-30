@@ -78,7 +78,7 @@ public class XmlWorkflowProcessDumper {
         xmlDump.append("</process>");
     }
     
-    private void visitHeader(WorkflowProcess process, StringBuffer xmlDump, boolean includeMeta) {
+    protected void visitHeader(WorkflowProcess process, StringBuffer xmlDump, boolean includeMeta) {
         xmlDump.append("  <header>" + EOL);
         visitImports(((org.drools.process.core.Process) process).getImports(), xmlDump);
         visitGlobals(((org.drools.process.core.Process) process).getGlobals(), xmlDump);
