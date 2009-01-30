@@ -59,7 +59,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     	for (Node node: getCompositeNode().getNodes()) {
 			if (node instanceof EventNode) {
 				if ("external".equals(((EventNode) node).getScope())) {
-					((ProcessInstance) getProcessInstance()).addEventListener(
+					getProcessInstance().addEventListener(
 							((EventNode) node).getType(), new EventListener() {
 						public String[] getEventTypes() {
 							return null;
