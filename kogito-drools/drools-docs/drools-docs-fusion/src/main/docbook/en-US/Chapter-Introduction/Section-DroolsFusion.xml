@@ -1,11 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-	<title>Drools Fusion</title>	
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Drools Fusion</title>
 
+  <para>Event Processing use cases, in general, share several requirements and
+  goals with Business Rules use cases. These overlaps happen both on the
+  business side and on the technical side.</para>
+
+  <para>On the Business side:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Business rules are frequently defined based on the occurrence of
+      scenarios triggered by events. Examples could be: </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>On an algorithmic trading application: take an action if the
+          security price increases X% compared to the day opening price, where
+          the price increases are usually denoted by events on a Stock Trade
+          application.</para>
+        </listitem>
+
+        <listitem>
+          <para>On a monitoring application: take an action if the temperature
+          on the server room increases X degrees in Y minutes, where sensor
+          readings are usually denoted by events.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Both business rules and event processing queries change frequently
+      and require immediate response for the business to adapt itself to new
+      market conditions, new regulations and new enterprise policies.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>From a technical perspective:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Both require seemless integration with the enterprise
+      infrastructure and applications, specially on autonomous governance,
+      including, but not limited to, lifecycle management, auditing, security,
+      etc.</para>
+    </listitem>
+
+    <listitem>
+      <para>Both have functional requirements like pattern matching and
+      non-functional requirements like response time and query/rule
+      explanation.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Even sharing requirements and goals, historically, both fields were
+  born appart and although the industry evolved and one can find good products
+  on the market, they either focus on event processing or on business rules
+  management. That is due not only because of historical reasons but also
+  because, even overlapping in part, use cases do have some differences and
+  different requirements.</para>
+
+  <para></para>
+
+  <para></para>
 </section>

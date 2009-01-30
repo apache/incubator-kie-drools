@@ -9,19 +9,19 @@
   <title>Complex Event Processing</title>
 
   <para>Although several tries were made, there isn't up to date any broadly
-  accepted definition on the term Complex Event Processing. The term Event
-  by itself is frequently overloaded and used to refer to
-  several different things, depending on the context it is used. Defining
-  terms is not the goal of this guide and as so, lets adopt a loose definition
-  that, although not formal, will allow us to proceed with a common
-  understanding.</para>
+  accepted definition on the term Complex Event Processing. The term Event by
+  itself is frequently overloaded and used to refer to several different
+  things, depending on the context it is used. Defining terms is not the goal
+  of this guide and as so, lets adopt a loose definition that, although not
+  formal, will allow us to proceed with a common understanding.</para>
 
   <para>So, in the scope of this guide:</para>
 
   <important>
-    <para><indexterm><primary>Event</primary></indexterm>
-    <emphasis role="bold">Event</emphasis>, is a record of a significant
-    change of state in the application domain.</para>
+    <para><indexterm>
+        <primary>Event</primary>
+      </indexterm> <emphasis role="bold">Event</emphasis>, is a record of a
+    significant change of state in the application domain.</para>
   </important>
 
   <para>For instance, on a Stock Broker application, when a sell operation is
@@ -64,17 +64,33 @@
   briefly described as the following quote from Wikipedia:</para>
 
   <important>
-    <para>"<indexterm><primary>Complex Event Processing</primary></indexterm>
-    <emphasis role="bold">Complex Event Processing</emphasis>, or CEP,
-    is primarily an event processing concept that deals with the task of
-    processing multiple events with the goal of identifying the meaningful
-    events within the event cloud. CEP employs techniques such as detection of
-    complex patterns of many events, event correlation and abstraction, event
-    hierarchies, and relationships between events such as causality,
-    membership, and timing, and event-driven processes."</para>
+    <blockquote>
+      <attribution><ulink
+          url="http://en.wikipedia.org/wiki/Complex_event_processing">
+          <citetitle>wikipedia</citetitle>
+        </ulink></attribution>
+
+      <para>"<indexterm>
+          <primary>Complex Event Processing</primary>
+        </indexterm> <emphasis role="bold">Complex Event
+      Processing</emphasis>, or CEP, is primarily an event processing concept
+      that deals with the task of processing multiple events with the goal of
+      identifying the meaningful events within the event cloud. CEP employs
+      techniques such as detection of complex patterns of many events, event
+      correlation and abstraction, event hierarchies, and relationships
+      between events such as causality, membership, and timing, and
+      event-driven processes."</para>
+    </blockquote>
   </important>
 
-  <para>In other words, CEP is about detecting and selecting the interesting 
-  events (and only them), finding their relationships and infering new data from them 
-  and their relationships.</para>
+  <para>In other words, CEP is about detecting and selecting the interesting
+  events (and only them) from an event cloud, finding their relationships and
+  infering new data from them and their relationships.</para>
+
+  <note><para>For the remaining of this guide, we will use the terms 
+   <emphasis role="bold">Complex Event Processing</emphasis>
+  and <emphasis role="bold">CEP</emphasis> as a broad reference for any of 
+  the related technologies
+  and techniques, including but not limited to, CEP, Complex Event Processing,
+  ESP, Event Stream Processing and Event Processing in general.</para></note>
 </section>
