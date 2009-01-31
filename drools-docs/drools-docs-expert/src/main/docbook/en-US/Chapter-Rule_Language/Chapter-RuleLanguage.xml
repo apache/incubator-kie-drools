@@ -16,6 +16,8 @@
 
       <xi:include href="Section-Function.xml" />
 
+      <xi:include href="Section-TypeDeclaration.xml" />
+
       <xi:include href="Section-Rule.xml" />
 
       <xi:include href="Section-Query.xml" />
