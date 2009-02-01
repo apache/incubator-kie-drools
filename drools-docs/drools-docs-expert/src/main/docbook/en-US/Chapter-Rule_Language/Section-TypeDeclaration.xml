@@ -12,20 +12,12 @@
     <para><replaceable>(updated to Drools 5.0)</replaceable></para>
   </note>
 
-  <figure>
-    <title>type declaration</title>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center"
-                   fileref="images/Chapter-Rule_Language/function.png"
-                   format="PNG" role=""></imagedata>
-      </imageobject>
-    </mediaobject>
-  </figure>
+  <warning>
+    <para>FIXME: add syntax diagram for declare</para>
+  </warning>
 
   <para>Type Declarations have two main goals in the rules engine: allow the
-  declaration of new types and/or allow the declaration of meta data for
+  declaration of new types and/or allow the declaration of metadata for
   types.</para>
 
   <itemizedlist>
@@ -40,10 +32,11 @@
     </listitem>
 
     <listitem>
-      <para>Declaring meta data: facts may have meta information associated to
+      <para>Declaring metadata: facts may have meta information associated to
       them. Examples of meta information include any kind of data that is not
-      represented by the fact attributes. This meta information may be queried
-      at runtime by the engine and used in the reasoning process.</para>
+      represented by the fact attributes and are consistent among all
+      instances of that fact type. This meta information may be queried at
+      runtime by the engine and used in the reasoning process.</para>
     </listitem>
   </itemizedlist>
 
@@ -151,11 +144,107 @@
     work to do anything useful. This way, Drools provides a simplified API
     that allows you to manipulate such facts from your DRL file.</para>
 
-    <para></para>
+    <para><warning>
+        <para>FIXME: Will we expose org.drools.rule.FactType through the
+        drools-api module? or will it remain an internal API?</para>
+      </warning></para>
 
-    <para>org.drools.rule.FactType</para>
-
     <para></para>
+  </section>
+
+  <section>
+    <title>Declaring Metadata</title>
+
+    <para>Metadata may be assigned to several different constructions in
+    Drools, like fact types, fact attributes and rules. Drools uses the
+    <emphasis role="bold">@</emphasis> symbol to introduce metadata, and it
+    always uses the form:</para>
+
+    <para><programlisting>@matadata_key( metadata_value )</programlisting>The
+    parenthesis and the metadata_value are optional.</para>
+
+    <para>For instance, if you want to declare a metadata attribute like
+    <emphasis>author</emphasis>, whose value is <emphasis>Bob</emphasis>, you
+    could simply write:</para>
+
+    <example>
+      <title>declaring an arbitraty metadata attribute</title>
+
+      <programlisting>@author( Bob )</programlisting>
+    </example>
+
+    <para>Drools allows the declaration of any arbitrary metadata attribute,
+    but some will have special meaning to the engine, while others are simply
+    available for querying at runtime. Drools allows the declaration of
+    metadata both for fact types and for fact attributes. Any metadata that is
+    declared before the fields of a fact type are assigned to the fact type,
+    while metadata declared after an attribute are assigned to the attribute
+    in particular.</para>
+
+    <example>
+      <title>declaring metadata attributes for fact types and
+      attributes</title>
+
+      <programlisting><emphasis role="bold">import</emphasis> java.util.Date
+
+<emphasis role="bold">declare</emphasis> Person
+    <emphasis>@author</emphasis>( Bob )
+    <emphasis>@dateOfCreation</emphasis>( 01-Feb-2009 )
+
+    name : String <emphasis>@key @maxLength</emphasis>( 30 )
+    dateOfBirth : Date 
+    address : Address
+<emphasis role="bold">end</emphasis></programlisting>
+    </example>
+
+    <para>In the previous example, there are two metadata declared for the
+    fact type (<emphasis>@author</emphasis> and
+    <emphasis>@dateOfCreation</emphasis>), and two more defined for the name
+    attribute (<emphasis>@key</emphasis> and <emphasis>@maxLength</emphasis>).
+    Please note that the <emphasis>@key</emphasis> metadata has no value, and
+    so the parenthesis and the value were omitted. </para>
+  </section>
+
+  <section>
+    <title>Declaring Metadata for Existing Types</title>
+
+    <para>Drools allows the declaration of metadata attributes for existing
+    types in the same way as when declaring metadata attributes for new fact
+    types. The only difference is that there are no fields in that
+    declaration.</para>
+
+    <para>For instance, if there is a class org.drools.examples.Person, and
+    one wants to declare metadata for it, just to the following:</para>
+
+    <example>
+      <title>declaring metadata for an existing type</title>
+
+      <programlisting><emphasis role="bold">import</emphasis> org.drools.examples.Person
+
+<emphasis role="bold">declare</emphasis> Person
+    <emphasis>@author</emphasis>( Bob )
+    <emphasis>@dateOfCreation</emphasis>( 01-Feb-2009 )
+<emphasis role="bold">end</emphasis>
+</programlisting>
+    </example>
+
+    <para>Instead of using the import, it is also possible to reference the
+    class by its fully qualified name, but since the class will also be
+    referenced in the rules, usually it is shorter to add the import and use
+    the short class name everywhere. </para>
+
+    <example>
+      <title>declaring metadata using the fully qualified class name</title>
+
+      <programlisting><emphasis role="bold">declare</emphasis> org.drools.examples.Person
+    <emphasis>@author</emphasis>( Bob )
+    <emphasis>@dateOfCreation</emphasis>( 01-Feb-2009 )
+<emphasis role="bold">end</emphasis></programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>Accessing metadata through the API</title>
 
     <para></para>
   </section>
