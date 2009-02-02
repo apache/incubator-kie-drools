@@ -188,6 +188,14 @@ public class ActionType {
      */
     public void addCellValue(int col,
                              String content) {
+        //Michael Neale:
+        //for single standard quotes we escape them - eg they may mean "inches" 
+        // as in "I want a stone hence replica 19" tall"
+        //for more info: http://www.imdb.com/title/tt0088258/
+        int idx = content.indexOf("\"");
+        if (idx > 0 && content.indexOf("\"", idx) > -1) {
+            content = content.replace("\"", "\\\"");
+        }
         this.sourceBuilder.addCellValue( col,
                                          content );
     }

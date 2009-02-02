@@ -100,7 +100,7 @@ public class RuleWorksheetParseTest extends TestCase {
         // check rules
         Rule rule = (Rule) ruleset.getRules().get( 0 );
         Condition cond = (Condition) rule.getConditions().get( 0 );
-        assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > 1)",
+        assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")",
                       cond.getSnippet() );
 
         Consequence cons = (Consequence) rule.getConsequences().get( 0 );

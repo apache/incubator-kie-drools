@@ -103,6 +103,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
 
         assertNotNull( drl );
 
+        System.out.println(drl);
         Pattern p = Pattern.compile( ".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",
                                      Pattern.DOTALL | Pattern.MULTILINE );
         Matcher m = p.matcher( drl );
@@ -112,12 +113,15 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
         assertTrue( drl.indexOf( "myObject.setIsValid(10-Jul-1974)" ) > -1 );
         assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) > -1 );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")" ) > -1 );
 
         assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ) > -1 );
         assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 9)" ) > -1 );
 
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) < drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ) );
+
+
+        assertTrue( drl.indexOf( "myObject.setIsValid(\"19-Jul-1992\")" ) > -1 );
 
     }
 
