@@ -96,7 +96,7 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
         assertTrue( drl1.indexOf( "myObject.setIsValid(10-Jul-1974)" ) > -1 );
         assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) > -1 );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 12\")" ) > -1 );
 
         assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) > -1 );
         assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 9)" ) > -1 );
@@ -117,7 +117,7 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "This is a function block" ) > -1 );
         assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
         assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) > -1 );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 12\")" ) > -1 );
 
         assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) > -1 );
         assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 9)" ) > -1 );
