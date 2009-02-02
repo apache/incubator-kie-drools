@@ -135,7 +135,8 @@ public abstract class AbstractWorkingMemory
     protected Map                                            queryResults;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver                                 globalResolver;
+    protected GlobalResolver                                 defaultGlobalResolver;
+    protected GlobalResolver                                 delegateGlobalResolver;
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport                      workingMemoryEventSupport;
@@ -244,7 +245,7 @@ public abstract class AbstractWorkingMemory
         this.config = config;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
-        this.globalResolver = new MapGlobalResolver();
+        this.defaultGlobalResolver = new MapGlobalResolver();
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
@@ -489,7 +490,7 @@ public abstract class AbstractWorkingMemory
                 throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
             } else {
-                this.globalResolver.setGlobal( identifier,
+                this.defaultGlobalResolver.setGlobal( identifier,
                                                value );
             }
         } finally {
@@ -500,14 +501,14 @@ public abstract class AbstractWorkingMemory
     public void setGlobalResolver(final GlobalResolver globalResolver) {
         try {
             this.lock.lock();
-            this.globalResolver = globalResolver;
+            this.delegateGlobalResolver = globalResolver;
         } finally {
             this.lock.unlock();
         }
     }
 
     public GlobalResolver getGlobalResolver() {
-        return this.globalResolver;
+        return this.delegateGlobalResolver;
     }
 
     public long getId() {
@@ -521,7 +522,11 @@ public abstract class AbstractWorkingMemory
     public Object getGlobal(final String identifier) {
         try {
             this.lock.lock();
-            return this.globalResolver.resolveGlobal( identifier );
+            Object object =  this.defaultGlobalResolver.resolveGlobal( identifier );
+            if ( object == null && this.delegateGlobalResolver != null ) {
+                object =  this.delegateGlobalResolver.resolveGlobal( identifier );
+            }
+            return object;
         } finally {
             this.lock.unlock();
         }
