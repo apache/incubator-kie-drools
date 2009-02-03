@@ -34,6 +34,7 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.definition.process.Process;
+import org.drools.definition.type.FactType;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.io.Resource;
 

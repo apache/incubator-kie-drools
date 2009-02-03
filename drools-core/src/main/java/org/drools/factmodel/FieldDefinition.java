@@ -19,10 +19,9 @@ package org.drools.factmodel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.InvocationTargetException;
 
 import org.drools.base.ClassFieldAccessor;
-import org.drools.rule.FactField;
+import org.drools.definition.type.FactField;
 
 /**
  * Declares a field to be dynamically generated.
@@ -40,7 +39,7 @@ public class FieldDefinition
 
     public FieldDefinition() {
     }
-    
+
     /**
      * Default constructor
      * 
@@ -67,11 +66,10 @@ public class FieldDefinition
         this.type = type;
         this.key = key;
     }
-    
 
     public void setReadWriteAccessor(ClassFieldAccessor accessor) {
         this.accessor = accessor;
-    }    
+    }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -191,14 +189,9 @@ public class FieldDefinition
      * @param bean the target bean instance where the attribute shall be set
      * @param value the value to set the attribute to
      * 
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
      */
     public void setValue(Object bean,
-                         Object value) throws IllegalArgumentException,
-                                      IllegalAccessException,
-                                      InvocationTargetException {
+                         Object value) {
         this.accessor.setValue( bean,
                                 value );
     }
@@ -210,14 +203,19 @@ public class FieldDefinition
      * 
      * @return target bean instance attribute value
      *  
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
      */
-    public Object getValue(Object bean) throws IllegalArgumentException,
-                                       IllegalAccessException,
-                                       InvocationTargetException {
+    public Object getValue(Object bean) {
         return this.accessor.getValue( bean );
+    }
+
+    public Object get(Object bean) {
+        return this.accessor.getValue( bean );
+    }
+
+    public void set(Object bean,
+                    Object value) {
+        this.accessor.setValue( bean,
+                                value );
     }
 
 }

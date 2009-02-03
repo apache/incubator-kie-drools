@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.drools.definition.type.FactType;
 import org.drools.marshalling.Marshaller;
-import org.drools.rule.FactType;
 import org.drools.rule.Package;
 import org.drools.WorkingMemory;
 

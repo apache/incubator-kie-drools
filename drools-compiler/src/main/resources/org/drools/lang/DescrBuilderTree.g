@@ -176,7 +176,7 @@ type_declaration returns [TypeDeclarationDescr declaration]
 
 decl_metadata returns [Map attData]
 @init {attData = new HashMap();}
-	:	^(AT att=ID pc=VT_PAREN_CHUNK)
+	:	^(AT att=ID pc=VT_PAREN_CHUNK?)
 	{	$attData.put($att, $pc);	}
 	;
 

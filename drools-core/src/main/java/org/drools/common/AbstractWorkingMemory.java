@@ -808,12 +808,8 @@ public abstract class AbstractWorkingMemory
         InternalFactHandle handle = null;
 
         if ( isSequential() ) {
-            handle = this.handleFactory.newFactHandle( object,
-                                                       typeConf,
-                                                       this );
-            handle.setEntryPoint( this );
-            this.objectStore.addHandle( handle,
-                                        object );
+            handle = createHandle( object,
+                                   typeConf );
             insert( handle,
                     object,
                     rule,
@@ -864,15 +860,8 @@ public abstract class AbstractWorkingMemory
 
                 // At this point we know the handle is null
                 if ( key == null ) {
-                    // key is also null, so treat as a totally new
-                    // stated/logical
-                    // assert
-                    handle = this.handleFactory.newFactHandle( object,
-                                                               typeConf,
-                                                               this );
-                    handle.setEntryPoint( this );
-                    this.objectStore.addHandle( handle,
-                                                object );
+                    handle = createHandle( object,
+                                           typeConf );
 
                     key = new EqualityKey( handle );
                     handle.setEqualityKey( key );
@@ -917,22 +906,15 @@ public abstract class AbstractWorkingMemory
                             // override, then instantiate new handle for
                             // assertion
                             key.setStatus( EqualityKey.STATED );
-                            handle = this.handleFactory.newFactHandle( object,
-                                                                       typeConf,
-                                                                       this );
+                            handle = createHandle( object,
+                                                   typeConf );
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
-                            this.objectStore.addHandle( handle,
-                                                        object );
-
                         }
 
                     } else {
-                        handle = this.handleFactory.newFactHandle( object,
-                                                                   typeConf,
-                                                                   this );
-                        this.objectStore.addHandle( handle,
-                                                    object );
+                        handle = createHandle( object,
+                                               typeConf );
                         key.addFactHandle( handle );
                         handle.setEqualityKey( key );
 
@@ -959,11 +941,8 @@ public abstract class AbstractWorkingMemory
                 if ( handle != null ) {
                     return handle;
                 }
-                handle = this.handleFactory.newFactHandle( object,
-                                                           typeConf,
-                                                           this );
-                this.objectStore.addHandle( handle,
-                                            object );
+                handle = createHandle( object,
+                                       typeConf );
 
             }
 
@@ -980,6 +959,18 @@ public abstract class AbstractWorkingMemory
         } finally {
             this.lock.unlock();
         }
+        return handle;
+    }
+
+    private InternalFactHandle createHandle(final Object object,
+                                            ObjectTypeConf typeConf) {
+        InternalFactHandle handle;
+        handle = this.handleFactory.newFactHandle( object,
+                                                   typeConf,
+                                                   this );
+        handle.setEntryPoint( this );
+        this.objectStore.addHandle( handle,
+                                    object );
         return handle;
     }
 

@@ -29,7 +29,6 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.InternalRuleBase;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.SingleBetaConstraints;

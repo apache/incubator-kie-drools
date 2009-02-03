@@ -16,6 +16,9 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.process.Process;
+import org.drools.definition.rule.Rule;
+import org.drools.definition.type.FactType;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.AfterFunctionRemovedEvent;
@@ -161,6 +164,29 @@ public class KnowledgeBaseImpl
     public void removeProcess(String processId) {
         this.ruleBase.removeProcess( processId );
     }
+    
+    public FactType getFactType(String packageName,
+                                String typeName) {
+        return this.ruleBase.getFactType( packageName + "." + typeName );
+    }
+
+    public KnowledgePackage getKnowledgePackage(String packageName) {
+        return new KnowledgePackageImp( this.ruleBase.getPackage( packageName ) );
+    }
+
+    public Process getProcess(String processId) {
+        Process p = null;
+        for( Package pkg : this.ruleBase.getPackages() ) {
+            p = pkg.getRuleFlows().get( processId );
+            if( p != null ) break;
+        }
+        return p;
+    }
+
+    public Rule getRule(String packageName,
+                        String ruleName) {
+        return this.ruleBase.getPackage( packageName ).getRule( ruleName );
+    }
 
     public static class KnowledgeBaseEventListenerWrapper
         implements
@@ -248,4 +274,5 @@ public class KnowledgeBaseImpl
                                                                              new RuleImpl( event.getRule() ) ) );
         }
     }
+
 }

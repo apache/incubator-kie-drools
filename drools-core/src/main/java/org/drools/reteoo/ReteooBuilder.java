@@ -304,7 +304,6 @@ public class ReteooBuilder
         droolsStream.writeObject( rules );
         droolsStream.writeObject( idGenerator );
         droolsStream.writeBoolean( ordered );
-        droolsStream.writeObject( ruleBase );
         if ( !isDrools ) {
             bytes.close();
             out.writeObject( bytes.toByteArray() );
@@ -327,7 +326,7 @@ public class ReteooBuilder
         this.rules = (Map) in.readObject();
         this.idGenerator = (IdGenerator) in.readObject();
         this.ordered = in.readBoolean();
-        this.ruleBase = (InternalRuleBase) droolsStream.readObject();
+        this.ruleBase = droolsStream.getRuleBase();
         if ( !isDrools ) {
             bytes.close();
         }
