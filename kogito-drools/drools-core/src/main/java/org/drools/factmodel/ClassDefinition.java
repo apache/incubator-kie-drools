@@ -28,8 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.rule.FactField;
-import org.drools.rule.FactType;
+import org.drools.definition.type.FactField;
+import org.drools.definition.type.FactType;
 
 /**
  * Declares a class to be dynamically created
@@ -86,7 +86,6 @@ public class ClassDefinition
         this.className = (String) in.readObject();
         this.superClass = (String) in.readObject();
         this.interfaces = (String[]) in.readObject();
-        //this.definedClass = (Class<?>) in.readObject();
         this.fields = (Map<String, FieldDefinition>) in.readObject();
     }
 
@@ -94,7 +93,6 @@ public class ClassDefinition
         out.writeObject( this.className );
         out.writeObject( this.superClass );
         out.writeObject( this.interfaces );
-        //out.writeObject( this.definedClass );
         out.writeObject( this.fields );
     }
 

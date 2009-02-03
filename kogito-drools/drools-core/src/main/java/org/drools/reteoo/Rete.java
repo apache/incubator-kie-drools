@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BaseNode;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -229,14 +230,13 @@ public class Rete extends ObjectSource
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( entryPoints );
-        out.writeObject( ruleBase );
         super.writeExternal( out );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         entryPoints = (Map<EntryPoint, EntryPointNode>) in.readObject();
-        ruleBase = (InternalRuleBase) in.readObject();
+        ruleBase = ((DroolsObjectInputStream)in).getRuleBase();
         super.readExternal( in );
     }
 }

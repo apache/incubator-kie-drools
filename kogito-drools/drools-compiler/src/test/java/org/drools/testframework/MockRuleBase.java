@@ -11,9 +11,9 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
+import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.marshalling.Marshaller;
-import org.drools.rule.FactType;
 import org.drools.rule.Package;
 
 public class MockRuleBase implements RuleBase {

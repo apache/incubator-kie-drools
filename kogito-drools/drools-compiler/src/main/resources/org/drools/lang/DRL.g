@@ -576,8 +576,8 @@ decl_metadata
 	{	emit($AT, DroolsEditorType.SYMBOL);	}
 		ID
 	{	emit($ID, DroolsEditorType.IDENTIFIER);	}
-		paren_chunk
-		-> ^(AT ID paren_chunk)
+		paren_chunk?
+		-> ^(AT ID paren_chunk?)
 	;
 
 decl_field

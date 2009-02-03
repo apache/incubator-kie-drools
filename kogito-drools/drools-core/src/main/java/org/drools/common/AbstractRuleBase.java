@@ -42,13 +42,13 @@ import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.marshalling.Marshaller;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
-import org.drools.rule.FactType;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
@@ -90,7 +90,7 @@ abstract public class AbstractRuleBase
     /** The fact handle factory. */
     protected FactHandleFactory                        factHandleFactory;
 
-    protected Map<String, Class>                       globals;
+    protected transient Map<String, Class<?>>          globals;
 
     private ReloadPackageCompilationData               reloadPackageCompilationData = null;
 
@@ -157,7 +157,7 @@ abstract public class AbstractRuleBase
         this.rootClassLoader = new CompositeClassLoader( this.config.getClassLoader() );
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
-        this.globals = new HashMap();
+        this.globals = new HashMap<String, Class<?>>();
         this.statefulSessions = new ObjectHashSet();
 
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
@@ -198,7 +198,7 @@ abstract public class AbstractRuleBase
         droolsStream.writeObject( this.processes );
         droolsStream.writeObject( this.agendaGroupRuleTotals );
         droolsStream.writeUTF( this.factHandleFactory.getClass().getName() );
-        droolsStream.writeObject( this.globals );
+        droolsStream.writeObject( buildGlobalMapForSerialization() );
         droolsStream.writeObject( this.partitionIDs );
 
         this.eventSupport.removeEventListener( RuleBaseEventListener.class );
@@ -207,6 +207,14 @@ abstract public class AbstractRuleBase
             bytes.close();
             out.writeObject( bytes.toByteArray() );
         }
+    }
+
+    private Map<String, String> buildGlobalMapForSerialization() {
+        Map<String, String> gl = new HashMap<String, String>();
+        for( Map.Entry<String, Class<?>> entry : this.globals.entrySet() ) {
+            gl.put( entry.getKey(), entry.getValue().getName() );
+        }
+        return gl;
     }
 
     /**
@@ -270,7 +278,10 @@ abstract public class AbstractRuleBase
         
         this.populateTypeDeclarationMaps(); 
         
-        this.globals = (Map) droolsStream.readObject();
+        // read globals
+        Map<String, String> globs = (Map<String, String>) droolsStream.readObject();
+        populateGlobalsMap( globs );
+        
         this.partitionIDs = (List<RuleBasePartitionId>) droolsStream.readObject();
         
         this.eventSupport = (RuleBaseEventSupport) droolsStream.readObject();
@@ -282,6 +293,24 @@ abstract public class AbstractRuleBase
         }                      
     }
 
+    /**
+     * globals class types must be re-wired after serialization
+     * 
+     * @param globs
+     * @throws ClassNotFoundException
+     */
+    private void populateGlobalsMap(Map<String, String> globs) throws ClassNotFoundException {
+        this.globals = new HashMap<String, Class<?>>();
+        for( Map.Entry<String, String> entry : globs.entrySet() ) {
+            this.globals.put( entry.getKey(), this.rootClassLoader.loadClass( entry.getValue() ) );
+        }
+    }
+
+    /**
+     * type classes must be re-wired after serialization
+     *  
+     * @throws ClassNotFoundException
+     */
     private void populateTypeDeclarationMaps() throws ClassNotFoundException {
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
         for ( Package pkg : this.pkgs.values() ) {

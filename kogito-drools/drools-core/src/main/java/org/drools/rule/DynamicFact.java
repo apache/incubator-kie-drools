@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.definition.type.FactField;
+import org.drools.definition.type.FactType;
+
 /**
  * DO NOT USE THIS YET. Use FactType instead.
  *
