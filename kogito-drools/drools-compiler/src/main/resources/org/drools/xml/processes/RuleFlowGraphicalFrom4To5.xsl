@@ -2,13 +2,14 @@
 <xsl:stylesheet version="2.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<xsl:output method="xml" indent="yes" />
-	<!-- Converts a drools version 4 non-graphical ruleflow file (i.e. .rfm file) to version5 .rf file-->
+	<!-- Converts a drools version 4 graphical ruleflow file (i.e. .rf file) to version 5-->
 	<!-- How to get the first node so the the implementing class need not be mentioned here.-->
 	<xsl:variable name="type">RuleFlow</xsl:variable>
-	<xsl:variable name="name"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/name"/></xsl:variable>
-	<xsl:variable name="id"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/id"/></xsl:variable>
-	<xsl:variable name="packageName"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/packageName"/></xsl:variable>
-	<xsl:variable name="version"><xsl:value-of select="./org.drools.ruleflow.core.impl.RuleFlowProcessImpl/version"/></xsl:variable>
+	<xsl:variable name="name"><xsl:value-of select="//process/name/."/></xsl:variable>
+	<xsl:variable name="id"><xsl:value-of select="//process/id/."/></xsl:variable>
+	<xsl:variable name="packageName"><xsl:value-of select="//process/packageName/."/></xsl:variable>
+	<xsl:variable name="version"><xsl:value-of select="//process/version/."/></xsl:variable>
+	<xsl:variable name="routerLayout"><xsl:value-of select="//routerLayout/."/></xsl:variable>
 	<xsl:param name="generateTypes">false</xsl:param>
 	<xsl:param name="generateImports">false</xsl:param>
 	<xsl:param name="generateIncludes">false</xsl:param>
@@ -23,6 +24,7 @@
 			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="package-name"><xsl:value-of select="$packageName"/></xsl:attribute>
 			<xsl:attribute name="version"><xsl:value-of select="$version"/></xsl:attribute>
+			<xsl:attribute name="routerLayout"><xsl:value-of select="$routerLayout"/></xsl:attribute>
 			<!-- TODO Could not add other namespace related attributes on the element node especially for schema location. -->
 			<xsl:element name="header">
 				<xsl:call-template name="processImports"/>
@@ -63,14 +65,10 @@
 	</xsl:template>
 
 	<xsl:template name="processNodes">
-		<xsl:for-each select="//nodes/entry[1]/child::node()">
-			<xsl:choose>
-				<xsl:when test="(starts-with(name(.), 'org.drools.ruleflow'))">
-					<xsl:call-template name="printNodes"><xsl:with-param name="className"><xsl:value-of select = "name(.)"/></xsl:with-param></xsl:call-template>
-				</xsl:when>
-			</xsl:choose>
-			
+		<xsl:for-each select="//element[@id != '']">
+			<xsl:call-template name="printNodes"><xsl:with-param name="className"><xsl:value-of select = "@class"/></xsl:with-param></xsl:call-template>
 		</xsl:for-each>
+		
 		<!-- Only those from or to nodes that have id. When there is reference it means that the node was already declared as id earlier or would come later.-->
 		<xsl:for-each select="//from[@id != '']|//to[@id != '']">
 			<xsl:call-template name="printNodes"><xsl:with-param name="className"><xsl:value-of select = "@class"/></xsl:with-param></xsl:call-template>
@@ -210,13 +208,37 @@
 	<xsl:template name="renderIdAndNameAttribute">
 		<xsl:attribute name="id"><xsl:value-of select = "./@id"/></xsl:attribute>
 		<xsl:attribute name="name"><xsl:value-of select = "./name"/></xsl:attribute>
+		<xsl:call-template name="renderPosition"><xsl:with-param name="theId"><xsl:value-of select = "./@id"/></xsl:with-param></xsl:call-template>
 	</xsl:template>
+	
+	<xsl:template name="renderPosition2">
+		<xsl:param name="theId"/>
+		<xsl:attribute name="shahad"><xsl:value-of select = "$theId"/></xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template name="renderPosition">
+		<xsl:param name="theId"/>
+		<xsl:for-each select="//element[./@id=$theId or ./@reference=$theId]">
+				<xsl:apply-templates select="../constraint"/>
+		</xsl:for-each>
+	</xsl:template>
+	
+	
+	<xsl:template match="constraint">
+		<xsl:attribute name="x"><xsl:value-of select = "./x"/></xsl:attribute>
+		<xsl:attribute name="y"><xsl:value-of select = "./y"/></xsl:attribute>
+		<xsl:attribute name="width"><xsl:value-of select = "./width"/></xsl:attribute>
+		<xsl:attribute name="height"><xsl:value-of select = "./height"/></xsl:attribute>
+	</xsl:template>
+	
 	
 	<xsl:template name="formConnections">
 		<xsl:for-each select="//from">
 			<xsl:element name="connection">
 				<xsl:attribute name="from"><xsl:apply-templates select="current()"/></xsl:attribute>
 				<xsl:attribute name="to"><xsl:apply-templates select="../to"/></xsl:attribute>
+				<xsl:call-template name="renderSourceBendpoints"><xsl:with-param name="theId"><xsl:apply-templates select="current()"/></xsl:with-param></xsl:call-template>
+				<xsl:call-template name="renderTargetBendpoints"><xsl:with-param name="theId"><xsl:apply-templates select="../to"/></xsl:with-param></xsl:call-template>
 			</xsl:element>
 		</xsl:for-each>
 	</xsl:template>
@@ -235,4 +257,38 @@
 			</xsl:choose>
 		</xsl:for-each>
 	</xsl:template>
+	
+	<xsl:template name="renderSourceBendpoints">
+		<xsl:param name="theId"/>
+		<xsl:for-each select="//source/org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper/default/element[./@id=$theId or ./@reference=$theId]">
+			<xsl:if test="../../../../bendpoints/child::*">
+				<xsl:attribute name="bendpoints">
+					<xsl:text>[</xsl:text>
+					<xsl:for-each select="../../../../bendpoints/child::*">
+						<xsl:value-of select="concat(./x/.,',',./y/.)"/>
+						<xsl:if test="position() != last()">;</xsl:if>
+					</xsl:for-each>
+					<xsl:text>]</xsl:text>
+				</xsl:attribute>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="renderTargetBendpoints">
+		<xsl:param name="theId"/>
+		<xsl:for-each select="//target/org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper/default/element[./@id=$theId or ./@reference=$theId]">
+			<xsl:if test="../../../../bendpoints/child::*">
+				<xsl:attribute name="bendpoints">
+					<xsl:text>[</xsl:text>
+					<xsl:for-each select="../../../../bendpoints/child::*">
+						<xsl:value-of select="concat(./x/.,',',./y/.)"/>
+						<xsl:if test="position() != last()">;</xsl:if>
+					</xsl:for-each>
+					<xsl:text>]</xsl:text>
+				</xsl:attribute>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	
 </xsl:stylesheet>

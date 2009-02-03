@@ -65,6 +65,7 @@ import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.Trigger;
 import org.drools.xml.XmlProcessReader;
+import org.drools.xml.processes.RuleFlowMigrator;
 
 /**
  * A ProcessBuilder can be used to build processes based on XML files
@@ -232,34 +233,38 @@ public class ProcessBuilder {
         reader.close();
     }
 
+    
+  
+    /*************************************************************************
+     * Converts a drools version 4 .rf or .rfm ruleflow to a version 5 .rf.
+     * Version 5 .rf ruleflows are allowed, but are not migrated.
+     * @param reader containing any drools 4 .rf or .rfm ruleflow, or a 
+     * version 5 .rf
+     * @return reader containing the input reader in the latest (5) .rf format
+     * @throws Exception
+     ************************************************************************/
     private Reader portToCurrentVersion(final Reader reader) throws Exception {
-        String xml = convertReaderToString( reader );
-        if ( xml.indexOf( "<org.drools.ruleflow.core.impl.RuleFlowProcessImpl " ) >= 0 ) {
-            // Not a current version convert it.
-            String version5XML = XSLTransformation.transform( XSL_FROM_4_TO_5,
-                                                              xml,
-                                                              null );
-            // Add the namespace attribute to the process element as it is not added by the XSL transformation.
-            version5XML = version5XML.replaceAll( "<process ",
-                                                  PROCESS_ELEMENT_WITH_NAMESPACE );
-            return new StringReader( version5XML );
+        //Migrate v4 ruleflows to v5
+        String xml = RuleFlowMigrator.convertReaderToString( reader );
+        
+        if ( RuleFlowMigrator.needToMigrateRFM(xml) ) {
+            // Not a current version RFM convert it.
+            xml = RuleFlowMigrator.portRFMToCurrentVersion(xml);
         }
-        return reader;
+        else if ( RuleFlowMigrator.needToMigrateRF(xml) ) {
+            // Not a current version RF convert it.
+            xml = RuleFlowMigrator.portRFMToCurrentVersion(xml);}
+        //
+        // Note that we have also return any input v5 ruleflow as 
+        // a StringReader since the act of checking it using 
+        // convertReaderToString will have read the reader making it
+        // appear empty if read later. As reset is not guaranteed on
+        // all Reader implementation, it is safest to convert the v5 
+        // ruleflow string representation to a StringReader as well.
+        //
+        return new StringReader( xml );
     }
 
-    private String convertReaderToString(Reader reader) throws IOException {
-        final StringBuffer text = new StringBuffer();
-
-        final char[] buf = new char[1024];
-        int len = 0;
-
-        while ( (len = reader.read( buf )) >= 0 ) {
-            text.append( buf,
-                         0,
-                         len );
-        }
-        return text.toString();
-    }
 
     private String generateRules(final Process process) {
         StringBuilder builder = new StringBuilder();
@@ -349,59 +354,4 @@ public class ProcessBuilder {
         return result;
     }
 
-    private static class XSLTransformation {
-        public static String transform(String stylesheet,
-                                       String srcXMLString,
-                                       HashMap<String, String> params) throws Exception {
-            StringWriter writer = new StringWriter();
-            StreamResult result = new StreamResult( writer );
-            Source src = new StreamSource( new StringReader( srcXMLString ) );
-            transform( stylesheet,
-                       src,
-                       result,
-                       params );
-            return writer.toString();
-        }
-
-        public static void transform(String stylesheet,
-                                     Source src,
-                                     Result res,
-                                     HashMap<String, String> params) throws Exception {
-
-            Transformer transformer = getTransformer( stylesheet );
-
-            transformer.clearParameters();
-
-            if ( params != null && params.size() > 0 ) {
-                Iterator<String> itKeys = params.keySet().iterator();
-
-                while ( itKeys.hasNext() ) {
-                    String key = itKeys.next();
-                    String value = params.get( key );
-                    transformer.setParameter( key,
-                                              value );
-                }
-            }
-
-            transformer.transform( src,
-                                   res );
-        }
-
-        private static Transformer getTransformer(String stylesheet) throws Exception {
-            Transformer transformer = null;
-            InputStream xslStream = null;
-
-            try {
-                InputStream in = XSLTransformation.class.getResourceAsStream( stylesheet );
-                xslStream = new BufferedInputStream( in );
-                StreamSource src = new StreamSource( xslStream );
-                src.setSystemId( stylesheet );
-                transformer = TransformerFactory.newInstance().newTransformer( src );
-            } finally {
-                if ( xslStream != null ) xslStream.close();
-            }
-
-            return transformer;
-        }
-    }
 }
