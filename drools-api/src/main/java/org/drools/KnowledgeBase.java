@@ -3,6 +3,9 @@ package org.drools;
 import java.util.Collection;
 
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.process.Process;
+import org.drools.definition.rule.Rule;
+import org.drools.definition.type.FactType;
 import org.drools.event.knowledgebase.KnowledgeBaseEventManager;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -52,6 +55,15 @@ public interface KnowledgeBase
      * @return
      */
     Collection<KnowledgePackage> getKnowledgePackages();
+    
+    /**
+     * Returns a reference to the KnowledgePackage identified by the given name.
+     * 
+     * @param packageName the name of the KnowledgePackage to return
+     *  
+     * @return the KnowledgePackage identified by the the given name or null if package not found.
+     */
+    KnowledgePackage getKnowledgePackage( String packageName );
 
     /**
      * Remove a KnowledgePackage and all the definitions it contains from the KnowledgeBase.
@@ -60,13 +72,43 @@ public interface KnowledgeBase
     void removeKnowledgePackage(String packageName);
 
     /**
+     * Returns a reference to the Rule identified by the given package and rule names.
+     * 
+     * @param packageName the package name to which the rule belongs to.
+     * @param ruleName the name of the rule.
+     * 
+     * @return the Rule object or null if not found.
+     */
+    Rule getRule( String packageName, 
+                  String ruleName );
+    /**
      * Remove a rule from the specified package.
      * @param packageName
      * @param ruleName
      */
     void removeRule(String packageName,
                     String ruleName);
+    
+    /**
+     * Returns the FactType identified by the given package and type names.
+     * 
+     * @param packageName the name of the package the fact belongs to.
+     * @param typeName the name of the type.
+     * 
+     * @return the FactType identified by the parameters or null if FactType not found.
+     */
+    FactType getFactType( String packageName, 
+                          String typeName );
 
+    /**
+     * Returns a referent to the Process identified by the given processId
+     * 
+     * @param processId the id of the process
+     * 
+     * @return the Process identified by the given processId or null if process not found.
+     */
+    Process getProcess( String processId );
+    
     /**
      * Remove a process from the specified package.
      * @param processId
