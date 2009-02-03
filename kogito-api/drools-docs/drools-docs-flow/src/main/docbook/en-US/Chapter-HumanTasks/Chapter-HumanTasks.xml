@@ -184,6 +184,96 @@
   session.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());</programlisting>
       <para>By default, this handler will connect to the human task management component on the local machine on port 9123,
       but you can easily change that by invoking the setConnection(ipAddress, port) method on the WSHumanTaskHandler.</para>
+
+      <para>At this moment WSHumanTaskHandler is using Mina
+      (http://mina.apache.org/) for testing the behavior in a client/server
+      architecture. Mina uses messages between client and server to enable the
+      client comunicate with the server. That's why WSHumanTaskHandler have a
+      MinaTaskClient that create different messages to give the user different
+      actions that are executed for the server.</para>
+
+      <para>In the client (MinaTaskClient in this implementation) should see
+      the implementation of the following methods to interact with Human
+      Tasks:</para>
+
+      <para><programlisting>  public void start(long taskId, String userId, TaskOperationResponseHandler responseHandler)
+  public void stop(long taskId, String userId, TaskOperationResponseHandler responseHandler)
+  public void release(long taskId, String userId, TaskOperationResponseHandler responseHandler)
+  public void suspend(long taskId, String userId, TaskOperationResponseHandler responseHandler)
+  public void resume(long taskId, String userId, TaskOperationResponseHandler responseHandler)
+  public void skip(long taskId, String userId, TaskOperationResponseHandler responseHandler)
+  public void delegate(long taskId, String userId, String targetUserId, TaskOperationResponseHandler responseHandler)
+  public void complete(long taskId, String userId, ContentData outputData, TaskOperationResponseHandler responseHandler)
+  ...
+
+    </programlisting></para>
+
+      <para>Using this methods we will implement any kind of GUI that the end
+      user will use to do the task that they have assigned. If you take a look
+      a this method signatures you will notice that almost all of this method
+      takes the following arguments:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">taskId<emphasis>:</emphasis>
+          <emphasis>the id of the task with we are working. Probably you will
+          pick this Id from the user task list in the UI (User
+          Interface).</emphasis></emphasis></para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">userId</emphasis>: the id of the user
+          that is executing the action. Probably the Id of the user that is
+          signed in the application.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">responseHandler</emphasis>: this is the
+          handler have responsability to catch the response and get the
+          results or just let us know that the task is already
+          finished.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>As you can imagine all the methods create a message that will be
+      sended to the server, and the server will execute the logic that
+      implement the correct action. A creation of one of this messages will be
+      like this:</para>
+
+      <para><programlisting>    public void complete(long taskId,
+                         String userId,
+                         ContentData outputData,
+                         TaskOperationResponseHandler responseHandler) {
+        List&lt;Object&gt; args = new ArrayList&lt;Object&gt;( 5 );
+        args.add( Operation.Complete );
+        args.add( taskId );
+        args.add( userId );
+        args.add( null );
+        args.add( outputData );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.OperationRequest,
+                                   args );
+
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+
+        session.write( cmd );
+    }
+
+    </programlisting>Here we can see that a Command is created and the arguments
+      of the method are inserted inside the command with the type of operation
+      that we are trying to execute and then this command is sended to the
+      server with session.write( cmd ) method.</para>
+
+      <para>If we see the server implementation, when the command is recived,
+      we find that depends of the operation type (here Operation.Complete)
+      will be the logic that will be executed. If we look at the class
+      TaskServerHandler in the messageReceived method the taskOperation is
+      executed using the taskServiceSession that is the responsible for get,
+      persist and manipulate all the Human Task Information when the tasks are
+      created and the user is not interacting with them.</para>
+
+
     </section>
 
     <section>
