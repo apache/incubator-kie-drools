@@ -136,20 +136,7 @@
     insert( mark );
 <emphasis role="bold">end</emphasis>
 </programlisting>
-      </example>Although, the declared type can be used like any other POJO
-    inside your rules, the classes are only available at runtime, after the
-    DRL is compiled. It means that you will not be able to reference them
-    explicitly from your application code. You could use reflection for that,
-    but anyone that ever used reflection knows that it requires quite some
-    work to do anything useful. This way, Drools provides a simplified API
-    that allows you to manipulate such facts from your DRL file.</para>
-
-    <para><warning>
-        <para>FIXME: Will we expose org.drools.rule.FactType through the
-        drools-api module? or will it remain an internal API?</para>
-      </warning></para>
-
-    <para></para>
+      </example></para>
   </section>
 
   <section>
@@ -202,7 +189,7 @@
     <emphasis>@dateOfCreation</emphasis>), and two more defined for the name
     attribute (<emphasis>@key</emphasis> and <emphasis>@maxLength</emphasis>).
     Please note that the <emphasis>@key</emphasis> metadata has no value, and
-    so the parenthesis and the value were omitted. </para>
+    so the parenthesis and the value were omitted.</para>
   </section>
 
   <section>
@@ -231,7 +218,7 @@
     <para>Instead of using the import, it is also possible to reference the
     class by its fully qualified name, but since the class will also be
     referenced in the rules, usually it is shorter to add the import and use
-    the short class name everywhere. </para>
+    the short class name everywhere.</para>
 
     <example>
       <title>declaring metadata using the fully qualified class name</title>
@@ -244,7 +231,100 @@
   </section>
 
   <section>
-    <title>Accessing metadata through the API</title>
+    <title>Accessing Declared Types from the Application Code</title>
+
+    <para>Declared types are usually used inside rules files, while Java
+    models are used when sharing the model between rules and aplications.
+    Although, sometimes, the application may need to access and handle facts
+    from the declared types, specially when the application is wrapping the
+    rules engine and providing higher level, domain specific, user interfaces
+    for rules management.</para>
+
+    <para>In such cases, the generated classes can be handled as usual with
+    the Java Reflection APIs, but as we know, that usually requires a lot of
+    work for small results. This way, Drools provides a simplified API for the
+    most common fact handling the application may want to do.</para>
+
+    <para>The first important thing to realize is that a declared fact will
+    belong to the package where it was declared. So, for instance, in the
+    example bellow, <emphasis>Person</emphasis> will belong to the
+    <emphasis>org.drools.examples</emphasis> package, and so the generated
+    class fully qualified name will be:
+    <emphasis>org.drools.examples.Person</emphasis>.</para>
+
+    <example>
+      <title>declaring a type in the org.drools.examples package</title>
+
+      <programlisting><emphasis role="bold">package</emphasis> org.drools.examples
+
+<emphasis role="bold">import</emphasis> java.util.Date
+
+<emphasis role="bold">declare</emphasis> Person
+    name : String
+    dateOfBirth : Date
+    address : Address
+<emphasis role="bold">end</emphasis></programlisting>
+    </example>
+
+    <para>Declared types, as discussed previously, are generated at knowledge
+    base compilation time, i.e., the application will only have access to them
+    at application run time. As so, these classes are not available for direct
+    reference from the application. </para>
+
+    <para>Drools then provides an interface through which the users can handle
+    declared types from the application code:
+    org.drools.definition.type.FactType. Through this interface, the user can
+    instantiate, read and write fields in the declared fact types.</para>
+
+    <example>
+      <title>handling declared fact types through the API</title>
+
+      <programlisting>// get a reference to a knowledge base with a declared type:
+KnowledgeBase kbase = ...
+
+// get the declared FactType
+FactType personType = kbase.getFactType( "org.drools.examples",
+                                         "Person" );
+
+// handle the type as necessary:
+// create instances:
+Object bob = personType.newInstance();
+
+// set attributes values
+personType.set( bob,
+                "name",
+                "Bob" );
+personType.set( bob,
+                "age",
+                42 );
+
+// insert fact into a session
+StatefulKnowledgeSession ksession = ...
+ksession.insert( bob );
+ksession.fireAllRules();
+
+// read attributes
+String name = personType.get( bob, "name" );
+int age = personType.get( bob, "age" );
+
+</programlisting>
+    </example>
+
+    <para>The API also includes other helpful methods, like setting all the
+    attributes at once, reading values from a Map, or read all attributes at
+    once, populating a Map. </para>
+
+    <para>Although the API is similar, although much simpler, then using Java
+    reflection, it does not use reflection underneath, relying in much more
+    performant bytecode generated accessors.</para>
+
+    <para></para>
+
+    <para></para>
+
+    <para></para>
+
+    <para></para>
 
     <para></para>
   </section>
