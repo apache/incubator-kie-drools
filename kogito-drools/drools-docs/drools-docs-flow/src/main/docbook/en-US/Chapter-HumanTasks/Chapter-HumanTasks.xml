@@ -9,11 +9,11 @@
 
   <title>Human Tasks</title>
 
-  <para>An important aspect of work flow is human task management.  While some of the
-  work performed in a process can be executed automatically, some tasks need to be executed
-  by human actors.  Drools Flow supports the use of human tasks inside processes using a
-  special human task node.  This node allows process designers to define the type of task,
-  the actor(s), the data associated with the task, etc.  We also have implemented a task service
+  <para>An important aspect of work flow and BPM (business process management)is human task management.
+  While some of the work performed in a process can be executed automatically, some tasks need to be executed
+  with the interaction of human actors.  Drools Flow supports the use of human tasks inside processes using a
+  special human task node that will represent this interaction.  This node allows process designers to define
+  the type of task, the actor(s), the data associated with the task, etc.  We also have implemented a task service
   that can be used to manage these human tasks.  Users are however open to integrate any
   other solution if they want to, as this is fully pluggable.</para>
 
@@ -54,6 +54,7 @@
       <listitem><emphasis>Parameter mapping</emphasis>: Allows copying the value of process variables to parameters of the human task.  Upon creation of the human tasks, the values will be copied.</listitem>
       <listitem><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the human task to a process variable.  Upon completion of the human task, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.  A human task has a result variable "Result" that contains the data returned by the human actor.  The variable "ActorId" contains the id of the actor that actually executed the task.</listitem>
       <listitem><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</listitem>
+      <listitem><emphasis>ParentId</emphasis>: Allows to specify the parent task id, in the case that this task is a sub task of another. (see the 'sub task' section for more details)</listitem>
     </itemizedlist>
     </para>
 
@@ -142,7 +143,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-HumanTasks/WSHT-lifecycle.png" format="PNG" role="" />
+              <imagedata scalefit="1" align="center" fileref="images/Chapter-HumanTasks/WSHT-lifecycle.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
 
@@ -186,7 +187,7 @@
       but you can easily change that by invoking the setConnection(ipAddress, port) method on the WSHumanTaskHandler.</para>
 
       <para>At this moment WSHumanTaskHandler is using Mina
-      (http://mina.apache.org/) for testing the behavior in a client/server
+      <ulink url="http://mina.apache.org/">(http://mina.apache.org/)</ulink> for testing the behavior in a client/server
       architecture. Mina uses messages between client and server to enable the
       client comunicate with the server. That's why WSHumanTaskHandler have a
       MinaTaskClient that create different messages to give the user different
@@ -289,7 +290,58 @@
       not interact with this low-level API directly but rather use one of the task list clients.  These clients interact with
       the task management component using this API.</para>
 
-      <para></para>
+      <para>This interaction will be described with the following image:</para>
+       <mediaobject>
+        <imageobject>
+          <imagedata scalefit="1" align="center" fileref="images/Chapter-HumanTasks/component-distribution.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+      <para>
+          As we can see in the image we have MinaTaskClient and MinaTaskServer. They communicate to each other sending
+          messages to query and manipulate human tasks. Step by step the interaction will be something like this:
+          <itemizedlist>
+            <listitem>
+              <para>
+                  Some client need to complete some task. So he/she needs to create an instace of MinaTaskClient
+                  and connect it to the MinaTaskServer to have a session to talk to each other. This is the step one in the image.
+              </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Then the client can call the method complete() in MinaTaskClient with the corresponding
+                    arguments. This will generate a new Message (or Command) that will be inserted in the session
+                    that the client open when it connects to the server. This message must specify a type that the
+                    server recognize and know what to do when the message is recieved. This is the step two in the image.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    At this moment TaskServerHandler noticed that there is a new message in the session so an analysis
+                    about what kind of message is will take place. In this case is the type of Operation.Complete, because
+                    the client is finishing succesfully some task. So we need to complete the task that the user want to finish.
+                    This is achieved using the TaskServiceSession that will fire an specific type of event that will be procesed by
+                    an specific subclass of TaskEventListener. This are step three and four in the image.
+
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                   When the event is recived by TaskEventListener it will know how to modify the status of the task. This is achieved
+                   using the EntityManager to retrieve and modify the status of an specific task from the database. In this case, because
+                   we are finishing a task, the status will be updated to Completed. This is step five in the image.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Now, when the changes are made we need to notify the client about that the task was succesfully ended and
+                    this is achieved creating a response message that TaskClientHandler will receive and inform MinaTaskClient.
+                    This are steps six, seven and eight in the image.
+                </para>
+            </listitem>
+
+          </itemizedlist>
+
+      </para>
 
     </section>
 
