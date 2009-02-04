@@ -22,21 +22,22 @@
 
   <itemizedlist>
     <listitem>
-      <para>Declaring new types: Drools works out of the box with plain POJOs
-      as facts. Although, sometimes the users may want to define the model
-      directly into the rules engine, without worrying to create their models
-      in a lower level language like Java. Another times, there is a domain
-      model already built, but eventually the user wants or needs to
-      complement this model with additional entities that are used mainly
-      during the reasoning process.</para>
+      <para><emphasis role="bold">Declaring new types:</emphasis> Drools works
+      out of the box with plain POJOs as facts. Although, sometimes the users
+      may want to define the model directly into the rules engine, without
+      worrying to create their models in a lower level language like Java.
+      Another times, there is a domain model already built, but eventually the
+      user wants or needs to complement this model with additional entities
+      that are used mainly during the reasoning process.</para>
     </listitem>
 
     <listitem>
-      <para>Declaring metadata: facts may have meta information associated to
-      them. Examples of meta information include any kind of data that is not
-      represented by the fact attributes and are consistent among all
-      instances of that fact type. This meta information may be queried at
-      runtime by the engine and used in the reasoning process.</para>
+      <para><emphasis role="bold">Declaring metadata:</emphasis> facts may
+      have meta information associated to them. Examples of meta information
+      include any kind of data that is not represented by the fact attributes
+      and are consistent among all instances of that fact type. This meta
+      information may be queried at runtime by the engine and used in the
+      reasoning process.</para>
     </listitem>
   </itemizedlist>
 
@@ -62,7 +63,7 @@
     <emphasis>Address</emphasis>. This fact type will have 3 attributes:
     <emphasis>number</emphasis>, <emphasis>streetName</emphasis> and
     <emphasis>city</emphasis>. Each attribute has a type that can be any valid
-    java type, including any other class created by the user or even other
+    Java type, including any other class created by the user or even other
     fact types previously declared.</para>
 
     <para>For instance, we may want to declare another fact type
@@ -79,11 +80,11 @@
 </programlisting>
       </example>As we can see on the previous example,
     <emphasis>dateOfBirth</emphasis> is of type <code>java.util.Date</code>,
-    from the java API, while <emphasis>address</emphasis> is of the previously
+    from the Java API, while <emphasis>address</emphasis> is of the previously
     defined fact type Address.</para>
 
     <para>You may avoid having to write the fully qualified name of a class
-    everytime you write it by using the <emphasis
+    every time you write it by using the <emphasis
     role="bold">import</emphasis> clause, previously discussed.</para>
 
     <para><example>
@@ -100,12 +101,12 @@
       </example></para>
 
     <para>When you declare a new fact type, Drools will bytecode generate at
-    compile time a POJO that implements the fact type. The generated java
+    compile time a POJO that implements the fact type. The generated Java
     class will be a one-to-one javabean mapping of the type definition. So,
-    for the previous example, the generated java class would be:</para>
+    for the previous example, the generated Java class would be:</para>
 
     <para><example>
-        <title>generated java class for the previous Person fact type
+        <title>generated Java class for the previous Person fact type
         declaration</title>
 
         <programlisting><emphasis role="bold">public</emphasis> <emphasis
@@ -155,7 +156,7 @@
     could simply write:</para>
 
     <example>
-      <title>declaring an arbitraty metadata attribute</title>
+      <title>declaring an arbitrary metadata attribute</title>
 
       <programlisting>@author( Bob )</programlisting>
     </example>
@@ -234,7 +235,7 @@
     <title>Accessing Declared Types from the Application Code</title>
 
     <para>Declared types are usually used inside rules files, while Java
-    models are used when sharing the model between rules and aplications.
+    models are used when sharing the model between rules and applications.
     Although, sometimes, the application may need to access and handle facts
     from the declared types, specially when the application is wrapping the
     rules engine and providing higher level, domain specific, user interfaces
@@ -314,8 +315,8 @@ int age = personType.get( bob, "age" );
     attributes at once, reading values from a Map, or read all attributes at
     once, populating a Map. </para>
 
-    <para>Although the API is similar, although much simpler, then using Java
-    reflection, it does not use reflection underneath, relying in much more
+    <para>Although the API is similar to Java reflection (yet much simpler to
+    use), it does not use reflection underneath, relying in much more
     performant bytecode generated accessors.</para>
 
     <para></para>
