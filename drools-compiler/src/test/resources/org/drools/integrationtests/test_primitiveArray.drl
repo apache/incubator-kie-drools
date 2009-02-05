@@ -1,6 +1,6 @@
 package org.drools;
 
-global java.util.List %result%;
+global java.util.List result;
 
 function boolean testNonEmptyArray(int[] array) {
    return array != null && array.length > 0;

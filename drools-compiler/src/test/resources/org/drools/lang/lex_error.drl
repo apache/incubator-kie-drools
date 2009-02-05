@@ -1,6 +1,7 @@
+
 rule simple_rule 
   when
-    eval(abc();)
+	Student( name == "Andy )
   then
 	Kapow
 	Poof

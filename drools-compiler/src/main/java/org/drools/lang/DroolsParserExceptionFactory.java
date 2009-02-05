@@ -74,7 +74,7 @@ public class DroolsParserExceptionFactory {
 						DroolsParserExceptionFactory.TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE,
 						line, column, formatParserLocation());
 
-		return new DroolsParserException("ERR 108", message, line, column,
+		return new DroolsParserException("ERR 104", message, line, column,
 				offset, null);
 	}
 
@@ -109,7 +109,7 @@ public class DroolsParserExceptionFactory {
 								getBetterToken(mte.expecting),
 								formatParserLocation());
 				codeAndMessage.add(message);
-				codeAndMessage.add("ERR 101");
+				codeAndMessage.add("ERR 102");
 			} else {
 				message = String
 						.format(
@@ -117,7 +117,7 @@ public class DroolsParserExceptionFactory {
 								e.line, e.charPositionInLine,
 								getBetterToken(e.token), formatParserLocation());
 				codeAndMessage.add(message);
-				codeAndMessage.add("ERR 101");
+				codeAndMessage.add("ERR 102");
 			}
 		} else if (e instanceof MismatchedTreeNodeException) {
 			MismatchedTreeNodeException mtne = (MismatchedTreeNodeException) e;
@@ -130,7 +130,7 @@ public class DroolsParserExceptionFactory {
 								getBetterToken(mtne.expecting),
 								formatParserLocation());
 				codeAndMessage.add(message);
-				codeAndMessage.add("ERR 102");
+				codeAndMessage.add("ERR 106");
 			} else {
 				message = String
 						.format(
@@ -138,7 +138,7 @@ public class DroolsParserExceptionFactory {
 								e.line, e.charPositionInLine,
 								getBetterToken(e.token), formatParserLocation());
 				codeAndMessage.add(message);
-				codeAndMessage.add("ERR 102");
+				codeAndMessage.add("ERR 106");
 			}
 		} else if (e instanceof NoViableAltException) {
 			// NoViableAltException nvae = (NoViableAltException) e;
@@ -147,7 +147,7 @@ public class DroolsParserExceptionFactory {
 					e.charPositionInLine, getBetterToken(e.token),
 					formatParserLocation());
 			codeAndMessage.add(message);
-			codeAndMessage.add("ERR 103");
+			codeAndMessage.add("ERR 101");
 		} else if (e instanceof EarlyExitException) {
 			// EarlyExitException eee = (EarlyExitException) e;
 			message = String.format(
@@ -155,7 +155,7 @@ public class DroolsParserExceptionFactory {
 					e.charPositionInLine, getBetterToken(e.token),
 					formatParserLocation());
 			codeAndMessage.add(message);
-			codeAndMessage.add("ERR 104");
+			codeAndMessage.add("ERR 105");
 		} else if (e instanceof MismatchedSetException) {
 			MismatchedSetException mse = (MismatchedSetException) e;
 			message = String.format(
@@ -163,7 +163,7 @@ public class DroolsParserExceptionFactory {
 					e.line, e.charPositionInLine, getBetterToken(e.token),
 					mse.expecting, formatParserLocation());
 			codeAndMessage.add(message);
-			codeAndMessage.add("ERR 105");
+			codeAndMessage.add("ERR 107");
 		} else if (e instanceof MismatchedNotSetException) {
 			MismatchedNotSetException mse = (MismatchedNotSetException) e;
 			message = String.format(
@@ -171,7 +171,7 @@ public class DroolsParserExceptionFactory {
 					e.line, e.charPositionInLine, getBetterToken(e.token),
 					mse.expecting, formatParserLocation());
 			codeAndMessage.add(message);
-			codeAndMessage.add("ERR 106");
+			codeAndMessage.add("ERR 108");
 		} else if (e instanceof FailedPredicateException) {
 			FailedPredicateException fpe = (FailedPredicateException) e;
 			message = String.format(
@@ -179,7 +179,7 @@ public class DroolsParserExceptionFactory {
 					e.line, e.charPositionInLine, fpe.ruleName,
 					fpe.predicateText, formatParserLocation());
 			codeAndMessage.add(message);
-			codeAndMessage.add("ERR 107");
+			codeAndMessage.add("ERR 103");
 		}
 		if (codeAndMessage.get(0).length() == 0) {
 			codeAndMessage.add("?????");
@@ -292,8 +292,6 @@ public class DroolsParserExceptionFactory {
 			return "null";
 		case DRLLexer.THEN:
 			return "then";
-		case DRLLexer.GRAVE_ACCENT:
-			return "`";
 		case DRLLexer.SEMICOLON:
 			return ";";
 		case DRLLexer.DOT_STAR:
