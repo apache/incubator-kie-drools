@@ -1,60 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>drools</artifactId>
-    <groupId>org.drools</groupId>
-    <version>5.0.0.SNAPSHOT</version>
-  </parent>
-
-  <artifactId>drools-compiler</artifactId>
-  <packaging>jar</packaging>
-  <name>Drools :: Compiler</name>
-
-  <build/>
-
-  <dependencies>
-    <!-- Internal dependencies -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-
-    <!-- External dependencies -->
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr-runtime</artifactId>           
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>             
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>janino</groupId>
-      <artifactId>janino</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <optional>true</optional>
-    </dependency>      
-    <dependency>
-        <groupId>org.mvel</groupId>
-        <artifactId>mvel2</artifactId>
-    </dependency>
-
-    <!--
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>drools</artifactId>
+		<groupId>org.drools</groupId>
+		<version>5.0.0.SNAPSHOT</version>
+	</parent>
+	<artifactId>drools-compiler</artifactId>
+	<packaging>jar</packaging>
+	<name>Drools :: Compiler</name>
+	<dependencies>
+<!-- Internal dependencies -->
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-core</artifactId>
+		</dependency>
+<!-- External dependencies -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>janino</groupId>
+			<artifactId>janino</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mvel</groupId>
+			<artifactId>mvel2</artifactId>
+		</dependency>
+<!--
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
     </dependency>
-    -->  
-  </dependencies>
-
+    -->
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<configuration>
+					<tasks>
+						<path id="base.classpath">
+							<pathelement path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+							<pathelement path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
+							<pathelement path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>					      
+					    </path>
+						<property name="antlr_classpath" refid="maven.compile.classpath" />
+						<echo message="Generating Antlr Grammars"/>
+						<java classname="org.antlr.Tool" fork="true">
+							<arg line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DRL.g src/main/resources/org/drools/lang/DescrBuilderTree.g"/>
+							<classpath refid="base.classpath" />
+						</java>
+						<move todir="src/main/java/org/drools/lang/">
+							<fileset dir="src/main/resources/org/drools/lang">
+								<include name="**/*.java"/>
+						    </fileset>
+						</move>
+						<java classname="org.antlr.Tool" fork="true">
+							<arg line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/Tree2TestDRL.g"/>
+							<classpath refid="base.classpath" />
+						</java>
+						<move todir="src/test/java/org/drools/lang/">
+							<fileset dir="src/main/resources/org/drools/lang">
+								<include name="**/*.java"/>
+						    </fileset>
+						</move>
+					  <delete>
+					    <fileset dir="src/main/resources/org/drools/lang">
+							<include name="**/*.tokens"/>
+							<include name="DRL__.g"/>
+						</fileset>
+					  </delete>
+					</tasks>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
