@@ -55,7 +55,7 @@ function
 	;
 
 query
-	:	^(VK_QUERY VT_QUERY_ID parameters? lhs_block END)
+	:	^(VK_QUERY VT_QUERY_ID parameters? lhs_block VK_END)
 	;
 
 parameters
@@ -71,11 +71,11 @@ argument
 	;
 
 type_declaration
-	:	^(VK_DECLARE VT_TYPE_DECLARE_ID decl_metadata* decl_field* END)
+	:	^(VK_DECLARE VT_TYPE_DECLARE_ID decl_metadata* decl_field* VK_END)
 	;
 
 decl_metadata
-	:	^(AT ID VT_PAREN_CHUNK)
+	:	^(AT ID VT_PAREN_CHUNK?)
 	;
 
 decl_field
@@ -87,7 +87,7 @@ decl_field_initialization
 	;
 
 template
-	:	^(VK_TEMPLATE VT_TEMPLATE_ID template_slot+ END)
+	:	^(VK_TEMPLATE VT_TEMPLATE_ID template_slot+ VK_END)
 	;
 
 template_slot
@@ -146,7 +146,7 @@ from_elements
 
 accumulate_init_clause
 	:	^(VT_ACCUMULATE_INIT_CLAUSE 
-			^(INIT VT_PAREN_CHUNK) 
+			^(VK_INIT VT_PAREN_CHUNK) 
 			^(VK_ACTION VT_PAREN_CHUNK) 
 			accumulate_init_reverse_clause?
 			^(VK_RESULT VT_PAREN_CHUNK))

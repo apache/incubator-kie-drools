@@ -34,228 +34,262 @@ import org.drools.lang.dsl.DefaultExpander;
 
 public class ErrorsParserTest extends TestCase {
 
-	private DRLParser parser;
+    private DRLParser parser;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.parser = null;
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.parser = null;
 
-		// initializes pluggable operators
-		new EvaluatorRegistry();
-	}
+        // initializes pluggable operators
+        new EvaluatorRegistry();
+    }
 
-	protected void tearDown() throws Exception {
-		this.parser = null;
-		super.tearDown();
-	}
+    protected void tearDown() throws Exception {
+        this.parser = null;
+        super.tearDown();
+    }
 
-	public void testPartialAST() throws Exception {
-		parseResource("pattern_partial.drl");
+    public void testPartialAST() throws Exception {
+        parseResource( "pattern_partial.drl" );
 
-		Tree object = (Tree) this.parser.compilation_unit().getTree();
+        Tree object = (Tree) this.parser.compilation_unit().getTree();
 
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
 
-		assertTrue(this.parser.hasErrors());
+        assertTrue( this.parser.hasErrors() );
 
-		// FIXME check for generated Tree
-		// final PackageDescr pkg = this.parser.getPackageDescr();
-		// assertEquals( 1,
-		// pkg.getRules().size() );
-		// final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-		//
-		// assertEquals( 1,
-		// rule.getLhs().getDescrs().size() );
-		// final PatternDescr pattern = (PatternDescr)
-		// rule.getLhs().getDescrs().get( 0 );
-		//
-		// assertNotNull( pattern );
-		// assertEquals( "Bar",
-		// pattern.getObjectType() );
-		// assertEquals( "foo3",
-		// pattern.getIdentifier() );
-	}
+        // FIXME check for generated Tree
+        // final PackageDescr pkg = this.parser.getPackageDescr();
+        // assertEquals( 1,
+        // pkg.getRules().size() );
+        // final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        //
+        // assertEquals( 1,
+        // rule.getLhs().getDescrs().size() );
+        // final PatternDescr pattern = (PatternDescr)
+        // rule.getLhs().getDescrs().get( 0 );
+        //
+        // assertNotNull( pattern );
+        // assertEquals( "Bar",
+        // pattern.getObjectType() );
+        // assertEquals( "foo3",
+        // pattern.getIdentifier() );
+    }
 
-	public void testNotBindindShouldBarf() throws Exception {
-		final DRLParser parser = parseResource("not_with_binding_error.drl");
-		parser.compilation_unit();
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
+    public void testNotBindindShouldBarf() throws Exception {
+        final DRLParser parser = parseResource( "not_with_binding_error.drl" );
+        parser.compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
 
-		assertTrue(parser.hasErrors());
-	}
+        assertTrue( parser.hasErrors() );
+    }
 
-	public void testExpanderErrorsAfterExpansion() throws Exception {
+    public void testExpanderErrorsAfterExpansion() throws Exception {
 
-		final String name = "expander_post_errors.dslr";
-		final Expander expander = new DefaultExpander();
-		final String expanded = expander.expand(this.getReader(name));
+        final String name = "expander_post_errors.dslr";
+        final Expander expander = new DefaultExpander();
+        final String expanded = expander.expand( this.getReader( name ) );
 
-		final DRLParser parser = parse(name, expanded);
-		parser.compilation_unit();
-		assertTrue(parser.hasErrors());
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
+        final DRLParser parser = parse( name,
+                                        expanded );
+        parser.compilation_unit();
+        assertTrue( parser.hasErrors() );
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
 
-		final DroolsParserException err = (DroolsParserException) parser
-				.getErrors().get(0);
-		assertEquals(1, parser.getErrors().size());
+        final DroolsParserException err = (DroolsParserException) parser.getErrors().get( 0 );
+        assertEquals( 1,
+                      parser.getErrors().size() );
 
-		assertEquals(5, err.getLineNumber());
-	}
+        assertEquals( 5,
+                      err.getLineNumber() );
+    }
 
-	public void testInvalidSyntax_Catches() throws Exception {
-		parseResource("invalid_syntax.drl").compilation_unit();
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
-		assertTrue(this.parser.hasErrors());
-	}
+    public void testInvalidSyntax_Catches() throws Exception {
+        parseResource( "invalid_syntax.drl" ).compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( this.parser.hasErrors() );
+    }
 
-	public void testMultipleErrors() throws Exception {
-		parseResource("multiple_errors.drl").compilation_unit();
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
-		assertTrue(this.parser.hasErrors());
-		assertEquals(2, this.parser.getErrors().size());
-	}
+    public void testMultipleErrors() throws Exception {
+        parseResource( "multiple_errors.drl" ).compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( this.parser.hasErrors() );
+        assertEquals( 2,
+                      this.parser.getErrors().size() );
+    }
 
-	public void testPackageGarbage() throws Exception {
+    public void testPackageGarbage() throws Exception {
 
-		parseResource("package_garbage.drl").compilation_unit();
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
-		assertTrue(this.parser.hasErrors());
-	}
+        parseResource( "package_garbage.drl" ).compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( this.parser.hasErrors() );
+    }
 
-	public void testEvalWithSemicolon() throws Exception {
-		parseResource("eval_with_semicolon.drl").compilation_unit();
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
-		assertTrue(this.parser.hasErrors());
-		assertEquals(1, this.parser.getErrorMessages().size());
-		assertEquals("ERR 108", this.parser.getErrors().get(0).getErrorCode());
-	}
+    public void testEvalWithSemicolon() throws Exception {
+        parseResource( "eval_with_semicolon.drl" ).compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( this.parser.hasErrors() );
+        assertEquals( 1,
+                      this.parser.getErrorMessages().size() );
+        assertEquals( "ERR 104",
+                      this.parser.getErrors().get( 0 ).getErrorCode() );
+    }
 
-	public void testRuleParseLhs2() throws Exception {
-		final String text = "Message( Message.HELLO )\n";
-		parse(text).lhs_pattern();
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
-		assertTrue(parser.hasErrors());
-	}
+    public void testLexicalError() throws Exception {
+        parseResource( "lex_error.drl" ).compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( parser.hasErrors() );
+    }
 
-	public void testErrorMessageForMisplacedParenthesis() throws Exception {
-		final DRLParser parser = parseResource("misplaced_parenthesis.drl");
-		parser.compilation_unit();
+    public void testTempleteError() throws Exception {
+        parseResource( "template_test_error.drl" ).compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( parser.hasErrors() );
+    }
 
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
-		assertTrue("Parser should have raised errors", parser.hasErrors());
+    public void testRuleParseLhs2() throws Exception {
+        final String text = "Message( Message.HELLO )\n";
+        parse( text ).lhs_pattern();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( parser.hasErrors() );
+    }
 
-		assertEquals(2, parser.getErrors().size());
+    public void testErrorMessageForMisplacedParenthesis() throws Exception {
+        final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
+        parser.compilation_unit();
 
-		assertEquals("ERR 103", parser.getErrors().get(0).getErrorCode());
-		assertEquals("ERR 101", parser.getErrors().get(1).getErrorCode());
-	}
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( "Parser should have raised errors",
+                    parser.hasErrors() );
 
-	public void testNPEOnParser() throws Exception {
-		final DRLParser parser = parseResource("npe_on_parser.drl");
-		parser.compilation_unit();
-		System.out.println(this.getName());
-		for (String message : this.parser.getErrorMessages()) {
-			System.out.println(message);
-		}
-		assertTrue("Parser should have raised errors", parser.hasErrors());
+        assertEquals( 2,
+                      parser.getErrors().size() );
 
-		assertEquals(1, parser.getErrors().size());
+        assertEquals( "ERR 101",
+                      parser.getErrors().get( 0 ).getErrorCode() );
+        assertEquals( "ERR 102",
+                      parser.getErrors().get( 1 ).getErrorCode() );
+    }
 
-		assertTrue(parser.getErrors().get(0).getErrorCode().equals("ERR 103"));
-	}
+    public void testNPEOnParser() throws Exception {
+        final DRLParser parser = parseResource( "npe_on_parser.drl" );
+        parser.compilation_unit();
+        System.out.println( this.getName() );
+        for ( String message : this.parser.getErrorMessages() ) {
+            System.out.println( message );
+        }
+        assertTrue( "Parser should have raised errors",
+                    parser.hasErrors() );
 
-	public void testCommaMisuse() throws Exception {
-		final DRLParser parser = parseResource("comma_misuse.drl");
-		try {
-			parser.compilation_unit();
-			System.out.println(this.getName());
-			for (String message : this.parser.getErrorMessages()) {
-				System.out.println(message);
-			}
-			assertTrue("Parser should have raised errors", parser.hasErrors());
-			assertEquals(3, parser.getErrors().size());
+        assertEquals( 1,
+                      parser.getErrors().size() );
 
-		} catch (NullPointerException npe) {
-			fail("Should not raise NPE");
-		}
-	}
+        assertTrue( parser.getErrors().get( 0 ).getErrorCode().equals( "ERR 101" ) );
+    }
 
-	private DRLParser parse(final String text) throws Exception {
-		this.parser = newParser(newTokenStream(newLexer(newCharStream(text))));
-		return this.parser;
-	}
+    public void testCommaMisuse() throws Exception {
+        final DRLParser parser = parseResource( "comma_misuse.drl" );
+        try {
+            parser.compilation_unit();
+            System.out.println( this.getName() );
+            for ( String message : this.parser.getErrorMessages() ) {
+                System.out.println( message );
+            }
+            assertTrue( "Parser should have raised errors",
+                        parser.hasErrors() );
+            assertEquals( 3,
+                          parser.getErrors().size() );
 
-	private DRLParser parse(final String source, final String text)
-			throws Exception {
-		this.parser = newParser(newTokenStream(newLexer(newCharStream(text))));
-		// this.parser.setSource( source );
-		return this.parser;
-	}
+        } catch ( NullPointerException npe ) {
+            fail( "Should not raise NPE" );
+        }
+    }
 
-	private Reader getReader(final String name) throws Exception {
-		final InputStream in = getClass().getResourceAsStream(name);
+    private DRLParser parse(final String text) throws Exception {
+        this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
+        return this.parser;
+    }
 
-		return new InputStreamReader(in);
-	}
+    private DRLParser parse(final String source,
+                            final String text) throws Exception {
+        this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
+        // this.parser.setSource( source );
+        return this.parser;
+    }
 
-	private DRLParser parseResource(final String name) throws Exception {
+    private Reader getReader(final String name) throws Exception {
+        final InputStream in = getClass().getResourceAsStream( name );
 
-		final Reader reader = getReader(name);
+        return new InputStreamReader( in );
+    }
 
-		final StringBuffer text = new StringBuffer();
+    private DRLParser parseResource(final String name) throws Exception {
 
-		final char[] buf = new char[1024];
-		int len = 0;
+        final Reader reader = getReader( name );
 
-		while ((len = reader.read(buf)) >= 0) {
-			text.append(buf, 0, len);
-		}
+        final StringBuffer text = new StringBuffer();
 
-		return parse(name, text.toString());
-	}
+        final char[] buf = new char[1024];
+        int len = 0;
 
-	private CharStream newCharStream(final String text) {
-		return new ANTLRStringStream(text);
-	}
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
 
-	private DRLLexer newLexer(final CharStream charStream) {
-		return new DRLLexer(charStream);
-	}
+        return parse( name,
+                      text.toString() );
+    }
 
-	private TokenStream newTokenStream(final Lexer lexer) {
-		return new CommonTokenStream(lexer);
-	}
+    private CharStream newCharStream(final String text) {
+        return new ANTLRStringStream( text );
+    }
 
-	private DRLParser newParser(final TokenStream tokenStream) {
-		final DRLParser p = new DRLParser(tokenStream);
-		p.setTreeAdaptor(new DroolsTreeAdaptor());
-		return p;
-	}
+    private DRLLexer newLexer(final CharStream charStream) {
+        return new DRLLexer( charStream );
+    }
+
+    private TokenStream newTokenStream(final Lexer lexer) {
+        return new CommonTokenStream( lexer );
+    }
+
+    private DRLParser newParser(final TokenStream tokenStream) {
+        final DRLParser p = new DRLParser( tokenStream );
+        p.setTreeAdaptor( new DroolsTreeAdaptor() );
+        return p;
+    }
 }
