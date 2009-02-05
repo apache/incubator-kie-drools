@@ -9,8 +9,12 @@
       <title>The Rule Language</title>
 
       <xi:include href="Section-Overview.xml" />
+
+      <xi:include href="Section-Keywords.xml" />
       
       <xi:include href="Section-Comments.xml" />
+
+      <xi:include href="Section-ErrorMessages.xml" />
 
       <xi:include href="Section-Package.xml" />
 
