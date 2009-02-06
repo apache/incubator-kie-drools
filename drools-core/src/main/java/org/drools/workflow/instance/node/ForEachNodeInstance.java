@@ -14,6 +14,8 @@ import org.drools.workflow.core.node.ForEachNode.ForEachSplitNode;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
+import org.drools.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.mvel2.MVEL;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -98,13 +100,20 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
         
         private Collection<?> evaluateCollectionExpression(String collectionExpression) {
             // TODO: should evaluate this expression using MVEL
+        	Object collection = null;
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, collectionExpression);
-            if (variableScopeInstance == null) {
-                throw new IllegalArgumentException(
-                    "Could not find collection " + collectionExpression);
+            if (variableScopeInstance != null) {
+            	collection = variableScopeInstance.getVariable(collectionExpression);
+            } else {
+            	try {
+            		collection = MVEL.eval(collectionExpression, new NodeInstanceResolverFactory(this));
+            	} catch (Throwable t) {
+            		throw new IllegalArgumentException(
+                        "Could not find collection " + collectionExpression);
+            	}
+                
             }
-            Object collection = variableScopeInstance.getVariable(collectionExpression);
             if (collection == null) {
             	return Collections.EMPTY_LIST;
             }
