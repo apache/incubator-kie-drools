@@ -399,7 +399,7 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator,
         @end{}
 
         return @{processClassName}.@{methodName} (
-	        @foreach{identifier : globals} @{identifier}
+	        processContext@if{globals != empty},@end{} @foreach{identifier : globals} @{identifier}
 	        @end{","} );
     }
     
