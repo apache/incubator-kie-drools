@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>Events</title>	
-	
-	<xi:include href="Section-Events_TimestampAndDuration.xml" />
-		
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Events</title>
+
+  <para>Events, from a Drools perspective are just a special type of fact. In
+  this way, we can say that all events are facts, but not all facts are
+  events. In the next few sections the specific differences that characterize
+  an event are presented.</para>
+
+  <xi:include href="Section-Events_Semantics.xml" />
+
+  <xi:include href="Section-Events_Declaration.xml" />
+
+  <xi:include href="Section-Events_EventsMetadata.xml" />
 </section>
