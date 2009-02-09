@@ -1,11 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook"">
-	<title>Event Declaration</title>	
-		
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Event Declaration</title>
+
+  <para>To declare a fact type as an event, all it is required is to assign
+  the @role metadata tag to the fact type. The @role metadata tag accepts two
+  possible values:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>fact : this is the default, declares that the type is to be
+      handled as a regular fact.</para>
+    </listitem>
+
+    <listitem>
+      <para>event : declares that the type is to be handled as an
+      event.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>For instance, the example bellow is declaring that the fact type
+  StockTick in a stock broker application shall be handled as an event.</para>
+
+  <para><example>
+      <title>declaring a fact type as an event</title>
+
+      <programlisting><emphasis role="bold">import</emphasis> some.package.StockTick
+
+<emphasis role="bold">declare</emphasis> StockTick
+    <emphasis>@role</emphasis>( event )
+<emphasis role="bold">end</emphasis>
+</programlisting>
+    </example></para>
+
+  <para>The same applies to facts declared inline. So, if StockTick was a fact
+  type declared in the DRL itself, instead of a previously existing class, the
+  code would be:</para>
+
+  <para><example>
+      <title>declaring a fact type and assiging it the event role</title>
+
+      <programlisting><emphasis role="bold">declare</emphasis> StockTick 
+    <emphasis>@role</emphasis>( event )
+
+    datetime : java.util.Date
+    symbol : String
+    price : double
+<emphasis role="bold">end</emphasis>
+</programlisting>
+    </example>For more information on type declarations, please check the Rule
+  Language section of the Drools Expert documentation.</para>
+
+  <para></para>
 </section>
