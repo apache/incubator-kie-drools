@@ -41,6 +41,9 @@ public class ResourceType {
     /** Binary Package */
     public static final ResourceType PKG = addResourceTypeToRegistry("PKG");
 
+    /** Drools Rule Language */
+    public static final ResourceType BRL = addResourceTypeToRegistry("BRL");
+
     /** ChangeSet */
     public static final ResourceType ChangeSet = addResourceTypeToRegistry("ChangeSet");
     
