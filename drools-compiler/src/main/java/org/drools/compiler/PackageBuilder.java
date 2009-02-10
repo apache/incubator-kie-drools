@@ -17,6 +17,7 @@ package org.drools.compiler;
  */
 
 import java.beans.IntrospectionException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -52,6 +53,9 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.server.util.BRDRLPersistence;
+import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
@@ -383,6 +387,44 @@ public class PackageBuilder {
         this.resource = null;
     }
 
+    public void addPackageFromBrl(final Resource resource)
+			throws DroolsParserException, IOException {
+		this.resource = resource;
+
+        String brl = loadBrlFile(resource.getReader());
+		RuleModel model = BRXMLPersistence.getInstance().unmarshal(brl);
+		String drl = BRDRLPersistence.getInstance().marshal(model);
+        final DrlParser parser = new DrlParser();
+        DefaultExpander expander = getDslExpander();
+
+        try {
+            String str = expander.expand( new StringReader(drl) );
+            if ( expander.hasErrors() ) {
+                this.results.addAll( expander.getErrors() );
+            }
+
+            final PackageDescr pkg = parser.parse( str );
+            this.results.addAll( parser.getErrors() );
+            if ( !parser.hasErrors() ) {
+                addPackage( pkg );
+            }
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        this.resource = null;
+	}
+
+    private String loadBrlFile(final Reader drl) throws IOException {
+        final StringBuffer buf = new StringBuffer();
+        final BufferedReader input = new BufferedReader( drl );
+        String line = null;
+        while ( (line = input.readLine()) != null ) {
+            buf.append( line );
+            buf.append( "\n" );
+        }
+        return buf.toString();
+    }
+    
     public void addDsl(Resource resource) throws IOException {
         this.resource = resource;
 
@@ -459,6 +501,9 @@ public class PackageBuilder {
             } else if ( ResourceType.XDRL.equals( type )) {
                 ((InternalResource) resource).setResourceType( type );
                 addPackageFromXml( resource );
+            } else if ( ResourceType.BRL.equals( type )) {
+                ((InternalResource) resource).setResourceType( type );
+                addPackageFromBrl( resource );
             } else if ( ResourceType.DRF.equals( type )) {
                 ((InternalResource) resource).setResourceType( type );
                 addProcessFromXml( resource );

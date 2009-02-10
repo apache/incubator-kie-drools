@@ -1,5 +1,6 @@
 package org.drools.workflow.core.node;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -320,7 +321,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         }
     }
     
-    public class NodeAndType {
+    public class NodeAndType implements Serializable {
 
         private long nodeId;
         private String type;
@@ -396,7 +397,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         
         public Node getInNode() {
             if (inNode == null) {
-                inNode = getNodeContainer().getNode(inNodeId);
+                inNode = ((NodeContainer) CompositeNode.this.getNodeContainer()).internalGetNode(inNodeId);
             }
             return inNode;
         }
@@ -438,7 +439,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         
         public Node getOutNode() {
             if (outNode == null) {
-                outNode = getNodeContainer().getNode(outNodeId);
+                outNode = ((NodeContainer) CompositeNode.this.getNodeContainer()).internalGetNode(outNodeId);
             }
             return outNode;
         }

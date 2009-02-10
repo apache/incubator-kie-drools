@@ -1,12 +1,13 @@
 package org.drools.workflow.core.node;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.process.core.context.variable.Mappable;
 
-public class Trigger implements Mappable {
+public class Trigger implements Mappable, Serializable {
 	
     private Map<String, String> inMapping = new HashMap<String, String>();
 

@@ -77,6 +77,7 @@ public class SessionConfiguration
         out.writeObject( chainedProperties );
         out.writeBoolean( immutable );
         out.writeBoolean( keepReference );
+        out.writeObject( clockType );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -84,6 +85,7 @@ public class SessionConfiguration
         chainedProperties = (ChainedProperties) in.readObject();
         immutable = in.readBoolean();
         keepReference = in.readBoolean();
+        clockType = (ClockType) in.readObject();
     }
 
     /**
