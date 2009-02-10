@@ -1,5 +1,7 @@
 package org.drools.xml.processes;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -500,6 +502,9 @@ public class XMLPersistenceTest extends TestCase {
         System.out.println(xml2);
         
 //        assertEquals(xml, xml2);
+        
+        // test serialization of process elements
+        new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(process);
     }
     
     public void testSpecialCharacters() {

@@ -1,8 +1,10 @@
 package org.drools.process.core.context.exception;
 
+import java.io.Serializable;
+
 import org.drools.workflow.core.DroolsAction;
 
-public class ActionExceptionHandler implements ExceptionHandler {
+public class ActionExceptionHandler implements ExceptionHandler, Serializable {
 	
 	private static final long serialVersionUID = 400L;
 	

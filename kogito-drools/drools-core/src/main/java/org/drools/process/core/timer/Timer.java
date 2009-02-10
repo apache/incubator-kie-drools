@@ -1,10 +1,12 @@
 package org.drools.process.core.timer;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class Timer {
+public class Timer implements Serializable {
 
     private long id;
     private long delay;

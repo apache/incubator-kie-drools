@@ -51,11 +51,11 @@ public class ObjectDataType implements DataType {
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    	className = in.readUTF();
+    	className = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-    	out.writeUTF(className);
+    	out.writeObject(className);
     }
 
     public boolean verifyDataType(final Object value) {

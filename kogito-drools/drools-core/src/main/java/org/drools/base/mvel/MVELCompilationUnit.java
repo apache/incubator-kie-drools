@@ -20,6 +20,7 @@ import org.drools.rule.Declaration;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.DataConversion;
+import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -340,6 +341,8 @@ public class MVELCompilationUnit
                                 final ClassLoader classLoader,
                                 final ParserContext parserContext,
                                 final int languageLevel) {
+    	MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+    	
         ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
 
         if ( MVELDebugHandler.isDebugMode() ) {
