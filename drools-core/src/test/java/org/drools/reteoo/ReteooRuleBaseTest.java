@@ -66,8 +66,8 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
     public void testNoKeepReference() throws Exception {
         SessionConfiguration conf = new SessionConfiguration();
         conf.setKeepReference( false );
-        final WorkingMemory wm5 = this.ruleBase.newStatefulSession( conf );
-        final WorkingMemory wm6 = this.ruleBase.newStatefulSession( conf );
+        final WorkingMemory wm5 = this.ruleBase.newStatefulSession( conf, null );
+        final WorkingMemory wm6 = this.ruleBase.newStatefulSession( conf, null );
         assertLength( 4,
                       this.ruleBase.getStatefulSessions() );
         assertNotContains( wm5, this.ruleBase.getStatefulSessions() );

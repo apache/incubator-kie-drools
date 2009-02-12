@@ -15,7 +15,9 @@ import org.drools.concurrent.FireAllRules;
 import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.FactHandle;
+import org.drools.runtime.Environment;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;
@@ -36,16 +38,19 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this( id,
               ruleBase,
               executorService,
-              new SessionConfiguration() );
+              new SessionConfiguration(),
+              EnvironmentFactory.newEnvironment() );
     }
 
     public ReteooStatefulSession(final int id,
                                  final InternalRuleBase ruleBase,
                                  final ExecutorService executorService,
-                                 final SessionConfiguration config) {
+                                 final SessionConfiguration config,
+                                 final Environment environment) {
         super( id,
                ruleBase,
-               config );
+               config,
+               environment );
         this.executor = executorService;
     }
 
@@ -56,14 +61,16 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
                                  final InitialFactHandle initialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
-                                 final InternalAgenda agenda) {
+                                 final InternalAgenda agenda,
+                                 final Environment environment) {
         super( id,
                ruleBase,
                handleFactory,
                initialFactHandle,
                propagationContext,
                config,
-               agenda );
+               agenda,
+               environment );
         this.executor = executorService;
     }
 

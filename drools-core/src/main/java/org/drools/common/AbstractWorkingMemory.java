@@ -84,6 +84,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
@@ -209,6 +210,8 @@ public abstract class AbstractWorkingMemory
     
     private Map<String, ExitPoint>                           exitPoints;
 
+    private Environment                                      environment;
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -225,13 +228,16 @@ public abstract class AbstractWorkingMemory
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
-                                 final SessionConfiguration config) {
+                                 final SessionConfiguration config,
+                                 final Environment environment)
+    {
         this( id,
               ruleBase,
               handleFactory,
               null,
               0,
-              config );
+              config,
+              environment );
     }
 
     public AbstractWorkingMemory(final int id,
@@ -239,12 +245,14 @@ public abstract class AbstractWorkingMemory
                                  final FactHandleFactory handleFactory,
                                  final InitialFactHandle initialFactHandle,
                                  final long propagationContext,
-                                 final SessionConfiguration config) {
+                                 final SessionConfiguration config,
+                                 final Environment environment) {
         this.id = id;
         this.config = config;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.globalResolver = new MapGlobalResolver();
+        this.environment = environment;
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 

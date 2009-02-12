@@ -16,7 +16,8 @@ public class DefaultMarshaller
     implements
     Marshaller {
     GlobalResolver                     globalResolver;
-    RuleBaseConfiguration              config;
+    RuleBaseConfiguration              ruleBaseConfig;
+    MarshallingConfiguration           marshallingConfig;
     PlaceholderResolverStrategyFactory factory;
 
     public DefaultMarshaller() {
@@ -28,18 +29,20 @@ public class DefaultMarshaller
               null );
     }
 
-    public DefaultMarshaller(RuleBaseConfiguration config,
-                             PlaceholderResolverStrategyFactory factory) {
-        this.config = (config != null) ? config : new RuleBaseConfiguration();
-
-        if ( factory == null ) {
+    public DefaultMarshaller(RuleBaseConfiguration ruleBaseConfig,
+                             MarshallingConfiguration marshallingConfig) {
+        this.ruleBaseConfig = (ruleBaseConfig != null) ? ruleBaseConfig : new RuleBaseConfiguration();
+        this.marshallingConfig = marshallingConfig;
+        
+        if ( marshallingConfig.getPlaceholderResolverStrategyFactory() == null ) {
             this.factory = new PlaceholderResolverStrategyFactory();
             ClassPlaceholderResolverStrategyAcceptor acceptor = new ClassPlaceholderResolverStrategyAcceptor( "*.*" );
             IdentityPlaceholderResolverStrategy strategy = new IdentityPlaceholderResolverStrategy( acceptor );
             this.factory.addStrategy( strategy );
         } else {
-            this.factory = factory;
+            this.factory = marshallingConfig.getPlaceholderResolverStrategyFactory();
         }
+        
     }
 
     /* (non-Javadoc)
@@ -53,7 +56,10 @@ public class DefaultMarshaller
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        ruleBase,
                                                                        RuleBaseNodes.getNodeMap( ruleBase ),
-                                                                       factory );
+                                                                       factory,
+                                                                       marshallingConfig.isMarshallProcessInstances(),
+                                                                       marshallingConfig.isMarshallWorkItems(),
+                                                                       marshallingConfig.isMarshallTimers() );
 
         ReteooStatefulSession session = InputMarshaller.readSession( context,
                                                                      id,
@@ -70,7 +76,10 @@ public class DefaultMarshaller
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        ruleBase,
                                                                        RuleBaseNodes.getNodeMap( ruleBase ),
-                                                                       factory );
+                                                                       factory,
+                                                                       marshallingConfig.isMarshallProcessInstances(),
+                                                                       marshallingConfig.isMarshallWorkItems(),
+                                                                       marshallingConfig.isMarshallTimers());
 
         session = InputMarshaller.readSession( (ReteooStatefulSession) session,
                                                context );
@@ -89,7 +98,10 @@ public class DefaultMarshaller
                                                                      ruleBase,
                                                                      (InternalWorkingMemory) session,
                                                                      RuleBaseNodes.getNodeMap( ruleBase ),
-                                                                     this.factory );
+                                                                     this.factory,
+                                                                     marshallingConfig.isMarshallProcessInstances(),
+                                                                     marshallingConfig.isMarshallWorkItems(),
+                                                                     marshallingConfig.isMarshallTimers() );
         OutputMarshaller.writeSession( context );
         context.close();
     }

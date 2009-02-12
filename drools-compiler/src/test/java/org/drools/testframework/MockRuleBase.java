@@ -15,6 +15,7 @@ import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.marshalling.Marshaller;
 import org.drools.rule.Package;
+import org.drools.runtime.Environment;
 
 public class MockRuleBase implements RuleBase {
 
@@ -53,7 +54,7 @@ public class MockRuleBase implements RuleBase {
 		return null;
 	}
 
-	public StatefulSession newStatefulSession(SessionConfiguration config) {
+	public StatefulSession newStatefulSession(SessionConfiguration config, Environment environment ) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -164,5 +165,10 @@ public class MockRuleBase implements RuleBase {
     public void addPackages(Package[] pkgs) {
         // TODO Auto-generated method stub
         
+    }
+
+    public StatefulSession newStatefulSession(boolean keepReference) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

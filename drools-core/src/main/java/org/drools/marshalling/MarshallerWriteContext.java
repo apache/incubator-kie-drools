@@ -26,12 +26,27 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     public final PlaceholderResolverStrategyFactory resolverStrategyFactory;
 
     public final Map<LeftTuple, Integer>            terminalTupleMap;
+    
+    public final boolean                            marshalProcessInstances;
+    public final boolean                            marshalWorkItems;
+    public final boolean                            marshalTimers;    
+    
+    public MarshallerWriteContext(OutputStream stream,
+                                  InternalRuleBase ruleBase,
+                                  InternalWorkingMemory wm,
+                                  Map<Integer, BaseNode> sinks,
+                                  PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {
+        this(stream, ruleBase, wm, sinks, resolverStrategyFactory, true, true, true);
+    }
 
     public MarshallerWriteContext(OutputStream stream,
                                      InternalRuleBase ruleBase,
                                      InternalWorkingMemory wm,
                                      Map<Integer, BaseNode> sinks,
-                                     PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {
+                                     PlaceholderResolverStrategyFactory resolverStrategyFactory,
+                                     boolean marshalProcessInstances,
+                                     boolean marshalWorkItems,
+                                     boolean marshalTimers) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
@@ -41,5 +56,9 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.resolverStrategyFactory = resolverStrategyFactory;
         
         this.terminalTupleMap = new IdentityHashMap<LeftTuple, Integer>();
+        
+        this.marshalProcessInstances = marshalProcessInstances;
+        this.marshalWorkItems = marshalWorkItems;
+        this.marshalTimers = marshalTimers;        
     }
 }

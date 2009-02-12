@@ -35,12 +35,14 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
+import org.drools.runtime.Environment;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -62,7 +64,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                final InternalRuleBase ruleBase) {
         this( id,
               ruleBase,
-              new SessionConfiguration() );
+              new SessionConfiguration(),
+              EnvironmentFactory.newEnvironment() );
     }
 
     /**
@@ -73,11 +76,13 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
      */
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
-                               final SessionConfiguration config) {
+                               final SessionConfiguration config,
+                               final Environment environment) {
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory(),
-               config );
+               config,
+               environment );
         this.agenda = new DefaultAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );
     }
@@ -88,14 +93,16 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                final InitialFactHandle initialFactHandle,
                                final long propagationContext,
                                final SessionConfiguration config,
-                               final InternalAgenda agenda) {
+                               final InternalAgenda agenda,
+                               final Environment environment) {
         super( id,
                ruleBase,
                handleFactory,
                initialFactHandle,
                //ruleBase.newFactHandleFactory(context),
                propagationContext,
-               config );
+               config,
+               environment );
         this.agenda = agenda;
         this.agenda.setWorkingMemory( this );
         //        InputPersister.readFactHandles( context );

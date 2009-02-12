@@ -10,7 +10,7 @@ import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.PlaceholderResolverStrategyFactory;
+import org.drools.marshalling.MarshallingConfiguration;
 import org.drools.persistence.ByteArraySnapshotter;
 
 public class StatefulSessionSnapshotter implements ByteArraySnapshotter<StatefulSession> {
@@ -24,24 +24,24 @@ public class StatefulSessionSnapshotter implements ByteArraySnapshotter<Stateful
 		this(ruleBase, null);
 	}
 
-	public StatefulSessionSnapshotter(RuleBase ruleBase, PlaceholderResolverStrategyFactory factory) {
-		this(ruleBase, new SessionConfiguration(), factory);
+	public StatefulSessionSnapshotter(RuleBase ruleBase, MarshallingConfiguration marshallingConfiguration) {
+		this(ruleBase, new SessionConfiguration(), marshallingConfiguration);
 	}
 
-	public StatefulSessionSnapshotter(RuleBase ruleBase, SessionConfiguration conf, PlaceholderResolverStrategyFactory factory) {
+	public StatefulSessionSnapshotter(RuleBase ruleBase, SessionConfiguration conf, MarshallingConfiguration marshallingConfiguration) {
 		this.ruleBase = ruleBase;
 		this.conf = conf;
-		this.marshaller = new DefaultMarshaller(((InternalRuleBase) ruleBase).getConfiguration(), factory);
+		this.marshaller = new DefaultMarshaller(((InternalRuleBase) ruleBase).getConfiguration(), marshallingConfiguration);
 	}
 
 	public StatefulSessionSnapshotter(StatefulSession session) {
 		this(session, null);
 	}
 
-	public StatefulSessionSnapshotter(StatefulSession session, PlaceholderResolverStrategyFactory factory) {
+	public StatefulSessionSnapshotter(StatefulSession session, MarshallingConfiguration marshallingConfiguration) {
 		this.session = session;
 		this.ruleBase = session.getRuleBase();
-		this.marshaller = new DefaultMarshaller(((InternalRuleBase) ruleBase).getConfiguration(), factory);
+		this.marshaller = new DefaultMarshaller(((InternalRuleBase) ruleBase).getConfiguration(), marshallingConfiguration);
 	}
 
 	public byte[] getSnapshot() {
@@ -57,7 +57,7 @@ public class StatefulSessionSnapshotter implements ByteArraySnapshotter<Stateful
 
 	public void loadSnapshot(byte[] bytes) {
 		if (session == null) {
-			session = ruleBase.newStatefulSession(conf);
+			session = ruleBase.newStatefulSession(conf, null);
 		}
 		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 		try {

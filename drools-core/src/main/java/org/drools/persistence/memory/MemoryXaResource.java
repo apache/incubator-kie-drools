@@ -12,7 +12,9 @@ public class MemoryXaResource implements XAResource {
     private MemoryPersister pm;
     
     Map<Xid, byte[]> data = new HashMap<Xid, byte[]>();
-    LinkedList<Xid> list = new LinkedList<Xid>();       
+    LinkedList<Xid> list = new LinkedList<Xid>();    
+    
+    private boolean nestedSavePointsAllowed = false;
 
     public MemoryXaResource(MemoryPersister pm) {
         this.pm = pm;
@@ -22,16 +24,24 @@ public class MemoryXaResource implements XAResource {
     	return list.size() > 0;
     }
 
+
+    public int prepare(Xid xid) throws XAException {
+        return 0;
+    }
+    
     public void start(Xid xid,
                       int flags) throws XAException {
         byte[] bytes = pm.getSnapshot();
         // The start of the first transaction is recorded as  save point, for HA.
-        if ( this.list.isEmpty() ) {
+        if ( this.list.isEmpty() && this.nestedSavePointsAllowed ) {
         	pm.setLastSave( bytes );
         }        
         
-        this.list.add( xid );
-        this.data.put( xid, bytes );
+        if ( this.nestedSavePointsAllowed || this.list.isEmpty() ) {
+            // either this is the first snapshot, or nested snapshots is allowed
+            this.list.add( xid );
+            this.data.put( xid, bytes );
+        }
     }     
     
     public void rollback(Xid xid) throws XAException {   
@@ -86,16 +96,32 @@ public class MemoryXaResource implements XAResource {
         return false;
     }
 
-    public int prepare(Xid xid) throws XAException {
-        return 0;
-    }
-
     public Xid[] recover(int flag) throws XAException {
         return null;
     }
 
     public boolean setTransactionTimeout(int seconds) throws XAException {
         return false;
-    }      
+    }
 
+    public boolean isNestedSavePointsAllowed() {
+        return nestedSavePointsAllowed;
+    }
+
+    public void setNestedSavePointsAllowed(boolean nestedSavePointsAllowed) {
+        this.nestedSavePointsAllowed = nestedSavePointsAllowed;
+    }    
+    
+
+//    public boolean equals(Object object) {
+//        if ( object == null || !(object instanceof MemoryXaResource)) {
+//            return false;
+//        }
+//        
+//        
+//        return this == object;
+//    }
+    
+    
+    
 }

@@ -19,7 +19,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
 
 public class MarshallerReaderContext extends ObjectInputStream {
-    public final MarshallerReaderContext           stream;
+    public final MarshallerReaderContext            stream;
     public final InternalRuleBase                   ruleBase;
     public InternalWorkingMemory                    wm;
     public final Map<Integer, BaseNode>             sinks;
@@ -34,10 +34,30 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
     public final Map<Long, PropagationContext>      propagationContexts;
 
+    public final boolean                            marshalProcessInstances;
+    public final boolean                            marshalWorkItems;
+    public final boolean                            marshalTimers;
+
     public MarshallerReaderContext(InputStream stream,
-                                    InternalRuleBase ruleBase,
-                                    Map<Integer, BaseNode> sinks,
-                                    PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {
+                                   InternalRuleBase ruleBase,
+                                   Map<Integer, BaseNode> sinks,
+                                   PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {
+        this( stream,
+              ruleBase,
+              sinks,
+              resolverStrategyFactory,
+              true,
+              true,
+              true );
+    }
+
+    public MarshallerReaderContext(InputStream stream,
+                                   InternalRuleBase ruleBase,
+                                   Map<Integer, BaseNode> sinks,
+                                   PlaceholderResolverStrategyFactory resolverStrategyFactory,
+                                   boolean marshalProcessInstances,
+                                   boolean marshalWorkItems,
+                                   boolean marshalTimers) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
@@ -48,5 +68,8 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.entryPoints = new HashMap<String, EntryPoint>();
         this.propagationContexts = new HashMap<Long, PropagationContext>();
         this.resolverStrategyFactory = resolverStrategyFactory;
+        this.marshalProcessInstances = marshalProcessInstances;
+        this.marshalWorkItems = marshalWorkItems;
+        this.marshalTimers = marshalTimers;
     }
 }

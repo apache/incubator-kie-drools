@@ -62,7 +62,7 @@ public class OutOfMemoryTest extends TestCase {
         conf.setKeepReference( true ); // this is just for documentation purposes, since the default value is "true"
         try {
             for( i = 0; i < 300000; i++ ) {
-                final StatefulSession session = ruleBase.newStatefulSession( conf );
+                final StatefulSession session = ruleBase.newStatefulSession( conf, null );
                 session.dispose();
             } 
         } catch ( Throwable e ) {
