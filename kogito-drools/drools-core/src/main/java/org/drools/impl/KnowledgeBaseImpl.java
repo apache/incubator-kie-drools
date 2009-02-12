@@ -55,6 +55,7 @@ import org.drools.process.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Package;
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
@@ -130,15 +131,25 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession() {
-    	return newStatefulKnowledgeSession(new SessionConfiguration());
+    	return newStatefulKnowledgeSession(new SessionConfiguration(), EnvironmentFactory.newEnvironment() );
     }
     
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf) {
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
+        // NOTE if you update here, you'll also need to update the JPAService
+        if ( conf == null ) {
+            conf = new SessionConfiguration();
+        }
+        
+        if ( environment == null ) {
+            environment = EnvironmentFactory.newEnvironment();
+        }
+        
     	CommandService commandService = ((SessionConfiguration) conf).getCommandService(this.ruleBase);
     	if (commandService != null) {
 			return new CommandBasedStatefulKnowledgeSession(commandService);
     	} else {
-    		ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf );
+    		ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, 
+    		                                                                                          environment );
     		return new StatefulKnowledgeSessionImpl( session, this );
     	}
     }    

@@ -45,6 +45,7 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.Marshaller;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositeClassLoader;
@@ -333,7 +334,7 @@ abstract public class AbstractRuleBase
      * @see RuleBase
      */
     public StatefulSession newStatefulSession() {
-        return newStatefulSession( new SessionConfiguration() );
+        return newStatefulSession( new SessionConfiguration(), EnvironmentFactory.newEnvironment() );
     }
 
     public synchronized void disposeStatefulSession(final StatefulSession statefulSession) {

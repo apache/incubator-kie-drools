@@ -29,6 +29,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
@@ -65,6 +66,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.runtime.Environment;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.spi.Activation;
@@ -154,6 +156,14 @@ public class InputMarshaller {
                                                     int id,
                                                     ExecutorService executor) throws IOException,
                                                                              ClassNotFoundException {
+        return readSession( context, id, executor, EnvironmentFactory.newEnvironment() );
+    }
+    
+    public static ReteooStatefulSession readSession(MarshallerReaderContext context,
+                                                    int id,
+                                                    ExecutorService executor,
+                                                    Environment environment) throws IOException,
+                                                                             ClassNotFoundException {
 
         boolean multithread = context.readBoolean();
         
@@ -179,7 +189,8 @@ public class InputMarshaller {
                                                                    initialFactHandle,
                                                                    propagationCounter,
                                                                    new SessionConfiguration(), // FIXME: must deserialize configuration  
-                                                                   agenda );
+                                                                   agenda,
+                                                                   environment );
 
         // RuleFlowGroups need to reference the session
         for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
@@ -195,18 +206,24 @@ public class InputMarshaller {
             readTruthMaintenanceSystem( context );
         }
 
-        readProcessInstances( context );
+        if ( context.marshalProcessInstances ) {
+            readProcessInstances( context );
+        }
 
-        readWorkItems( context );
+        if ( context.marshalWorkItems ) {
+            readWorkItems( context );
+        }
 
-        readTimers( context );
+        if ( context.marshalTimers ) {
+            readTimers( context );
+        }
 
         if( multithread ) {
             session.startPartitionManagers();
         }
 
         return session;
-    }
+    }    
 
     public static void readAgenda(MarshallerReaderContext context,
                                   DefaultAgenda agenda) throws IOException {

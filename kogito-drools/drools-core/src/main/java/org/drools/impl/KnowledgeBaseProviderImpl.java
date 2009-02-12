@@ -38,6 +38,6 @@ public class KnowledgeBaseProviderImpl implements KnowledgeBaseProvider {
     }
 
 	public Environment newEnvironment() {
-		return EnvironmentFactory.newEnvironment();
+		return new EnvironmentImpl(); //EnvironmentFactory.newEnvironment();
 	}
 }

@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import org.drools.definition.type.FactType;
 import org.drools.marshalling.Marshaller;
 import org.drools.rule.Package;
+import org.drools.runtime.Environment;
 import org.drools.WorkingMemory;
 
 /**
@@ -65,6 +66,8 @@ public interface RuleBase
      */
     StatefulSession newStatefulSession();
 
+    StatefulSession newStatefulSession(boolean keepReference);
+    
     /**
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>.
@@ -77,7 +80,7 @@ public interface RuleBase
      *
      * @return A newly initialized <code>WorkingMemory</code>.
      */
-    StatefulSession newStatefulSession(SessionConfiguration config);
+    StatefulSession newStatefulSession(SessionConfiguration config, Environment environment);
 
     StatefulSession readStatefulSession(InputStream stream,
                                         Marshaller marshaller) throws IOException,

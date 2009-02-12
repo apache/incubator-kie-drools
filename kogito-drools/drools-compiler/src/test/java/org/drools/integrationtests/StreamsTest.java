@@ -82,7 +82,7 @@ public class StreamsTest extends TestCase {
 
         KnowledgeSessionConfiguration conf = new SessionConfiguration();
         ((SessionConfiguration) conf).setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf, null );
 
         final List results = new ArrayList();
 

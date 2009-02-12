@@ -105,11 +105,17 @@ public class OutputMarshaller {
             context.writeBoolean( false );
         }
 
-        writeProcessInstances( context );
+        if ( context.marshalProcessInstances ) {
+            writeProcessInstances( context );
+        }
 
-        writeWorkItems( context );
+        if ( context.marshalWorkItems ) {
+            writeWorkItems( context );
+        }
 
-        writeTimers( context );
+        if ( context.marshalTimers ) {
+            writeTimers( context );
+        }
         
         if( multithread ) {
             wm.startPartitionManagers();

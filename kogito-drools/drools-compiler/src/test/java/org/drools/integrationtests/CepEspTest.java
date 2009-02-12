@@ -83,7 +83,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession session = ruleBase.newStatefulSession( conf );
+        StatefulSession session = ruleBase.newStatefulSession( conf, null );
 
         final List results = new ArrayList();
 
@@ -138,7 +138,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final List results = new ArrayList();
 
@@ -218,7 +218,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final List results = new ArrayList();
 
@@ -304,7 +304,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final PseudoClockScheduler clock = (PseudoClockScheduler) wm.getSessionClock();
 
@@ -511,7 +511,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final List<?> results = new ArrayList<Object>();
 
@@ -562,7 +562,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final List<?> results = new ArrayList<Object>();
 
@@ -613,7 +613,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final List<?> results = new ArrayList<Object>();
 
@@ -666,7 +666,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         List results = new ArrayList();
 
@@ -799,7 +799,7 @@ public class CepEspTest extends TestCase {
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.REALTIME_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final List results = new ArrayList();
 
@@ -887,7 +887,7 @@ public class CepEspTest extends TestCase {
         
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        StatefulSession wm = ruleBase.newStatefulSession( conf, null );
 
         final List results = new ArrayList();
 

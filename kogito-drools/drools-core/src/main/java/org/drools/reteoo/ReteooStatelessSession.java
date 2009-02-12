@@ -27,6 +27,7 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.AgendaFilter;
@@ -84,7 +85,8 @@ public class ReteooStatelessSession
         synchronized ( this.ruleBase.getPackagesMap() ) {
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                                 this.ruleBase,
-                                                                new SessionConfiguration() );
+                                                                new SessionConfiguration(),
+                                                                EnvironmentFactory.newEnvironment() );
 
             wm.setGlobalResolver( this.globalResolver );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );

@@ -41,12 +41,14 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.Marshaller;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.runtime.Environment;
 import org.drools.FactHandle;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
@@ -232,8 +234,17 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                  context,
                                  workingMemory );
     }
+    
 
-    public synchronized StatefulSession newStatefulSession(final SessionConfiguration sessionConfig) {
+    public synchronized StatefulSession newStatefulSession(boolean keepReference) {
+        SessionConfiguration config = new SessionConfiguration();
+        config.setKeepReference( keepReference );
+                       
+        return newStatefulSession( config, EnvironmentFactory.newEnvironment() );
+    }
+    
+    
+    public synchronized StatefulSession newStatefulSession(final SessionConfiguration sessionConfig, final Environment environment) {
         if ( this.config.isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
@@ -244,7 +255,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
             session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
                                                  this,
                                                  executor,
-                                                 sessionConfig );
+                                                 sessionConfig,
+                                                 environment );
 
             executor.setCommandExecutor( new CommandExecutor( session ) );
 
