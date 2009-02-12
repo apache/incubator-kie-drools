@@ -33,9 +33,9 @@ public class DefaultDSLMapping
     implements
     DSLMapping {
 
-    private String identifier;
-    private String description;
-    private List   entries;
+    private String                identifier;
+    private String                description;
+    private List<DSLMappingEntry> entries;
 
     public DefaultDSLMapping() {
         this( "" );
@@ -43,7 +43,7 @@ public class DefaultDSLMapping
 
     public DefaultDSLMapping(final String identifier) {
         this.identifier = identifier;
-        this.entries = new LinkedList();
+        this.entries = new LinkedList<DSLMappingEntry>();
     }
 
     /**
@@ -58,14 +58,14 @@ public class DefaultDSLMapping
      * Adds all entries in the given list to this DSL Mapping
      * @param entries
      */
-    public void addEntries(final List entries) {
+    public void addEntries(final List<DSLMappingEntry> entries) {
         this.entries.addAll( entries );
     }
 
     /**
      * Returns an unmodifiable list of entries
      */
-    public List getEntries() {
+    public List<DSLMappingEntry> getEntries() {
         return Collections.unmodifiableList( this.entries );
     }
 
@@ -74,10 +74,10 @@ public class DefaultDSLMapping
      * @param section
      * @return
      */
-    public List getEntries(final Section section) {
-        final List list = new LinkedList();
-        for ( final Iterator it = this.entries.iterator(); it.hasNext(); ) {
-            final DSLMappingEntry entry = (DSLMappingEntry) it.next();
+    public List<DSLMappingEntry> getEntries(final Section section) {
+        final List<DSLMappingEntry> list = new LinkedList<DSLMappingEntry>();
+        for ( final Iterator<DSLMappingEntry> it = this.entries.iterator(); it.hasNext(); ) {
+            final DSLMappingEntry entry = it.next();
             if ( entry.getSection().equals( section ) ) {
                 list.add( entry );
             }

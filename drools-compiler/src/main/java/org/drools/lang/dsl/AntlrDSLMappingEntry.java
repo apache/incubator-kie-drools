@@ -16,19 +16,21 @@
 
 package org.drools.lang.dsl;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.mvel2.util.ParseTools;
 
 /**
  * An ANTLR-driven implementation for the DSL Mapping Entry interface
  * 
  * @author mattgeis
  */
-public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry
-    implements
-    DSLMappingEntry {
+public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
+
+    private static final String HEAD_TAG = "__HEAD__";
+    private static final String TAIL_TAG = "__TAIL__";
+    
     private boolean headMatchGroupAdded = false;
     private boolean tailMatchGroupAdded = false;
 
@@ -37,86 +39,132 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry
               DSLMappingEntry.EMPTY_METADATA,
               null,
               null,
-              null);
+              null,
+              null );
     }
 
     public AntlrDSLMappingEntry(final Section section,
                                 final MetaData metadata,
                                 final String key,
                                 final String value,
-                                final String sentence) {
-        this.section = section;
-        this.metadata = metadata;
-        this.setMappingKey( key );
-        this.setMappingValue( value );
-        this.sentence = sentence;
+                                final String keyPattern,
+                                final String valuePattern) {
+        setSection( section );
+        setMetaData( metadata );
+        setMappingKey( key );
+        setMappingValue( value );
+        setKeyPattern( keyPattern );
+        setValuePattern( valuePattern );
     }
 
     /**
      * @param key
      *            the key to set
      */
-    public void setMappingKey(String key) {
+    public void setKeyPattern(final String keyPat) {
         //the "key" in this case is already mostly formed into 
         //a pattern by ANTLR, and just requires a bit of post-processing.
-        if ( key != null ) {
-            key = key.trim();
-        }
-        this.key = key;
+        if ( keyPat != null ) {
+            String trimmed = keyPat.trim();
+            // escaping the special character $
+            String keyPattern = trimmed.replaceAll( "\\$",
+                                                    "\\\\\\$" );
 
-        if ( key != null ) {
-            int substr = 0;
-            // escape '$' to avoid errors
-            //final String escapedKey = key.replaceAll("\\$", "\\\\\\$");
-            // retrieving variables list and creating key pattern
-            final StringBuffer buf = new StringBuffer();
-
-            if ( !key.startsWith( "^" ) ) {
+            if ( !keyPattern.startsWith( "^" ) ) {
                 // making it start with a space char or a line start
-                buf.append( "(\\W|^)" ).append( key );
-                redistributeVariables();
+                keyPattern = "(\\W|^)" + keyPattern;
+                // adding a dummy variable due to index shift
+                getVariables().put( HEAD_TAG,
+                                    Integer.valueOf( 0 ) );
                 headMatchGroupAdded = true;
             }
 
             // if pattern ends with a pure variable whose pattern could create
             // a greedy match, append a line end to avoid multiple line matching
-            if ( buf.toString().endsWith( "(.*?)" ) ) {
-                buf.append( "$" );
+            if ( keyPattern.endsWith( "(.*?)" ) ) {
+                keyPattern += "$";
             } else {
-                buf.append( "(\\W|$)" );
+                keyPattern += "(\\W|$)";
+                getVariables().put( TAIL_TAG,
+                                    Integer.valueOf( 1 ) );
                 tailMatchGroupAdded = true;
             }
+            
+            // fix variables offset
+            fixVariableOffsets();
 
             // setting the key pattern and making it space insensitive
-            String pat = buf.toString();
             //first, look to see if it's 
-            if ( key.substring( substr ).trim().startsWith( "-" ) && (!key.substring( substr ).trim().startsWith( "-\\s*" )) ) {
-                pat = pat.substring( 0,
-                                     pat.indexOf( '-' ) + 1 ) + "\\s*" + pat.substring( pat.indexOf( '-' ) + 1 ).trim();
+            if ( trimmed.startsWith( "-" ) && (!trimmed.startsWith( "-\\s*" )) ) {
+                int index = keyPattern.indexOf( '-' ) + 1;
+                keyPattern = keyPattern.substring( 0,
+                                                   index ) + "\\s*" + keyPattern.substring( index ).trim();
             }
-            //may not need to do this at all
-            //pat = pat.replaceAll("\\s+", "\\\\s+");
-            this.keyPattern = Pattern.compile( pat,
-                                               Pattern.DOTALL | Pattern.MULTILINE );
+
+            // making the pattern space insensitive
+            keyPattern = keyPattern.replaceAll( "\\s+",
+                                                "\\\\s+" );
+            // normalize duplications
+            keyPattern = keyPattern.replaceAll( "(\\\\s\\+)+",
+                                                "\\\\s+" );
+
+            setKeyPattern( Pattern.compile( keyPattern,
+                                            Pattern.DOTALL | Pattern.MULTILINE ) );
 
         } else {
-            this.keyPattern = null;
+            setKeyPattern( (Pattern) null );
         }
-        // update value mapping
-        //this.setMappingValue(this.value);
     }
 
-    /**
-     * The keys for this map are integers, starting at 1.  However,
-     * in certain cases we insert a matching group at the start of the
-     * pattern, which means that 1 should become 2, 2 become 3, etc.
-     */
-    private void redistributeVariables() {
-        for ( Iterator it = variables.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Integer i = (Integer) entry.getValue();
-            variables.put( entry.getKey(),
-                           new Integer( i.intValue() + 1 ) );
+    private void fixVariableOffsets() {
+        char[] input = getMappingKey().toCharArray();
+        int counter = 1;
+        boolean insideCurly = false;
+        if( headMatchGroupAdded ) {
+            getVariables().put( HEAD_TAG, Integer.valueOf( counter ) );
+            counter++;
+        }
+        for ( int i = 0; i < input.length; i++ ) {
+            switch ( input[i] ) {
+                case '\\' :
+                    // next char is escaped
+                    i++;
+                    break;
+                case '(' :
+                    counter++;
+                    break;
+                case '{' :
+                    if( insideCurly ) {
+                        i = ParseTools.balancedCapture( input, i, '{' );
+                    } else {
+                        insideCurly = true;
+                        updateVariableIndex( i,
+                                             counter );
+                        counter++;
+                    }
+                    break;
+                case '}' :
+                    if ( insideCurly )
+                        insideCurly = false;
+            }
+        }
+        if( tailMatchGroupAdded ) {
+            getVariables().put( TAIL_TAG, Integer.valueOf( counter ) );
+        }
+    }
+    
+    
+
+    private void updateVariableIndex(int offset,
+                                     int counter) {
+        String subs = getMappingKey().substring( offset );
+        for ( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
+            if ( subs.startsWith( "{" + entry.getKey() ) &&
+                 (( subs.charAt( entry.getKey().length()+1 ) == '}' ) || 
+                  ( subs.charAt( entry.getKey().length()+1 ) == ':' ) )) {
+                entry.setValue( Integer.valueOf( counter ) );
+                break;
+            }
         }
     }
 
@@ -124,32 +172,26 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry
      * @param value
      *            the value to set
      */
-    public void setMappingValue(String value) {
+    public void setValuePattern(String value) {
         if ( value != null ) {
             StringBuffer valuePatternBuffer = new StringBuffer();
-            StringBuffer valueBuffer = new StringBuffer();
 
             if ( headMatchGroupAdded ) {
                 valuePatternBuffer.append( "$1" );
-                valueBuffer.append( "$1" );
             }
             valuePatternBuffer.append( value );
-            valueBuffer.append( value );
-            if ( tailMatchGroupAdded ) {
-                int maxGroupIndex = 0;
-                if ( !variables.isEmpty() ) {
-                    Integer tailMatchGroupIndex = (Integer) Collections.max( variables.values() );
-                    maxGroupIndex = tailMatchGroupIndex.intValue();
-                } else if ( headMatchGroupAdded ) {
-                    //if empty, but head group matched, set max group to 1
-                    maxGroupIndex++;
-                }
-                maxGroupIndex++;
-                valuePatternBuffer.append( "$" + maxGroupIndex );
-                valueBuffer.append( "$" + maxGroupIndex );
+            if ( value.endsWith( " " ) ) {
+                valuePatternBuffer.deleteCharAt( valuePatternBuffer.length() - 1 );
             }
-            this.valuePattern = valuePatternBuffer.toString();
-            this.value = valueBuffer.toString();
+            if ( tailMatchGroupAdded ) {
+                int tailIndex = getVariables().get( TAIL_TAG ).intValue();
+                valuePatternBuffer.append( "$" + tailIndex );
+            }
+            String pat = valuePatternBuffer.toString();
+            for( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
+                pat = pat.replaceAll( "\\{"+entry.getKey()+"(:(.*?))?\\}", "\\$"+entry.getValue() );
+            }
+            super.setValuePattern( pat );
         }
 
     }

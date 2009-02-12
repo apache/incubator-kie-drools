@@ -10,7 +10,6 @@ options {
 	
 	import java.util.Map;
 	import java.util.HashMap;
-	
 }
 
 
@@ -35,24 +34,30 @@ valid_entry returns [DSLMappingEntry mappingEntry]
 
 entry returns [DSLMappingEntry mappingEntry]
 scope {
-	Map variables;
+	Map<String,Integer> variables;
 	AntlrDSLMappingEntry retval;
-	int counter;
 	StringBuffer keybuffer;
 	StringBuffer valuebuffer;
-	StringBuffer sentencebuffer;
+	StringBuffer sentenceKeyBuffer;
+	StringBuffer sentenceValueBuffer;
 }
 @init {
 	$entry::retval = new AntlrDSLMappingEntry() ;
-	$entry::variables = new HashMap();
+	$entry::variables = new HashMap<String,Integer>();
 	$entry::keybuffer = new StringBuffer();
 	$entry::valuebuffer = new StringBuffer();
-	$entry::sentencebuffer = new StringBuffer();
+	$entry::sentenceKeyBuffer = new StringBuffer();
+	$entry::sentenceValueBuffer = new StringBuffer();
 }
-	: ^(VT_ENTRY scope_section meta_section? key_section {$entry::retval.variables = $entry::variables; $entry::retval.setMappingKey($entry::keybuffer.toString());$entry::retval.setSentence($entry::sentencebuffer.toString());}
+	: ^(VT_ENTRY scope_section meta_section? key_section 
+	        {    $entry::retval.setVariables( $entry::variables ); 
+	             $entry::retval.setMappingKey($entry::sentenceKeyBuffer.toString());
+	             $entry::retval.setKeyPattern($entry::keybuffer.toString());
+	        }
 		value_section)
 	{
-		$entry::retval.setMappingValue($entry::valuebuffer.toString());
+		$entry::retval.setMappingValue($entry::sentenceValueBuffer.toString());
+		$entry::retval.setValuePattern($entry::valuebuffer.toString());
 		$mappingEntry = $entry::retval;
 		$mapping_file::retval.addEntry($mappingEntry);
 	}
@@ -85,12 +90,12 @@ key_sentence
 	| vtl=VT_LITERAL 
 	{
 		$entry::keybuffer.append($vtl.text);
-		$entry::sentencebuffer.append($vtl.text);
+		$entry::sentenceKeyBuffer.append($vtl.text);
 	}
 	| VT_SPACE
 	{
 		$entry::keybuffer.append("\\s+");
-		$entry::sentencebuffer.append(" ");
+		$entry::sentenceKeyBuffer.append(" ");
 	}
 	;		
 
@@ -106,10 +111,12 @@ value_sentence
 	| vtl=VT_LITERAL
 	{
 		$entry::valuebuffer.append($vtl.text.replaceAll("\\$", "\\\\\\$"));
+		$entry::sentenceValueBuffer.append($vtl.text);
 	}
 	| VT_SPACE
 	{
 		$entry::valuebuffer.append(" ");
+		$entry::sentenceValueBuffer.append(" ");
 	}
 	;	
 
@@ -120,15 +127,14 @@ literal
 variable_definition
 	:   ^(VT_VAR_DEF varname=LITERAL  ^(VT_QUAL q=LITERAL?) pattern=VT_PATTERN? )
 	{
-		$entry::counter++;
-		$entry::variables.put($varname.text, new Integer($entry::counter));
+		$entry::variables.put($varname.text, Integer.valueOf(0));
 		
 		if($q!=null && $pattern!=null){
-			$entry::sentencebuffer.append("{"+$varname.text+":"+$q.text+":"+$pattern.text+"}");
+			$entry::sentenceKeyBuffer.append("{"+$varname.text+":"+$q.text+":"+$pattern.text+"}");
 		}else if($q==null && $pattern!=null){
-			$entry::sentencebuffer.append("{"+$varname.text+":"+$pattern.text+"}");
+			$entry::sentenceKeyBuffer.append("{"+$varname.text+":"+$pattern.text+"}");
 		}else{
-			$entry::sentencebuffer.append("{"+$varname.text+"}");
+			$entry::sentenceKeyBuffer.append("{"+$varname.text+"}");
 		}
 		
 		if($q == null || (!$q.getText().equals("ENUM") && !$q.getText().equals("DATE") && !$q.getText().equals("BOOLEAN"))){
@@ -144,7 +150,8 @@ variable_definition
 variable_reference 
 	: ^(varref=VT_VAR_REF lit=LITERAL ) 
 	{
-		$entry::valuebuffer.append("$" + $entry::variables.get($lit.text));
+		$entry::valuebuffer.append("{" + $lit.text + "}" );
+ 		$entry::sentenceValueBuffer.append("{"+$lit.text+"}");
 	}
 	;	
 

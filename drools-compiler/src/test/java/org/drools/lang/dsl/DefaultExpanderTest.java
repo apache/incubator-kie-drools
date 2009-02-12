@@ -18,7 +18,7 @@ public class DefaultExpanderTest extends TestCase {
     protected void setUp() throws Exception {
         final String filename = "test_metainfo.dsl";
         final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
-        this.file = new DSLMappingFile();
+        this.file = new DSLTokenizedMappingFile();
         this.tokenizedFile = new DSLTokenizedMappingFile();
         this.file.parseAndLoad( reader );
         reader.close();
@@ -60,7 +60,7 @@ public class DefaultExpanderTest extends TestCase {
 
     
     public void testExpandParts() throws Exception {
-        DSLMappingFile file = new DSLMappingFile();
+        DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
         file.parseAndLoad( new StringReader( dsl ) );
         assertEquals( 0,
@@ -85,7 +85,7 @@ public class DefaultExpanderTest extends TestCase {
     
     public void testExpandFailure() throws Exception {
 
-        DSLMappingFile file = new DSLMappingFile();
+        DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
         file.parseAndLoad( new StringReader( dsl ) );
         assertEquals( 0,
@@ -137,7 +137,7 @@ public class DefaultExpanderTest extends TestCase {
 
     public void testExpandWithKeywordClashes() throws Exception {
 
-        DSLMappingFile file = new DSLMappingFile();
+        DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Invoke rule executor=ruleExec: RuleExecutor()\n" + "[then]Execute rule \"{id}\"=ruleExec.ExecuteSubRule( new Long({id}));";
         file.parseAndLoad( new StringReader( dsl ) );
         assertEquals( 0,
@@ -151,7 +151,7 @@ public class DefaultExpanderTest extends TestCase {
 //        System.out.println("["+drl+"]" );
 //        System.out.println("["+expected+"]" );
         assertFalse( ex.hasErrors() );
-        assertEquals( expected, drl );
+        equalsIgnoreWhiteSpace( expected, drl );
 
     }
     
@@ -166,7 +166,7 @@ public class DefaultExpanderTest extends TestCase {
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping( file.getMapping() );
         String source =   "package something;\n\nrule \"1\"\nwhen\n    Invoke rule executor\nthen\n    Execute rule \"5\"\nend";
-        String expected = "package something;\n\nrule \"1\"\nwhen\n    ruleExec: RuleExecutor() \nthen\n    ruleExec.ExecuteSubRule( new Long(5)); \nend\n";
+        String expected = "package something;\n\nrule \"1\"\nwhen\n    ruleExec: RuleExecutor()\nthen\n    ruleExec.ExecuteSubRule( new Long(5));\nend\n";
         String drl = ex.expand( source );
 //        System.out.println("["+drl+"]" );
 //        System.out.println("["+expected+"]" );
@@ -176,7 +176,7 @@ public class DefaultExpanderTest extends TestCase {
 
 
     public void testLineNumberError() throws Exception {
-        DSLMappingFile file = new DSLMappingFile();
+        DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
         file.parseAndLoad( new StringReader( dsl ) );
 
@@ -238,7 +238,7 @@ public class DefaultExpanderTest extends TestCase {
         String expected = "rule \"TestNewDslSetup\"\n"+
         "dialect \"mvel\"\n"+
         "when\n"+
-        "applicant:Applicant(credit==AA) \n"+ 
+        "applicant:Applicant(credit==AA)\n"+ 
         "then \nend\n";
         
         assertFalse(ex.getErrors().toString(),ex.hasErrors());

@@ -27,10 +27,11 @@ import java.util.regex.Pattern;
  */
 public interface DSLMappingEntry {
 
-    public static final Section  KEYWORD        = new KeywordSection();
-    public static final Section  CONDITION      = new ConditionSection();
-    public static final Section  CONSEQUENCE    = new ConsequenceSection();
-    public static final Section  ANY            = new AnySection();
+    public static final Section  KEYWORD        = Section.KEYWORD;
+    public static final Section  CONDITION      = Section.CONDITION;
+    public static final Section  CONSEQUENCE    = Section.CONSEQUENCE;
+    public static final Section  ANY            = Section.ANY;
+
     public static final MetaData EMPTY_METADATA = new DefaultDSLEntryMetaData( "" );
 
     /**
@@ -75,10 +76,12 @@ public interface DSLMappingEntry {
     public String getValuePattern();
 
     /**
-     * Returns the list of variables found in the given pattern key
+     * Returns the list of variables found in the given pattern key 
+     * in the same order they were found
+     * 
      * @return the variables
      */
-    public Map getVariables();
+    public Map<String, Integer> getVariables();
 
     /**
      * @param key the key to set
@@ -107,14 +110,23 @@ public interface DSLMappingEntry {
     public List getErrors();
 
     /**
-     * An inner interface for DSL mapping sections
-     * @author etirelli
-     *
+     * An enum for the sections
      */
-    public static interface Section
-        extends
-        Comparable {
-        public String getSymbol();
+    public enum Section {
+        KEYWORD("[keyword]"), 
+        CONDITION("[condition]"), 
+        CONSEQUENCE("[consequence]"), 
+        ANY("[*]");
+
+        private String symbol;
+
+        private Section(String symbol) {
+            this.symbol = symbol;
+        }
+
+        public String getSymbol() {
+            return this.symbol;
+        }
     }
 
     /**
@@ -127,229 +139,10 @@ public interface DSLMappingEntry {
      */
     public static interface MetaData
         extends
-        Comparable {
+        Comparable<MetaData> {
         public String toString();
 
         public String getMetaData();
-    }
-
-    /**
-     * The keyword section, to allow mapping of keywords
-     * 
-     * @author etirelli
-     */
-    public static class KeywordSection
-        implements
-        Section {
-        private static final String symbol = "[keyword]";
-
-        private KeywordSection() {
-        }
-
-        public String getSymbol() {
-            return symbol;
-        }
-
-        public String toString() {
-            return symbol;
-        }
-
-        public int hashCode() {
-            final int PRIME = 31;
-            int result = 1;
-            result = PRIME * result + ((symbol == null) ? 0 : symbol.hashCode());
-            return result;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( this == obj ) {
-                return true;
-            }
-            if ( obj == null ) {
-                return false;
-            }
-            if ( getClass() != obj.getClass() ) {
-                return false;
-            }
-            final KeywordSection other = (KeywordSection) obj;
-            if ( symbol == null ) {
-                if ( other.getSymbol() != null ) {
-                    return false;
-                }
-            } else if ( !symbol.equals( other.getSymbol() ) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int compareTo(final Object arg0) {
-            return this.toString().compareTo( arg0.toString() );
-        }
-    }
-
-    /**
-     * The condition section, to allow mapping of the conditions
-     * 
-     * @author etirelli
-     */
-    public static class ConditionSection
-        implements
-        Section {
-        private static final String symbol = "[condition]";
-
-        private ConditionSection() {
-        }
-
-        public String getSymbol() {
-            return symbol;
-        }
-
-        public String toString() {
-            return symbol;
-        }
-
-        public int hashCode() {
-            final int PRIME = 31;
-            int result = 1;
-            result = PRIME * result + ((symbol == null) ? 0 : symbol.hashCode());
-            return result;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( this == obj ) {
-                return true;
-            }
-            if ( obj == null ) {
-                return false;
-            }
-            if ( getClass() != obj.getClass() ) {
-                return false;
-            }
-            final KeywordSection other = (KeywordSection) obj;
-            if ( symbol == null ) {
-                if ( other.getSymbol() != null ) {
-                    return false;
-                }
-            } else if ( !symbol.equals( other.getSymbol() ) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int compareTo(final Object arg0) {
-            return this.toString().compareTo( arg0.toString() );
-        }
-    }
-
-    /**
-     * The consequence section to allow the mapping 
-     * of consequence elements
-     * 
-     * @author etirelli
-     */
-    public static class ConsequenceSection
-        implements
-        Section {
-        private static final String symbol = "[consequence]";
-
-        private ConsequenceSection() {
-        }
-
-        public String getSymbol() {
-            return symbol;
-        }
-
-        public String toString() {
-            return symbol;
-        }
-
-        public int hashCode() {
-            final int PRIME = 31;
-            int result = 1;
-            result = PRIME * result + ((symbol == null) ? 0 : symbol.hashCode());
-            return result;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( this == obj ) {
-                return true;
-            }
-            if ( obj == null ) {
-                return false;
-            }
-            if ( getClass() != obj.getClass() ) {
-                return false;
-            }
-            final KeywordSection other = (KeywordSection) obj;
-            if ( symbol == null ) {
-                if ( other.getSymbol() != null ) {
-                    return false;
-                }
-            } else if ( !symbol.equals( other.getSymbol() ) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int compareTo(final Object arg0) {
-            return this.toString().compareTo( arg0.toString() );
-        }
-    }
-
-    /**
-     * An element to indicate the mapping should be applicable
-     * to any section
-     *  
-     * @author etirelli
-     */
-    public static class AnySection
-        implements
-        Section {
-
-        private static final String symbol = "[*]";
-
-        private AnySection() {
-        }
-
-        public String getSymbol() {
-            return symbol;
-        }
-
-        public String toString() {
-            return symbol;
-        }
-
-        public int hashCode() {
-            final int PRIME = 31;
-            int result = 1;
-            result = PRIME * result + ((symbol == null) ? 0 : symbol.hashCode());
-            return result;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( this == obj ) {
-                return true;
-            }
-            if ( obj == null ) {
-                return false;
-            }
-            if ( getClass() != obj.getClass() ) {
-                return false;
-            }
-            final KeywordSection other = (KeywordSection) obj;
-            if ( symbol == null ) {
-                if ( other.getSymbol() != null ) {
-                    return false;
-                }
-            } else if ( !symbol.equals( other.getSymbol() ) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int compareTo(final Object arg0) {
-            return this.toString().compareTo( arg0.toString() );
-        }
     }
 
     public static class DefaultDSLEntryMetaData
@@ -370,7 +163,7 @@ public interface DSLMappingEntry {
             return (this.metadata == null) ? "" : this.metadata;
         }
 
-        public int compareTo(final Object arg0) {
+        public int compareTo(final MetaData arg0) {
             return this.toString().compareTo( arg0.toString() );
         }
     }

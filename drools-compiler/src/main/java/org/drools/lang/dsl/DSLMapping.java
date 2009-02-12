@@ -55,7 +55,7 @@ public interface DSLMapping {
      * Returns the list of entries in this mapping
      * @return
      */
-    public List getEntries();
+    public List<DSLMappingEntry> getEntries();
 
     /**
      * Add one entry to the list of the entries
@@ -67,7 +67,7 @@ public interface DSLMapping {
      * Adds all entries in the given list to this DSL Mapping
      * @param entries
      */
-    public void addEntries(List entries);
+    public void addEntries(List<DSLMappingEntry> entries);
 
     /**
      * Removes the given entry from the list of entries
@@ -80,6 +80,6 @@ public interface DSLMapping {
      * @param section
      * @return
      */
-    public List getEntries(Section section);
+    public List<DSLMappingEntry> getEntries(Section section);
 
 }
