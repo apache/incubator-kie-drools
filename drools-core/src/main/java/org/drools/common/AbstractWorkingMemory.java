@@ -954,7 +954,10 @@ public abstract class AbstractWorkingMemory
 
             }
 
-            if ( dynamic ) {
+            // if the dynamic parameter is true or if the
+            // user declared the fact type with the meta tag:
+            // @propertyChangeSupport
+            if ( dynamic || typeConf.isDynamic() ) {
                 addPropertyChangeListener( object );
             }
 

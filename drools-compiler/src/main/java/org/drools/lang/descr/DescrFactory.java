@@ -362,7 +362,7 @@ public class DescrFactory {
 		for (Map activeMetadata : declMetadaList) {
 			Entry activeEntry = (Entry) activeMetadata.entrySet().iterator()
 					.next();
-			String chunkData = ((DroolsTree) activeEntry.getValue()).getText();
+			String chunkData = ((DroolsTree) activeEntry.getValue() != null ) ?((DroolsTree) activeEntry.getValue()).getText() : "()";
 			typeDeclr.addMetaAttribute(((DroolsTree) activeEntry.getKey())
 					.getText(), chunkData.substring(1, chunkData.length() - 1)
 					.trim());

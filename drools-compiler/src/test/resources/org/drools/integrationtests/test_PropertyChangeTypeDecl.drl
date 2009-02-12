@@ -1,0 +1,16 @@
+package org.drools.test;
+
+import org.drools.State;
+
+global java.util.List list
+
+declare State
+    @propertyChangeSupport
+end
+
+rule simple
+    when
+        State( )
+    then
+		list.add("fired");
+end   

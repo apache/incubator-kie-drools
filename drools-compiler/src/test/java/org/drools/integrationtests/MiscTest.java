@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1449,7 +1450,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void testPropertyChangeSupport() throws Exception {
+    public void testPropertyChangeSupportOldAPI() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1486,6 +1487,44 @@ public class MiscTest extends TestCase {
         session.fireAllRules();
         assertEquals( 3,
                       ((List) session.getGlobal( "list" )).size() );
+
+    }
+
+    public void testPropertyChangeSupportNewAPI() throws Exception {
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_PropertyChangeTypeDecl.drl" ) ),
+                     ResourceType.DRL );
+        final Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( pkgs );
+        
+        kbase = SerializationHelper.serializeObject( kbase );
+        
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        final List list = new ArrayList();
+        session.setGlobal( "list",
+                           list );
+
+        final State state = new State( "initial" );
+        session.insert( state );
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      ((List) session.getGlobal( "list" )).size() );
+
+        state.setFlag( true );
+        assertEquals( 1,
+                      ((List) session.getGlobal( "list" )).size() );
+
+        session.fireAllRules();
+        assertEquals( 2,
+                      ((List) session.getGlobal( "list" )).size() );
+
+        state.setState( "finished" );
+        
+        session.dispose();
 
     }
 
