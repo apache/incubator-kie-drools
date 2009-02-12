@@ -67,10 +67,12 @@ public class DefaultExpander
      * Creates a new DefaultExpander
      */
     public DefaultExpander() {
-        this.cleanup.add( new DefaultDSLMappingEntry( DSLMappingEntry.KEYWORD,
-                                                      null,
+        this.cleanup.add( new AntlrDSLMappingEntry( DSLMappingEntry.KEYWORD,
+                                                    DSLMappingEntry.EMPTY_METADATA,
                                                       "expander {name}",
-                                                      "" ) );
+                                                      "",
+                                                      "expander (.*?)",
+                                                      "") );
     }
 
     /**

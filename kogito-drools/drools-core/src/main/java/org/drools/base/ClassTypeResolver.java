@@ -217,15 +217,12 @@ public class ClassTypeResolver
         String qualifiedClass = null;
         Class clazz = null;
         
-        String simpleClassName = ( className.indexOf( '.' ) > 0 ) ? className.split( "\\." )[0] : className;
-
         if ( importText.endsWith( "*" ) ) {
             qualifiedClass = importText.substring( 0,
                                                    importText.indexOf( '*' ) ) + className;
         } else if ( importText.endsWith( "." + className ) ) {
             qualifiedClass = importText;
-        } else if ( importText.endsWith( simpleClassName ) ) {
-            // resolves inner classes
+        } else if ( ( className.indexOf( '.' ) > 0 ) && (importText.endsWith( className.split( "\\." )[0] )) ) {
             qualifiedClass = importText + className.substring( className.indexOf( '.' ) );
         } else if ( importText.equals( className ) ) {
             qualifiedClass = importText;

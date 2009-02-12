@@ -111,6 +111,14 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.SecondClass.AlternativeKey" ) );
     }
 
+    public void testResolveObjectFromImportNested() throws Exception {
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.FirstClass" );
+
+        assertEquals( FirstClass.AlternativeKey.class,
+                      resolver.resolveType( "FirstClass.AlternativeKey" ) );
+    }
+
     public void testResolveFullTypeName() throws Exception {
 
         final TypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );

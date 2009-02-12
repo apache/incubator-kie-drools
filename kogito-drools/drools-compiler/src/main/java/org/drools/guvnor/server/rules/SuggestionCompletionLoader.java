@@ -225,9 +225,9 @@ public class SuggestionCompletionLoader {
             for (final Iterator entries = mapping.getEntries().iterator(); entries.hasNext();) {
                 final AbstractDSLMappingEntry entry = (AbstractDSLMappingEntry) entries.next();
                 if (entry.getSection() == DSLMappingEntry.CONDITION) {
-                    this.builder.addDSLConditionSentence(entry.getSentence());
+                    this.builder.addDSLConditionSentence(entry.getMappingKey());
                 } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
-                    this.builder.addDSLActionSentence(entry.getSentence());
+                    this.builder.addDSLActionSentence(entry.getMappingKey());
                 } else if (entry.getSection() == DSLMappingEntry.KEYWORD) {
                     this.builder.addDSLMapping(entry);
                 } else if (entry.getSection() == DSLMappingEntry.ANY) {

@@ -16,42 +16,25 @@
 
 package org.drools.lang.dsl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.drools.lang.dsl.DSLMappingEntry.DefaultDSLEntryMetaData;
 
 /**
  * A helper class that handles a DSL Mapping file
  * @author etirelli
  */
-public class DSLMappingFile {
+public abstract class DSLMappingFile {
 
-    // the following pattern will be used to parse dsl mapping entries in the DSL file.
-    // It is capable of parsing entries that follows the pattern:
-    // [<section>][<metadata>]?<key>=<value>
-    private static final Pattern pattern     = Pattern.compile( "((\\[[^\\[]*\\])\\s*(\\[([^\\[]*)\\])?)?\\s*((\\\\=|[^=])*)=(.*)" );
-    private static final String  KEYWORD     = "[keyword]";
-    private static final String  CONDITION   = "[condition]";
-    private static final String  CONSEQUENCE = "[consequence]";
-    //private static final String  ANY         = "[*]";
-    private static final String  WHEN        = "[when]";
-    private static final String  THEN        = "[then]";
-
-    protected DSLMapping           mapping;
-    protected List                 errors;
+    private DSLMapping mapping;
+    private List       errors;
 
     public DSLMappingFile() {
         this.mapping = new DefaultDSLMapping();
-        this.errors = Collections.EMPTY_LIST;
+        this.errors = Collections.emptyList();
     }
 
     /**
@@ -78,6 +61,10 @@ public class DSLMappingFile {
         return Collections.unmodifiableList( this.errors );
     }
 
+    protected void setErrors(List errors) {
+        this.errors = errors;
+    }
+
     /**
      * Parses the file. Throws IOException in case there is any problem
      * reading the file;
@@ -85,79 +72,7 @@ public class DSLMappingFile {
      * @return true in case no error was found parsing the file. false 
      *         otherwise. Use getErrors() to check for the actual errors.
      */
-    public boolean parseAndLoad(final Reader dsl) throws IOException {
-        String line = null;
-        int linecounter = 0;
-        final BufferedReader dslFileReader = new BufferedReader( dsl );
-        this.mapping = new DefaultDSLMapping();
-        this.errors = new LinkedList();
-        //Note: Use a string builder for 1.5 targets
-        StringBuffer sb = new StringBuffer();
-        boolean spacesAllowed = true;
-        while ( (line = dslFileReader.readLine()) != null ) {
-            linecounter++;
-            String trimmedline = line.trim(); //this can be more efficient, get rid of trim(), iterate-- over last chars only.
-            if ( spacesAllowed ) { //prevents that the break of some line be mixed with comments or empty lines
-                if ( trimmedline.length() == 0 ) {
-                    // empty line in DSL: [\t ]*\n
-                    continue;
-                }
-                if ( trimmedline.startsWith( "#" ) ) {
-                    // comment line in DSL: # bla bla \n
-                    continue;
-                }
-            }
-            //else, add the chars in the buffer, we'll see about that in a sec
-            sb.append( trimmedline );
-            if ( sb.charAt( sb.length() - 1 ) == '\\' ) {
-                sb.append( ' ' ); //put a space, don't be ridiculous
-                spacesAllowed = false;
-                continue;
-            }
-            //reinit the buffer, no matter what, but keep the accumulated chars
-            String lineToParse = sb.toString();
-            spacesAllowed = true;
-            sb = new StringBuffer();
-            final Matcher mat = pattern.matcher( lineToParse );
-            // - END - 
-            if ( mat.matches() ) {
-                final String sectionStr = mat.group( 2 );
-                final String metadataStr = mat.group( 4 );
-                final String key = mat.group( 5 ).replaceAll( "\\\\=",
-                                                              "=" );
-                final String value = mat.group( 7 );
-
-                DSLMappingEntry.Section section = DSLMappingEntry.ANY;
-                if ( KEYWORD.equals( sectionStr ) ) {
-                    section = DSLMappingEntry.KEYWORD;
-                } else if ( CONDITION.equals( sectionStr ) || WHEN.equals( sectionStr ) ) {
-                    section = DSLMappingEntry.CONDITION;
-                } else if ( CONSEQUENCE.equals( sectionStr ) || THEN.equals( sectionStr ) ) {
-                    section = DSLMappingEntry.CONSEQUENCE;
-                }
-
-                DSLMappingEntry.MetaData metadata;
-                if ( metadataStr == null || metadataStr.length() == 0 ) {
-                    metadata = DSLMappingEntry.EMPTY_METADATA;
-                } else {
-                    metadata = new DefaultDSLEntryMetaData( metadataStr );
-                }
-
-                final DSLMappingEntry entry = new DefaultDSLMappingEntry( section,
-                                                                          metadata,
-                                                                          key,
-                                                                          value );
-
-                this.mapping.addEntry( entry );
-            } else { // it is for sure an error !
-                final String error = "Error parsing mapping entry: " + line;
-                final DSLMappingParseException exception = new DSLMappingParseException( error,
-                                                                                         linecounter );
-                this.errors.add( exception );
-            }
-        }
-        return this.errors.isEmpty();
-    }
+    public abstract boolean parseAndLoad(final Reader dsl) throws IOException;
 
     /**
      * Saves current mapping into a DSL mapping file

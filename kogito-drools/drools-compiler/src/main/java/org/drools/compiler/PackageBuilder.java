@@ -502,7 +502,7 @@ public class PackageBuilder {
                 ((InternalResource) resource).setResourceType( type );
                 addPackageFromXml( resource );
             } else if ( ResourceType.BRL.equals( type )) {
-                ((InternalResource) resource).setResourceType( type );
+                ((InternalResource) resource).setResourceType( type ); 
                 addPackageFromBrl( resource );
             } else if ( ResourceType.DRF.equals( type )) {
                 ((InternalResource) resource).setResourceType( type );

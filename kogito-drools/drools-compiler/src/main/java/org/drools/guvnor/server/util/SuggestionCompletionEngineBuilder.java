@@ -173,9 +173,9 @@ public class SuggestionCompletionEngineBuilder {
         return (DSLSentence[]) ls.toArray( new DSLSentence[ls.size()] );
     }
 
-	public void addDSLMapping(AbstractDSLMappingEntry entry) {
+	public void addDSLMapping(DSLMappingEntry entry) {
 		DSLSentence sen = new DSLSentence();
-		sen.sentence = entry.getSentence();
+		sen.sentence = entry.getMappingKey();
 		if (entry.getSection() == DSLMappingEntry.CONDITION) {
 			this.conditionDSLSentences.add(sen);
 		} else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {

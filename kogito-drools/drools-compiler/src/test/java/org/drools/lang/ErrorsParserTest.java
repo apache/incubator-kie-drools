@@ -100,16 +100,14 @@ public class ErrorsParserTest extends TestCase {
                                         expanded );
         parser.compilation_unit();
         assertTrue( parser.hasErrors() );
-        System.out.println( this.getName() );
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
+//        for ( String message : this.parser.getErrorMessages() ) {
+//            System.out.println( message );
+//        }
 
         final DroolsParserException err = (DroolsParserException) parser.getErrors().get( 0 );
         assertEquals( 1,
                       parser.getErrors().size() );
-
-        assertEquals( 5,
+        assertEquals( 6,
                       err.getLineNumber() );
     }
 
