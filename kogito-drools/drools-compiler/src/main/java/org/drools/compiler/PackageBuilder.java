@@ -1048,6 +1048,10 @@ public class PackageBuilder {
                 }
                 type.setExpirationOffset( timeParser.parse( expiration )[0].longValue() );
             }
+            
+            boolean dynamic = typeDescr.getMetaAttributes().containsKey( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
+            type.setDynamic( dynamic );
+            
             pkgRegistry.getPackage().addTypeDeclaration( type );
         }
     }

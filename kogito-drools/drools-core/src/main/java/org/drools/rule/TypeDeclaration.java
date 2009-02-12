@@ -45,11 +45,12 @@ public class TypeDeclaration
     KnowledgeDefinition,
     Externalizable {
 
-    public static final String ATTR_CLASS     = "class";
-    public static final String ATTR_TEMPLATE  = "template";
-    public static final String ATTR_DURATION  = "duration";
-    public static final String ATTR_TIMESTAMP = "timestamp";
-    public static final String ATTR_EXPIRE    = "expires";
+    public static final String ATTR_CLASS               = "class";
+    public static final String ATTR_TEMPLATE            = "template";
+    public static final String ATTR_DURATION            = "duration";
+    public static final String ATTR_TIMESTAMP           = "timestamp";
+    public static final String ATTR_EXPIRE              = "expires";
+    public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
 
     public static enum Role {
         FACT, EVENT;
@@ -93,6 +94,7 @@ public class TypeDeclaration
     private FactTemplate         typeTemplate;
     private ClassDefinition      typeClassDef;
     private Resource             resource;
+    private boolean              dynamic;
 
     private transient ObjectType objectType;
     private long                 expirationOffset;
@@ -123,6 +125,7 @@ public class TypeDeclaration
         this.timestampExtractor = (InternalReadAccessor) in.readObject();
         this.resource = (Resource) in.readObject();
         this.expirationOffset = in.readLong();
+        this.dynamic = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -138,6 +141,7 @@ public class TypeDeclaration
         out.writeObject( timestampExtractor );
         out.writeObject( this.resource );
         out.writeLong( expirationOffset );
+        out.writeBoolean( dynamic );
     }
 
     /**
@@ -218,7 +222,7 @@ public class TypeDeclaration
         if ( this.typeClassDef != null ) {
             this.typeClassDef.setDefinedClass( this.typeClass );
         }
-        if( this.typeClass != null ) {
+        if ( this.typeClass != null ) {
             this.typeClassName = this.typeClass.getName();
         }
     }
@@ -358,6 +362,14 @@ public class TypeDeclaration
 
     public void setTypeClassName(String typeClassName) {
         this.typeClassName = typeClassName;
+    }
+
+    public boolean isDynamic() {
+        return dynamic;
+    }
+
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
     }
 
 }

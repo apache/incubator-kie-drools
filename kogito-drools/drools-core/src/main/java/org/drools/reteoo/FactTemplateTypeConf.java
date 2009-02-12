@@ -125,4 +125,8 @@ public class FactTemplateTypeConf
         return null;
     }
 
+    public boolean isDynamic() {
+        return false;
+    }
+
 }

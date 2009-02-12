@@ -188,4 +188,8 @@ public class ClassObjectTypeConf
     public TypeDeclaration getTypeDeclaration() {
         return typeDecl;
     }
+    
+    public boolean isDynamic() {
+        return (typeDecl != null) ? typeDecl.isDynamic() : false;
+    }
 }

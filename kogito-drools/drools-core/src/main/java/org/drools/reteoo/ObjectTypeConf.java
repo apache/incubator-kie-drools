@@ -34,5 +34,7 @@ public interface ObjectTypeConf {
 
     public boolean isEvent();
     
+    public boolean isDynamic();
+    
     public TypeDeclaration getTypeDeclaration();    
 }
