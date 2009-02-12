@@ -7,6 +7,7 @@ import org.drools.definition.process.Process;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
 import org.drools.event.knowledgebase.KnowledgeBaseEventManager;
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
@@ -114,16 +115,18 @@ public interface KnowledgeBase
      * @param processId
      */
     void removeProcess(String processId);
-
+    
     /**
-     * Create a new StatefulKnowledgeSession using the given session configuration.
-     * Don't forget to dispose() session when you are done.
+     * Create a new StatefulKnowledgeSession using the given session configuration and/or environment.
+     * Either one can be null and it will use a default.
      * 
+     * Don't forget to dispose() session when you are done.
      * @param conf
+     * @param environment
      * @return
      *     The StatefulKnowledgeSession.
      */
-    StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf);
+    StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment);
 
     /**
      * Create a new StatefulKnowledgeSession using the default session configuration.

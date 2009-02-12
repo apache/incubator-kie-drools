@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.util.ProviderLocator;
 
 /**
  * <p>
@@ -26,7 +27,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
  *
  * @see org.drools.KnowledgeBase
  */
-public class KnowledgeBaseFactory {
+public class KnowledgeBaseFactory extends ProviderLocator {
     private static KnowledgeBaseProvider provider;
 
     /**
@@ -90,6 +91,13 @@ public class KnowledgeBaseFactory {
         return getKnowledgeBaseProvider().newEnvironment();
     }
 
+//    private static synchronized KnowledgeBaseProvider getKnowledgeBaseProvider() {
+//        if ( provider == null ) {
+//            provider = newProviderFor( KnowledgeBaseProvider.class );
+//        }
+//        return provider;
+//    }
+    
     private static synchronized void setKnowledgeBaseProvider(KnowledgeBaseProvider provider) {
         KnowledgeBaseFactory.provider = provider;
     }
@@ -108,8 +116,7 @@ public class KnowledgeBaseFactory {
             Class<KnowledgeBaseProvider> cls = (Class<KnowledgeBaseProvider>) Class.forName( "org.drools.impl.KnowledgeBaseProviderImpl" );
             setKnowledgeBaseProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider org.drools.impl.KnowledgeBaseProviderImpl could not be set.",
-                                                       e );
+            throw new ProviderInitializationException( "Provider org.drools.impl.KnowledgeBaseProviderImpl could not be set.", e );
         }
     }
 }

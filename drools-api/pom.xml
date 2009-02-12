@@ -52,7 +52,7 @@
 		  <artifactId>jms</artifactId>
 		  <version>1.1</version>
           <scope>provided</scope>
-        </dependency>  	         
+        </dependency>  	 
         
   </dependencies>
   
@@ -85,8 +85,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.5</version>
+              
                 <configuration>
                     <aggregate>false</aggregate>
+                    <doclet>ydoc.doclets.YStandard</doclet>
+                    <docletPath>                        ${ydoc.home}/lib/ydoc.jar${path.separator}${ydoc.home}/lib/class2svg.jar${path.separator}${ydoc.home}/resources
+                    </docletPath>
+                    <additionalparam>-umlautogen -tag y.precondition -tag y.postcondition -tag y.complexity -tag param -tag return -tag see -tag y.uml
+                    </additionalparam>                            
                     <links>
                         <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
                     </links>
@@ -115,7 +121,6 @@
                 </configuration>
             </plugin>
         </plugins>
-    </reporting>        
-
+    </reporting>     
 
 </project>
