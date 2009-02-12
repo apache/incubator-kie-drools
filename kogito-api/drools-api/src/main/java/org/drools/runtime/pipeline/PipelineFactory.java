@@ -85,7 +85,7 @@ import com.thoughtworks.xstream.XStream;
  * </p>
  * 
  * <p>
- * Pipeline is provides an adapter to insert the payload and internal create the correct PipelineContext. Two types of Pipelines
+ * Pipeline is provides an adapter to insert the payload and internally create the correct PipelineContext. Two types of Pipelines
  * are provided, both requiring a different PipelineContext. StatefulKnowledgeSessionPipeline and StatelessKnowledgeSessionPipeline.
  * Pipeline itself implements both Stage and Emitter, this means it's a Stage in a pipeline and emits the payload to a receiver. It does
  * not implement Receiver itself, as it the start adapter for the pipeline. PipelineFactory provides methods to create both of the two
@@ -120,13 +120,9 @@ import com.thoughtworks.xstream.XStream;
  * </pre>
  * 
  * <p>
- * See StatefullKnowledgeSessionPipeline, StatelessKnowledgeSessionPipeline for more specific information and capabilities on these pipelines.
- * </p>
- * 
- * <p>
  * While the above example is for loading a resource from disk it is also possible to work from a running messaging service. Drools currently
- * provides a single Service for JMS, called JmsMessenger. Other Services will be added later. Look at the factory method for JmsMessenger for more details, but below shows
- * part of a unit test:
+ * provides a single Service for JMS, called JmsMessenger.  Support for other Services will be added later. Below shows part of a unit test which 
+ * illustrates part of the JmsMessenger in action
  * </p>
  * 
  * <pre>
