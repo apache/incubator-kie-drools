@@ -243,8 +243,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
         return newStatefulSession( config, EnvironmentFactory.newEnvironment() );
     }
     
-    
     public synchronized StatefulSession newStatefulSession(final SessionConfiguration sessionConfig, final Environment environment) {
+        return newStatefulSession( nextWorkingMemoryCounter(), sessionConfig, environment );
+    }
+    
+    public synchronized StatefulSession newStatefulSession(int id, final SessionConfiguration sessionConfig, final Environment environment) {
         if ( this.config.isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
@@ -252,7 +255,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
         synchronized ( this.pkgs ) {
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );;
-            session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
+            session = new ReteooStatefulSession( id,
                                                  this,
                                                  executor,
                                                  sessionConfig,

@@ -25,6 +25,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
+import org.drools.runtime.Environment;
 import org.drools.runtime.ObjectFilter;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -427,6 +428,11 @@ public class ExternalSheetListenerTest extends TestCase {
 				}
 
                 public Object getObject(org.drools.runtime.rule.FactHandle handle) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Environment getEnvironment() {
                     // TODO Auto-generated method stub
                     return null;
                 }

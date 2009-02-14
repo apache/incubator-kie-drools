@@ -170,7 +170,7 @@ public class RuleExecutionSetImpl
      * @return A new WorkingMemory object.
      */
     public StatefulSession newStatefulSession(SessionConfiguration conf) {
-        return this.ruleBase.newStatefulSession(conf);
+        return this.ruleBase.newStatefulSession(conf, null);
     }
     
     /**

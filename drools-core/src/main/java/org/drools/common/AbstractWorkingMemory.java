@@ -534,6 +534,10 @@ public abstract class AbstractWorkingMemory
             this.lock.unlock();
         }
     }
+    
+    public Environment getEnvironment() {
+        return this.environment;
+    }
 
     public Agenda getAgenda() {
         return this.agenda;

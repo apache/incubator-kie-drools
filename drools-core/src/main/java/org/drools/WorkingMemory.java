@@ -24,6 +24,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
+import org.drools.runtime.Environment;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
@@ -66,6 +67,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      */
     Object getGlobal(String identifier);
 
+    Environment getEnvironment(); 
 
     /**
      * Sets the GlobalResolver instance to be used when resolving globals, replaces the current GlobalResolver.

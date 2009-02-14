@@ -26,7 +26,7 @@ public class DefaultMarshaller
 
     public DefaultMarshaller(RuleBaseConfiguration config) {
         this( config,
-              null );
+              new MarshallingConfigurationImpl() );
     }
 
     public DefaultMarshaller(RuleBaseConfiguration ruleBaseConfig,

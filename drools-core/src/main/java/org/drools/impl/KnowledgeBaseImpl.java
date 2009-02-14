@@ -144,7 +144,7 @@ public class KnowledgeBaseImpl
             environment = EnvironmentFactory.newEnvironment();
         }
         
-    	CommandService commandService = ((SessionConfiguration) conf).getCommandService(this.ruleBase);
+    	CommandService commandService = ((SessionConfiguration) conf).getCommandService(this.ruleBase, environment);
     	if (commandService != null) {
 			return new CommandBasedStatefulKnowledgeSession(commandService);
     	} else {
