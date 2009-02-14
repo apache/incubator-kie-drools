@@ -28,6 +28,7 @@ import org.drools.process.command.CommandService;
 import org.drools.process.instance.ProcessInstanceManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.process.instance.event.SignalManagerFactory;
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.util.ChainedProperties;
@@ -339,15 +340,15 @@ public class SessionConfiguration
         }
     }
     
-    public CommandService getCommandService(RuleBase ruleBase) {
+    public CommandService getCommandService(RuleBase ruleBase, Environment environment) {
         if ( this.commandService == null ) {
-            initCommandService(ruleBase);
+            initCommandService(ruleBase, environment);
         }
         return this.commandService;
     }
 
     @SuppressWarnings("unchecked")
-    private void initCommandService(RuleBase ruleBase) {
+    private void initCommandService(RuleBase ruleBase, Environment environment) {
         String className = this.chainedProperties.getProperty( "drools.commandService", null );
         if (className == null) {
         	return;
@@ -368,7 +369,7 @@ public class SessionConfiguration
 
         if ( clazz != null ) {
             try {
-                this.commandService = clazz.getConstructor(RuleBase.class, SessionConfiguration.class).newInstance(ruleBase, this);
+                this.commandService = clazz.getConstructor(RuleBase.class, SessionConfiguration.class, Environment.class).newInstance(ruleBase, this, environment);
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to instantiate command service '" + className + "'",
                                                     e );

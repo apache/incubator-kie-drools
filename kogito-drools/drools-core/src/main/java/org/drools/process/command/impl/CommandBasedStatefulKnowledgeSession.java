@@ -12,10 +12,12 @@ import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.process.command.AbortWorkItemCommand;
 import org.drools.process.command.CommandService;
 import org.drools.process.command.CompleteWorkItemCommand;
+import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.GetProcessInstanceCommand;
 import org.drools.process.command.InsertObjectCommand;
 import org.drools.process.command.RegisterWorkItemHandlerCommand;
+import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.runtime.Environment;
@@ -103,8 +105,8 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 		commandService.dispose();
 	}
 
-	public int fireAllRules() {
-		throw new UnsupportedOperationException();
+	public int fireAllRules() {	    
+		return this.commandService.execute( new FireAllRulesCommand() ); 
 	}
 
 	public int fireAllRules(int max) {
@@ -132,7 +134,7 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 	}
 
 	public void setGlobal(String identifier, Object object) {
-		throw new UnsupportedOperationException();
+	    this.commandService.execute( new SetGlobalCommand(identifier, object) );
 	}
 
 	public void setGlobalResolver(GlobalResolver globalResolver) {

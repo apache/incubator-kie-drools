@@ -1,23 +1,28 @@
 package org.drools.marshalling;
 
-public class MarshallingConfigurationImpl implements  MarshallingConfiguration {
+public class MarshallingConfigurationImpl
+    implements
+    MarshallingConfiguration {
     private PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory;
-    private boolean marshallProcessInstances;
-    private boolean marshallWorkItems;
-    private boolean marshallTimers;        
-    
+    private boolean                            marshallProcessInstances;
+    private boolean                            marshallWorkItems;
+    private boolean                            marshallTimers;
+
     public MarshallingConfigurationImpl() {
-        
+        this( null,
+              true,
+              true,
+              true );
     }
-    
+
     public MarshallingConfigurationImpl(PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory,
                                         boolean marshallProcessInstances,
                                         boolean marshallWorkItems,
                                         boolean marshallTimers) {
+        this.placeholderResolverStrategyFactory = placeholderResolverStrategyFactory;
         this.marshallProcessInstances = marshallProcessInstances;
         this.marshallWorkItems = marshallWorkItems;
         this.marshallTimers = marshallTimers;
-        this.placeholderResolverStrategyFactory = placeholderResolverStrategyFactory;
     }
 
     public boolean isMarshallProcessInstances() {
@@ -51,5 +56,5 @@ public class MarshallingConfigurationImpl implements  MarshallingConfiguration {
     public void setPlaceholderResolverStrategyFactory(PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory) {
         this.placeholderResolverStrategyFactory = placeholderResolverStrategyFactory;
     }
-    
-} 
+
+}

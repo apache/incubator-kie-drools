@@ -130,11 +130,17 @@ public class InputMarshaller {
             readTruthMaintenanceSystem( context );
         }
 
-        readProcessInstances( context );
+        if ( context.marshalProcessInstances ) {
+            readProcessInstances( context );
+        }
 
-        readWorkItems( context );
+        if ( context.marshalWorkItems ) {
+            readWorkItems( context );
+        }
 
-        readTimers( context );
+        if ( context.marshalTimers ) {
+            readTimers( context );
+        }
         
         if( multithread ) {
             session.startPartitionManagers();
