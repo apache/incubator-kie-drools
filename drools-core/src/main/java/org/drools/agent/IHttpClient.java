@@ -3,6 +3,7 @@ package org.drools.agent;
 import java.io.IOException;
 import java.net.URL;
 
+import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
 
 /**
@@ -16,10 +17,10 @@ import org.drools.rule.Package;
 public interface IHttpClient {
 
     public LastUpdatedPing checkLastUpdated(URL url) throws IOException;
-    
-    public Package fetchPackage(URL url) throws IOException, ClassNotFoundException;
-    
-    
+
+    public Package fetchPackage(URL url) throws IOException,
+                                        ClassNotFoundException;
+
 }
 
 /**
@@ -28,16 +29,16 @@ public interface IHttpClient {
  * @author Michael Neale
  */
 class LastUpdatedPing {
-    public long lastUpdated = -1;
+    public long   lastUpdated = -1;
     public String responseMessage;
-    
+
     public boolean isError() {
-        if (lastUpdated == -1) return true;
-        if (responseMessage == null) return true;
-        if (responseMessage.indexOf( "200 OK" ) == -1) return true;
+        if ( lastUpdated == -1 ) return true;
+        if ( responseMessage == null ) return true;
+        if ( responseMessage.indexOf( "200 OK" ) == -1 ) return true;
         return false;
     }
-    
+
     public String toString() {
         return "Last updated: " + lastUpdated + "\n" + "Reponse header: " + responseMessage;
     }

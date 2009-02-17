@@ -16,6 +16,8 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.InternalRuleBase;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 
 public class RuleAgentTest extends TestCase {
@@ -76,6 +78,44 @@ public class RuleAgentTest extends TestCase {
         File p2f = new File( dir,
                              "p2.pkg" );
         RuleBaseAssemblerTest.writePackage( p2,
+                                            p2f );
+
+        String path = dir.getPath() + "/" + "p1.pkg " + dir.getPath() + "/" + "p2.pkg";
+
+        Properties props = new Properties();
+        props.setProperty( "file",
+                           path );
+        RuleAgent ag = RuleAgent.newRuleAgent( props );
+        RuleBase rb = ag.getRuleBase();
+        assertNotNull( rb );
+        assertEquals( 2,
+                      rb.getPackages().length );
+
+        assertFalse( ag.isPolling() );
+
+        props.setProperty( "poll",
+                           "1" );
+        ag = RuleAgent.newRuleAgent( props );
+        assertTrue( ag.isPolling() );
+
+        ag.stopPolling();
+        assertFalse( ag.isPolling() );
+
+    }
+
+    public void testFilesWithKnowledgePackage() throws Exception {
+        File dir = RuleBaseAssemblerTest.getTempDirectory();
+
+        KnowledgePackage kpackage1 = new KnowledgePackageImp( new Package( "p1" ) );
+        File p1f = new File( dir,
+                             "p1.pkg" );
+        RuleBaseAssemblerTest.writePackage( kpackage1,
+                                            p1f );
+
+        KnowledgePackage kpackage2 = new KnowledgePackageImp( new Package( "p2" ) );
+        File p2f = new File( dir,
+                             "p2.pkg" );
+        RuleBaseAssemblerTest.writePackage( kpackage2,
                                             p2f );
 
         String path = dir.getPath() + "/" + "p1.pkg " + dir.getPath() + "/" + "p2.pkg";
@@ -270,65 +310,129 @@ public class RuleAgentTest extends TestCase {
                     rb__ );
 
     }
-    
-//    // FIXME - for some reason failing on hudson
-//    public void FIXME_testPollingFilesRuleBaseReplace2() throws Exception {
-//        File dir = RuleBaseAssemblerTest.getTempDirectory();
-//
-//        Package p1 = new Package( "p1" );
-//        File p1f = new File( dir,
-//                             "p43_.pkg" );
-//        RuleBaseAssemblerTest.writePackage( p1,
-//                                            p1f );
-//
-//        Package p2 = new Package( "p2" );
-//        File p2f = new File( dir,
-//                             "p44_.pkg" );
-//        RuleBaseAssemblerTest.writePackage( p2,
-//                                            p2f );
-//
-//        String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
-//
-//        Properties props = new Properties();
-//        props.setProperty( "file",
-//                           path );
-//
-//        props.setProperty( "newInstance",
-//                           "true" );
-//        
-//        props.setProperty( "poll", "1" );
-//        
-//        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "agent1", props );
-//        
-//        KnowledgeBase kbase = kagent.getKnowledgeBase();
-//        
-//        assertEquals( 2,
-//                      kbase.getKnowledgePackages().size() );        
-//
-//        KnowledgeBase kbase_ = kagent.getKnowledgeBase();
-//        assertSame( kbase,
-//                    kbase_ );
-//
-//        //only change one
-//        RuleBaseAssemblerTest.writePackage( p1,
-//                                            p1f );
-//        int i = 0;
-//        while ( i < 20 && kagent.getKnowledgeBase() == kbase ) {
-//            // this will sleep for a max of 10 seconds, it'll check every 500ms to see if a new kbase exists
-//            // if it exists, it will break the loop.
-//            Thread.sleep( 500 );
-//            i++;
-//        }
-//        
-//        kbase_ = kagent.getKnowledgeBase();
-//        assertNotSame( kbase,
-//                    kbase_ );
-//
-//        //check we will have 2
-//        assertEquals( 2,
-//                      kbase.getKnowledgePackages().size() );
-//
-//    }    
+
+    public void testPollingFilesRuleBaseReplaceWithKnowledgePackages() throws Exception {
+        File dir = RuleBaseAssemblerTest.getTempDirectory();
+
+        KnowledgePackage kpackage1 = new KnowledgePackageImp( new Package( "p1" ) );
+        File p1f = new File( dir,
+                             "p43_.pkg" );
+        RuleBaseAssemblerTest.writePackage( kpackage1,
+                                            p1f );
+
+        KnowledgePackage kpackage2 = new KnowledgePackageImp( new Package( "p2" ));
+        File p2f = new File( dir,
+                             "p44_.pkg" );
+        RuleBaseAssemblerTest.writePackage( kpackage2,
+                                            p2f );
+
+        String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
+
+        Properties props = new Properties();
+        props.setProperty( "file",
+                           path );
+
+        props.setProperty( "newInstance",
+                           "true" );
+        RuleAgent ag = RuleAgent.newRuleAgent( props );
+
+        assertTrue( ag.isNewInstance() );
+
+        RuleBase rb = ag.getRuleBase();
+        assertEquals( 2,
+                      rb.getPackages().length );
+
+        RuleBase rb_ = ag.getRuleBase();
+        assertSame( rb,
+                    rb_ );
+
+        ag.refreshRuleBase();
+
+        assertSame( rb,
+                    ag.getRuleBase() );
+        Thread.sleep( 1000 );
+        //only change one
+        RuleBaseAssemblerTest.writePackage( kpackage1,
+                                            p1f );
+        Thread.sleep( 1000 );
+        ag.refreshRuleBase();
+
+        rb_ = ag.getRuleBase();
+
+        assertNotSame( rb,
+                       rb_ );
+
+        //check we will have 2
+        assertEquals( 2,
+                      rb_.getPackages().length );
+
+        ag.refreshRuleBase();
+        ag.refreshRuleBase();
+
+        RuleBase rb__ = ag.getRuleBase();
+        assertSame( rb_,
+                    rb__ );
+
+    }
+
+    //    // FIXME - for some reason failing on hudson
+    //    public void FIXME_testPollingFilesRuleBaseReplace2() throws Exception {
+    //        File dir = RuleBaseAssemblerTest.getTempDirectory();
+    //
+    //        Package p1 = new Package( "p1" );
+    //        File p1f = new File( dir,
+    //                             "p43_.pkg" );
+    //        RuleBaseAssemblerTest.writePackage( p1,
+    //                                            p1f );
+    //
+    //        Package p2 = new Package( "p2" );
+    //        File p2f = new File( dir,
+    //                             "p44_.pkg" );
+    //        RuleBaseAssemblerTest.writePackage( p2,
+    //                                            p2f );
+    //
+    //        String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
+    //
+    //        Properties props = new Properties();
+    //        props.setProperty( "file",
+    //                           path );
+    //
+    //        props.setProperty( "newInstance",
+    //                           "true" );
+    //        
+    //        props.setProperty( "poll", "1" );
+    //        
+    //        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "agent1", props );
+    //        
+    //        KnowledgeBase kbase = kagent.getKnowledgeBase();
+    //        
+    //        assertEquals( 2,
+    //                      kbase.getKnowledgePackages().size() );        
+    //
+    //        KnowledgeBase kbase_ = kagent.getKnowledgeBase();
+    //        assertSame( kbase,
+    //                    kbase_ );
+    //
+    //        //only change one
+    //        RuleBaseAssemblerTest.writePackage( p1,
+    //                                            p1f );
+    //        int i = 0;
+    //        while ( i < 20 && kagent.getKnowledgeBase() == kbase ) {
+    //            // this will sleep for a max of 10 seconds, it'll check every 500ms to see if a new kbase exists
+    //            // if it exists, it will break the loop.
+    //            Thread.sleep( 500 );
+    //            i++;
+    //        }
+    //        
+    //        kbase_ = kagent.getKnowledgeBase();
+    //        assertNotSame( kbase,
+    //                    kbase_ );
+    //
+    //        //check we will have 2
+    //        assertEquals( 2,
+    //                      kbase.getKnowledgePackages().size() );
+    //
+    //    }    
 
     public void testPollingFilesRuleBaseRemoveNewInstanceFalse() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
@@ -570,19 +674,19 @@ public class RuleAgentTest extends TestCase {
             public void debug(String message,
                               Object object) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             public void info(String message,
                              Object object) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             public void warning(String message,
                                 Object object) {
                 // TODO Auto-generated method stub
-                
+
             }
         };
 
@@ -778,19 +882,19 @@ public class RuleAgentTest extends TestCase {
         public void debug(String message,
                           Object object) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void info(String message,
                          Object object) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void warning(String message,
                             Object object) {
             // TODO Auto-generated method stub
-            
+
         }
 
     }
