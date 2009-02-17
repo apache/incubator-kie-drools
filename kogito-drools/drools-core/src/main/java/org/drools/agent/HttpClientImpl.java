@@ -5,10 +5,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 import org.drools.util.DroolsStreamUtils;
 
-public class HttpClientImpl implements IHttpClient {
+public class HttpClientImpl
+    implements
+    IHttpClient {
 
     public LastUpdatedPing checkLastUpdated(URL url) throws IOException {
         URLConnection con = url.openConnection();
@@ -16,19 +19,18 @@ public class HttpClientImpl implements IHttpClient {
         try {
             httpCon.setRequestMethod( "HEAD" );
 
-
             String lm = httpCon.getHeaderField( "lastModified" );
             LastUpdatedPing ping = new LastUpdatedPing();
 
             ping.responseMessage = httpCon.getHeaderFields().toString();
 
-            if (lm != null) {
+            if ( lm != null ) {
                 ping.lastUpdated = Long.parseLong( lm );
             } else {
-            	long httpLM = httpCon.getLastModified();
-            	if (httpLM > 0) {
-            		ping.lastUpdated = httpLM;
-            	}
+                long httpLM = httpCon.getLastModified();
+                if ( httpLM > 0 ) {
+                    ping.lastUpdated = httpLM;
+                }
             }
 
             return ping;
@@ -38,14 +40,20 @@ public class HttpClientImpl implements IHttpClient {
 
     }
 
-    public Package fetchPackage(URL url) throws IOException, ClassNotFoundException {
+    public Package fetchPackage(URL url) throws IOException,
+                                        ClassNotFoundException {
         URLConnection con = url.openConnection();
         HttpURLConnection httpCon = (HttpURLConnection) con;
         try {
             httpCon.setRequestMethod( "GET" );
 
-            return (Package) DroolsStreamUtils.streamIn(httpCon.getInputStream());
+            Object o = DroolsStreamUtils.streamIn( httpCon.getInputStream() );
 
+            if ( o instanceof KnowledgePackageImp ) {
+                return ((KnowledgePackageImp) o).pkg;
+            } else {
+                return (Package) o;
+            }
         } finally {
             httpCon.disconnect();
         }
@@ -53,16 +61,13 @@ public class HttpClientImpl implements IHttpClient {
 
     public static void main(String[] args) throws Exception {
         HttpClientImpl cl = new HttpClientImpl();
-        URL url = new URL("http://localhost:8888/org.drools.guvnor.Guvnor/package/com.billasurf.manufacturing.plant/SNAP");
-
+        URL url = new URL( "http://localhost:8888/org.drools.guvnor.Guvnor/package/com.billasurf.manufacturing.plant/SNAP" );
 
         LastUpdatedPing ping = cl.checkLastUpdated( url );
 
-
         Package p = cl.fetchPackage( url );
 
-
-        System.err.println(ping);
+        System.err.println( ping );
         System.err.println( ping.isError() );
     }
 
