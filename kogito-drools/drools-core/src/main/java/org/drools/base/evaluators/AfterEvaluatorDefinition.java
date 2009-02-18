@@ -28,6 +28,7 @@ import java.util.Map;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

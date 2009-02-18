@@ -17,38 +17,32 @@
  */
 package org.drools.event;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
-import org.drools.event.AfterFunctionRemovedEvent;
-import org.drools.event.AfterRuleAddedEvent;
-import org.drools.event.AfterRuleRemovedEvent;
-import org.drools.event.BeforeFunctionRemovedEvent;
-import org.drools.event.BeforeRuleAddedEvent;
-import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
-import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
-
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
 /**
  * @author etirelli

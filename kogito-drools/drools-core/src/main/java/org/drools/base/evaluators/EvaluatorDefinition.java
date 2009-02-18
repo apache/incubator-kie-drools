@@ -31,7 +31,7 @@ import org.drools.spi.Evaluator;
  *
  * @author etirelli
  */
-public interface EvaluatorDefinition extends Externalizable {
+public interface EvaluatorDefinition extends Externalizable, org.drools.runtime.rule.EvaluatorDefinition {
 
     /**
      * Returns the list of identifies this

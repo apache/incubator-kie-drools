@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
@@ -41,7 +42,6 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
-import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;

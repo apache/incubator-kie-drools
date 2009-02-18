@@ -18,7 +18,6 @@ package org.drools.compiler;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,13 +26,19 @@ import java.util.Map.Entry;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
-import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.conf.AccumulateFunctionOption;
+import org.drools.builder.conf.DefaultDialectOption;
+import org.drools.builder.conf.DumpDirOption;
+import org.drools.builder.conf.EvaluatorOption;
+import org.drools.builder.conf.ProcessStringEscapesOption;
+import org.drools.conf.Option;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
 import org.drools.rule.Package;
+import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
@@ -72,50 +77,45 @@ import org.mvel2.MVEL;
  * 
  * drools.parser.processStringEscapes = true|false
  */
-public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguration {
+public class PackageBuilderConfiguration
+    implements
+    KnowledgeBuilderConfiguration {
 
-    private static final String        ACCUMULATE_FUNCTION_PREFIX  = "drools.accumulate.function.";
+    private Map                             dialectConfigurations;
 
-    private static final String        EVALUATOR_DEFINITION_PREFIX = "drools.evaluator.";
+    private DefaultDialectOption            defaultDialect;
 
-    private static final String        DROOLS_PARSER_PROCESS_STRING_ESCAPES = "drools.parser.processStringEscapes";
+    private ClassLoader                     classLoader;
 
-    private Map                        dialectConfigurations;
+    private ChainedProperties               chainedProperties;
 
-    private String                     defaultDialect;
+    private Map<String, AccumulateFunction> accumulateFunctions;
 
-    private ClassLoader                classLoader;
+    private EvaluatorRegistry               evaluatorRegistry;
 
-    private ChainedProperties          chainedProperties;
+    private SemanticModules                 semanticModules;
 
-    private Map<String, String>        accumulateFunctions;
+    private ProcessNodeBuilderRegistry      nodeBuilderRegistry;
 
-    private EvaluatorRegistry          evaluatorRegistry;
+    private File                            dumpDirectory;
 
-    private SemanticModules            semanticModules;
+    private boolean                         allowMultipleNamespaces              = true;
 
-    private ProcessNodeBuilderRegistry nodeBuilderRegistry;
-
-    private File                       dumpDirectory;
-
-    private boolean					   allowMultipleNamespaces = true;
-    
-    private boolean                    processStringEscapes = true;
+    private boolean                         processStringEscapes                 = true;
 
     public boolean isAllowMultipleNamespaces() {
-		return allowMultipleNamespaces;
-	}
-
+        return allowMultipleNamespaces;
+    }
 
     /**
      * By default multiple namespaces are allowed. If you set this to "false" it will
      * make it all happen in the "default" namespace (the first namespace you define).
      */
-	public void setAllowMultipleNamespaces(boolean allowMultipleNamespaces) {
-		this.allowMultipleNamespaces = allowMultipleNamespaces;
-	}
+    public void setAllowMultipleNamespaces(boolean allowMultipleNamespaces) {
+        this.allowMultipleNamespaces = allowMultipleNamespaces;
+    }
 
-	/**
+    /**
      * Constructor that sets the parent class loader for the package being built/compiled
      * @param classLoader
      */
@@ -175,45 +175,52 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
         buildEvaluatorRegistry();
 
         buildDumpDirectory();
-        
-        setProperty( DROOLS_PARSER_PROCESS_STRING_ESCAPES, 
-                     this.chainedProperties.getProperty( DROOLS_PARSER_PROCESS_STRING_ESCAPES, "true" ) );
+
+        setProperty( ProcessStringEscapesOption.PROPERTY_NAME,
+                     this.chainedProperties.getProperty( ProcessStringEscapesOption.PROPERTY_NAME,
+                                                         "true" ) );
     }
-    
-    public void setProperty(String name, String value) {
+
+    public void setProperty(String name,
+                            String value) {
         name = name.trim();
         if ( StringUtils.isEmpty( name ) ) {
             return;
         }
-        
-        if ( name.equals( "drools.dialect.default" ) ) {
-            setDefaultDialect( value );    
-        } else if ( name.startsWith( "drools.accumulate.function" ) ) {
-            addAccumulateFunction( name.substring( name.lastIndexOf( '.' ) ), value );
-        } else if ( name.startsWith( "drools.evaluator." ) ) {
+
+        if ( name.equals( DefaultDialectOption.PROPERTY_NAME ) ) {
+            setDefaultDialect( value );
+        } else if ( name.startsWith( AccumulateFunctionOption.PROPERTY_NAME ) ) {
+            addAccumulateFunction( name.substring( AccumulateFunctionOption.PROPERTY_NAME.length() ),
+                                   value );
+        } else if ( name.startsWith( EvaluatorOption.PROPERTY_NAME ) ) {
             this.evaluatorRegistry.addEvaluatorDefinition( value );
-        } else if ( name.equals(  "drools.dump.dir" ) ) {
+        } else if ( name.equals( DumpDirOption.PROPERTY_NAME ) ) {
             buildDumpDirectory( value );
-        } else if ( name.equals(  DROOLS_PARSER_PROCESS_STRING_ESCAPES ) ) {
+        } else if ( name.equals( ProcessStringEscapesOption.PROPERTY_NAME ) ) {
             setProcessStringEscapes( Boolean.parseBoolean( value ) );
         }
     }
-    
+
     public String getProperty(String name) {
         name = name.trim();
         if ( StringUtils.isEmpty( name ) ) {
             return null;
         }
-        
-        if ( name.equals( "drools.dialect.default" ) ) {
-            return getDefaultDialect( );    
-        } else if ( name.startsWith( "drools.accumulate.function" ) ) {
-            return this.accumulateFunctions.get( name );
-        }else if ( name.startsWith( "drools.evaluator." ) ) {
-            return this.evaluatorRegistry.getEvaluatorDefinition( name.substring( name.lastIndexOf( '.' ) ) ).getClass().getName();
-        } else if ( name.equals(  "drools.dump.dir" ) ) {
-            return Boolean.toString( this.dumpDirectory != null ); 
-        } else if ( name.equals(  DROOLS_PARSER_PROCESS_STRING_ESCAPES ) ) {
+
+        if ( name.equals( DefaultDialectOption.PROPERTY_NAME ) ) {
+            return getDefaultDialect();
+        } else if ( name.startsWith( AccumulateFunctionOption.PROPERTY_NAME ) ) {
+            int index = AccumulateFunctionOption.PROPERTY_NAME.length();
+            AccumulateFunction function = this.accumulateFunctions.get( name.substring( index ) );
+            return function != null ? function.getClass().getName() : null;
+        } else if ( name.startsWith( EvaluatorOption.PROPERTY_NAME ) ) {
+            String key = name.substring( name.lastIndexOf( '.' )+1 );
+            EvaluatorDefinition evalDef = this.evaluatorRegistry.getEvaluatorDefinition( key ); 
+            return evalDef != null ? evalDef.getClass().getName() : null;
+        } else if ( name.equals( DumpDirOption.PROPERTY_NAME ) ) {
+            return this.dumpDirectory != null ? this.dumpDirectory.toString() : null;
+        } else if ( name.equals( ProcessStringEscapesOption.PROPERTY_NAME ) ) {
             return String.valueOf( isProcessStringEscapes() );
         }
         return null;
@@ -229,7 +236,7 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
         this.chainedProperties.mapStartsWith( dialectProperties,
                                               "drools.dialect",
                                               false );
-        setDefaultDialect( (String) dialectProperties.remove( "drools.dialect.default" ) );
+        setDefaultDialect( (String) dialectProperties.remove( DefaultDialectOption.PROPERTY_NAME ) );
 
         for ( Iterator it = dialectProperties.entrySet().iterator(); it.hasNext(); ) {
             Entry entry = (Entry) it.next();
@@ -243,15 +250,15 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
 
     public void addDialect(String dialectName,
                            String dialectClass) {
-    	Class cls = null;
-    	try {
+        Class cls = null;
+        try {
             cls = classLoader.loadClass( dialectClass );
             DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
             dialectConf.init( this );
             addDialect( dialectName,
                         dialectConf );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls!=null) ? cls.getName() : "null") + "'",
+            throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls != null) ? cls.getName() : "null") + "'",
                                               e );
         }
     }
@@ -262,11 +269,15 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
                                    dialectConf );
     }
 
-    public DialectCompiletimeRegistry buildDialectRegistry(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg) {
-        DialectCompiletimeRegistry registry = new DialectCompiletimeRegistry(pkg);
+    public DialectCompiletimeRegistry buildDialectRegistry(PackageBuilder packageBuilder,
+                                                           PackageRegistry pkgRegistry,
+                                                           Package pkg) {
+        DialectCompiletimeRegistry registry = new DialectCompiletimeRegistry( pkg );
         for ( Iterator it = this.dialectConfigurations.values().iterator(); it.hasNext(); ) {
             DialectConfiguration conf = (DialectConfiguration) it.next();
-            Dialect dialect = conf.newDialect(packageBuilder, pkgRegistry, pkg);
+            Dialect dialect = conf.newDialect( packageBuilder,
+                                               pkgRegistry,
+                                               pkg );
             registry.addDialect( dialect.getId(),
                                  dialect );
         }
@@ -274,11 +285,11 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     }
 
     public String getDefaultDialect() {
-        return this.defaultDialect;
+        return this.defaultDialect.getName();
     }
 
     public void setDefaultDialect(String defaultDialect) {
-        this.defaultDialect = defaultDialect;
+        this.defaultDialect = DefaultDialectOption.get( defaultDialect );
     }
 
     public DialectConfiguration getDialectConfiguration(String name) {
@@ -449,64 +460,85 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     }
 
     private void buildAccumulateFunctionsMap() {
-        this.accumulateFunctions = new HashMap<String, String>();
-        Map temp = new HashMap();
+        this.accumulateFunctions = new HashMap<String, AccumulateFunction>();
+        Map<String, String> temp = new HashMap<String, String>();
         this.chainedProperties.mapStartsWith( temp,
-                                              ACCUMULATE_FUNCTION_PREFIX,
+                                              AccumulateFunctionOption.PROPERTY_NAME,
                                               true );
-        for ( Iterator it = temp.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String identifier = ((String) entry.getKey()).trim().substring( ACCUMULATE_FUNCTION_PREFIX.length() );
+        int index = AccumulateFunctionOption.PROPERTY_NAME.length();
+        for ( Map.Entry<String, String> entry : temp.entrySet() ) {
+            String identifier = entry.getKey().trim().substring( index );
             this.accumulateFunctions.put( identifier,
-                                          (String) entry.getValue() );
+                                          loadAccumulateFunction( identifier,
+                                                                  entry.getValue() ) );
         }
     }
 
+    /**
+     * This method is deprecated and will be removed 
+     * @return
+     * 
+     * @deprecated
+     */
     public Map<String, String> getAccumulateFunctionsMap() {
-        return Collections.unmodifiableMap( this.accumulateFunctions );
+        Map<String, String> result = new HashMap<String, String>();
+        for ( Map.Entry<String, AccumulateFunction> entry : this.accumulateFunctions.entrySet() ) {
+            result.put( entry.getKey(),
+                        entry.getValue().getClass().getName() );
+        }
+        return result;
     }
 
     public void addAccumulateFunction(String identifier,
                                       String className) {
         this.accumulateFunctions.put( identifier,
-                                      className );
+                                      loadAccumulateFunction( identifier,
+                                                              className ) );
     }
 
     public void addAccumulateFunction(String identifier,
-                                      Class<? extends AccumulateFunction> clazz) {
-        this.accumulateFunctions.put( identifier,
-                                      clazz.getName() );
+                                      Class< ? extends AccumulateFunction> clazz) {
+        try {
+            this.accumulateFunctions.put( identifier,
+                                          clazz.newInstance() );
+        } catch ( InstantiationException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + clazz.getName(),
+                                              e );
+        } catch ( IllegalAccessException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + clazz.getName(),
+                                              e );
+        }
+    }
+
+    public AccumulateFunction getAccumulateFunction(String identifier) {
+        return this.accumulateFunctions.get( identifier );
     }
 
     @SuppressWarnings("unchecked")
-    public AccumulateFunction getAccumulateFunction(String identifier) {
-        String className = this.accumulateFunctions.get( identifier );
-        if ( className == null ) {
-            throw new RuntimeDroolsException( "No accumulator function found for identifier: " + identifier );
-        }
+    private AccumulateFunction loadAccumulateFunction(String identifier,
+                                                      String className) {
         try {
-            Class<? extends AccumulateFunction> clazz = (Class<? extends AccumulateFunction>)this.classLoader.loadClass( className );
+            Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) this.classLoader.loadClass( className );
             return (AccumulateFunction) clazz.newInstance();
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
                                               e );
         } catch ( InstantiationException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Instantiation failed for class " + className,
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
                                               e );
         } catch ( IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Illegal access to class " + className,
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
                                               e );
         }
     }
 
     private void buildEvaluatorRegistry() {
         this.evaluatorRegistry = new EvaluatorRegistry( this.classLoader );
-        Map temp = new HashMap();
+        Map<String, String> temp = new HashMap<String, String>();
         this.chainedProperties.mapStartsWith( temp,
-                                              EVALUATOR_DEFINITION_PREFIX,
+                                              EvaluatorOption.PROPERTY_NAME,
                                               true );
-        for ( Iterator it = temp.values().iterator(); it.hasNext(); ) {
-            String className = (String) it.next();
+        for ( String className : temp.values() ) {
             this.evaluatorRegistry.addEvaluatorDefinition( className );
         }
     }
@@ -547,20 +579,16 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     }
 
     private void buildDumpDirectory() {
-        String dumpStr = this.chainedProperties.getProperty( "drools.dump.dir",
+        String dumpStr = this.chainedProperties.getProperty( DumpDirOption.PROPERTY_NAME,
                                                              null );
         buildDumpDirectory( dumpStr );
     }
-    
+
     private void buildDumpDirectory(String dumpStr) {
         if ( dumpStr != null ) {
-            this.dumpDirectory = new File( dumpStr );
-            if ( !dumpDirectory.isDirectory() || !dumpDirectory.canWrite() || !dumpDirectory.canRead() ) {
-                this.dumpDirectory = null;
-                throw new RuntimeDroolsException( "Drools dump directory is not accessible: " + dumpStr );
-            }
+            setDumpDir( new File( dumpStr ) );
         }
-    }    
+    }
 
     public File getDumpDir() {
         return this.dumpDirectory;
@@ -573,14 +601,51 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
         this.dumpDirectory = dumpDir;
     }
 
-
     public boolean isProcessStringEscapes() {
         return processStringEscapes;
     }
-
 
     public void setProcessStringEscapes(boolean processStringEscapes) {
         this.processStringEscapes = processStringEscapes;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Option> T getOption(Class<T> option) {
+        if ( DefaultDialectOption.class.equals( option ) ) {
+            return (T) this.defaultDialect;
+        } else if ( DumpDirOption.class.equals( option ) ) {
+            return (T) DumpDirOption.get( this.dumpDirectory );
+        } else if ( ProcessStringEscapesOption.class.equals( option ) ) {
+            return (T) ( this.processStringEscapes ? ProcessStringEscapesOption.YES : ProcessStringEscapesOption.NO ); 
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Option> T getOption(Class<T> option,
+                                          String key) {
+        if ( AccumulateFunctionOption.class.equals( option ) ) {
+            return (T) AccumulateFunctionOption.get( key,
+                                                     this.accumulateFunctions.get( key ) );
+        } else if ( EvaluatorOption.class.equals( option ) ) {
+            return (T) EvaluatorOption.get( key,
+                                            this.evaluatorRegistry.getEvaluatorDefinition( key ) );
+        }
+        return null;
+    }
+
+    public <T extends Option> void setOption(T option) {
+        if ( option instanceof DefaultDialectOption ) {
+            this.defaultDialect = (DefaultDialectOption) option;
+        } else if ( option instanceof AccumulateFunctionOption ) {
+            this.accumulateFunctions.put( ((AccumulateFunctionOption) option).getName(),
+                                          ((AccumulateFunctionOption) option).getFunction() );
+        } else if ( option instanceof DumpDirOption ) {
+            this.dumpDirectory = ((DumpDirOption) option).getDirectory();
+        } else if ( option instanceof EvaluatorOption ) {
+            this.evaluatorRegistry.addEvaluatorDefinition( (EvaluatorDefinition) ((EvaluatorOption)option).getEvaluatorDefinition() );
+        } else if ( option instanceof ProcessStringEscapesOption ) {
+            this.processStringEscapes = ( option == ProcessStringEscapesOption.YES );
+        }
+    }
 }

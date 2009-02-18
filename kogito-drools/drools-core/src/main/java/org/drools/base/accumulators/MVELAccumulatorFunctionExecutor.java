@@ -51,7 +51,7 @@ public class MVELAccumulatorFunctionExecutor
     private final Object        dummy            = new Object();
 
     private MVELCompilationUnit unit;
-    private AccumulateFunction  function;
+    private org.drools.runtime.rule.AccumulateFunction  function;
 
     private DroolsMVELFactory   model;
     private Serializable        expression;
@@ -61,7 +61,7 @@ public class MVELAccumulatorFunctionExecutor
     }
 
     public MVELAccumulatorFunctionExecutor(MVELCompilationUnit unit,
-                                           final AccumulateFunction function) {
+                                           final org.drools.runtime.rule.AccumulateFunction function) {
         super();
         this.unit = unit;
         this.function = function;
@@ -70,7 +70,7 @@ public class MVELAccumulatorFunctionExecutor
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         unit = (MVELCompilationUnit) in.readObject();
-        function = (AccumulateFunction) in.readObject();
+        function = (org.drools.runtime.rule.AccumulateFunction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

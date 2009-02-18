@@ -58,7 +58,7 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
     }
 
     /**
-     * @param key
+     * @param KEY
      *            the key to set
      */
     public void setKeyPattern(final String keyPat) {

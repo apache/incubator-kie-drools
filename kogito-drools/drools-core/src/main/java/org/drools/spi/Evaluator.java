@@ -19,10 +19,10 @@ package org.drools.spi;
 import java.io.Serializable;
 
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
+import org.drools.runtime.rule.Operator;
 import org.drools.time.Interval;
 
 /**
@@ -30,7 +30,7 @@ import org.drools.time.Interval;
  */
 public interface Evaluator
     extends
-    Serializable {
+    Serializable, org.drools.runtime.rule.Evaluator {
 
     /**
      * Returns the type of the values this evaluator operates upon.

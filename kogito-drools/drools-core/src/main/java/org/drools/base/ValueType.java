@@ -129,14 +129,23 @@ public class ValueType
         return determineValueType( this.classType );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#getName()
+     */
     public String getName() {
         return this.name;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#getClassType()
+     */
     public Class<?> getClassType() {
         return this.classType;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#getSimpleType()
+     */
     public int getSimpleType() {
         return this.simpleType;
     }
@@ -219,28 +228,46 @@ public class ValueType
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#isBoolean()
+     */
     public boolean isBoolean() {
         return ((this.classType == Boolean.class) || (this.classType == Boolean.TYPE));
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#isNumber()
+     */
     public boolean isNumber() {
         return (this.simpleType == SimpleValueType.INTEGER ||
                 this.simpleType == SimpleValueType.DECIMAL ||
                 this.simpleType == SimpleValueType.CHAR);
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#isIntegerNumber()
+     */
     public boolean isIntegerNumber() {
         return this.simpleType == SimpleValueType.INTEGER;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#isFloatNumber()
+     */
     public boolean isFloatNumber() {
         return this.simpleType == SimpleValueType.DECIMAL;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#isChar()
+     */
     public boolean isChar() {
         return this.simpleType == SimpleValueType.CHAR;
     }
     
+    /* (non-Javadoc)
+     * @see org.drools.base.ValueTypeInterface#isEvent()
+     */
     public boolean isEvent() { 
         return this.classType == EventFactHandle.class;
     }
