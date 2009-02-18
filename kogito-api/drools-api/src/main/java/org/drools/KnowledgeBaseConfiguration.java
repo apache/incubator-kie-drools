@@ -1,5 +1,7 @@
 package org.drools;
 
+import org.drools.conf.OptionsConfiguration;
+
 /**
  *<p>
  * A class to store KnowledgeBase related configuration. It must be used at KnowledgeBase instantiation time

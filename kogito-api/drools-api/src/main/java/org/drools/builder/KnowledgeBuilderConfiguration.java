@@ -1,6 +1,7 @@
 package org.drools.builder;
 
 import org.drools.PropertiesConfiguration;
+import org.drools.conf.OptionsConfiguration;
 
 /**
  * <p>
@@ -49,6 +50,7 @@ import org.drools.PropertiesConfiguration;
  */
 public interface KnowledgeBuilderConfiguration
     extends
-    PropertiesConfiguration {
+    PropertiesConfiguration,
+    OptionsConfiguration {
 
 }
