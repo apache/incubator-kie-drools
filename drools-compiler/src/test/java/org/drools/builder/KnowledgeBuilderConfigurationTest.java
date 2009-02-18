@@ -1,0 +1,217 @@
+/*
+ * Copyright 2008 Red Hat
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+package org.drools.builder;
+
+import java.io.File;
+
+import junit.framework.TestCase;
+
+import org.drools.base.accumulators.AverageAccumulateFunction;
+import org.drools.base.accumulators.MaxAccumulateFunction;
+import org.drools.base.evaluators.AfterEvaluatorDefinition;
+import org.drools.base.evaluators.BeforeEvaluatorDefinition;
+import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.builder.conf.AccumulateFunctionOption;
+import org.drools.builder.conf.DefaultDialectOption;
+import org.drools.builder.conf.DumpDirOption;
+import org.drools.builder.conf.EvaluatorOption;
+import org.drools.builder.conf.ProcessStringEscapesOption;
+import org.drools.runtime.rule.AccumulateFunction;
+
+/**
+ * @author etirelli
+ *
+ */
+public class KnowledgeBuilderConfigurationTest extends TestCase {
+
+    private KnowledgeBuilderConfiguration config;
+
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+    }
+
+    public void testDefaultDialectConfiguration() {
+        // setting the default dialect using the type safe method
+        config.setOption( DefaultDialectOption.get( "mvel" ) );
+
+        // checking the type safe getOption() method
+        assertEquals( DefaultDialectOption.get( "mvel" ),
+                      config.getOption( DefaultDialectOption.class ) );
+        // checking string conversion
+        assertEquals( "mvel",
+                      config.getOption( DefaultDialectOption.class ).getName() );
+        // checking the string based getProperty() method
+        assertEquals( "mvel",
+                      config.getProperty( DefaultDialectOption.PROPERTY_NAME ) );
+
+        // setting the default dialect using the string based setProperty() method
+        config.setProperty( DefaultDialectOption.PROPERTY_NAME,
+                            "java" );
+        
+        // checking the type safe getOption() method
+        assertEquals( DefaultDialectOption.get( "java" ),
+                      config.getOption( DefaultDialectOption.class ) );
+        // checking string conversion
+        assertEquals( "java",
+                      config.getOption( DefaultDialectOption.class ).getName() );
+        // checking the string based getProperty() method
+        assertEquals( "java",
+                      config.getProperty( DefaultDialectOption.PROPERTY_NAME ) );
+    }
+    
+    public void testAccumulateFunctionConfiguration() {
+        // in this use case, the application already has the instance of the accumulate function
+        AccumulateFunction function = new AverageAccumulateFunction();
+        
+        // creating the option and storing in a local var just to make test easier
+        AccumulateFunctionOption option = AccumulateFunctionOption.get( "avg", function );
+        
+        // wiring the accumulate function using the type safe method
+        config.setOption( option );
+
+        // checking the type safe getOption() method
+        assertEquals( option,
+                      config.getOption( AccumulateFunctionOption.class, "avg" ) );
+        // checking string conversion
+        assertEquals( "avg",
+                      config.getOption( AccumulateFunctionOption.class, "avg" ).getName() );
+        assertEquals( function,
+                      config.getOption( AccumulateFunctionOption.class, "avg" ).getFunction() );
+        // checking the string based getProperty() method
+        assertEquals( AverageAccumulateFunction.class.getName(),
+                      config.getProperty( AccumulateFunctionOption.PROPERTY_NAME+"avg" ) );
+
+        // wiring the accumulate function using the string based setProperty() method
+        config.setProperty( AccumulateFunctionOption.PROPERTY_NAME+"maximum",
+                            MaxAccumulateFunction.class.getName() );
+        
+        MaxAccumulateFunction max = new MaxAccumulateFunction();
+        // checking the type safe getOption() method
+        assertEquals( AccumulateFunctionOption.get( "maximum", max ),
+                      config.getOption( AccumulateFunctionOption.class, "maximum" ) );
+        // checking string conversion
+        assertEquals( "maximum",
+                      config.getOption( AccumulateFunctionOption.class, "maximum" ).getName() );
+        assertEquals( max.getClass().getName(),
+                      config.getOption( AccumulateFunctionOption.class, "maximum" ).getFunction().getClass().getName() );
+        // checking the string based getProperty() method
+        assertEquals( MaxAccumulateFunction.class.getName(),
+                      config.getProperty( AccumulateFunctionOption.PROPERTY_NAME+"maximum" ) );
+    }
+    
+    public void testDumpDirectoryConfiguration() {
+        File dumpDir = new File("target");
+        // setting the dump directory using the type safe method
+        config.setOption( DumpDirOption.get( dumpDir ) );
+
+        // checking the type safe getOption() method
+        assertEquals( DumpDirOption.get( dumpDir ),
+                      config.getOption( DumpDirOption.class ) );
+        // checking string conversion
+        assertEquals( dumpDir,
+                      config.getOption( DumpDirOption.class ).getDirectory() );
+        // checking the string based getProperty() method
+        assertEquals( dumpDir.toString(),
+                      config.getProperty( DumpDirOption.PROPERTY_NAME ) );
+
+        // setting the dump dir using the string based setProperty() method
+        dumpDir = new File( "src/main/resources" );
+        config.setProperty( DumpDirOption.PROPERTY_NAME,
+                            "src/main/resources" );
+        
+        // checking the type safe getOption() method
+        assertEquals( DumpDirOption.get( dumpDir ),
+                      config.getOption( DumpDirOption.class ) );
+        // checking string conversion
+        assertEquals( dumpDir,
+                      config.getOption( DumpDirOption.class ).getDirectory() );
+        // checking the string based getProperty() method
+        assertEquals( dumpDir.toString(),
+                      config.getProperty( DumpDirOption.PROPERTY_NAME ) );
+    }
+    
+    public void testEvaluatorConfiguration() {
+        // in this use case, the application already has the instance of the evaluator definition
+        EvaluatorDefinition afterDef = new AfterEvaluatorDefinition();
+        assertNotNull( afterDef );
+        
+        // creating the option and storing in a local var just to make test easier
+        EvaluatorOption option = EvaluatorOption.get( "after", afterDef );
+        
+        // wiring the evaluator definition using the type safe method
+        config.setOption( option );
+
+        // checking the type safe getOption() method
+        assertEquals( option,
+                      config.getOption( EvaluatorOption.class, "after" ) );
+        // checking string conversion
+        assertEquals( "after",
+                      config.getOption( EvaluatorOption.class, "after" ).getName() );
+        assertEquals( afterDef,
+                      config.getOption( EvaluatorOption.class, "after" ).getEvaluatorDefinition() );
+        // checking the string based getProperty() method
+        assertEquals( AfterEvaluatorDefinition.class.getName(),
+                      config.getProperty( EvaluatorOption.PROPERTY_NAME+"after" ) );
+
+        // wiring the evaluator definition using the string based setProperty() method
+        config.setProperty( EvaluatorOption.PROPERTY_NAME+"before",
+                            BeforeEvaluatorDefinition.class.getName() );
+        
+        BeforeEvaluatorDefinition beforeDef = new BeforeEvaluatorDefinition();
+        // checking the type safe getOption() method
+        assertEquals( EvaluatorOption.get( "before", beforeDef ),
+                      config.getOption( EvaluatorOption.class, "before" ) );
+        // checking string conversion
+        assertEquals( "before",
+                      config.getOption( EvaluatorOption.class, "before" ).getName() );
+        assertEquals( beforeDef.getClass().getName(),
+                      config.getOption( EvaluatorOption.class, "before" ).getEvaluatorDefinition().getClass().getName() );
+        // checking the string based getProperty() method
+        assertEquals( beforeDef.getClass().getName(),
+                      config.getProperty( EvaluatorOption.PROPERTY_NAME+"before" ) );
+    }
+    
+    public void testProcessStringEscapesConfiguration() {
+        // setting the process string escapes option using the type safe method
+        config.setOption( ProcessStringEscapesOption.YES );
+
+        // checking the type safe getOption() method
+        assertEquals( ProcessStringEscapesOption.YES,
+                      config.getOption( ProcessStringEscapesOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "true",
+                      config.getProperty( ProcessStringEscapesOption.PROPERTY_NAME ) );
+
+        // setting the default dialect using the string based setProperty() method
+        config.setProperty( ProcessStringEscapesOption.PROPERTY_NAME,
+                            "false" );
+        
+        // checking the type safe getOption() method
+        assertEquals( ProcessStringEscapesOption.NO,
+                      config.getOption( ProcessStringEscapesOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "false",
+                      config.getProperty( ProcessStringEscapesOption.PROPERTY_NAME ) );
+    }
+    
+    
+
+}

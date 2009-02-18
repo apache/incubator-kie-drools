@@ -19,7 +19,6 @@ package org.drools.rule.builder.dialect.mvel;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.base.mvel.MVELAccumulator;
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -36,6 +35,7 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
+import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.spi.Accumulator;
 
 /**

@@ -12,7 +12,7 @@ import org.drools.RuntimeDroolsException;
 
 public class Operator
     implements
-    Externalizable {
+    Externalizable, org.drools.runtime.rule.Operator {
 
     private static final long                  serialVersionUID = 400L;
 
@@ -111,10 +111,16 @@ public class Operator
         return "Operator = '" + this.operator + "'";
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.evaluators.OperatorInterface#getOperatorString()
+     */
     public String getOperatorString() {
         return this.operator;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.base.evaluators.OperatorInterface#isNegated()
+     */
     public boolean isNegated() {
         return this.isNegated;
     }

@@ -48,13 +48,13 @@ public class JavaAccumulatorFunctionExecutor
     private static final long     serialVersionUID = 400L;
 
     private ReturnValueExpression expression;
-    private AccumulateFunction    function;
+    private org.drools.runtime.rule.AccumulateFunction    function;
 
     public JavaAccumulatorFunctionExecutor() {
 
     }
 
-    public JavaAccumulatorFunctionExecutor(final AccumulateFunction function) {
+    public JavaAccumulatorFunctionExecutor(final org.drools.runtime.rule.AccumulateFunction function) {
         super();
         this.function = function;
     }
@@ -62,7 +62,7 @@ public class JavaAccumulatorFunctionExecutor
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         expression = (ReturnValueExpression) in.readObject();
-        function = (AccumulateFunction) in.readObject();
+        function = (org.drools.runtime.rule.AccumulateFunction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

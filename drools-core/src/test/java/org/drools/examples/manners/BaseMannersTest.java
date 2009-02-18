@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
+import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
@@ -52,7 +53,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
-import org.drools.WorkingMemory;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Consequence;

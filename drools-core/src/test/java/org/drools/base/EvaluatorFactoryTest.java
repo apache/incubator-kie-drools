@@ -325,7 +325,7 @@ public class EvaluatorFactoryTest extends TestCase {
             final Object[] row = data[i];
             boolean isNegated = ((String) row[1]).startsWith( "not " );
             String evaluatorStr = isNegated ? ((String) row[1]).substring( 4 ) : (String) row[1];
-            final Evaluator evaluator = registry.getEvaluatorDefinition( evaluatorStr ).getEvaluator( valueType,
+            final Evaluator evaluator = (Evaluator) registry.getEvaluatorDefinition( evaluatorStr ).getEvaluator( valueType,
                                                                                                       evaluatorStr,
                                                                                                       isNegated,
                                                                                                       null );

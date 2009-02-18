@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;

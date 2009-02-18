@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccumulateDescr;
@@ -38,6 +37,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.runtime.rule.AccumulateFunction;
 
 /**
  * A builder for the java dialect accumulate version

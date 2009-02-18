@@ -26,8 +26,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
+import org.drools.runtime.rule.Evaluator;
 import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReturnValueExpression;
 
