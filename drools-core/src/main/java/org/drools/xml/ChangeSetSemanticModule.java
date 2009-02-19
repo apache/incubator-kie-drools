@@ -21,10 +21,10 @@ public class ChangeSetSemanticModule  extends DefaultSemanticModule implements S
         addHandler( "add",
                     new AddHandler() ); 
         
-        addHandler( "removed",
+        addHandler( "remove",
                     new RemoveHandler() );
         
-        addHandler( "modified",
+        addHandler( "modify",
                     new ModifyHandler() );        
         
         addHandler( "resource",

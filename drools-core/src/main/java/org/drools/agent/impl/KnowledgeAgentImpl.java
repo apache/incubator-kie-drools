@@ -1,5 +1,6 @@
 package org.drools.agent.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,9 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.definition.KnowledgeDefinition;
+import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.io.ResourceChangeListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.InternalResource;
@@ -88,7 +91,7 @@ public class KnowledgeAgentImpl
 
         monitorResourceChangeEvents( monitor );
 
-        buildResourceMapping( kbase );
+        //buildResourceMapping( kbase );
 
         this.listener.info( "KnowledgAgent created, with configuration:\nmonitorChangeSetEvents=" + monitor + " scanResources=" + scanResources + " scanDirectories=" + this.scanDirectories );
     }
@@ -109,7 +112,7 @@ public class KnowledgeAgentImpl
                           changeSetState );
 
         rebuildResources( changeSetState );
-        buildResourceMapping( this.kbase );
+        //buildResourceMapping( this.kbase );
     }
 
     public void processChangeSet(Resource resource,
@@ -222,6 +225,10 @@ public class KnowledgeAgentImpl
         boolean        needsKnowledgeBuilder;
     }
 
+    /**
+     * This indexes the rules and flows against their respective urls, to allow more fine grained removal and not just removing of an entire package
+     * @param kbase
+     */
     public void buildResourceMapping(KnowledgeBase kbase) {
         RuleBase rbase = ((KnowledgeBaseImpl) kbase).ruleBase;
         this.listener.debug( "KnowledgeAgent building resource map" );
@@ -334,32 +341,22 @@ public class KnowledgeAgentImpl
     private void rebuildResources(ChangeSetState changeSetState) {
         this.listener.debug( "KnowledgeAgent rebuilding KnowledgeBase using ChangeSet" );
         synchronized ( this.resources ) {
-            for ( Resource child : changeSetState.pkgs ) {
+            // modified we already know is in the map, so no need to process those
 
-                try {
-                    InputStream is = child.getInputStream();
-                    Package pkg = (Package) DroolsStreamUtils.streamIn( is );
-                    this.listener.debug( "KnowledgeAgent adding KnowledgeDefinitionsPackage " + pkg.getName() );
-                    ((KnowledgeBaseImpl) this.kbase).ruleBase.addPackage( pkg );
-                    is.close();
-                } catch ( Exception e ) {
-                    this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to serialize and KnowledgeDefinitionsPackage  " ) );
-                }
-            }
+            //            // now make a copy of the resource keys, as we are about to reset it, but need the keys to rebuild the kbase
+            //            Resource[] resourcesClone = this.resources.keySet().toArray( new Resource[this.resources.size()] );
+            //
+            //            // reset the resources map, so it can now be rebuilt
+            //            this.resources.clear();
+
+            this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
             if ( changeSetState.needsKnowledgeBuilder ) {
-                // modified we already know is in the map, so no need to process those
-
-                // now make a copy of the resource keys, as we are about to reset it, but need the keys to rebuild the kbase
-                Resource[] resourcesClone = this.resources.keySet().toArray( new Resource[this.resources.size()] );
-
-                // reset the resources map, so it can now be rebuilt
-                this.resources.clear();
 
                 // rebuild the kbase
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-                for ( Resource resource : resourcesClone ) {
+                for ( Resource resource : this.resources.keySet() ) {
                     this.listener.debug( "KnowledgeAgent building resource=" + resource );
                     if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
                         // .pks are handled as a special case.
@@ -373,10 +370,59 @@ public class KnowledgeAgentImpl
                                            kbuilder.getErrors() );
                 }
 
-                this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
                 this.kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-                this.listener.info( "KnowledgeAgent new KnowledgeBase now built and in use" );
             }
+
+            for ( Resource resource : this.resources.keySet() ) {
+
+                if ( ((InternalResource) resource).getResourceType() == ResourceType.PKG ) {
+                    this.listener.debug( "KnowledgeAgent building resource=" + resource );
+
+                    InputStream is = null;
+                    try {
+                        // .pks are handled as a special case.
+                        is = resource.getInputStream();
+                        Object object = DroolsStreamUtils.streamIn( is );
+                        Package pkg = null;
+                        if ( object instanceof KnowledgePackage ) {
+                            pkg = ((KnowledgePackageImp) object).pkg;
+                        } else {
+                            pkg = (Package) pkg;
+                        }
+                        this.listener.debug( "KnowledgeAgent adding KnowledgeDefinitionsPackage " + pkg.getName() );
+                        ((KnowledgeBaseImpl) this.kbase).ruleBase.addPackage( pkg );
+                    } catch ( Exception e ) {
+                        this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to serialize KnowledgeDefinitionsPackage  " ) );
+                    } finally {
+                        try {
+                            is.close();
+                        } catch ( IOException e ) {
+                            this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to close KnowledgeDefinitionsPackage  " ) );
+                        }
+                    }
+                }
+            }
+
+            //            for ( Resource child : changeSetState.pkgs ) {
+            //                try {
+            //                    this.listener.debug( "child : " + ((InternalResource) child).getLastRead() + " : " + ((InternalResource) child).getLastModified() );
+            //                    InputStream is = child.getInputStream();
+            //                    Object object = DroolsStreamUtils.streamIn( is );
+            //                    Package pkg = null;
+            //                    if ( object instanceof KnowledgePackage ) {
+            //                        pkg = ((KnowledgePackageImp)object).pkg;
+            //                    } else {
+            //                        pkg = ( Package ) pkg;
+            //                    }
+            //                    this.listener.debug( "KnowledgeAgent adding KnowledgeDefinitionsPackage " + pkg.getName() );
+            //                    ((KnowledgeBaseImpl) this.kbase).ruleBase.addPackage( pkg );
+            //                    is.close();
+            //                } catch ( Exception e ) {
+            //                    this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to serialize and KnowledgeDefinitionsPackage  " ) );
+            //                }
+            //            }        
+
+            this.listener.info( "KnowledgeAgent new KnowledgeBase now built and in use" );
         }
 
         // code commented out to try and do incremental kbase changes
@@ -459,13 +505,17 @@ public class KnowledgeAgentImpl
                 this.listener.info( "KnowledegAgent has started listening for ChangeSet notifications" );
             }
             while ( this.monitor ) {
+                Exception exception = null;
                 try {
                     kagent.applyChangeSet( this.queue.take() );
                 } catch ( InterruptedException e ) {
-                    this.listener.exception( new RuntimeException( "KnowledgeAgent ChangeSet notification thread has been interrupted",
-                                                                   e ) );
+                    exception = e;
                 }
                 Thread.yield();
+                if ( this.monitor && exception != null) {
+                    this.listener.exception( new RuntimeException( "KnowledgeAgent ChangeSet notification thread has been interrupted, but shutdown was not scheduled",
+                                                                   exception ) );
+                }
             }
 
             this.listener.info( "KnowledegAgent has stopped listening for ChangeSet notifications" );

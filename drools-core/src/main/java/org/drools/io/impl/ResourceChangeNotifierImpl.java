@@ -248,14 +248,18 @@ public class ResourceChangeNotifierImpl
                 this.listener.info( "ResourceChangeNotification has started listening for ChangeSet publications" );
             }
             while ( this.notify ) {
+                Exception exception = null;
                 try {
-                    this.listener.debug( "ResourceChangeNotification notifier thread is waiting for queue update" );
+                    this.listener.debug( "ResourceChangeNotification thread is waiting for queue update" );
                     this.notifier.processChangeSet( this.queue.take() );
                 } catch ( InterruptedException e ) {
-                    this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet publication thread was interrupted",
-                                                                   e ) );
+                    exception = e;
                 }
                 Thread.yield();
+                if ( this.notify && exception != null) {
+                    this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet publication thread was interrupted, but shutdown was not scheduled",
+                                                                   exception ) );
+                }
             }
             this.listener.info( "ResourceChangeNotification has stopped listening for ChangeSet publications" );
         }
