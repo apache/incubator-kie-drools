@@ -144,7 +144,9 @@ public class MockRuleBase implements RuleBase {
 
     public StatefulSession readStatefulSession(InputStream stream,
                                                boolean keepReference,
-                                               Marshaller marshaller) throws IOException,
+                                               Marshaller marshaller,
+                                               SessionConfiguration config,
+                                               Environment environment) throws IOException,
                                                                      ClassNotFoundException {
         // TODO Auto-generated method stub
         return null;

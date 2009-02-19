@@ -5,11 +5,12 @@ import java.io.IOException;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
+import org.drools.process.instance.event.DefaultSignalManager.SignalProcessInstanceAction;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 
 public class PersisterHelper {
-    public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException {
+    public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
         int type = context.readInt();
         switch(type) {
             case WorkingMemoryAction.WorkingMemoryReteAssertAction : {
@@ -23,6 +24,10 @@ public class PersisterHelper {
             }
             case WorkingMemoryAction.LogicalRetractCallback : {
                 return new LogicalRetractCallback(context);
+            }
+            
+            case WorkingMemoryAction.SignalProcessInstanceAction : {
+                return new SignalProcessInstanceAction(context);
             }
         }    
         return null;

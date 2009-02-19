@@ -113,9 +113,7 @@ public class OutputMarshaller {
             writeWorkItems( context );
         }
 
-        if ( context.marshalTimers ) {
-            writeTimers( context );
-        }
+        writeTimers( context );
         
         if( multithread ) {
             wm.startPartitionManagers();

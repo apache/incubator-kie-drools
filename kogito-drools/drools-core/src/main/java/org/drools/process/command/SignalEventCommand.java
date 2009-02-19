@@ -39,7 +39,7 @@ public class SignalEventCommand implements Command<Object> {
 		} else {
 			ProcessInstance processInstance = session.getProcessInstance(processInstanceId);
 			if (processInstance != null) {
-				processInstance.signalEvent(eventType, processInstance);
+				processInstance.signalEvent(eventType, event);
 			}
 		}
 		return null;

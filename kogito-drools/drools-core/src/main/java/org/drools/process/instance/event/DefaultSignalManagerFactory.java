@@ -5,7 +5,7 @@ import org.drools.WorkingMemory;
 public class DefaultSignalManagerFactory implements SignalManagerFactory {
 
 	public SignalManager createSignalManager(WorkingMemory workingMemory) {
-		return new DefaultSignalManager();
+		return new DefaultSignalManager(workingMemory);
 	}
 
 }

@@ -15,8 +15,10 @@ import junit.framework.TestCase;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
 import org.drools.process.core.context.variable.VariableScope;
@@ -469,15 +471,32 @@ public class ProcessMarchallingTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(pkg);
 
-        StatefulSession session = ruleBase.newStatefulSession();
+        final StatefulSession session = ruleBase.newStatefulSession();
+
+        new Thread(new Runnable() {
+			public void run() {
+	        	session.fireUntilHalt();       	
+			}
+        }).start();
+		
         session.startProcess("com.sample.ruleflow", null);
 
         assertEquals(1, session.getProcessInstances().size());
+        session.halt();
         
-        session = getSerialisedStatefulSession( session );
+        final StatefulSession session2 = getSerialisedStatefulSession( session );
+        
+		new Thread(new Runnable() {
+			public void run() {
+	        	session2.fireUntilHalt();       	
+			}
+        }).start();
+		
         Thread.sleep(400);
 
-        assertEquals(0, session.getProcessInstances().size());
+        assertEquals(0, session2.getProcessInstances().size());
+        
+        session2.halt();
     }
     
     public void test6() throws Exception {
@@ -509,7 +528,14 @@ public class ProcessMarchallingTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(pkg);
 
-        StatefulSession session = ruleBase.newStatefulSession();
+        final StatefulSession session = ruleBase.newStatefulSession();
+        
+		new Thread(new Runnable() {
+			public void run() {
+	        	session.fireUntilHalt();       	
+			}
+        }).start();
+		
         session.startProcess("com.sample.ruleflow", null);
         assertEquals(1, session.getProcessInstances().size());
         
@@ -518,14 +544,23 @@ public class ProcessMarchallingTest extends TestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ruleBase.writeStatefulSession(session, baos, marshaller);
         byte[] b1 = baos.toByteArray();
+        session.halt();
         session.dispose();
         Thread.sleep(400);
         
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        session = ruleBase.readStatefulSession(bais, true, marshaller);
+        final StatefulSession session2 = ruleBase.readStatefulSession(bais, true, marshaller, new SessionConfiguration(), EnvironmentFactory.newEnvironment());
+        
+		new Thread(new Runnable() {
+			public void run() {
+	        	session2.fireUntilHalt();       	
+			}
+        }).start();
+		
         Thread.sleep(100);
 
-        assertEquals(0, session.getProcessInstances().size());
+        assertEquals(0, session2.getProcessInstances().size());
+        session2.halt();
     }
     
     private static class TestWorkItemHandler implements WorkItemHandler {

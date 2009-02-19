@@ -36,7 +36,6 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
     public final boolean                            marshalProcessInstances;
     public final boolean                            marshalWorkItems;
-    public final boolean                            marshalTimers;
 
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
@@ -47,7 +46,6 @@ public class MarshallerReaderContext extends ObjectInputStream {
               sinks,
               resolverStrategyFactory,
               true,
-              true,
               true );
     }
 
@@ -56,8 +54,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                    Map<Integer, BaseNode> sinks,
                                    PlaceholderResolverStrategyFactory resolverStrategyFactory,
                                    boolean marshalProcessInstances,
-                                   boolean marshalWorkItems,
-                                   boolean marshalTimers) throws IOException {
+                                   boolean marshalWorkItems) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
@@ -70,6 +67,5 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.resolverStrategyFactory = resolverStrategyFactory;
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
-        this.marshalTimers = marshalTimers;
     }
 }

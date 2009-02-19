@@ -44,7 +44,6 @@ public class StartProcessCommand implements Command<ProcessInstance> {
 			}
 		}
 		ProcessInstance processInstance = (ProcessInstance) session.startProcess(processId, parameters);
-		session.fireAllRules();
 		return processInstance;
 	}
 

@@ -138,9 +138,7 @@ public class InputMarshaller {
             readWorkItems( context );
         }
 
-        if ( context.marshalTimers ) {
-            readTimers( context );
-        }
+        readTimers( context );
         
         if( multithread ) {
             session.startPartitionManagers();
@@ -162,13 +160,14 @@ public class InputMarshaller {
                                                     int id,
                                                     ExecutorService executor) throws IOException,
                                                                              ClassNotFoundException {
-        return readSession( context, id, executor, EnvironmentFactory.newEnvironment() );
+        return readSession( context, id, executor, EnvironmentFactory.newEnvironment(), new SessionConfiguration() );
     }
     
     public static ReteooStatefulSession readSession(MarshallerReaderContext context,
                                                     int id,
                                                     ExecutorService executor,
-                                                    Environment environment) throws IOException,
+                                                    Environment environment,
+                                                    SessionConfiguration config) throws IOException,
                                                                              ClassNotFoundException {
 
         boolean multithread = context.readBoolean();
@@ -194,7 +193,7 @@ public class InputMarshaller {
                                                                    handleFactory,
                                                                    initialFactHandle,
                                                                    propagationCounter,
-                                                                   new SessionConfiguration(), // FIXME: must deserialize configuration  
+                                                                   config,  
                                                                    agenda,
                                                                    environment );
 
@@ -220,9 +219,7 @@ public class InputMarshaller {
             readWorkItems( context );
         }
 
-        if ( context.marshalTimers ) {
-            readTimers( context );
-        }
+        readTimers( context );
 
         if( multithread ) {
             session.startPartitionManagers();
@@ -260,7 +257,7 @@ public class InputMarshaller {
 
     }
 
-    public static void readActionQueue(MarshallerReaderContext context) throws IOException {
+    public static void readActionQueue(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         Queue actionQueue = wm.getActionQueue();
         while ( context.readShort() == PersisterEnums.WORKING_MEMORY_ACTION ) {

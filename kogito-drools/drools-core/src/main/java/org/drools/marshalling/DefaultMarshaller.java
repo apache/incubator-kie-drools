@@ -5,11 +5,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.runtime.Environment;
 import org.drools.spi.GlobalResolver;
 
 public class DefaultMarshaller
@@ -51,19 +53,22 @@ public class DefaultMarshaller
     public ReteooStatefulSession read(final InputStream stream,
                                       final InternalRuleBase ruleBase,
                                       final int id,
-                                      final ExecutorService executor) throws IOException,
+                                      final ExecutorService executor,
+                                      final SessionConfiguration config,
+                                      final Environment environment) throws IOException,
                                                                      ClassNotFoundException {
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        ruleBase,
                                                                        RuleBaseNodes.getNodeMap( ruleBase ),
                                                                        factory,
                                                                        marshallingConfig.isMarshallProcessInstances(),
-                                                                       marshallingConfig.isMarshallWorkItems(),
-                                                                       marshallingConfig.isMarshallTimers() );
+                                                                       marshallingConfig.isMarshallWorkItems() );
 
         ReteooStatefulSession session = InputMarshaller.readSession( context,
                                                                      id,
-                                                                     executor );
+                                                                     executor,
+                                                                     environment,
+                                                                     config );
         context.close();
         return session;
 
@@ -78,8 +83,7 @@ public class DefaultMarshaller
                                                                        RuleBaseNodes.getNodeMap( ruleBase ),
                                                                        factory,
                                                                        marshallingConfig.isMarshallProcessInstances(),
-                                                                       marshallingConfig.isMarshallWorkItems(),
-                                                                       marshallingConfig.isMarshallTimers());
+                                                                       marshallingConfig.isMarshallWorkItems());
 
         session = InputMarshaller.readSession( (ReteooStatefulSession) session,
                                                context );
@@ -100,8 +104,7 @@ public class DefaultMarshaller
                                                                      RuleBaseNodes.getNodeMap( ruleBase ),
                                                                      this.factory,
                                                                      marshallingConfig.isMarshallProcessInstances(),
-                                                                     marshallingConfig.isMarshallWorkItems(),
-                                                                     marshallingConfig.isMarshallTimers() );
+                                                                     marshallingConfig.isMarshallWorkItems() );
         OutputMarshaller.writeSession( context );
         context.close();
     }

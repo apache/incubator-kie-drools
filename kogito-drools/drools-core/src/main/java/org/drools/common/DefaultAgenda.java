@@ -1050,7 +1050,8 @@ public class DefaultAgenda
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
-            boolean fired = fireNextItem( agendaFilter );
+        	boolean fired = fireNextItem( agendaFilter );
+        	this.workingMemory.executeQueuedActions();
             if ( !fired ) {
                 try {
                     synchronized ( this.halt ) {
@@ -1088,12 +1089,16 @@ public class DefaultAgenda
     private final int updateFireLimit(final int fireLimit) {
         return fireLimit > 0 ? fireLimit - 1 : fireLimit;
     }
-
-    public void halt() {
-        this.halt.set( true );
+    
+    public void notifyHalt() {
         synchronized ( this.halt ) {
             this.halt.notifyAll();
         }
+    }
+
+    public void halt() {
+        this.halt.set( true );
+        notifyHalt();
     }
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {

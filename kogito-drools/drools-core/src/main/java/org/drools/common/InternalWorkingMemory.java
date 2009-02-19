@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
@@ -123,4 +124,6 @@ public interface InternalWorkingMemory
     public KnowledgeRuntime getKnowledgeRuntime();
     
     public Map<String, ExitPoint> getExitPoints();
+    
+    public SessionConfiguration getSessionConfiguration();
 }
