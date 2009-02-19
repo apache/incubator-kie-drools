@@ -1487,6 +1487,182 @@ end
       <para>The above example will cause the rule to fire once for each item
       whose value is greater than 100 for each given order.</para>
 
+	  <para>You must take caution, however, when using <emphasis
+      role="bold">from</emphasis>, especially in conjunction with the
+      <emphasis role="bold">lock-on-active</emphasis> rule attribute 
+      as it may produce unexpected results. Consider the example provided earlier, but
+      now slightly modified as follows:</para>
+      
+      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+lock-on-active true
+when
+    $p : Person( ) 
+    $a : Address( state == "NC") from $p.address 
+then
+    modify ($p) {} #Assign person to sales region 1 in a modify block
+end
+
+rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+lock-on-active true
+when
+    $p : Person( ) 
+    $a : Address( city == "Raleigh") from $p.address 
+then
+    modify ($p) {} #Apply discount to person in a modify block
+end
+</programlisting></para>
+
+	  <para>
+	  In the above example, persons in Raleigh, NC should be assigned to sales region 1 and 
+	  receive a discount; i.e., you would expect both rules to activate and fire. Instead you
+	  will find that only the second rule fires.</para>
+	  
+	  <para>If you were to turn on the audit log, you would also see that when the second rule fires,
+	  it deactivates the first rule. Since the rule attribute <emphasis role="bold">lock-on-active</emphasis>
+	  prevents a rule from creating new activations when a set of facts change, the first rule fails to
+	  reactivate. Though the set of facts have not changed, the use of
+	  <emphasis role="bold">from</emphasis> returns a new fact for all intents and purposes each time
+	  it is evaluated. 
+	  </para>
+	  
+	  <para>First, it's important to review why you would use the above pattern. You may have
+	  many rules across different rule-flow groups. When rules modify working memory and other rules
+	  downstream of your RuleFlow (in different rule-flow groups) need to be reevaluated, the use of <emphasis role="bold">modify</emphasis>
+	  is critical. You don't, however, want other rules in the same rule-flow group to place
+	  activations on one another recursively. In this case, the <emphasis role="bold">no-loop</emphasis>
+	  attribute is ineffective, as it would only prevent a rule from activating itself recursively. Hence,
+	  you resort to <emphasis role="bold">lock-on-active</emphasis>.
+	  </para>
+	  
+	  <para>
+	  There are several ways to address this issue:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Avoid the use of <emphasis role="bold">from</emphasis> when you can assert all facts into working memory 
+          or use nested object references in your constraint expressions (shown below)</para>
+        </listitem>
+        <listitem>
+          <para>Place the variable assigned used in the modify block as the last sentence in your condition (LHS)</para>
+        </listitem>
+        <listitem>
+          <para>Avoid the use of <emphasis role="bold">lock-on-active</emphasis> when you can 
+          explicitly manage how rules within the same rule-flow group place activations on one another 
+          (explained below)</para>
+        </listitem>
+      </itemizedlist>
+
+		<para>The preferred solution is to minimize use of <emphasis role="bold">from</emphasis>
+		when you can assert all your facts into working memory directly. In the example above,
+		both the Person and Address instance can be asserted into working memory. In this case, because
+		the graph is fairly simple, an even easier solution is to modify your rules as follows:
+		</para>
+
+      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+lock-on-active true
+when
+    $p : Person(address.state == "NC" )  
+then
+    modify ($p) {} #Assign person to sales region 1 in a modify block
+end
+
+rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+lock-on-active true
+when
+    $p : Person(address.city == "Raleigh" )  
+then
+    modify ($p) {} #Apply discount to person in a modify block
+end
+</programlisting></para>
+
+	  <para>Now, you will find that both rules fire as expected. However, it is not 
+	  always possible to access nested facts as above. Consider an example where a Person
+	  holds one or more Addresses and you wish to use an existential quantifier to
+	  match people with at least one address that meets certain conditions. 
+	  In this case, you would have to resort to 
+	  the use of  <emphasis role="bold">from</emphasis> to reason over the collection.</para>
+	  
+	  <para>
+	  There are several ways to use <emphasis role="bold">from</emphasis>
+	  to achieve this and not all of them exhibit an issue
+	  with the use of  <emphasis role="bold">lock-on-active</emphasis>. For example,
+	  the following use of <emphasis role="bold">from</emphasis> causes both rules to fire as expected:	  
+	  </para>
+	  
+	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+lock-on-active true
+when
+    $p : Person($addresses : addresses)
+    exists (Address(state == "NC") from $addresses)  
+then
+    modify ($p) {} #Assign person to sales region 1 in a modify block
+end
+
+rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+lock-on-active true
+when
+    $p : Person($addresses : addresses)
+    exists (Address(city == "Raleigh") from $addresses)  
+then
+    modify ($p) {} #Apply discount to person in a modify block
+end
+</programlisting></para>
+	
+	  <para>However, the following slightly different approach does exhibit the problem:</para>
+	  
+	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+lock-on-active true
+when
+    $assessment : Assessment()
+    $p : Person()
+    $addresses : List() from $p.addresses
+    exists (Address( state == "NC") from $addresses) 
+then
+    modify ($assessment) {} #Modify assessment in a modify block
+end
+
+rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+lock-on-active true
+when
+    $assessment : Assessment()
+    $p : Person()
+    $addresses : List() from $p.addresses 
+    exists (Address( city == "Raleigh") from $addresses)
+then
+    modify ($assessment) {} #Modify assessment in a modify block
+end</programlisting></para>
+	  
+	  <para>In the above example, the $addresses variable is returned from the
+	  use of <emphasis role="bold">from</emphasis>. The example also introduces
+	  a new object, assessment, to highlight one possible solution in this case.
+	  If the $assessment variable assigned in the condition (LHS) is moved to the last condition
+	  in each rule, both rules fire as expected.
+	  </para>
+	  
+	  <para>
+	  Though the above examples demonstrate how to combine the use of <emphasis role="bold">from</emphasis>
+	  with <emphasis role="bold">lock-on-active</emphasis> where no loss of rule activations occurs,
+	  they carry the drawback of placing a dependency on the order of conditions on the LHS. In addition,
+	  the solutions present greater complexity for the rule author in terms of keeping track of
+	  which conditions may create issues.
+	  </para>
+	  
+	  <para>A better alternative is to 
+	  assert more facts into working memory. In this case, a person's addresses
+	  may be asserted into working memory and the use of <emphasis role="bold">from</emphasis> 
+	  would not be necessary.</para>
+	  
+	  <para>There are cases, however, where asserting all data into working memory is not
+	  practical and we need to find other solutions. Another option is to reevaluate the
+	  need for <emphasis role="bold">lock-on-active</emphasis>. 
+	  An alternative to <emphasis role="bold">lock-on-active</emphasis> is to 
+	  directly manage how rules within the same rule-flow group activate one another
+	  by including conditions in each rule that prevent rules from activating each other recursively
+	  when working memory is modified. For example, in the case above where a
+	  discount is applied to citizens of Raleigh, a condition may be added to the rule
+	  that checks whether the discount has already been applied. If so, the rule does not
+	  activate.</para>
+	  	    
       <para>The next example shows how we can reason over the results of a
       hibernate query. The Restaurant pattern will reason over and bind with
       each result in turn:</para>
