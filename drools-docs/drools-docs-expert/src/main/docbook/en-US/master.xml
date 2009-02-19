@@ -38,14 +38,13 @@
 		</imageobject> </mediaobject> <para /> </preface>
 	-->
 
+	<xi:include href="Acknowledgements.xml" />
+	
 	<xi:include href="Chapter-Rule_Engine/Chapter-Rule_Engine.xml" />
-
 
 	<xi:include href="Chapter-Decision_Tables/Chapter-Spreadsheet.xml" />
 
-
 	<xi:include href="Chapter-IDE/Chapter-QuickStart.xml" />
-
 
 	<xi:include href="Chapter-Deployment/Chapter-DepymentAndTest.xml" />
 
