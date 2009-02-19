@@ -49,7 +49,7 @@ public class ResourceChangeScannerConfigurationImpl implements ResourceChangeSca
     }
 
     public void setInterval(int interval) {
-        this.interval = interval * 1000;
+        this.interval = interval;
     }
    
 }

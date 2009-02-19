@@ -43,9 +43,12 @@ public class ResourceChangeScannerImpl
 
     public void configure(ResourceChangeScannerConfiguration configuration) {
         setInterval( ((ResourceChangeScannerConfigurationImpl) configuration).getInterval() );
-        this.listener.info( "ResourceChangeScanner reconfigured with interval=" + ( getInterval() / 1000 ) );
-        synchronized ( this.resources ) {
-            this.resources.notify(); // notify wait, so that it will wait again
+        this.listener.info( "ResourceChangeScanner reconfigured with interval=" + ( getInterval() ) );
+        
+        // restart it if it's already running.
+        if ( this.scannerScheduler.isRunning() ) {
+            stop();
+            start();           
         }
     }
 
@@ -157,7 +160,7 @@ public class ResourceChangeScannerImpl
                             changeSet.getResourcesRemoved().add( resource );
                         }
                     } else if ( ((InternalResource) resource).getLastRead() < lastModified ) {
-                        this.listener.debug( "ResourceChangeScanner modified resource=" + resource );
+                        this.listener.debug( "ResourceChangeScanner modified resource=" + resource + " : " + ((InternalResource) resource).getLastRead() + " : " + lastModified );
                         // it's modified
                         // iterate notifiers for this resource and add to each modified
                         for ( ResourceChangeNotifier notifier : notifiers ) {
@@ -192,10 +195,6 @@ public class ResourceChangeScannerImpl
 
     public void setInterval(int interval) {
         this.scannerScheduler.setInterval( interval );
-        if ( this.scannerScheduler.isRunning() ) {
-            // need to interrupt so it will iterate the run() and the new interval will take effect
-            this.thread.interrupt();            
-        }
     }
 
     public int getInterval() {
@@ -245,7 +244,7 @@ public class ResourceChangeScannerImpl
         }
 
         public int getInterval() {
-            return (int) this.interval / 1000;
+            return (int) this.interval;
         }
 
         public void setScan(boolean scan) {
@@ -262,19 +261,24 @@ public class ResourceChangeScannerImpl
                     this.listener.info( "ResourceChangeNotification scanner has started" );
                 }
                 while ( this.scan ) {
-                    System.out.println( "BEFORE : sync this.resources" );
+                    Exception exception = null;
+                    //System.out.println( "BEFORE : sync this.resources" );
                     synchronized ( this.resources ) {      
-                        System.out.println( "DURING : sync this.resources" );
+                        //System.out.println( "DURING : sync this.resources" );
                         // lock the resources, as we don't want this modified while processing
                         this.scanner.scan();
                     }
-                    System.out.println( "AFTER : SCAN" );
+                    //System.out.println( "AFTER : SCAN" );
                     try {
-                        this.listener.debug( "ResourceChangeNotification scanner thread is waiting for " + ( this.interval / 1000 ) );
-                        wait( this.interval );
+                        this.listener.debug( "ResourceChangeScanner thread is waiting for " + this.interval );
+                        wait( this.interval * 1000 );
                     } catch ( InterruptedException e ) {
-                        this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted",
-                                                                       e ) );
+                        exception = e;
+                    }
+                    
+                    if ( this.scan && exception != null) {
+                        this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted, but shutdown was not scheduled",
+                                                                       exception ) );                        
                     }
                 }
                 this.listener.info( "ResourceChangeNotification scanner has stopped" );
