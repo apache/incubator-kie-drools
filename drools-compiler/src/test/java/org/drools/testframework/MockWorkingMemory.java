@@ -16,6 +16,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.SessionConfiguration;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -512,6 +513,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public Environment getEnvironment() {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    public SessionConfiguration getSessionConfiguration() {
+        // TODO Auto-generated method stub
+    	return null;
     }
 
 }

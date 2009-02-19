@@ -6,23 +6,19 @@ public class MarshallingConfigurationImpl
     private PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory;
     private boolean                            marshallProcessInstances;
     private boolean                            marshallWorkItems;
-    private boolean                            marshallTimers;
 
     public MarshallingConfigurationImpl() {
         this( null,
-              true,
               true,
               true );
     }
 
     public MarshallingConfigurationImpl(PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory,
                                         boolean marshallProcessInstances,
-                                        boolean marshallWorkItems,
-                                        boolean marshallTimers) {
+                                        boolean marshallWorkItems) {
         this.placeholderResolverStrategyFactory = placeholderResolverStrategyFactory;
         this.marshallProcessInstances = marshallProcessInstances;
         this.marshallWorkItems = marshallWorkItems;
-        this.marshallTimers = marshallTimers;
     }
 
     public boolean isMarshallProcessInstances() {
@@ -39,14 +35,6 @@ public class MarshallingConfigurationImpl
 
     public void setMarshallWorkItems(boolean marshallWorkItems) {
         this.marshallWorkItems = marshallWorkItems;
-    }
-
-    public boolean isMarshallTimers() {
-        return this.marshallTimers;
-    }
-
-    public void setMarshallTimers(boolean marshallTimers) {
-        this.marshallTimers = marshallTimers;
     }
 
     public PlaceholderResolverStrategyFactory getPlaceholderResolverStrategyFactory() {

@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
 import org.drools.util.DroolsStreamUtils;
@@ -60,7 +61,9 @@ public class SerializationHelper {
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
         StatefulSession session2 = ruleBase.readStatefulSession( bais,
                                                                 true,
-                                                                marshaller );
+                                                                marshaller,
+                                                                ((InternalWorkingMemory) session).getSessionConfiguration(),
+                                                                session.getEnvironment());
 
         // write methods allways needs a new marshaller for Identity strategies
         marshaller = new DefaultMarshaller();        

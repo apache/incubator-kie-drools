@@ -73,20 +73,33 @@ public class ProcessTimerTest extends TestCase {
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
+		final StatefulSession session = ruleBase.newStatefulSession();
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
+		
+		new Thread(new Runnable() {
+			public void run() {
+	        	session.fireUntilHalt();       	
+			}
+        }).start();
+		
         ProcessInstance processInstance = ( ProcessInstance )
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, session.getTimerManager().getTimers().size());
+        session.halt();
         
-        session = getSerialisedStatefulSession( session );
-        myList = (List<Message>) session.getGlobal( "myList" );
-        processInstance = ( ProcessInstance ) session.getProcessInstance( processInstance.getId() );
+        final StatefulSession session2 = getSerialisedStatefulSession( session );
+        myList = (List<Message>) session2.getGlobal( "myList" );
+		new Thread(new Runnable() {
+			public void run() {
+	        	session2.fireUntilHalt();       	
+			}
+        }).start();
+        processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
         
-        assertEquals(1, session.getTimerManager().getTimers().size());
+        assertEquals(1, session2.getTimerManager().getTimers().size());
 
         // test that the delay works
         try {
@@ -102,9 +115,10 @@ public class ProcessTimerTest extends TestCase {
         } catch (InterruptedException e) {
         	// do nothing
         }
-        session.fireAllRules();
         assertEquals(5, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+        session2.halt();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -147,20 +161,36 @@ public class ProcessTimerTest extends TestCase {
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
+		final StatefulSession session = ruleBase.newStatefulSession();
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
+		
+		new Thread(new Runnable() {
+			public void run() {
+	        	session.fireUntilHalt();       	
+			}
+        }).start();
+		
         ProcessInstance processInstance = ( ProcessInstance )
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, session.getTimerManager().getTimers().size());
         
-        session = getSerialisedStatefulSession( session );
-        myList = (List<String>) session.getGlobal( "myList" );
-        processInstance = ( ProcessInstance ) session.getProcessInstance( processInstance.getId() );
+        session.halt();
         
-        assertEquals(1, session.getTimerManager().getTimers().size());
+        final StatefulSession session2 = getSerialisedStatefulSession( session );
+        myList = (List<String>) session2.getGlobal( "myList" );
+        
+		new Thread(new Runnable() {
+			public void run() {
+	        	session2.fireUntilHalt();       	
+			}
+        }).start();
+		
+        processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
+        
+        assertEquals(1, session2.getTimerManager().getTimers().size());
 
         try {
             Thread.sleep(400);
@@ -168,6 +198,8 @@ public class ProcessTimerTest extends TestCase {
             // do nothing
         }
         assertEquals(1, myList.size());
+        
+        session2.halt();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -210,20 +242,35 @@ public class ProcessTimerTest extends TestCase {
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
+		final StatefulSession session = ruleBase.newStatefulSession();
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
+		
+		new Thread(new Runnable() {
+			public void run() {
+	        	session.fireUntilHalt();       	
+			}
+        }).start();
+
         ProcessInstance processInstance = ( ProcessInstance )
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, session.getTimerManager().getTimers().size());
+        session.halt();
         
-        session = getSerialisedStatefulSession( session );
-        myList = (List<String>) session.getGlobal( "myList" );
-        processInstance = ( ProcessInstance ) session.getProcessInstance( processInstance.getId() );
+        final StatefulSession session2 = getSerialisedStatefulSession( session );
+        myList = (List<String>) session2.getGlobal( "myList" );
         
-        assertEquals(1, session.getTimerManager().getTimers().size());
+		new Thread(new Runnable() {
+			public void run() {
+	        	session2.fireUntilHalt();       	
+			}
+        }).start();
+
+        processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
+        
+        assertEquals(1, session2.getTimerManager().getTimers().size());
 
         try {
             Thread.sleep(600);
@@ -231,6 +278,8 @@ public class ProcessTimerTest extends TestCase {
             // do nothing
         }
         assertEquals(2, myList.size());
+        
+        session2.halt();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -276,18 +325,32 @@ public class ProcessTimerTest extends TestCase {
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
+		final StatefulSession session = ruleBase.newStatefulSession();
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
+		
+		new Thread(new Runnable() {
+			public void run() {
+	        	session.fireUntilHalt();       	
+			}
+        }).start();
+
         ProcessInstance processInstance = ( ProcessInstance )
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(2, session.getTimerManager().getTimers().size());
         
-        session = getSerialisedStatefulSession( session );
-        myList = (List<String>) session.getGlobal( "myList" );
-        assertEquals(2, session.getTimerManager().getTimers().size());
+        final StatefulSession session2 = getSerialisedStatefulSession( session );
+        myList = (List<String>) session2.getGlobal( "myList" );
+        
+		new Thread(new Runnable() {
+			public void run() {
+	        	session2.fireUntilHalt();       	
+			}
+        }).start();
+		
+        assertEquals(2, session2.getTimerManager().getTimers().size());
 
         try {
             Thread.sleep(300);
@@ -296,16 +359,25 @@ public class ProcessTimerTest extends TestCase {
         }
         assertEquals(1, myList.size());
         assertEquals("Executing timer2", myList.get(0));
+        session2.halt();
         
-        session = getSerialisedStatefulSession( session );
+        final StatefulSession session3 = getSerialisedStatefulSession( session2 );
         myList = (List<String>) session.getGlobal( "myList" );
         
+		new Thread(new Runnable() {
+			public void run() {
+	        	session3.fireUntilHalt();       	
+			}
+        }).start();
+		
         try {
             Thread.sleep(400);
         } catch (InterruptedException e) {
             // do nothing
         }
         assertEquals(2, myList.size());
+        
+        session3.halt();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -348,20 +420,37 @@ public class ProcessTimerTest extends TestCase {
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
+		final StatefulSession session = ruleBase.newStatefulSession();
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
+		
+		new Thread(new Runnable() {
+			public void run() {
+	        	session.fireUntilHalt();       	
+			}
+        }).start();
+		
         ProcessInstance processInstance = ( ProcessInstance )
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, session.getTimerManager().getTimers().size());
+        session.halt();
         
-        session = getSerialisedStatefulSession( session );
-        myList = (List<String>) session.getGlobal( "myList" );
-        session.insert(new Message());
+        final StatefulSession session2 = getSerialisedStatefulSession( session );
+        myList = (List<String>) session2.getGlobal( "myList" );
+        
+		new Thread(new Runnable() {
+			public void run() {
+	        	session2.fireUntilHalt();       	
+			}
+        }).start();
+		
+        session2.insert(new Message());
         assertEquals(0, myList.size());
-        assertEquals(0, session.getTimerManager().getTimers().size());
+        assertEquals(0, session2.getTimerManager().getTimers().size());
+        
+        session2.halt();
 	}
 	
 }

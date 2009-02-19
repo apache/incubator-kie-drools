@@ -104,7 +104,9 @@ public interface RuleBase
      */
     StatefulSession readStatefulSession(InputStream stream,
                                         boolean keepReference,
-                                        Marshaller marshaller) throws IOException,
+                                        Marshaller marshaller,
+                                        SessionConfiguration sessionConfig,
+                                        Environment environment) throws IOException,
                                                               ClassNotFoundException;
 
     public void writeStatefulSession(StatefulSession session,

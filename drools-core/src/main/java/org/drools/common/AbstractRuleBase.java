@@ -349,7 +349,9 @@ abstract public class AbstractRuleBase
                                                                      ClassNotFoundException {
         return readStatefulSession( stream,
                                     true,
-                                    marshaller );
+                                    marshaller,
+                                    new SessionConfiguration(),
+                                    EnvironmentFactory.newEnvironment() );
     }
 
     /**

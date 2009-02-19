@@ -29,14 +29,13 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     
     public final boolean                            marshalProcessInstances;
     public final boolean                            marshalWorkItems;
-    public final boolean                            marshalTimers;    
     
     public MarshallerWriteContext(OutputStream stream,
                                   InternalRuleBase ruleBase,
                                   InternalWorkingMemory wm,
                                   Map<Integer, BaseNode> sinks,
                                   PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {
-        this(stream, ruleBase, wm, sinks, resolverStrategyFactory, true, true, true);
+        this(stream, ruleBase, wm, sinks, resolverStrategyFactory, true, true);
     }
 
     public MarshallerWriteContext(OutputStream stream,
@@ -45,8 +44,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
                                      Map<Integer, BaseNode> sinks,
                                      PlaceholderResolverStrategyFactory resolverStrategyFactory,
                                      boolean marshalProcessInstances,
-                                     boolean marshalWorkItems,
-                                     boolean marshalTimers) throws IOException {
+                                     boolean marshalWorkItems) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
@@ -59,6 +57,5 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
-        this.marshalTimers = marshalTimers;        
     }
 }

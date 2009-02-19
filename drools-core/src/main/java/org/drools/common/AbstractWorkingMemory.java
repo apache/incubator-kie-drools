@@ -381,6 +381,10 @@ public abstract class AbstractWorkingMemory
         this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
         this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
     }
+    
+    public SessionConfiguration getSessionConfiguration() {
+    	return this.config;
+    }
 
     public void reset(int handleId,
                       long handleCounter,
@@ -1421,6 +1425,7 @@ public abstract class AbstractWorkingMemory
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
         synchronized ( this.actionQueue ) {
             this.actionQueue.add( action );
+            this.agenda.notifyHalt();
         }
     }
 

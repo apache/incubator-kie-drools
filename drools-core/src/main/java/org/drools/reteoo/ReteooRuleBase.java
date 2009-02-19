@@ -284,7 +284,9 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public StatefulSession readStatefulSession(final InputStream stream,
                                                final boolean keepReference,
-                                               Marshaller marshaller) throws IOException,
+                                               final Marshaller marshaller,
+                                               final SessionConfiguration sessionConfig,
+                                               Environment environment ) throws IOException,
                                                                           ClassNotFoundException {
 
         if ( this.config.isSequential() ) {
@@ -298,7 +300,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         synchronized ( this.pkgs ) {
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
             
-            session = marshaller.read( stream, this, nextWorkingMemoryCounter(), executor );
+            session = marshaller.read( stream, this, nextWorkingMemoryCounter(), executor, sessionConfig, environment );
 
 //            WMSerialisationInContext context = new WMSerialisationInContext( stream,
 //                                                                             this,

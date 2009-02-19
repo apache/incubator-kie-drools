@@ -100,6 +100,8 @@ public interface InternalAgenda
      * execution though.
      */
     public void halt();
+    
+    public void notifyHalt();
 
     /**
      * Keeps firing activations until a halt is called. If in a given moment, there is 

@@ -7,7 +7,7 @@ public interface SignalManager {
 	
 	void signalEvent(String type, Object event);
 	
-	void signalEvent(ProcessInstance processInstance, String type, Object event);
+	void signalEvent(long processInstanceId, String type, Object event);
 	
 	void addEventListener(String type, EventListener eventListener);
 	
