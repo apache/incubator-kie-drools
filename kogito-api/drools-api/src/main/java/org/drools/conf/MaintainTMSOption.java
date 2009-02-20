@@ -16,20 +16,41 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
 
 /**
- * A base interface for type safe options in configuration objects
+ * An Enum for MaintainTMS option.
+ * 
+ * drools.maintainTms = &lt;true|false&gt; 
+ * 
+ * DEFAULT = true
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
+public enum MaintainTMSOption implements KnowledgeBaseOption {
+    
+    YES(true),
+    NO(false);
+
+    /**
+     * The property name for the maintain TMS option
+     */
+    public static final String PROPERTY_NAME = "drools.maintainTms";
+    
+    private boolean value;
+    
+    MaintainTMSOption( final boolean value ) {
+        this.value = value;
+    }
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * {@inheritDoc}
      */
-    public String getPropertyName();
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
+    public boolean isMaintainTMS() {
+        return this.value;
+    }
 
 }

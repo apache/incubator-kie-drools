@@ -16,7 +16,6 @@
  */
 package org.drools.builder.conf;
 
-import org.drools.conf.Option;
 import org.drools.runtime.rule.AccumulateFunction;
 
 /**
@@ -24,7 +23,7 @@ import org.drools.runtime.rule.AccumulateFunction;
  * 
  * @author etirelli
  */
-public class AccumulateFunctionOption implements Option {
+public class AccumulateFunctionOption implements KnowledgeBuilderOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 

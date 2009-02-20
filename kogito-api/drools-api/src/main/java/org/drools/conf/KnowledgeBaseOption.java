@@ -16,20 +16,15 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
+import org.drools.conf.Option;
 
 /**
- * A base interface for type safe options in configuration objects
+ * A markup interface for KnowledgeBaseConfiguration options
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
-    
-    /**
-     * Returns the property name for this option
-     * 
-     * @return
-     */
-    public String getPropertyName();
+public interface KnowledgeBaseOption
+    extends
+    Option {
 
 }

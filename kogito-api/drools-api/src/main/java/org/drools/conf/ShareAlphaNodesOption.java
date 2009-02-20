@@ -16,20 +16,41 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
 
 /**
- * A base interface for type safe options in configuration objects
+ * An Enum for ShareAlphaNodes option.
+ * 
+ * drools.shareAlphaNodes = &lt;true|false&gt; 
+ * 
+ * DEFAULT = true
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
+public enum ShareAlphaNodesOption implements KnowledgeBaseOption {
+    
+    YES(true),
+    NO(false);
+
+    /**
+     * The property name for the sequential mode option
+     */
+    public static final String PROPERTY_NAME = "drools.shareAlphaNodes";
+    
+    private boolean value;
+    
+    ShareAlphaNodesOption( final boolean value ) {
+        this.value = value;
+    }
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * {@inheritDoc}
      */
-    public String getPropertyName();
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
+    public boolean isShareAlphaNodes() {
+        return this.value;
+    }
 
 }

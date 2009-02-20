@@ -16,20 +16,41 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
 
 /**
- * A base interface for type safe options in configuration objects
+ * An Enum for ShareBetaNodes option.
+ * 
+ * drools.shareBetaNodes = &lt;true|false&gt; 
+ * 
+ * DEFAULT = true
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
+public enum ShareBetaNodesOption implements KnowledgeBaseOption {
+    
+    YES(true),
+    NO(false);
+
+    /**
+     * The property name for the share beta nodes option
+     */
+    public static final String PROPERTY_NAME = "drools.shareBetaNodes";
+    
+    private boolean value;
+    
+    ShareBetaNodesOption( final boolean value ) {
+        this.value = value;
+    }
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * {@inheritDoc}
      */
-    public String getPropertyName();
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
+    public boolean isShareBetaNodes() {
+        return this.value;
+    }
 
 }

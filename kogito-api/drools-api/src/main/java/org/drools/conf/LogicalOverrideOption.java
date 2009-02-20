@@ -16,20 +16,31 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
 
 /**
- * A base interface for type safe options in configuration objects
+ * An Enum for LogicalOverride option.
+ * 
+ * drools.logicalOverride = &lt;discard|preserve&gt;
+ * 
+ * DEFAULT = discard
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
+public enum LogicalOverrideOption implements KnowledgeBaseOption {
+    
+    DISCARD,
+    PRESERVE;
+
+    /**
+     * The property name for the sequential mode option
+     */
+    public static final String PROPERTY_NAME = "drools.logicalOverride";
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * {@inheritDoc}
      */
-    public String getPropertyName();
-
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
 }

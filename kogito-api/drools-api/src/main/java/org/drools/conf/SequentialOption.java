@@ -16,20 +16,41 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
 
 /**
- * A base interface for type safe options in configuration objects
+ * An Enum for Sequential option.
+ * 
+ * drools.sequential = &lt;true|false&gt; 
+ * 
+ * DEFAULT = false
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
+public enum SequentialOption implements KnowledgeBaseOption {
+    
+    YES(true),
+    NO(false);
+
+    /**
+     * The property name for the sequential mode option
+     */
+    public static final String PROPERTY_NAME = "drools.sequential";
+    
+    private boolean value;
+    
+    SequentialOption( final boolean value ) {
+        this.value = value;
+    }
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * {@inheritDoc}
      */
-    public String getPropertyName();
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
+    public boolean isSequential() {
+        return this.value;
+    }
 
 }

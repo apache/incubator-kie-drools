@@ -16,20 +16,31 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
 
 /**
- * A base interface for type safe options in configuration objects
+ * An Enum for SequentialAgenda option.
+ * 
+ * drools.sequential.agenda = &lt;sequential|dynamic&gt;
+ * 
+ * DEFAULT = sequential
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
+public enum SequentialAgendaOption implements KnowledgeBaseOption {
+    
+    SEQUENTIAL,
+    DYNAMIC;
+
+    /**
+     * The property name for the sequential mode option
+     */
+    public static final String PROPERTY_NAME = "drools.sequential.agenda";
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * {@inheritDoc}
      */
-    public String getPropertyName();
-
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
 }

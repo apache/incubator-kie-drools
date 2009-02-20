@@ -16,20 +16,31 @@
  */
 package org.drools.conf;
 
-import java.io.Serializable;
 
 /**
- * A base interface for type safe options in configuration objects
+ * An Enum for AssertBehavior option.
+ * 
+ * drools.assertBehaviour = &lt;identity|equality&gt;
+ * 
+ * DEFAULT = identity
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
+public enum AssertBehaviorOption implements KnowledgeBaseOption {
+    
+    IDENTITY,
+    EQUALITY;
+
+    /**
+     * The property name for the sequential mode option
+     */
+    public static final String PROPERTY_NAME = "drools.assertBehaviour";
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * {@inheritDoc}
      */
-    public String getPropertyName();
-
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
 }

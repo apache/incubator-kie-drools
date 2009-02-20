@@ -18,8 +18,6 @@ package org.drools.builder.conf;
 
 import java.io.File;
 
-import org.drools.conf.Option;
-
 /**
  * A class for the dump directory configuration. I.e., for the directory
  * where Drools will dump generated code for debugging purposes. If this
@@ -27,7 +25,7 @@ import org.drools.conf.Option;
  * 
  * @author etirelli
  */
-public class DumpDirOption implements Option {
+public class DumpDirOption implements KnowledgeBuilderOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 
