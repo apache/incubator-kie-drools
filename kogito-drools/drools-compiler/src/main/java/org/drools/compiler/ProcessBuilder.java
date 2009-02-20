@@ -226,7 +226,13 @@ public class ProcessBuilder {
                 portedReader = reader;
             }
             Process process = xmlReader.read(portedReader);
-            buildProcess( process, resource );
+            if ( process != null ) {
+                // it is possible an xml file could not be parsed, so we need to stop null pointers
+                buildProcess( process, resource );
+            } else {
+                // @TODO could we maybe add something a bit more informative about what is wrong with the XML ?
+                this.errors.add( new RuleFlowLoadError( "unable to parse xml", null ) );
+            }
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }
