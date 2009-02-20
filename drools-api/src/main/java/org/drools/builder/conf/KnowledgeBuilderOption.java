@@ -14,22 +14,17 @@
  * limitations under the License.
  *
  */
-package org.drools.conf;
+package org.drools.builder.conf;
 
-import java.io.Serializable;
+import org.drools.conf.Option;
 
 /**
- * A base interface for type safe options in configuration objects
+ * A markup interface for KnowledgeBuilderConfiguration options
  * 
  * @author etirelli
  */
-public interface Option extends Serializable {
-    
-    /**
-     * Returns the property name for this option
-     * 
-     * @return
-     */
-    public String getPropertyName();
+public interface KnowledgeBuilderOption
+    extends
+    Option {
 
 }

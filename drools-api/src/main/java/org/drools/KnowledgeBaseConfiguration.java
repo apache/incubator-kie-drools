@@ -1,6 +1,6 @@
 package org.drools;
 
-import org.drools.conf.OptionsConfiguration;
+import org.drools.conf.KnowledgeBaseOptionsConfiguration;
 
 /**
  *<p>
@@ -28,19 +28,18 @@ import org.drools.conf.OptionsConfiguration;
  * <p>
  * The following properties are supported:
  * <ul>
- * <li>drools.maintainTms = &lt;true|false&gt;</li>
- * <li>drools.assertBehaviour = &lt;identity|equality&gt;</li>
- * <li>drools.logicalOverride = &lt;discard|preserve&gt;</li>
- * <li>drools.sequential = &lt;true|false&gt;</li>
- * <li>drools.sequential.agenda = &lt;sequential|dynamic&gt;</li>
- * <li>drools.removeIdentities = &lt;true|false&gt;</li>
- * <li>drools.shareAlphaNodes  = &lt;true|false&gt;</li>
- * <li>drools.shareBetaNodes = &lt;true|false&gt;</li>
- * <li>drools.alphaMemory = &lt;true/false&gt;</li>
+ * X<li>drools.maintainTms = &lt;true|false&gt;</li>
+ * X<li>drools.assertBehaviour = &lt;identity|equality&gt;</li>
+ * X<li>drools.logicalOverride = &lt;discard|preserve&gt;</li>
+ * X<li>drools.sequential = &lt;true|false&gt;</li>
+ * X<li>drools.sequential.agenda = &lt;sequential|dynamic&gt;</li>
+ * X<li>drools.removeIdentities = &lt;true|false&gt;</li>
+ * X<li>drools.shareAlphaNodes  = &lt;true|false&gt;</li>
+ * X<li>drools.shareBetaNodes = &lt;true|false&gt;</li>
  * <li>drools.alphaNodeHashingThreshold = &lt;1...n&gt;</li>
  * <li>drools.compositeKeyDepth  = &lt;1..3&gt;</li>
- * <li>drools.indexLeftBetaMemory = &lt;true/false&gt;</li>
- * <li>drools.indexRightBetaMemory = &lt;true/false&gt;</li>
+ * X<li>drools.indexLeftBetaMemory = &lt;true/false&gt;</li>
+ * X<li>drools.indexRightBetaMemory = &lt;true/false&gt;</li>
  * <li>drools.consequenceExceptionHandler = &lt;qualified class name&gt;</li>
  * </ul>
  * </p>
@@ -57,6 +56,7 @@ import org.drools.conf.OptionsConfiguration;
  */
 public interface KnowledgeBaseConfiguration
     extends
-    PropertiesConfiguration {
+    PropertiesConfiguration,
+    KnowledgeBaseOptionsConfiguration {
 
 }

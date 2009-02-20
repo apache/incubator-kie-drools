@@ -1,7 +1,7 @@
 package org.drools.builder;
 
 import org.drools.PropertiesConfiguration;
-import org.drools.conf.OptionsConfiguration;
+import org.drools.builder.conf.KnowledgeBuilderOptionsConfiguration;
 
 /**
  * <p>
@@ -33,6 +33,7 @@ import org.drools.conf.OptionsConfiguration;
  * <li>drools.accumulate.function.&lt;function name&gt; = &lt;qualified class&gt;</li>
  * <li>drools.evaluator.<ident> = &lt;qualified class&gt;</li>
  * <li>drools.dump.dir = &lt;String&gt;</li>
+ * <li>drools.parser.processStringEscapes = $lt;true|false&gt;</li>
  * </ul>
  * </p>
  * 
@@ -51,6 +52,6 @@ import org.drools.conf.OptionsConfiguration;
 public interface KnowledgeBuilderConfiguration
     extends
     PropertiesConfiguration,
-    OptionsConfiguration {
+    KnowledgeBuilderOptionsConfiguration {
 
 }

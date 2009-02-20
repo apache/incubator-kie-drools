@@ -16,7 +16,6 @@
  */
 package org.drools.builder.conf;
 
-import org.drools.conf.Option;
 import org.drools.runtime.rule.EvaluatorDefinition;
 
 /**
@@ -27,7 +26,7 @@ import org.drools.runtime.rule.EvaluatorDefinition;
  * 
  * @author etirelli
  */
-public class EvaluatorOption implements Option {
+public class EvaluatorOption implements KnowledgeBuilderOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 

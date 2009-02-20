@@ -16,13 +16,12 @@
  */
 package org.drools.conf;
 
-
 /**
  * A base interface for type safe configurations
  * 
  * @author etirelli
  */
-public interface OptionsConfiguration {
+public interface KnowledgeBaseOptionsConfiguration {
     
     /**
      * Sets an option
@@ -31,7 +30,7 @@ public interface OptionsConfiguration {
      *               itself contains the option key, and so a single parameter
      *               is enough.
      */
-    public <T extends Option> void setOption( T option );
+    public <T extends KnowledgeBaseOption> void setOption( T option );
 
     /**
      * Gets an option value
@@ -41,7 +40,7 @@ public interface OptionsConfiguration {
      * @return the Option value for the given option. Returns null if option is 
      *         not configured.
      */
-    public <T extends Option> T getOption( Class<T> option );
+    public <T extends KnowledgeBaseOption> T getOption( Class<T> option );
     
     
     /**
@@ -55,7 +54,7 @@ public interface OptionsConfiguration {
      * @return the Option value for the given option + key. Returns null if option is 
      *         not configured.
      */
-    public <T extends Option> T getOption( Class<T> option, String key );
+    public <T extends KnowledgeBaseOption> T getOption( Class<T> option, String key );
     
 
 }

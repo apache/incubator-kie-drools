@@ -16,14 +16,13 @@
  */
 package org.drools.builder.conf;
 
-import org.drools.conf.Option;
 
 /**
  * A class for the default dialect configuration.
  * 
  * @author etirelli
  */
-public class DefaultDialectOption implements Option {
+public class DefaultDialectOption implements KnowledgeBuilderOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 
