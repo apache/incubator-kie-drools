@@ -50,7 +50,7 @@ import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ExitPoint;
-import org.drools.runtime.GlobalResolver;
+import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
@@ -247,8 +247,8 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getGlobal( identifier );
     }
     
-    public void setGlobalResolver(GlobalResolver globalResolver) {
-        this.session.setGlobalResolver( (org.drools.spi.GlobalResolver) globalResolver );
+    public Globals getGlobals() {
+        return this.session.getGlobalResolver();
     }    
 
 //    public Future<Object> asyncInsert(Object object) {

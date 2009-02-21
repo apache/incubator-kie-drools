@@ -22,7 +22,7 @@ import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
-import org.drools.runtime.GlobalResolver;
+import org.drools.runtime.Globals;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
@@ -133,14 +133,6 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 		throw new UnsupportedOperationException();
 	}
 
-	public void setGlobal(String identifier, Object object) {
-	    this.commandService.execute( new SetGlobalCommand(identifier, object) );
-	}
-
-	public void setGlobalResolver(GlobalResolver globalResolver) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void unregisterExitPoint(String name) {
 		throw new UnsupportedOperationException();
 	}
@@ -239,6 +231,14 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 	public Object getGlobal(String identifier) {
 		throw new UnsupportedOperationException();
 	}
+	
+    public void setGlobal(String identifier, Object object) {
+        this.commandService.execute( new SetGlobalCommand(identifier, object) );
+    }
+
+    public Globals getGlobals() {
+        throw new UnsupportedOperationException();
+    }	
 
 	public Object getObject(FactHandle factHandle) {
 		throw new UnsupportedOperationException();

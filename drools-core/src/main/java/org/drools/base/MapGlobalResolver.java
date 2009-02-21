@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.runtime.Globals;
 import org.drools.spi.GlobalResolver;
 
 public class MapGlobalResolver
@@ -18,6 +19,8 @@ public class MapGlobalResolver
     private static final long serialVersionUID = 400L;
 
     private Map map;
+    
+    private Globals delegate;
 
     public MapGlobalResolver() {
         this.map = new HashMap();
@@ -29,14 +32,32 @@ public class MapGlobalResolver
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         map = (Map)in.readObject();
+        delegate = ( Globals ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(map);
+        out.writeObject( map );
+        out.writeObject( delegate );
+    }
+    
+    public void setDelegate(Globals delegate) {
+        this.delegate = delegate;
+    }    
+    
+    public Object get(String identifier) {
+        return resolveGlobal( identifier );
     }
 
     public Object resolveGlobal(String identifier) {
-        return this.map.get( identifier );
+        Object object = this.map.get( identifier );
+        if ( object == null && this.delegate != null ) {
+            object = this.delegate.get( identifier );
+        }
+        return object;
+    }
+    
+    public void set(String identifier, Object value) {
+        setGlobal( identifier, value );
     }
 
     public void setGlobal(String identifier, Object value) {
