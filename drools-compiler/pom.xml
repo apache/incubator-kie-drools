@@ -115,11 +115,25 @@
 												<include name="**/*.java" />
 											</fileset>
 										</move>
+										<java classname="org.antlr.Tool" fork="true">
+											<arg
+												line="-lib src/main/resources/org/drools/semantics/java/parser src/main/resources/org/drools/semantics/java/parser/Java.g" />
+											<classpath refid="base.classpath" />
+										</java>
+										<move todir="src/main/java/org/drools/rule/builder/dialect/java/parser">
+											<fileset dir="src/main/resources/org/drools/semantics/java/parser">
+												<include name="**/*.java" />
+											</fileset>
+										</move>
 										<delete>
 											<fileset dir="src/main/resources/org/drools/lang">
 												<include name="**/*.tokens" />
 												<include name="DRL__.g" />
 												<include name="dsl/DSLMap__.g" />
+											</fileset>
+											<fileset dir="src/main/resources/org/drools/semantics/java/parser">
+												<include name="**/*.tokens" />
+												<include name="Java__.g" />
 											</fileset>
 										</delete>
 									</tasks>

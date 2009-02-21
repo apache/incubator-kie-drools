@@ -92,6 +92,8 @@ options {k=2; backtrack=true; memoize=true;}
 	private int localVariableLevel = 0;
 	private List modifyBlocks = new ArrayList();
 	public List getModifyBlocks() { return modifyBlocks; }
+	private List<JavaExitPointsDescr> exitPoints = new ArrayList<JavaExitPointsDescr>();
+	public List<JavaExitPointsDescr> getExitPoints() { return exitPoints; }
 	
 	private String source = "unknown";
 	
@@ -680,6 +682,7 @@ statement
     | 'continue' Identifier? ';'
     // adding support to drools modify block
     | modifyStatement
+    | exitPointsStatement
     | ';'
     | statementExpression ';'
     | Identifier ':' statement
@@ -704,6 +707,19 @@ modifyStatement
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
         }
 	;	
+	
+exitPointsStatement
+	@init {
+	    JavaExitPointsDescr d = null;
+	}
+        : s='exitPoints' '[' id=StringLiteral c=']' 
+        {
+	    d = new JavaExitPointsDescr( $id.text );
+	    d.setStart( ((CommonToken)$s).getStartIndex() );
+            d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+	    this.exitPoints.add( d );
+        }
+        ;	
 	
 catches
 	:	catchClause (catchClause)*

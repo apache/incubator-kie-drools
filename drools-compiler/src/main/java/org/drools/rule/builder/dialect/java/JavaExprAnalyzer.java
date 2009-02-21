@@ -100,6 +100,7 @@ public class JavaExprAnalyzer {
             }
         }
         result.setModifyBlocks( parser.getModifyBlocks() );
+        result.setExitPoints( parser.getExitPoints() );
 
         return analyze( result,
                         availableIdentifiers );
