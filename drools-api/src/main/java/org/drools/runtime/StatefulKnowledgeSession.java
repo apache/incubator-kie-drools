@@ -55,7 +55,7 @@ import org.drools.runtime.rule.StatefulRuleSession;
  * ksession.dispose();
  * </pre>
  * 
- * @see org.drools.runtime.GlobalResolver
+ * @see org.drools.runtime.Globals
  */
 public interface StatefulKnowledgeSession
     extends
