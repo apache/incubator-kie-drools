@@ -45,13 +45,13 @@ public class AbstractJavaRuleBuilder {
         return INVOKER_REGISTRY;
     }
 
-    public Map createVariableContext(final String className,
+    public Map<String,Object> createVariableContext(final String className,
                                      final String text,
                                      final RuleBuildContext context,
                                      final Declaration[] declarations,
                                      final Declaration[] localDeclarations,
                                      final String[] globals) {
-        final Map map = new HashMap();
+        final Map<String,Object> map = new HashMap<String,Object>();
 
         map.put("methodName",
                 className);
@@ -97,7 +97,7 @@ public class AbstractJavaRuleBuilder {
                     localDeclarationTypes);
         }
 
-        final List globalTypes = new ArrayList(globals.length);
+        final List<String> globalTypes = new ArrayList<String>(globals.length);
         for (int i = 0, length = globals.length; i < length; i++) {
             globalTypes.add((context.getPkg().getGlobals().get(globals[i])).replace('$',
                     '.'));

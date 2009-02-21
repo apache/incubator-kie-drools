@@ -23,7 +23,9 @@ import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
+import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
@@ -181,5 +183,13 @@ public class SequentialKnowledgeHelper
     
     public void halt() {
         this.workingMemory.halt();
+    }
+
+    public WorkingMemoryEntryPoint getEntryPoint(String id) {
+        return this.workingMemory.getEntryPoints().get( id );
+    }
+
+    public ExitPoint getExitPoint(String id) {
+        return this.workingMemory.getExitPoints().get( id );
     }    
 }

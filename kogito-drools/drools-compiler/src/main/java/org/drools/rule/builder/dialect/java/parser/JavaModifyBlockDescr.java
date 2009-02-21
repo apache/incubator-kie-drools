@@ -12,15 +12,15 @@ import java.util.List;
  * 
  * @author etirelli
  */
-public class JavaModifyBlockDescr {
+public class JavaModifyBlockDescr implements JavaBlockDescr {
     private int start;
     private int end;
     private String modifyExpression;
-    private List expressions;
+    private List<String> expressions;
     
     public JavaModifyBlockDescr( String modifyExpression ) {
         this.modifyExpression = modifyExpression;
-        this.expressions = new ArrayList();
+        this.expressions = new ArrayList<String>();
     }
     
     public int getStart() {
@@ -41,15 +41,19 @@ public class JavaModifyBlockDescr {
     public void setModifyExpression(String modifyExpression) {
         this.modifyExpression = modifyExpression;
     }
-    public List getExpressions() {
+    public List<String> getExpressions() {
         return expressions;
     }
-    public void setExpressions(List expressions) {
+    public void setExpressions(List<String> expressions) {
         this.expressions = expressions;
     }
     
     public String toString() {
         return "ModifyBlock( start="+start+" end="+end+" expression="+modifyExpression+" )";
+    }
+
+    public BlockType getType() {
+        return BlockType.MODIFY;
     }
 
 }

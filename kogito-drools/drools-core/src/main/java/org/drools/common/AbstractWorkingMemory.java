@@ -1833,5 +1833,9 @@ public abstract class AbstractWorkingMemory
 	public Map<String, ExitPoint> getExitPoints() {
 		return this.exitPoints;
 	}
+	
+	public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
+	    return this.entryPoints;
+	}
 
 }

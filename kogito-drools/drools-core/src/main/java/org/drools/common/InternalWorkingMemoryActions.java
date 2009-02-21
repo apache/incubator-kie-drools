@@ -17,8 +17,8 @@ package org.drools.common;
  */
 
 import org.drools.FactException;
-import org.drools.rule.Rule;
 import org.drools.FactHandle;
+import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 
 public interface InternalWorkingMemoryActions

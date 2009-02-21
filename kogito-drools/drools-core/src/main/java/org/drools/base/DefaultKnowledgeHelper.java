@@ -26,11 +26,14 @@ import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Declaration;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
+import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
@@ -235,5 +238,11 @@ public class DefaultKnowledgeHelper
 
     public void halt() {
         this.workingMemory.halt();
+    }
+    public WorkingMemoryEntryPoint getEntryPoint(String id) {
+        return this.workingMemory.getEntryPoints().get( id );
+    }
+    public ExitPoint getExitPoint(String id) {
+        return this.workingMemory.getExitPoints().get( id );
     }
 }

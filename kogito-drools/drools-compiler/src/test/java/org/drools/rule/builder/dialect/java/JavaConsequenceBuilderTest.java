@@ -61,27 +61,56 @@ public class JavaConsequenceBuilderTest extends TestCase {
     }
 
     public void testFixExitPointsReferences() {
-        String consequence = " System.out.println(\"this is a test\");\n " + 
-                             " exitPoints[\"foo\"].insert( new Cheese() );\n " + 
-                             " System.out.println(\"we are done with exitPoints\");\n ";
+        String consequence = " System.out.println(\"this is a test\");\n " + " exitPoints[\"foo\"].insert( new Cheese() );\n " + " System.out.println(\"we are done with exitPoints\");\n ";
         setupTest( consequence );
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
                                                                                       new Set[]{} );
 
-            String fixed = builder.fixExitPointsReferences( context,
-                                                            analysis,
-                                                            (String) ruleDescr.getConsequence() );
+            String fixed = builder.fixBlockDescr( context,
+                                                  analysis,
+                                                  (String) ruleDescr.getConsequence() );
 
             String expected = " System.out.println(\"this is a test\");\n " + 
-                              " exitPoints.get(\"foo\").insert( new Cheese() );\n " + 
+                              " drools.getExitPoint(\"foo\").insert( new Cheese() );\n " + 
                               " System.out.println(\"we are done with exitPoints\");\n ";
 
-            System.out.println( "=============================" );
-            System.out.println( ruleDescr.getConsequence() );
-            System.out.println( "=============================" );
-            System.out.println( fixed );
+//            System.out.println( "=============================" );
+//            System.out.println( ruleDescr.getConsequence() );
+//            System.out.println( "=============================" );
+//            System.out.println( fixed );
+
+            assertNotNull( context.getErrors().toString(),
+                           fixed );
+            assertEqualsIgnoreSpaces( expected,
+                                      fixed );
+        } catch ( RecognitionException e ) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void testFixEntryPointsReferences() {
+        String consequence = " System.out.println(\"this is a test\");\n " + " entryPoints[\"foo\"].insert( new Cheese() );\n " + " System.out.println(\"we are done with entryPoints\");\n ";
+        setupTest( consequence );
+        try {
+            JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
+            JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
+                                                                                      new Set[]{} );
+
+            String fixed = builder.fixBlockDescr( context,
+                                                  analysis,
+                                                  (String) ruleDescr.getConsequence() );
+
+            String expected = " System.out.println(\"this is a test\");\n " + 
+                              " drools.getEntryPoint(\"foo\").insert( new Cheese() );\n " + 
+                              " System.out.println(\"we are done with entryPoints\");\n ";
+
+//            System.out.println( "=============================" );
+//            System.out.println( ruleDescr.getConsequence() );
+//            System.out.println( "=============================" );
+//            System.out.println( fixed );
 
             assertNotNull( context.getErrors().toString(),
                            fixed );
@@ -101,9 +130,9 @@ public class JavaConsequenceBuilderTest extends TestCase {
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
                                                                                       new Set[]{} );
 
-            String fixed = builder.fixModifyBlocks( context,
-                                                    analysis,
-                                                    (String) ruleDescr.getConsequence() );
+            String fixed = builder.fixBlockDescr( context,
+                                                  analysis,
+                                                  (String) ruleDescr.getConsequence() );
 
             String expected = " System.out.println(\"this is a test\");\n" + "{ org.drools.Cheese __obj__ = (org.drools.Cheese) ( $cheese );\n" + "modifyRetract( __obj__ );\n" + "__obj__.setPrice( 10 );\n" + "__obj__.setAge( age );\n"
                               + "modifyInsert( __obj__ );}\n" + "System.out.println(\"we are done\");\n";

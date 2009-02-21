@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.Dialect.AnalysisResult;
-import org.drools.rule.builder.dialect.java.parser.JavaExitPointsDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 
 /**
@@ -38,8 +38,7 @@ public class JavaAnalysisResult implements AnalysisResult {
     private List identifiers = Collections.EMPTY_LIST;
     private Map localVariables = Collections.EMPTY_MAP;
     private List notBoundedIdentifiers = Collections.EMPTY_LIST;
-    private List modifyBlocks = Collections.EMPTY_LIST;
-    private List<JavaExitPointsDescr> exitPoints = Collections.emptyList();
+    private List<JavaBlockDescr> blocks = Collections.emptyList();
     
     public List[] getBoundIdentifiers() {
         return boundIdentifiers;
@@ -71,16 +70,10 @@ public class JavaAnalysisResult implements AnalysisResult {
     public void setNotBoundedIdentifiers(List notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
-    public List getModifyBlocks() {
-        return modifyBlocks;
+    public List<JavaBlockDescr> getBlockDescrs() {
+        return blocks;
     }
-    public void setModifyBlocks(List modifyBlocks) {
-        this.modifyBlocks = modifyBlocks;
-    }
-    public List<JavaExitPointsDescr> getExitPoints() {
-        return exitPoints;
-    }
-    public void setExitPoints(List<JavaExitPointsDescr> exitPoints) {
-        this.exitPoints = exitPoints;
+    public void setBlockDescrs(List<JavaBlockDescr> blocks) {
+        this.blocks = blocks;
     }
 }
