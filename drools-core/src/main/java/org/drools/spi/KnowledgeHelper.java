@@ -19,11 +19,13 @@ package org.drools.spi;
 import java.io.Serializable;
 
 import org.drools.FactException;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.FactHandle;
+import org.drools.runtime.ExitPoint;
 import org.drools.runtime.rule.RuleContext;
-import org.drools.WorkingMemory;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -109,35 +111,12 @@ public interface KnowledgeHelper
     Activation getActivation();
 
     WorkingMemory getWorkingMemory();
+    
+    WorkingMemoryEntryPoint getEntryPoint( String id );
+    
+    ExitPoint getExitPoint( String id );
 
-//    /** @return - A List of the objects in the WorkingMemory */
-//    List getObjects();
-//
-//    /**
-//     * Retruns a List of Objects that match the given Class in the paremeter.
-//     * 
-//     * @param objectClass -
-//     *            The Class to filter by
-//     * @return - All the Objects in the WorkingMemory that match the given Class
-//     *         filter
-//     */
-//    List getObjects(Class objectClass);
-//
-//    QueryResults getQueryResults(String query);
-//
-//    /**
-//     * Clears the agenda causing all existing Activations to fire
-//     * ActivationCancelled events. <br>
-//     */
-//    void clearAgenda();
-//
-//    void clearAgendaGroup(String group);
-//
-//    public AgendaGroup getFocus();
-//
     void setFocus(String focus);
-//
-//    void setFocus(AgendaGroup focus);
 
     public Declaration getDeclaration(String identifier);
     

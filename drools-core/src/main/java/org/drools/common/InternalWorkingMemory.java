@@ -7,6 +7,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
@@ -125,5 +126,7 @@ public interface InternalWorkingMemory
     
     public Map<String, ExitPoint> getExitPoints();
     
+    public Map<String, WorkingMemoryEntryPoint> getEntryPoints();
+
     public SessionConfiguration getSessionConfiguration();
 }

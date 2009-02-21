@@ -520,4 +520,9 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     	return null;
     }
 
+    public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
