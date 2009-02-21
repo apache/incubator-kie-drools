@@ -125,6 +125,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
@@ -596,6 +597,18 @@ public class MiscTest extends TestCase {
                          value );
             }
 
+            public Object get(String identifier) {
+                return resolveGlobal( identifier );
+            }
+
+            public void set(String identifier,
+                            Object value) {
+                setGlobal( identifier, value );
+            }
+
+            public void setDelegate(Globals delegate) {
+            }
+
         } );
 
         workingMemory.fireAllRules();
@@ -646,6 +659,18 @@ public class MiscTest extends TestCase {
 
             public void writeExternal(ObjectOutput out) throws IOException {
             }
+            
+            public Object get(String identifier) {
+                return resolveGlobal( identifier );
+            }
+
+            public void set(String identifier,
+                            Object value) {
+                setGlobal( identifier, value );
+            }
+
+            public void setDelegate(Globals delegate) {
+            }            
         } );
 
         Cheese bree = new Cheese();

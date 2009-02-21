@@ -29,6 +29,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.Environment;
+import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.Parameters;
 import org.drools.runtime.StatelessKnowledgeSession;
@@ -77,10 +78,8 @@ public class StatelessKnowledgeSessionImpl
                                                                 (SessionConfiguration) this.conf,
                                                                 this.environment );
 
-            DelegatingGlobalResolver resolver = new DelegatingGlobalResolver();
-            resolver.setDelegate( this.sessionGlobals );
-
-            wm.setGlobalResolver( resolver );
+            wm.getGlobalResolver().setDelegate( this.sessionGlobals );
+            
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( this.ruleFlowEventSupport );
@@ -154,7 +153,7 @@ public class StatelessKnowledgeSessionImpl
                                        value );
     }
 
-    public void setGlobalResolver(org.drools.runtime.GlobalResolver globalResolver) {
+    public void setGlobalResolver(org.drools.runtime.Globals globalResolver) {
         this.sessionGlobals = (GlobalResolver) globalResolver;
 
     }
@@ -291,45 +290,5 @@ public class StatelessKnowledgeSessionImpl
         return new ParametersImpl();
     }
 
-    public static class DelegatingGlobalResolver
-        implements
-        GlobalResolver {
-        MapGlobalResolver resolver;
-        GlobalResolver    delegate;
-
-        public DelegatingGlobalResolver() {
-            this.resolver = new MapGlobalResolver();
-        }
-
-        public void setDelegate(GlobalResolver delegate) {
-            this.delegate = delegate;
-        }
-
-        public Object resolveGlobal(String identifier) {
-            Object object = this.resolver.resolveGlobal( identifier );
-            if ( object == null ) {
-                return this.delegate.resolveGlobal( identifier );
-            } else {
-                return object;
-            }
-        }
-
-        public void setGlobal(String identifier,
-                              Object value) {
-            resolver.setGlobal( identifier,
-                                value );
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( this.resolver );
-            out.writeObject( this.delegate );
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            this.resolver = (MapGlobalResolver) in.readObject();
-            this.delegate = (GlobalResolver) in.readObject();
-        }
-    }
 
 }
