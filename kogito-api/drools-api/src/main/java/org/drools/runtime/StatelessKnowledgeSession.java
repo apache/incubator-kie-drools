@@ -86,7 +86,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </pre>  
  * 
  * @see org.drools.runtime.Parameters
- * @see org.drools.runtime.GlobalResolver
+ * @see org.drools.runtime.Globals
  */
 public interface StatelessKnowledgeSession
     extends
@@ -98,7 +98,7 @@ public interface StatelessKnowledgeSession
      * Delegate used to resolve any global names not found in the internally collection.
      * @param globalResolver
      */
-    void setGlobalResolver(GlobalResolver globalResolver);
+    void setGlobalResolver(Globals globalResolver);
 
     /**
      * Sets a global value on the internal collection
