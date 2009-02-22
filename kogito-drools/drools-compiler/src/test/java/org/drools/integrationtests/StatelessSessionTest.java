@@ -410,9 +410,6 @@ public class StatelessSessionTest extends TestCase {
         kbase.addKnowledgePackages( pkgs );
         kbase    = SerializationHelper.serializeObject( kbase );
         StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
-        
-//        session    = SerializationHelper.serializeObject(session);
-        session.setGlobalResolver( this.globalResolver );
 
         session.setGlobal( "list",
                            this.list );

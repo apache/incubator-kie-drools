@@ -43,7 +43,7 @@ public class StatelessKnowledgeSessionImpl
 
     private InternalRuleBase                                                  ruleBase;
     private AgendaFilter                                                      agendaFilter;
-    private GlobalResolver                                                    sessionGlobals            = new MapGlobalResolver();
+    private MapGlobalResolver                                                 sessionGlobals            = new MapGlobalResolver();
 
     /** The event mapping */
     public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
@@ -54,16 +54,17 @@ public class StatelessKnowledgeSessionImpl
     public WorkingMemoryEventSupport                                          workingMemoryEventSupport = new WorkingMemoryEventSupport();
     public AgendaEventSupport                                                 agendaEventSupport        = new AgendaEventSupport();
     public RuleFlowEventSupport                                               ruleFlowEventSupport      = new RuleFlowEventSupport();
-    
-    private KnowledgeSessionConfiguration conf;
-    private Environment environment;
+
+    private KnowledgeSessionConfiguration                                     conf;
+    private Environment                                                       environment;
 
     public StatelessKnowledgeSessionImpl() {
     }
 
-    public StatelessKnowledgeSessionImpl(final InternalRuleBase ruleBase, final KnowledgeSessionConfiguration conf) {
+    public StatelessKnowledgeSessionImpl(final InternalRuleBase ruleBase,
+                                         final KnowledgeSessionConfiguration conf) {
         this.ruleBase = ruleBase;
-        this.conf = ( conf != null ) ? conf : new SessionConfiguration() ;
+        this.conf = (conf != null) ? conf : new SessionConfiguration();
         this.environment = EnvironmentFactory.newEnvironment();
     }
 
@@ -78,8 +79,8 @@ public class StatelessKnowledgeSessionImpl
                                                                 (SessionConfiguration) this.conf,
                                                                 this.environment );
 
-            wm.getGlobalResolver().setDelegate( this.sessionGlobals );
-            
+            ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
+
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( this.ruleFlowEventSupport );
@@ -152,10 +153,9 @@ public class StatelessKnowledgeSessionImpl
         this.sessionGlobals.setGlobal( identifier,
                                        value );
     }
-
-    public void setGlobalResolver(org.drools.runtime.Globals globalResolver) {
-        this.sessionGlobals = (GlobalResolver) globalResolver;
-
+    
+    public Globals getGlobals() {
+        return this.sessionGlobals;
     }
 
     public void executeObject(Object object) {
@@ -227,7 +227,7 @@ public class StatelessKnowledgeSessionImpl
         if ( map != null && !map.isEmpty() ) {
             for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
                 Entry<String, Object> entry = (Entry<String, Object>) it.next();
-                sessionGlobals.setGlobal( entry.getKey(),
+                wm.setGlobal( entry.getKey(),
                                           entry.getValue() );
                 wm.insert( entry.getValue() );
             }
@@ -237,7 +237,7 @@ public class StatelessKnowledgeSessionImpl
         if ( map != null && !map.isEmpty() ) {
             for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
                 Entry<String, Object> entry = (Entry<String, Object>) it.next();
-                sessionGlobals.setGlobal( entry.getKey(),
+                wm.setGlobal( entry.getKey(),
                                           entry.getValue() );
                 results.put( entry.getKey(),
                              entry.getValue() );
@@ -249,7 +249,7 @@ public class StatelessKnowledgeSessionImpl
         if ( map != null && !map.isEmpty() ) {
             for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
                 Entry<String, Object> entry = (Entry<String, Object>) it.next();
-                sessionGlobals.setGlobal( entry.getKey(),
+                wm.setGlobal( entry.getKey(),
                                           entry.getValue() );
             }
         }
@@ -260,7 +260,7 @@ public class StatelessKnowledgeSessionImpl
                 Entry<String, Object> entry = (Entry<String, Object>) it.next();
                 results.put( entry.getKey(),
                              entry.getValue() );
-                sessionGlobals.setGlobal( entry.getKey(),
+                wm.setGlobal( entry.getKey(),
                                           entry.getValue() );
             }
         }
@@ -285,10 +285,9 @@ public class StatelessKnowledgeSessionImpl
             }
         }
     }
-    
+
     public Parameters newParameters() {
         return new ParametersImpl();
     }
-
 
 }

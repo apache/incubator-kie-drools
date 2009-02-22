@@ -13,7 +13,7 @@ import org.drools.spi.GlobalResolver;
 
 public class MapGlobalResolver
     implements
-    GlobalResolver,
+    GlobalResolver, Globals,
     Externalizable {
 
     private static final long serialVersionUID = 400L;

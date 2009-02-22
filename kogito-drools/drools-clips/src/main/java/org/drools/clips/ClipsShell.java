@@ -288,13 +288,13 @@ public class ClipsShell
         implements
         GlobalResolver {
         private Map<String, Object> vars;
-        private Globals      delegate;
+        private GlobalResolver      delegate;
 
         public GlobalResolver2() {
         }
 
         public GlobalResolver2(Map<String, Object> vars,
-                               Globals delegate) {
+                               GlobalResolver delegate) {
             this.vars = vars;
             this.delegate = delegate;
         }
@@ -313,28 +313,15 @@ public class ClipsShell
         public Object resolveGlobal(String identifier) {
             Object object = this.vars.get( identifier );
             if ( object == null ) {
-                object = delegate.get( identifier );
+                object = delegate.resolveGlobal( identifier );
             }
             return object;
         }
 
         public void setGlobal(String identifier,
                               Object value) {
-            this.delegate.set( identifier,
+            this.delegate.setGlobal( identifier,
                                      value );
-        }
-
-        public Object get(String identifier) {
-            return resolveGlobal( identifier );
-        }
-
-        public void set(String identifier,
-                        Object value) {
-            setGlobal( identifier, value );
-        }
-
-        public void setDelegate(Globals delegate) {
-            this.delegate = delegate;
         }
     }
 
