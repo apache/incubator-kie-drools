@@ -248,7 +248,7 @@ public class StatefulKnowledgeSessionImpl
     }
     
     public Globals getGlobals() {
-        return this.session.getGlobalResolver();
+        return ( Globals ) this.session.getGlobalResolver();
     }    
 
 //    public Future<Object> asyncInsert(Object object) {
