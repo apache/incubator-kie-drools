@@ -95,16 +95,17 @@ public interface StatelessKnowledgeSession
     KnowledgeRuntimeEventManager {
 
     /**
-     * Delegate used to resolve any global names not found in the internally collection.
+     * Return the Globals store
      * @param globalResolver
      */
-    void setGlobalResolver(Globals globalResolver);
+    Globals getGlobals();
 
     /**
-     * Sets a global value on the internal collection
+     * Sets a global value on the globals store
      * @param identifer the global identifier
      * @param value the value assigned to the global identifier
      */
     void setGlobal(String identifer,
                    Object value);
+    
 }
