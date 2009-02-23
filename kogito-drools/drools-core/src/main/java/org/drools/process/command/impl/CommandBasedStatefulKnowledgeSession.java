@@ -10,7 +10,6 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.process.command.AbortWorkItemCommand;
-import org.drools.process.command.AddEventListenerCommand;
 import org.drools.process.command.CommandService;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.FireAllRulesCommand;
@@ -30,7 +29,6 @@ import org.drools.process.command.GetWorkingMemoryEntryPointCommand;
 import org.drools.process.command.HaltCommand;
 import org.drools.process.command.InsertObjectCommand;
 import org.drools.process.command.RegisterWorkItemHandlerCommand;
-import org.drools.process.command.RemoveEventListenerCommand;
 import org.drools.process.command.RetractCommand;
 import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.SignalEventCommand;
@@ -230,11 +228,11 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
-        commandService.execute( new AddEventListenerCommand( listener ) );
+        throw new UnsupportedOperationException();
     }
 
     public void addEventListener(AgendaEventListener listener) {
-        commandService.execute( new AddEventListenerCommand( listener ) );
+        throw new UnsupportedOperationException();
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
@@ -246,15 +244,15 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
-        commandService.execute( new RemoveEventListenerCommand( listener ) );
+        throw new UnsupportedOperationException();
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        commandService.execute( new RemoveEventListenerCommand( listener ) );
+        throw new UnsupportedOperationException();
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        commandService.execute( new AddEventListenerCommand( listener ) );
+        throw new UnsupportedOperationException();
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
@@ -262,7 +260,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        commandService.execute( new RemoveEventListenerCommand( listener ) );
+        throw new UnsupportedOperationException();
     }
 
     public Object getGlobal(String identifier) {
