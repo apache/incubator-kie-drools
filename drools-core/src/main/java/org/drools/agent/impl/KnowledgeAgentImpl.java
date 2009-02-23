@@ -387,17 +387,17 @@ public class KnowledgeAgentImpl
                         if ( object instanceof KnowledgePackage ) {
                             pkg = ((KnowledgePackageImp) object).pkg;
                         } else {
-                            pkg = (Package) pkg;
+                            pkg = (Package) object;
                         }
                         this.listener.debug( "KnowledgeAgent adding KnowledgeDefinitionsPackage " + pkg.getName() );
                         ((KnowledgeBaseImpl) this.kbase).ruleBase.addPackage( pkg );
                     } catch ( Exception e ) {
-                        this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to serialize KnowledgeDefinitionsPackage  " ) );
+                        this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to deserialize KnowledgeDefinitionsPackage  ", e ) );
                     } finally {
                         try {
                             is.close();
                         } catch ( IOException e ) {
-                            this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to close KnowledgeDefinitionsPackage  " ) );
+                            this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to close KnowledgeDefinitionsPackage  ", e ) );
                         }
                     }
                 }
