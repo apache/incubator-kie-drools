@@ -21,7 +21,7 @@
     <module>drools-docs-flow</module>
     <module>drools-docs-fusion</module>
     <module>drools-docs-guvnor</module>
-    <module>drools-docs-solver</module>
+    <!--module>drools-docs-solver</module-->
   </modules>
 
   <dependencyManagement>
@@ -84,6 +84,45 @@
       </roles>
     </contributor>
   </contributors>
+
+
+    <profiles>
+        <profile>
+            <id>soa</id>
+            <activation>
+                <property>
+                    <name>soa</name>
+                </property>
+            </activation>
+            <modules>
+                <module>docbook-style-drools</module>
+                <module>docbook-xsl-drools</module>
+                <module>drools-docs-introduction</module>
+                <module>drools-docs-expert</module>
+                <module>drools-docs-flow</module>
+                <module>drools-docs-fusion</module>
+                <module>drools-docs-guvnor</module>
+                <!--module>drools-docs-solver</module-->
+            </modules>
+        </profile>             
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault> 
+            </activation>            
+            <modules>
+                <module>docbook-style-drools</module>
+                <module>docbook-xsl-drools</module>
+                <module>drools-docs-introduction</module>
+                <module>drools-docs-expert</module>
+                <module>drools-docs-flow</module>
+                <module>drools-docs-fusion</module>
+                <module>drools-docs-guvnor</module>
+                <module>drools-docs-solver</module>
+            </modules>
+       </profile>        
+    </profiles>
+
 
   <build>
     <plugins>
