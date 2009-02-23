@@ -15,7 +15,7 @@ import org.drools.ProviderInitializationException;
  * versions.
  * </p>
  * <p>
- * The Follow example constructs an agent that will build a new KnowledgeBase from the files specified in the path String.
+ * The Following example constructs an agent that will build a new KnowledgeBase from the files specified in the path String.
  * It will poll those files every 30 seconds to see if they are updated. If new files are found it will construct a new 
  * KnowledgeBase, instead of updating the existing one, due to the "newInstance" set to "true" (however currently only the value of
  * "true" is supported and is hard coded into the engine):
