@@ -1,7 +1,5 @@
 package org.drools.process.command;
 
-import java.util.Map;
-
 import org.drools.StatefulSession;
 import org.drools.process.instance.ProcessInstance;
 
