@@ -6,6 +6,7 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -101,22 +102,39 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
+        if ( this.mappedWorkingMemoryListeners == null ) {
+            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
+        }
+        
         WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
         this.mappedWorkingMemoryListeners.put( listener,
                                                wrapper );
         this.workingMemoryEventSupport.addEventListener( wrapper );
     }
 
+    
     public void removeEventListener(WorkingMemoryEventListener listener) {
+        if ( this.mappedWorkingMemoryListeners == null ) {
+            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
+        }
+        
         WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
         this.workingMemoryEventSupport.removeEventListener( wrapper );
     }
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
+        if ( this.mappedWorkingMemoryListeners == null ) {
+            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
+        }
+        
         return Collections.unmodifiableCollection( this.mappedWorkingMemoryListeners.keySet() );
     }
 
     public void addEventListener(AgendaEventListener listener) {
+        if ( this.mappedAgendaListeners == null ) {
+            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
+        }
+        
         AgendaEventListenerWrapper wrapper = new AgendaEventListenerWrapper( listener );
         this.mappedAgendaListeners.put( listener,
                                         wrapper );
@@ -124,15 +142,27 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
+        if ( this.mappedAgendaListeners == null ) {
+            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
+        }
+        
         return Collections.unmodifiableCollection( this.mappedAgendaListeners.keySet() );
     }
 
     public void removeEventListener(AgendaEventListener listener) {
+        if ( this.mappedAgendaListeners == null ) {
+            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
+        }
+        
         AgendaEventListenerWrapper wrapper = this.mappedAgendaListeners.remove( listener );
         this.agendaEventSupport.removeEventListener( wrapper );
     }
 
     public void addEventListener(ProcessEventListener listener) {
+        if ( this.mappedProcessListeners == null ) {
+            this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
+        }
+        
         ProcessEventListenerWrapper wrapper = new ProcessEventListenerWrapper( listener );
         this.mappedProcessListeners.put( listener,
                                          wrapper );
@@ -140,10 +170,18 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
+        if ( this.mappedProcessListeners == null ) {
+            this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
+        }
+        
         return Collections.unmodifiableCollection( this.mappedProcessListeners.keySet() );
     }
 
     public void removeEventListener(ProcessEventListener listener) {
+        if ( this.mappedProcessListeners == null ) {
+            this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
+        }
+        
         ProcessEventListenerWrapper wrapper = this.mappedProcessListeners.get( listener );
         this.ruleFlowEventSupport.removeEventListener( wrapper );
     }
