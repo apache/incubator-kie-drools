@@ -18,9 +18,11 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.compiler.PackageBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeScannerImpl;
@@ -294,7 +296,8 @@ public class KnowledgeAgentTest extends TestCase {
         assertTrue( list.contains( "rule2" ) );
         kagent.monitorResourceChangeEvents( false );
     }
-    
+
+
     public void testDeletePackageUrl() throws Exception {
         String rule1 = "";
         rule1 += "package org.drools.test1\n";
@@ -304,7 +307,7 @@ public class KnowledgeAgentTest extends TestCase {
         rule1 += "then\n";
         rule1 += "list.add( drools.getRule().getName() );\n";
         rule1 += "end\n";
-    
+
         String rule2 = "";
         rule2 += "package org.drools.test2\n";
         rule2 += "global java.util.List list\n";
@@ -313,22 +316,22 @@ public class KnowledgeAgentTest extends TestCase {
         rule2 += "then\n";
         rule2 += "list.add( drools.getRule().getName() );\n";
         rule2 += "end\n";
-        
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
         kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ), ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        
+
         Map map = new HashMap();
         for ( KnowledgePackage pkg : kbuilder.getKnowledgePackages() ) {
             map.put(  pkg.getName(), pkg );
         }
         writePackage( (KnowledgePackage) map.get( "org.drools.test1" ), fileManager.newFile( "pkg1.pkg" ) );
         writePackage( (KnowledgePackage) map.get( "org.drools.test2" ), fileManager.newFile( "pkg2.pkg" ) );
-        
-    
+
+
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
@@ -338,14 +341,14 @@ public class KnowledgeAgentTest extends TestCase {
         xml += "        <resource source='http://localhost:9000/pkg2.pkg' type='PKG' />";
         xml += "    </add> ";
         xml += "</change-set>";
-    
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-    
+
         ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
         sconf.setProperty( "drools.resource.scanner.interval",
                            "2" );
         ResourceFactory.getResourceChangeScannerService().configure( sconf );
-    
+
         KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
         aconf.setProperty( "drools.agent.scanDirectories",
                            "true" );
@@ -356,26 +359,26 @@ public class KnowledgeAgentTest extends TestCase {
         KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent",
                                                                          kbase,
                                                                          aconf );
-    
+
         kagent.applyChangeSet( ResourceFactory.newByteArrayResource( xml.getBytes() ) );
-    
+
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
         ksession.fireAllRules();
         ksession.dispose();
-    
+
         assertEquals( 2,
                       list.size() );
         assertTrue( list.contains( "rule1" ) );
         assertTrue( list.contains( "rule2" ) );
-    
+
         list.clear();
-    
+
         // have to sleep here as linux lastModified does not do milliseconds http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
         Thread.sleep( 2000 );
-        
+
         xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
@@ -383,25 +386,109 @@ public class KnowledgeAgentTest extends TestCase {
         xml += "    <remove> ";
         xml += "        <resource source='http://localhost:9000/pkg2.pkg' type='PKG' />";
         xml += "    </remove> ";
-        xml += "</change-set>";        
-    
+        xml += "</change-set>";
+
         kagent.applyChangeSet( ResourceFactory.newByteArrayResource( xml.getBytes() ) );
 
         Thread.sleep( 3000 );
-        
+
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
         ksession.fireAllRules();
         ksession.dispose();
-    
+
         assertEquals( 1,
                       list.size() );
-    
+
         assertTrue( list.contains( "rule1" ) );
         kagent.monitorResourceChangeEvents( false );
-    }    
+    }
+
+    public void testOldSchoolPackageUrl() throws Exception {
+        String rule1 = "";
+        rule1 += "package org.drools.test\n";
+        rule1 += "global java.util.List list\n";
+        rule1 += "rule rule1\n";
+        rule1 += "when\n";
+        rule1 += "then\n";
+        rule1 += "list.add( drools.getRule().getName() );\n";
+        rule1 += "end\n";
+
+        String rule2 = "";
+        rule2 += "package org.drools.test\n";
+        rule2 += "global java.util.List list\n";
+        rule2 += "rule rule2\n";
+        rule2 += "when\n";
+        rule2 += "then\n";
+        rule2 += "list.add( drools.getRule().getName() );\n";
+        rule2 += "end\n";
+
+
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBuilderImpl kbi = (KnowledgeBuilderImpl) kbuilder;
+
+        //KnowledgePackage pkg = ( KnowledgePackage ) kbuilder.getKnowledgePackages().iterator().next();
+        writePackage( kbi.getPackageBuilder().getPackage(), fileManager.newFile( "pkgold.pkg" ) );
+
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:9000/pkgold.pkg' type='PKG' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.newFile( "changeset.xml" );
+        fxml.deleteOnExit();
+        Writer output = new BufferedWriter( new FileWriter( fxml ) );
+        output.write( xml );
+        output.close();
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+        sconf.setProperty( "drools.resource.scanner.interval",
+                "2" );
+        ResourceFactory.getResourceChangeScannerService().configure( sconf );
+
+        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+        aconf.setProperty( "drools.agent.scanDirectories",
+                "true" );
+        aconf.setProperty( "drools.agent.scanResources",
+                "true" );
+        aconf.setProperty( "drools.agent.newInstance",
+                "true" );
+        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent",
+                kbase,
+                aconf );
+
+        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+
+        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                list );
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                list.size() );
+        assertTrue( list.contains( "rule1" ) );
+        assertTrue( list.contains( "rule2" ) );
+
+
+    }
 
     public void testModifyFile() throws IOException,
                                 InterruptedException {
@@ -629,7 +716,7 @@ public class KnowledgeAgentTest extends TestCase {
         kagent.monitorResourceChangeEvents( false );
     }
 
-    private static void writePackage(KnowledgePackage pkg,
+    private static void writePackage(Object pkg,
                                      File p1file) throws IOException,
                                                  FileNotFoundException {
          FileOutputStream out = new FileOutputStream( p1file );
