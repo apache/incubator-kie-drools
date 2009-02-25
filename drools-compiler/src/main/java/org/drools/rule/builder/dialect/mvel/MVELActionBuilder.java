@@ -107,8 +107,9 @@ public class MVELActionBuilder
 	                            null,
 	                            "Could not find variable '" + variableName + "' for action '" + actionDescr.getText() + "'" ) );            		
 	            	} else {
-	            		variableClasses.put(variableName, Class.forName(
-            				variableScope.findVariable(variableName).getType().getStringType()));
+	            		variableClasses.put(variableName,
+            				context.getDialect().getTypeResolver().resolveType(
+        						variableScope.findVariable(variableName).getType().getStringType()));
 	            	}
 	            }
             }
@@ -134,7 +135,7 @@ public class MVELActionBuilder
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           actionDescr,
                                                           null,
-                                                          "Unable to build expression for 'action' : " + e.getMessage() + " '"+ actionDescr.getText() + "'" ) );
+                                                          "Unable to build expression for action '" + actionDescr.getText() + "' :" + e ) );
         }
     }
 
