@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.process.core.ContextResolver;
+import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -77,6 +81,32 @@ public class AbstractJavaProcessBuilder {
                 globalTypes);
 
         return map;
+    }
+    
+    public Map createVariableContext(
+    		final String className,
+            final String text,
+            final ProcessBuildContext context,
+            final String[] globals,
+            final List<String> unboundIdentifiers,
+            final ContextResolver contextResolver) {
+    	Map map = createVariableContext(className, text, context, globals);
+    	List<String> variables = new ArrayList<String>();
+    	final List variableTypes = new ArrayList(globals.length);
+        for (String variableName: unboundIdentifiers) {
+        	VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);
+        	if (variableScope != null) {
+        		variables.add(variableName);
+        		variableTypes.add(variableScope.findVariable(variableName).getType().getStringType());
+        	}
+        }
+
+        map.put("variables",
+                variables);
+
+        map.put("variableTypes",
+                variableTypes);
+    	return map;
     }
 
     public void generatTemplates(final String ruleTemplate,

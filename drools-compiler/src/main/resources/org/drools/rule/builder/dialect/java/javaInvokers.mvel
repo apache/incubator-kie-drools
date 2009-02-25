@@ -374,9 +374,14 @@ public class @{invokerClassName} implements org.drools.spi.Action, org.drools.sp
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
 
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
+        @end{}
+
         @{processClassName}.@{methodName} (
 	        knowledgeHelper@if{globals != empty},@end{}
 	        @foreach{identifier : globals} @{identifier}
+	        @end{","}@if{variables != empty},@end{}
+	        @foreach{identifier : variables} @{identifier}
 	        @end{","}, context );
     }
     
