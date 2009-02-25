@@ -26,7 +26,7 @@ package org.drools.conf;
  * 
  * @author etirelli
  */
-public enum ShareAlphaNodesOption implements KnowledgeBaseOption {
+public enum ShareAlphaNodesOption implements SingleValueKnowledgeBaseOption {
     
     YES(true),
     NO(false);

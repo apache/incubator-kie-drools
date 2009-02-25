@@ -14,50 +14,47 @@
  * limitations under the License.
  *
  */
-package org.drools.builder.conf;
+package org.drools.conf;
 
-import java.io.File;
 
 /**
- * A class for the dump directory configuration. I.e., for the directory
- * where Drools will dump generated code for debugging purposes. If this
- * option is not set, drools will generate and compile all code in memory.
+ * A class for the composite key depth configuration.
  * 
  * @author etirelli
  */
-public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
+public class CompositeKeyDepthOption implements SingleValueKnowledgeBaseOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 
     /**
-     * The property name for the drools dump directory configuration
+     * The property name for the default DIALECT
      */
-    public static final String PROPERTY_NAME = "drools.dump.dir";
+    public static final String PROPERTY_NAME = "drools.compositeKeyDepth";
     
     /**
-     * directory reference
+     * dialect name
      */
-    private final File dir;
+    private final int depth;
     
     /**
      * Private constructor to enforce the use of the factory method
-     * @param dir directory to set
+     * @param depth
      */
-    private DumpDirOption( File dir ) {
-        this.dir = dir;
+    private CompositeKeyDepthOption( int depth ) {
+        this.depth = depth;
     }
     
     /**
-     * This is a factory method for this DumpDirectoryOption configuration.
+     * This is a factory method for this CompositeKeyDepth configuration.
      * The factory method is a best practice for the case where the 
      * actual object construction is changed in the future.
      * 
-     * @param dir the directory to which drools will dump files
+     * @param depth the composite key depth value
      * 
-     * @return the actual type safe dump directory configuration.
+     * @return the actual type safe CompositeKeyDepth configuration.
      */
-    public static DumpDirOption get( File dir ) {
-        return new DumpDirOption( dir );
+    public static CompositeKeyDepthOption get( int depth ) {
+        return new CompositeKeyDepthOption( depth );
     }
     
     /**
@@ -68,24 +65,19 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
     }
     
     /**
-     * Returns the directory to which drools should dump generated files
+     * Returns the depth value for composite key indexing
      * 
      * @return
      */
-    public File getDirectory() {
-        return dir;
+    public int getDepth() {
+        return depth;
     }
 
-    @Override
-    public String toString() {
-        return "DumpDirOption( directory="+dir.toString()+" )";
-    }
-    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((dir == null) ? 0 : dir.hashCode());
+        result = prime * result + depth;
         return result;
     }
 
@@ -94,11 +86,9 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        DumpDirOption other = (DumpDirOption) obj;
-        if ( dir == null ) {
-            if ( other.dir != null ) return false;
-        } else if ( !dir.equals( other.dir ) ) return false;
+        CompositeKeyDepthOption other = (CompositeKeyDepthOption) obj;
+        if ( depth != other.depth ) return false;
         return true;
     }
-
+    
 }

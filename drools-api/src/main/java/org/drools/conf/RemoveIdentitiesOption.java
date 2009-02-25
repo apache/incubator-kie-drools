@@ -26,7 +26,7 @@ package org.drools.conf;
  * 
  * @author etirelli
  */
-public enum RemoveIdentitiesOption implements KnowledgeBaseOption {
+public enum RemoveIdentitiesOption implements SingleValueKnowledgeBaseOption {
     
     YES(true),
     NO(false);

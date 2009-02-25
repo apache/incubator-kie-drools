@@ -14,50 +14,47 @@
  * limitations under the License.
  *
  */
-package org.drools.builder.conf;
+package org.drools.conf;
 
-import java.io.File;
 
 /**
- * A class for the dump directory configuration. I.e., for the directory
- * where Drools will dump generated code for debugging purposes. If this
- * option is not set, drools will generate and compile all code in memory.
+ * A class for the alpha node hashing threshold configuration.
  * 
  * @author etirelli
  */
-public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
+public class AlphaThresholdOption implements SingleValueKnowledgeBaseOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 
     /**
-     * The property name for the drools dump directory configuration
+     * The property name for the default DIALECT
      */
-    public static final String PROPERTY_NAME = "drools.dump.dir";
+    public static final String PROPERTY_NAME = "drools.alphaNodeHashingThreshold";
     
     /**
-     * directory reference
+     * alpha threshold
      */
-    private final File dir;
+    private final int threshold;
     
     /**
      * Private constructor to enforce the use of the factory method
-     * @param dir directory to set
+     * @param threshold
      */
-    private DumpDirOption( File dir ) {
-        this.dir = dir;
+    private AlphaThresholdOption( int threshold ) {
+        this.threshold = threshold;
     }
     
     /**
-     * This is a factory method for this DumpDirectoryOption configuration.
+     * This is a factory method for this Alpha Threshold configuration.
      * The factory method is a best practice for the case where the 
      * actual object construction is changed in the future.
      * 
-     * @param dir the directory to which drools will dump files
+     * @param threshold the threshold value for the alpha hashing option
      * 
-     * @return the actual type safe dump directory configuration.
+     * @return the actual type safe alpha threshold configuration.
      */
-    public static DumpDirOption get( File dir ) {
-        return new DumpDirOption( dir );
+    public static AlphaThresholdOption get( int threshold ) {
+        return new AlphaThresholdOption( threshold );
     }
     
     /**
@@ -68,24 +65,19 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
     }
     
     /**
-     * Returns the directory to which drools should dump generated files
+     * Returns the threshold value for alpha hashing
      * 
      * @return
      */
-    public File getDirectory() {
-        return dir;
+    public int getThreshold() {
+        return threshold;
     }
 
-    @Override
-    public String toString() {
-        return "DumpDirOption( directory="+dir.toString()+" )";
-    }
-    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((dir == null) ? 0 : dir.hashCode());
+        result = prime * result + threshold;
         return result;
     }
 
@@ -94,11 +86,9 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        DumpDirOption other = (DumpDirOption) obj;
-        if ( dir == null ) {
-            if ( other.dir != null ) return false;
-        } else if ( !dir.equals( other.dir ) ) return false;
+        AlphaThresholdOption other = (AlphaThresholdOption) obj;
+        if ( threshold != other.threshold ) return false;
         return true;
     }
-
+    
 }

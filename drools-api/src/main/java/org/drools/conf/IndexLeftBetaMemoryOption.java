@@ -26,7 +26,7 @@ package org.drools.conf;
  * 
  * @author etirelli
  */
-public enum IndexLeftBetaMemoryOption implements KnowledgeBaseOption {
+public enum IndexLeftBetaMemoryOption implements SingleValueKnowledgeBaseOption {
     
     YES(true),
     NO(false);

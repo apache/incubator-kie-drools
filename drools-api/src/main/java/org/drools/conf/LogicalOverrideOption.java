@@ -26,7 +26,7 @@ package org.drools.conf;
  * 
  * @author etirelli
  */
-public enum LogicalOverrideOption implements KnowledgeBaseOption {
+public enum LogicalOverrideOption implements SingleValueKnowledgeBaseOption {
     
     DISCARD,
     PRESERVE;

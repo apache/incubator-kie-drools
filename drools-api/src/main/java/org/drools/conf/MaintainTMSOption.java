@@ -26,7 +26,7 @@ package org.drools.conf;
  * 
  * @author etirelli
  */
-public enum MaintainTMSOption implements KnowledgeBaseOption {
+public enum MaintainTMSOption implements SingleValueKnowledgeBaseOption {
     
     YES(true),
     NO(false);

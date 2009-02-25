@@ -22,7 +22,7 @@ package org.drools.builder.conf;
  * 
  * @author etirelli
  */
-public class DefaultDialectOption implements KnowledgeBuilderOption {
+public class DefaultDialectOption implements SingleValueKnowledgeBuilderOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 

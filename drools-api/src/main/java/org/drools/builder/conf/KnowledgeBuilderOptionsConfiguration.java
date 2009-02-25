@@ -40,7 +40,7 @@ public interface KnowledgeBuilderOptionsConfiguration {
      * @return the Option value for the given option. Returns null if option is 
      *         not configured.
      */
-    public <T extends KnowledgeBuilderOption> T getOption( Class<T> option );
+    public <T extends SingleValueKnowledgeBuilderOption> T getOption( Class<T> option );
     
     
     /**
@@ -54,7 +54,7 @@ public interface KnowledgeBuilderOptionsConfiguration {
      * @return the Option value for the given option + key. Returns null if option is 
      *         not configured.
      */
-    public <T extends KnowledgeBuilderOption> T getOption( Class<T> option, String key );
+    public <T extends MultiValueKnowledgeBuilderOption> T getOption( Class<T> option, String key );
     
 
 }

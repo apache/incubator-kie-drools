@@ -26,7 +26,7 @@ package org.drools.conf;
  * 
  * @author etirelli
  */
-public enum SequentialOption implements KnowledgeBaseOption {
+public enum SequentialOption implements SingleValueKnowledgeBaseOption {
     
     YES(true),
     NO(false);

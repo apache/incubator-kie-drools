@@ -23,7 +23,7 @@ import org.drools.runtime.rule.AccumulateFunction;
  * 
  * @author etirelli
  */
-public class AccumulateFunctionOption implements KnowledgeBuilderOption {
+public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOption {
 
     private static final long serialVersionUID = -8461267995706982981L;
 
@@ -52,13 +52,13 @@ public class AccumulateFunctionOption implements KnowledgeBuilderOption {
     }
     
     /**
-     * This is a factory method for this DefaultDialect configuration.
+     * This is a factory method for this AccumulateFunction configuration.
      * The factory method is a best practice for the case where the 
      * actual object construction is changed in the future.
      * 
-     * @param name the name of the dialect to be configured as default
+     * @param name the name of the function to be configured
      * 
-     * @return the actual type safe default dialect configuration.
+     * @return the actual type safe accumulate function configuration.
      */
     public static AccumulateFunctionOption get( final String name, final AccumulateFunction function ) {
         return new AccumulateFunctionOption( name, function );
@@ -72,7 +72,7 @@ public class AccumulateFunctionOption implements KnowledgeBuilderOption {
     }
     
     /**
-     * Returns the name of the dialect configured as default
+     * Returns the name of the function configured
      * 
      * @return
      */

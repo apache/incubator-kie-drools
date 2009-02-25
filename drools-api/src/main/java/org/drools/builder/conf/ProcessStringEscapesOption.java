@@ -37,7 +37,7 @@ package org.drools.builder.conf;
  * 
  * @author etirelli
  */
-public enum ProcessStringEscapesOption implements KnowledgeBuilderOption {
+public enum ProcessStringEscapesOption implements SingleValueKnowledgeBuilderOption {
     
     YES(true),
     NO(false);
