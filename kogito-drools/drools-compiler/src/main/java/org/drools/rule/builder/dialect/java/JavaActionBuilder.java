@@ -37,17 +37,6 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
     implements
     ActionBuilder {
 
-    /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
-     */
-    public void build(final PackageBuildContext context,
-                      final DroolsAction action,
-                      final ActionDescr actionDescr) {
-        build( context,
-               action,
-               actionDescr,
-               null );
-    }
     public void build(final PackageBuildContext context,
                       final DroolsAction action,
                       final ActionDescr actionDescr,
@@ -73,7 +62,9 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
         final Map map = createVariableContext( className,
                                                actionDescr.getText(),
                                                (ProcessBuildContext) context,
-                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
+                                               analysis.getNotBoundedIdentifiers(),
+                                               contextResolver);
         map.put( "text",
                  dialect.getKnowledgeHelperFixer().fix( actionDescr.getText() ));
 

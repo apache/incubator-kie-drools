@@ -3,8 +3,10 @@ package org.drools.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -123,9 +125,9 @@ public class ProcessActionTest extends TestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
-			"String variable = (String) context.getVariable(\"variable\");\n" +
+			"String myVariable = (String) context.getVariable(\"variable\");\n" +
 			"System.out.println(drools.getWorkingMemory());\n" +
-			"list.add(variable);\n" +
+			"list.add(myVariable);\n" +
 			"String nodeName = context.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
 			"nodeName = kcontext.getNodeInstance().getNodeName();\n" +
@@ -247,6 +249,132 @@ public class ProcessActionTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
+	public void testActionVariableJava() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "\n" +
+            "  <header>\n" +
+			"    <imports>\n" +
+			"      <import name=\"org.drools.integrationtests.ProcessActionTest.TestVariable\" />\n" +
+			"    </imports>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+    		"    <variables>\n" +
+    		"      <variable name=\"person\" >\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.drools.integrationtests.ProcessActionTest.TestVariable\" />\n" +
+    		"      </variable>\n" +
+    		"    </variables>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
+			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
+			"list.add(person.getName());\n" +
+			"</action>\n" +
+			"    </actionNode>\n" + 
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\" />\n" +
+            "    <connection from=\"2\" to=\"3\" />\n" +
+            "  </connections>\n" +
+            "\n" +
+            "</process>");
+        builder.addRuleFlow(source);
+        PackageBuilderErrors errors = builder.getErrors();
+        if (!errors.isEmpty()) {
+        	for (DroolsError error: errors.getErrors()) {
+        		System.err.println(error);
+        	}
+        	fail("Errors while building package");
+        }
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<String> list = new ArrayList<String>();
+        workingMemory.setGlobal("list", list);
+        TestVariable person = new TestVariable("John Doe");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", person);
+        ProcessInstance processInstance =
+            workingMemory.startProcess("org.drools.actions", params);
+        assertEquals(1, list.size());
+        assertEquals("John Doe", list.get(0));
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+	
+	public void testActionVariableMVEL() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "\n" +
+            "  <header>\n" +
+			"    <imports>\n" +
+			"      <import name=\"org.drools.integrationtests.ProcessActionTest.TestVariable\" />\n" +
+			"    </imports>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+    		"    <variables>\n" +
+    		"      <variable name=\"person\" >\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"TestVariable\" />\n" +
+    		"      </variable>\n" +
+    		"    </variables>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
+			"      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Triggered\");\n" +
+			"list.add(person.name);\n" +
+			"</action>\n" +
+			"    </actionNode>\n" + 
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\" />\n" +
+            "    <connection from=\"2\" to=\"3\" />\n" +
+            "  </connections>\n" +
+            "\n" +
+            "</process>");
+        builder.addRuleFlow(source);
+        PackageBuilderErrors errors = builder.getErrors();
+        if (!errors.isEmpty()) {
+        	for (DroolsError error: errors.getErrors()) {
+        		System.err.println(error);
+        	}
+        	fail("Errors while building package");
+        }
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<String> list = new ArrayList<String>();
+        workingMemory.setGlobal("list", list);
+        TestVariable person = new TestVariable("John Doe");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", person);
+        ProcessInstance processInstance =
+            workingMemory.startProcess("org.drools.actions", params);
+        assertEquals(1, list.size());
+        assertEquals("John Doe", list.get(0));
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+	
 	private static class TestWorkItemHandler implements WorkItemHandler {
         private WorkItem workItem;
         public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -258,4 +386,18 @@ public class ProcessActionTest extends TestCase {
             return workItem;
         }
     }
+	
+	public static class TestVariable {
+		
+		private String name;
+		
+		public TestVariable(String name) {
+			this.name = name;
+		}
+		
+		public String getName() {
+			return name;
+		}
+	
+	}
 }
