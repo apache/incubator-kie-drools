@@ -26,7 +26,7 @@ package org.drools.conf;
  * 
  * @author etirelli
  */
-public enum SequentialAgendaOption implements KnowledgeBaseOption {
+public enum SequentialAgendaOption implements SingleValueKnowledgeBaseOption {
     
     SEQUENTIAL,
     DYNAMIC;

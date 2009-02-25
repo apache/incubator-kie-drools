@@ -14,33 +14,16 @@
  * limitations under the License.
  *
  */
-package org.drools.conf;
+package org.drools.builder.conf;
 
 
 /**
- * An Enum for AssertBehavior option.
- * 
- * drools.assertBehaviour = &lt;identity|equality&gt;
- * 
- * DEFAULT = identity
+ * A markup interface for MultiValueKnowledgeBuilderConfiguration options
  * 
  * @author etirelli
  */
-public enum AssertBehaviorOption implements SingleValueKnowledgeBaseOption {
-    
-    IDENTITY,
-    EQUALITY;
+public interface MultiValueKnowledgeBuilderOption
+    extends
+    KnowledgeBuilderOption {
 
-    /**
-     * The property name for the sequential mode option
-     */
-    public static final String PROPERTY_NAME = "drools.assertBehaviour";
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getPropertyName() {
-        return PROPERTY_NAME;
-    }
-    
 }

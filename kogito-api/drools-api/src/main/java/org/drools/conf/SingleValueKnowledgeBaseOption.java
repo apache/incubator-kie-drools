@@ -18,29 +18,12 @@ package org.drools.conf;
 
 
 /**
- * An Enum for AssertBehavior option.
- * 
- * drools.assertBehaviour = &lt;identity|equality&gt;
- * 
- * DEFAULT = identity
+ * A markup interface for KnowledgeBaseConfiguration options
  * 
  * @author etirelli
  */
-public enum AssertBehaviorOption implements SingleValueKnowledgeBaseOption {
-    
-    IDENTITY,
-    EQUALITY;
+public interface SingleValueKnowledgeBaseOption
+    extends
+    KnowledgeBaseOption {
 
-    /**
-     * The property name for the sequential mode option
-     */
-    public static final String PROPERTY_NAME = "drools.assertBehaviour";
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getPropertyName() {
-        return PROPERTY_NAME;
-    }
-    
 }
