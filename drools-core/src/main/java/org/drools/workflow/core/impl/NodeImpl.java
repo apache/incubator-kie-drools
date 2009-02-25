@@ -26,6 +26,7 @@ import java.util.Map;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.Context;
+import org.drools.process.core.ContextResolver;
 import org.drools.workflow.core.Node;
 
 /**
@@ -33,7 +34,7 @@ import org.drools.workflow.core.Node;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class NodeImpl implements Node, Serializable {
+public abstract class NodeImpl implements Node, Serializable, ContextResolver {
 
     private static final long serialVersionUID = 4L;
 

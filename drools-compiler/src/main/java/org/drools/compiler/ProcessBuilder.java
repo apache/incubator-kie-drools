@@ -16,24 +16,13 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
@@ -51,6 +40,7 @@ import org.drools.process.core.ContextContainer;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;
+import org.drools.process.core.impl.ProcessImpl;
 import org.drools.process.core.validation.ProcessValidationError;
 import org.drools.process.core.validation.ProcessValidator;
 import org.drools.rule.builder.ProcessBuildContext;
@@ -167,7 +157,7 @@ public class ProcessBuilder {
     					ActionDescr actionDescr = new ActionDescr();
     			        actionDescr.setText( action.getConsequence() );   
     			        Dialect dialect = buildContext.getDialectRegistry().getDialect( action.getDialect() );            
-    			        dialect.getActionBuilder().build( buildContext, action, actionDescr );
+    			        dialect.getActionBuilder().build( buildContext, action, actionDescr, (ProcessImpl) buildContext.getProcess() );
     				}
     			}
     		}

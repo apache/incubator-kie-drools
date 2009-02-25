@@ -8,6 +8,7 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.core.timer.Timer;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.workflow.core.DroolsAction;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.EventBasedNode;
 
 public class EventBasedNodeBuilder extends ExtendedNodeBuilder {
@@ -20,7 +21,7 @@ public class EventBasedNodeBuilder extends ExtendedNodeBuilder {
         Map<Timer, DroolsAction> timers = ((EventBasedNode) node).getTimers();
         if (timers != null) {
 	        for (DroolsAction action: timers.values()) {
-	        	buildAction(action, context);
+	        	buildAction(action, context, (NodeImpl) node );
 	        }
         }
     }
