@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.drools.asm.ClassReader;
+import org.mvel2.asm.ClassReader;
 
 public class MethodComparerTest extends TestCase {
 

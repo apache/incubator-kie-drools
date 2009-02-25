@@ -20,12 +20,12 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.drools.asm.ClassWriter;
-import org.drools.asm.FieldVisitor;
-import org.drools.asm.Label;
-import org.drools.asm.MethodVisitor;
-import org.drools.asm.Opcodes;
-import org.drools.asm.Type;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 /**
  * A builder to dynamically build simple Javabean(TM) classes
@@ -139,7 +139,7 @@ public class ClassBuilder {
                                                       InstantiationException,
                                                       NoSuchFieldException {
 
-        ClassWriter cw = new ClassWriter( true );
+        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
 
         this.buildClassHeader( cw,
                                classDef );
