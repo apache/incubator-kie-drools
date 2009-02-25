@@ -9,30 +9,42 @@ import org.drools.KnowledgeBase;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
+import org.drools.impl.StatefulKnowledgeSessionImpl.ProcessEventListenerWrapper;
+import org.drools.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
 import org.drools.process.command.AbortWorkItemCommand;
+import org.drools.process.command.AddEventListenerCommand;
 import org.drools.process.command.CommandService;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.FireUntilHaltCommand;
 import org.drools.process.command.GetAgendaCommand;
+import org.drools.process.command.GetAgendaEventListenersCommand;
 import org.drools.process.command.GetEnvironmentCommand;
 import org.drools.process.command.GetFactHandleCommand;
+import org.drools.process.command.GetFactHandlesCommand;
 import org.drools.process.command.GetGlobalCommand;
 import org.drools.process.command.GetGlobalsCommand;
 import org.drools.process.command.GetKnowledgeBaseCommand;
 import org.drools.process.command.GetObjectCommand;
 import org.drools.process.command.GetObjectsCommand;
+import org.drools.process.command.GetProcessEventListenersCommand;
 import org.drools.process.command.GetProcessInstanceCommand;
 import org.drools.process.command.GetProcessInstancesCommand;
 import org.drools.process.command.GetSessionClockCommand;
 import org.drools.process.command.GetWorkingMemoryEntryPointCommand;
+import org.drools.process.command.GetWorkingMemoryEventListenersCommand;
 import org.drools.process.command.HaltCommand;
 import org.drools.process.command.InsertObjectCommand;
+import org.drools.process.command.RegisterExitPointCommand;
 import org.drools.process.command.RegisterWorkItemHandlerCommand;
+import org.drools.process.command.RemoveEventListenerCommand;
 import org.drools.process.command.RetractCommand;
 import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
+import org.drools.process.command.UnregisterExitPointCommand;
 import org.drools.process.command.UpdateCommand;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
@@ -52,8 +64,12 @@ public class CommandBasedStatefulKnowledgeSession
     implements
     StatefulKnowledgeSession {
 
-    private CommandService            commandService;
-    private transient WorkItemManager workItemManager;
+    private CommandService                                                    commandService;
+    private transient WorkItemManager                                         workItemManager;
+
+    public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
+    public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
+    public Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners;
 
     public CommandBasedStatefulKnowledgeSession(CommandService commandService) {
         this.commandService = commandService;
@@ -153,12 +169,12 @@ public class CommandBasedStatefulKnowledgeSession
 
     public void registerExitPoint(String name,
                                   ExitPoint exitPoint) {
-        throw new UnsupportedOperationException();
-
+        this.commandService.execute( new RegisterExitPointCommand( name,
+                                                                   exitPoint ) );
     }
 
     public void unregisterExitPoint(String name) {
-        throw new UnsupportedOperationException();
+        this.commandService.execute( new UnregisterExitPointCommand( name ) );
 
     }
 
@@ -171,12 +187,12 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public Collection< ? extends FactHandle> getFactHandles() {
-        throw new UnsupportedOperationException();
+        return this.commandService.execute( new GetFactHandlesCommand() );
 
     }
 
     public Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter) {
-        throw new UnsupportedOperationException();
+        return this.commandService.execute( new GetFactHandlesCommand( filter ) );
     }
 
     public Collection< ? > getObjects() {
@@ -228,39 +244,84 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
-        throw new UnsupportedOperationException();
+        WorkingMemoryEventListenerWrapper wrapper = new StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper( listener );
+
+        this.mappedWorkingMemoryListeners.put( listener,
+                                               wrapper );
+
+        commandService.execute( new AddEventListenerCommand( wrapper ) );
     }
 
     public void addEventListener(AgendaEventListener listener) {
-        throw new UnsupportedOperationException();
+        AgendaEventListenerWrapper wrapper = new StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper( listener );
+
+        this.mappedAgendaListeners.put( listener,
+                                        wrapper );
+
+        commandService.execute( new AddEventListenerCommand( wrapper ) );
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        throw new UnsupportedOperationException();
+        Collection<org.drools.event.AgendaEventListener> listeners = commandService.execute( new GetAgendaEventListenersCommand() );
+        Collection<AgendaEventListener> result = new ArrayList<AgendaEventListener>();
+
+        for ( org.drools.event.AgendaEventListener listener : listeners ) {
+            AgendaEventListenerWrapper wrapper = (AgendaEventListenerWrapper) listener;
+            result.add( wrapper.unWrap() );
+        }
+
+        return result;
     }
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-        throw new UnsupportedOperationException();
+        Collection<org.drools.event.WorkingMemoryEventListener> listeners = commandService.execute( new GetWorkingMemoryEventListenersCommand() );
+        Collection<WorkingMemoryEventListener> result = new ArrayList<WorkingMemoryEventListener>();
+
+        for ( org.drools.event.WorkingMemoryEventListener listener : listeners ) {
+            WorkingMemoryEventListenerWrapper wrapper = (WorkingMemoryEventListenerWrapper) listener;
+            result.add( wrapper.unWrap() );
+        }
+
+        return result;
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
-        throw new UnsupportedOperationException();
+        WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
+
+        commandService.execute( new RemoveEventListenerCommand( wrapper ) );
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        throw new UnsupportedOperationException();
+        AgendaEventListenerWrapper wrapper = this.mappedAgendaListeners.remove( listener );
+
+        commandService.execute( new RemoveEventListenerCommand( wrapper ) );
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        throw new UnsupportedOperationException();
+        ProcessEventListenerWrapper wrapper = new StatefulKnowledgeSessionImpl.ProcessEventListenerWrapper( listener );
+
+        this.mappedProcessListeners.put( listener,
+                                         wrapper );
+
+        commandService.execute( new AddEventListenerCommand( wrapper ) );
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        throw new UnsupportedOperationException();
+        Collection<org.drools.event.RuleFlowEventListener> listeners = commandService.execute( new GetProcessEventListenersCommand() );
+        Collection<ProcessEventListener> result = new ArrayList<ProcessEventListener>();
+
+        for ( org.drools.event.RuleFlowEventListener listener : listeners ) {
+            ProcessEventListenerWrapper wrapper = (ProcessEventListenerWrapper) listener;
+            result.add( wrapper.unWrap() );
+        }
+
+        return result;
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        throw new UnsupportedOperationException();
+        WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
+
+        commandService.execute( new RemoveEventListenerCommand( wrapper ) );
     }
 
     public Object getGlobal(String identifier) {

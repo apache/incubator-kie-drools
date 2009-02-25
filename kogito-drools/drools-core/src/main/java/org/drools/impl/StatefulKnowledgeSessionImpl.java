@@ -27,6 +27,7 @@ import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.RuleFlowCompletedEvent;
+import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.RuleFlowNodeTriggeredEvent;
@@ -66,7 +67,7 @@ public class StatefulKnowledgeSessionImpl
     implements
     StatefulKnowledgeSession,
     InternalWorkingMemoryEntryPoint {
-    public ReteooWorkingMemory                                              session;
+    public ReteooWorkingMemory                                                session;
     public KnowledgeBaseImpl                                                  kbase;
 
     public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
@@ -87,10 +88,10 @@ public class StatefulKnowledgeSessionImpl
         this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
         this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
     }
-    
+
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return session.getWorkingMemoryEntryPoint( name );        
-    }    
+        return session.getWorkingMemoryEntryPoint( name );
+    }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
         WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
@@ -150,22 +151,22 @@ public class StatefulKnowledgeSessionImpl
     public int fireAllRules() {
         return this.session.fireAllRules();
     }
-    
+
     public int fireAllRules(int max) {
         return this.session.fireAllRules( max );
     }
-    
+
     public int fireAllRules(AgendaFilter agendaFilter) {
         return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ) );
     }
 
     public void fireUntilHalt() {
-        this.session.fireUntilHalt( );
+        this.session.fireUntilHalt();
     }
 
     public void fireUntilHalt(AgendaFilter agendaFilter) {
         this.session.fireUntilHalt( new AgendaFilterWrapper( agendaFilter ) );
-    }    
+    }
 
     public SessionClock getSessionClock() {
         return this.session.getSessionClock();
@@ -174,11 +175,11 @@ public class StatefulKnowledgeSessionImpl
     public void halt() {
         this.session.halt();
     }
-    
+
     public void dispose() {
         this.session.dispose();
     }
-    
+
     public FactHandle insert(Object object) {
         return this.session.insert( object );
     }
@@ -202,7 +203,7 @@ public class StatefulKnowledgeSessionImpl
     public FactHandle getFactHandle(Object object) {
         return this.session.getFactHandle( object );
     }
-    
+
     public Object getObject(FactHandle factHandle) {
         return this.session.getObject( factHandle );
     }
@@ -212,9 +213,9 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-    	List<ProcessInstance> result = new ArrayList<ProcessInstance>();
-    	result.addAll(this.session.getProcessInstances());
-    	return result;
+        List<ProcessInstance> result = new ArrayList<ProcessInstance>();
+        result.addAll( this.session.getProcessInstances() );
+        return result;
     }
 
     public WorkItemManager getWorkItemManager() {
@@ -242,30 +243,30 @@ public class StatefulKnowledgeSessionImpl
         this.session.setGlobal( identifier,
                                 object );
     }
-    
+
     public Object getGlobal(String identifier) {
         return this.session.getGlobal( identifier );
     }
-    
-    public Globals getGlobals() {
-        return ( Globals ) this.session.getGlobalResolver();
-    }    
 
-//    public Future<Object> asyncInsert(Object object) {
-//        return new FutureAdapter( this.session.asyncInsert( object ) );
-//    }
-//
-//    public Future<Object> asyncInsert(Object[] array) {
-//        return new FutureAdapter( this.session.asyncInsert( array ) );
-//    }
-//
-//    public Future<Object> asyncInsert(Iterable< ? > iterable) {
-//        return new FutureAdapter( this.session.asyncInsert( iterable ) );
-//    }
-//
-//    public Future< ? > asyncFireAllRules() {
-//        return new FutureAdapter( this.session.asyncFireAllRules() );
-//    }
+    public Globals getGlobals() {
+        return (Globals) this.session.getGlobalResolver();
+    }
+
+    //    public Future<Object> asyncInsert(Object object) {
+    //        return new FutureAdapter( this.session.asyncInsert( object ) );
+    //    }
+    //
+    //    public Future<Object> asyncInsert(Object[] array) {
+    //        return new FutureAdapter( this.session.asyncInsert( array ) );
+    //    }
+    //
+    //    public Future<Object> asyncInsert(Iterable< ? > iterable) {
+    //        return new FutureAdapter( this.session.asyncInsert( iterable ) );
+    //    }
+    //
+    //    public Future< ? > asyncFireAllRules() {
+    //        return new FutureAdapter( this.session.asyncFireAllRules() );
+    //    }
 
     public Collection< ? extends FactHandle> getFactHandles() {
         return new ObjectStoreWrapper( session.getObjectStore(),
@@ -321,11 +322,11 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public static class ObjectStoreWrapper extends AbstractImmutableCollection {
-        public ObjectStore      store;
-        public org.drools.runtime.ObjectFilter     filter;
-        public int              type;           // 0 == object, 1 == facthandle
-        public static final int OBJECT      = 0;
-        public static final int FACT_HANDLE = 1;
+        public ObjectStore                     store;
+        public org.drools.runtime.ObjectFilter filter;
+        public int                             type;           // 0 == object, 1 == facthandle
+        public static final int                OBJECT      = 0;
+        public static final int                FACT_HANDLE = 1;
 
         public ObjectStoreWrapper(ObjectStore store,
                                   org.drools.runtime.ObjectFilter filter,
@@ -430,12 +431,16 @@ public class StatefulKnowledgeSessionImpl
         public void objectUpdated(ObjectUpdatedEvent event) {
             listener.objectUpdated( new ObjectUpdatedEventImpl( event ) );
         }
+
+        public WorkingMemoryEventListener unWrap() {
+            return listener;
+        }
     }
 
     public static class AgendaEventListenerWrapper
         implements
         org.drools.event.AgendaEventListener {
-        private AgendaEventListener listener;      
+        private AgendaEventListener listener;
 
         public AgendaEventListenerWrapper(AgendaEventListener listener) {
             this.listener = listener;
@@ -445,39 +450,43 @@ public class StatefulKnowledgeSessionImpl
                                         WorkingMemory workingMemory) {
 
             listener.activationCancelled( new ActivationCancelledEventImpl( event.getActivation(),
-                                          ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime(),
-                                          event.getCause() ) );
+                                                                            ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime(),
+                                                                            event.getCause() ) );
 
         }
 
         public void activationCreated(ActivationCreatedEvent event,
                                       WorkingMemory workingMemory) {
             listener.activationCreated( new ActivationCreatedEventImpl( event.getActivation(),
-                                        ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
+                                                                        ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void beforeActivationFired(BeforeActivationFiredEvent event,
                                           WorkingMemory workingMemory) {
             listener.beforeActivationFired( new BeforeActivationFiredEventImpl( event.getActivation(),
-                                            ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
+                                                                                ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void afterActivationFired(AfterActivationFiredEvent event,
                                          WorkingMemory workingMemory) {
             listener.afterActivationFired( new AfterActivationFiredEventImpl( event.getActivation(),
-                                           ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
+                                                                              ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void agendaGroupPopped(AgendaGroupPoppedEvent event,
                                       WorkingMemory workingMemory) {
             listener.agendaGroupPopped( new AgendaGroupPoppedEventImpl( event.getAgendaGroup(),
-                                        ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
+                                                                        ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void agendaGroupPushed(AgendaGroupPushedEvent event,
                                       WorkingMemory workingMemory) {
             listener.agendaGroupPushed( new AgendaGroupPushedEventImpl( event.getAgendaGroup(),
-                                        ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
+                                                                        ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
+        }
+
+        public AgendaEventListener unWrap() {
+            return listener;
         }
 
     }
@@ -555,31 +564,39 @@ public class StatefulKnowledgeSessionImpl
                                                                        workingMemory ) );
         }
 
+        public ProcessEventListener unWrap() {
+            return listener;
+        }
+
     }
-    
-    public static class AgendaFilterWrapper implements org.drools.spi.AgendaFilter {
-        private AgendaFilter filter;        
-        
+
+    public static class AgendaFilterWrapper
+        implements
+        org.drools.spi.AgendaFilter {
+        private AgendaFilter filter;
+
         public AgendaFilterWrapper(AgendaFilter filter) {
             this.filter = filter;
         }
 
         public boolean accept(Activation activation) {
             return filter.accept( activation );
-        }               
+        }
     }
 
     public Agenda getAgenda() {
-        return new AgendaImpl( ( InternalAgenda ) this.session.getAgenda() );
+        return new AgendaImpl( (InternalAgenda) this.session.getAgenda() );
     }
 
-	public void registerExitPoint(String name, ExitPoint exitPoint) {
-		this.session.registerExitPoint(name, exitPoint);
-	}
+    public void registerExitPoint(String name,
+                                  ExitPoint exitPoint) {
+        this.session.registerExitPoint( name,
+                                        exitPoint );
+    }
 
-	public void unregisterExitPoint(String name) {
-		this.session.unregisterExitPoint(name);
-	}
+    public void unregisterExitPoint(String name) {
+        this.session.unregisterExitPoint( name );
+    }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return this.session.getObjectTypeConfigurationRegistry();
