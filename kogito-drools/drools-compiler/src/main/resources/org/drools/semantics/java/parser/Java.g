@@ -680,7 +680,6 @@ statement
     | 'continue' Identifier? ';'
     // adding support to drools modify block
     | modifyStatement
-    | exitPointsStatement
     | ';'
     | statementExpression ';'
     | Identifier ':' statement
@@ -706,7 +705,7 @@ modifyStatement
         }
 	;	
 	
-exitPointsStatement
+epStatement
 	@init {
 	    JavaInterfacePointsDescr d = null;
 	}
@@ -727,7 +726,7 @@ exitPointsStatement
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
 	    this.blocks.add( d );
         }
-        )
+        ) 
         ;	
 	
 catches
@@ -906,6 +905,7 @@ primary
         (explicitGenericInvocationSuffix | 'this' arguments)
     |   'this' ('.' Identifier)* (identifierSuffix)?
     |   'super' superSuffix
+    |   epStatement ('.' Identifier)* (identifierSuffix)?
     |   literal
     |   'new' creator
     |   i=Identifier { if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( $i.text );  } ('.' Identifier)* (identifierSuffix)?

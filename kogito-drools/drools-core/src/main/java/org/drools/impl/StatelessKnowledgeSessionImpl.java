@@ -1,8 +1,5 @@
 package org.drools.impl;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +33,6 @@ import org.drools.runtime.Parameters;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
 import org.drools.spi.AgendaFilter;
-import org.drools.spi.GlobalResolver;
 
 public class StatelessKnowledgeSessionImpl
     implements

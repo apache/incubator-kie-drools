@@ -1652,8 +1652,8 @@ public class MiscTest extends TestCase {
         rule += "    l = new ArrayList();\n";
         rule += "    l.add(\"first\");\n";
         rule += "    m.put(\"content\", l);\n";
-        rule += "    System.out.println(m[\"content\"][0]);\n";
-        rule += "    list.add(m[\"content\"][0]);\n";
+        rule += "    System.out.println(((ArrayList)m[\"content\"])[0]);\n";
+        rule += "    list.add(((ArrayList)m[\"content\"])[0]);\n";
         rule += "end";
 
         final PackageBuilder builder = new PackageBuilder();

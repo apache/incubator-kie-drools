@@ -7,10 +7,10 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
- 
+
+import org.drools.WorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
-import org.drools.WorkingMemory;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.mvel2.CompileException;
@@ -19,7 +19,6 @@ import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.BaseVariableResolverFactory;
 import org.mvel2.integration.impl.LocalVariableResolverFactory;
 import org.mvel2.integration.impl.StaticMethodImportResolverFactory;
-import org.mvel2.integration.impl.MapVariableResolver;
  
 public class DroolsMVELFactory extends BaseVariableResolverFactory
         implements

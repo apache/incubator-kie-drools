@@ -117,101 +117,101 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    protected static final Class[]                           ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
-    private static final int                                 NODE_MEMORIES_ARRAY_GROWTH                    = 32;
+    protected static final Class[]                                            ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    private static final int                                                  NODE_MEMORIES_ARRAY_GROWTH                    = 32;
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected long                                           id;
+    protected long                                                            id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected Object[]                                       addRemovePropertyChangeListenerArgs;
+    protected Object[]                                                        addRemovePropertyChangeListenerArgs;
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected NodeMemories                                   nodeMemories;
+    protected NodeMemories                                                    nodeMemories;
 
-    protected ObjectStore                                    objectStore;
+    protected ObjectStore                                                     objectStore;
 
-    protected Map                                            queryResults;
+    protected Map                                                             queryResults;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver                                 globalResolver;
+    protected GlobalResolver                                                  globalResolver;
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport                      workingMemoryEventSupport;
+    protected WorkingMemoryEventSupport                                       workingMemoryEventSupport;
 
-    protected AgendaEventSupport                             agendaEventSupport;
+    protected AgendaEventSupport                                              agendaEventSupport;
 
-    protected RuleFlowEventSupport                           workflowEventSupport;
+    protected RuleFlowEventSupport                                            workflowEventSupport;
 
-    protected List                                           __ruleBaseEventListeners;
+    protected List                                                            __ruleBaseEventListeners;
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase                     ruleBase;
+    protected transient InternalRuleBase                                      ruleBase;
 
-    protected FactHandleFactory                              handleFactory;
+    protected FactHandleFactory                                               handleFactory;
 
-    protected TruthMaintenanceSystem                         tms;
+    protected TruthMaintenanceSystem                                          tms;
 
     /** Rule-firing agenda. */
-    protected InternalAgenda                                 agenda;
+    protected InternalAgenda                                                  agenda;
 
-    protected Queue<WorkingMemoryAction>                     actionQueue;
+    protected Queue<WorkingMemoryAction>                                      actionQueue;
 
-    protected volatile boolean                               evaluatingActionQueue;
+    protected volatile boolean                                                evaluatingActionQueue;
 
-    protected ReentrantLock                                  lock;
+    protected ReentrantLock                                                   lock;
 
-    protected boolean                                        discardOnLogicalOverride;
+    protected boolean                                                         discardOnLogicalOverride;
 
     /**
      * This must be thread safe as it is incremented and read via different
      * EntryPoints
      */
-    protected AtomicLong                                     propagationIdCounter;
+    protected AtomicLong                                                      propagationIdCounter;
 
-    private boolean                                          maintainTms;
-    private boolean                                          sequential;
+    private boolean                                                           maintainTms;
+    private boolean                                                           sequential;
 
-    private List                                             liaPropagations;
+    private List                                                              liaPropagations;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected volatile AtomicBoolean                         firing;
+    protected volatile AtomicBoolean                                          firing;
 
-    private ProcessInstanceManager                           processInstanceManager;
+    private ProcessInstanceManager                                            processInstanceManager;
 
-    private WorkItemManager                                  workItemManager;
+    private WorkItemManager                                                   workItemManager;
 
-    private TimerManager                                     timerManager;
+    private TimerManager                                                      timerManager;
 
-    private SignalManager									 signalManager;
+    private SignalManager                                                     signalManager;
 
-    private TimeMachine                                      timeMachine;
+    private TimeMachine                                                       timeMachine;
 
-    protected transient ObjectTypeConfigurationRegistry      typeConfReg;
+    protected transient ObjectTypeConfigurationRegistry                       typeConfReg;
 
-    protected EntryPoint                                     entryPoint;
-    protected transient EntryPointNode                       entryPointNode;
+    protected EntryPoint                                                      entryPoint;
+    protected transient EntryPointNode                                        entryPointNode;
 
-    protected Map<String, WorkingMemoryEntryPoint>           entryPoints;
+    protected Map<String, WorkingMemoryEntryPoint>                            entryPoints;
 
-    protected InternalFactHandle                             initialFactHandle;
+    protected InternalFactHandle                                              initialFactHandle;
 
-    protected SessionConfiguration                           config;
+    protected SessionConfiguration                                            config;
 
-    protected Map<RuleBasePartitionId, PartitionTaskManager> partitionManagers;
+    protected Map<RuleBasePartitionId, PartitionTaskManager>                  partitionManagers;
 
-    protected transient AtomicReference<java.util.concurrent.ExecutorService> threadPool = new AtomicReference<java.util.concurrent.ExecutorService>();
+    protected transient AtomicReference<java.util.concurrent.ExecutorService> threadPool                                    = new AtomicReference<java.util.concurrent.ExecutorService>();
 
-    private Map<InternalFactHandle, PropagationContext>      modifyContexts;
-    
-    private KnowledgeRuntime                                 kruntime;
-    
-    private Map<String, ExitPoint>                           exitPoints;
+    private Map<InternalFactHandle, PropagationContext>                       modifyContexts;
 
-    private Environment                                      environment;
-    
+    private KnowledgeRuntime                                                  kruntime;
+
+    private Map<String, ExitPoint>                                            exitPoints;
+
+    private Environment                                                       environment;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -229,8 +229,7 @@ public abstract class AbstractWorkingMemory
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
                                  final SessionConfiguration config,
-                                 final Environment environment)
-    {
+                                 final Environment environment) {
         this( id,
               ruleBase,
               handleFactory,
@@ -305,16 +304,12 @@ public abstract class AbstractWorkingMemory
             this.discardOnLogicalOverride = false;
         }
 
-        this.entryPoints = new ConcurrentHashMap();
-        this.entryPoints.put( "DEFAULT",
-                              this );
-
-        this.entryPoint = EntryPoint.DEFAULT;
+        initEntryPointsMap();
         this.firing = new AtomicBoolean( false );
         this.modifyContexts = new HashMap<InternalFactHandle, PropagationContext>();
         this.exitPoints = new ConcurrentHashMap<String, ExitPoint>();
         //setGlobal( "exitPoints", Collections.unmodifiableMap( this.exitPoints ) );
-		initProcessEventListeners();
+        initProcessEventListeners();
         initPartitionManagers();
         initTransient();
     }
@@ -327,6 +322,24 @@ public abstract class AbstractWorkingMemory
         this.ruleBase = ruleBase;
         this.nodeMemories.setRuleBaseReference( this.ruleBase );
         initTransient();
+    }
+
+    private void initEntryPointsMap() {
+        this.entryPoints = new ConcurrentHashMap<String, WorkingMemoryEntryPoint>();
+        this.entryPoints.put( "DEFAULT",
+                              this );
+        this.entryPoint = EntryPoint.DEFAULT;
+
+        for ( EntryPointNode entryPointNode : this.ruleBase.getRete().getEntryPointNodes().values() ) {
+            EntryPoint id = entryPointNode.getEntryPoint();
+            if( !  EntryPoint.DEFAULT.equals( id ) ) {
+                WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( id,
+                                                                            entryPointNode,
+                                                                            this );
+                this.entryPoints.put( entryPointNode.getEntryPoint().getEntryPointId(),
+                                      wmEntryPoint );
+            }
+        }
     }
 
     /**
@@ -353,7 +366,8 @@ public abstract class AbstractWorkingMemory
     public void startPartitionManagers() {
         if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
             int maxThreads = (this.ruleBase.getConfiguration().getMaxThreads() > 0) ? this.ruleBase.getConfiguration().getMaxThreads() : this.ruleBase.getPartitionIds().size();
-            if( this.threadPool.compareAndSet( null, Executors.newFixedThreadPool( maxThreads ) ) ) {
+            if ( this.threadPool.compareAndSet( null,
+                                                Executors.newFixedThreadPool( maxThreads ) ) ) {
                 for ( PartitionTaskManager task : this.partitionManagers.values() ) {
                     task.setPool( this.threadPool.get() );
                 }
@@ -364,7 +378,8 @@ public abstract class AbstractWorkingMemory
     public void stopPartitionManagers() {
         if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
             java.util.concurrent.ExecutorService service = this.threadPool.get();
-            if( this.threadPool.compareAndSet( service, null ) ) {
+            if ( this.threadPool.compareAndSet( service,
+                                                null ) ) {
                 service.shutdown();
                 for ( PartitionTaskManager task : this.partitionManagers.values() ) {
                     task.setPool( null );
@@ -372,7 +387,7 @@ public abstract class AbstractWorkingMemory
             }
         }
     }
-    
+
     public boolean isPartitionManagersActive() {
         return this.threadPool.get() != null;
     }
@@ -381,9 +396,9 @@ public abstract class AbstractWorkingMemory
         this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
         this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
     }
-    
+
     public SessionConfiguration getSessionConfiguration() {
-    	return this.config;
+        return this.config;
     }
 
     public void reset(int handleId,
@@ -538,7 +553,7 @@ public abstract class AbstractWorkingMemory
             this.lock.unlock();
         }
     }
-    
+
     public Environment getEnvironment() {
         return this.environment;
     }
@@ -1532,7 +1547,7 @@ public abstract class AbstractWorkingMemory
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        ProcessInstance processInstance = ( ProcessInstance ) getProcessInstance( process );
+        ProcessInstance processInstance = (ProcessInstance) getProcessInstance( process );
         processInstance.setWorkingMemory( this );
         processInstance.setProcess( process );
         processInstanceManager.addProcessInstance( processInstance );
@@ -1579,7 +1594,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return ( Collection<ProcessInstance> ) processInstanceManager.getProcessInstances();
+        return (Collection<ProcessInstance>) processInstanceManager.getProcessInstances();
     }
 
     public ProcessInstance getProcessInstance(long id) {
@@ -1605,64 +1620,79 @@ public abstract class AbstractWorkingMemory
     }
 
     public SignalManager getSignalManager() {
-    	return signalManager;
+        return signalManager;
     }
 
-	private void initProcessEventListeners() {
-		for (Process process: ruleBase.getProcesses()) {
-			if (process instanceof RuleFlowProcess) {
-				StartNode startNode = ((RuleFlowProcess) process).getStart();
-				List<Trigger> triggers = startNode.getTriggers();
-				if (triggers != null) {
-					for (Trigger trigger: triggers) {
-						if (trigger instanceof EventTrigger) {
-							final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
-							String type = null;
-							for (EventFilter filter: filters) {
-								if (filter instanceof EventTypeFilter) {
-									type = ((EventTypeFilter) filter).getType();
-								}
-							}
-							getSignalManager().addEventListener(type, new StartProcessEventListener(process.getId(), filters, trigger.getInMappings()));
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	private class StartProcessEventListener implements EventListener {
-		private String processId;
-		private List<EventFilter> eventFilters;
-		private Map<String, String> inMappings;
-		public StartProcessEventListener(String processId, List<EventFilter> eventFilters, Map<String, String> inMappings) {
-			this.processId = processId;
-			this.eventFilters = eventFilters;
-			this.inMappings = inMappings;
-		}
-		public String[] getEventTypes() {
-			return null;
-		}
-		public void signalEvent(String type, Object event) {
-			for (EventFilter filter: eventFilters) {
-				if (!filter.acceptsEvent(type, event)) {
-					return;
-				}
-			}
-			Map<String, Object> params = null;
-			if (inMappings != null && !inMappings.isEmpty()) {
-				 params = new HashMap<String, Object>();
-				 for (Map.Entry<String, String> entry: inMappings.entrySet()) {
-					 if ("event".equals(entry.getValue())) {
-						 params.put(entry.getKey(), event);
-					 } else {
-						 params.put(entry.getKey(), entry.getValue());
-					 }
-				 }
-			}
-			startProcess(processId, params);
-		}
-	}
+    private void initProcessEventListeners() {
+        for ( Process process : ruleBase.getProcesses() ) {
+            if ( process instanceof RuleFlowProcess ) {
+                StartNode startNode = ((RuleFlowProcess) process).getStart();
+                List<Trigger> triggers = startNode.getTriggers();
+                if ( triggers != null ) {
+                    for ( Trigger trigger : triggers ) {
+                        if ( trigger instanceof EventTrigger ) {
+                            final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
+                            String type = null;
+                            for ( EventFilter filter : filters ) {
+                                if ( filter instanceof EventTypeFilter ) {
+                                    type = ((EventTypeFilter) filter).getType();
+                                }
+                            }
+                            getSignalManager().addEventListener( type,
+                                                                 new StartProcessEventListener( process.getId(),
+                                                                                                filters,
+                                                                                                trigger.getInMappings() ) );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private class StartProcessEventListener
+        implements
+        EventListener {
+        private String              processId;
+        private List<EventFilter>   eventFilters;
+        private Map<String, String> inMappings;
+
+        public StartProcessEventListener(String processId,
+                                         List<EventFilter> eventFilters,
+                                         Map<String, String> inMappings) {
+            this.processId = processId;
+            this.eventFilters = eventFilters;
+            this.inMappings = inMappings;
+        }
+
+        public String[] getEventTypes() {
+            return null;
+        }
+
+        public void signalEvent(String type,
+                                Object event) {
+            for ( EventFilter filter : eventFilters ) {
+                if ( !filter.acceptsEvent( type,
+                                           event ) ) {
+                    return;
+                }
+            }
+            Map<String, Object> params = null;
+            if ( inMappings != null && !inMappings.isEmpty() ) {
+                params = new HashMap<String, Object>();
+                for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
+                    if ( "event".equals( entry.getValue() ) ) {
+                        params.put( entry.getKey(),
+                                    event );
+                    } else {
+                        params.put( entry.getKey(),
+                                    entry.getValue() );
+                    }
+                }
+            }
+            startProcess( processId,
+                          params );
+        }
+    }
 
     public TimerManager getTimerManager() {
         return timerManager;
@@ -1732,21 +1762,6 @@ public abstract class AbstractWorkingMemory
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         WorkingMemoryEntryPoint wmEntryPoint = this.entryPoints.get( name );
-        if ( wmEntryPoint == null ) {
-            EntryPoint entryPoint = new EntryPoint( name );
-            EntryPointNode entryPointNode = this.ruleBase.getRete().getEntryPointNode( entryPoint );
-
-            if ( entryPointNode != null ) {
-                wmEntryPoint = new NamedEntryPoint( entryPoint,
-                                                    entryPointNode,
-                                                    this );
-            }
-
-            if ( wmEntryPoint != null ) {
-                this.entryPoints.put( name,
-                                      wmEntryPoint );
-            }
-        }
         return wmEntryPoint;
     }
 
@@ -1813,29 +1828,31 @@ public abstract class AbstractWorkingMemory
         this.stopPartitionManagers();
         this.timerManager.dispose();
     }
-    
+
     public void setKnowledgeRuntime(KnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
     }
-    
+
     public KnowledgeRuntime getKnowledgeRuntime() {
         return this.kruntime;
-    }       
-    
-	public void registerExitPoint(String name, ExitPoint exitPoint) {
-		this.exitPoints.put(name, exitPoint);
-	}
+    }
 
-	public void unregisterExitPoint(String name) {
-		this.exitPoints.remove( name );
-	}    
-	
-	public Map<String, ExitPoint> getExitPoints() {
-		return this.exitPoints;
-	}
-	
-	public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
-	    return this.entryPoints;
-	}
+    public void registerExitPoint(String name,
+                                  ExitPoint exitPoint) {
+        this.exitPoints.put( name,
+                             exitPoint );
+    }
+
+    public void unregisterExitPoint(String name) {
+        this.exitPoints.remove( name );
+    }
+
+    public Map<String, ExitPoint> getExitPoints() {
+        return this.exitPoints;
+    }
+
+    public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
+        return this.entryPoints;
+    }
 
 }

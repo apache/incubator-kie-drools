@@ -17,6 +17,7 @@ package org.drools.spi;
  */
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -114,7 +115,11 @@ public interface KnowledgeHelper
     
     WorkingMemoryEntryPoint getEntryPoint( String id );
     
+    Map<String, WorkingMemoryEntryPoint> getEntryPoints();
+    
     ExitPoint getExitPoint( String id );
+    
+    Map<String, ExitPoint> getExitPoints();
 
     void setFocus(String focus);
 

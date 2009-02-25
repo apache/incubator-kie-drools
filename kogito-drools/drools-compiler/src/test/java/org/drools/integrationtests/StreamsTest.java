@@ -18,8 +18,6 @@
 package org.drools.integrationtests;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +66,11 @@ public class StreamsTest extends TestCase {
         kbuilder.add( ResourceFactory.newClassPathResource( fileName,
                                                                     getClass() ),
                               ResourceType.DRL );
-
+        
+        if( kbuilder.hasErrors() ) {
+            System.out.println(kbuilder.getErrors());
+            return null;
+        }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -169,4 +171,55 @@ public class StreamsTest extends TestCase {
 
     }
 
+    public void testEntryPointReference() throws Exception {
+        // read in the source
+        KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPointReference.drl" );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        final List<StockTick> results = new ArrayList<StockTick>();
+        session.setGlobal( "results",
+                           results );
+
+        StockTick tick5 = new StockTick( 5,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+        StockTick tick6 = new StockTick( 6,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis() );
+        StockTick tick7 = new StockTick( 7,
+                                         "ACME",
+                                         30,
+                                         System.currentTimeMillis() );
+        StockTick tick8 = new StockTick( 8,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+
+        WorkingMemoryEntryPoint entry = session.getWorkingMemoryEntryPoint( "stream1" );
+
+        InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
+        InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
+        InternalFactHandle handle7 = (InternalFactHandle) entry.insert( tick7 );
+        InternalFactHandle handle8 = (InternalFactHandle) entry.insert( tick8 );
+
+        assertNotNull( handle5 );
+        assertNotNull( handle6 );
+        assertNotNull( handle7 );
+        assertNotNull( handle8 );
+
+        assertTrue( handle5.isEvent() );
+        assertTrue( handle6.isEvent() );
+        assertTrue( handle7.isEvent() );
+        assertTrue( handle8.isEvent() );
+
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertSame( tick7,
+                    results.get( 0 ) );
+
+    }
 }

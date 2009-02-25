@@ -4,27 +4,20 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.Message;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderErrors;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
 
 public class ProcessForEachTest extends TestCase {
+    
     
     public void testOnEntryExit() {
         PackageBuilder builder = new PackageBuilder();

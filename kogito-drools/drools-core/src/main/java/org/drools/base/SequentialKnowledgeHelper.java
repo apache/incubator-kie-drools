@@ -16,6 +16,9 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.drools.FactException;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -191,5 +194,13 @@ public class SequentialKnowledgeHelper
 
     public ExitPoint getExitPoint(String id) {
         return this.workingMemory.getExitPoints().get( id );
-    }    
+    }
+
+    public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
+        return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
+    }
+
+    public Map<String, ExitPoint> getExitPoints() {
+        return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
+    }
 }

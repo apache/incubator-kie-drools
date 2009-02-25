@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.runtime.rule.ConsequenceExceptionHandler;
+import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 
 /**
  * @author etirelli
@@ -267,6 +269,75 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( SequentialAgendaOption.PROPERTY_NAME ) );
     }
     
+    public void testAlphaThresholdConfiguration() {
+        // setting the option using the type safe method
+        config.setOption( AlphaThresholdOption.get(5) );
+
+        // checking the type safe getOption() method
+        assertEquals( AlphaThresholdOption.get(5),
+                      config.getOption( AlphaThresholdOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "5",
+                      config.getProperty( AlphaThresholdOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( AlphaThresholdOption.PROPERTY_NAME,
+                            "7" );
+        
+        // checking the type safe getOption() method
+        assertEquals( AlphaThresholdOption.get(7),
+                      config.getOption( AlphaThresholdOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "7",
+                      config.getProperty( AlphaThresholdOption.PROPERTY_NAME ) );
+    }
+    
+    public void testCompositeKeyDepthConfiguration() {
+        // setting the option using the type safe method
+        config.setOption( CompositeKeyDepthOption.get(1) );
+
+        // checking the type safe getOption() method
+        assertEquals( CompositeKeyDepthOption.get(1),
+                      config.getOption( CompositeKeyDepthOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "1",
+                      config.getProperty( CompositeKeyDepthOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( CompositeKeyDepthOption.PROPERTY_NAME,
+                            "2" );
+        
+        // checking the type safe getOption() method
+        assertEquals( CompositeKeyDepthOption.get(2),
+                      config.getOption( CompositeKeyDepthOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "2",
+                      config.getProperty( CompositeKeyDepthOption.PROPERTY_NAME ) );
+    }
+    
+    public void testConsequenceExceptionHandlerConfiguration() {
+        Class<? extends ConsequenceExceptionHandler> handler = DefaultConsequenceExceptionHandler.class;
+        // setting the option using the type safe method
+        config.setOption( ConsequenceExceptionHandlerOption.get(handler) );
+
+        // checking the type safe getOption() method
+        assertEquals( ConsequenceExceptionHandlerOption.get(handler),
+                      config.getOption( ConsequenceExceptionHandlerOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( handler.getName(),
+                      config.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME,
+                            handler.getName() );
+        
+        // checking the type safe getOption() method
+        assertEquals( handler.getName(),
+                      config.getOption( ConsequenceExceptionHandlerOption.class ).getHandler().getName() );
+        // checking the string based getProperty() method
+        assertEquals( handler.getName(),
+                      config.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) );
+    }
     
     
     

@@ -81,7 +81,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         final GroupElement subrule = new GroupElement( GroupElement.AND );
         subrule.addChild( pattern );
-        final Map map = new HashMap();
+        final Map<String, Declaration> map = new HashMap<String, Declaration>();
         map.put( "cheese",
                  pattern.getDeclaration() );
         declarationResolver.setDeclarations( map );
@@ -122,10 +122,6 @@ public class MVELConsequenceBuilderTest extends TestCase {
                       cheddar.getPrice() );
     }
 
-    public void testKnowledgeHelper() {
-
-    }
-
     public void testImperativeCodeError() throws Exception {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
@@ -161,7 +157,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final Declaration declaration = new Declaration( "cheese",
                                                          extractor,
                                                          pattern );
-        final Map map = new HashMap();
+        final Map<String, Declaration> map = new HashMap<String, Declaration>();
         map.put( "cheese",
                  declaration );
         declarationResolver.setDeclarations( map );
@@ -317,4 +313,5 @@ public class MVELConsequenceBuilderTest extends TestCase {
                       count );
 
     }
+    
 }

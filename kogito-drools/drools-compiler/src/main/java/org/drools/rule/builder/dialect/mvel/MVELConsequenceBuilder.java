@@ -19,10 +19,7 @@ public class MVELConsequenceBuilder
     implements
     ConsequenceBuilder {
 
-    //private final Interceptor assertInterceptor;
-    //private final Interceptor modifyInterceptor;
-
-    private static final Map macros = new HashMap( 5 );
+    private static final Map<String, Macro> macros = new HashMap<String,Macro>( 10 );
     static {
         macros.put( "insert",
                     new Macro() {
@@ -57,7 +54,19 @@ public class MVELConsequenceBuilder
                         public String doMacro() {
                             return "drools.retract";
                         }
-                    } );;
+                    } );
+        macros.put( "entryPoints",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.entryPoints";
+                        }
+                    } );
+        macros.put( "exitPoints",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.exitPoints";
+                        }
+                    } );
     }
 
     public MVELConsequenceBuilder() {

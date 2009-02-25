@@ -27,7 +27,6 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.CompositeMaxDuration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.time.SessionPseudoClock;
