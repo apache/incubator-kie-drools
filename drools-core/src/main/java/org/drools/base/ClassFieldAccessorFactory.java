@@ -23,11 +23,6 @@ import java.security.ProtectionDomain;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.asm.ClassWriter;
-import org.drools.asm.Label;
-import org.drools.asm.MethodVisitor;
-import org.drools.asm.Opcodes;
-import org.drools.asm.Type;
 import org.drools.base.ClassFieldAccessorCache.ByteArrayClassLoader;
 import org.drools.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.base.extractors.BaseBooleanClassFieldReader;
@@ -52,6 +47,11 @@ import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.util.asm.ClassFieldInspector;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 /**
  * This generates subclasses of BaseClassFieldExtractor to provide field extractors.
@@ -205,7 +205,7 @@ public class ClassFieldAccessorFactory {
                               final Class< ? > fieldType,
                               final boolean isInterface) throws Exception {
 
-        final ClassWriter cw = new ClassWriter( true );
+        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
 
         final Class< ? > superClass = getReaderSuperClassFor( fieldType );
         buildClassHeader( superClass,
@@ -237,7 +237,7 @@ public class ClassFieldAccessorFactory {
                               final Class< ? > fieldType,
                               final boolean isInterface) throws Exception {
 
-        final ClassWriter cw = new ClassWriter( true );
+        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
 
         final Class< ? > superClass = getWriterSuperClassFor( fieldType );
         buildClassHeader( superClass,

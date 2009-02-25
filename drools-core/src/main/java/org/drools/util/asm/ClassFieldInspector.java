@@ -27,14 +27,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.asm.AnnotationVisitor;
-import org.drools.asm.Attribute;
-import org.drools.asm.ClassReader;
-import org.drools.asm.ClassVisitor;
-import org.drools.asm.FieldVisitor;
-import org.drools.asm.MethodVisitor;
-import org.drools.asm.Opcodes;
-import org.drools.asm.Type;
+import org.mvel2.asm.AnnotationVisitor;
+import org.mvel2.asm.Attribute;
+import org.mvel2.asm.ClassReader;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
@@ -91,7 +91,7 @@ public class ClassFieldInspector {
                                                                  includeFinalMethods,
                                                                  this );
         reader.accept( visitor,
-                       false );
+                       0 );
         if ( clazz.getSuperclass() != null ) {
             final String name = getResourcePath( clazz.getSuperclass() );
             final InputStream parentStream = clazz.getResourceAsStream( name );

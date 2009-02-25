@@ -18,9 +18,9 @@
             throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}' ");
         }
 
-        org.drools.asm.ClassReader classReader = new org.drools.asm.ClassReader( bos.toByteArray() );
-        classReader.accept( visit, true );
-        org.drools.asm.util.TraceMethodVisitor trace = visit.getTrace();
+        org.mvel2.asm.ClassReader classReader = new org.mvel2.asm.ClassReader( bos.toByteArray() );
+        classReader.accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
+        org.mvel2.asm.util.TraceMethodVisitor trace = visit.getTrace();
         return trace.getText();
     }
 @end{}
@@ -181,8 +181,8 @@ public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.d
 @declare{"accumulateInvoker"}
 package @{package};
 
-import org.drools.asm.ClassReader;
-import org.drools.asm.util.TraceMethodVisitor;
+import org.mvel2.asm.ClassReader;
+import org.mvel2.asm.util.TraceMethodVisitor;
 import org.drools.util.asm.MethodComparator.Tracer;
 import java.util.Collections;
 public class @{invokerClassName} implements org.drools.spi.Accumulator, org.drools.spi.CompiledInvoker

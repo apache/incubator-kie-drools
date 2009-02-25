@@ -2,13 +2,13 @@ package org.drools.util.asm;
 
 import java.util.List;
 
-import org.drools.asm.AnnotationVisitor;
-import org.drools.asm.Attribute;
-import org.drools.asm.ClassReader;
-import org.drools.asm.ClassVisitor;
-import org.drools.asm.FieldVisitor;
-import org.drools.asm.MethodVisitor;
-import org.drools.asm.util.TraceMethodVisitor;
+import org.mvel2.asm.AnnotationVisitor;
+import org.mvel2.asm.Attribute;
+import org.mvel2.asm.ClassReader;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.util.TraceMethodVisitor;
 
 /**
  * The purpose of this utility it to check if 2 method implementations are equivalent, by comparing the bytecode.
@@ -46,7 +46,7 @@ public class MethodComparator {
                                   final ClassReader classReader) {
         final Tracer visit = new Tracer( methodName );
         classReader.accept( visit,
-                            true );
+                            ClassReader.SKIP_DEBUG );
         final TraceMethodVisitor trace = visit.getTrace();
         return trace.getText();
     }
@@ -60,7 +60,7 @@ public class MethodComparator {
         final Tracer visit = new Tracer( methodName );
         final ClassReader classReader = new ClassReader( bytes );
         classReader.accept( visit,
-                            true );
+                            ClassReader.SKIP_DEBUG );
         final TraceMethodVisitor trace = visit.getTrace();
         return trace.getText();
     }
