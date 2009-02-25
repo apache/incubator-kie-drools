@@ -239,4 +239,8 @@ public class Rete extends ObjectSource
         ruleBase = ((DroolsObjectInputStream)in).getRuleBase();
         super.readExternal( in );
     }
+
+    public Map<EntryPoint,EntryPointNode> getEntryPointNodes() {
+        return this.entryPoints;
+    }
 }

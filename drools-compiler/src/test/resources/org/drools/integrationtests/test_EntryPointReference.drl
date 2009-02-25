@@ -1,0 +1,32 @@
+package org.drools;
+
+import org.drools.StockTick;
+
+global java.util.List results;
+
+declare StockTick
+    @role( event )
+end
+
+rule "Test entry point 1"
+when
+    $st : StockTick( company == "ACME", price > 10 ) from entry-point "stream1"
+then
+    entryPoints["stream2"].insert( $st );
+end
+
+rule "Test entry point 2"
+    dialect "mvel"
+when
+    $st : StockTick( company == "ACME", price > 20 ) from entry-point "stream2"
+then
+    entryPoints["stream3"].insert( $st );
+end
+
+rule "Test entry point 3"
+when
+    $st : StockTick( ) from entry-point "stream3"
+then
+    results.add( $st );
+end
+

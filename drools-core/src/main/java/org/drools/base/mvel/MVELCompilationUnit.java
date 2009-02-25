@@ -52,7 +52,7 @@ public class MVELCompilationUnit
 
     private Map<String, Class>              resolvedInputs;
 
-    private static Map                      interceptors  = new HashMap( 1 );
+    private static Map                      interceptors  = new HashMap( 2 );
     static {
         interceptors.put( "Modify",
                           new ModifyInterceptor() );
@@ -242,7 +242,8 @@ public class MVELCompilationUnit
         }
 
         parserContext.setInterceptors( interceptors );
-        parserContext.setStrictTypeEnforcement( strictMode );
+        parserContext.setStrongTyping( strictMode );
+        //parserContext.setStrictTypeEnforcement( strictMode );
 
         resolvedInputs = new HashMap<String, Class>( inputIdentifiers.length );
 
