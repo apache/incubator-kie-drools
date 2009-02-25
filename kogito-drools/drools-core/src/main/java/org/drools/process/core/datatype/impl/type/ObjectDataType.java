@@ -85,6 +85,6 @@ public class ObjectDataType implements DataType {
 	}
 
 	public String getStringType() {
-		return className == null ? "Object" : className;
+		return className == null ? "java.lang.Object" : className;
 	}
 }

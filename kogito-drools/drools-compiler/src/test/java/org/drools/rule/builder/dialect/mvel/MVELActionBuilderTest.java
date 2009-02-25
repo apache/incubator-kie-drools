@@ -51,7 +51,8 @@ public class MVELActionBuilderTest extends TestCase {
         final MVELActionBuilder builder = new MVELActionBuilder();
         builder.build( context,
                        action,
-                       actionDescr );
+                       actionDescr,
+                       actionNode );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkgBuilder.getPackage() );

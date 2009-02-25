@@ -2,6 +2,7 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,9 +11,12 @@ import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ActionDescr;
+import org.drools.process.core.ContextResolver;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.PackageBuildContext;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.mvel2.Macro;
@@ -66,7 +70,8 @@ public class MVELActionBuilder
 
     public void build(final PackageBuildContext context,
                       final DroolsAction action,
-                      final ActionDescr actionDescr) {
+                      final ActionDescr actionDescr,
+                      final ContextResolver contextResolver) {
 
         String text = processMacros( actionDescr.getText() );
 
@@ -76,24 +81,48 @@ public class MVELActionBuilder
             Set<String> variables = new HashSet<String>();
             variables.add("context");
             variables.add("kcontext");
+            variables.add("drools");
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     actionDescr,
                                                                     dialect.getInterceptors(),
                                                                     text,
                                                                     new Set[]{variables, context.getPkg().getGlobals().keySet()},
                                                                     null );                       
-            
+
+
             Map<String, Class> variableClasses = new HashMap<String, Class>();
             variableClasses.put("context", ProcessContext.class);
             variableClasses.put("kcontext", org.drools.runtime.process.ProcessContext.class);
+            variableClasses.put("drools", KnowledgeHelper.class);
+
+            List<String> variableNames = analysis.getNotBoundedIdentifiers();
+            if (contextResolver != null) {
+	            for (String variableName: variableNames) {
+	            	VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);
+	            	if (variableScope == null) {
+	            		context.getErrors().add(
+	        				new DescrBuildError(
+	    						context.getParentDescr(),
+	                            actionDescr,
+	                            null,
+	                            "Could not find variable '" + variableName + "' for action '" + actionDescr.getText() + "'" ) );            		
+	            	} else {
+	            		variableClasses.put(variableName, Class.forName(
+            				variableScope.findVariable(variableName).getType().getStringType()));
+	            	}
+	            }
+            }
+
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        null,
                                                                        null,
                                                                        variableClasses,
                                                                        context );              
-            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );   
-            expr.setVariableNames(analysis.getNotBoundedIdentifiers());
+            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
+            expr.setVariableNames(variableNames);
+            
+            
             action.setMetaData("Action",  expr );
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );            

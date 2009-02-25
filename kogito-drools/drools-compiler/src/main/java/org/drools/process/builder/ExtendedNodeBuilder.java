@@ -11,6 +11,7 @@ import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
+import org.drools.workflow.core.impl.NodeImpl;
 
 public class ExtendedNodeBuilder
     implements
@@ -25,18 +26,18 @@ public class ExtendedNodeBuilder
         	List<DroolsAction> actions = extendedNode.getActions(type);
         	if (actions != null) {
 	        	for (DroolsAction droolsAction: actions) {
-	                buildAction(droolsAction, context);
+	                buildAction(droolsAction, context, (NodeImpl) node);
 	        	}
         	}
         }
     }
     
-    protected void buildAction(DroolsAction droolsAction, ProcessBuildContext context) {
+    protected void buildAction(DroolsAction droolsAction, ProcessBuildContext context, NodeImpl node) {
     	DroolsConsequenceAction action = (DroolsConsequenceAction) droolsAction;
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText( action.getConsequence() );   
         Dialect dialect = context.getDialectRegistry().getDialect( action.getDialect() );            
-        dialect.getActionBuilder().build( context, action, actionDescr );
+        dialect.getActionBuilder().build( context, action, actionDescr, node);
     }
 
 }

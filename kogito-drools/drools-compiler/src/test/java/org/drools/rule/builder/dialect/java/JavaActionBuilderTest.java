@@ -58,7 +58,7 @@ public class JavaActionBuilderTest extends TestCase {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         actionNode.setAction(action);
         
-        javaDialect.getActionBuilder().build( context, action, actionDescr );
+        javaDialect.getActionBuilder().build( context, action, actionDescr, actionNode );
         javaDialect.addProcess( context );
         javaDialect.compileAll();            
         assertEquals( 0, javaDialect.getResults().size() );
