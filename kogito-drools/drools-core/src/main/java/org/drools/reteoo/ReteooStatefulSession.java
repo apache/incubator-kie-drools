@@ -1,5 +1,13 @@
 package org.drools.reteoo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +24,10 @@ import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
 import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.marshalling.Marshaller;
+import org.drools.marshalling.MarshallerFactory;
 import org.drools.FactHandle;
 import org.drools.runtime.Environment;
 import org.drools.spi.AgendaFilter;
@@ -25,13 +37,18 @@ import org.drools.spi.RuleBaseUpdateListenerFactory;
 
 public class ReteooStatefulSession extends ReteooWorkingMemory
     implements
-    StatefulSession {
+    StatefulSession,
+    Externalizable {
 
     private static final long         serialVersionUID = -5360554247241558374L;
     private transient ExecutorService executor;
 
     private transient List            ruleBaseListeners;
-
+    
+    public ReteooStatefulSession() {
+        super();
+    }
+    
     public ReteooStatefulSession(final int id,
                                  final InternalRuleBase ruleBase,
                                  final ExecutorService executorService) {
@@ -72,6 +89,28 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
                agenda,
                environment );
         this.executor = executorService;
+    }
+    
+    public byte[] bytes;
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        // all we do is create marshall to a byte[] and write to the stream
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( this );
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        marshaller.marshall( stream, ksession );
+        stream.close();
+        
+        byte[] bytes = stream.toByteArray();
+        out.writeInt( bytes.length );
+        out.write( bytes );  
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        bytes = new byte[ in.readInt() ];
+        in.readFully( bytes );
     }
 
     public Future asyncInsert(final Object object) {

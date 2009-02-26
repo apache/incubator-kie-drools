@@ -344,15 +344,6 @@ abstract public class AbstractRuleBase
         }
     }
 
-    public StatefulSession readStatefulSession(final InputStream stream,
-                                               Marshaller marshaller) throws IOException,
-                                                                     ClassNotFoundException {
-        return readStatefulSession( stream,
-                                    true,
-                                    marshaller,
-                                    new SessionConfiguration(),
-                                    EnvironmentFactory.newEnvironment() );
-    }
 
     /**
      * @see RuleBase
@@ -804,7 +795,7 @@ abstract public class AbstractRuleBase
         return process;
     }
 
-    protected synchronized void addStatefulSession(final StatefulSession statefulSession) {
+    public synchronized void addStatefulSession(final StatefulSession statefulSession) {
         this.statefulSessions.add( statefulSession );
     }
 

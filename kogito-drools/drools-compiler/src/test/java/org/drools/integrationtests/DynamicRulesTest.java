@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -13,6 +14,8 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.FactA;
 import org.drools.FactB;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -23,10 +26,19 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.definition.KnowledgePackage;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.io.ResourceFactory;
+import org.drools.marshalling.MarshallerFactory;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class DynamicRulesTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -557,17 +569,20 @@ public class DynamicRulesTest extends TestCase {
     }
 
     public void testDynamicNotNode() throws Exception {
-        final PackageBuilder builderInit = new PackageBuilder();
-        builderInit.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectDynamicRules1.drl" ) ) );
-        final Package pkgInit = builderInit.getPackage();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_CollectDynamicRules1.drl", getClass() ), ResourceType.DRL );        
+        if ( kbuilder.hasErrors() ) {
+            fail ( kbuilder.getErrors().toString() );
+        }        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );        
+        kbase.addKnowledgePackages( kpkgs );
+        kbase = SerializationHelper.serializeObject( kbase );
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkgInit );
-
-        StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List results = new ArrayList();
-        session.setGlobal( "results",
-                                 results );
+        ksession.setGlobal( "results",
+                            results );
 
         final Cheese a = new Cheese( "stilton",
                                      10 );
@@ -575,37 +590,45 @@ public class DynamicRulesTest extends TestCase {
                                      15 );
         final Cheese c = new Cheese( "stilton",
                                      20 );
-        session.insert( a );
-        session.insert( b );
-        session.insert( c );
+        ksession.insert( a );
+        ksession.insert( b );
+        ksession.insert( c );
         
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicNotNode.drl" ) ) );
-        final Package pkg = builder.getPackage();
-        ruleBase.addPackage( SerializationHelper.serializeObject( pkg ) );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        results = (List) session.getGlobal( "results" );
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl", getClass() ), ResourceType.DRL );        
+        if ( kbuilder.hasErrors() ) {
+            fail ( kbuilder.getErrors().toString() );
+        }                        
+        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );        
+        kbase.addKnowledgePackages( kpkgs );
+        kbase = SerializationHelper.serializeObject( kbase );    
+        
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), false );
+        
+        results = (List) ksession.getGlobal( "results" );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         assertEquals( 0,
                       results.size() );
 
-        ruleBase.removePackage( "org.drools" );
+        kbase.removeKnowledgePackage( "org.drools" );
 
-        session.retract( session.getFactHandle( b ) );
-
-        final PackageBuilder builder1 = new PackageBuilder();
-        builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicNotNode.drl" ) ) );
-        final Package pkg1 = builder.getPackage();
-        ruleBase.addPackage( SerializationHelper.serializeObject( pkg1 ) );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        results = (List) session.getGlobal( "results" );
-        session.fireAllRules();
+        ksession.retract( ksession.getFactHandle( b ) );
+        
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl", getClass() ), ResourceType.DRL );        
+        if ( kbuilder.hasErrors() ) {
+            fail ( kbuilder.getErrors().toString() );
+        }                        
+        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );        
+        kbase.addKnowledgePackages( kpkgs );
+        kbase = SerializationHelper.serializeObject( kbase );
+        
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), false );
+        
+        results = (List) ksession.getGlobal( "results" );
+        ksession.fireAllRules();
 
         assertEquals( 1,
                       results.size() );

@@ -3,12 +3,23 @@ package org.drools.integrationtests;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
+import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.marshalling.DefaultMarshaller;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.Marshaller;
+import org.drools.marshalling.MarshallerFactory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.DefaultMarshaller;
+import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.util.DroolsStreamUtils;
 
 /**
@@ -50,33 +61,32 @@ public class SerializationHelper {
     public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
                                                                RuleBase ruleBase,
                                                                boolean dispose) throws Exception {
-        Marshaller marshaller = new DefaultMarshaller();
+        // Serialize to a byte array
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = new ObjectOutputStream( bos );
+        out.writeObject( session );
+        out.close();
+        bos.close();
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        // Get the bytes of the serialized object
+        final byte[] b1 = bos.toByteArray();
 
-        byte[] b1 = baos.toByteArray();
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        StatefulSession session2 = ruleBase.readStatefulSession( bais,
-                                                                true,
-                                                                marshaller,
-                                                                ((InternalWorkingMemory) session).getSessionConfiguration(),
-                                                                session.getEnvironment());
+        StatefulSession session2 = ruleBase.newStatefulSession( bais );
+        bais.close();
 
-        // write methods allways needs a new marshaller for Identity strategies
-        marshaller = new DefaultMarshaller();        
-        baos = new ByteArrayOutputStream();
-        ruleBase.writeStatefulSession( session2,
-                                       baos,
-                                       marshaller );
+        bos = new ByteArrayOutputStream();
+        out = new ObjectOutputStream( bos );
+        out.writeObject( session2 );
+        out.close();
+        bos.close();
 
-        byte[] b2 = baos.toByteArray();
+        final byte[] b2 = bos.toByteArray();
+
         // bytes should be the same.
         if ( !areByteArraysEqual( b1,
                                   b2 ) ) {
-            throw new IllegalArgumentException("byte streams for serialisation test are not equal");
+            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
         }
 
         session2.setGlobalResolver( session.getGlobalResolver() );
@@ -87,6 +97,51 @@ public class SerializationHelper {
 
         return session2;
     }
+
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+                                                                        boolean dispose) throws Exception {
+        
+        return getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newSerializeMarshallingStrategy(), dispose);
+    }
+    
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+                                                                         ObjectMarshallingStrategy strategy,
+                                                                        boolean dispose) throws Exception {
+        
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(), new ObjectMarshallingStrategy[]{ strategy } );
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        marshaller.marshall( bos,
+                             ksession );
+        final byte[] b1 = bos.toByteArray();
+        bos.close();
+
+        ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
+        StatefulKnowledgeSession ksession2 = marshaller.unmarshall( bais,
+                                                                    new SessionConfiguration(),
+                                                                    EnvironmentFactory.newEnvironment() );
+        bais.close();
+
+        bos = new ByteArrayOutputStream();
+        marshaller.marshall( bos,
+                             ksession2 );
+        final byte[] b2 = bos.toByteArray();
+        bos.close();
+
+        // bytes should be the same.
+        if ( !areByteArraysEqual( b1,
+                                  b2 ) ) {
+            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
+        }
+
+        ((StatefulKnowledgeSessionImpl) ksession2).session.setGlobalResolver( ((StatefulKnowledgeSessionImpl) ksession).session.getGlobalResolver() );
+
+        if ( dispose ) {
+            ksession.dispose();
+        }
+
+        return ksession2;
+    }    
 
     public static boolean areByteArraysEqual(byte[] b1,
                                              byte[] b2) {

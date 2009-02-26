@@ -117,11 +117,14 @@ import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.marshalling.MarshallerFactory;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
@@ -130,6 +133,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
+
+import com.thoughtworks.xstream.MarshallingStrategy;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -1506,10 +1511,11 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).size() );
 
         state.setState( "finished" );
+        
+        
+        StatefulKnowledgeSession ksesion = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session), MarshallerFactory.newIdentityMarshallingStrategy(), false );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
+        ksesion.fireAllRules();
         assertEquals( 3,
                       ((List) session.getGlobal( "list" )).size() );
 
@@ -1682,18 +1688,23 @@ public class MiscTest extends TestCase {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "evalmodify.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
 
         RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        Package pkg = builder.getPackage();
+        ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         StatefulSession session = ruleBase.newStatefulSession();
         session.insert( cell1 );
         FactHandle cellHandle = session.insert( cell );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
+        StatefulKnowledgeSession ksesion = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session), MarshallerFactory.newIdentityMarshallingStrategy(), false );
+        
+        ksesion.fireAllRules();
         assertEquals( 9,
                       cell.getValue() );
     }

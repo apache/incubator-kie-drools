@@ -1,10 +1,14 @@
 package org.drools.integrationtests;
 
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -22,6 +26,8 @@ import org.drools.Cheese;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.FactC;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.Person;
 import org.drools.Primitives;
@@ -31,24 +37,34 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.marshalling.DefaultMarshaller;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.io.ResourceFactory;
 import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.RuleBaseNodes;
+import org.drools.marshalling.MarshallerFactory;
+import org.drools.marshalling.impl.DefaultMarshaller;
+import org.drools.marshalling.impl.RuleBaseNodes;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.GlobalResolver;
 import org.drools.util.DroolsStreamUtils;
 
 public class MarshallingTest extends TestCase {
-
+    
     public void testSerializable() throws Exception {
 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
@@ -493,18 +509,21 @@ public class MarshallingTest extends TestCase {
 
         // serialize session and rulebase out
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Marshaller marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
+
         GlobalResolver resolver = session.getGlobalResolver();
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
         session.dispose();
 
         // now deserialize the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         session.setGlobalResolver( resolver );
 
         // dynamically add a new package
@@ -524,17 +543,23 @@ public class MarshallingTest extends TestCase {
         results = (List) session.getGlobal( "results" );
         assertEquals( 4,
                       results.size() );
-        assertEquals( bob.getObject(),
-                      results.get( 1 ) );
+        
         assertEquals( stilton2.getObject(),
-                      results.get( 2 ) );
+                      results.get( 1 ) );
+        
+
         assertEquals( mark.getObject(),
+                      results.get( 2 ) );
+        
+        assertEquals( bob.getObject(),
                       results.get( 3 ) );
+
 
         serializedRulebase = null;
 
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
+        
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         // dispose session
@@ -571,11 +596,14 @@ public class MarshallingTest extends TestCase {
         session.fireAllRules();
 
         GlobalResolver resolver = session.getGlobalResolver();
+        
+        // serialize session and rulebase out
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Marshaller marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
+        
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -587,9 +615,11 @@ public class MarshallingTest extends TestCase {
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         session.setGlobalResolver( resolver );
+
         results = (List) session.getGlobal( "results" );
 
         builder = new PackageBuilder();
@@ -606,14 +636,17 @@ public class MarshallingTest extends TestCase {
         session.fireAllRules();
         assertEquals( 5,
                       results.size() );
-        assertEquals( brie1.getObject(),
-                      results.get( 1 ) );
+        
         assertEquals( stilton2.getObject(),
+                      results.get( 1 ) );
+   
+        assertEquals( brie3.getObject(),
                       results.get( 2 ) );
         assertEquals( brie2.getObject(),
-                      results.get( 4 ) );
-        assertEquals( brie3.getObject(),
                       results.get( 3 ) );
+        
+        assertEquals( brie1.getObject(),
+                      results.get( 4 ) );
 
         serializedRulebase = null;
 
@@ -645,13 +678,14 @@ public class MarshallingTest extends TestCase {
         InternalFactHandle brie1 = (InternalFactHandle) session.insert( new Cheese( "brie",
                                                                                     10 ) );
         session.fireAllRules();
-
+        
         GlobalResolver resolver = session.getGlobalResolver();
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Marshaller marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -663,8 +697,9 @@ public class MarshallingTest extends TestCase {
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -697,18 +732,19 @@ public class MarshallingTest extends TestCase {
 
         resolver = session.getGlobalResolver();
         baos = new ByteArrayOutputStream();
-        marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -747,17 +783,18 @@ public class MarshallingTest extends TestCase {
 
         resolver = session.getGlobalResolver();
         baos = new ByteArrayOutputStream();
-        marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -791,6 +828,7 @@ public class MarshallingTest extends TestCase {
 
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
+
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -825,11 +863,13 @@ public class MarshallingTest extends TestCase {
                                                                                     10 ) );
         session.fireAllRules();
 
+        GlobalResolver resolver = session.getGlobalResolver();
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Marshaller marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -841,8 +881,9 @@ public class MarshallingTest extends TestCase {
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );
@@ -875,18 +916,19 @@ public class MarshallingTest extends TestCase {
         serializedRulebase = null;
 
         baos = new ByteArrayOutputStream();
-        marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );
@@ -914,8 +956,9 @@ public class MarshallingTest extends TestCase {
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller );
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );
@@ -943,17 +986,18 @@ public class MarshallingTest extends TestCase {
         byte[] serializedSession = null;
         serializedRulebase = null;
         baos = new ByteArrayOutputStream();
-        marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session,
-                                       baos,
-                                       marshaller );
+        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession ) session );
+        marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        marshaller.marshall( baos, ksession );
+        baos.close();
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
         // Deserialize the rulebase and the session 
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
-                                                marshaller ); //  throws java.lang.ClassNotFoundException Exception
+        marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( ruleBase ) );
+        ksession = ( StatefulKnowledgeSessionImpl ) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ), KnowledgeBaseFactory.newKnowledgeSessionConfiguration(), EnvironmentFactory.newEnvironment() );
+        session =  (ReteooStatefulSession ) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );
@@ -980,6 +1024,7 @@ public class MarshallingTest extends TestCase {
 
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
+        
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -1426,85 +1471,89 @@ public class MarshallingTest extends TestCase {
         rule1 += "    list.add( new Integer( 5 ) );\n";
         rule1 += "end\n";
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( header + rule1 ) );
-        final Package pkg = builder.getPackage();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( (header + rule1 ).getBytes() ), ResourceType.DRL ) ;
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
 
-        StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         // add a person, no cheese
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Person bobba = new Person( "bobba fet",
                                    50 );
-        session.insert( bobba );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.insert( bobba );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
 
         // add another person, no cheese
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Person darth = new Person( "darth vadar",
                                    200 );
-        session.insert( darth );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.insert( darth );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 2,
                       list.size() );
 
         // add cheese 
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Cheese stilton = new Cheese( "stilton",
                                      5 );
-        session.insert( stilton );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.insert( stilton );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 2,
                       list.size() );
 
         // remove cheese
-        session = getSerialisedStatefulSession( session );
-        session.retract( session.getFactHandle( stilton ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.retract( ksession.getFactHandle( stilton ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         // put 2 cheeses back in
-        session = getSerialisedStatefulSession( session );
-        session.insert( stilton );
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.insert( stilton );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Cheese brie = new Cheese( "brie",
                                   18 );
-        session.insert( brie );
-        session.fireAllRules();
+        ksession.insert( brie );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         // now remove a cheese, should be no change
-        session.retract( session.getFactHandle( stilton ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.retract( ksession.getFactHandle( stilton ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         // now remove a person, should be no change
-        session.retract( session.getFactHandle( bobba ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.retract( ksession.getFactHandle( bobba ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         //removal remaining cheese, should increase by one, as one person left
-        session.retract( session.getFactHandle( brie ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.retract( ksession.getFactHandle( brie ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 5,
                       list.size() );
     }
@@ -1525,92 +1574,96 @@ public class MarshallingTest extends TestCase {
         rule1 += "    list.add( new Integer( 5 ) );\n";
         rule1 += "end\n";
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( header + rule1 ) );
-        final Package pkg = builder.getPackage();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( (header + rule1 ).getBytes() ), ResourceType.DRL ) ;
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
 
-        StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         // add a person, no cheese
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Person bobba = new Person( "bobba fet",
                                    50 );
-        session.insert( bobba );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.insert( bobba );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
         // add another person, no cheese
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Person darth = new Person( "darth vadar",
                                    200 );
-        session.insert( darth );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.insert( darth );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
         // add cheese 
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Cheese stilton = new Cheese( "stilton",
                                      5 );
-        session.insert( stilton );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.insert( stilton );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 2,
                       list.size() );
 
         // remove cheese
-        session = getSerialisedStatefulSession( session );
-        session.retract( session.getFactHandle( stilton ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.retract( ksession.getFactHandle( stilton ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 2,
                       list.size() );
 
         // put 2 cheeses back in
-        session = getSerialisedStatefulSession( session );
-        session.insert( stilton );
-        session = getSerialisedStatefulSession( session );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.insert( stilton );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
         Cheese brie = new Cheese( "brie",
                                   18 );
-        session.insert( brie );
-        session.fireAllRules();
+        ksession.insert( brie );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         // now remove a cheese, should be no change
-        session.retract( session.getFactHandle( stilton ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.retract( ksession.getFactHandle( stilton ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         // now remove a person, should be no change
-        session.retract( session.getFactHandle( bobba ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.retract( ksession.getFactHandle( bobba ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         //removal remaining cheese, no
-        session.retract( session.getFactHandle( brie ) );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession.retract( ksession.getFactHandle( brie ) );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
 
         // put one cheese back in, with one person should increase by one
-        session = getSerialisedStatefulSession( session );
-        session.insert( stilton );
-        session.fireAllRules();
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), true );
+        ksession.insert( stilton );
+        ksession.fireAllRules();
         assertEquals( 5,
                       list.size() );
     }

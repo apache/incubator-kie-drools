@@ -50,6 +50,7 @@ import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -76,14 +77,14 @@ public class StatefulKnowledgeSessionImpl
 
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
         this( session,
-              null );
+              new KnowledgeBaseImpl( session.getRuleBase() ) );
     }
 
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session,
-                                        KnowledgeBaseImpl kbase) {
+                                        KnowledgeBase kbase) {
         this.session = session;
         this.session.setKnowledgeRuntime( this );
-        this.kbase = kbase;
+        this.kbase = ( KnowledgeBaseImpl ) kbase;
         this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
         this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
         this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
@@ -250,6 +251,10 @@ public class StatefulKnowledgeSessionImpl
 
     public Globals getGlobals() {
         return (Globals) this.session.getGlobalResolver();
+    }
+    
+    public Environment getEnvironment() {
+        return this.session.getEnvironment();
     }
 
     //    public Future<Object> asyncInsert(Object object) {

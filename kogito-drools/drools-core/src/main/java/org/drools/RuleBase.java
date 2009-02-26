@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.drools.definition.type.FactType;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.Marshaller;
 import org.drools.rule.Package;
 import org.drools.runtime.Environment;
@@ -67,6 +68,11 @@ public interface RuleBase
     StatefulSession newStatefulSession();
 
     StatefulSession newStatefulSession(boolean keepReference);
+
+    StatefulSession newStatefulSession(java.io.InputStream stream);
+
+    StatefulSession newStatefulSession(java.io.InputStream stream,
+                                                           boolean keepReference);    
     
     /**
      * Create a new <code>WorkingMemory</code> session for this
@@ -81,37 +87,6 @@ public interface RuleBase
      * @return A newly initialized <code>WorkingMemory</code>.
      */
     StatefulSession newStatefulSession(SessionConfiguration config, Environment environment);
-
-    StatefulSession readStatefulSession(InputStream stream,
-                                        Marshaller marshaller) throws IOException,
-                                                              ClassNotFoundException;
-
-    /**
-     * RuleBases handle the returning of a Serialized WorkingMemory
-     * pass as an InputStream. If the reference is a byte[] then
-     * wrap with new ByteArrayInputStream. Optionally the RuleBase retains a
-     * weak reference to returned WorkingMemory.
-     *
-     * <p>
-     * The created <code>WorkingMemory</code> uses the default conflict
-     * resolution strategy.
-     * </p>
-     *
-     * @see WorkingMemory
-     * @see org.drools.conflict.DefaultConflictResolver
-     *
-     * @return A serialised initialized <code>WorkingMemory</code>.
-     */
-    StatefulSession readStatefulSession(InputStream stream,
-                                        boolean keepReference,
-                                        Marshaller marshaller,
-                                        SessionConfiguration sessionConfig,
-                                        Environment environment) throws IOException,
-                                                              ClassNotFoundException;
-
-    public void writeStatefulSession(StatefulSession session,
-                                     OutputStream stream,
-                                     Marshaller marshaller) throws IOException;
 
     Package[] getPackages();
 
