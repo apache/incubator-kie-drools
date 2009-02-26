@@ -9,7 +9,8 @@ import org.drools.ProviderInitializationException;
  * This factory is used to build the knowledge base definitions that are held collectively in
  * KnowledgePackages. The KnowledgePackage also provides the role of 'namespacing'. An optional
  * KnowlegeBuilderConfiguration can be supplied. The KnowledgeBuilderConfiguration is itself
- * created from this factory.
+ * created from this factory. The KnowledgeBuilderConfiguration allows you to set the ClassLoader to be used
+ * along with other setting like the default dialect and compiler, as well as many other options.
  * 
  * <pre>
  * KnowledgeBuilder kbuilder = KnowlegeBuilderFactory.newKnowledgeBuilder();
