@@ -22,6 +22,8 @@ public interface KnowledgeRuntime
     Object getGlobal(String identifier);
     
     Globals getGlobals();
+    
+    Environment getEnvironment();
 
     /**
      * Returns the KnowledgeBase reference from which this stateful session was created.
