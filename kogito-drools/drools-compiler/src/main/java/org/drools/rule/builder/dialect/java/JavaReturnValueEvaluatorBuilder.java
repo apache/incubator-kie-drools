@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
+import org.drools.process.core.ContextResolver;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
@@ -41,7 +42,8 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
      */
     public void build(final PackageBuildContext context,
                       final ReturnValueConstraintEvaluator constraintNode,
-                      final ReturnValueDescr descr) {
+                      final ReturnValueDescr descr,
+                      final ContextResolver contextResolver) {
 
         final String className = "returnValueEvaluator" + context.getNextId();
 
@@ -63,7 +65,9 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
         final Map map = createVariableContext( className,
                                                descr.getText(),
                                                (ProcessBuildContext) context,
-                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
+                                               analysis.getNotBoundedIdentifiers(),
+                                               contextResolver );
         map.put( "text",
                  descr.getText() );
 

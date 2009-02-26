@@ -57,7 +57,8 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
         final JavaReturnValueEvaluatorBuilder builder = new JavaReturnValueEvaluatorBuilder();
         builder.build( context,
                        node,
-                       descr );
+                       descr,
+                       null );
 
         javaDialect.addProcess( context );
         javaDialect.compileAll();
