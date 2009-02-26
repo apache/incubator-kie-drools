@@ -13,6 +13,7 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.ConstraintImpl;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 import org.drools.workflow.instance.impl.RuleConstraintEvaluator;
@@ -62,7 +63,7 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
                 returnValueDescr.setText( constraint.getConstraint() );
                 
                 Dialect dialect = context.getDialectRegistry().getDialect( constraint.getDialect() );                               
-                dialect.getReturnValueEvaluatorBuilder().build( context, returnValueConstraint, returnValueDescr );
+                dialect.getReturnValueEvaluatorBuilder().build( context, returnValueConstraint, returnValueDescr, (NodeImpl) node );
             }
         }
     }

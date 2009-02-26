@@ -49,7 +49,8 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
         final MVELReturnValueEvaluatorBuilder builder = new MVELReturnValueEvaluatorBuilder();
         builder.build( context,
                        node,
-                       descr );
+                       descr,
+                       null );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkgBuilder.getPackage() );

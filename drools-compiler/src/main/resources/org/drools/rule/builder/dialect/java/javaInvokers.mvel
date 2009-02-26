@@ -403,8 +403,14 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator,
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
 
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );
+        @end{}
+
         return @{processClassName}.@{methodName} (
-	        processContext@if{globals != empty},@end{} @foreach{identifier : globals} @{identifier}
+	        processContext@if{globals != empty},@end{}
+	        @foreach{identifier : globals} @{identifier}
+	        @end{","}@if{variables != empty},@end{}
+	        @foreach{identifier : variables} @{identifier}
 	        @end{","} );
     }
     

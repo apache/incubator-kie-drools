@@ -1,6 +1,9 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -8,6 +11,8 @@ import org.drools.base.mvel.MVELReturnValueEvaluator;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
+import org.drools.process.core.ContextResolver;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
@@ -23,7 +28,8 @@ public class MVELReturnValueEvaluatorBuilder
 
     public void build(final PackageBuildContext context,
                       final ReturnValueConstraintEvaluator constraintNode,
-                      final ReturnValueDescr descr) {
+                      final ReturnValueDescr descr,
+                      final ContextResolver contextResolver) {
 
         String text = descr.getText();
 
@@ -37,28 +43,49 @@ public class MVELReturnValueEvaluatorBuilder
                                                                     new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()},
                                                                     null );         
 
+            Map<String, Class> variableClasses = new HashMap<String, Class>();
+            List<String> variableNames = analysis.getNotBoundedIdentifiers();
+            if (contextResolver != null) {
+	            for (String variableName: variableNames) {
+	            	VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);
+	            	if (variableScope == null) {
+	            		context.getErrors().add(
+	        				new DescrBuildError(
+	    						context.getParentDescr(),
+	                            descr,
+	                            null,
+	                            "Could not find variable '" + variableName + "' for constraint '" + descr.getText() + "'" ) );            		
+	            	} else {
+	            		variableClasses.put(variableName,
+            				context.getDialect().getTypeResolver().resolveType(
+        						variableScope.findVariable(variableName).getType().getStringType()));
+	            	}
+	            }
+            }
+            
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        null,
                                                                        null,
-                                                                       null,
+                                                                       variableClasses,
                                                                        context );  
 
             MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator( unit,
                                                                           dialect.getId() );
+            expr.setVariableNames(variableNames);
+
             constraintNode.setEvaluator( expr );
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );
             data.addCompileable( constraintNode,
                                   expr );
             
-            expr.setVariableNames(analysis.getNotBoundedIdentifiers());
             expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           null,
-                                                          "Unable to build expression for 'returnValuEvaluator' : " + e.getMessage() + "'" + descr.getText() + "'" ) );
+                                                          "Unable to build expression for 'constraint' " + descr.getText() + "': " + e ) );
         }
     }
 
