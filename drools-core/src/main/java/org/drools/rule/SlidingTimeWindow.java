@@ -29,7 +29,7 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.marshalling.MarshallerWriteContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.reteoo.RightTuple;
 import org.drools.spi.PropagationContext;
 import org.drools.time.Job;

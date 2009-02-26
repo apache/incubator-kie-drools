@@ -1,9 +1,11 @@
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
+
+import org.drools.marshalling.ObjectMarshallingStrategy;
 
 public class MarshallingConfigurationImpl
     implements
     MarshallingConfiguration {
-    private PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory;
+    private ObjectMarshallingStrategyStore objectMarshallingStrategyStore;
     private boolean                            marshallProcessInstances;
     private boolean                            marshallWorkItems;
 
@@ -13,10 +15,10 @@ public class MarshallingConfigurationImpl
               true );
     }
 
-    public MarshallingConfigurationImpl(PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory,
+    public MarshallingConfigurationImpl(ObjectMarshallingStrategy[] strategies,
                                         boolean marshallProcessInstances,
                                         boolean marshallWorkItems) {
-        this.placeholderResolverStrategyFactory = placeholderResolverStrategyFactory;
+        this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore( strategies );
         this.marshallProcessInstances = marshallProcessInstances;
         this.marshallWorkItems = marshallWorkItems;
     }
@@ -37,12 +39,12 @@ public class MarshallingConfigurationImpl
         this.marshallWorkItems = marshallWorkItems;
     }
 
-    public PlaceholderResolverStrategyFactory getPlaceholderResolverStrategyFactory() {
-        return this.placeholderResolverStrategyFactory;
+    public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore() {
+        return this.objectMarshallingStrategyStore;
     }
 
-    public void setPlaceholderResolverStrategyFactory(PlaceholderResolverStrategyFactory placeholderResolverStrategyFactory) {
-        this.placeholderResolverStrategyFactory = placeholderResolverStrategyFactory;
+    public void setPlaceholderResolverStrategyFactory(ObjectMarshallingStrategyStore placeholderResolverStrategyFactory) {
+        this.objectMarshallingStrategyStore = placeholderResolverStrategyFactory;
     }
 
 }

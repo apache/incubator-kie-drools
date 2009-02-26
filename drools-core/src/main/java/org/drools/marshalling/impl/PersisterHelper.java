@@ -1,4 +1,4 @@
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
 
 import java.io.IOException;
 

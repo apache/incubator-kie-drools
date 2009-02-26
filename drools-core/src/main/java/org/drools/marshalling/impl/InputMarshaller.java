@@ -1,4 +1,4 @@
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,6 +30,7 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
 import org.drools.impl.EnvironmentFactory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
@@ -290,7 +291,7 @@ public class InputMarshaller {
                                                                        ClassNotFoundException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
-        PlaceholderResolverStrategyFactory resolverStrategyFactory = context.resolverStrategyFactory;
+        ObjectMarshallingStrategyStore resolverStrategyFactory = context.resolverStrategyFactory;
         InternalWorkingMemory wm = context.wm;
 
         if ( stream.readBoolean() ) {
@@ -358,16 +359,13 @@ public class InputMarshaller {
         long recency = context.stream.readLong();
 
         int strategyIndex = context.stream.readInt();
-        PlaceholderResolverStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
-        ObjectPlaceholder placeHolder = strategy.read( context.stream );
-
-        Object object = placeHolder.resolveObject();
+        ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
+        Object object = strategy.read( context.stream );
 
         InternalFactHandle handle = new DefaultFactHandle( id,
                                                            object,
                                                            recency );
         return handle;
-
     }
 
     public static void readRightTuples(InternalFactHandle factHandle,

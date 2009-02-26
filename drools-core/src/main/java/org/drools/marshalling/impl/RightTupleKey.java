@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
 
 import org.drools.reteoo.Sink;
 

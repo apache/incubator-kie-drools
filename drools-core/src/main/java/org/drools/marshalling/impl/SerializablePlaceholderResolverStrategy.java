@@ -1,18 +1,21 @@
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
+
 public class SerializablePlaceholderResolverStrategy
     implements
-    PlaceholderResolverStrategy {
+    ObjectMarshallingStrategy {
 
     private int index;
     
-    private PlaceholderResolverStrategyAcceptor acceptor;
+    private ObjectMarshallingStrategyAcceptor acceptor;
     
-    public SerializablePlaceholderResolverStrategy(PlaceholderResolverStrategyAcceptor acceptor) {
+    public SerializablePlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
         this.acceptor = acceptor;
     }
     
@@ -24,9 +27,9 @@ public class SerializablePlaceholderResolverStrategy
         this.index = index;
     }    
 
-    public ObjectPlaceholder read(ObjectInputStream os) throws IOException,
+    public Object read(ObjectInputStream os) throws IOException,
                                                        ClassNotFoundException {
-        return new SerializablePlaceholder( os.readObject() );
+        return  os.readObject();
     }
 
     public void write(ObjectOutputStream os,

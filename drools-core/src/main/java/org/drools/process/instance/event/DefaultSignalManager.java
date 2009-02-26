@@ -11,8 +11,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.ProcessInstance;
 

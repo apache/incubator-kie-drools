@@ -59,12 +59,6 @@ public class MockRuleBase implements RuleBase {
 		return null;
 	}
 
-	public StatefulSession newStatefulSession(InputStream stream)
-			throws IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public StatefulSession readStatefulSession(InputStream stream,
 			boolean keepReference) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
@@ -170,6 +164,17 @@ public class MockRuleBase implements RuleBase {
     }
 
     public StatefulSession newStatefulSession(boolean keepReference) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public StatefulSession newStatefulSession(InputStream stream,
+                                              boolean keepReference) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public StatefulSession newStatefulSession(InputStream stream) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -1,4 +1,4 @@
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -27,6 +27,7 @@ import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.WorkItemManager;
@@ -241,7 +242,7 @@ public class OutputMarshaller {
     public static void writeFactHandles(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
-        PlaceholderResolverStrategyFactory resolverStrategyFactory = context.resolverStrategyFactory;
+        ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
 
         writeInitialFactHandleRightTuples( context );
 
@@ -253,7 +254,7 @@ public class OutputMarshaller {
             //InternalFactHandle handle = (InternalFactHandle) it.next();
             writeFactHandle( context,
                              stream,
-                             resolverStrategyFactory,
+                             objectMarshallingStrategyStore,
                              handle );
 
             writeRightTuples( handle,
@@ -271,7 +272,7 @@ public class OutputMarshaller {
 
     private static void writeFactHandle(MarshallerWriteContext context,
                                         ObjectOutputStream stream,
-                                        PlaceholderResolverStrategyFactory resolverStrategyFactory,
+                                        ObjectMarshallingStrategyStore objectMarshallingStrategyStore,
                                         InternalFactHandle handle) throws IOException {
         stream.writeInt( handle.getId() );
         stream.writeLong( handle.getRecency() );
@@ -281,9 +282,11 @@ public class OutputMarshaller {
 
         Object object = handle.getObject();
 
-        PlaceholderResolverStrategy strategy = resolverStrategyFactory.getStrategy( object );
+        int index = objectMarshallingStrategyStore.getStrategy( object );
+        
+        ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
 
-        stream.writeInt( strategy.getIndex() );
+        stream.writeInt( index );
 
         strategy.write( stream,
                         object );
@@ -493,7 +496,7 @@ public class OutputMarshaller {
                 // first we serialize the generated fact handle
                 writeFactHandle( context,
                                  stream,
-                                 context.resolverStrategyFactory,
+                                 context.objectMarshallingStrategyStore,
                                  accctx.result.getFactHandle() );
                 // then we serialize the associated accumulation context
                 stream.writeObject( accctx.context );
@@ -529,7 +532,7 @@ public class OutputMarshaller {
                 // first we serialize the generated fact handle
                 writeFactHandle( context,
                                  stream,
-                                 context.resolverStrategyFactory,
+                                 context.objectMarshallingStrategyStore,
                                  colctx.resultTuple.getFactHandle() );
                 // then we serialize the boolean propagated flag
                 stream.writeBoolean( colctx.propagated );

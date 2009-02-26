@@ -340,15 +340,15 @@ public class SessionConfiguration
         }
     }
     
-    public CommandService getCommandService(RuleBase ruleBase, Environment environment) {
+    public CommandService getCommandService(KnowledgeBase kbase, Environment environment) {
         if ( this.commandService == null ) {
-            initCommandService(ruleBase, environment);
+            initCommandService(kbase, environment);
         }
         return this.commandService;
     }
 
     @SuppressWarnings("unchecked")
-    private void initCommandService(RuleBase ruleBase, Environment environment) {
+    private void initCommandService(KnowledgeBase kbase, Environment environment) {
         String className = this.chainedProperties.getProperty( "drools.commandService", null );
         if (className == null) {
         	return;
@@ -369,7 +369,7 @@ public class SessionConfiguration
 
         if ( clazz != null ) {
             try {
-                this.commandService = clazz.getConstructor(RuleBase.class, SessionConfiguration.class, Environment.class).newInstance(ruleBase, this, environment);
+                this.commandService = clazz.getConstructor(KnowledgeBase.class, KnowledgeSessionConfiguration.class, Environment.class).newInstance(kbase, this, environment);
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to instantiate command service '" + className + "'",
                                                     e );

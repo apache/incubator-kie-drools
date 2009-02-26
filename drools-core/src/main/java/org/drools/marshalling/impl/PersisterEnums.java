@@ -1,4 +1,4 @@
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
 
 public class PersisterEnums {
     public static final short REPEAT                 = 0;

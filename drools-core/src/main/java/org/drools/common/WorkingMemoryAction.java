@@ -6,7 +6,7 @@ package org.drools.common;
 import java.io.Externalizable;
 import java.io.IOException;
 
-import org.drools.marshalling.MarshallerWriteContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
 
 public interface WorkingMemoryAction extends Externalizable {
     public static final int WorkingMemoryReteAssertAction = 1;

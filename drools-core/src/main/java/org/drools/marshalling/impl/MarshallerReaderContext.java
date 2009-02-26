@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.drools.marshalling;
+package org.drools.marshalling.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public final Map<RightTupleKey, RightTuple>     rightTuples;
     public final Map<Integer, LeftTuple>            terminalTupleMap;
 
-    public final PlaceholderResolverStrategyFactory resolverStrategyFactory;
+    public final ObjectMarshallingStrategyStore resolverStrategyFactory;
     public final Map<String, EntryPoint>            entryPoints;
 
     public final Map<Long, PropagationContext>      propagationContexts;
@@ -40,7 +40,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
                                    Map<Integer, BaseNode> sinks,
-                                   PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {
+                                   ObjectMarshallingStrategyStore resolverStrategyFactory) throws IOException {
         this( stream,
               ruleBase,
               sinks,
@@ -52,7 +52,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
                                    Map<Integer, BaseNode> sinks,
-                                   PlaceholderResolverStrategyFactory resolverStrategyFactory,
+                                   ObjectMarshallingStrategyStore resolverStrategyFactory,
                                    boolean marshalProcessInstances,
                                    boolean marshalWorkItems) throws IOException {
         super( stream );

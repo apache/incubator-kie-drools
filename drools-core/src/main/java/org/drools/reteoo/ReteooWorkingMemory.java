@@ -36,8 +36,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
@@ -59,6 +59,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
      *
      */
     private static final long serialVersionUID = 400L;
+    
+    public ReteooWorkingMemory() {
+        super();
+    }
 
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase) {

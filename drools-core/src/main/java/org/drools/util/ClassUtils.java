@@ -215,7 +215,7 @@ public final class ClassUtils {
         } else if ( STAR.equals( object ) ) {
             return false;
         } else if ( patterns.containsKey( "*" ) ) {
-            // for now we assume if the name space is * then we have a catchal *.* pattern
+            // for now we assume if the name space is * then we have a catchall *.* pattern
             return true;
         } else {
             List list = (List) object;
