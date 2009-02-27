@@ -61,18 +61,6 @@ public class PersistentStatefulSessionTest extends TestCase {
     }
 
     public void testLocalTransactionPerStatement() {
-
-        Properties properties = new Properties();
-        properties.setProperty( "drools.commandService",
-                                "org.drools.persistence.session.SingleSessionCommandService" );
-        properties.setProperty( "drools.processInstanceManagerFactory",
-                                "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory" );
-        properties.setProperty( "drools.workItemManagerFactory",
-                                "org.drools.persistence.processinstance.JPAWorkItemManagerFactory" );
-        properties.setProperty( "drools.processSignalManagerFactory",
-                                "org.drools.persistence.processinstance.JPASignalManagerFactory" );
-        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration( properties );
-
         String str = "";
         str += "package org.drools.test\n";
         str += "global java.util.List list\n";
@@ -99,12 +87,11 @@ public class PersistentStatefulSessionTest extends TestCase {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
-
-        env.set( "drools.TransactionManager",
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
+        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( config,
-                                                                               env );
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         List list = new ArrayList();
 
         ksession.setGlobal( "list",
