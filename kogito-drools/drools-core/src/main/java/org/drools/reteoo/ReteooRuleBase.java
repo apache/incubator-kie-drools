@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.FactException;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
@@ -296,8 +297,14 @@ public class ReteooRuleBase extends AbstractRuleBase {
         return session;
     }
 
-    public synchronized StatefulSession newStatefulSession(final SessionConfiguration sessionConfig,
-                                                           final Environment environment) {
+    public synchronized StatefulSession newStatefulSession(SessionConfiguration sessionConfig,
+                                                           Environment environment) {
+        if ( sessionConfig == null ) {
+            sessionConfig = ( SessionConfiguration ) KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        }
+        if ( environment == null ) {
+            environment = EnvironmentFactory.newEnvironment();
+        }
         return newStatefulSession( nextWorkingMemoryCounter(),
                                    sessionConfig,
                                    environment );
