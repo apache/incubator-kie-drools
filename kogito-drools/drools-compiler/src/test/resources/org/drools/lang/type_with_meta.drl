@@ -1,0 +1,31 @@
+package org.drools;
+
+declare NetworkNode
+            locElevation: java.math.BigDecimal
+            name: String @key
+            nodeClass: String
+            locLongitude: java.math.BigDecimal
+            nodeType: String
+            locLatitude: java.math.BigDecimal
+end
+
+declare NetworkConnection
+            id: String @key
+            node1: NetworkNode
+            node2: NetworkNode
+            hops: Integer
+end
+
+declare NetworkEvent
+            @role( event )
+            @timestamp( creationTime )
+
+            id: String @key
+            locElevation: java.math.BigDecimal
+            description: String
+            sourceComponent: NetworkNode
+            locLongitude: java.math.BigDecimal
+            severity: Integer
+            creationTime: java.util.Date
+            locLatitude: java.math.BigDecimal
+end
