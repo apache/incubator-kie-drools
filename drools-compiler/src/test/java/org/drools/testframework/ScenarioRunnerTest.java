@@ -44,6 +44,30 @@ public class ScenarioRunnerTest extends RuleUnit {
 		DroolsMVELFactory d = new DroolsMVELFactory();
 	}
 
+    public void testPopulateFactsWithInterfaces() throws Exception {
+        Scenario sc = new Scenario();
+        List facts = ls( new FactData( "List",
+                                       "ls",
+                                       new ArrayList(),
+                                       false ) );
+
+       List globals = ls( new FactData( "List",
+                                       "ls",
+                                       new ArrayList(),
+                                       false ) );
+        sc.fixtures.addAll( facts );
+        sc.globals.addAll( globals );
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "java.util.List" );
+
+        ScenarioRunner runner = new ScenarioRunner( sc,
+                                                    resolver,
+                                                    new MockWorkingMemory() );
+
+
+    }
+
     public void testPopulateFacts() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
