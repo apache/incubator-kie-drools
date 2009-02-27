@@ -63,6 +63,8 @@ public interface StatefulKnowledgeSession
     StatefulProcessSession,
     KnowledgeRuntime {
 
+    int getId();
+    
     /**
      * Releases all the current session resources, setting up the session for garbage collection.
      * This method <b>must</b> always be called after finishing using the session, or the engine
