@@ -99,7 +99,7 @@ public class ScenarioRunner {
 
 		for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
 			FactData fact = (FactData) iterator.next();
-			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
+			Object f = eval("new " + getTypeName(resolver, fact) + "()");
 			populateFields(fact, globalData, f);
 			globalData.put(fact.name, f);
 			wm.setGlobal(fact.name, f);
@@ -111,7 +111,7 @@ public class ScenarioRunner {
 			if (fx instanceof FactData) {
 				//deal with facts and globals
 				FactData fact = (FactData)fx;
-				Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + resolver.getFullTypeName(fact.type) + "()");
+				Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + getTypeName(resolver, fact) + "()");
 				if (fact.isModify) {
 					if (!this.factHandles.containsKey(fact.name)) {
 						throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
@@ -164,7 +164,17 @@ public class ScenarioRunner {
 		}
 	}
 
-	private void applyTimeMachine(final InternalWorkingMemory wm,
+    private String getTypeName(TypeResolver resolver, FactData fact) throws ClassNotFoundException {
+
+        String fullName = resolver.getFullTypeName(fact.type);
+        if (fullName.equals("java.util.List") || fullName.equals("java.util.Collection")) {
+                return "java.util.ArrayList";
+        } else {
+                return fullName;
+        }
+    }
+
+    private void applyTimeMachine(final InternalWorkingMemory wm,
 			ExecutionTrace executionTrace) {
 		if (executionTrace.scenarioSimulatedDate != null) {
 			final Calendar now = Calendar.getInstance();
