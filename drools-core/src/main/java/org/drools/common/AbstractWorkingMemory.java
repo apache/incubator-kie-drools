@@ -85,7 +85,9 @@ import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.ExitPoint;
+import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.WorkItemHandler;
@@ -123,7 +125,7 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected long                                                            id;
+    protected int                                                            id;
 
     /** The arguments used when adding/removing a property change listener. */
     protected Object[]                                                        addRemovePropertyChangeListenerArgs;
@@ -250,8 +252,18 @@ public abstract class AbstractWorkingMemory
         this.config = config;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
-        this.globalResolver = new MapGlobalResolver();
         this.environment = environment;
+        
+        Globals globals =  ( Globals ) this.environment.get( EnvironmentName.GLOBALS );
+        if ( globals != null ) {
+            if ( !(globals instanceof GlobalResolver )) {
+                this.globalResolver = new GlobalsAdapter( globals );   
+            } else {
+                this.globalResolver = ( GlobalResolver ) globals;
+            }
+        } else {
+            this.globalResolver = new MapGlobalResolver();
+        }
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
@@ -312,6 +324,25 @@ public abstract class AbstractWorkingMemory
         initProcessEventListeners();
         initPartitionManagers();
         initTransient();
+    }
+    
+    public static class GlobalsAdapter implements GlobalResolver {
+        private Globals globals;
+        
+        public GlobalsAdapter(Globals globals) {
+            this.globals = globals;
+        }
+        
+        
+        public Object resolveGlobal(String identifier) {
+            return this.globals.get( identifier );
+        }
+
+        public void setGlobal(String identifier,
+                              Object value) {
+            this.globals.set( identifier, value );
+        }
+        
     }
 
     // ------------------------------------------------------------
@@ -537,11 +568,11 @@ public abstract class AbstractWorkingMemory
         return this.globalResolver;
     }
 
-    public long getId() {
+    public int getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

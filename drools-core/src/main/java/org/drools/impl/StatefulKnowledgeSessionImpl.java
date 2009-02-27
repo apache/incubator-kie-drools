@@ -89,6 +89,10 @@ public class StatefulKnowledgeSessionImpl
         this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
         this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
     }
+    
+    public int getId() {
+        return this.session.getId();
+    }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         return session.getWorkingMemoryEntryPoint( name );

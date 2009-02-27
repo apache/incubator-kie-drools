@@ -122,6 +122,12 @@ public class SessionConfiguration
                                                                                       "realtime" ) ) );
     }
     
+    public void addProperties(Properties properties) {
+        if ( properties != null ) {
+            this.chainedProperties.addProperties( properties );
+        }        
+    }
+    
     public void setProperty(String name,
                             String value) {
         name = name.trim();

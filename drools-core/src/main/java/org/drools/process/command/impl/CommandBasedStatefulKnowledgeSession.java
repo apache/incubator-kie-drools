@@ -46,6 +46,7 @@ import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.process.command.UnregisterExitPointCommand;
 import org.drools.process.command.UpdateCommand;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
@@ -73,6 +74,10 @@ public class CommandBasedStatefulKnowledgeSession
 
     public CommandBasedStatefulKnowledgeSession(CommandService commandService) {
         this.commandService = commandService;
+    }
+    
+    public int getId() {
+        return ((ReteooWorkingMemory)this.commandService.getSession()).getId();
     }
 
     public ProcessInstance getProcessInstance(long id) {
