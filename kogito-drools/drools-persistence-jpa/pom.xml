@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.0.0.SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-persistence-jpa</artifactId>
+  <packaging>jar</packaging>
+  <name>Drools :: Persistence :: JPA</name> 
+    
+      <dependencies> 	       
+    	<dependency>
+    		<groupId>org.drools</groupId>
+    		<artifactId>drools-api</artifactId>
+    	</dependency>         		  
+       
+    	<dependency>
+    		<groupId>org.drools</groupId>
+    		<artifactId>drools-core</artifactId>
+    	</dependency>         		  
+       
+    	<dependency>
+    		<groupId>org.drools</groupId>
+    		<artifactId>drools-compiler</artifactId>
+    	</dependency>         		  
+       
+    	<dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-jdk14</artifactId>
+    		<version>1.5.2</version>
+    	</dependency>     	       	
+
+    	<dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-api</artifactId>
+    		<version>1.5.2</version>
+    	</dependency>          	 
+   	
+    	<!-- Hibernate -->
+    	<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-entitymanager</artifactId>
+    		<version>3.4.0.GA</version>
+    	</dependency>
+
+    	<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-annotations</artifactId>
+    		<version>3.4.0.GA</version>
+    	</dependency>
+
+    	<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-commons-annotations</artifactId>
+    		<version>3.1.0.GA</version>
+    	</dependency>
+
+    	<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-core</artifactId>
+    		<version>3.3.0.SP1</version>
+    	</dependency>
+
+    	<!-- HSQLDB -->
+    	<dependency>
+    		<groupId>com.h2database</groupId>
+    		<artifactId>h2</artifactId>
+    		<version>1.0.77</version>
+    	</dependency>
+    	
+    	<dependency>
+    		<groupId>javax.persistence</groupId>
+    		<artifactId>persistence-api</artifactId>
+    		<version>1.0</version>
+    	</dependency>
+
+    	<dependency>
+    		<groupId>dom4j</groupId>
+    		<artifactId>dom4j</artifactId>
+    		<version>1.6.1</version>
+    	</dependency>
+
+    	<dependency>
+    		<groupId>javassist</groupId>
+    		<artifactId>javassist</artifactId>
+    		<version>3.4.GA</version>
+    	</dependency>
+
+     	<dependency>
+    		<groupId>commons-collections</groupId>
+    		<artifactId>commons-collections</artifactId>
+    		<version>3.2</version>
+    	</dependency>
+
+    	<dependency>
+    		<groupId>javax.transaction</groupId>
+    		<artifactId>jta</artifactId>
+    		<version>1.0.1B</version>
+    	</dependency>
+    	
+    	<dependency>
+		    <groupId>org.codehaus.btm</groupId>
+		    <artifactId>btm</artifactId>
+		    <version>1.3.2</version>    	
+		    <scope>test</scope>
+    	</dependency>    	
+
+      </dependencies>              
+                  
+</project>
