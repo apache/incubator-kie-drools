@@ -3957,6 +3957,20 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Operator.EQUAL",
                       qualifiedIdentifierRestrictionDescr.getText() );
     }
+    
+    public void testTypeWithMetaData() throws Exception {
+
+        parseResource( "compilation_unit",
+                       "compilation_unit",
+                       "type_with_meta.drl" );
+
+        final PackageDescr pack = walker.getPackageDescr();
+
+        final List<TypeDeclarationDescr> declarations = pack.getTypeDeclarations();
+
+        assertEquals( 3,
+                      declarations.size() );
+    }    
 
     private Object parse(String parserRuleName,
                          String treeRuleName,
