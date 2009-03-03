@@ -438,7 +438,7 @@ abstract public class AbstractRuleBase
      * @param newPkg
      *            The package to add.
      */    
-    public synchronized void addPackages(final Collection<Package> newPkgs) {
+    public void addPackages(final Collection<Package> newPkgs) {
         synchronized ( this.pkgs ) {
             boolean doUnlock = false;
             // only acquire the lock if it hasn't been done explicitely
@@ -621,16 +621,18 @@ abstract public class AbstractRuleBase
         return this.classTypeDeclaration.values();
     }
     
-    public synchronized void addRule(final Package pkg,
+    public  void addRule(final Package pkg,
                                      final Rule rule) throws InvalidPatternException {
-        this.eventSupport.fireBeforeRuleAdded( pkg,
-                                               rule );
-//        if ( !rule.isValid() ) {
-//            throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
-//        }
-        addRule( rule );
-        this.eventSupport.fireAfterRuleAdded( pkg,
-                                              rule );
+        synchronized ( this.pkgs ) {
+            this.eventSupport.fireBeforeRuleAdded( pkg,
+                                                   rule );
+    //        if ( !rule.isValid() ) {
+    //            throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
+    //        }
+            addRule( rule );
+            this.eventSupport.fireAfterRuleAdded( pkg,
+                                                  rule );
+        }
     }
 
     protected abstract void addRule(final Rule rule) throws InvalidPatternException;
@@ -776,7 +778,7 @@ abstract public class AbstractRuleBase
         }
     }
 
-    public synchronized void addProcess(final Process process) {
+    public void addProcess(final Process process) {
         synchronized ( this.pkgs ) {
             this.processes.put( process.getId(),
                                 process );
@@ -784,7 +786,7 @@ abstract public class AbstractRuleBase
 
     }
 
-    public synchronized void removeProcess(final String id) {
+    public void removeProcess(final String id) {
         synchronized ( this.pkgs ) {
             this.processes.remove( id );
         }
@@ -798,8 +800,10 @@ abstract public class AbstractRuleBase
         return process;
     }
 
-    public synchronized void addStatefulSession(final StatefulSession statefulSession) {
-        this.statefulSessions.add( statefulSession );
+    public void addStatefulSession(final StatefulSession statefulSession) {
+        synchronized ( this.statefulSessions ) {
+            this.statefulSessions.add( statefulSession );
+        }
     }
 
     public Package getPackage(final String name) {
