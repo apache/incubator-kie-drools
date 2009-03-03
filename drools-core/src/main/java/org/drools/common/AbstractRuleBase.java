@@ -737,11 +737,14 @@ abstract public class AbstractRuleBase
 
     public void removeRule(final Package pkg,
                            final Rule rule) {
-        this.eventSupport.fireBeforeRuleRemoved( pkg,
-                                                 rule );
-        removeRule( rule );
-        this.eventSupport.fireAfterRuleRemoved( pkg,
-                                                rule );
+        synchronized ( this.pkgs ) {
+            this.eventSupport.fireBeforeRuleRemoved( pkg,
+                                                     rule );
+            
+            removeRule( rule );
+            this.eventSupport.fireAfterRuleRemoved( pkg,
+                                                    rule );
+        }
     }
 
     protected abstract void removeRule(Rule rule);
