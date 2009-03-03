@@ -242,7 +242,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                  workingMemory );
     }
 
-    public synchronized StatefulSession newStatefulSession(boolean keepReference) {
+    public StatefulSession newStatefulSession(boolean keepReference) {
         SessionConfiguration config = new SessionConfiguration();
         config.setKeepReference( keepReference );
 
@@ -250,38 +250,40 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                    EnvironmentFactory.newEnvironment() );
     }
 
-    public synchronized StatefulSession newStatefulSession(java.io.InputStream stream) {
+    public StatefulSession newStatefulSession(java.io.InputStream stream) {
         return newStatefulSession( stream,
                                    true );
     }
 
-    public synchronized StatefulSession newStatefulSession(java.io.InputStream stream,
-                                                           boolean keepReference) {
+    public StatefulSession newStatefulSession(java.io.InputStream stream,
+                                              boolean keepReference) {
         StatefulSession session = null;
         try {
-            // first unwrap the byte[]
-            ObjectInputStream ois = new ObjectInputStream( stream );
-
-            // standard serialisation would have written the statateful session instance info to the stream first
-            // so we read it, but we don't need it, so just ignore.
-            ReteooStatefulSession rsession = (ReteooStatefulSession) ois.readObject();
-
-            // now unmarshall that byte[]
-            ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
-            Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ) );
-            StatefulKnowledgeSession ksession = marshaller.unmarshall( bais,
-                                                                       new SessionConfiguration(),
-                                                                       EnvironmentFactory.newEnvironment() );
-            session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
-
-            if ( keepReference ) {
-                super.addStatefulSession( session );
-                for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
-                    addEventListener( (RuleBaseEventListener) it.next() );
+            synchronized ( this.pkgs ) {
+                // first unwrap the byte[]
+                ObjectInputStream ois = new ObjectInputStream( stream );
+    
+                // standard serialisation would have written the statateful session instance info to the stream first
+                // so we read it, but we don't need it, so just ignore.
+                ReteooStatefulSession rsession = (ReteooStatefulSession) ois.readObject();
+    
+                // now unmarshall that byte[]
+                ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
+                Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ) );
+                StatefulKnowledgeSession ksession = marshaller.unmarshall( bais,
+                                                                           new SessionConfiguration(),
+                                                                           EnvironmentFactory.newEnvironment() );
+                session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
+    
+                if ( keepReference ) {
+                    super.addStatefulSession( session );
+                    for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+                        addEventListener( (RuleBaseEventListener) it.next() );
+                    }
                 }
+    
+                bais.close();
             }
-
-            bais.close();
 
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to unmarshall session",
@@ -297,8 +299,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
         return session;
     }
 
-    public synchronized StatefulSession newStatefulSession(SessionConfiguration sessionConfig,
-                                                           Environment environment) {
+    public StatefulSession newStatefulSession(SessionConfiguration sessionConfig,
+                                              Environment environment) {
         if ( sessionConfig == null ) {
             sessionConfig = ( SessionConfiguration ) KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         }
@@ -310,9 +312,9 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                    environment );
     }
 
-    public synchronized StatefulSession newStatefulSession(int id,
-                                                           final SessionConfiguration sessionConfig,
-                                                           final Environment environment) {
+    public StatefulSession newStatefulSession(int id,
+                                              final SessionConfiguration sessionConfig,
+                                              final Environment environment) {
         if ( this.config.isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
@@ -470,7 +472,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super.addPackages( pkgs );
     }
 
-    public synchronized void addPackage(final Package newPkg) {
+    public void addPackage(final Package newPkg) {
         List<Package> list = new ArrayList<Package>();
         list.add( newPkg );
         super.addPackages( list );
