@@ -2,7 +2,6 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELConsequence;
@@ -86,7 +85,7 @@ public class MVELConsequenceBuilder
                                                                     context.getRuleDescr(),
                                                                     dialect.getInterceptors(),
                                                                     text,
-                                                                    new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()},
+                                                                    new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()},
                                                                     null );
             
             Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations(context.getRule()).size()] );

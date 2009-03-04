@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.java;
 
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -72,19 +73,19 @@ public class JavaAccumulateBuilderTest extends TestCase {
         
         String code = "int x = 0;";
         String expected = "x = 0;";
-        JavaAnalysisResult analysis = analyzer.analyzeBlock( code, new Set[0]);
+        JavaAnalysisResult analysis = analyzer.analyzeBlock( code, new Map[0]);
         String result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );
         
         code = "$anExternalVar.method(); \nint aVar = 0, anotherVar=10    ;Integer bla = new Integer( 25);functionCall();\n";
         expected = "$anExternalVar.method(); \naVar = 0;anotherVar=10;bla = new Integer( 25);functionCall();\n";;
-        analysis = analyzer.analyzeBlock( code, new Set[0]);
+        analysis = analyzer.analyzeBlock( code, new Map[0]);
         result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );
         
         code = "$anExternalVar.method(); String[] aVar = new String[] { \"a\", \"b\" }, anotherVar=new String[] { someStringVar }  ;final Integer bla = new Integer( 25);functionCall();\n";
         expected = "$anExternalVar.method(); aVar = new String[] { \"a\", \"b\" };anotherVar=new String[] { someStringVar };bla = new Integer( 25);functionCall();\n";
-        analysis = analyzer.analyzeBlock( code, new Set[0]);
+        analysis = analyzer.analyzeBlock( code, new Map[0]);
         result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );
 

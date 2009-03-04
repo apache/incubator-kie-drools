@@ -132,7 +132,7 @@ public class PackageBuilder {
 
     private CompositeClassLoader          rootClassLoader;
 
-    private Map<String, Class>            globals;
+    private Map<String, Class<?>>            globals;
 
     private Resource                      resource;
 
@@ -239,7 +239,7 @@ public class PackageBuilder {
         this.pkgRegistryMap.put( pkg.getName(),
                                  pkgRegistry );
 
-        globals = new HashMap<String, Class>();
+        globals = new HashMap<String, Class<?>>();
     }
 
     public PackageBuilder(RuleBase ruleBase,
@@ -264,7 +264,7 @@ public class PackageBuilder {
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
-        globals = new HashMap<String, Class>();
+        globals = new HashMap<String, Class<?>>();
     }
 
     /**
@@ -799,7 +799,7 @@ public class PackageBuilder {
                     } else {
                         pkg.addGlobal( identifier,
                                        this.rootClassLoader.loadClass( type ) );
-                        // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
+                        // this isn't a package merge, it's adding to the rulebase, but I've put it here for convenience
                         this.globals.put( identifier,
                                           this.rootClassLoader.loadClass( type ) );
                     }
@@ -1278,7 +1278,7 @@ public class PackageBuilder {
         return expander;
     }
 
-    public Map<String, Class> getGlobals() {
+    public Map<String, Class<?>> getGlobals() {
         return this.globals;
     }
 

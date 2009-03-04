@@ -38,7 +38,7 @@ public interface RuleConditionElement
      * 
      * @return
      */
-    public Map getInnerDeclarations();
+    public Map<String,Declaration> getInnerDeclarations();
 
     /**
      * Returns a Map of declarations that are visible
@@ -46,7 +46,7 @@ public interface RuleConditionElement
      * 
      * @return
      */
-    public Map getOuterDeclarations();
+    public Map<String,Declaration> getOuterDeclarations();
 
     /**
      * Resolves the given identifier in the current scope and

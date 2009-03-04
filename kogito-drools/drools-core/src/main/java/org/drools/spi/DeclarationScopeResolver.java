@@ -18,18 +18,18 @@ import org.drools.rule.RuleConditionElement;
  * @author etirelli
  */
 public class DeclarationScopeResolver {
-    private static final Stack EMPTY_STACK = new Stack();
-    private Map[]              maps;
-    private Stack              buildStack;
-    private Package            pkg;
+    private static final Stack<RuleConditionElement> EMPTY_STACK = new Stack<RuleConditionElement>();
+    private Map<String, Class< ? >>[]                maps;
+    private Stack<RuleConditionElement>              buildStack;
+    private Package                                  pkg;
 
-    public DeclarationScopeResolver(final Map[] maps) {
+    public DeclarationScopeResolver(final Map<String, Class< ? >>[] maps) {
         this( maps,
               EMPTY_STACK );
     }
 
-    public DeclarationScopeResolver(final Map[] maps,
-                                    final Stack buildStack) {
+    public DeclarationScopeResolver(final Map<String, Class< ? >>[] maps,
+                                    final Stack<RuleConditionElement> buildStack) {
         this.maps = maps;
         if ( buildStack == null ) {
             this.buildStack = EMPTY_STACK;
@@ -42,46 +42,31 @@ public class DeclarationScopeResolver {
         this.pkg = pkg;
     }
 
-    // @ TODO I don't think this is needed any more, no references to it
-    //  public Class getType(final String name) {
-    //      for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-    //          final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( name );
-    //          if ( declaration != null ) {
-    //              return declaration.getExtractor().getExtractToClass();
-    //          }
-    //      }
-    //      for ( int i = 0, length = this.maps.length; i < length; i++ ) {
-    //          final Object object = this.maps[i].get( name );
-    //          if ( object != null ) {
-    //              if ( object instanceof Declaration ) {
-    //                  return ((Declaration) object).getExtractor().getExtractToClass();
-    //              } else {
-    //                  return (Class) object;
-    //              }
-    //          }
-    //      }
-    //      return null;
-    //  }
-    private Declaration getExtendedDeclaration(Rule rule, String identifier){
-    	if(rule.getLhs().getInnerDeclarations().containsKey(identifier)){
-    		return (Declaration)rule.getLhs().getInnerDeclarations().get(identifier);
-    	}else if(null != rule.getParent()){
-    		return getExtendedDeclaration(rule.getParent(), identifier);
-    	}
-    	return null;
-    	
+    private Declaration getExtendedDeclaration(Rule rule,
+                                               String identifier) {
+        if ( rule.getLhs().getInnerDeclarations().containsKey( identifier ) ) {
+            return (Declaration) rule.getLhs().getInnerDeclarations().get( identifier );
+        } else if ( null != rule.getParent() ) {
+            return getExtendedDeclaration( rule.getParent(),
+                                           identifier );
+        }
+        return null;
+
     }
-    private HashMap getAllExtendedDeclaration(Rule rule, HashMap dec){
-    	//declarations.putAll( ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations() );
-    	dec.putAll( ((RuleConditionElement)rule.getLhs()).getInnerDeclarations() );
-    	if(null != rule.getParent()){
-    		return getAllExtendedDeclaration(rule.getParent(), dec);
-    	}
-    	return dec;
-    	
+
+    private HashMap<String, Declaration> getAllExtendedDeclaration(Rule rule,
+                                                                   HashMap<String, Declaration> dec) {
+        dec.putAll( ((RuleConditionElement) rule.getLhs()).getInnerDeclarations() );
+        if ( null != rule.getParent() ) {
+            return getAllExtendedDeclaration( rule.getParent(),
+                                              dec );
+        }
+        return dec;
+
     }
-    
-    public Declaration getDeclaration(final Rule rule, final String identifier) {
+
+    public Declaration getDeclaration(final Rule rule,
+                                      final String identifier) {
         // it may be a local bound variable
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
             final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( identifier );
@@ -90,39 +75,40 @@ public class DeclarationScopeResolver {
             }
         }
         // look at parent rules
-        if(rule != null && rule.getParent() != null){
-        	// recursive algorithm for each parent
+        if ( rule != null && rule.getParent() != null ) {
+            // recursive algorithm for each parent
             //     -> lhs.getInnerDeclarations()
-        	Declaration parentDeclaration = getExtendedDeclaration(rule.getParent(), identifier);
-        	if(null != parentDeclaration){
-        		return parentDeclaration;
-        	}
+            Declaration parentDeclaration = getExtendedDeclaration( rule.getParent(),
+                                                                    identifier );
+            if ( null != parentDeclaration ) {
+                return parentDeclaration;
+            }
         }
-        
-        
+
         // it may be a global or something
         for ( int i = 0, length = this.maps.length; i < length; i++ ) {
             if ( this.maps[i].containsKey( (identifier) ) ) {
                 if ( pkg != null ) {
-                    Class cls = (Class) this.maps[i].get( identifier );
+                    Class<?> cls = (Class<?>) this.maps[i].get( identifier );
                     ClassObjectType classObjectType = new ClassObjectType( cls );
-                                        
+
                     Declaration declaration = null;
                     final Pattern dummy = new Pattern( 0,
                                                        classObjectType );
-                    
-                    GlobalExtractor globalExtractor = new GlobalExtractor(identifier, classObjectType);
+
+                    GlobalExtractor globalExtractor = new GlobalExtractor( identifier,
+                                                                           classObjectType );
                     declaration = new Declaration( identifier,
                                                    globalExtractor,
                                                    dummy );
-                    
+
                     // make sure dummy and globalExtractor are wired up to correct ClassObjectType
                     // and set as targets for rewiring
-                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType, 
+                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType,
                                                                          dummy );
-                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType, 
+                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType,
                                                                          globalExtractor );
-                    
+
                     return declaration;
                 } else {
                     throw new UnsupportedOperationException( "This shoudln't happen outside of PackageBuilder" );
@@ -132,7 +118,8 @@ public class DeclarationScopeResolver {
         return null;
     }
 
-    public boolean available(Rule rule, final String name) {
+    public boolean available(Rule rule,
+                             final String name) {
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
             final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( name );
             if ( declaration != null ) {
@@ -145,18 +132,20 @@ public class DeclarationScopeResolver {
             }
         }
         // look at parent rules
-        if(rule != null && rule.getParent() != null){
-        	// recursive algorithm for each parent
+        if ( rule != null && rule.getParent() != null ) {
+            // recursive algorithm for each parent
             //     -> lhs.getInnerDeclarations()
-        	Declaration parentDeclaration = getExtendedDeclaration(rule.getParent(), name);
-        	if(null != parentDeclaration){
-        		return true;
-        	}
+            Declaration parentDeclaration = getExtendedDeclaration( rule.getParent(),
+                                                                    name );
+            if ( null != parentDeclaration ) {
+                return true;
+            }
         }
         return false;
     }
 
-    public boolean isDuplicated(Rule rule, final String name) {
+    public boolean isDuplicated(Rule rule,
+                                final String name) {
         for ( int i = 0, length = this.maps.length; i < length; i++ ) {
             if ( this.maps[i].containsKey( (name) ) ) {
                 return true;
@@ -175,13 +164,14 @@ public class DeclarationScopeResolver {
             }
         }
         // look at parent rules
-        if(rule != null && rule.getParent() != null){
-        	// recursive algorithm for each parent
+        if ( rule != null && rule.getParent() != null ) {
+            // recursive algorithm for each parent
             //     -> lhs.getInnerDeclarations()
-        	Declaration parentDeclaration = getExtendedDeclaration(rule.getParent(), name);
-        	if(null != parentDeclaration){
-        		return true;
-        	}
+            Declaration parentDeclaration = getExtendedDeclaration( rule.getParent(),
+                                                                    name );
+            if ( null != parentDeclaration ) {
+                return true;
+            }
         }
         return false;
     }
@@ -192,17 +182,27 @@ public class DeclarationScopeResolver {
      * 
      * @return
      */
-    public Map getDeclarations(Rule rule) {
-        final Map declarations = new HashMap();
+    public Map<String, Declaration> getDeclarations(Rule rule) {
+        final Map<String, Declaration> declarations = new HashMap<String, Declaration>();
         for ( int i = 0; i < this.buildStack.size(); i++ ) {
             // this may be optimized in the future to only re-add elements at 
             // scope breaks, like "NOT" and "EXISTS"
             declarations.putAll( ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations() );
         }
-        if(null != rule.getParent()){
-        	return getAllExtendedDeclaration(rule.getParent(), (HashMap)declarations);
+        if ( null != rule.getParent() ) {
+            return getAllExtendedDeclaration( rule.getParent(),
+                                              (HashMap<String, Declaration>) declarations );
         }
         return declarations;
+    }
+    
+    public Map<String,Class<?>> getDeclarationClasses(Rule rule) {
+        final Map<String, Declaration> declarations = getDeclarations( rule );
+        final Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
+        for ( Map.Entry<String, Declaration> decl : declarations.entrySet() ) {
+            classes.put( decl.getKey(), decl.getValue().getExtractor().getExtractToClass() );
+        }
+        return classes;
     }
 
     public Pattern findPatternByIndex(int index) {

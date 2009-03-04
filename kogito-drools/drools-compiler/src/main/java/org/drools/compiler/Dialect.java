@@ -2,7 +2,6 @@ package org.drools.compiler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.TypeResolver;
 import org.drools.io.Resource;
@@ -14,6 +13,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
+import org.drools.rule.builder.EngineElementBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.PackageBuildContext;
@@ -44,7 +44,7 @@ public interface Dialect {
     // to execute complex expressions
     String getExpressionDialectName();
 
-    Map getBuilders();
+    Map<Class<?>,EngineElementBuilder> getBuilders();
 
     TypeResolver getTypeResolver();
 
@@ -78,17 +78,17 @@ public interface Dialect {
 
     EntryPointBuilder getEntryPointBuilder();
 
-    RuleConditionBuilder getBuilder(Class clazz);
+    EngineElementBuilder getBuilder(Class<?> clazz);
 
     AnalysisResult analyzeExpression(final PackageBuildContext context,
                                      final BaseDescr descr,
                                      final Object content,
-                                     final Set[] availableIdentifiers);
+                                     final Map<String, Class<?>>[] availableIdentifiers);
 
     AnalysisResult analyzeBlock(final PackageBuildContext context,
                                 final BaseDescr descr,
                                 final String text,
-                                final Set[] availableIdentifiers);
+                                final Map<String, Class<?>>[] availableIdentifiers);
 
     void compileAll();
 
@@ -122,28 +122,28 @@ public interface Dialect {
          * 
          * @return
          */
-        public List getIdentifiers();
+        public List<String> getIdentifiers();
 
         /**
          * Returns the array of lists<String> of bound identifiers
          * 
          * @return
          */
-        public List[] getBoundIdentifiers();
+        public List<String>[] getBoundIdentifiers();
 
         /**
          * Returns the list<String> of not bounded identifiers
          * 
          * @return
          */
-        public List getNotBoundedIdentifiers();
+        public List<String> getNotBoundedIdentifiers();
 
         /**
          * Returns the list<String> of declared local variables
          * 
          * @return
          */
-        public List getLocalVariables();
+        public List<String> getLocalVariables();
 
     }
 

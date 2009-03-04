@@ -17,7 +17,7 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELReturnValueExpression;
@@ -51,7 +51,8 @@ public class MVELReturnValueBuilder
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       returnValueRestrictionDescr,
                                                                                       returnValueRestrictionDescr.getContent(),
-                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                      new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()} );
+
     
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
     

@@ -18,8 +18,10 @@ package org.drools.rule.builder;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.ClassObjectType;
@@ -151,7 +153,8 @@ public class PatternBuilder
         Pattern pattern;
         if ( patternDescr.getIdentifier() != null && !patternDescr.getIdentifier().equals( "" ) ) {
 
-            if ( context.getDeclarationResolver().isDuplicated(context.getRule(), patternDescr.getIdentifier() ) ) {
+            if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
+                                                                patternDescr.getIdentifier() ) ) {
                 // This declaration already  exists, so throw an Exception
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               patternDescr,
@@ -168,7 +171,7 @@ public class PatternBuilder
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
                 context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
                                                                                   (PatternExtractor) pattern.getDeclaration().getExtractor() );
-            }            
+            }
         } else {
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
@@ -181,7 +184,7 @@ public class PatternBuilder
             context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
                                                                               pattern );
         }
-        
+
         //context.getPkg().getClassFieldAccessorStore().get
 
         // adding the newly created pattern to the build stack
@@ -198,7 +201,7 @@ public class PatternBuilder
 
         if ( patternDescr.getSource() != null ) {
             // we have a pattern source, so build it
-            RuleConditionBuilder builder = context.getDialect().getBuilder( patternDescr.getSource().getClass() );
+            RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( patternDescr.getSource().getClass() );
 
             PatternSource source = (PatternSource) builder.build( context,
                                                                   patternDescr.getSource() );
@@ -211,7 +214,7 @@ public class PatternBuilder
                 SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
                 SlidingTimeWindow window = new SlidingTimeWindow( swd.getLength() );
                 pattern.addBehavior( window );
-            } else if( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getType() ) ) {
+            } else if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getType() ) ) {
                 SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
                 SlidingLengthWindow window = new SlidingLengthWindow( (int) swd.getLength() );
                 pattern.addBehavior( window );
@@ -366,7 +369,7 @@ public class PatternBuilder
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
-                                  ( LiteralConstraint ) constraint );            
+                                  (LiteralConstraint) constraint );
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
@@ -377,7 +380,7 @@ public class PatternBuilder
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
-                                  (VariableRestriction) restriction );            
+                                  (VariableRestriction) restriction );
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
@@ -388,7 +391,7 @@ public class PatternBuilder
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
-                                  (ReturnValueConstraint) constraint );            
+                                  (ReturnValueConstraint) constraint );
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
@@ -542,7 +545,8 @@ public class PatternBuilder
                        final Pattern pattern,
                        final FieldBindingDescr fieldBindingDescr) {
 
-        if ( context.getDeclarationResolver().isDuplicated(context.getRule(), fieldBindingDescr.getIdentifier() ) ) {
+        if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
+                                                            fieldBindingDescr.getIdentifier() ) ) {
             // This declaration already  exists, so throw an Exception
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           fieldBindingDescr,
@@ -561,15 +565,19 @@ public class PatternBuilder
                                                                      true );
     }
 
+    @SuppressWarnings("unchecked")
     private void build(final RuleBuildContext context,
                        final Pattern pattern,
                        final PredicateDescr predicateDescr,
                        final AbstractCompositeConstraint container) {
 
+        Map<String, Class< ? >> declarations = getDeclarationsMap( context );
+        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
+
         final Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                         predicateDescr,
                                                                                         predicateDescr.getContent(),
-                                                                                        new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                        new Map[]{declarations, globals} );
 
         if ( analysis == null ) {
             // something bad happened
@@ -584,7 +592,8 @@ public class PatternBuilder
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) );
+            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                      (String) usedIdentifiers[0].get( i ) );
             if ( decl.getPattern() == pattern ) {
                 factDeclarations.add( decl );
             } else {
@@ -624,6 +633,15 @@ public class PatternBuilder
                        predicateConstraint,
                        predicateDescr );
 
+    }
+
+    private Map<String, Class< ? >> getDeclarationsMap(final RuleBuildContext context) {
+        Map<String, Class< ? >> declarations = new HashMap<String, Class< ? >>();
+        for ( Map.Entry<String, Declaration> entry : context.getDeclarationResolver().getDeclarations( context.getRule() ).entrySet() ) {
+            declarations.put( entry.getKey(),
+                              entry.getValue().getExtractor().getExtractToClass() );
+        }
+        return declarations;
     }
 
     /**
@@ -729,7 +747,8 @@ public class PatternBuilder
             return null;
         }
 
-        Declaration declaration = context.getDeclarationResolver().getDeclaration(context.getRule(), variableRestrictionDescr.getIdentifier() );
+        Declaration declaration = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                   variableRestrictionDescr.getIdentifier() );
 
         if ( declaration == null ) {
             // trying to create implicit declaration
@@ -749,9 +768,7 @@ public class PatternBuilder
         }
 
         Target right = getRightTarget( extractor );
-        Target left = ( declaration.isPatternDeclaration() && ! 
-                ( Date.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) ||
-                Number.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) ) )? Target.HANDLE : Target.FACT;
+        Target left = (declaration.isPatternDeclaration() && !(Date.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   variableRestrictionDescr,
                                                   extractor.getValueType(),
@@ -776,11 +793,10 @@ public class PatternBuilder
         FieldValue field = null;
         try {
             Object value = literalRestrictionDescr.getValue();
-            if( literalRestrictionDescr.getType() == LiteralRestrictionDescr.TYPE_STRING &&
-                context.getConfiguration().isProcessStringEscapes() ) {
+            if ( literalRestrictionDescr.getType() == LiteralRestrictionDescr.TYPE_STRING && context.getConfiguration().isProcessStringEscapes() ) {
                 value = StringUtils.unescapeJava( (String) value );
             }
-            
+
             field = FieldFactory.getFieldValue( value,
                                                 extractor.getValueType() );
         } catch ( final Exception e ) {
@@ -828,7 +844,8 @@ public class PatternBuilder
                                                          parts[1],
                                                          (Pattern) context.getBuildStack().peek() );
             } else {
-                final Declaration decl = context.getDeclarationResolver().getDeclaration(context.getRule(), parts[0] );
+                final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                          parts[0] );
                 // if a declaration exists, then it may be a variable direct property access, not an enum
                 if ( decl != null ) {
                     if ( decl.isPatternDeclaration() ) {
@@ -848,9 +865,7 @@ public class PatternBuilder
 
             if ( implicit != null ) {
                 Target right = getRightTarget( extractor );
-               Target left = ( implicit.isPatternDeclaration() && ! 
-                       ( Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) ||
-                       Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) ) )? Target.HANDLE : Target.FACT;
+                Target left = (implicit.isPatternDeclaration() && !(Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
                 final Evaluator evaluator = getEvaluator( context,
                                                           qiRestrictionDescr,
                                                           extractor.getValueType(),
@@ -903,7 +918,7 @@ public class PatternBuilder
                                                   qiRestrictionDescr.getEvaluator(),
                                                   qiRestrictionDescr.isNegated(),
                                                   qiRestrictionDescr.getParameterText(),
-                                                  left, 
+                                                  left,
                                                   right );
         if ( evaluator == null ) {
             return null;
@@ -915,8 +930,7 @@ public class PatternBuilder
     }
 
     private Target getRightTarget(final InternalReadAccessor extractor) {
-        Target right = ( extractor.isSelfReference() && ! ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
-                Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ) ? Target.HANDLE : Target.FACT;
+        Target right = (extractor.isSelfReference() && !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
         return right;
     }
 
@@ -925,16 +939,19 @@ public class PatternBuilder
                                                     final InternalReadAccessor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
+        Map<String, Class< ? >> declarations = getDeclarationsMap( context );
+        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,
                                                                                   returnValueRestrictionDescr.getContent(),
-                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                  new Map[]{declarations, globals} );
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            final Declaration declaration = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) );
+            final Declaration declaration = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                             (String) usedIdentifiers[0].get( i ) );
             if ( declaration.getPattern() == pattern ) {
                 factDeclarations.add( declaration );
             } else {
@@ -1037,7 +1054,7 @@ public class PatternBuilder
                                    final boolean isNegated,
                                    final String parameterText,
                                    final Target left,
-                                   final Target right ) {
+                                   final Target right) {
 
         final EvaluatorDefinition def = context.getConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( evaluatorString );
         if ( def == null ) {

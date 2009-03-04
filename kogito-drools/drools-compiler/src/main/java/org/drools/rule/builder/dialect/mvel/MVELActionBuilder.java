@@ -78,22 +78,17 @@ public class MVELActionBuilder
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-            Set<String> variables = new HashSet<String>();
-            variables.add("context");
-            variables.add("kcontext");
-            variables.add("drools");
+            Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
+            variables.put("context", ProcessContext.class);
+            variables.put("kcontext", org.drools.runtime.process.ProcessContext.class);
+            variables.put("drools", KnowledgeHelper.class);
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     actionDescr,
                                                                     dialect.getInterceptors(),
                                                                     text,
-                                                                    new Set[]{variables, context.getPkg().getGlobals().keySet()},
+                                                                    new Map[]{variables, context.getPackageBuilder().getGlobals()},
                                                                     null );                       
 
-
-            Map<String, Class> variableClasses = new HashMap<String, Class>();
-            variableClasses.put("context", ProcessContext.class);
-            variableClasses.put("kcontext", org.drools.runtime.process.ProcessContext.class);
-            variableClasses.put("drools", KnowledgeHelper.class);
 
             List<String> variableNames = analysis.getNotBoundedIdentifiers();
             if (contextResolver != null) {
@@ -107,7 +102,7 @@ public class MVELActionBuilder
 	                            null,
 	                            "Could not find variable '" + variableName + "' for action '" + actionDescr.getText() + "'" ) );            		
 	            	} else {
-	            		variableClasses.put(variableName,
+	            		variables.put(variableName,
             				context.getDialect().getTypeResolver().resolveType(
         						variableScope.findVariable(variableName).getType().getStringType()));
 	            	}
@@ -118,7 +113,7 @@ public class MVELActionBuilder
                                                                        analysis,
                                                                        null,
                                                                        null,
-                                                                       variableClasses,
+                                                                       variables,
                                                                        context );              
             MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
             expr.setVariableNames(variableNames);

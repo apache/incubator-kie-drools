@@ -19,7 +19,6 @@ package org.drools.common;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -46,7 +45,6 @@ import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.Marshaller;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
@@ -246,7 +244,7 @@ abstract public class AbstractRuleBase
         this.config = (RuleBaseConfiguration) droolsStream.readObject();
         this.config.setClassLoader( droolsStream.getParentClassLoader() );
         
-        this.pkgs = (Map) droolsStream.readObject();
+        this.pkgs = (Map<String, Package>) droolsStream.readObject();
 
 
         for ( final Object object : this.pkgs.values() ) {

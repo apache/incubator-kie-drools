@@ -18,6 +18,7 @@
 package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -60,7 +61,7 @@ public class JavaExprAnalyzerTest extends TestCase {
                            "double thisIsAGoodVar = 0;\n" +
                            "method();\n";
         try {
-            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new Set[0] );
+            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new Map[0] );
             List vars = analysis.getLocalVariables();
             
             assertEquals( 3, vars.size() );

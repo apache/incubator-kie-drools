@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.base.ModifyInterceptor;
@@ -51,6 +50,7 @@ import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
+import org.drools.rule.builder.EngineElementBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
@@ -108,7 +108,7 @@ public class MVELDialect
     protected static final GroupElementBuilder             GE_BUILDER                     = new GroupElementBuilder();
 
     // a map of registered builders
-    private static Map                                     builders;
+    private static Map<Class< ? >, EngineElementBuilder>   builders;
 
     static {
         initBuilder();
@@ -135,7 +135,7 @@ public class MVELDialect
 
     private boolean                                        strictMode;
     private int                                            languageLevel;
-    public static final Object                             COMPILER_LOCK                  = new Object();    
+    public static final Object                             COMPILER_LOCK                  = new Object();
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
@@ -160,9 +160,9 @@ public class MVELDialect
 
         this.imports = new HashMap();
         this.packageImports = new HashMap();
-        
+
         // setting MVEL option directly
-        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;        
+        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
 
         this.interceptors = new HashMap( 1 );
         this.interceptors.put( "Modify",
@@ -243,7 +243,7 @@ public class MVELDialect
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
-        builders = new HashMap();
+        builders = new HashMap<Class< ? >, EngineElementBuilder>();
 
         builders.put( AndDescr.class,
                       GE_BUILDER );
@@ -437,10 +437,10 @@ public class MVELDialect
     public void compileAll() {
     }
 
-    public Dialect.AnalysisResult analyzeExpression(PackageBuildContext context,
-                                                    BaseDescr descr,
-                                                    Object content,
-                                                    final Set[] availableIdentifiers) {
+    public Dialect.AnalysisResult analyzeExpression(final PackageBuildContext context,
+                                                    final BaseDescr descr,
+                                                    final Object content,
+                                                    final Map<String, Class< ? >>[] availableIdentifiers) {
         return analyzeExpression( context,
                                   descr,
                                   content,
@@ -448,21 +448,18 @@ public class MVELDialect
                                   null );
     }
 
-    public Dialect.AnalysisResult analyzeExpression(PackageBuildContext context,
-                                                    BaseDescr descr,
-                                                    Object content,
-                                                    final Set[] availableIdentifiers,
-                                                    Map localTypes) {
-        // new
-        // Set[]{context.getDeclarationResolver().getDeclarations().keySet(),
-        // context.getPkg().getGlobals().keySet()},
+    public Dialect.AnalysisResult analyzeExpression(final PackageBuildContext context,
+                                                    final BaseDescr descr,
+                                                    final Object content,
+                                                    final Map<String, Class< ? >>[] availableIdentifiers,
+                                                    final Map<String, Class< ? >> localTypes) {
 
         Dialect.AnalysisResult result = null;
         try {
-            result = this.analyzer.analyzeExpression( context,
-                                                      (String) content,
-                                                      availableIdentifiers,
-                                                      localTypes );
+            result = analyzer.analyzeExpression( context,
+                                                 (String) content,
+                                                 availableIdentifiers,
+                                                 localTypes );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
@@ -472,10 +469,10 @@ public class MVELDialect
         return result;
     }
 
-    public Dialect.AnalysisResult analyzeBlock(PackageBuildContext context,
-                                               BaseDescr descr,
-                                               String text,
-                                               final Set[] availableIdentifiers) {
+    public Dialect.AnalysisResult analyzeBlock(final PackageBuildContext context,
+                                               final BaseDescr descr,
+                                               final String text,
+                                               final Map<String, Class< ? >>[] availableIdentifiers) {
         return analyzeBlock( context,
                              descr,
                              null,
@@ -484,21 +481,18 @@ public class MVELDialect
                              null );
     }
 
-    public Dialect.AnalysisResult analyzeBlock(PackageBuildContext context,
-                                               BaseDescr descr,
-                                               Map interceptors,
-                                               String text,
-                                               final Set[] availableIdentifiers,
-                                               Map localTypes) {
-        // new
-        // Set[]{context.getDeclarationResolver().getDeclarations().keySet(),
-        // context.getPkg().getGlobals().keySet()}
+    public Dialect.AnalysisResult analyzeBlock(final PackageBuildContext context,
+                                               final BaseDescr descr,
+                                               final Map interceptors,
+                                               final String text,
+                                               final Map<String, Class< ? >>[] availableIdentifiers,
+                                               final Map<String, Class< ? >> localTypes) {
 
         Dialect.AnalysisResult result = null;
-        result = this.analyzer.analyzeExpression( context,
-                                                  text,
-                                                  availableIdentifiers,
-                                                  localTypes );
+        result = analyzer.analyzeExpression( context,
+                                             text,
+                                             availableIdentifiers,
+                                             localTypes );
         return result;
     }
 
@@ -533,7 +527,7 @@ public class MVELDialect
                                                       final Dialect.AnalysisResult analysis,
                                                       final Declaration[] previousDeclarations,
                                                       final Declaration[] localDeclarations,
-                                                      final Map<String, Class> otherInputVariables,
+                                                      final Map<String, Class<?>> otherInputVariables,
                                                       final PackageBuildContext context) {
         String[] pkgImports = new String[this.packageImports.size()];
         int i = 0;
@@ -576,16 +570,16 @@ public class MVELDialect
                                     (Class) globalTypes.get( identifier ) );
             }
 
-//            // @TODO yuck, we don't want conditions for configuration :(
-//            if ( context instanceof RuleBuildContext ) {
-//                DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
-//                for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
-//                    String identifier = (String) it.next();
-//                    Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
-//                    resolvedInputs.put( identifier,
-//                                        cls );
-//                }
-//            }
+            //            // @TODO yuck, we don't want conditions for configuration :(
+            //            if ( context instanceof RuleBuildContext ) {
+            //                DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
+            //                for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
+            //                    String identifier = (String) it.next();
+            //                    Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
+            //                    resolvedInputs.put( identifier,
+            //                                        cls );
+            //                }
+            //            }
 
             // Set<String> usedIdentifiers = new HashSet<String>( list[0] );
 
@@ -634,7 +628,7 @@ public class MVELDialect
         String name;
         if ( context != null && context.getPkg() != null & context.getPkg().getName() != null ) {
             if ( context instanceof RuleBuildContext ) {
-                name = context.getPkg().getName() + "." + ((RuleBuildContext)context).getRuleDescr().getClassName();
+                name = context.getPkg().getName() + "." + ((RuleBuildContext) context).getRuleDescr().getClassName();
             } else {
                 name = context.getPkg().getName() + ".Unknown";
             }
@@ -667,7 +661,7 @@ public class MVELDialect
         String name;
         if ( context != null && context.getPkg() != null & context.getPkg().getName() != null ) {
             if ( context instanceof RuleBuildContext ) {
-                name = context.getPkg().getName() + "." + ((RuleBuildContext)context).getRuleDescr().getClassName();
+                name = context.getPkg().getName() + "." + ((RuleBuildContext) context).getRuleDescr().getClassName();
             } else {
                 name = context.getPkg().getName() + ".Unknown";
             }
@@ -703,7 +697,8 @@ public class MVELDialect
                 DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
                 for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
                     String identifier = (String) it.next();
-                    Class cls = resolver.getDeclaration(null, identifier ).getExtractor().getExtractToClass();
+                    Class cls = resolver.getDeclaration( null,
+                                                         identifier ).getExtractor().getExtractToClass();
                     parserContext.addInput( identifier,
                                             cls );
                 }
@@ -735,19 +730,19 @@ public class MVELDialect
             parserContext.addInput( "drools",
                                     KnowledgeHelper.class );
             if ( parserContext.getInputs().get( "kcontext" ) == null ) {
-            	parserContext.addInput( "kcontext",
-            							RuleContext.class );
+                parserContext.addInput( "kcontext",
+                                        RuleContext.class );
             }
         }
 
         return parserContext;
     }
 
-    public RuleConditionBuilder getBuilder(final Class clazz) {
-        return (RuleConditionBuilder) this.builders.get( clazz );
+    public EngineElementBuilder getBuilder(final Class< ? > clazz) {
+        return this.builders.get( clazz );
     }
 
-    public Map getBuilders() {
+    public Map<Class< ? >, EngineElementBuilder> getBuilders() {
         return this.builders;
     }
 

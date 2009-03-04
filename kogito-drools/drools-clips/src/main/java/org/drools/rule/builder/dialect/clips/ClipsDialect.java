@@ -2,7 +2,6 @@ package org.drools.rule.builder.dialect.clips;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.clips.Appendable;
 import org.drools.clips.FunctionHandlers;
@@ -141,8 +140,8 @@ public class ClipsDialect extends MVELDialect {
     public Dialect.AnalysisResult analyzeExpression(PackageBuildContext context,
                                                     BaseDescr descr,
                                                     Object content,
-                                                    final Set[] availableIdentifiers,
-                                                    Map localTypes) {
+                                                    final Map<String,Class<?>>[] availableIdentifiers,
+                                                    Map<String,Class<?>> localTypes) {
         if ( descr instanceof PredicateDescr ) {
             Appendable builder = new StringBuilderAppendable();
             PredicateDescr pdescr = (PredicateDescr) descr;
