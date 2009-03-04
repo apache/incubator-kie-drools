@@ -1575,6 +1575,10 @@ name=MyConfig</programlisting>
     <section>
       <title>Drools execution server</title>
 
+      <para>
+	IMPORTANT NOTE: the exact message formats described here are likely to slightly change post drools 5 (as support for processes and stateful sessions is added). The following will be preserved for compatability, but may be deprecated in favour of more flexible formats that are in the pipelines. 
+      </para>
+
       <para>The drools execution server (drools-server) module is a war which
       you can deploy to execute knowledgebases (rulebases) remotely for any
       sort of client application. This is not limited to JVM application
