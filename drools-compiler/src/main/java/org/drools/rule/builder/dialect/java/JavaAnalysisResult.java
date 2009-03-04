@@ -32,42 +32,42 @@ import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
  * @author etirelli
  */
 public class JavaAnalysisResult implements AnalysisResult {
-    private static final List[] EMPTY_ARRAY_OF_LISTS = new List[0];
+    private static final List<String>[] EMPTY_ARRAY_OF_LISTS = new List[0];
     
-    private List[] boundIdentifiers = EMPTY_ARRAY_OF_LISTS;
-    private List identifiers = Collections.EMPTY_LIST;
-    private Map localVariables = Collections.EMPTY_MAP;
-    private List notBoundedIdentifiers = Collections.EMPTY_LIST;
+    private List<String>[] boundIdentifiers = EMPTY_ARRAY_OF_LISTS;
+    private List<String> identifiers = Collections.emptyList();
+    private Map<String,JavaLocalDeclarationDescr> localVariables = Collections.emptyMap();
+    private List<String> notBoundedIdentifiers = Collections.emptyList();
     private List<JavaBlockDescr> blocks = Collections.emptyList();
     
-    public List[] getBoundIdentifiers() {
+    public List<String>[] getBoundIdentifiers() {
         return boundIdentifiers;
     }
-    public void setBoundIdentifiers(List[] boundIdentifiers) {
+    public void setBoundIdentifiers(List<String>[] boundIdentifiers) {
         this.boundIdentifiers = boundIdentifiers;
     }
-    public List getIdentifiers() {
+    public List<String> getIdentifiers() {
         return identifiers;
     }
-    public void setIdentifiers(List identifiers) {
+    public void setIdentifiers(List<String> identifiers) {
         this.identifiers = identifiers;
     }
-    public List getLocalVariables() {
-        return new ArrayList( localVariables.keySet() );
+    public List<String> getLocalVariables() {
+        return new ArrayList<String>( localVariables.keySet() );
     }
-    public Map getLocalVariablesMap() {
+    public Map<String,JavaLocalDeclarationDescr> getLocalVariablesMap() {
         return this.localVariables;
     }
-    public void setLocalVariables(Map localVariables) {
+    public void setLocalVariables(Map<String,JavaLocalDeclarationDescr> localVariables) {
         this.localVariables = localVariables;
     }
     public void addLocalVariable( String identifier, JavaLocalDeclarationDescr descr ) {
         this.localVariables.put( identifier, descr );
     }
-    public List getNotBoundedIdentifiers() {
+    public List<String> getNotBoundedIdentifiers() {
         return notBoundedIdentifiers;
     }
-    public void setNotBoundedIdentifiers(List notBoundedIdentifiers) {
+    public void setNotBoundedIdentifiers(List<String> notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
     public List<JavaBlockDescr> getBlockDescrs() {

@@ -36,7 +36,6 @@ import org.drools.common.DroolsObjectOutputStream;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactType;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.io.Resource;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -67,7 +66,7 @@ public class Package
     private String                         name;
 
     /** Set of all rule-names in this <code>Package</code>. */
-    private Map                            rules;
+    private Map<String,Rule>               rules;
 
     private Map<String, ImportDeclaration> imports;
 
@@ -98,7 +97,7 @@ public class Package
      * This will keep a summary error message as to why this package is not
      * valid
      */
-    private String                         errorSummary;    
+    private String                         errorSummary;
 
     // ------------------------------------------------------------
     // Constructors
@@ -123,7 +122,7 @@ public class Package
         this.imports = new HashMap<String, ImportDeclaration>();
         this.typeDeclarations = new HashMap<String, TypeDeclaration>();
         this.staticImports = Collections.EMPTY_SET;
-        this.rules = new LinkedHashMap();
+        this.rules = new LinkedHashMap<String, Rule>();
         this.ruleFlows = Collections.EMPTY_MAP;
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
@@ -206,7 +205,7 @@ public class Package
         this.ruleFlows = (Map) in.readObject();
         this.globals = (Map<String, String>) in.readObject();
         this.valid = in.readBoolean();
-        this.rules = (Map) in.readObject();
+        this.rules = (Map<String, Rule>) in.readObject();
         this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
         if ( !isDroolsStream ) {
             in.close();
@@ -290,18 +289,12 @@ public class Package
     }
 
     public void addGlobal(final String identifier,
-                          final Class clazz) {
-        addGlobal( identifier,
-                   clazz.getName() );
-    }
-
-    public void addGlobal(final String identifier,
-                          final String className) {
+                          final Class< ? > clazz) {
         if ( this.globals == Collections.EMPTY_MAP ) {
             this.globals = new HashMap<String, String>( 1 );
         }
         this.globals.put( identifier,
-                          className );
+                          clazz.getName() );
     }
 
     public void removeGlobal(final String identifier) {
@@ -491,7 +484,6 @@ public class Package
     public String getErrorSummary() {
         return this.errorSummary;
     }
-    
 
     public boolean equals(final Object object) {
         if ( this == object ) {

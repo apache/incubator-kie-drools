@@ -26,7 +26,7 @@ import org.drools.rule.RuleConditionElement;
  * 
  * @author etirelli
  */
-public interface RuleConditionBuilder {
+public interface RuleConditionBuilder extends EngineElementBuilder {
 
     public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr);    

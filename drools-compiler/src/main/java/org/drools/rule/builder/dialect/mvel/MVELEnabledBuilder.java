@@ -2,7 +2,6 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELEnabledExpression;
@@ -25,14 +24,15 @@ public class MVELEnabledBuilder
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-            Map<String,Class> otherVars = new HashMap<String, Class>();
+            Map<String,Class<?>> otherVars = new HashMap<String, Class<?>>();
             otherVars.put( "rule", org.drools.rule.Rule.class );
 
             Map<String, Declaration> declarations = context.getDeclarationResolver().getDeclarations(context.getRule());
+            Map<String, Class<?>>[] available = new Map[]{ context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()};
             Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                          context.getRuleDescr(),
                                                                          (String) context.getRuleDescr().getEnabled(),
-                                                                         new Set[]{declarations.keySet(), context.getPkg().getGlobals().keySet()},
+                                                                         available,
                                                                          otherVars );
 
             Declaration[] previousDeclarations = (Declaration[]) declarations.values().toArray( new Declaration[declarations.size()] );

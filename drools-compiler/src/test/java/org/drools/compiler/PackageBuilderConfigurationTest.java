@@ -312,7 +312,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         public AnalysisResult analyzeBlock(PackageBuildContext context,
                                            BaseDescr descr,
                                            String text,
-                                           Set[] availableIdentifiers) {
+                                           Map[] availableIdentifiers) {
             // TODO Auto-generated method stub
             return null;
         }
@@ -320,7 +320,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         public AnalysisResult analyzeExpression(PackageBuildContext context,
                                                 BaseDescr descr,
                                                 Object content,
-                                                Set[] availableIdentifiers) {
+                                                Map[] availableIdentifiers) {
             // TODO Auto-generated method stub
             return null;
         }

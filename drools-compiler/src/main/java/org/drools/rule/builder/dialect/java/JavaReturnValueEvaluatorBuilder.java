@@ -19,7 +19,6 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
@@ -52,7 +51,7 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
         Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                 descr,
                                                                 descr.getText(),
-                                                                new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()} );
+                                                                new Map[]{Collections.EMPTY_MAP, context.getPackageBuilder().getGlobals()} );
 
         if ( analysis == null ) {
             // not possible to get the analysis results

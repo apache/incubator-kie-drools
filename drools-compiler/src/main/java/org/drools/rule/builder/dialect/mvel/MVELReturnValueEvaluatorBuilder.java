@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELReturnValueEvaluator;
@@ -40,10 +39,10 @@ public class MVELReturnValueEvaluatorBuilder
                                                                     descr,
                                                                     dialect.getInterceptors(),
                                                                     text,
-                                                                    new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()},
+                                                                    new Map[]{Collections.EMPTY_MAP, context.getPackageBuilder().getGlobals()},
                                                                     null );         
 
-            Map<String, Class> variableClasses = new HashMap<String, Class>();
+            Map<String, Class<?>> variableClasses = new HashMap<String, Class<?>>();
             List<String> variableNames = analysis.getNotBoundedIdentifiers();
             if (contextResolver != null) {
 	            for (String variableName: variableNames) {

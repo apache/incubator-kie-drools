@@ -64,18 +64,18 @@ public class ReteooBuilder
     /**
      *
      */
-    private static final long                 serialVersionUID = 400L;
+    private static final long           serialVersionUID = 400L;
 
     /** The RuleBase */
-    private transient InternalRuleBase        ruleBase;
+    private transient InternalRuleBase  ruleBase;
 
-    private Map                               rules;
+    private Map<Rule, BaseNode[]>       rules;
 
-    private transient ReteooRuleBuilder       ruleBuilder;
+    private transient ReteooRuleBuilder ruleBuilder;
 
-    private IdGenerator                       idGenerator;
+    private IdGenerator                 idGenerator;
 
-    private boolean                           ordered;
+    private boolean                     ordered;
 
     // ------------------------------------------------------------
     // Constructors
@@ -91,7 +91,7 @@ public class ReteooBuilder
      */
     ReteooBuilder(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.rules = new HashMap();
+        this.rules = new HashMap<Rule, BaseNode[]>();
 
         //Set to 1 as Rete node is set to 0
         this.idGenerator = new IdGenerator( 1 );
@@ -114,9 +114,9 @@ public class ReteooBuilder
      * @throws InvalidPatternException
      */
     void addRule(final Rule rule) throws InvalidPatternException {
-        final List terminals = this.ruleBuilder.addRule( rule,
-                                                         this.ruleBase,
-                                                         this.idGenerator );
+        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule,
+                                                                       this.ruleBase,
+                                                                       this.idGenerator );
 
         this.rules.put( rule,
                         terminals.toArray( new BaseNode[terminals.size()] ) );
@@ -323,7 +323,7 @@ public class ReteooBuilder
             bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
             droolsStream = new DroolsObjectInputStream( bytes );
         }
-        this.rules = (Map) in.readObject();
+        this.rules = (Map<Rule, BaseNode[]>) in.readObject();
         this.idGenerator = (IdGenerator) in.readObject();
         this.ordered = in.readBoolean();
         this.ruleBase = droolsStream.getRuleBase();

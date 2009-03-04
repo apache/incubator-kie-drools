@@ -15,7 +15,7 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 
-public class QueryBuilder {
+public class QueryBuilder implements EngineElementBuilder {
     public Pattern build(final RuleBuildContext context,
                          final QueryDescr queryDescr) {
         ObjectType objectType = new ClassObjectType( DroolsQuery.class );

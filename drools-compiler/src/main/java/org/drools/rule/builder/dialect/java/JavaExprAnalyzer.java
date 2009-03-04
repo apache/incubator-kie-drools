@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.ANTLRStringStream;
@@ -66,7 +67,7 @@ public class JavaExprAnalyzer {
      *             If an error occurs in the parser.
      */
     public JavaAnalysisResult analyzeExpression(final String expr,
-                                            final Set[] availableIdentifiers) throws RecognitionException {
+                                                final Map<String,Class<?>>[] availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( expr );
         final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
@@ -81,7 +82,7 @@ public class JavaExprAnalyzer {
     }
 
     public JavaAnalysisResult analyzeBlock(final String expr,
-                                       final Set[] availableIdentifiers) throws RecognitionException {
+                                       final Map<String,Class<?>>[] availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
         final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
@@ -91,7 +92,7 @@ public class JavaExprAnalyzer {
 
         JavaAnalysisResult result = new JavaAnalysisResult();
         result.setIdentifiers( parser.getIdentifiers() );
-        result.setLocalVariables( new HashMap() );
+        result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
         for( Iterator it = parser.getLocalDeclarations().iterator(); it.hasNext(); ) {
             JavaLocalDeclarationDescr descr = (JavaLocalDeclarationDescr) it.next();
             for( Iterator identIt = descr.getIdentifiers().iterator(); identIt.hasNext(); ) {
@@ -119,18 +120,16 @@ public class JavaExprAnalyzer {
      *             If an error occurs in the parser.
      */
     private JavaAnalysisResult analyze(final JavaAnalysisResult result,
-                                   final Set[] availableIdentifiers) throws RecognitionException {
-        final List identifiers = result.getIdentifiers();
-        final Set notBound = new HashSet( identifiers );
-        final List[] used = new List[availableIdentifiers.length];
+                                   final Map<String,Class<?>>[] availableIdentifiers) throws RecognitionException {
+        final List<String> identifiers = result.getIdentifiers();
+        final Set<String> notBound = new HashSet<String>( identifiers );
+        final List<String>[] used = new List[availableIdentifiers.length];
         for ( int i = 0, length = used.length; i < length; i++ ) {
-            used[i] = new ArrayList();
+            used[i] = new ArrayList<String>();
         }
 
         for ( int i = 0, length = availableIdentifiers.length; i < length; i++ ) {
-            final Set set = availableIdentifiers[i];
-            for ( final Iterator it = set.iterator(); it.hasNext(); ) {
-                final String eachDecl = (String) it.next();
+            for ( final String eachDecl : availableIdentifiers[i].keySet() ) {
                 if ( identifiers.contains( eachDecl ) ) {
                     used[i].add( eachDecl );
                     notBound.remove( eachDecl );
@@ -138,7 +137,7 @@ public class JavaExprAnalyzer {
             }
         }
         result.setBoundIdentifiers( used );
-        result.setNotBoundedIdentifiers( new ArrayList( notBound ) );
+        result.setNotBoundedIdentifiers( new ArrayList<String>( notBound ) );
 
         return result;
     }

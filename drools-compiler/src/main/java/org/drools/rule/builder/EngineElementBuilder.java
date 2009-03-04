@@ -1,7 +1,5 @@
-package org.drools.rule.builder;
-
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2008 Red Hat
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +12,15 @@ package org.drools.rule.builder;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
+package org.drools.rule.builder;
 
-import java.util.List;
-import java.util.Map;
+/**
+ * A markup interface for builders
+ * 
+ * @author etirelli
+ */
+public interface EngineElementBuilder {
 
-import org.drools.base.TypeResolver;
-import org.drools.lang.descr.FunctionDescr;
-import org.drools.rule.Package;
-
-public interface FunctionBuilder extends EngineElementBuilder {
-    public String build(final Package pkg,
-                        final FunctionDescr functionDescr,
-                        final TypeResolver typeResolver,
-                        final Map lineMappings,
-                        final List errors);
 }

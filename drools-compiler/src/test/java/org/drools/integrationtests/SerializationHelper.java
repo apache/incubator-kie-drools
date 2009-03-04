@@ -6,19 +6,14 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.impl.DefaultMarshaller;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.util.DroolsStreamUtils;
 

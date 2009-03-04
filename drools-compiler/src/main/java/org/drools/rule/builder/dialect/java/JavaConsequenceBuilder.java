@@ -19,9 +19,9 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,10 +62,11 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         final RuleDescr ruleDescr = context.getRuleDescr();
 
+        Map<String, Class< ? >> variables = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
         Dialect.AnalysisResult analysis = context.getDialect().analyzeBlock( context,
                                                                              ruleDescr,
                                                                              (String) ruleDescr.getConsequence(),
-                                                                             new Set[]{context.getDeclarationResolver().getDeclarations( context.getRule() ).keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                             new Map[]{variables, context.getPackageBuilder().getGlobals()} );
 
         if ( analysis == null ) {
             // not possible to get the analysis results
@@ -207,11 +208,12 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                MVELDialect mvel,
                                StringBuilder consequence,
                                JavaModifyBlockDescr d) {
+        Map<String, Class< ? >> variables = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
         Dialect.AnalysisResult mvelAnalysis = mvel.analyzeBlock( context,
                                                                  context.getRuleDescr(),
                                                                  mvel.getInterceptors(),
                                                                  d.getModifyExpression(),
-                                                                 new Set[]{context.getDeclarationResolver().getDeclarations( context.getRule() ).keySet(), context.getPkg().getGlobals().keySet()},
+                                                                 new Map[]{variables, context.getPackageBuilder().getGlobals()},
                                                                  null );
 
         final ExecutableStatement expr = (ExecutableStatement) mvel.compile( d.getModifyExpression(),

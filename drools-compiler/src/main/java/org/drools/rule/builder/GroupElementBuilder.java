@@ -63,7 +63,7 @@ public class GroupElementBuilder
             final BaseDescr child = (BaseDescr) it.next();
 
             // gets corresponding builder
-            final RuleConditionBuilder builder = context.getDialect().getBuilder( child.getClass() );
+            final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( child.getClass() );
 
             if ( builder != null ) {
                 final RuleConditionElement element = builder.build( context,

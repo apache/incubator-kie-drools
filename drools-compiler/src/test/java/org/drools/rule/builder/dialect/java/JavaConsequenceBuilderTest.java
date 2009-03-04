@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.java;
 
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -66,7 +67,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new Set[]{} );
+                                                                                      new Map[]{} );
 
             String fixed = builder.fixBlockDescr( context,
                                                   analysis,
@@ -97,7 +98,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new Set[]{} );
+                                                                                      new Map[]{} );
 
             String fixed = builder.fixBlockDescr( context,
                                                   analysis,
@@ -128,7 +129,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new Set[]{} );
+                                                                                      new Map[]{} );
 
             String fixed = builder.fixBlockDescr( context,
                                                   analysis,

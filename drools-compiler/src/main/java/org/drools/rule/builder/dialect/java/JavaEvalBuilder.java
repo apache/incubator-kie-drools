@@ -18,7 +18,6 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.BaseDescr;
@@ -68,7 +67,7 @@ public class JavaEvalBuilder extends AbstractJavaRuleBuilder
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   evalDescr,
                                                                                   evalDescr.getContent(),
-                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                  new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()} );
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];

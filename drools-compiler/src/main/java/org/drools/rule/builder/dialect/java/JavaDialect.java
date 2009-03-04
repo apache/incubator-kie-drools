@@ -243,10 +243,9 @@ public class JavaDialect
     public AnalysisResult analyzeExpression(final PackageBuildContext context,
                                             final BaseDescr descr,
                                             final Object content,
-                                            final Set[] availableIdentifiers) {
+                                            final Map<String,Class<?>>[] availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
-            //new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()}
             result = this.analyzer.analyzeExpression( (String) content,
                                                       availableIdentifiers );
         } catch ( final Exception e ) {
@@ -261,10 +260,9 @@ public class JavaDialect
     public AnalysisResult analyzeBlock(final PackageBuildContext context,
                                        final BaseDescr descr,
                                        final String text,
-                                       final Set[] availableIdentifiers) {
+                                       final Map<String,Class<?>>[] availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
-            // new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} 
             result = this.analyzer.analyzeBlock( text,
                                                  availableIdentifiers );
         } catch ( final Exception e ) {
