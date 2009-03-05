@@ -1,4 +1,4 @@
-package org.drools.guided;
+package org.drools.guvnor.client.modeldriven.ui;
 
 public class ConstraintValueEditorHelper {
 
