@@ -137,7 +137,7 @@ public class ProcessSplitTest extends TestCase {
             "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
             "      <constraints>" +
             "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"mvel\" >return true;</constraint>" +
-            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return name != null;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return name != null &amp;&amp; name.length > 0;</constraint>" +
             "      </constraints>" +
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
@@ -203,7 +203,7 @@ public class ProcessSplitTest extends TestCase {
             "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
             "      <constraints>" +
             "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"java\" >return true;</constraint>" +
-            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"java\" >return name != null;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"java\" >return name != null &amp;&amp; name.length() > 0;</constraint>" +
             "      </constraints>" +
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
@@ -269,7 +269,7 @@ public class ProcessSplitTest extends TestCase {
             "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
             "      <constraints>" +
             "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"mvel\" >return true;</constraint>" +
-            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return list != null;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return list != null &amp;&amp; list.size >= 0;</constraint>" +
             "      </constraints>" +
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
@@ -330,7 +330,7 @@ public class ProcessSplitTest extends TestCase {
             "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
             "      <constraints>" +
             "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"java\" >return true;</constraint>" +
-            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"java\" >return list != null;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"java\" >return list != null &amp;&amp; list.size() >= 0;</constraint>" +
             "      </constraints>" +
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
