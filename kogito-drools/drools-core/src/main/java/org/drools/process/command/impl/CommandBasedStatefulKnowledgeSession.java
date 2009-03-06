@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
+import org.drools.command.Command;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
@@ -37,6 +38,7 @@ import org.drools.process.command.GetWorkingMemoryEntryPointCommand;
 import org.drools.process.command.GetWorkingMemoryEventListenersCommand;
 import org.drools.process.command.HaltCommand;
 import org.drools.process.command.InsertObjectCommand;
+import org.drools.process.command.QueryCommand;
 import org.drools.process.command.RegisterExitPointCommand;
 import org.drools.process.command.RegisterWorkItemHandlerCommand;
 import org.drools.process.command.RemoveEventListenerCommand;
@@ -47,6 +49,7 @@ import org.drools.process.command.StartProcessCommand;
 import org.drools.process.command.UnregisterExitPointCommand;
 import org.drools.process.command.UpdateCommand;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.BatchExecutionResult;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
@@ -58,6 +61,7 @@ import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
 
@@ -350,5 +354,29 @@ public class CommandBasedStatefulKnowledgeSession
     public Environment getEnvironment() {
         return commandService.execute( new GetEnvironmentCommand() );
     }
+    
+    public BatchExecutionResult execute(Command command) {        
+        try {            
+            ((ReteooWorkingMemory)this.commandService.getSession()).startBatchExecution();
+            
+            this.commandService.execute( (org.drools.process.command.Command) command );
+            
+            BatchExecutionResult result = ((ReteooWorkingMemory)this.commandService.getSession()).getBatchExecutionResult();
+            return result;
+        } finally {
+            ((ReteooWorkingMemory)this.commandService.getSession()).endBatchExecution();
+        }
+    }
+
+    public QueryResults getQueryResults(String query) {
+        QueryCommand cmd = new QueryCommand(null, query, null);
+        return this.commandService.execute( cmd );
+    }
+
+    public QueryResults getQueryResults(String query,
+                                        Object[] arguments) {
+        QueryCommand cmd = new QueryCommand(null, query, arguments);
+        return this.commandService.execute( cmd );
+    }    
 
 }

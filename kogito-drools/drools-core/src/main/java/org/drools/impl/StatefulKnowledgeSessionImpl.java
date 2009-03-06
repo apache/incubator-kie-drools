@@ -11,6 +11,7 @@ import java.util.Map;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.command.Command;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -50,6 +51,8 @@ import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.BatchExecutionResult;
+import org.drools.runtime.BatchExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
@@ -59,14 +62,17 @@ import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.runtime.rule.impl.AgendaImpl;
+import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.spi.Activation;
 import org.drools.time.SessionClock;
 
 public class StatefulKnowledgeSessionImpl
     implements
     StatefulKnowledgeSession,
+    BatchExecutor,
     InternalWorkingMemoryEntryPoint {
     public ReteooWorkingMemory                                                session;
     public KnowledgeBaseImpl                                                  kbase;
@@ -613,6 +619,26 @@ public class StatefulKnowledgeSessionImpl
 
     public RuleBase getRuleBase() {
         return this.kbase.ruleBase;
+    }
+
+    public QueryResults getQueryResults(String query) {
+        return new NativeQueryResults( this.session.getQueryResults( query ));
+    }
+
+    public QueryResults getQueryResults(String query,
+                                        Object[] arguments) {
+        return new NativeQueryResults( this.session.getQueryResults( query, arguments ) );
+    }
+    
+    public BatchExecutionResult execute(Command command) {        
+        try {
+            session.startBatchExecution();
+            ((org.drools.process.command.Command)command).execute( session );
+            BatchExecutionResult result = session.getBatchExecutionResult();
+            return result;
+        } finally {
+            session.endBatchExecution();
+        }
     }
 
 }

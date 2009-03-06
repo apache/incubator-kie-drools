@@ -3,7 +3,7 @@ package org.drools.process.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 
 public class CompleteWorkItemCommand implements Command<Object> {
 	
@@ -26,7 +26,7 @@ public class CompleteWorkItemCommand implements Command<Object> {
 		this.results = results;
 	}
 
-	public Object execute(StatefulSession session) {
+	public Object execute(ReteooWorkingMemory session) {
 		session.getWorkItemManager().completeWorkItem(workItemId, results);
 		return null;
 	}

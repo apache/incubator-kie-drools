@@ -3,17 +3,18 @@ package org.drools.process.command.impl;
 import org.drools.StatefulSession;
 import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
+import org.drools.reteoo.ReteooWorkingMemory;
 
 public class DefaultCommandService implements CommandService {
 
-	private StatefulSession session;
+	private ReteooWorkingMemory session;
 	
 	public DefaultCommandService(StatefulSession session) {
-		this.session = session;
+		this.session = ( ReteooWorkingMemory ) session;
 	}
 	
 	public StatefulSession getSession() {
-		return session;
+		return ( StatefulSession ) session;
 	}
 	
 	public <T> T execute(Command<T> command) {

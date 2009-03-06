@@ -17,8 +17,10 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.BatchExecutionResult;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.impl.BatchExecutionResultImpl;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -129,4 +131,11 @@ public interface InternalWorkingMemory
     public Map<String, ? extends WorkingMemoryEntryPoint> getEntryPoints();
 
     public SessionConfiguration getSessionConfiguration();
+    
+    
+    public void startBatchExecution();
+    
+    public BatchExecutionResultImpl getBatchExecutionResult();
+    
+    public void endBatchExecution();
 }

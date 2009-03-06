@@ -1,7 +1,7 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ExitPoint;
 
 public class RegisterExitPointCommand
@@ -17,7 +17,7 @@ public class RegisterExitPointCommand
         this.exitPoint = exitPoint;
     }
 
-    public Object execute(StatefulSession session) {
+    public Object execute(ReteooWorkingMemory session) {
         ReteooStatefulSession reteooStatefulSession = (ReteooStatefulSession) session;
 
         reteooStatefulSession.registerExitPoint( name,

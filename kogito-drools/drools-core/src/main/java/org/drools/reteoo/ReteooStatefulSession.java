@@ -38,7 +38,7 @@ import org.drools.spi.RuleBaseUpdateListenerFactory;
 public class ReteooStatefulSession extends ReteooWorkingMemory
     implements
     StatefulSession,
-    Externalizable {
+    Externalizable { 
 
     private static final long         serialVersionUID = -5360554247241558374L;
     private transient ExecutorService executor;

@@ -31,7 +31,7 @@ import org.drools.spi.Tuple;
  * get a specific row. All the available Declarations used in the query can also be accessed.
  *
  */
-public class QueryResults {
+public class QueryResults implements Iterable<QueryResult>{
     private Query           query;
 
     private Map             declarations;
@@ -61,7 +61,7 @@ public class QueryResults {
      * 
      * @return
      */
-    public Iterator iterator() {
+    public Iterator<QueryResult> iterator() {
         return new QueryResultsIterator( this.results.iterator() );
     }
 

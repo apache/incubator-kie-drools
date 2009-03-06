@@ -1,13 +1,13 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.time.SessionClock;
 
 public class GetSessionClockCommand
     implements
     Command<SessionClock> {
 
-    public SessionClock execute(StatefulSession session) {
+    public SessionClock execute(ReteooWorkingMemory session) {
         return session.getSessionClock();
     }
 

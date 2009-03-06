@@ -1,7 +1,7 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.rule.AgendaFilter;
 
 public class FireAllRulesCommand
@@ -22,7 +22,7 @@ public class FireAllRulesCommand
         this.agendaFilter = agendaFilter;
     }
 
-    public Integer execute(StatefulSession session) {
+    public Integer execute(ReteooWorkingMemory session) {
         if ( max > 0 ) {
             return session.fireAllRules( max );
         } else if ( agendaFilter != null ) {

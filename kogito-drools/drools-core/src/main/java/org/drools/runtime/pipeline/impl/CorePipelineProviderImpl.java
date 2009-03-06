@@ -2,6 +2,7 @@ package org.drools.runtime.pipeline.impl;
 
 import java.util.List;
 
+import org.drools.process.command.InsertElementsCommand;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.pipeline.Action;
@@ -28,16 +29,16 @@ public class CorePipelineProviderImpl
                                                          entryPointName );
     }
 
-    public Pipeline newStatelessKnowledgeSessionPipelineImpl(StatelessKnowledgeSession ksession) {
+    public Pipeline newStatelessKnowledgeSessionPipeline(StatelessKnowledgeSession ksession) {
         return new StatelessKnowledgeSessionPipelineImpl( ksession );
+    }
+    
+    public KnowledgeRuntimeCommand newBatchExecutor() {
+        return new BatchExecutorStage();
     }
 
     public KnowledgeRuntimeCommand newStatefulKnowledgeSessionInsert() {
         return new StatefulKnowledgeSessionInsertStage();
-    }
-
-    public KnowledgeRuntimeCommand newStatelessKnowledgeSessionExecute() {
-        return new StatelessKnowledgeSessionExecuteStage();
     }
 
     public KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetGlobal() {
@@ -102,5 +103,13 @@ public class CorePipelineProviderImpl
 
     public Callable newCallable() {
         return new CallableImpl();
+    }
+
+    public KnowledgeRuntimeCommand newInsertElementsCommand() {
+        return new InsertElementsCommandStage();
+    }
+
+    public KnowledgeRuntimeCommand newInsertObjectCommand() {
+        return new InsertObjectCommandStage();
     }
 }

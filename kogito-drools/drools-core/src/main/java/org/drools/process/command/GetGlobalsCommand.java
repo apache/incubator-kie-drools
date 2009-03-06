@@ -1,13 +1,13 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Globals;
 
 public class GetGlobalsCommand
     implements
     Command<Globals> {
 
-    public Globals execute(StatefulSession session) {
+    public Globals execute(ReteooWorkingMemory session) {
         return (Globals) session.getGlobalResolver();
     }
 

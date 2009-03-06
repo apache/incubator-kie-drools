@@ -1,6 +1,6 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 
 public class AbortWorkItemCommand
     implements
@@ -16,7 +16,7 @@ public class AbortWorkItemCommand
         this.workItemId = workItemId;
     }
 
-    public Object execute(StatefulSession session) {
+    public Object execute(ReteooWorkingMemory session) {
         session.getWorkItemManager().abortWorkItem( workItemId );
         return null;
     }

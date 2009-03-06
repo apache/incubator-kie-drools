@@ -1,13 +1,13 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Environment;
 
 public class GetEnvironmentCommand
     implements
     Command<Environment> {
 
-    public Environment execute(StatefulSession session) {
+    public Environment execute(ReteooWorkingMemory session) {
         return session.getEnvironment();
     }
 

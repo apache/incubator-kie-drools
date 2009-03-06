@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -25,14 +27,19 @@ import org.drools.base.ReferenceOriginalGlobalExporter;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.Command;
+import org.drools.command.CommandFactory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
-import org.drools.impl.ParametersImpl;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
-import org.drools.runtime.Parameters;
+import org.drools.runtime.BatchExecutionResult;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
+import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.GlobalResolver;
 
 public class StatelessSessionTest extends TestCase {
@@ -58,7 +65,7 @@ public class StatelessSessionTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
 
-        session.executeObject( stilton );
+        session.execute( stilton );
 
         assertEquals( "stilton",
                       list.get( 0 ) );
@@ -70,7 +77,7 @@ public class StatelessSessionTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
 
-        session.executeIterable( Arrays.asList( new Object[]{stilton} ) );
+        session.execute( Arrays.asList( new Object[]{stilton} ) );
 
         assertEquals( "stilton",
                       list.get( 0 ) );
@@ -84,180 +91,255 @@ public class StatelessSessionTest extends TestCase {
 
         List collection = new ArrayList();
         collection.add( stilton );
-        session.executeIterable( collection );
+        session.execute( collection );
 
         assertEquals( "stilton",
                       list.get( 0 ) );
     }
-
-    public void testSingleObjectAssertWithResults() throws Exception {
-        StatelessKnowledgeSession session = getSession2( "literal_rule_test.drl" );
-
-        // notice I don't export Cheessery
-        Parameters parameters = session.newParameters();
-        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) );        
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( stilton,
-                                                                             parameters );
+    
+    public void testInsertObject() throws Exception {
+        String str = "";
+        str += "package org.drools \n";
+        str += "import org.drools.Cheese \n";
+        str += "rule rule1 \n";
+        str += "  when \n";
+        str += "    $c : Cheese() \n";
+        str += " \n";
+        str += "  then \n";
+        str += "    $c.setPrice( 30 ); \n";
+        str += "end\n";
         
-        assertEquals( 1, results.getIdentifiers().size() );
-        assertTrue( results.getIdentifiers().contains( "list" ));
-
-        assertEquals( "stilton",
-                      ((List) results.getValue( "list" )).get( 0 ) );
-
-        // cheesery should be null
-        assertNull( results.getValue( "cheesery" ) );
-    }
-
-    public void testArrayObjectAssertWithResults() throws Exception {
-        StatelessKnowledgeSession session = getSession2( "literal_rule_test.drl" );
-
-        // notice I don't export Cheessery
-        Parameters parameters = session.newParameters();
-        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        StatelessKnowledgeSessionResults results = session.executeIterableWithParameters( Arrays.asList( new Object[]{stilton} ),
-                                                                             parameters );
-
-        assertEquals( 1, results.getIdentifiers().size() );
-        assertTrue( results.getIdentifiers().contains( "list" ));
-
-        assertEquals( "stilton",
-                      ((List) results.getValue( "list" )).get( 0 ) );
-
-        // cheesery should be null
-        assertNull( results.getValue( "cheesery" ) );
-    }
-
-    public void testCollectionObjectAssertWithResults() throws Exception {
-        StatelessKnowledgeSession session = getSession2( "literal_rule_test.drl" );
-
-        // notice I don't export Cheessery
-        Parameters parameters = session.newParameters();
-        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        List collection = new ArrayList();
-        collection.add( stilton );        
-        StatelessKnowledgeSessionResults results = session.executeIterableWithParameters( collection,
-                                                                                          parameters );        
-
-        assertEquals( 1, results.getIdentifiers().size() );
-        assertTrue( results.getIdentifiers().contains( "list" ));
-
-        assertEquals( "stilton",
-                      ((List) results.getValue( "list" )).get( 0 ) );
-
-        // cheesery should be null
-        assertNull( results.getValue( "cheesery" ) );
+        Cheese stilton = new Cheese( "stilton", 5 );
+        
+        StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
+        Command cmd = CommandFactory.newInsertObject( stilton, "outStilton" );
+        BatchExecutionResult result = ksession.execute( cmd );
+        stilton = ( Cheese ) result.getValue( "outStilton" );
+        assertEquals( 30,
+                      stilton.getPrice() );       
     }
     
-    public void testInAndOutParams() throws Exception {
-        StatelessKnowledgeSession session = getSession2( "testStatelessKnowledgeSessionInOutParams.drl" );
-
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
+    public void testSetGlobal() throws Exception {
+        String str = "";
+        str += "package org.drools \n";
+        str += "import org.drools.Cheese \n";
+        str += "global java.util.List list1 \n";
+        str += "global java.util.List list2 \n";
+        str += "global java.util.List list3 \n";
+        str += "rule rule1 \n";
+        str += "  when \n";
+        str += "    $c : Cheese() \n";
+        str += " \n";
+        str += "  then \n";
+        str += "    $c.setPrice( 30 ); \n";
+        str += "    list1.add( $c ); \n";
+        str += "    list2.add( $c ); \n";
+        str += "    list3.add( $c ); \n";
+        str += "end\n";
         
-        final Cheese cheddar = new Cheese( "cheddar",
-                                           25 );   
+        Cheese stilton = new Cheese( "stilton", 5 );
+        List list1 = new ArrayList();
+        List list2 = new ArrayList();
+        List list3 = new ArrayList();
         
-        // notice I don't export Cheessery
-        Parameters parameters = session.newParameters();
-        Map<String, Object> globalsIn = new HashMap<String, Object>();
-        globalsIn.put( "inString", "string" );
-        parameters.getGlobalParams().setIn( globalsIn );        
-        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
+        StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
+        Command setGlobal1 = CommandFactory.newSetGlobal( "list1", list1 );
+        Command setGlobal2 = CommandFactory.newSetGlobal( "list2", list2, true );
+        Command setGlobal3 = CommandFactory.newSetGlobal( "list3", list3, "outList3" );
+        Command insert = CommandFactory.newInsertObject( stilton  );
         
-        Map<String, Object> factIn = new HashMap<String, Object>();
-        factIn.put( "inCheese", cheddar );
-        parameters.getFactParams().setIn( factIn );
-        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );         
- 
-        StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( stilton,
-                                                                                        parameters );        
-
-        assertEquals( 2, results.getIdentifiers().size() );
-        assertTrue( results.getIdentifiers().contains( "list" ));
-        assertTrue( results.getIdentifiers().contains( "outCheese" ));
+        List cmds = new ArrayList();
+        cmds.add( setGlobal1 );
+        cmds.add( setGlobal2 );
+        cmds.add( setGlobal3 );
+        cmds.add(  insert );
         
-        assertEquals( new Cheese( "brie", 50), results.getValue( "outCheese" ) );
-
-        assertEquals( "rule1 cheddar",
-                      ((List) results.getValue( "list" )).get( 0 ) );
+        BatchExecutionResult result = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
-        assertEquals( "rule2 stilton",
-                      ((List) results.getValue( "list" )).get( 1 ) );      
+        assertEquals( 30,
+                      stilton.getPrice() ); 
         
-        assertEquals( "rule3 brie",
-                      ((List) results.getValue( "list" )).get( 2 ) );         
+        assertNull( result.getValue( "list1" ) );
         
-        assertEquals( "rule4 string",
-                      ((List) results.getValue( "list" )).get( 3 ) );          
-
-        // cheesery should be null
-        assertNull( results.getValue( "cheesery" ) );        
+        list2 = ( List ) result.getValue( "list2" );
+        assertEquals( 1, list2.size() );
+        assertSame( stilton, list2.get( 0 ) );
         
-    }
-    
-    public void testInOutAndOutParams() throws Exception {
-        StatelessKnowledgeSession session = getSession2( "testStatelessKnowledgeSessionInOutParams.drl" );
-
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
+          
         
-        final Cheese cheddar = new Cheese( "cheddar",
-                                           25 );   
-        
-        // notice I don't export Cheessery
-        Parameters parameters = session.newParameters();
-        Map<String, Object> globalsInOut = new HashMap<String, Object>();
-        globalsInOut.put( "inString", "string" );
-        parameters.getGlobalParams().setInOut( globalsInOut );        
-        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
-        
-        Map<String, Object> factInOut = new HashMap<String, Object>();
-        factInOut.put( "inCheese", cheddar );
-        parameters.getFactParams().setInOut( factInOut );
-        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );         
- 
-        StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( stilton,
-                                                                                        parameters );        
-
-        assertEquals( 4, results.getIdentifiers().size() );
-        assertTrue( results.getIdentifiers().contains( "list" ));
-        assertTrue( results.getIdentifiers().contains( "inString" ));
-        assertTrue( results.getIdentifiers().contains( "inCheese" ));
-        assertTrue( results.getIdentifiers().contains( "outCheese" ));
-        
-        assertEquals( new Cheese( "brie", 50), results.getValue( "outCheese" ) );
-
-        assertEquals( "rule1 cheddar",
-                      ((List) results.getValue( "list" )).get( 0 ) );
-        
-        assertEquals( "rule2 stilton",
-                      ((List) results.getValue( "list" )).get( 1 ) );      
-        
-        assertEquals( "rule3 brie",
-                      ((List) results.getValue( "list" )).get( 2 ) );         
-        
-        assertEquals( "rule4 string",
-                      ((List) results.getValue( "list" )).get( 3 ) );          
-
-        // cheesery should be null
-        assertNull( results.getValue( "cheesery" ) );        
-        
+        list3 = ( List ) result.getValue( "outList3" );
+        assertEquals( 1, list3.size() );
+        assertSame( stilton, list3.get( 0 ) );        
     }    
+    
+    public void testQuery() throws Exception {
+        String str = "";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Cheese \n";
+        str += "query cheeses \n";
+        str += "    stilton : Cheese(type == 'stilton') \n";
+        str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
+        str += "end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if  ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        Cheese stilton1 = new Cheese( "stilton", 1);
+        Cheese cheddar1 = new Cheese( "cheddar", 1);
+        Cheese stilton2 = new Cheese( "stilton", 2);
+        Cheese cheddar2 = new Cheese( "cheddar", 2);
+        Cheese stilton3 = new Cheese( "stilton", 3);
+        Cheese cheddar3 = new Cheese( "cheddar", 3);  
+        
+        Set set = new HashSet();
+        List list = new ArrayList();
+        list.add(stilton1);
+        list.add(cheddar1);
+        set.add( list );
+        
+        list = new ArrayList();
+        list.add(stilton2);
+        list.add(cheddar2);
+        set.add( list );
+        
+        list = new ArrayList();
+        list.add(stilton3);
+        list.add(cheddar3);
+        set.add( list );
+        
+        List<Command> cmds = new ArrayList<Command>();        
+        cmds.add( CommandFactory.newInsertObject( stilton1 ) );
+        cmds.add( CommandFactory.newInsertObject( stilton2 ) );
+        cmds.add( CommandFactory.newInsertObject( stilton3 ) );
+        cmds.add( CommandFactory.newInsertObject( cheddar1 ) );
+        cmds.add( CommandFactory.newInsertObject( cheddar2 ) );
+        cmds.add( CommandFactory.newInsertObject( cheddar3 ) );
+        
+        cmds.add(  CommandFactory.newQuery( "cheeses", "cheeses" ) );
+        
+        BatchExecutionResult batchResult = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+        
+        org.drools.runtime.rule.QueryResults results = ( org.drools.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
+        assertEquals( 3, results.size() );        
+        assertEquals( 2, results.getIdentifiers().length );
+        Set newSet = new HashSet();
+        for ( org.drools.runtime.rule.QueryResultsRow result : results ) {
+            list = new ArrayList();
+            list.add( result.get( "stilton" ) );
+            list.add( result.get( "cheddar" ));
+            newSet.add( list );
+        }
+        assertEquals( set, newSet );      
+    }    
+    
+    // @TODO need to figure out if we need to support "out" params 
+//    public void testInAndOutParams() throws Exception {
+//        StatelessKnowledgeSession session = getSession2( "testStatelessKnowledgeSessionInOutParams.drl" );
+//
+//
+//        final Cheese stilton = new Cheese( "stilton",
+//                                           5 );
+//        
+//        final Cheese cheddar = new Cheese( "cheddar",
+//                                           25 );   
+//        
+//        // notice I don't export Cheessery
+//        Parameters parameters = session.newParameters();
+//        Map<String, Object> globalsIn = new HashMap<String, Object>();
+//        globalsIn.put( "inString", "string" );
+//        parameters.getGlobalParams().setIn( globalsIn );        
+//        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
+//        
+//        Map<String, Object> factIn = new HashMap<String, Object>();
+//        factIn.put( "inCheese", cheddar );
+//        parameters.getFactParams().setIn( factIn );
+//        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );         
+// 
+//        StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( stilton,
+//                                                                                        parameters );        
+//
+//        assertEquals( 2, results.getIdentifiers().size() );
+//        assertTrue( results.getIdentifiers().contains( "list" ));
+//        assertTrue( results.getIdentifiers().contains( "outCheese" ));
+//        
+//        assertEquals( new Cheese( "brie", 50), results.getValue( "outCheese" ) );
+//
+//        assertEquals( "rule1 cheddar",
+//                      ((List) results.getValue( "list" )).get( 0 ) );
+//        
+//        assertEquals( "rule2 stilton",
+//                      ((List) results.getValue( "list" )).get( 1 ) );      
+//        
+//        assertEquals( "rule3 brie",
+//                      ((List) results.getValue( "list" )).get( 2 ) );         
+//        
+//        assertEquals( "rule4 string",
+//                      ((List) results.getValue( "list" )).get( 3 ) );          
+//
+//        // cheesery should be null
+//        assertNull( results.getValue( "cheesery" ) );        
+//        
+//    }
+//    
+//    public void testInOutAndOutParams() throws Exception {
+//        StatelessKnowledgeSession session = getSession2( "testStatelessKnowledgeSessionInOutParams.drl" );
+//
+//
+//        final Cheese stilton = new Cheese( "stilton",
+//                                           5 );
+//        
+//        final Cheese cheddar = new Cheese( "cheddar",
+//                                           25 );   
+//        
+//        // notice I don't export Cheessery
+//        Parameters parameters = session.newParameters();
+//        Map<String, Object> globalsInOut = new HashMap<String, Object>();
+//        globalsInOut.put( "inString", "string" );
+//        parameters.getGlobalParams().setInOut( globalsInOut );        
+//        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
+//        
+//        Map<String, Object> factInOut = new HashMap<String, Object>();
+//        factInOut.put( "inCheese", cheddar );
+//        parameters.getFactParams().setInOut( factInOut );
+//        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );         
+// 
+//        StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( stilton,
+//                                                                                        parameters );        
+//
+//        assertEquals( 4, results.getIdentifiers().size() );
+//        assertTrue( results.getIdentifiers().contains( "list" ));
+//        assertTrue( results.getIdentifiers().contains( "inString" ));
+//        assertTrue( results.getIdentifiers().contains( "inCheese" ));
+//        assertTrue( results.getIdentifiers().contains( "outCheese" ));
+//        
+//        assertEquals( new Cheese( "brie", 50), results.getValue( "outCheese" ) );
+//
+//        assertEquals( "rule1 cheddar",
+//                      ((List) results.getValue( "list" )).get( 0 ) );
+//        
+//        assertEquals( "rule2 stilton",
+//                      ((List) results.getValue( "list" )).get( 1 ) );      
+//        
+//        assertEquals( "rule3 brie",
+//                      ((List) results.getValue( "list" )).get( 2 ) );         
+//        
+//        assertEquals( "rule4 string",
+//                      ((List) results.getValue( "list" )).get( 3 ) );          
+//
+//        // cheesery should be null
+//        assertNull( results.getValue( "cheesery" ) );        
+//        
+//    }    
     
     public void testAsynSingleOjbectcAssert() throws Exception {
         StatelessSession session = getSession();
@@ -394,8 +476,12 @@ public class StatelessSessionTest extends TestCase {
     }
     
     private StatelessKnowledgeSession getSession2(String fileName) throws Exception {
+        return getSession2( ResourceFactory.newClassPathResource( fileName, getClass() ) );
+    }
+        
+    private StatelessKnowledgeSession getSession2(Resource resource) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(  ResourceFactory.newClassPathResource( fileName, getClass() ), ResourceType.DRL );
+        kbuilder.add( resource, ResourceType.DRL );
         
         if (kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );

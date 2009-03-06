@@ -47,6 +47,7 @@ import org.drools.rule.TimeMachine;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.impl.BatchExecutionResultImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -523,6 +524,21 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void endBatchExecution() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public BatchExecutionResultImpl getBatchExecutionResult() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void startBatchExecution() {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -1,9 +1,9 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 
-public interface Command<T> {
+public interface Command<T> extends org.drools.command.Command {
 	
-	T execute(StatefulSession session);
+	T execute(ReteooWorkingMemory session);
 	
 }

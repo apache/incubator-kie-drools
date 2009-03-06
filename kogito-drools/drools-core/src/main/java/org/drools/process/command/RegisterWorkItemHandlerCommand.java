@@ -1,6 +1,6 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.process.WorkItemHandler;
 
 public class RegisterWorkItemHandlerCommand implements Command<Object> {
@@ -24,7 +24,7 @@ public class RegisterWorkItemHandlerCommand implements Command<Object> {
 		this.workItemName = workItemName;
 	}
 
-	public Object execute(StatefulSession session) {
+	public Object execute(ReteooWorkingMemory session) {
 		session.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
 		return null;
 	}

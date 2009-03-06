@@ -2,9 +2,9 @@ package org.drools.process.command;
 
 import java.util.Collection;
 
-import org.drools.StatefulSession;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 
@@ -21,7 +21,7 @@ public class GetFactHandlesCommand
         this.filter = filter;
     }
 
-    public Collection< ? extends FactHandle> execute(StatefulSession session) {
+    public Collection< ? extends FactHandle> execute(ReteooWorkingMemory session) {
         ReteooStatefulSession reteooStatefulSession = (ReteooStatefulSession) session;
 
         if ( filter != null ) {
