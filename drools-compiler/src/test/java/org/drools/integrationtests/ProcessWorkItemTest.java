@@ -23,6 +23,7 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.runtime.process.WorkflowProcessInstance;
 
 public class ProcessWorkItemTest extends TestCase {
     
@@ -102,7 +103,8 @@ public class ProcessWorkItemTest extends TestCase {
     	
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        ProcessInstance processInstance = ksession.startProcess("org.drools.actions");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
+        	ksession.startProcess("org.drools.actions");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -116,7 +118,8 @@ public class ProcessWorkItemTest extends TestCase {
         Person person = new Person();
         person.setName("Jane Doe");
         parameters.put("Person", person);
-        processInstance = ksession.startProcess("org.drools.actions", parameters);
+        processInstance = (WorkflowProcessInstance)
+        	ksession.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -128,11 +131,8 @@ public class ProcessWorkItemTest extends TestCase {
         results.put("Result", "SomeOtherString");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        VariableScopeInstance variableScope = (VariableScopeInstance)
-        	((org.drools.process.instance.ProcessInstance) processInstance)
-        		.getContextInstance(VariableScope.VARIABLE_SCOPE);
-        assertEquals("SomeOtherString", variableScope.getVariable("MyObject"));
-        assertEquals(15, variableScope.getVariable("Number"));
+        assertEquals("SomeOtherString", processInstance.getVariable("MyObject"));
+        assertEquals(15, processInstance.getVariable("Number"));
     }
     
     private static class TestWorkItemHandler implements WorkItemHandler {
