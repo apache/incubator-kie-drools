@@ -975,6 +975,40 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.size() );
     }
 
+    public void testRuleFlowGroupInActiveMode() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+
+        final StatefulSession workingMemory = ruleBase.newStatefulSession();
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+        
+        new Thread(new Runnable() {
+			public void run() {
+				workingMemory.fireUntilHalt();
+			}
+        }).start();
+
+        workingMemory.insert( "Test" );
+        assertEquals( 0,
+                      list.size() );
+
+        workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
+
+        Thread.sleep(1000);
+        
+        assertEquals( 1,
+                      list.size() );
+        
+        workingMemory.halt();
+    }
+
     public void testRuleFlow() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );

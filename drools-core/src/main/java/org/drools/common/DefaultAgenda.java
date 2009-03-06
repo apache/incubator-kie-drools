@@ -1059,6 +1059,7 @@ public class DefaultAgenda
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
         	boolean fired = fireNextItem( agendaFilter );
+        	fired = fired || !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
         	this.workingMemory.executeQueuedActions();
             if ( !fired ) {
                 try {

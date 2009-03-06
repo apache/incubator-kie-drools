@@ -167,6 +167,8 @@ public class RuleFlowGroupImpl
             final Activation activation = node.getActivation();
             ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
         }
+        // making sure we re-evaluate agenda in case we are waiting for activations
+        ((InternalAgenda) workingMemory.getAgenda()).notifyHalt();
     }
 
     public void clear() {
