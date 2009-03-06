@@ -6128,6 +6128,27 @@ public class MiscTest extends TestCase {
         assertEquals( foo, results.get( 1 ) );
     }
 
+    public void testEvalWithLineBreaks() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EvalWithLineBreaks.drl" ) ), 
+                      ResourceType.DRL );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        final List<Person> results = new ArrayList<Person>(); 
+        
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal( "results", results );
+        
+        session.insert( Integer.valueOf( 10 ) );
+        session.fireAllRules();
+        
+        assertEquals( 1, results.size() );
+        assertEquals( Integer.valueOf( 10 ), results.get( 0 ) );
+    }
+
+    
     public void testKnowledgeContextJava() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_KnowledgeContextJava.drl",

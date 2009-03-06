@@ -1,0 +1,15 @@
+package org.drools
+
+global java.util.List results
+
+function boolean test( Object o1, Object o2 ) {
+    return o1.equals(o2);
+}
+
+rule "TestRule"
+when
+    $i : Integer( eval( test( $i,
+                              $i ) ) )
+then
+    results.add( $i );
+end 
