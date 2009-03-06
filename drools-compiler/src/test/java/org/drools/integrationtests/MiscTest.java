@@ -6097,6 +6097,37 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testNPEOnParenthesis() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ParenthesisUsage.drl" ) ), 
+                      ResourceType.DRL );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        final List<Person> results = new ArrayList<Person>(); 
+        
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal( "results", results );
+        
+        Person bob = new Person( "Bob", 20 );
+        bob.setAlive( true );
+        Person foo = new Person( "Foo", 0 );
+        foo.setAlive( false );
+        
+        session.insert( bob );
+        session.fireAllRules();
+        
+        assertEquals( 1, results.size() );
+        assertEquals( bob, results.get( 0 ) );
+        
+        session.insert( foo );
+        session.fireAllRules();
+        
+        assertEquals( 2, results.size() );
+        assertEquals( foo, results.get( 1 ) );
+    }
+
     public void testKnowledgeContextJava() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_KnowledgeContextJava.drl",
