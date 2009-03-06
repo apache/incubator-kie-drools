@@ -32,7 +32,9 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstanceContainer;
@@ -155,6 +157,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	public WorkflowProcess getWorkflowProcess() {
 		return (WorkflowProcess) getProcess();
+	}
+	
+	public Object getVariable(String name) {
+		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+			getContextInstance(VariableScope.VARIABLE_SCOPE);
+		if (variableScopeInstance == null) {
+			return null;
+		}
+		return variableScopeInstance.getVariable(name);
 	}
 
 	public void setState(final int state) {
