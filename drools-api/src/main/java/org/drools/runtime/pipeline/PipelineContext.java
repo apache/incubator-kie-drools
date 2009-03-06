@@ -2,6 +2,8 @@ package org.drools.runtime.pipeline;
 
 import java.util.Map;
 
+import org.drools.runtime.BatchExecutor;
+
 public interface PipelineContext {
 
     ClassLoader getClassLoader();
@@ -13,5 +15,7 @@ public interface PipelineContext {
     Object getResult();
 
     ResultHandler getResultHandler();
+    
+    BatchExecutor getBatchExecutor();
 
 }

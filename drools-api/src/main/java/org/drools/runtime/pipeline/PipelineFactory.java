@@ -203,9 +203,23 @@ public class PipelineFactory {
      * @return
      */
     public static Pipeline newStatelessKnowledgeSessionPipeline(StatelessKnowledgeSession ksession) {
-        return getCorePipelineProvider().newStatelessKnowledgeSessionPipelineImpl( ksession );
+        return getCorePipelineProvider().newStatelessKnowledgeSessionPipeline( ksession );
+    }
+    
+    
+    public static KnowledgeRuntimeCommand newBatchExecutor() {
+        return getCorePipelineProvider().newBatchExecutor();
+    }    
+
+    
+    public static KnowledgeRuntimeCommand newInsertElementsCommand() {
+        return getCorePipelineProvider().newInsertElementsCommand();
     }
 
+    public static KnowledgeRuntimeCommand newInsertObjectCommand() {
+        return getCorePipelineProvider().newInsertObjectCommand();
+    }    
+    
     /**
      * Insert the payload into the StatefulKnowledgeSesssion referenced in the context. This stage
      * expects the returned FactHandles to be stored in a HashMap of the PipelineContext result property.
@@ -213,40 +227,6 @@ public class PipelineFactory {
      */
     public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionInsert() {
         return getCorePipelineProvider().newStatefulKnowledgeSessionInsert();
-    }
-
-    /**
-     * Executes a StatelessKnowledgeSession. StatelessKnowledgeSessions sessions have four possible execution. Execute against an object
-     * and execute against an Iterable and both with and without Paramters. See StatelessKnowledgeSession for more details on what those 
-     * mean. To control which execution method is used the StatelessKnowledgeSessionPipelineContext has three properties; object, iterable
-     * and parameters. These can be assigned using an MVEL action stage, which has access to that context, the "this" object is assumed 
-     * to be the propagating payload object. If no properties are set it will call executeObject against the propagating payload. The same
-     * is true if just the object property is assigned. If the Iterable property is assigned it all call executeIterable. Finally the WithParamaters
-     * method will be called for each of those if the parameters property is set.
-     * 
-     * <pre>
-     * Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
-     *   
-     * KnowledgeRuntimeCommand execute = PipelineFactory.newStatelessKnowledgeSessionExecute();
-     * execute.setReceiver( executeResultHandler );
-     *   
-     * Action assignParameters = PipelineFactory.newMvelAction( "context.parameters.globalParams.setInOut( ['list' : new java.util.ArrayList()] )");
-     * assignParameters.setReceiver( execute );
-     *   
-     * Action assignIterable = PipelineFactory.newMvelAction( "context.setIterable( this )");                
-     * assignIterable.setReceiver( assignParameters );
-     *           
-     * Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline(ksession);
-     * pipeline.setReceiver( assignIterable );
-     *   
-     * ResultHandlerImpl handler = new ResultHandlerImpl();
-     *     
-     * pipeline.insert( object, handler );
-     * </pre>
-     * @return
-     */
-    public static KnowledgeRuntimeCommand newStatelessKnowledgeSessionExecute() {
-        return getCorePipelineProvider().newStatelessKnowledgeSessionExecute();
     }
 
     /**

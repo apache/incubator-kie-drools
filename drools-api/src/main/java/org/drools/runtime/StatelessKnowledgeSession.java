@@ -92,6 +92,7 @@ public interface StatelessKnowledgeSession
     extends
     StatelessRuleSession,
     StatelessProcessSession,
+    BatchExecutor,
     KnowledgeRuntimeEventManager {
 
     /**
