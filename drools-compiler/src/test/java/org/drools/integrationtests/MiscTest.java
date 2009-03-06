@@ -27,9 +27,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -130,6 +132,7 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
@@ -2974,6 +2977,126 @@ public class MiscTest extends TestCase {
                       results.get( 0 ).get( 0 ) );
     }
 
+    public void testQueryWithParamsOnKnowledgeApi() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryWithParams.drl" , getClass() ), ResourceType.DRL );
+
+        if  ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "assertedobjquery",
+                                                              new String[]{"value1"} );
+        assertEquals( 1,
+                      results.size() );
+//        assertEquals( new InsertedObject( "value1" ),
+//                      results.get( 0 ).get( 0 ) );
+
+        results = ksession.getQueryResults( "assertedobjquery",
+                                                 new String[]{"value3"} );
+        assertEquals( 0,
+                      results.size() );
+
+        results = ksession.getQueryResults( "assertedobjquery2",
+                                                 new String[]{null, "value2"} );
+        assertEquals( 1,
+                      results.size() );
+        
+        assertEquals( new InsertedObject( "value2" ), ((org.drools.runtime.rule.QueryResultsRow)results.iterator().next()).get( "assertedobj" ) );
+
+        results = ksession.getQueryResults( "assertedobjquery2",
+                                                 new String[]{"value3", "value2"} );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new InsertedObject( "value2" ), ((org.drools.runtime.rule.QueryResultsRow)results.iterator().next()).get( "assertedobj" ) );
+    }
+    
+    public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
+        String str = "";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Cheese \n";
+        str += "query cheeses \n";
+        str += "    stilton : Cheese(type == 'stilton') \n";
+        str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
+        str += "end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if  ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Cheese stilton1 = new Cheese( "stilton", 1);
+        Cheese cheddar1 = new Cheese( "cheddar", 1);
+        Cheese stilton2 = new Cheese( "stilton", 2);
+        Cheese cheddar2 = new Cheese( "cheddar", 2);
+        Cheese stilton3 = new Cheese( "stilton", 3);
+        Cheese cheddar3 = new Cheese( "cheddar", 3);  
+        
+        Set set = new HashSet();
+        List list = new ArrayList();
+        list.add(stilton1);
+        list.add(cheddar1);
+        set.add( list );
+        
+        list = new ArrayList();
+        list.add(stilton2);
+        list.add(cheddar2);
+        set.add( list );
+        
+        list = new ArrayList();
+        list.add(stilton3);
+        list.add(cheddar3);
+        set.add( list );
+        
+        ksession.insert( stilton1 );
+        ksession.insert( stilton2 );
+        ksession.insert( stilton3 );
+        ksession.insert( cheddar1 );
+        ksession.insert( cheddar2 );
+        ksession.insert( cheddar3 );
+        
+        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "cheeses" );  
+        assertEquals( 3, results.size() );        
+        assertEquals( 2, results.getIdentifiers().length );
+        Set newSet = new HashSet();
+        for ( org.drools.runtime.rule.QueryResultsRow result : results ) {
+            list = new ArrayList();
+            list.add( result.get( "stilton" ) );
+            list.add( result.get( "cheddar" ));
+            newSet.add( list );
+        }
+        assertEquals( set, newSet );
+        
+        
+        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl)ksession).session.getQueryResults( "cheeses" ) );
+        assertEquals( 3, flatResults.size() );
+        assertEquals( 2, flatResults.getIdentifiers().length );
+        newSet = new HashSet();
+        for ( org.drools.runtime.rule.QueryResultsRow result : flatResults ) {
+            list = new ArrayList();
+            list.add( result.get( "stilton" ) );
+            list.add( result.get( "cheddar" ));
+            newSet.add( list );
+        }
+        assertEquals( set, newSet );        
+    }
+    
     public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
@@ -4599,8 +4722,8 @@ public class MiscTest extends TestCase {
 
     }
 
-    // @FIXME see JBRULES-1808
-    public void FIXME_testKnowledgeHelperFixerInStrings() {
+    // JBRULES-1808
+    public void testKnowledgeHelperFixerInStrings() {
         String str = "";
         str += "package org.simple \n";
         str += "global java.util.List list \n";

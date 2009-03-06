@@ -1,7 +1,7 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 
 public class UnregisterExitPointCommand
     implements
@@ -13,7 +13,7 @@ public class UnregisterExitPointCommand
         this.name = name;
     }
 
-    public Object execute(StatefulSession session) {
+    public Object execute(ReteooWorkingMemory session) {
         ReteooStatefulSession reteooStatefulSession = (ReteooStatefulSession) session;
 
         reteooStatefulSession.unregisterExitPoint( name );

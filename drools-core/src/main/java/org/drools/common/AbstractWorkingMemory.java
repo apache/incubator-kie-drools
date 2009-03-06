@@ -84,11 +84,13 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.BatchExecutionResult;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.impl.BatchExecutionResultImpl;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.spi.Activation;
@@ -213,6 +215,8 @@ public abstract class AbstractWorkingMemory
     private Map<String, ExitPoint>                                            exitPoints;
 
     private Environment                                                       environment;
+    
+    private BatchExecutionResult                                              batchExecutionResult;
 
     // ------------------------------------------------------------
     // Constructors
@@ -1819,6 +1823,20 @@ public abstract class AbstractWorkingMemory
     public PartitionTaskManager getPartitionManager(final RuleBasePartitionId partitionId) {
         return partitionManagers.get( partitionId );
     }
+    
+    public void startBatchExecution() {
+        this.lock.lock();
+        this.batchExecutionResult = new BatchExecutionResultImpl();
+    }
+    
+    public BatchExecutionResultImpl getBatchExecutionResult() {
+        return ( BatchExecutionResultImpl ) this.batchExecutionResult;
+    }
+    
+    public void endBatchExecution() {
+        this.batchExecutionResult = null;
+        this.lock.unlock();
+    }    
 
     // public static class FactHandleInvalidation implements WorkingMemoryAction
     // {

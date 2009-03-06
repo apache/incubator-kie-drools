@@ -1,12 +1,12 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 
 public class HaltCommand
     implements
     Command<Object> {
 
-    public Object execute(StatefulSession session) {
+    public Object execute(ReteooWorkingMemory session) {
         session.halt();
         return null;
     }

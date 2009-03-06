@@ -2,7 +2,7 @@ package org.drools.process.command;
 
 import java.util.Iterator;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ObjectFilter;
 
 public class GetObjectsCommand
@@ -18,7 +18,7 @@ public class GetObjectsCommand
         this.filter = filter;
     }
 
-    public Iterator< ? > execute(StatefulSession session) {
+    public Iterator< ? > execute(ReteooWorkingMemory session) {
         if ( filter != null ) {
             return session.iterateObjects( filter );
         } else {

@@ -1,6 +1,6 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class GetWorkingMemoryEntryPointCommand
@@ -13,7 +13,7 @@ public class GetWorkingMemoryEntryPointCommand
         this.name = name;
     }
 
-    public WorkingMemoryEntryPoint execute(StatefulSession session) {
+    public WorkingMemoryEntryPoint execute(ReteooWorkingMemory session) {
         return session.getWorkingMemoryEntryPoint( name );
     }
 

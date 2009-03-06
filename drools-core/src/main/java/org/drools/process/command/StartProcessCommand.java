@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.StatefulSession;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.reteoo.ReteooWorkingMemory;
 
 public class StartProcessCommand implements Command<ProcessInstance> {
 	
@@ -37,7 +37,7 @@ public class StartProcessCommand implements Command<ProcessInstance> {
 		this.data = data;
 	}
 
-	public ProcessInstance execute(StatefulSession session) {
+	public ProcessInstance execute(ReteooWorkingMemory session) {
 		if (data != null) {
 			for (Object o: data) {
 				session.insert(o);

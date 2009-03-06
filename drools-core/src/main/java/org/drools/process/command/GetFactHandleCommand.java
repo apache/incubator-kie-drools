@@ -1,6 +1,6 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.rule.FactHandle;
 
 public class GetFactHandleCommand
@@ -13,7 +13,7 @@ public class GetFactHandleCommand
         this.object = object;
     }
 
-    public FactHandle execute(StatefulSession session) {
+    public FactHandle execute(ReteooWorkingMemory session) {
         session.getFactHandle( object );
         return null;
     }

@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.drools.SessionConfiguration;
 import org.drools.base.MapGlobalResolver;
+import org.drools.command.Command;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.event.AgendaEventSupport;
@@ -26,10 +27,10 @@ import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
+import org.drools.runtime.BatchExecutionResult;
 import org.drools.runtime.Environment;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.Parameters;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
 import org.drools.spi.AgendaFilter;
@@ -192,14 +193,27 @@ public class StatelessKnowledgeSessionImpl
         return this.sessionGlobals;
     }
 
-    public void executeObject(Object object) {
+    public BatchExecutionResult execute(Command command) {        
+        ReteooWorkingMemory session = ( ReteooWorkingMemory ) newWorkingMemory();
+        try {
+            session.startBatchExecution();
+            ((org.drools.process.command.Command)command).execute( session );
+            session.fireAllRules( this.agendaFilter );
+            BatchExecutionResult result = session.getBatchExecutionResult();
+            return result;
+        } finally {
+            session.endBatchExecution();
+        }
+    }
+
+    public void execute(Object object) {
         InternalWorkingMemory wm = newWorkingMemory();
 
         wm.insert( object );
         wm.fireAllRules( this.agendaFilter );
     }
 
-    public void executeIterable(Iterable< ? > objects) {
+    public void execute(Iterable objects) {
         InternalWorkingMemory wm = newWorkingMemory();
 
         for ( Object object : objects ) {
@@ -208,120 +222,5 @@ public class StatelessKnowledgeSessionImpl
         wm.fireAllRules( this.agendaFilter );
     }
 
-    public StatelessKnowledgeSessionResults executeObjectWithParameters(Object object,
-                                                                        Parameters parameters) {
-        InternalWorkingMemory wm = newWorkingMemory();
-
-        wm.insert( object );
-
-        Map<String, Object> results = new HashMap<String, Object>();
-
-        executeInParams( wm,
-                         parameters,
-                         results );
-
-        wm.fireAllRules( this.agendaFilter );
-
-        getOutParams( wm,
-                      parameters,
-                      results );
-
-        return new StatelessKnowledgeSessionResultsImpl( results );
-
-    }
-
-    public StatelessKnowledgeSessionResults executeIterableWithParameters(Iterable< ? > objects,
-                                                                          Parameters parameters) {
-        InternalWorkingMemory wm = newWorkingMemory();
-
-        for ( Object object : objects ) {
-            wm.insert( object );
-        }
-
-        Map<String, Object> results = new HashMap<String, Object>();
-
-        executeInParams( wm,
-                         parameters,
-                         results );
-
-        wm.fireAllRules( this.agendaFilter );
-
-        getOutParams( wm,
-                      parameters,
-                      results );
-
-        return new StatelessKnowledgeSessionResultsImpl( results );
-
-    }
-
-    private void executeInParams(InternalWorkingMemory wm,
-                                 Parameters parameters,
-                                 Map<String, Object> results) {
-        Map<String, ? > map = ((FactParamsImpl) parameters.getFactParams()).getIn();
-        if ( map != null && !map.isEmpty() ) {
-            for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-                Entry<String, Object> entry = (Entry<String, Object>) it.next();
-                wm.setGlobal( entry.getKey(),
-                                          entry.getValue() );
-                wm.insert( entry.getValue() );
-            }
-        }
-
-        map = ((FactParamsImpl) parameters.getFactParams()).getInOut();
-        if ( map != null && !map.isEmpty() ) {
-            for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-                Entry<String, Object> entry = (Entry<String, Object>) it.next();
-                wm.setGlobal( entry.getKey(),
-                                          entry.getValue() );
-                results.put( entry.getKey(),
-                             entry.getValue() );
-                wm.insert( entry.getValue() );
-            }
-        }
-
-        map = ((GlobalParamsImpl) parameters.getGlobalParams()).getIn();
-        if ( map != null && !map.isEmpty() ) {
-            for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-                Entry<String, Object> entry = (Entry<String, Object>) it.next();
-                wm.setGlobal( entry.getKey(),
-                                          entry.getValue() );
-            }
-        }
-
-        map = ((GlobalParamsImpl) parameters.getGlobalParams()).getInOut();
-        if ( map != null && !map.isEmpty() ) {
-            for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-                Entry<String, Object> entry = (Entry<String, Object>) it.next();
-                results.put( entry.getKey(),
-                             entry.getValue() );
-                wm.setGlobal( entry.getKey(),
-                                          entry.getValue() );
-            }
-        }
-    }
-
-    private void getOutParams(InternalWorkingMemory wm,
-                              Parameters parameters,
-                              Map<String, Object> results) {
-        Collection<String> col = ((FactParamsImpl) parameters.getFactParams()).getOut();
-        if ( col != null && !col.isEmpty() ) {
-            for ( String identifer : col ) {
-                results.put( identifer,
-                             wm.getGlobal( identifer ) );
-            }
-        }
-
-        col = ((GlobalParamsImpl) parameters.getGlobalParams()).getOut();
-        if ( col != null && !col.isEmpty() ) {
-            for ( String identifer : col ) {
-                results.put( identifer,
-                             wm.getGlobal( identifer ) );
-            }
-        }
-    }
-
-    public Parameters newParameters() {
-        return new ParametersImpl();
-    }
 
 }

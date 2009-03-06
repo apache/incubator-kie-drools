@@ -1,6 +1,6 @@
 package org.drools.process.command;
 
-import org.drools.StatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.rule.FactHandle;
 
 public class RetractCommand
@@ -13,7 +13,7 @@ public class RetractCommand
         this.handle = handle;
     }
 
-    public Object execute(StatefulSession session) {
+    public Object execute(ReteooWorkingMemory session) {
         session.retract( handle );
         return null;
     }

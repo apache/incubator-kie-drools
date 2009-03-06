@@ -228,7 +228,7 @@ public class SingleSessionCommandService
 
             registerRollbackSync();
 
-            T result = command.execute( session );
+            T result = command.execute( ( ReteooWorkingMemory ) session );
             //System.out.println( "3) exec ver : " + this.sessionInfo.getVersion() );
 
             if ( localTransaction ) {
