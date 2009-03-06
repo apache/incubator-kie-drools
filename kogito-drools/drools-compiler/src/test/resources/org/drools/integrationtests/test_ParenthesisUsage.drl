@@ -1,0 +1,10 @@
+package org.drools
+
+global java.util.List results
+
+rule "TestRule"
+when
+    $p : Person( alive ==true ||(alive==false && age ==0) )
+then
+    results.add( $p );
+end 
