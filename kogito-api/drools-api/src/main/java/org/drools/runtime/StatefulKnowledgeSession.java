@@ -61,6 +61,7 @@ public interface StatefulKnowledgeSession
     extends
     StatefulRuleSession,
     StatefulProcessSession,
+    BatchExecutor,
     KnowledgeRuntime {
 
     int getId();

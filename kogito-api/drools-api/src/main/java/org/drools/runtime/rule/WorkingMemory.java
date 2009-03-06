@@ -104,4 +104,35 @@ public interface WorkingMemory
      * @return
      */
     WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
+    
+    /**
+     * Retrieve the QueryResults of the specified query.
+     *
+     * @param query
+     *            The name of the query.
+     *
+     * @return The QueryResults of the specified query.
+     *         If no results match the query it is empty.
+     *
+     * @throws IllegalArgumentException
+     *         if no query named "query" is found in the KnowledgeBase
+     */
+    public QueryResults getQueryResults(String query);
+
+    /**
+     * Retrieve the QueryResults of the specified query and arguments
+     *
+     * @param query
+     *            The name of the query.
+     *
+     * @param arguments
+     *            The arguments used for the query
+     *
+     * @return The QueryResults of the specified query.
+     *         If no results match the query it is empty.
+     *
+     * @throws IllegalArgumentException
+     *         if no query named "query" is found in the KnowledgeBase
+     */
+    public QueryResults getQueryResults(String query, Object[] arguments);      
 }
