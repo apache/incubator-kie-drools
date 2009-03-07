@@ -39,13 +39,14 @@ import org.mvel2.compiler.ExpressionCompiler;
  */
 public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 
-    private static final long serialVersionUID = 400L;
+    private static final long  serialVersionUID = 400L;
 
-    private CompiledExpression mvelExpression = null;
-    private Map extractors = null;
+    private CompiledExpression mvelExpression   = null;
+    private Map                extractors       = null;
 
     public MVELClassFieldReader() {
     }
+
     public MVELClassFieldReader(Class cls,
                                 String fieldName,
                                 CacheEntry cache) {
@@ -56,42 +57,52 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 
         ExpressionCompiler compiler = new ExpressionCompiler( fieldName );
         this.mvelExpression = compiler.compile();
-        
 
         Set inputs = compiler.getParserContextState().getInputs().keySet();
-        for( Iterator it = inputs.iterator(); it.hasNext(); ) {
+        for ( Iterator it = inputs.iterator(); it.hasNext(); ) {
             String basefield = (String) it.next();
-                                    
-            InternalReadAccessor extr = cache.getReadAccessor( new AccessorKey( cls.getName(), basefield, AccessorKey.AccessorType.FieldAccessor), cls );
-            this.extractors.put( basefield, extr );
+            if ( "this".equals( basefield ) ) {
+                continue;
+            }
+            InternalReadAccessor extr = cache.getReadAccessor( new AccessorKey( cls.getName(),
+                                                                                basefield,
+                                                                                AccessorKey.AccessorType.FieldAccessor ),
+                                                               cls );
+            this.extractors.put( basefield,
+                                 extr );
         }
     }
 
-//    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-//        super.readExternal(in);
-//        mvelExpression  = (CompiledExpression)in.readObject();
-//        extractors  = (Map)in.readObject();
-//    }
-//
-//    public void writeExternal(ObjectOutput out) throws IOException {
-//        super.writeExternal(out);
-//        out.writeObject(mvelExpression);
-//        out.writeObject(extractors);
-//    }
+    //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    //        super.readExternal(in);
+    //        mvelExpression  = (CompiledExpression)in.readObject();
+    //        extractors  = (Map)in.readObject();
+    //    }
+    //
+    //    public void writeExternal(ObjectOutput out) throws IOException {
+    //        super.writeExternal(out);
+    //        out.writeObject(mvelExpression);
+    //        out.writeObject(extractors);
+    //    }
 
     /* (non-Javadoc)
      * @see org.drools.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
-    public Object getValue(InternalWorkingMemory workingMemory, Object object) {
+    public Object getValue(InternalWorkingMemory workingMemory,
+                           Object object) {
         Map variables = new HashMap();
-        for( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
+        for ( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String var = (String) entry.getKey();
             InternalReadAccessor extr = (InternalReadAccessor) entry.getValue();
 
-            variables.put( var, extr.getValue( workingMemory, object ));
+            variables.put( var,
+                           extr.getValue( workingMemory,
+                                          object ) );
         }
-        return MVEL.executeExpression( mvelExpression, variables );
+        return MVEL.executeExpression( mvelExpression,
+                                       object,
+                                       variables );
     }
 
 }
