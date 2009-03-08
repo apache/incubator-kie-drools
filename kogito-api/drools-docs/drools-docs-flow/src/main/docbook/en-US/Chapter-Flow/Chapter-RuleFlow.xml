@@ -457,11 +457,11 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
             </para>
            </listitem>
            <listitem>
-             <para>XOR means that it continues if one of its incoming branches has been completed.
+             <para>XOR means that it continues if one of its incoming branches has been completed.  If it is triggered from more than one incoming connection, it will trigger the next node for each of those triggers.
              </para>
            </listitem>
            <listitem>
-             <para>Discriminator means that it continues if one of its incoming branches has been completed.
+             <para>Discriminator means that it continues if one of its incoming branches has been completed.  At that point, it will wait until all other connections have been triggered as well.  At that point, it will reset, so that it can trigger again when one of its incoming branches has been completed.
              </para>
            </listitem>
            <listitem>
@@ -516,10 +516,19 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
 
       <!-- TIMER -->
       <listitem>
-        <para><emphasis role="strong">Timer</emphasis>: represents a timer that can trigger one or multiple times after a given period of time.  A Timer node should have one incoming connection and one outgoing connection.  The timer delay specifies how long (in milliseconds) the timer should wait before triggering the first time.  The timerperiod specifies the time between two subsequenct triggers.  A period of 0 means that the timer should only be triggered once.  When a timer node is reached in the ruleflow, it will execute the associated timer.  The timer is cancelled if the timer node is cancelled (e.g. by completing or aborting the process).  It contains the following properties:</para>
+        <para><emphasis role="strong">Timer</emphasis>: represents a timer that can trigger one or multiple times after a given period of time.  A Timer node should have one incoming connection and one outgoing connection.  The timer delay specifies how long (in milliseconds) the timer should wait before triggering the first time.  The timerperiod specifies the time between two subsequenct triggers.  A period of 0 means that the timer should only be triggered once.  When a timer node is reached in the ruleflow, it will execute the associated timer.  The timer is cancelled if the timer node is cancelled (e.g. by completing or aborting the process).  Check out the section on timers to find out more information. The timer node contains the following properties:</para>
         <itemizedlist>
           <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
+          <listitem><para><emphasis>Name</emphasis>: T    <programlisting>
+  rule 'YourRule'
+     ruleflow-group 'group1'
+     when
+      ...
+     then
+      ...
+    end  
+  </programlisting>
+he display name of the node.</para></listitem>
           <listitem><para><emphasis>Timer delay</emphasis>: The delay (in milliseconds) that the node should wait before triggering the first time.</para></listitem>
           <listitem><para><emphasis>Timer period</emphasis>: The period (in milliseconds) between two subsequent triggers.  If the period is 0, the timer should only be triggered once.</para></listitem>
         </itemizedlist>
@@ -639,10 +648,11 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
       <itemizedlist>
         <listitem>Process-level variables can be set when starting a process by providing a map of parameters when
         invoking the startProcess method.  These parameters will be set as variables on the process scope.</listitem>
-        <listitem>Actions can read/write variables through the process context using
-        <programlisting>Object value = context.getVariable(variableName);</programlisting> and
-        <programlisting>context.setVariable(variableName, value);</programlisting>.  When using the MVEL dialect,
-        you can even access the variables directly using the variable name.</listitem>
+        <listitem>Actions can access variables directly (by simply using the name of the variable as a parameter name).
+          <programlisting>person.setAge(10); // with "person" a variable in the process</programlisting>
+          Changing the value of a variable can be done through the knowledge context:
+          <programlisting>kcontext.setVariable(variableName, value);</programlisting>
+        </listitem>
         <listitem>Work items and sub-flows can pass the value of parameters to the outside world by mapping the variable to one
         of the work item parameters (either using a parameter mapping or by using #{expression} directly inside
         a String parameter.  The results of a work item can also be copied to a variable using a result mapping.</listitem>
@@ -652,36 +662,49 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
       </itemizedlist>
     </para>
 
-    <para>globals, data in working memory, etc</para>
+    <para>Finally, processes and rules all have access to globals (globally defined variables that are considered immutable
+    with regard to rule evaluation) and data in the knowledge session.  The knowledge session can be accessed in actions
+    using the knowledge context:</para>
+    <programlisting>kcontext.getKnowledgeRuntime().insert( new Person("..") );</programlisting>
+
   </section>
 
   <section>
     <title>Constraints</title>
 
-    <para>Two types of constraints:
+    <para>Constraints can be used in various locations in your processes, like for example decision points (i.e. an (X)OR split), wait constraints, etc.  Drools Flow supports two types of constraints:
       <itemizedlist>
-        <listitem>rule: Rule constraints are equals to rule conditions and refer to data in the working memory.</listitem>
-        <listitem>code: Code constraints are expressions that return a boolean value.  They have access to the context variable.  MVEL code constraints also have direct access to the variables.</listitem>
+        <listitem>code: Code constraints are expressions that return a boolean value.  They are evaluated directly whenever they are reached.  We currently support two dialects for expressing these code constraints: java and MVEL.  Both java and MVEL code constraints have direct access to the globals and variables defined in the process.  An example of a valid java code constraint would for example be (with person a variable in the process):
+          <programlisting>return person.getAge() > 20;</programlisting>
+An similar example of a valid MVEL code constraint would be:
+          <programlisting>return person.age > 20;</programlisting>
+        </listitem>
+        <listitem>rule: Rule constraints are equals to normal Drools rule conditions.  They use the Drools Rule Language syntax to express possibly complex constraints.  These rules can (like any other rule) refer to data in the working memory.  They can also refer to globals directly.  An example of a valid rule constraint would for example be:
+          <programlisting>Person( age > 20 )</programlisting>
+which will search for a person older than 20 in the working memory.</listitem>
       </itemizedlist>
     </para>
 
-    <para>Both rule and code constraints have access to globals that are defined for
-    the process and can reuse imports at the process level.</para>
+    <para>Rule constraints do not have direct access to variables defined inside the process.  It is however possible to refer to the current process instance inside a rule constraint, by adding the process instance to the working memory and matching to the process instance inside your rule constraint.  We have added special logic to make sure that a variable "processInstance" of type WorkflowProcessInstance will only match to the current process instance and not to other process instances in the working memory.  Note that you are however responsible yourself to insert (and possibly update) the process instance into the session (for example using Java code or an (on-entry or on-exit or explicit) action in your process). The following exampleof a rule constraint will search for a person with the same name as the value stored in the variable "name" of the process:</para>
+
+    <programlisting>processInstance: WorkflowProcessInstance()
+Person( name == ( processInstance.getVariable("name") ) )
+# add more constraints here ...</programlisting>	
   </section>
+
 
   <section>
     <title>Actions</title>
 
     <para>Actions can be used in different ways:
       <itemizedlist>
-        <listitem>Action node: </listitem>
-        <listitem>On entry/exit actions: </listitem>
+        <listitem>Action node</listitem>
+        <listitem>On entry/exit actions</listitem>
         <listitem>Actions that specify the behaviour of exception handlers</listitem>
       </itemizedlist>
     </para>
 
-    <para>Actions have access to globals that are defined for
-    the process and the 'kcontext' variable.  This variable is of type org.drools.runtime.process.ProcessContext and can be used for
+    <para>Actions have access to globals and the variables that are defined for the process and the 'kcontext' variable.  This variable is of type org.drools.runtime.process.ProcessContext and can be used for
       <itemizedlist>
         <listitem>Getting the current node instance (if applicable).  The node instance could be queried for data (name, type).  You can also cancel the current node instance.</listitem>
         <listitem>Getting the current process instance.  This process instance could be queried for data (name, id, processId, etc.), abort process instance, signal events (internal).</listitem>
@@ -689,6 +712,15 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
         <listitem>Accessing the KnowledgeRuntime: this allows you do things like starting a process, signalling events (external), inserting data, etc.</listitem>
       </itemizedlist>
     </para>
+
+    <para>Drools currently supports two dialects: the java and the MVEL dialect.  Java actions should be valid Java code.  MVEL actions can use the business scripting language MVEL to express the action.  MVEL accepts any valid Java code but also provides aditional support for nested accesses of parameters (e.g. person.name instead of person.getName()), and many other scripting improvements.  Therefore, MVEL usually allows more business user friendly action expressions.  For example, an action that prints out the name of the person in the "requester" variable of the process would look like this:</para>
+
+    <programlisting>// using the Java dialect
+System.out.println( person.getName() );
+
+// Similarly, using the MVEL dialect
+System.out.println( person.name );
+    </programlisting>
   </section>
   
   <section>
@@ -817,6 +849,32 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
         cancelled.</listitem>
       </itemizedlist>
     </para>
+
+    <para>By default, the Drools engine is a passive component, meaning that it will only
+    start processing if you tell it to (for example, you first insert the necessary data and then
+    tell the engine to start processing).  In passive mode, a timer that has been triggered will
+    be put on the action queue.  This means that it will be executed the next time the engine is
+    told to start executing by the user (using fireAllRules() or if the engine is already / still
+    running), in which case the timer will be executed automatically.</para>
+
+    <para>When using timers, it does usually make sense to make the Drools engine an active component,
+    meaning that it will execute actions whenever they become available (and not wait until the user
+    tells it to start executing again).  This would mean a timer would be executed once it is triggered.
+    To make the engine fire all actions continuously, you must call the fireUntilHalt() method.  That
+    means the engine will continue firing until the engine is halted.  The following fragment shows
+    how to do this (note that you should call fireUntilHalt() in a separate thread as it will only return
+    if the engine has been halted (by either the user or some logic calling halt() on the session):</para>
+
+    <programlisting>
+new Thread(new Runnable() {
+  public void run() {
+    ksession.fireUntilHalt();
+  }
+}).start();
+
+// starting a new process instance
+ksession.startProcess("...");
+// any timer that will trigger will now be executed automatically</programlisting>
   </section>
   
   <section>
