@@ -57,6 +57,7 @@ import org.drools.Guess;
 import org.drools.IndexedNumber;
 import org.drools.InsertedObject;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.MockPersistentSet;
@@ -103,6 +104,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
+import org.drools.conf.SequentialOption;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
 import org.drools.event.ActivationCancelledEvent;
@@ -132,6 +134,7 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
@@ -526,6 +529,35 @@ public class MiscTest extends TestCase {
         assertEquals( 10,
                       list.get( 0 ) );
     }
+    
+    public void testKnowledgeRuntimeAccess() throws Exception {
+        String str = "";
+        str += "package org.test\n";
+        str +="import org.drools.Message\n";
+        str +="rule \"Hello World\"\n";
+        str +="when\n";
+        str +="    Message( )\n";
+        str +="then\n";
+        str +="    System.out.println( drools.getKnowledgeRuntime() );\n";
+        str +="end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes()), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(  );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase    = SerializationHelper.serializeObject( kbase );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();       
+        
+        ksession.insert( new Message( "help" ) );
+        ksession.fireAllRules();
+        ksession.dispose();
+    }    
 
     public void testEvalWithBigDecimal() throws Exception {
         String str = "";

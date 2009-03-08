@@ -23,6 +23,7 @@ import org.drools.FactException;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -152,7 +153,7 @@ public class SequentialKnowledgeHelper
     }
     
     public KnowledgeRuntime getKnowledgeRuntime() {        
-        return new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) this.workingMemory );
+        return new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory );
      }
 
     public Activation getActivation() {

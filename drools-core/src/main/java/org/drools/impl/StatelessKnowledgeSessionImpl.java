@@ -79,13 +79,15 @@ public class StatelessKnowledgeSessionImpl
 
     public InternalWorkingMemory newWorkingMemory() {
         synchronized ( this.ruleBase.getPackagesMap() ) {
-            InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
+            ReteooWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                                 this.ruleBase,
                                                                 (SessionConfiguration) this.conf,
                                                                 this.environment );
 
+            StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( wm, new KnowledgeBaseImpl( this.ruleBase ), mappedWorkingMemoryListeners, mappedAgendaListeners, mappedProcessListeners ); 
+            
             ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
-
+            wm.setKnowledgeRuntime( ksession );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( this.ruleFlowEventSupport );
