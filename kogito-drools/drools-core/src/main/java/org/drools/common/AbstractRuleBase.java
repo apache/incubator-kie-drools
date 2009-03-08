@@ -46,6 +46,7 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.process.core.Process;
+import org.drools.reteoo.ReteooBuilder;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Function;

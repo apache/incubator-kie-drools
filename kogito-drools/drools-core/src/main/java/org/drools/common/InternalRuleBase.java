@@ -28,6 +28,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.process.core.Process;
 import org.drools.reteoo.Rete;
+import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.Package;
@@ -63,6 +64,8 @@ public interface InternalRuleBase
     void disposeStatefulSession(StatefulSession statefulSession);
     
     void executeQueuedActions();
+    
+    ReteooBuilder getReteooBuilder();
 
     /**
      * Assert a fact object.
