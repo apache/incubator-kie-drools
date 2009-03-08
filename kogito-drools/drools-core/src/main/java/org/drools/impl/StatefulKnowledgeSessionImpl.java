@@ -96,6 +96,20 @@ public class StatefulKnowledgeSessionImpl
         this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
     }
     
+    public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session,
+                                        KnowledgeBase kbase,
+                                        Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners,
+                                        Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners,
+                                        Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners) {                                        
+                                        
+        this.session = session;
+        this.session.setKnowledgeRuntime( this );
+        this.kbase = ( KnowledgeBaseImpl ) kbase;
+        this.mappedWorkingMemoryListeners = mappedWorkingMemoryListeners;
+        this.mappedAgendaListeners = mappedAgendaListeners;
+        this.mappedProcessListeners = mappedProcessListeners;
+    }    
+    
     public int getId() {
         return this.session.getId();
     }

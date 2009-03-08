@@ -123,27 +123,34 @@ public class AgendaEventSupportTest extends TestCase {
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
             public void activationCancelled(ActivationCancelledEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
 
             }
 
             public void activationCreated(ActivationCreatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
+                
             }
 
             public void afterActivationFired(AfterActivationFiredEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
             }
 
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
             }
 
             public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
             }
         };

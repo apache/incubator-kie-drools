@@ -13,6 +13,7 @@ import org.drools.Cheese;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Message;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -25,11 +26,24 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.conf.Option;
 import org.drools.conf.SequentialOption;
+import org.drools.event.rule.ActivationCancelledEvent;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.AgendaGroupPoppedEvent;
+import org.drools.event.rule.AgendaGroupPushedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.DefaultAgendaEventListener;
+import org.drools.event.rule.ObjectInsertedEvent;
+import org.drools.event.rule.ObjectRetractedEvent;
+import org.drools.event.rule.ObjectUpdatedEvent;
+import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.integrationtests.DynamicRulesTest;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemory;
 
 public class SequentialTest extends TestCase {
     //  FIXME lots of XXX tests here, need to find out why.
@@ -103,6 +117,124 @@ public class SequentialTest extends TestCase {
         assertEquals( "rule 2", list.get( 1 ));
         assertEquals( "rule 1", list.get( 2 ));
     }
+    
+    public void testKnowledgeRuntimeAccess() throws Exception {
+        String str = "";
+        str += "package org.test\n";
+        str +="import org.drools.Message\n";
+        str +="rule \"Hello World\"\n";
+        str +="when\n";
+        str +="    Message( )\n";
+        str +="then\n";
+        str +="    System.out.println( drools.getKnowledgeRuntime() );\n";
+        str +="end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes()), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( SequentialOption.YES );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase    = SerializationHelper.serializeObject( kbase );
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();       
+        
+        ksession.execute( new Message( "help" ) );
+    }
+    
+    public void testEvents() throws Exception {
+        String str = "";
+        str += "package org.test\n";
+        str +="import org.drools.Message\n";
+        str +="rule \"Hello World\"\n";
+        str +="when\n";
+        str +="    Message( )\n";
+        str +="then\n";
+        str +="    System.out.println( drools.getKnowledgeRuntime() );\n";
+        str +="end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes()), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( SequentialOption.YES );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase    = SerializationHelper.serializeObject( kbase );
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();     
+        
+        final List list = new ArrayList();
+        
+        ksession.addEventListener( new AgendaEventListener() {
+
+            public void activationCancelled(ActivationCancelledEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+
+            public void activationCreated(ActivationCreatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event );   
+            }
+
+            public void afterActivationFired(AfterActivationFiredEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+
+            public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+
+            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event );  
+            }
+
+        });
+        
+        ksession.addEventListener( new WorkingMemoryEventListener() {
+
+            public void objectInserted(ObjectInsertedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+
+            public void objectRetracted(ObjectRetractedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+
+            public void objectUpdated(ObjectUpdatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+            
+        });
+        
+        ksession.execute( new Message( "help" ) );
+        
+        assertEquals( 4, list.size() );
+    }
+    
 
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
     public void testSequentialWithRulebaseUpdate() throws Exception {
