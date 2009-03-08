@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.base.MapGlobalResolver;
 import org.drools.command.Command;
@@ -64,6 +65,12 @@ public class StatelessKnowledgeSessionImpl
         this.ruleBase = ruleBase;
         this.conf = (conf != null) ? conf : new SessionConfiguration();
         this.environment = EnvironmentFactory.newEnvironment();
+        
+        synchronized ( this.ruleBase.getPackagesMap() ) {
+            if ( ruleBase.getConfiguration().isSequential() ) {
+                this.ruleBase.getReteooBuilder().order();
+            }
+        }        
     }
 
     public InternalRuleBase getRuleBase() {

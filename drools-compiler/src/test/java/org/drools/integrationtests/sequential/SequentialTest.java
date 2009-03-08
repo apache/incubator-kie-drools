@@ -3,40 +3,56 @@ package org.drools.integrationtests.sequential;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.conf.Option;
+import org.drools.conf.SequentialOption;
 import org.drools.integrationtests.DynamicRulesTest;
 import org.drools.integrationtests.SerializationHelper;
+import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 public class SequentialTest extends TestCase {
+    //  FIXME lots of XXX tests here, need to find out why.
+    
     public void testBasicOperation() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "simpleSequential.drl", getClass() ), ResourceType.DRL );
 
-        // postponed while I sort out KnowledgeHelperFixer
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simpleSequential.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( SequentialOption.YES );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setSequential( true );
-        RuleBase ruleBase = getRuleBase( conf );
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final StatelessSession session = ruleBase.newStatelessSession();
+        kbase    = SerializationHelper.serializeObject( kbase );
+        final StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         final Person p1 = new Person( "p1",
@@ -51,30 +67,34 @@ public class SequentialTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            15 );
 
-        session.execute( new Object[]{p1, stilton, p2, cheddar, p3} );
+        ksession.execute( Arrays.asList( new Object[]{p1, stilton, p2, cheddar, p3} ) );
 
         assertEquals( 3,
                       list.size() );
-
     }
     
-    public void testSalience() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simpleSalience.drl" ) ) );
-        final Package pkg = builder.getPackage();
+    public void testSalience() throws Exception {        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "simpleSalience.drl", getClass() ), ResourceType.DRL );
 
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setSequential( true );
-        RuleBase ruleBase = getRuleBase( conf );
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final StatelessSession session = ruleBase.newStatelessSession();
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( SequentialOption.YES );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase    = SerializationHelper.serializeObject( kbase );
+        final StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
-        session.execute( new Person( "pob")  );
+        ksession.execute( new Person( "pob")  );
 
         assertEquals( 3,
                       list.size() );
@@ -86,32 +106,37 @@ public class SequentialTest extends TestCase {
 
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
     public void testSequentialWithRulebaseUpdate() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simpleSalience.drl" ) ) );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "simpleSalience.drl", getClass() ), ResourceType.DRL );
 
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setSequential( true );
-        RuleBase ruleBase = getRuleBase( conf );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( SequentialOption.YES );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        ruleBase.addPackage(builder.getPackage());
-        StatelessSession    session = ruleBase.newStatelessSession();
+        kbase    = SerializationHelper.serializeObject( kbase );
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
-        session.execute(new Person("pob"));
+        ksession.execute(new Person("pob"));
 
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl(
-                new InputStreamReader( DynamicRulesTest.class.getResourceAsStream( "test_Dynamic3.drl" ) ) );
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_Dynamic3.drl", DynamicRulesTest.class ), ResourceType.DRL );
 
-        ruleBase.addPackage(builder.getPackage());
-        session = ruleBase.newStatelessSession();
-        session.setGlobal( "list",
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        ksession = kbase.newStatelessKnowledgeSession();
+        ksession.setGlobal( "list",
                            list );
         Person  person  = new Person("bop");
-        session.execute(person);
+        ksession.execute(person);
 
         assertEquals( 7,
                       list.size() );
