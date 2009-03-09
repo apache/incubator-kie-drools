@@ -1,18 +1,22 @@
 package org.drools.runtime.help.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.process.command.GetGlobalCommand;
 import org.drools.process.command.InsertElementsCommand;
 import org.drools.process.command.InsertObjectCommand;
 import org.drools.process.command.QueryCommand;
 import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.StartProcessCommand;
-import org.drools.runtime.BatchExecutionResult;
+import org.drools.rule.Declaration;
+import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.BatchRequestMessage;
 import org.drools.runtime.help.BatchExecutionHelperProvider;
 import org.drools.runtime.impl.BatchExecutionResultImpl;
@@ -21,6 +25,9 @@ import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
+import org.drools.spi.ObjectType;
+
+import sun.text.CompactShortArray.Iterator;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
@@ -72,9 +79,6 @@ public class BatchMessageHelperProviderImpl
         xstream.registerConverter( new GetGlobalConverter( xstream.getMapper() ) );
         xstream.registerConverter( new BatchExecutionResultConverter( xstream.getMapper() ) );
         xstream.registerConverter( new QueryResultsConverter( xstream.getMapper() ) );
-
-        xstream.addImplicitCollection( InsertElementsCommand.class,
-                                       "objects" );
 
         return xstream;
     }
@@ -424,7 +428,7 @@ public class BatchMessageHelperProviderImpl
     public void marshal(Object object,
                         HierarchicalStreamWriter writer,
                         MarshallingContext context) {
-        BatchExecutionResult result = (BatchExecutionResult) object;
+        BatchExecutionResults result = (BatchExecutionResults) object;
         for ( String identifier : result.getIdentifiers() ) {
             writer.startNode( "result" );
             writer.addAttribute( "identifier", identifier );
@@ -459,7 +463,7 @@ public class BatchMessageHelperProviderImpl
     }
 
     public boolean canConvert(Class clazz) {
-        return BatchExecutionResult.class.isAssignableFrom( clazz );
+        return BatchExecutionResults.class.isAssignableFrom( clazz );
     }
 }    
 
@@ -476,8 +480,26 @@ public class BatchMessageHelperProviderImpl
                             MarshallingContext context) {
             QueryResults results = (QueryResults) object;
             
-            // write out identifiers
-            String[] identifiers = results.getIdentifiers();            
+            // write out identifiers             
+            List<String> originalIds = Arrays.asList( results.getIdentifiers() );
+            List<String> actualIds = new ArrayList();
+            if ( results instanceof NativeQueryResults ) {
+                for ( String identifier : originalIds ) {
+                    // we don't want to marshall the query parameters
+                    Declaration declr = ((NativeQueryResults)results).getDeclarations().get( identifier ); 
+                    ObjectType objectType = declr.getPattern().getObjectType();
+                    if ( objectType instanceof ClassObjectType ) {
+                        if ( ((ClassObjectType)objectType).getClassType() == DroolsQuery.class ) {
+                            continue;
+                        }
+                    }                
+                    actualIds.add( identifier );
+                }
+            }
+            
+            String[] identifiers = actualIds.toArray( new String[ actualIds.size() ] );
+            
+            
             writer.startNode( "identifiers" );
             for ( int i = 0; i < identifiers.length; i++ ) {
                 writer.startNode( "identifier" );

@@ -1,7 +1,7 @@
 package org.drools.process.command;
 
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.BatchExecutionResult;
+import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 

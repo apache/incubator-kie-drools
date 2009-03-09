@@ -51,7 +51,7 @@ import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.BatchExecutionResult;
+import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.BatchExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
@@ -644,11 +644,11 @@ public class StatefulKnowledgeSessionImpl
         return new NativeQueryResults( this.session.getQueryResults( query, arguments ) );
     }
     
-    public BatchExecutionResult execute(Command command) {        
+    public BatchExecutionResults execute(Command command) {        
         try {
             session.startBatchExecution();
             ((org.drools.process.command.Command)command).execute( session );
-            BatchExecutionResult result = session.getBatchExecutionResult();
+            BatchExecutionResults result = session.getBatchExecutionResult();
             return result;
         } finally {
             session.endBatchExecution();

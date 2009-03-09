@@ -12,26 +12,26 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public class InsertElementsCommand
     implements
     Command<Collection<FactHandle>> {
-    public Collection objects;
+    public Iterable objects;
 
     public InsertElementsCommand() {
         this.objects = new ArrayList();
     }
 
-    public InsertElementsCommand(Collection objects) {
+    public InsertElementsCommand(Iterable objects) {
         this.objects = objects;
     }
     
-    public Collection getObjects() {
+    public Iterable getObjects() {
         return this.objects;
     }
 
-    public void setObjects(Collection objects) {
+    public void setObjects(Iterable objects) {
         this.objects = objects;
     }
 
     public Collection<FactHandle> execute(ReteooWorkingMemory session) {
-        List<FactHandle> handles = new ArrayList<FactHandle>( objects.size() );
+        List<FactHandle> handles = new ArrayList<FactHandle>( );
         for ( Object object : objects ) {
             handles.add( session.insert( object ) );
         }
@@ -39,7 +39,11 @@ public class InsertElementsCommand
     }
 
     public String toString() {
-        return "insert " + objects;
+        List<Object> list = new ArrayList<Object>( );
+        for ( Object object : objects ) {
+            list.add( object );
+        }
+        return "insert " + list;
     }
 
 }

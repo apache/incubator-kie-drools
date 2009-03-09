@@ -1,7 +1,9 @@
 package org.drools.runtime.rule.impl;
 
 import java.util.Iterator;
+import java.util.Map;
 
+import org.drools.rule.Declaration;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.QueryResults;
 
@@ -17,6 +19,10 @@ public class NativeQueryResults
 
     public String[] getIdentifiers() {
         return (String[]) this.results.getDeclarations().keySet().toArray( new String[this.results.getDeclarations().size()] );
+    }
+    
+    public Map<String, Declaration> getDeclarations() {
+        return this.results.getDeclarations();
     }
 
     public int size() {

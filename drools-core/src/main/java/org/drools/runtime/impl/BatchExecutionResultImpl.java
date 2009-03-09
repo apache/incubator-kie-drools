@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.runtime.BatchExecutionResult;
+import org.drools.runtime.BatchExecutionResults;
 
-public class BatchExecutionResultImpl implements BatchExecutionResult {
+public class BatchExecutionResultImpl implements BatchExecutionResults {
     Map<String, Object> results = new HashMap<String, Object>();
     
     /* (non-Javadoc)

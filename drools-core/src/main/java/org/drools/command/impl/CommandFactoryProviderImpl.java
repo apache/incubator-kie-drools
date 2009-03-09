@@ -1,6 +1,5 @@
 package org.drools.command.impl;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +28,8 @@ public class CommandFactoryProviderImpl
         return cmd;
     }
 
-    public Command newInsertElements(Collection collection) {
-        return new InsertElementsCommand( collection );
+    public Command newInsertElements(Iterable objects) {
+        return new InsertElementsCommand( objects );
     }
 
     public Command newInsertObject(Object object) {
