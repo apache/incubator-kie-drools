@@ -282,5 +282,24 @@ public class DSLMappingEntryTest extends TestCase {
                       result );
     }
 
+    public void testExpandWithPound() throws IOException {
+        final String inputKey = "Bedingung-\\#19-MKM4";
+        final String inputValue = "eval ( $p.getTempVal(\"\\#UML-ATZ-1\") < $p.getZvUmlStfr() )";
+
+        DSLMappingEntry entry = createEntry( inputKey,
+                                  inputValue );
+
+        assertEquals( "(\\W|^)Bedingung-#19-MKM4(\\W|$)",
+                      entry.getKeyPattern().toString() );
+        assertEquals( "$1eval ( \\$p.getTempVal(\"#UML-ATZ-1\") < \\$p.getZvUmlStfr() )$2",
+                      entry.getValuePattern());
+        
+        
+        String result = entry.getKeyPattern().matcher( "Bedingung-#19-MKM4" ).replaceAll( entry.getValuePattern() );
+
+        assertEquals( result,
+                      "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )",
+                      result );
+    }
     
 }
