@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.drools.process.command.Command;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.BatchExecutionResult;
+import org.drools.runtime.BatchExecutionResults;
 
 
 public class BatchExecutionImpl implements Command<Void> {

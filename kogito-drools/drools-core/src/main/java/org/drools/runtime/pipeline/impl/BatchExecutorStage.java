@@ -6,7 +6,7 @@ import java.util.List;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
 import org.drools.runtime.BatchExecution;
-import org.drools.runtime.BatchExecutionResult;
+import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 
@@ -20,7 +20,7 @@ public class BatchExecutorStage extends BaseEmitter
         if ( object instanceof Collection ) {
             object = CommandFactory.newBatchExecution( (List<Command>) object );
         }
-        BatchExecutionResult result = kContext.getBatchExecutor().execute( (Command) object );
+        BatchExecutionResults result = kContext.getBatchExecutor().execute( (Command) object );
 
         emit( result,
               kContext );
