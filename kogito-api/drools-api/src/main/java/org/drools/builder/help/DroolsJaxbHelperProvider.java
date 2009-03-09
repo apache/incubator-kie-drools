@@ -18,6 +18,9 @@ import com.sun.tools.xjc.Options;
  * This class is not considered stable and may change, the user is protected from this change by using 
  * the Factory api, which is considered stable.
  *
+ * 
+ * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
+ *
  */
 public interface DroolsJaxbHelperProvider {
     /**

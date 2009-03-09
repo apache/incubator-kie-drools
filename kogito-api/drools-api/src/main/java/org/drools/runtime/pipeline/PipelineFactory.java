@@ -156,6 +156,8 @@ import com.thoughtworks.xstream.XStream;
  *                                                      factory );
  * messenger.start();
  * </pre>
+ * 
+ * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  */
 
 public class PipelineFactory {
@@ -409,7 +411,9 @@ public class PipelineFactory {
     }
 
     /**
+     * <p>
      * Transforms from Source to Pojo using Smooks, the resulting pojo is set as the propagating object. 
+     * </p>
      * 
      * <pre>
      * // Instantiate Smooks with the config...
@@ -431,7 +435,9 @@ public class PipelineFactory {
     }
 
     /**
+     * <p>
      * Transforms from Pojo to Source using Smooks, the resulting Source is set as the propagating object
+     * </p>
      * 
      * <pre>
      * // Instantiate Smooks with the config...
@@ -498,13 +504,22 @@ public class PipelineFactory {
     }
 
     /**
+     * <p>
      * Transforms from XML to Pojo using XStream, the resulting Pojo is set as the propagating object. 
+     * </p>
      * 
      * <pre>
      * XStream xstream = new XStream();
      * Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
      * transformer.setReceiver( receiver );
      * </pre>
+     * 
+     * <p>
+     * The BatchExecutionHelper factory provides a pre-configured XStream instance used for marshalling Commands, specifically
+     * the BatchExecutionCommand and the BatchExecutionResults. It also contains docs on the xml formant and on how to use the pipeline 
+     * for marshalling BatchExecutionCommand and BatchExecutionResults.
+     * </p>
+     * 
      * @param xstream
      * @return
      */
@@ -513,13 +528,21 @@ public class PipelineFactory {
     }
 
     /**
+     * <p>
      * Transforms from Pojo to XML using XStream, the resulting XML is set as the propagating object. 
+     * </p>
      * 
      * <pre>
      * XStream xstream = new XStream();
      * Transformer transformer = PipelineFactory.newXStreamToXmlTransformer( xstream );
      * transformer.setReceiver( receiver );
      * </pre>
+     * 
+     * <p>
+     * The BatchExecutionHelper factory provides a pre-configured XStream instance used for marshalling Commands, specifically
+     * the BatchExecutionCommand and the BatchExecutionResults. It also contains docs on the xml formant and on how to use the pipeline 
+     * for marshalling BatchExecutionCommand and BatchExecutionResults.
+     * </p>
      * @param xstream
      * @return
      */    
