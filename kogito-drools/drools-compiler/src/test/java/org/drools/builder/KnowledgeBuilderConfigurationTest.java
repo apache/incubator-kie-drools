@@ -17,6 +17,7 @@
 package org.drools.builder;
 
 import java.io.File;
+import java.io.Serializable;
 
 import junit.framework.TestCase;
 
@@ -115,6 +116,23 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         // checking the string based getProperty() method
         assertEquals( MaxAccumulateFunction.class.getName(),
                       config.getProperty( AccumulateFunctionOption.PROPERTY_NAME+"maximum" ) );
+        
+        // wiring the inner class accumulate function using the string based setProperty() method
+        config.setProperty( AccumulateFunctionOption.PROPERTY_NAME+"inner",
+                            InnerAccumulateFuncion.class.getName() );
+        
+        InnerAccumulateFuncion inner = new InnerAccumulateFuncion();
+        // checking the type safe getOption() method
+        assertEquals( AccumulateFunctionOption.get( "inner", inner ),
+                      config.getOption( AccumulateFunctionOption.class, "inner" ) );
+        // checking string conversion
+        assertEquals( "inner",
+                      config.getOption( AccumulateFunctionOption.class, "inner" ).getName() );
+        assertEquals( inner.getClass().getName(),
+                      config.getOption( AccumulateFunctionOption.class, "inner" ).getFunction().getClass().getName() );
+        // checking the string based getProperty() method
+        assertEquals( InnerAccumulateFuncion.class.getName(),
+                      config.getProperty( AccumulateFunctionOption.PROPERTY_NAME+"inner" ) );
     }
     
     public void testDumpDirectoryConfiguration() {
@@ -211,7 +229,31 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         assertEquals( "false",
                       config.getProperty( ProcessStringEscapesOption.PROPERTY_NAME ) );
     }
-    
-    
+
+    /**
+     * an accumulate function implemented as an inner class
+     * @author admin
+     *
+     */
+    public static class InnerAccumulateFuncion implements AccumulateFunction {
+
+        public void accumulate(Serializable context,
+                               Object value) {
+        }
+        public Serializable createContext() {
+            return null;
+        }
+        public Object getResult(Serializable context) throws Exception {
+            return null;
+        }
+        public void init(Serializable context) throws Exception {
+        }
+        public void reverse(Serializable context,
+                            Object value) throws Exception {
+        }
+        public boolean supportsReverse() {
+            return false;
+        }
+    }
 
 }
