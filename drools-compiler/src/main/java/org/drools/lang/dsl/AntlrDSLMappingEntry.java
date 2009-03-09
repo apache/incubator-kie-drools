@@ -28,11 +28,11 @@ import org.mvel2.util.ParseTools;
  */
 public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
 
-    private static final String HEAD_TAG = "__HEAD__";
-    private static final String TAIL_TAG = "__TAIL__";
-    
-    private boolean headMatchGroupAdded = false;
-    private boolean tailMatchGroupAdded = false;
+    private static final String HEAD_TAG            = "__HEAD__";
+    private static final String TAIL_TAG            = "__TAIL__";
+
+    private boolean             headMatchGroupAdded = false;
+    private boolean             tailMatchGroupAdded = false;
 
     public AntlrDSLMappingEntry() {
         this( DSLMappingEntry.ANY,
@@ -69,6 +69,9 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
             // escaping the special character $
             String keyPattern = trimmed.replaceAll( "\\$",
                                                     "\\\\\\$" );
+            // unescaping the special character #
+            keyPattern = keyPattern.replaceAll( "\\\\#",
+                                                "#" );
 
             if ( !keyPattern.startsWith( "^" ) ) {
                 // making it start with a space char or a line start
@@ -89,7 +92,7 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
                                     Integer.valueOf( 1 ) );
                 tailMatchGroupAdded = true;
             }
-            
+
             // fix variables offset
             fixVariableOffsets();
 
@@ -120,8 +123,9 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
         char[] input = getMappingKey().toCharArray();
         int counter = 1;
         boolean insideCurly = false;
-        if( headMatchGroupAdded ) {
-            getVariables().put( HEAD_TAG, Integer.valueOf( counter ) );
+        if ( headMatchGroupAdded ) {
+            getVariables().put( HEAD_TAG,
+                                Integer.valueOf( counter ) );
             counter++;
         }
         for ( int i = 0; i < input.length; i++ ) {
@@ -134,8 +138,10 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
                     counter++;
                     break;
                 case '{' :
-                    if( insideCurly ) {
-                        i = ParseTools.balancedCapture( input, i, '{' );
+                    if ( insideCurly ) {
+                        i = ParseTools.balancedCapture( input,
+                                                        i,
+                                                        '{' );
                     } else {
                         insideCurly = true;
                         updateVariableIndex( i,
@@ -144,24 +150,20 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
                     }
                     break;
                 case '}' :
-                    if ( insideCurly )
-                        insideCurly = false;
+                    if ( insideCurly ) insideCurly = false;
             }
         }
-        if( tailMatchGroupAdded ) {
-            getVariables().put( TAIL_TAG, Integer.valueOf( counter ) );
+        if ( tailMatchGroupAdded ) {
+            getVariables().put( TAIL_TAG,
+                                Integer.valueOf( counter ) );
         }
     }
-    
-    
 
     private void updateVariableIndex(int offset,
                                      int counter) {
         String subs = getMappingKey().substring( offset );
         for ( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
-            if ( subs.startsWith( "{" + entry.getKey() ) &&
-                 (( subs.charAt( entry.getKey().length()+1 ) == '}' ) || 
-                  ( subs.charAt( entry.getKey().length()+1 ) == ':' ) )) {
+            if ( subs.startsWith( "{" + entry.getKey() ) && ((subs.charAt( entry.getKey().length() + 1 ) == '}') || (subs.charAt( entry.getKey().length() + 1 ) == ':')) ) {
                 entry.setValue( Integer.valueOf( counter ) );
                 break;
             }
@@ -187,9 +189,12 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
                 int tailIndex = getVariables().get( TAIL_TAG ).intValue();
                 valuePatternBuffer.append( "$" + tailIndex );
             }
-            String pat = valuePatternBuffer.toString();
-            for( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
-                pat = pat.replaceAll( "\\{"+entry.getKey()+"(:(.*?))?\\}", "\\$"+entry.getValue() );
+            // unescaping the special character #
+            String pat = valuePatternBuffer.toString().replaceAll( "\\\\#",
+                                                                   "#" );
+            for ( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
+                pat = pat.replaceAll( "\\{" + entry.getKey() + "(:(.*?))?\\}",
+                                      "\\$" + entry.getValue() );
             }
             super.setValuePattern( pat );
         }
