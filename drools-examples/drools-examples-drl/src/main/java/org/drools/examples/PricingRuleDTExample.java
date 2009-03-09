@@ -31,10 +31,11 @@ public class PricingRuleDTExample {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "ExamplePolicyPricing.xls", getClass() ),
-                              ResourceType.DTABLE,
-                              dtableconfiguration );
-        
+        kbuilder.add( ResourceFactory.newClassPathResource( "ExamplePolicyPricing.xls",
+                                                            getClass() ),
+                      ResourceType.DTABLE,
+                      dtableconfiguration );
+
         if ( kbuilder.hasErrors() ) {
             System.err.print( kbuilder.getErrors() );
             return -1;
@@ -50,7 +51,7 @@ public class PricingRuleDTExample {
         Driver driver = new Driver();
         Policy policy = new Policy();
 
-        ksession.executeIterable( Arrays.asList( new Object[]{driver, policy} ) );
+        ksession.execute( Arrays.asList( new Object[]{driver, policy} ) );
 
         System.out.println( "BASE PRICE IS: " + policy.getBasePrice() );
         System.out.println( "DISCOUNT IS: " + policy.getDiscountPercent() );
