@@ -20,6 +20,9 @@ import com.sun.tools.xjc.Options;
 /**
  * Provides helper methods for working with JAXB and a Knowledgebase, it takes care of the Classpath issues when
  * mapping against internal type declarations.
+ * 
+ * 
+ * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  *
  */
 public class KnowledgeBuilderHelper {

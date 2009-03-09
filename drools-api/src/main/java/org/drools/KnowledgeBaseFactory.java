@@ -20,9 +20,16 @@ import org.drools.util.ProviderLocator;
  * </p>
  * <pre>
  * Properties properties = new Properties();
- * properties.setProperty( "org.drools.sequential", "true");
+ * properties.setOption( SequentialOption.YES );
  * KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(properties, myClassLoader);
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
+ * </pre>
+ *
+ * <p>
+ * The above could also have used the supported property
+ * </p>
+ * <pre>
+ * properties.setProperty( "org.drools.sequential", "true");
  * </pre>
  *
  * @see org.drools.KnowledgeBase

@@ -1,6 +1,5 @@
 package org.drools.command;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,7 @@ public interface CommandFactoryProvider {
     Command newInsertObject(Object object,
                             String outIdentifier);
 
-    Command newInsertElements(Collection collection);
+    Command newInsertElements(Iterable iterable);
 
     Command newSetGlobal(String identifie,
                          Object object);
