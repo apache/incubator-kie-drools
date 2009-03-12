@@ -52,7 +52,7 @@ public class SplitNodeHandler extends AbstractNodeHandler {
                         + "toType=\"" + connection.getToType() + "\" ");
                 String name = constraint.getName();
                 if (name != null && !"".equals(name)) {
-                    xmlDump.append("name=\"" + constraint.getName() + "\" ");
+                    xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
                 }
                 int priority = constraint.getPriority();
                 if (priority != 0) {
