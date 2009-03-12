@@ -253,7 +253,7 @@ public class XMLPersistenceTest extends TestCase {
         split.setType(Split.TYPE_XOR);
         Connection connection = new ConnectionImpl(split, Node.CONNECTION_DEFAULT_TYPE, actionNode, Node.CONNECTION_DEFAULT_TYPE);
         Constraint constraint = new ConstraintImpl();
-        constraint.setName("constraint1");
+        constraint.setName("constraint1 ><&&");
         constraint.setPriority(1);
         constraint.setDialect("dialect1");
         constraint.setType("type1");
