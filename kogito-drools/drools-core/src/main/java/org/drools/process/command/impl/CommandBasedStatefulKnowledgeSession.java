@@ -35,6 +35,7 @@ import org.drools.process.command.GetProcessInstanceCommand;
 import org.drools.process.command.GetProcessInstancesCommand;
 import org.drools.process.command.GetSessionClockCommand;
 import org.drools.process.command.GetWorkingMemoryEntryPointCommand;
+import org.drools.process.command.GetWorkingMemoryEntryPointsCommand;
 import org.drools.process.command.GetWorkingMemoryEventListenersCommand;
 import org.drools.process.command.HaltCommand;
 import org.drools.process.command.InsertObjectCommand;
@@ -234,6 +235,10 @@ public class CommandBasedStatefulKnowledgeSession
         return this.commandService.execute( new GetWorkingMemoryEntryPointCommand( name ) );
     }
 
+    public Collection< ? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+        return this.commandService.execute( new GetWorkingMemoryEntryPointsCommand() );
+    }
+    
     public void halt() {
         this.commandService.execute( new HaltCommand() );
     }

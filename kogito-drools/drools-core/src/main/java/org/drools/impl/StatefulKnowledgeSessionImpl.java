@@ -117,6 +117,10 @@ public class StatefulKnowledgeSessionImpl
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         return session.getWorkingMemoryEntryPoint( name );
     }
+    
+    public Collection<? extends org.drools.runtime.rule.WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+        return session.getWorkingMemoryEntryPoints();
+    }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
         WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
