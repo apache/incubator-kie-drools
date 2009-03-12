@@ -106,6 +106,14 @@ public interface WorkingMemory
     WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
     
     /**
+     * Returns a collection of all available working memory entry points
+     * for this session.
+     * 
+     * @return the collection of all available entry points for this session
+     */
+    Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints();
+    
+    /**
      * Retrieve the QueryResults of the specified query.
      *
      * @param query
