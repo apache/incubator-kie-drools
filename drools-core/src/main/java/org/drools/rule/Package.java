@@ -537,7 +537,7 @@ public class Package
     }
 
     public FactType getFactType(final String typeName) {
-        if ( this.name != null && !typeName.startsWith( this.name ) ) {
+        if ( typeName == null || ( this.name != null && !typeName.startsWith( this.name + "." ) ) ) {
             return null;
         }
         // in case the package name is != null, remove the package name from the

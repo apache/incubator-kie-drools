@@ -1799,7 +1799,10 @@ public abstract class AbstractWorkingMemory
         WorkingMemoryEntryPoint wmEntryPoint = this.entryPoints.get( name );
         return wmEntryPoint;
     }
-
+    
+    public Collection<WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+        return this.entryPoints.values();
+    }
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return this.typeConfReg;
     }

@@ -19,6 +19,7 @@ package org.drools.integrationtests;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -34,6 +35,7 @@ import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
 import org.drools.io.ResourceFactory;
+import org.drools.rule.EntryPoint;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -221,5 +223,23 @@ public class StreamsTest extends TestCase {
         assertSame( tick7,
                     results.get( 0 ) );
 
+    }
+    
+    public void testGetEntryPointList() throws Exception {
+        // read in the source
+        KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPointReference.drl" );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        
+        WorkingMemoryEntryPoint def = session.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() );
+        WorkingMemoryEntryPoint s1 = session.getWorkingMemoryEntryPoint( "stream1" );
+        WorkingMemoryEntryPoint s2 = session.getWorkingMemoryEntryPoint( "stream2" );
+        WorkingMemoryEntryPoint s3 = session.getWorkingMemoryEntryPoint( "stream3" );
+        Collection<? extends WorkingMemoryEntryPoint> eps = session.getWorkingMemoryEntryPoints();
+        
+        assertEquals( 4, eps.size() );
+        assertTrue( eps.contains( def ) );
+        assertTrue( eps.contains( s1 ) );
+        assertTrue( eps.contains( s2 ) );
+        assertTrue( eps.contains( s3 ) );
     }
 }

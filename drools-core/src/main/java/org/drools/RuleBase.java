@@ -17,16 +17,10 @@ package org.drools;
  */
 
 import java.io.Externalizable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.drools.definition.type.FactType;
-import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.Marshaller;
 import org.drools.rule.Package;
 import org.drools.runtime.Environment;
-import org.drools.WorkingMemory;
 
 /**
  * Active collection of <code>Rule</code>s.
