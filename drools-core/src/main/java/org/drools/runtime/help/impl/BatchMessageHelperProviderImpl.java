@@ -17,17 +17,14 @@ import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.rule.Declaration;
 import org.drools.runtime.BatchExecutionResults;
-import org.drools.runtime.BatchRequestMessage;
 import org.drools.runtime.help.BatchExecutionHelperProvider;
-import org.drools.runtime.impl.BatchExecutionResultImpl;
 import org.drools.runtime.impl.BatchExecutionImpl;
-import org.drools.runtime.rule.QueryResultsRow;
+import org.drools.runtime.impl.BatchExecutionResultImpl;
 import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.spi.ObjectType;
-
-import sun.text.CompactShortArray.Iterator;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
