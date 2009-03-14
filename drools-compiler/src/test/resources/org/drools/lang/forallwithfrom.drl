@@ -1,0 +1,6 @@
+rule "ForallParserTest"
+when
+     forall( Person( age > 21, $likes : likes ) from $village
+             Cheese( type == $likes ) from $cheesery );
+then
+end
