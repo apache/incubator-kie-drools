@@ -187,7 +187,7 @@ public class PackageBuilderConfiguration
         
         setProperty( DefaultPackageNameOption.PROPERTY_NAME,
                      this.chainedProperties.getProperty( DefaultPackageNameOption.PROPERTY_NAME,
-                                                         "org.drools.pkg" ) );
+                                                         "defaultpkg" ) );
     }
 
     public void setProperty(String name,
