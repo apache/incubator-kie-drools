@@ -2620,6 +2620,37 @@ public class RuleParserTest extends TestCase {
                       cheese.getObjectType() );
     }
 
+    public void testForallWithFrom() throws Exception {
+        parseResource( "compilation_unit",
+                       "compilation_unit",
+                       "forallwithfrom.drl" );
+
+        final PackageDescr pack = walker.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals( 2,
+                      forall.getDescrs().size() );
+        final PatternDescr pattern = forall.getBasePattern();
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+        assertEquals( "$village", 
+                      ((FromDescr)pattern.getSource()).getDataSource().toString() );
+        final List remaining = forall.getRemainingPatterns();
+        assertEquals( 1,
+                      remaining.size() );
+        final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
+        assertEquals( "Cheese",
+                      cheese.getObjectType() );
+        assertEquals( "$cheesery", 
+                      ((FromDescr)cheese.getSource()).getDataSource().toString() );
+    }
+
     public void testMemberof() throws Exception {
         final String text = "Country( $cities : city )\nPerson( city memberOf $cities )\n";
         AndDescr descrs = (AndDescr) parse( "normal_lhs_block",

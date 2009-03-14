@@ -895,9 +895,9 @@ lhs_eval
 lhs_forall
 	:	forall_key 
 		LEFT_PAREN {	emit($LEFT_PAREN, DroolsEditorType.SYMBOL);	} 
-			lhs_pattern+ 
+			pattern_source+ 
 		RIGHT_PAREN {	emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);	}
-		-> ^(forall_key lhs_pattern+ RIGHT_PAREN)
+		-> ^(forall_key pattern_source+ RIGHT_PAREN)
 	;
 
 pattern_source
