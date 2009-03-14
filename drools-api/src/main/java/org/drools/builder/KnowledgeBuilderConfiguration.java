@@ -73,6 +73,8 @@ import org.drools.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * <li>drools.accumulate.function.min = org.drools.base.accumulators.MinAccumulateFunction</li>
  * <li>drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction</li>
  * <li>drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction</li>
+ * <li>drools.accumulate.function.collectSet = org.drools.base.accumulators.CollectSetAccumulateFunction</li>
+ * <li>drools.accumulate.function.collectList = org.drools.base.accumulators.CollectListAccumulateFunction</li>
  * </ul>
  * </p>
  */
