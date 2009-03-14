@@ -1352,7 +1352,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         PackageBuilder bldr = new PackageBuilder( cfg );
         bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n import java.util.List" ) );
-        bldr.addPackageFromDrl( new StringReader( "function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
+        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
 
         assertFalse( bldr.hasErrors() );
     }
@@ -1365,6 +1365,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( bldr.hasErrors() );
         bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Person" ) );
         assertFalse( bldr.hasErrors() );
+        // following package will not be added because configuration is set for single namespace builders
         bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
         assertFalse( bldr.hasErrors() );
 
@@ -1377,12 +1378,13 @@ public class PackageBuilderTest extends DroolsTestCase {
         bldr = new PackageBuilder( cfg );
         bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Cheese" ) );
         assertFalse( bldr.hasErrors() );
+        // following import will be added to the default package name
         bldr.addPackageFromDrl( new StringReader( "import org.drools.Person" ) );
         assertFalse( bldr.hasErrors() );
         bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
         assertFalse( bldr.hasErrors() );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       bldr.getPackages().length );
     }
 

@@ -567,7 +567,6 @@ public class PackageBuilder {
      * there are any generated classes to compile of course.
      */
     public void addPackage(final PackageDescr packageDescr) {
-        //validatePackageName( packageDescr );
         validateUniqueRuleNames( packageDescr );
 
         String dialectName = this.defaultDialect;
@@ -583,7 +582,9 @@ public class PackageBuilder {
         if ( isEmpty( packageDescr.getNamespace() ) ) {
             packageDescr.setNamespace( this.configuration.getDefaultPackageName() );
         }
-        checkNamespace( packageDescr.getNamespace() );
+        if( ! checkNamespace( packageDescr.getNamespace() ) ) {
+            return;
+        }
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         if ( pkgRegistry == null ) {
@@ -669,7 +670,10 @@ public class PackageBuilder {
      */
     private boolean checkNamespace(String newName) {
         if ( this.configuration == null ) return true;
-        return this.configuration.isAllowMultipleNamespaces();
+        if( (! this.pkgRegistryMap.isEmpty()) && (! this.pkgRegistryMap.containsKey( newName )) ) {
+            return this.configuration.isAllowMultipleNamespaces();
+        }
+        return true;
     }
 
     public boolean isEmpty(String string) {
