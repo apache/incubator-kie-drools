@@ -121,11 +121,6 @@ public class PackageBuilder {
     private ReteooRuleBase                ruleBase;
 
     /**
-     * Current default package
-     */
-    private String                        defaultNamespace;
-
-    /**
      * default dialect
      */
     private final String                  defaultDialect;
@@ -227,7 +222,6 @@ public class PackageBuilder {
 
         this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
 
-        this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
@@ -586,18 +580,10 @@ public class PackageBuilder {
             }
         }
 
-        if ( !isEmpty( packageDescr.getNamespace() ) ) {
-            // use the default namespace
-            if ( checkNamespace( packageDescr.getNamespace() ) ) {
-                this.defaultNamespace = packageDescr.getNamespace();
-            } else {
-                //force the default.
-                packageDescr.setNamespace( this.defaultNamespace );
-            }
-        } else {
-            // packagedescr defines a new default namespace
-            packageDescr.setNamespace( this.defaultNamespace );
+        if ( isEmpty( packageDescr.getNamespace() ) ) {
+            packageDescr.setNamespace( this.configuration.getDefaultPackageName() );
         }
+        checkNamespace( packageDescr.getNamespace() );
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         if ( pkgRegistry == null ) {
@@ -613,8 +599,8 @@ public class PackageBuilder {
 
         // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
-            for ( final Iterator it = packageDescr.getFactTemplates().iterator(); it.hasNext(); ) {
-                addFactTemplate( (FactTemplateDescr) it.next() );
+            for ( final FactTemplateDescr factTempl : packageDescr.getFactTemplates() ) {
+                addFactTemplate( packageDescr, factTempl );
             }
 
             if ( !packageDescr.getFunctions().isEmpty() ) {
@@ -623,7 +609,7 @@ public class PackageBuilder {
                     FunctionDescr functionDescr = (FunctionDescr) it.next();
                     if ( isEmpty( functionDescr.getNamespace() ) ) {
                         // make sure namespace is set on components
-                        functionDescr.setNamespace( this.defaultNamespace );
+                        functionDescr.setNamespace( packageDescr.getNamespace() );
                     }
                     if ( isEmpty( functionDescr.getDialect() ) ) {
                         // make sure namespace is set on components
@@ -654,7 +640,7 @@ public class PackageBuilder {
                 RuleDescr ruleDescr = (RuleDescr) it.next();
                 if ( isEmpty( ruleDescr.getNamespace() ) ) {
                     // make sure namespace is set on components
-                    ruleDescr.setNamespace( this.defaultNamespace );
+                    ruleDescr.setNamespace( packageDescr.getNamespace() );
                 }
                 if ( isEmpty( ruleDescr.getDialect() ) ) {
                     ruleDescr.addAttribute( new AttributeDescr( "dialect", pkgRegistry.getDialect() ) );
@@ -683,8 +669,6 @@ public class PackageBuilder {
      */
     private boolean checkNamespace(String newName) {
         if ( this.configuration == null ) return true;
-        if ( this.defaultNamespace == null ) return true;
-        if ( this.defaultNamespace.equals( newName ) ) return true;
         return this.configuration.isAllowMultipleNamespaces();
     }
 
@@ -851,10 +835,8 @@ public class PackageBuilder {
     //    }
 
     private void validateUniqueRuleNames(final PackageDescr packageDescr) {
-        final Set names = new HashSet();
-        String namespace = packageDescr.getNamespace();
-        for ( final Iterator iter = packageDescr.getRules().iterator(); iter.hasNext(); ) {
-            final RuleDescr rule = (RuleDescr) iter.next();
+        final Set<String> names = new HashSet<String>();
+        for ( final RuleDescr rule : packageDescr.getRules() ) {
             final String name = rule.getName();
             if ( names.contains( name ) ) {
                 this.results.add( new ParserError( "Duplicate rule name: " + name,
@@ -900,34 +882,25 @@ public class PackageBuilder {
     }
 
     private void mergePackage(final PackageDescr packageDescr) {
-        PackageRegistry pkgRegistry;
-        if ( isEmpty( packageDescr.getName() ) ) {
-            pkgRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
-        } else {
-            pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
-        }
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
-        final List imports = packageDescr.getImports();
-        for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
-            ImportDescr importEntry = (ImportDescr) it.next();
+        for ( final ImportDescr importEntry : packageDescr.getImports() ) {
             pkgRegistry.addImport( importEntry.getTarget() );
         }
 
         processTypeDeclarations( packageDescr );
 
-        for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
-            String importEntry = ((FunctionImportDescr) it.next()).getTarget();
+        for ( final FunctionImportDescr functionImport : packageDescr.getFunctionImports() ) {
+            String importEntry = functionImport.getTarget();
             pkgRegistry.addStaticImport( importEntry );
             pkgRegistry.getPackage().addStaticImport( importEntry );
         }
 
-        final List globals = packageDescr.getGlobals();
-        for ( final Iterator it = globals.iterator(); it.hasNext(); ) {
-            final GlobalDescr global = (GlobalDescr) it.next();
+        for ( final GlobalDescr global : packageDescr.getGlobals() ) {
             final String identifier = global.getIdentifier();
             final String className = global.getType();
 
-            Class clazz;
+            Class<?> clazz;
             try {
                 clazz = pkgRegistry.getTypeResolver().resolveType( className );
                 pkgRegistry.getPackage().addGlobal( identifier,
@@ -947,24 +920,15 @@ public class PackageBuilder {
      * @param packageDescr
      */
     private void processTypeDeclarations(final PackageDescr packageDescr) {
-        PackageRegistry defaultRegistry;
-        if ( isEmpty( packageDescr.getName() ) ) {
-            defaultRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
-        } else {
-            defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
-        }
+        PackageRegistry defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
         PackageRegistry pkgRegistry = null;
         for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
             // make sure namespace is set on components
             if ( isEmpty( typeDescr.getNamespace() ) ) {
-                // use the default namespace 
-                typeDescr.setNamespace( defaultRegistry.getPackage().getName() );
-                pkgRegistry = defaultRegistry;
-            } else {
-                // use the namespace specified by the type declaration
-                pkgRegistry = this.pkgRegistryMap.get( typeDescr.getNamespace() );
+                typeDescr.setNamespace( packageDescr.getNamespace() );
             }
+            pkgRegistry = this.pkgRegistryMap.get( typeDescr.getNamespace() );
 
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
             if ( resource != null && ((InternalResource) resource).hasURL() ) {
@@ -1152,10 +1116,10 @@ public class PackageBuilder {
                                         pkgRegistry.getTypeResolver() );
     }
 
-    private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
+    private void addFactTemplate(final PackageDescr pkgDescr, final FactTemplateDescr factTemplateDescr) {
         final List fields = new ArrayList();
         int index = 0;
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( pkgDescr.getNamespace() );
         for ( final Iterator it = factTemplateDescr.getFields().iterator(); it.hasNext(); ) {
             final FieldTemplateDescr fieldTemplateDescr = (FieldTemplateDescr) it.next();
             FieldTemplate fieldTemplate = null;
@@ -1217,7 +1181,10 @@ public class PackageBuilder {
      * Compiled packages are serializable.
      */
     public Package getPackage() {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
+        PackageRegistry pkgRegistry = null;
+        if( ! this.pkgRegistryMap.isEmpty() ) {
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[0]; 
+        }
         Package pkg = null;
         if ( pkgRegistry != null ) {
             pkg = pkgRegistry.getPackage();
@@ -1306,10 +1273,6 @@ public class PackageBuilder {
      */
     protected void resetErrors() {
         this.results.clear();
-    }
-
-    public String getDefaultNamespace() {
-        return this.defaultNamespace;
     }
 
     public String getDefaultDialect() {

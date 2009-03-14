@@ -31,6 +31,7 @@ import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.conf.AccumulateFunctionOption;
 import org.drools.builder.conf.DefaultDialectOption;
+import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.builder.conf.DumpDirOption;
 import org.drools.builder.conf.EvaluatorOption;
 import org.drools.builder.conf.KnowledgeBuilderOption;
@@ -83,7 +84,7 @@ public class PackageBuilderConfiguration
     implements
     KnowledgeBuilderConfiguration {
 
-    private Map                             dialectConfigurations;
+    private Map<String, DialectConfiguration> dialectConfigurations;
 
     private DefaultDialectOption            defaultDialect;
 
@@ -104,6 +105,8 @@ public class PackageBuilderConfiguration
     private boolean                         allowMultipleNamespaces              = true;
 
     private boolean                         processStringEscapes                 = true;
+
+    private String                          defaultPackageName;
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -168,7 +171,7 @@ public class PackageBuilderConfiguration
             this.chainedProperties.addProperties( properties );
         }
 
-        this.dialectConfigurations = new HashMap();
+        this.dialectConfigurations = new HashMap<String, DialectConfiguration>();
 
         buildDialectConfigurationMap();
 
@@ -181,6 +184,10 @@ public class PackageBuilderConfiguration
         setProperty( ProcessStringEscapesOption.PROPERTY_NAME,
                      this.chainedProperties.getProperty( ProcessStringEscapesOption.PROPERTY_NAME,
                                                          "true" ) );
+        
+        setProperty( DefaultPackageNameOption.PROPERTY_NAME,
+                     this.chainedProperties.getProperty( DefaultPackageNameOption.PROPERTY_NAME,
+                                                         "org.drools.pkg" ) );
     }
 
     public void setProperty(String name,
@@ -199,6 +206,8 @@ public class PackageBuilderConfiguration
             this.evaluatorRegistry.addEvaluatorDefinition( value );
         } else if ( name.equals( DumpDirOption.PROPERTY_NAME ) ) {
             buildDumpDirectory( value );
+        } else if ( name.equals( DefaultPackageNameOption.PROPERTY_NAME ) ) {
+            setDefaultPackageName( value );
         } else if ( name.equals( ProcessStringEscapesOption.PROPERTY_NAME ) ) {
             setProcessStringEscapes( Boolean.parseBoolean( value ) );
         }
@@ -212,6 +221,8 @@ public class PackageBuilderConfiguration
 
         if ( name.equals( DefaultDialectOption.PROPERTY_NAME ) ) {
             return getDefaultDialect();
+        } else if ( name.equals( DefaultPackageNameOption.PROPERTY_NAME ) ) {
+            return getDefaultPackageName();
         } else if ( name.startsWith( AccumulateFunctionOption.PROPERTY_NAME ) ) {
             int index = AccumulateFunctionOption.PROPERTY_NAME.length();
             AccumulateFunction function = this.accumulateFunctions.get( name.substring( index ) );
@@ -610,6 +621,14 @@ public class PackageBuilderConfiguration
     public void setProcessStringEscapes(boolean processStringEscapes) {
         this.processStringEscapes = processStringEscapes;
     }
+    
+    public String getDefaultPackageName() {
+        return defaultPackageName;
+    }
+    
+    public void setDefaultPackageName(String defaultPackageName) {
+        this.defaultPackageName = defaultPackageName;
+    }
 
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeBuilderOption> T getOption(Class<T> option) {
@@ -619,6 +638,8 @@ public class PackageBuilderConfiguration
             return (T) DumpDirOption.get( this.dumpDirectory );
         } else if ( ProcessStringEscapesOption.class.equals( option ) ) {
             return (T) ( this.processStringEscapes ? ProcessStringEscapesOption.YES : ProcessStringEscapesOption.NO ); 
+        } else if ( DefaultPackageNameOption.class.equals( option ) ) {
+            return (T) DefaultPackageNameOption.get( this.defaultPackageName );
         }
         return null;
     }
@@ -648,6 +669,9 @@ public class PackageBuilderConfiguration
             this.evaluatorRegistry.addEvaluatorDefinition( (EvaluatorDefinition) ((EvaluatorOption)option).getEvaluatorDefinition() );
         } else if ( option instanceof ProcessStringEscapesOption ) {
             this.processStringEscapes = ((ProcessStringEscapesOption) option).isProcessStringEscapes();
+        } else if ( option instanceof DefaultPackageNameOption ) {
+            setDefaultPackageName( ((DefaultPackageNameOption) option).getPackageName() );
         }
     }
+
 }

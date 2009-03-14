@@ -1,0 +1,18 @@
+global java.util.List results
+
+function boolean test( Object o1, Object o2 ) {
+    return o1.equals(o2);
+}
+
+declare Person
+    name : String @key
+    age : int
+end    
+
+rule "TestRule"
+when
+    $p : Person( name == "Bob" );
+then
+    results.add( $p );
+end 
+
