@@ -9,6 +9,7 @@ declare Cheese
 end
 
 declare Person
+    name : String
 	age: int
 	likes: Cheese
 end

@@ -47,35 +47,7 @@ public class ClassFieldWriter
                             final String fieldName) {
         this.className = className;
         this.fieldName = fieldName;
-//        this.clazz = clazz;
-//        this.fieldName = fieldName;
-//        init( findClassLoader( classLoader ),
-//              factory );
     }    
-
-//    public ClassFieldWriter(final Class< ? > clazz,
-//                            final String fieldName,
-//                            final ClassLoader classLoader,
-//                            final ClassFieldAccessorFactory factory) {
-//        this.clazz = clazz;
-//        this.fieldName = fieldName;
-//        init( findClassLoader( classLoader ),
-//              factory );
-//    }
-
-//    /**
-//     * @param classLoader
-//     */
-//    private ClassLoader findClassLoader(final ClassLoader classLoader) {
-//        ClassLoader loader = classLoader;
-//        if ( loader == null ) {
-//            loader = Thread.currentThread().getContextClassLoader();
-//            if ( loader == null ) {
-//                loader = this.getClass().getClassLoader();
-//            }
-//        }
-//        return loader;
-//    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( className );
@@ -87,17 +59,6 @@ public class ClassFieldWriter
         className = (String) is.readObject();
         fieldName = (String) is.readObject();
     }
-//
-//    private void init(final ClassLoader classLoader,
-//                      final ClassFieldAccessorFactory factory) {
-//        try {
-//            this.writer = factory.getClassFieldWriter( this.clazz,
-//                                                       this.fieldName,
-//                                                       classLoader );
-//        } catch ( final Exception e ) {
-//            throw new RuntimeDroolsException( e );
-//        }
-//    }
     
     public void setWriteAccessor(WriteAccessor writer) {
         this.writer = writer;

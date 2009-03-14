@@ -28,6 +28,7 @@ import org.drools.base.evaluators.BeforeEvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.builder.conf.AccumulateFunctionOption;
 import org.drools.builder.conf.DefaultDialectOption;
+import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.builder.conf.DumpDirOption;
 import org.drools.builder.conf.EvaluatorOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
@@ -230,6 +231,35 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
                       config.getProperty( ProcessStringEscapesOption.PROPERTY_NAME ) );
     }
 
+    public void testDefaultPackageNameConfiguration() {
+        // setting the default dialect using the type safe method
+        config.setOption( DefaultPackageNameOption.get( "org.test" ) );
+
+        // checking the type safe getOption() method
+        assertEquals( DefaultPackageNameOption.get( "org.test" ),
+                      config.getOption( DefaultPackageNameOption.class ) );
+        // checking string conversion
+        assertEquals( "org.test",
+                      config.getOption( DefaultPackageNameOption.class ).getPackageName() );
+        // checking the string based getProperty() method
+        assertEquals( "org.test",
+                      config.getProperty( DefaultPackageNameOption.PROPERTY_NAME ) );
+
+        // setting the default dialect using the string based setProperty() method
+        config.setProperty( DefaultPackageNameOption.PROPERTY_NAME,
+                            "org.drools" );
+        
+        // checking the type safe getOption() method
+        assertEquals( DefaultPackageNameOption.get( "org.drools" ),
+                      config.getOption( DefaultPackageNameOption.class ) );
+        // checking string conversion
+        assertEquals( "org.drools",
+                      config.getOption( DefaultPackageNameOption.class ).getPackageName() );
+        // checking the string based getProperty() method
+        assertEquals( "org.drools",
+                      config.getProperty( DefaultPackageNameOption.PROPERTY_NAME ) );
+    }
+    
     /**
      * an accumulate function implemented as an inner class
      * @author admin
