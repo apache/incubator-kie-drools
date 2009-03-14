@@ -1,22 +1,17 @@
 package org.drools.builder.impl;
 
-import java.io.Reader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.Resource;
-import org.drools.io.impl.ReaderResource;
-import org.drools.io.impl.UrlResource;
 import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {

@@ -87,7 +87,7 @@ public class PackageDescr extends BaseDescr
     }
 
     public String getNamespace() {
-        return this.namespace == null ? "" : this.namespace;
+        return this.namespace;
     }
 
     public void setNamespace(String namespace) {
