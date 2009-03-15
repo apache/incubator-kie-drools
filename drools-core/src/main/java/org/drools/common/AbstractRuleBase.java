@@ -465,6 +465,14 @@ abstract public class AbstractRuleBase
                     // first merge anything related to classloader re-wiring
                     pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(), this.rootClassLoader );                
                 }
+
+                // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
+                for ( Package newPkg : newPkgs ) {
+                    Package pkg = this.pkgs.get( newPkg.getName() );              
+                    pkg.getDialectRuntimeRegistry().onBeforeExecute();
+                    // with the classloader recreated for all byte[] classes, we should now merge and wire any new accessors
+                    pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
+                }
                 
                 for ( Package newPkg : newPkgs ) {
                     Package pkg = this.pkgs.get( newPkg.getName() );  
@@ -474,8 +482,6 @@ abstract public class AbstractRuleBase
                             pkg.addFunction( entry.getValue() );
                         }
                     }            
-                    pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
-                    pkg.getDialectRuntimeRegistry().onBeforeExecute();
                     
                     // we have to do this before the merging, as it does some classloader resolving
                     TypeDeclaration lastType = null;
@@ -520,7 +526,7 @@ abstract public class AbstractRuleBase
                     }
     
                     this.eventSupport.fireAfterPackageAdded( newPkg );
-                }
+                }                
             } finally {
                 // only unlock if it had been acquired implicitely
                 if ( doUnlock ) {
