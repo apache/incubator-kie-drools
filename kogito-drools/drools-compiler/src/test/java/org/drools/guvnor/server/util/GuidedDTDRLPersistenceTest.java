@@ -33,6 +33,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 		AttributeCol attr = new AttributeCol();
 		attr.attr = "salience";
+        attr.defaultValue = "66";
 		dt.attributeCols.add(attr);
 
 		ConditionCol con = new ConditionCol();
@@ -91,12 +92,13 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		ActionSetFieldCol set2 = new ActionSetFieldCol();
 		set2.boundName = "f1";
 		set2.factField = "goo2";
+        set2.defaultValue = "whee";
 		set2.type = SuggestionCompletionEngine.TYPE_STRING;
 		dt.actionCols.add(set2);
 
 		dt.data = new String[][] {
-				new String[] {"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "gooVal2"},
-				new String[] {"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", "gooVal2"}
+				new String[] {"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
+				new String[] {"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
 		};
 
 
@@ -109,6 +111,9 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		assertTrue(drl.indexOf("rating == ( age * 0.2 )") > 0);
 		assertTrue(drl.indexOf("f2 : Driver( eval( age > 7 ))") > 0);
 		assertTrue(drl.indexOf("rating == ( age * 0.3 )") > drl.indexOf("rating == ( age * 0.2 )"));
+        assertTrue(drl.indexOf("f1.setGoo2( \"whee\" )") > 0);   //for default
+        assertTrue(drl.indexOf("salience 66") > 0);   //for default
+        
 
 	}
 

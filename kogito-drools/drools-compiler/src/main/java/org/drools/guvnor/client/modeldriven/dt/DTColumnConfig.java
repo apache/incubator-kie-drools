@@ -9,4 +9,15 @@ public class DTColumnConfig implements PortableObject {
 	 */
 	public int width = -1;
 
+
+    /**
+     * For a default value ! Will stil be in the array of course, just use this value if its empty.
+     */
+    public String defaultValue = null;
+
+    /**
+     * to hide the column (eg if it has a mandatory default).
+     */
+    public boolean hideColumn = false;
+
 }
