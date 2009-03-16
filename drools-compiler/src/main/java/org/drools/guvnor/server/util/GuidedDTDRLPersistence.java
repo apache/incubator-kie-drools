@@ -73,6 +73,9 @@ public class GuidedDTDRLPersistence {
 		for (int i = 0; i < actionCols.size(); i++) {
 			ActionCol c = actionCols.get(i);
 			String cell = row[condAndAttrs + i + GuidedDecisionTable.INTERNAL_ELEMENTS];
+            if (!validCell(cell)) {
+                cell = c.defaultValue;
+            }
 			if (validCell(cell)) {
 				if (c instanceof ActionInsertFactCol) {
 					ActionInsertFactCol ac = (ActionInsertFactCol)c;
@@ -144,6 +147,12 @@ public class GuidedDTDRLPersistence {
 		for (int i = 0; i < conditionCols.size(); i++) {
 			ConditionCol c = (ConditionCol) conditionCols.get(i);
 			String cell = row[i + GuidedDecisionTable.INTERNAL_ELEMENTS + numOfAttributesAndMeta];
+
+            if (!validCell(cell)) {
+                //try default value
+                cell = c.defaultValue;
+            }
+            
 			if (validCell(cell)) {
 
 				//get or create the pattern it belongs too
@@ -213,7 +222,9 @@ public class GuidedDTDRLPersistence {
 			String cell = row[j + GuidedDecisionTable.INTERNAL_ELEMENTS + numOfMeta];
 			if (validCell(cell)) {
 				attribs.add(new RuleAttribute(at.attr, cell));
-			}
+			} else if (at.defaultValue != null) {
+                attribs.add(new RuleAttribute(at.attr, at.defaultValue));                
+            }
 		}
 		if (attribs.size() > 0) {
 			rm.attributes = attribs.toArray(new RuleAttribute[attribs.size()]);
