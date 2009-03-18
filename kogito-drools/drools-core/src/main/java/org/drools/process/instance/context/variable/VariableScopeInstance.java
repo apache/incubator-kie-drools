@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.common.EventSupport;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ContextInstanceContainer;
@@ -36,7 +37,13 @@ public class VariableScopeInstance extends AbstractContextInstance {
             throw new IllegalArgumentException(
                 "The name of a variable may not be null!");
         }
+        if(getProcessInstance() != null){
+            ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeVariableChange(getProcessInstance(),name, variables.get(name), getProcessInstance().getWorkingMemory());
+        }
         variables.put(name, value);
+        if(getProcessInstance() != null){
+            ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterVariableChange(getProcessInstance(),name, value, getProcessInstance().getWorkingMemory());
+        }
     }
     
     public VariableScope getVariableScope() {
