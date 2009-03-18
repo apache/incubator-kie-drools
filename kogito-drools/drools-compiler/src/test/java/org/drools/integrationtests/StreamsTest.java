@@ -242,4 +242,99 @@ public class StreamsTest extends TestCase {
         assertTrue( eps.contains( s2 ) );
         assertTrue( eps.contains( s3 ) );
     }
+
+    public void testEventModify() throws Exception {
+            // read in the source
+        KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPoint_ModifyEvent.drl" );
+        //final RuleBase ruleBase = loadRuleBase( reader );
+
+        KnowledgeSessionConfiguration conf = new SessionConfiguration();
+        ((SessionConfiguration) conf).setClockType( ClockType.PSEUDO_CLOCK );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf, null );
+
+        final List results = new ArrayList();
+
+        session.setGlobal( "results",
+                           results );
+
+        StockTick tick1 = new StockTick( 1,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+        StockTick tick2 = new StockTick( 2,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis() );
+        StockTick tick3 = new StockTick( 3,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis() );
+        StockTick tick4 = new StockTick( 4,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
+
+        assertNotNull( handle1 );
+        assertNotNull( handle2 );
+        assertNotNull( handle3 );
+        assertNotNull( handle4 );
+
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+        assertTrue( handle3.isEvent() );
+        assertTrue( handle4.isEvent() );
+
+        session.fireAllRules();
+
+        assertEquals( 0,
+                      results.size() );
+
+        StockTick tick5 = new StockTick( 5,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+        StockTick tick6 = new StockTick( 6,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis() );
+        StockTick tick7 = new StockTick( 7,
+                                         "ACME",
+                                         15,
+                                         System.currentTimeMillis() );
+        StockTick tick8 = new StockTick( 8,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+
+        WorkingMemoryEntryPoint entry = session.getWorkingMemoryEntryPoint( "StockStream" );
+
+        InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
+        InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
+        InternalFactHandle handle7 = (InternalFactHandle) entry.insert( tick7 );
+        InternalFactHandle handle8 = (InternalFactHandle) entry.insert( tick8 );
+
+        assertNotNull( handle5 );
+        assertNotNull( handle6 );
+        assertNotNull( handle7 );
+        assertNotNull( handle8 );
+
+        assertTrue( handle5.isEvent() );
+        assertTrue( handle6.isEvent() );
+        assertTrue( handle7.isEvent() );
+        assertTrue( handle8.isEvent() );
+
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertSame( tick7,
+                    results.get( 0 ) );
+
+
+    }
 }
