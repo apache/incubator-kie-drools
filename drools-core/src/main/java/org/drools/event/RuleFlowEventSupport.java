@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.NodeInstance;
@@ -234,6 +235,41 @@ public class RuleFlowEventSupport implements Externalizable {
 
         for ( RuleFlowEventListener listener: listeners ) {
             listener.afterRuleFlowNodeLeft( event, workingMemory );
+        }
+    }
+
+    public void fireBeforeVariableChange(final ProcessInstance instance,
+                                            final String name,
+                                            final Object value,
+                                            WorkingMemory workingMemory) {
+        if (this.listeners.isEmpty()) {
+            return;
+        }
+
+        final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value );
+
+        for ( RuleFlowEventListener listener: listeners ) {
+            if(listener instanceof RuleFlowEventListenerExtension) {
+                ((RuleFlowEventListenerExtension) listener).beforeVariableChange(event, workingMemory);
+            }
+        }
+    }
+
+     public void fireAfterVariableChange(final ProcessInstance instance,
+                                            final String name,
+                                            final Object value,
+                                            WorkingMemory workingMemory) {
+        if (this.listeners.isEmpty()) {
+            return;
+        }
+
+        final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value );
+
+        for ( RuleFlowEventListener listener: listeners ) {
+            if(listener instanceof RuleFlowEventListenerExtension) {
+                ((RuleFlowEventListenerExtension) listener).afterVariableChange(event, workingMemory);
+            }
+            
         }
     }
 
