@@ -30,6 +30,15 @@ public class ExtendedNodeImpl extends NodeImpl {
 		return this.actions.get(type);
 	}
 	
+	public boolean containsActions() {
+		for (List<DroolsAction> l: actions.values()) {
+			if (!l.isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public String[] getActionTypes() {
 		return EVENT_TYPES;
 	}
