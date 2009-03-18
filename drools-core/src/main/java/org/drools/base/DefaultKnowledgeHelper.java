@@ -21,15 +21,14 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
-import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.ExitPoint;
@@ -54,12 +53,19 @@ public class DefaultKnowledgeHelper
     private Tuple                        tuple;
     private InternalWorkingMemoryActions workingMemory;
 
+    private IdentityHashMap<Object,FactHandle>              identityMap;
+    
     public DefaultKnowledgeHelper() {
+       
+        this.identityMap =  new IdentityHashMap<Object,FactHandle>();
 
     }
 
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+     
+       this.identityMap =  new IdentityHashMap<Object,FactHandle>();
+
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -100,25 +106,28 @@ public class DefaultKnowledgeHelper
 
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
+         FactHandle handle = this.workingMemory.insert( object,
                                    dynamic,
                                    false,
                                    this.rule,
                                    this.activation );
+         this.identityMap.put(object, handle);
     }
 
     public void insertLogical(final Object object) throws FactException {
         insertLogical( object,
                        false );
+
     }
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
+      FactHandle handle = this.workingMemory.insert( object,
                                    dynamic,
                                    true,
                                    this.rule,
                                    this.activation );
+      this.identityMap.put(object, handle);
     }
 
     public void update(final FactHandle handle,
@@ -151,7 +160,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
+        FactHandle handle = identityMap.get( object );
         if ( handle == null ) {
             throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
@@ -160,10 +169,12 @@ public class DefaultKnowledgeHelper
                                     true,
                                     this.rule,
                                     this.activation );
+        this.identityMap.remove(object);
+
     }
 
     public void modifyRetract(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
+        FactHandle handle =  identityMap.get( object );
         this.workingMemory.modifyRetract( handle,
                                           rule,
                                           activation );
@@ -176,11 +187,13 @@ public class DefaultKnowledgeHelper
     }
 
     public void modifyInsert(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
+        FactHandle handle =  identityMap.get( object );
+
         this.workingMemory.modifyInsert( handle,
                                          object,
                                          rule,
                                          activation );
+        this.identityMap.put(object, handle);
     }
 
     public void modifyInsert(final FactHandle factHandle,
@@ -189,6 +202,7 @@ public class DefaultKnowledgeHelper
                                          object,
                                          rule,
                                          activation );
+        this.identityMap.put(object, factHandle);
     }
 
     public Rule getRule() {
@@ -250,7 +264,9 @@ public class DefaultKnowledgeHelper
     }
 
     public Declaration getDeclaration(final String identifier) {
-        return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
+        Declaration declaration = (Declaration) this.subrule.getOuterDeclarations().get( identifier );
+        identityMap.put(tuple.get(declaration).getObject(), tuple.get(declaration));
+        return declaration;
     }
 
     public void halt() {
