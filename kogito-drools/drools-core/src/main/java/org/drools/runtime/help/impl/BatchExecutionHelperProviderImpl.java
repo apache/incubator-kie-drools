@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetGlobalCommand;
 import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.InsertElementsCommand;
@@ -67,6 +68,8 @@ public class BatchExecutionHelperProviderImpl
                        GetObjectsCommand.class );
         xstream.alias( "batch-execution-results",
                        BatchExecutionResultImpl.class );
+        xstream.alias( "fire-all-rules",
+                       FireAllRulesCommand.class );
         xstream.alias( "query",
                        QueryCommand.class );
         xstream.alias( "query-results",
@@ -76,6 +79,7 @@ public class BatchExecutionHelperProviderImpl
 
         xstream.registerConverter( new InsertConverter( xstream.getMapper() ) );
         xstream.registerConverter( new InsertElementsConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new FireAllRulesConverter( xstream.getMapper() ) );
         xstream.registerConverter( new StartProcessConvert( xstream.getMapper() ) );
         xstream.registerConverter( new QueryConverter( xstream.getMapper() ) );
         xstream.registerConverter( new SetGlobalConverter( xstream.getMapper() ) );
@@ -345,6 +349,44 @@ public class BatchExecutionHelperProviderImpl
 
         public boolean canConvert(Class clazz) {
             return clazz.equals( GetObjectsCommand.class );
+        }
+    }
+
+    public static class FireAllRulesConverter extends AbstractCollectionConverter
+        implements
+        Converter {
+
+        public FireAllRulesConverter(Mapper mapper) {
+            super( mapper );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            FireAllRulesCommand cmd = (FireAllRulesCommand) object;
+
+            if ( cmd.getMax() != -1 ) {
+                writer.addAttribute( "max",
+                                     Integer.toString( cmd.getMax() ) );
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            String max = reader.getAttribute( "max" );
+            
+            FireAllRulesCommand cmd = null;
+            
+            if ( max != null ) {
+                cmd = new FireAllRulesCommand( Integer.parseInt( max ) );
+            } else {
+                cmd = new FireAllRulesCommand( );
+            }
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( FireAllRulesCommand.class );
         }
     }
 

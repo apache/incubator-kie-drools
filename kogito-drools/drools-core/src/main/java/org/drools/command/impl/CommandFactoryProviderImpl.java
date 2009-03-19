@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryProvider;
+import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetGlobalCommand;
 import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.InsertElementsCommand;
@@ -64,6 +65,14 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
 		cmd.setOutIdentifier(outIdentifier);
 		return cmd;
+	}
+	
+	public Command newFireAllRules() {
+	    return new FireAllRulesCommand();
+	}
+	
+	public Command newFireAllRules(int max) {
+	    return new FireAllRulesCommand(max);
 	}
 
 	public Command newStartProcess(String processId) {
