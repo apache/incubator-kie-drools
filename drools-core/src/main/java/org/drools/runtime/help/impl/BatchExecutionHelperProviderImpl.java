@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.process.command.GetGlobalCommand;
+import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.InsertElementsCommand;
 import org.drools.process.command.InsertObjectCommand;
 import org.drools.process.command.QueryCommand;
@@ -41,11 +42,11 @@ public class BatchExecutionHelperProviderImpl
 
     public XStream newXStreamMarshaller() {
         ElementNames names = new XmlElementNames();
-        //ElementNames names = new JsonElementNames();
+        // ElementNames names = new JsonElementNames();
 
-        //XStream xstream = new XStream( new JettisonMappedXmlDriver() );       
+        // XStream xstream = new XStream( new JettisonMappedXmlDriver() );
         XStream xstream = new XStream();
-        //xstream.setMode( XStream.NO_REFERENCES );
+        // xstream.setMode( XStream.NO_REFERENCES );
         xstream.processAnnotations( BatchExecutionImpl.class );
         xstream.addImplicitCollection( BatchExecutionImpl.class,
                                        "commands" );
@@ -58,14 +59,16 @@ public class BatchExecutionHelperProviderImpl
                        InsertElementsCommand.class );
         xstream.alias( "startProcess",
                        StartProcessCommand.class );
-        xstream.alias( "query",
-                       QueryCommand.class );
         xstream.alias( "set-global",
                        SetGlobalCommand.class );
         xstream.alias( "get-global",
                        GetGlobalCommand.class );
+        xstream.alias( "get-objects",
+                       GetObjectsCommand.class );
         xstream.alias( "batch-execution-results",
                        BatchExecutionResultImpl.class );
+        xstream.alias( "query",
+                       QueryCommand.class );
         xstream.alias( "query-results",
                        FlatQueryResults.class );
         xstream.alias( "query-results",
@@ -77,6 +80,7 @@ public class BatchExecutionHelperProviderImpl
         xstream.registerConverter( new QueryConverter( xstream.getMapper() ) );
         xstream.registerConverter( new SetGlobalConverter( xstream.getMapper() ) );
         xstream.registerConverter( new GetGlobalConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new GetObjectsConverter( xstream.getMapper() ) );
         xstream.registerConverter( new BatchExecutionResultConverter( xstream.getMapper() ) );
         xstream.registerConverter( new QueryResultsConverter( xstream.getMapper() ) );
 
@@ -309,6 +313,41 @@ public class BatchExecutionHelperProviderImpl
         }
     }
 
+    public static class GetObjectsConverter extends AbstractCollectionConverter
+        implements
+        Converter {
+
+        public GetObjectsConverter(Mapper mapper) {
+            super( mapper );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            GetObjectsCommand cmd = (GetObjectsCommand) object;
+
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.addAttribute( "out-identifier",
+                                     cmd.getOutIdentifier() );
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            String identifierOut = reader.getAttribute( "out-identifier" );
+
+            GetObjectsCommand cmd = new GetObjectsCommand();
+            if ( identifierOut != null ) {
+                cmd.setOutIdentifier( identifierOut );
+            }
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( GetObjectsCommand.class );
+        }
+    }
+
     public static class QueryConverter extends AbstractCollectionConverter
         implements
         Converter {
@@ -338,7 +377,7 @@ public class BatchExecutionHelperProviderImpl
                                 UnmarshallingContext context) {
             List<String> outs = new ArrayList<String>();
 
-            //Query cmd = null;
+            // Query cmd = null;
             String outIdentifier = reader.getAttribute( "out-identifier" );
             String name = reader.getAttribute( "name" );
             List<Object> args = new ArrayList<Object>();
@@ -482,7 +521,7 @@ public class BatchExecutionHelperProviderImpl
                             MarshallingContext context) {
             QueryResults results = (QueryResults) object;
 
-            // write out identifiers             
+            // write out identifiers
             List<String> originalIds = Arrays.asList( results.getIdentifiers() );
             List<String> actualIds = new ArrayList();
             if ( results instanceof NativeQueryResults ) {

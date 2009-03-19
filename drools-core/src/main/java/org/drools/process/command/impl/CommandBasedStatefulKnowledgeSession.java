@@ -205,25 +205,12 @@ public class CommandBasedStatefulKnowledgeSession
         return this.commandService.execute( new GetFactHandlesCommand( filter ) );
     }
 
-    public Collection< ? > getObjects() {
-        Collection<Object> result = new ArrayList<Object>();
-        Iterator< ? > iterator = commandService.execute( new GetObjectsCommand() );
-        if ( iterator != null ) {
-            while ( iterator.hasNext() ) {
-                result.add( iterator.next() );
-            }
-        }
-        return result;
+    public Collection< ? extends Object> getObjects() {
+        return getObjects( null );
     }
 
-    public Collection< ? > getObjects(ObjectFilter filter) {
-        Collection<Object> result = new ArrayList<Object>();
-        Iterator< ? > iterator = commandService.execute( new GetObjectsCommand( filter ) );
-        if ( iterator != null ) {
-            while ( iterator.hasNext() ) {
-                result.add( iterator.next() );
-            }
-        }
+    public Collection< ? extends Object > getObjects(ObjectFilter filter) {
+        Collection result = commandService.execute( new GetObjectsCommand( filter ) );
         return result;
     }
 
