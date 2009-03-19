@@ -142,6 +142,14 @@ public class CommandFactory {
         return getCommandFactoryProvider().newGetGlobal( identifier,
                                                          outIdentifier );
     }
+    
+    public static Command newFireAllRules() {
+        return getCommandFactoryProvider().newFireAllRules();
+    }
+    
+    public static Command newFireAllRules(int max) {
+        return getCommandFactoryProvider().newFireAllRules(max);
+    }    
 
     /**
      * Start a process

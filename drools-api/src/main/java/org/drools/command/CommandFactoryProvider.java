@@ -13,6 +13,10 @@ public interface CommandFactoryProvider {
 
     Command newInsertElements(Iterable iterable);
     
+    Command newFireAllRules();
+
+    Command newFireAllRules(int max);    
+    
 	Command newGetObjects();
 
     public Command newGetObjects(ObjectFilter filter);
