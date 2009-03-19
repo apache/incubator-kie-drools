@@ -222,10 +222,10 @@ public class BatchExecutionHelper {
 
     private static void loadProvider() {
         try {
-            Class<BatchExecutionHelperProvider> cls = (Class<BatchExecutionHelperProvider>) Class.forName( "org.drools.runtime.help.impl.BatchMessageHelperProviderImpl" );
+            Class<BatchExecutionHelperProvider> cls = (Class<BatchExecutionHelperProvider>) Class.forName( "org.drools.runtime.help.impl.BatchExecutionHelperProviderImpl" );
             setBatchExecutionHelperProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.help.impl.BatchMessageHelperProviderImpl could not be set.",
+            throw new ProviderInitializationException( "Provider org.drools.runtime.help.impl.BatchExecutionHelperProviderImpl could not be set.",
                                                        e2 );
         }
     }
