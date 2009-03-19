@@ -62,7 +62,7 @@ public interface WorkingMemory
      * 
      * @return
      */
-    Collection< ? > getObjects();
+    Collection< ? extends Object > getObjects();
 
     /**
      * Returns all facts from the current session that are accepted by the given <code>ObjectFilter</code>.
@@ -71,7 +71,7 @@ public interface WorkingMemory
      *  
      * @return
      */
-    Collection< ? > getObjects(ObjectFilter filter);
+    Collection< ? extends Object > getObjects(ObjectFilter filter);
 
     /**
      * Returns all <code>FactHandle</code>s from the current session.
