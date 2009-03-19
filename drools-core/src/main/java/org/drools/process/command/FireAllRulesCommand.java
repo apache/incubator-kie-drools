@@ -21,9 +21,13 @@ public class FireAllRulesCommand
     public FireAllRulesCommand(AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
     }
+    
+    public int getMax() {
+        return this.max;
+    }
 
     public Integer execute(ReteooWorkingMemory session) {
-        if ( max > 0 ) {
+        if ( max != -1 ) {
             return session.fireAllRules( max );
         } else if ( agendaFilter != null ) {
             return session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );

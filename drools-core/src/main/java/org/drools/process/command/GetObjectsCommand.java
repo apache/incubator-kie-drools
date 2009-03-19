@@ -11,7 +11,7 @@ import org.drools.runtime.ObjectFilter;
 
 public class GetObjectsCommand
     implements
-    Command<Collection< ? extends Object>> {
+    Command<Collection> {
 
     public String getOutIdentifier() {
 		return outIdentifier;
@@ -32,7 +32,7 @@ public class GetObjectsCommand
         this.filter = filter;
     }
 
-    public Collection< ? extends Object > execute(ReteooWorkingMemory session) {        
+    public Collection execute(ReteooWorkingMemory session) {        
         Collection col = null;
         
         if ( filter != null ) {
