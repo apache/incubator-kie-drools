@@ -102,7 +102,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
-import org.drools.util.ObjectHashMap;
 import org.drools.workflow.core.node.EventTrigger;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.Trigger;
@@ -330,7 +329,7 @@ public abstract class AbstractWorkingMemory
         initPartitionManagers();
         initTransient();
     }
-
+    
     public static class GlobalsAdapter implements GlobalResolver {
         private Globals globals;
         
@@ -1261,13 +1260,11 @@ public abstract class AbstractWorkingMemory
                 // the hashCode and equality has changed, so we must update the
                 // EqualityKey
                 EqualityKey key = handle.getEqualityKey();
-                if(key != null){
-                    key.removeFactHandle( handle );
+                key.removeFactHandle( handle );
 
-                    // If the equality key is now empty, then remove it
-                    if ( key.isEmpty() ) {
-                        this.tms.remove( key );
-                    }
+                // If the equality key is now empty, then remove it
+                if ( key.isEmpty() ) {
+                    this.tms.remove( key );
                 }
             }
         } finally {
@@ -1295,22 +1292,20 @@ public abstract class AbstractWorkingMemory
             final Object originalObject = handle.getObject();
 
             if ( this.maintainTms ) {
-                if(handle.getEqualityKey() != null ){
-                    int status = handle.getEqualityKey().getStatus();
+                int status = handle.getEqualityKey().getStatus();
 
-                    // now use an existing EqualityKey, if it exists, else create a
-                    // new one
-                    EqualityKey key = this.tms.get( object );
-                    if ( key == null ) {
-                        key = new EqualityKey( handle,
-                                               status );
-                        this.tms.put( key );
-                    } else {
-                        key.addFactHandle( handle );
-                    }
-
-                    handle.setEqualityKey( key );
+                // now use an existing EqualityKey, if it exists, else create a
+                // new one
+                EqualityKey key = this.tms.get( object );
+                if ( key == null ) {
+                    key = new EqualityKey( handle,
+                                           status );
+                    this.tms.put( key );
+                } else {
+                    key.addFactHandle( handle );
                 }
+
+                handle.setEqualityKey( key );
             }
 
             this.handleFactory.increaseFactHandleRecency( handle );
