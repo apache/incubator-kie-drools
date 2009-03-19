@@ -23,17 +23,20 @@ import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ProcessEventListenerWrapper;
 import org.drools.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
+import org.drools.process.command.FireAllRulesCommand;
 import org.drools.reteoo.InitialFactHandle;
 import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
+import org.drools.runtime.BatchExecution;
 import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.Environment;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
+import org.drools.runtime.impl.BatchExecutionImpl;
 import org.drools.spi.AgendaFilter;
 
 public class StatelessKnowledgeSessionImpl
@@ -207,7 +210,21 @@ public class StatelessKnowledgeSessionImpl
         try {
             session.startBatchExecution();
             ((org.drools.process.command.Command)command).execute( session );
-            session.fireAllRules( this.agendaFilter );
+            // did the user take control of fireAllRules, if not we will auto execute
+            boolean autoFireAllRules = true;
+            if ( command instanceof FireAllRulesCommand ) {
+            	autoFireAllRules = false;
+            } else if ( command instanceof BatchExecution ) {
+            	for ( Command nestedCmd : ((BatchExecutionImpl)command).getCommands() ) {
+            		if ( nestedCmd instanceof FireAllRulesCommand ) {
+            			autoFireAllRules = false;
+            			break;
+                    }
+            	}
+            }
+            if ( autoFireAllRules ) {
+            	session.fireAllRules( this.agendaFilter );
+            }
             BatchExecutionResults result = session.getBatchExecutionResult();
             return result;
         } finally {
