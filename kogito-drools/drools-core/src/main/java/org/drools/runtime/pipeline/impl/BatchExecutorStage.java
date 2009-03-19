@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
-import org.drools.runtime.BatchExecution;
 import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;

@@ -29,7 +29,6 @@ import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.BatchExecution;
 import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.Environment;
 import org.drools.runtime.Globals;
@@ -214,7 +213,7 @@ public class StatelessKnowledgeSessionImpl
             boolean autoFireAllRules = true;
             if ( command instanceof FireAllRulesCommand ) {
             	autoFireAllRules = false;
-            } else if ( command instanceof BatchExecution ) {
+            } else if ( command instanceof BatchExecutionImpl ) {
             	for ( Command nestedCmd : ((BatchExecutionImpl)command).getCommands() ) {
             		if ( nestedCmd instanceof FireAllRulesCommand ) {
             			autoFireAllRules = false;
