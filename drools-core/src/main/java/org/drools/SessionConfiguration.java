@@ -30,6 +30,10 @@ import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.process.instance.event.SignalManagerFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.conf.KnowledgeSessionOption;
+import org.drools.runtime.conf.MultiValueKnowledgeSessionOption;
+import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ConfFileUtils;
@@ -382,6 +386,25 @@ public class SessionConfiguration
             }
         } else {
             throw new IllegalArgumentException( "Command service '" + className + "' not found" );
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends SingleValueKnowledgeSessionOption> T getOption(Class<T> option) {
+        if ( ClockTypeOption.class.equals( option ) ) {
+            return (T) ClockTypeOption.get( getClockType().toExternalForm() );
+        }
+        return null;
+    }
+
+    public <T extends MultiValueKnowledgeSessionOption> T getOption(Class<T> option,
+                                                                    String key) {
+        return null;
+    }
+
+    public <T extends KnowledgeSessionOption> void setOption(T option) {
+        if ( option instanceof ClockTypeOption ) {
+            setClockType( ClockType.resolveClockType( ((ClockTypeOption) option ).getClockType() ) );
         }
     }
 }
