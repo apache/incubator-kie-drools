@@ -11,6 +11,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.ClockType;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.OrderEvent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -20,15 +22,23 @@ import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.base.evaluators.TimeIntervalParser;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.PseudoClockScheduler;
 
@@ -77,13 +87,18 @@ public class CepEspTest extends TestCase {
 
     public void testEventAssertion() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) ), 
+                      ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession session = ruleBase.newStatefulSession( conf, null );
-
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf, null );
+        
+        SessionPseudoClock clock = session.getSessionClock();
+        
         final List results = new ArrayList();
 
         session.setGlobal( "results",
@@ -107,9 +122,13 @@ public class CepEspTest extends TestCase {
                                          11000 );
 
         InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        clock.advanceTime( 10, TimeUnit.SECONDS );
         InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        clock.advanceTime( 30, TimeUnit.SECONDS );
         InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        clock.advanceTime( 20, TimeUnit.SECONDS );
         InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
+        clock.advanceTime( 10, TimeUnit.SECONDS );
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );
@@ -121,8 +140,6 @@ public class CepEspTest extends TestCase {
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
         session.fireAllRules();
 
         assertEquals( 2,
