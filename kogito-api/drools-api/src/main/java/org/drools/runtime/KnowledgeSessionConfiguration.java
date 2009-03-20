@@ -1,6 +1,7 @@
 package org.drools.runtime;
 
 import org.drools.PropertiesConfiguration;
+import org.drools.runtime.conf.KnowledgeSessionOptionsConfiguration;
 
 /**
  * KnowledgeSessionConfiguration
@@ -22,10 +23,11 @@ import org.drools.PropertiesConfiguration;
  * 
  * 
  * drools.keepReference = <true|false>
- * drools.clockType = <pseudo|realtime|heartbeat|implicit>
+ * drools.clockType = <pseudo|realtime>
  */
 public interface KnowledgeSessionConfiguration
     extends
-    PropertiesConfiguration {
+    PropertiesConfiguration,
+    KnowledgeSessionOptionsConfiguration {
 
 }
