@@ -110,7 +110,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         final Boolean[] notPatterns = new Boolean[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             indexes[i] = new Integer( list.indexOf( declarations[i] ) );
-            notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? new Boolean( false ) : new Boolean( true );
+            notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? Boolean.FALSE : Boolean.TRUE ;
             if ( (indexes[i]).intValue() == -1 ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               ruleDescr,

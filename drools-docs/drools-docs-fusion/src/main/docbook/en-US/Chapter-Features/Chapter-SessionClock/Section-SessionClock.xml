@@ -52,6 +52,4 @@
   </itemizedlist>
 
   <xi:include href="Section-SessionClock_AvailableClockImplementations.xml" />
-
-  <xi:include href="Section-SessionClock_HowToImplementNewClocks.xml" />
 </section>

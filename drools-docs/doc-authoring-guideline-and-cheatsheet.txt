@@ -154,5 +154,28 @@ Callouts:
 ---------
 TODO
 
-  
-   
+  ======================================
+
+I guess the "reference section" would be somehow like a bibliography
+section in a book or paper. Here is the information I found for
+bibliography markup:
+
+http://www.docbook.org/tdg5/en/html/bibliography.html
+
+But I'm not sure whether it is working with the JBoss customized XSLT
+and CSS. If it looks too complex for you, just don't waste your time
+and I'll try it out later and add the relevant information to the
+cheatsheet.
+
+For the "Definition/Concept", I found the <termdef> tag that might be
+what you want:
+
+http://www.docbook.org/tdg5/en/html/termdef.html
+
+The example in the page looks not that complex. You can give it a try.
+Be warned I've not tested it yet (have much to do in the office for
+now), if this markup breaks the build, please let me know. (If it does
+not break the build, but you do not see any obvious visual effect,
+that means this tag is not defined the css. This is small problem and
+you can keep using the markup. I'm into CSS these days and will sooner
+or later update the Drools css for documentation.)
