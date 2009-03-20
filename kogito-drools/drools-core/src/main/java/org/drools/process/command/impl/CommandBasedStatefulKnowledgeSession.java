@@ -214,8 +214,9 @@ public class CommandBasedStatefulKnowledgeSession
         return result;
     }
 
-    public SessionClock getSessionClock() {
-        return this.commandService.execute( new GetSessionClockCommand() );
+    @SuppressWarnings("unchecked")
+    public <T extends SessionClock> T getSessionClock() {
+        return (T) this.commandService.execute( new GetSessionClockCommand() );
     }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
