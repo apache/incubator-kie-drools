@@ -32,7 +32,7 @@ public interface WorkingMemory
      * Returns the session clock instance assigned to this session
      * @return
      */
-    public SessionClock getSessionClock();
+    public <T extends SessionClock> T getSessionClock();
 
     /**
      * Returns the fact handle associated with the given object. It is important to note that this 
