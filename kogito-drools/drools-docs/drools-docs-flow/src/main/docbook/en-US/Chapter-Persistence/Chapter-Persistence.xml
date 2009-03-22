@@ -72,7 +72,7 @@
     <para>First of all, you need to add the necessary dependencies to your classpath.  If you're
     using the Eclipse IDE, you can do that by adding the jars to your Drools runtime directory
     (see the chapter on the Eclipse IDE), or by manually adding these dependencies to your project.
-    First of all you need the drools-process-enterprise jar, as that contains the necessary code
+    First of all you need the drools-persistence-jpa jar, as that contains the necessary code
     to persist the runtime state whenever necessary.  Next, you also need various other dependencies,
     but these are different depending on the persistence solution and database you are using.  In
     our case (using Hibernate and the H2 database), the following list of dependencies is needed:
@@ -95,10 +95,36 @@
     </para>
 
     <para>Next, you need to configure the Drools engine to persist the state of the engine whenever
-    necessary.  You can do this by simply specifying this in your session configuration.  There are
-    various ways to do this, but using a simple drools.session.conf file in a META-INF directory
-    on your classpath is probably the easiest way (check the documentation for other ways of configuring
-    your session, for example by providing a KnowledgeSessionConfiguration when first creating your
+    necessary.  The easiest way to do this is to use the JPAKnowledgeService to create your knowledge
+    session, based on a knowledge base, a knowledge session configuration (if necessary) and an
+    environment.  The environment needs to contain a reference to your entity manager factory.</para>
+
+    <programlisting>
+// create the entity manager factory and register it in the environment
+EntityManagerFactory emf =
+    Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+Environment env = KnowledgeBaseFactory.newEnvironment();
+env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
+
+// create a new knowledge session that uses JPA to store the runtime state
+StatefulKnowledgeSession ksession =
+    JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+int sessionId = ksession.getId();
+
+// invoke methods on your method here
+ksession.startProcess( "MyProcess" );
+ksession.dispose();</programlisting>
+
+    <para>You can also yse the JPAKnowledgeService to recreate a session based on a specific session id:</para>
+
+    <programlisting>
+// recreate the session from database using the sessionId
+ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );</programlisting>
+
+    <!--para>You can also configure your engine to use persistence by simply specifying this in your session
+    configuration.  There are various ways to do this, but using a simple drools.session.conf file in a
+    META-INF directory on your classpath is probably the easiest way (check the documentation for other
+    ways of configuring your session, for example by providing a KnowledgeSessionConfiguration when first creating your
     session).  In this config file you need to do two things: tell the engine that it needs to use
     a command service underneath (as commands are used to determine safe points during the execution of
     the engine), and use the JPA-based implementations of 3 internal components (the process instance
@@ -110,9 +136,15 @@
 drools.commandService = org.drools.persistence.session.SingleSessionCommandService
 drools.processInstanceManagerFactory = org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory
 drools.workItemManagerFactory = org.drools.persistence.processinstance.JPAWorkItemManagerFactory
-drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPASignalManagerFactory</programlisting>
+drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPASignalManagerFactory</programlisting-->
 
-    <para>By default, the drools-process-enterprise jar contains a configuration file that configures
+    <para>Note that we only persist the minimal state that is needed to continue execution of the process
+    instance at some later point.  This for example means that it does not contain information about already
+    executed nodes if that information is no longer relevant, or that process instances that have been
+    completed or aborted are removed from the database.  If you however want to search for history-related
+    information, you should use the history log, as explained later.</para>
+
+    <para>By default, the drools-persistence-jpa jar contains a configuration file that configures
     JPA to use hibernate and the H2 database, called persistence.xml in the META-INF directory, as shown below.
     You will need to override these if you want to change the default.  We refer to the JPA and Hibernate
     documentation for more information on how to do this.</para>
@@ -148,7 +180,7 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
   &lt;/persistence-unit&gt;
 &lt;/persistence&gt;</programlisting>
 
-    <para>After adding the necessary dependencies and the configuration file to your project, you can simply
+    <!--para>After adding the necessary dependencies and the configuration file to your project, you can simply
     use the StatelessKnowledgeSession just the way you used to do.  The engine will underneath translate your
     invocations to commands that will persist the state of the engine after each successful execution of a
     command.  For example, the following code snippet shows how to create a session and start a process.  Note
@@ -161,14 +193,37 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
     <programlisting>
   StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
   long processInstanceId = session.startProcess("org.drools.test.TestProcess").getId();
-  session.dispose();</programlisting>
+  session.dispose();</programlisting-->
+    </section>
 
-    <para>Note that we only persist the minimal state that is needed to continue execution of the process
-    instance at some later point.  This for example means that it does not contain information about already
-    executed nodes if that information is no longer relevant, or that process instances that have been
-    completed or aborted are removed from the database.  If you however want to search for history-related
-    information, you should use the history log, as explained later.</para>
-   </section>
+    <section>
+      <title>Transactions</title>
+
+    Whenever you do not provide transaction boundaries inside your application, the engine
+    will automatically execute each method invocation on the engine in a separate transaction.
+    If this is acceptable behaviour, you don't need to do anything else.  You can however
+    also specify the transaction boundaries yourself.  This allows you for example to combine
+    multiple commands into one transaction.  We use the Java Transaction API (JTA) to specify
+    transaction boundaries, as shown below:
+
+    <programlisting>
+// create a new knowledge session that uses JPA to store the runtime state
+StatefulKnowledgeSession ksession =
+    JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+
+// start the transaction
+UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+ut.begin();
+
+// perform multiple commands inside one transaction
+ksession.insert( new Person( "John Doe" ) );
+ksession.startProcess( "MyProcess" );
+ksession.fireAllRules();
+
+// now commit the transaction
+ut.commit();</programlisting>
+
+    </section>
 
 
   </section>
@@ -236,8 +291,8 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
       <para>To log process history information in a database like this, you need to register the logger
       on your session (or working memory) like this:</para>
       <programlisting>
-      StatefulKnowledgeSession session = ...
-      new WorkingMemoryDbLogger(session);</programlisting>
+StatefulKnowledgeSession session = ...
+new WorkingMemoryDbLogger(session);</programlisting>
       <para>Note that this logger is just a logger like any other audit logger.  This means you can add one
       or more filters using the addFilter method to make sure that only relevant information is stored in the
       database.  If you use more than one filter, only information that is accepted by all your filters will
