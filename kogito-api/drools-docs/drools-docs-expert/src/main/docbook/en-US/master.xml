@@ -38,7 +38,23 @@
 		</imageobject> </mediaobject> <para /> </preface>
 	-->
 
-	<xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />
+	<xi:include href="Acknowledgements.xml" />
+    
+	<xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />    
+	
+	<xi:include href="Chapter-Rule_Engine/Chapter-Rule_Engine.xml" />
 
-	<!--index /-->
+	<xi:include href="Chapter-Decision_Tables/Chapter-Spreadsheet.xml" />
+
+	<xi:include href="Chapter-IDE/Chapter-QuickStart.xml" />
+
+	<xi:include href="Chapter-Deployment/Chapter-DepymentAndTest.xml" />
+
+	<xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />
+
+	<xi:include href="Chapter-Rule_Language/Chapter-RuleLanguage.xml" />
+
+	<xi:include href="Chapter-Examples/Chapter-Examples.xml" />
+
+	<index />
 </book>
