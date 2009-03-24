@@ -15,273 +15,161 @@ package org.drools.event;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.RuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
+import java.util.Iterator;
+
 /**
+ * Please note that any event notification methods, e.g. <method>fireBeforePackageAdded</method>, etc.,
+ * always create the event and iterator regardless if there are listeners. This is because if the
+ * check is to see if there are listeners via the <method>isEmpty</method> method, theoretically
+ * there should be synchonrization involved to ensure the <method>isEmpty</method> and
+ * </method>getEventListenersIterator</method> both see the same list contents.
  *
  * @author etirelli
+ * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
-public class RuleBaseEventSupport
-    implements
-    Externalizable {
-    /**
-     *
-     */
-    private static final long                 serialVersionUID = 400L;
-    private List<RuleBaseEventListener> listeners        = new CopyOnWriteArrayList<RuleBaseEventListener>();
-    private transient RuleBase                ruleBase;
+public class RuleBaseEventSupport extends AbstractEventSupport<RuleBaseEventListener> {
+    private transient RuleBase ruleBase;
 
     public RuleBaseEventSupport() {
 
     }
+
     public RuleBaseEventSupport(final RuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        listeners   = (List<RuleBaseEventListener>)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(listeners);
-    }
-
-    public void addEventListener(final RuleBaseEventListener listener) {
-        if ( !this.listeners.contains( listener ) ) {
-            this.listeners.add( listener );
-        }
-    }
-
+   
     public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 
-    public void removeEventListener(Class cls) {
-        for ( int i = 0; i < this.listeners.size(); ) {
-            RuleBaseEventListener listener = this.listeners.get( i );
-            if ( cls.isAssignableFrom( listener.getClass() ) ) {
-                this.listeners.remove( i );
-            } else {
-                i++;
-            }
-        }
-    }
-
-    public void removeEventListener(final RuleBaseEventListener listener) {
-        this.listeners.remove( listener );
-    }
-
-    public List<RuleBaseEventListener> getEventListeners() {
-        return Collections.unmodifiableList( this.listeners );
-    }
-
-    public int size() {
-        return this.listeners.size();
-    }
-
-    public boolean isEmpty() {
-        return this.listeners.isEmpty();
-    }
-
     public void fireBeforePackageAdded(final Package newPkg) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final BeforePackageAddedEvent event = new BeforePackageAddedEvent(this.ruleBase, newPkg);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final BeforePackageAddedEvent event = new BeforePackageAddedEvent( this.ruleBase,
-                                                                           newPkg );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).beforePackageAdded( event );
+        while (iter.hasNext()) {
+            iter.next().beforePackageAdded(event);
         }
     }
 
     public void fireAfterPackageAdded(final Package newPkg) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final AfterPackageAddedEvent event = new AfterPackageAddedEvent(this.ruleBase, newPkg);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final AfterPackageAddedEvent event = new AfterPackageAddedEvent( this.ruleBase,
-                                                                         newPkg );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).afterPackageAdded( event );
+        while (iter.hasNext()) {
+            iter.next().afterPackageAdded(event);
         }
     }
 
     public void fireBeforePackageRemoved(final Package pkg) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final BeforePackageRemovedEvent event = new BeforePackageRemovedEvent(this.ruleBase, pkg);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final BeforePackageRemovedEvent event = new BeforePackageRemovedEvent( this.ruleBase,
-                                                                               pkg );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).beforePackageRemoved( event );
+        while (iter.hasNext()) {
+            iter.next().beforePackageRemoved(event);
         }
     }
 
     public void fireAfterPackageRemoved(final Package pkg) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final AfterPackageRemovedEvent event = new AfterPackageRemovedEvent(this.ruleBase, pkg);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final AfterPackageRemovedEvent event = new AfterPackageRemovedEvent( this.ruleBase,
-                                                                             pkg );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).afterPackageRemoved( event );
+        while (iter.hasNext()) {
+            iter.next().afterPackageRemoved(event);
         }
     }
 
-    //--
     public void fireBeforeRuleBaseLocked() {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final BeforeRuleBaseLockedEvent event = new BeforeRuleBaseLockedEvent(this.ruleBase);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final BeforeRuleBaseLockedEvent event = new BeforeRuleBaseLockedEvent( this.ruleBase );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).beforeRuleBaseLocked( event );
+        while (iter.hasNext()) {
+            iter.next().beforeRuleBaseLocked(event);
         }
     }
 
     public void fireAfterRuleBaseLocked() {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final AfterRuleBaseLockedEvent event = new AfterRuleBaseLockedEvent(this.ruleBase);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final AfterRuleBaseLockedEvent event = new AfterRuleBaseLockedEvent( this.ruleBase );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).afterRuleBaseLocked( event );
+        while (iter.hasNext()) {
+            iter.next().afterRuleBaseLocked(event);
         }
     }
 
     public void fireBeforeRuleBaseUnlocked() {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final BeforeRuleBaseUnlockedEvent event = new BeforeRuleBaseUnlockedEvent(this.ruleBase);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final BeforeRuleBaseUnlockedEvent event = new BeforeRuleBaseUnlockedEvent( this.ruleBase );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).beforeRuleBaseUnlocked( event );
+        while (iter.hasNext()) {
+            iter.next().beforeRuleBaseUnlocked(event);
         }
     }
 
     public void fireAfterRuleBaseUnlocked() {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final AfterRuleBaseUnlockedEvent event = new AfterRuleBaseUnlockedEvent(this.ruleBase);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final AfterRuleBaseUnlockedEvent event = new AfterRuleBaseUnlockedEvent( this.ruleBase );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).afterRuleBaseUnlocked( event );
+        while (iter.hasNext()) {
+            iter.next().afterRuleBaseUnlocked(event);
         }
     }
 
-    public void fireBeforeRuleAdded(final Package newPkg,
-                                    final Rule rule) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+    public void fireBeforeRuleAdded(final Package newPkg, final Rule rule) {
+        final BeforeRuleAddedEvent event = new BeforeRuleAddedEvent(this.ruleBase, newPkg, rule);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final BeforeRuleAddedEvent event = new BeforeRuleAddedEvent( this.ruleBase,
-                                                                     newPkg,
-                                                                     rule );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).beforeRuleAdded( event );
+        while (iter.hasNext()) {
+            iter.next().beforeRuleAdded(event);
         }
     }
 
-    public void fireAfterRuleAdded(final Package newPkg,
-                                   final Rule rule) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+    public void fireAfterRuleAdded(final Package newPkg, final Rule rule) {
+        final AfterRuleAddedEvent event = new AfterRuleAddedEvent(this.ruleBase, newPkg, rule);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final AfterRuleAddedEvent event = new AfterRuleAddedEvent( this.ruleBase,
-                                                                   newPkg,
-                                                                   rule );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).afterRuleAdded( event );
+        while (iter.hasNext()) {
+            iter.next().afterRuleAdded(event);
         }
     }
 
-    public void fireBeforeRuleRemoved(final Package pkg,
-                                      final Rule rule) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+    public void fireBeforeRuleRemoved(final Package pkg, final Rule rule) {
+        final BeforeRuleRemovedEvent event = new BeforeRuleRemovedEvent(this.ruleBase, pkg, rule);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final BeforeRuleRemovedEvent event = new BeforeRuleRemovedEvent( this.ruleBase,
-                                                                         pkg,
-                                                                         rule );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).beforeRuleRemoved( event );
+        while (iter.hasNext()) {
+            iter.next().beforeRuleRemoved(event);
         }
     }
 
-    public void fireAfterRuleRemoved(final Package pkg,
-                                     final Rule rule) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+    public void fireAfterRuleRemoved(final Package pkg, final Rule rule) {
+        final AfterRuleRemovedEvent event = new AfterRuleRemovedEvent(this.ruleBase, pkg, rule);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final AfterRuleRemovedEvent event = new AfterRuleRemovedEvent( this.ruleBase,
-                                                                       pkg,
-                                                                       rule );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).afterRuleRemoved( event );
+        while (iter.hasNext()) {
+            iter.next().afterRuleRemoved(event);
         }
     }
 
-    public void fireBeforeFunctionRemoved(final Package pkg,
-                                          final String function) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+    public void fireBeforeFunctionRemoved(final Package pkg, final String function) {
+        final BeforeFunctionRemovedEvent event = new BeforeFunctionRemovedEvent(this.ruleBase, pkg, function);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final BeforeFunctionRemovedEvent event = new BeforeFunctionRemovedEvent( this.ruleBase,
-                                                                                 pkg,
-                                                                                 function );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).beforeFunctionRemoved( event );
+        while (iter.hasNext()) {
+            iter.next().beforeFunctionRemoved(event);
         }
     }
 
-    public void fireAfterFunctionRemoved(final Package pkg,
-                                         final String function) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+    public void fireAfterFunctionRemoved(final Package pkg, final String function) {
+        final AfterFunctionRemovedEvent event = new AfterFunctionRemovedEvent(this.ruleBase, pkg, function);
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
 
-        final AfterFunctionRemovedEvent event = new AfterFunctionRemovedEvent( this.ruleBase,
-                                                                               pkg,
-                                                                               function );
-
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleBaseEventListener) this.listeners.get( i )).afterFunctionRemoved( event );
+        while (iter.hasNext()) {
+            iter.next().afterFunctionRemoved(event);
         }
     }
-
 }
