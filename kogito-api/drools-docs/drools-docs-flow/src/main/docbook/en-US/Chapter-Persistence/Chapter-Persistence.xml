@@ -75,9 +75,10 @@
     First of all you need the drools-persistence-jpa jar, as that contains the necessary code
     to persist the runtime state whenever necessary.  Next, you also need various other dependencies,
     but these are different depending on the persistence solution and database you are using.  In
-    our case (using Hibernate and the H2 database), the following list of dependencies is needed:
+    our case (using Hibernate as the JPA persistence provider, the H2 database and bitronix for
+    JTA-based transaction management), the following list of dependencies is needed:
       <orderedlist>
-        <listitem>drools-process-enterprise (org.drools)</listitem>
+        <listitem>drools-persistence-jpa (org.drools)</listitem>
         <listitem>persistence-api-1.0.jar (javax.persistence)</listitem>
         <listitem>hibernate-entitymanager-3.4.0.GA.jar (org.hibernate)</listitem>
         <listitem>hibernate-annotations-3.4.0.GA.jar (org.hibernate)</listitem>
@@ -85,12 +86,12 @@
         <listitem>hibernate-core-3.3.0.SP1.jar (org.hibernate)</listitem>
         <listitem>dom4j-1.6.1.jar (dom4j)</listitem>
         <listitem>jta-1.0.1B.jar (javax.transaction)</listitem>
+        <listitem>btm-1.3.2.jar (org.codehaus.btm)</listitem>
         <listitem>javassist-3.4.GA.jar (javassist)</listitem>
         <listitem>slf4j-api-1.5.2.jar (org.slf4j)</listitem>
         <listitem>slf4j-jdk14-1.5.2.jar (org.slf4j)</listitem>
         <listitem>h2-1.0.77.jar (com.h2database)</listitem>
         <listitem>commons-collections-3.2.jar (commons-collections)</listitem>
-        <listitem>antlr-2.7.6.jar (antlr)</listitem>
       </orderedlist>
     </para>
 
@@ -146,7 +147,8 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
 
     <para>By default, the drools-persistence-jpa jar contains a configuration file that configures
     JPA to use hibernate and the H2 database, called persistence.xml in the META-INF directory, as shown below.
-    You will need to override these if you want to change the default.  We refer to the JPA and Hibernate
+    You will need to override these defaults if you want to change them, by adding your own persistence.xml in
+    your classpath (before the default one in the drools-persistence-jpa jar).  We refer to the JPA and Hibernate
     documentation for more information on how to do this.</para>
 
     <programlisting>
@@ -164,21 +166,37 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
 
   &lt;persistence-unit name="org.drools.persistence.jpa"&gt;
     &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
-    &lt;class&gt;org.drools.persistence.jpa.ByteArrayObject&lt;/class&gt;
+    &lt;jta-data-source&gt;jdbc/processInstanceDS&lt;/jta-data-source&gt;
+    &lt;class&gt;org.drools.persistence.session.SessionInfo&lt;/class&gt;
+    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
+    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceEventInfo&lt;/class&gt;
+    &lt;class&gt;org.drools.persistence.processinstance.WorkItemInfo&lt;/class&gt;
 
     &lt;properties&gt;
-      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
-      &lt;property name="hibernate.connection.driver_class" value="org.h2.Driver"/&gt;	        
-      &lt;property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" /&gt;
-      &lt;property name="hibernate.connection.username" value="sa"/&gt;
-      &lt;property name="hibernate.connection.password" value="sasa"/&gt;	
-      &lt;property name="hibernate.connection.autocommit" value="false" /&gt; 	               
+      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;	        
       &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
-      &lt;property name="hibernate.hbm2ddl.auto" value="update" /&gt;
-      &lt;property name="hibernate.show_sql" value="false" /&gt;		    
+      &lt;property name="hibernate.hbm2ddl.auto" value="update"/&gt;
+      &lt;property name="hibernate.show_sql" value="true"/&gt;	
+      &lt;property name="hibernate.transaction.manager_lookup_class" 
+                value="org.hibernate.transaction.BTMTransactionManagerLookup"/&gt;
     &lt;/properties&gt;        
   &lt;/persistence-unit&gt;
 &lt;/persistence&gt;</programlisting>
+
+    <para>This config file refers to a data source called "jdbc/processInstanceDS".
+    The following Java fragment could be used to set up this data source, in this
+    case we are using the file-based H2 database.</para>
+
+    <programlisting>
+PoolingDataSource ds = new PoolingDataSource();
+ds.setUniqueName("jdbc/processInstanceDS");
+ds.setClassName("org.h2.jdbcx.JdbcDataSource");
+ds.setMaxPoolSize(3);
+ds.setAllowLocalTransactions(true);
+ds.getDriverProperties().put("user", "sa");
+ds.getDriverProperties().put("password", "sasa");
+ds.getDriverProperties().put("URL", "jdbc:h2:file:/NotBackedUp/data/process-instance-db");
+ds.init();</programlisting>
 
     <!--para>After adding the necessary dependencies and the configuration file to your project, you can simply
     use the StatelessKnowledgeSession just the way you used to do.  The engine will underneath translate your
@@ -291,12 +309,18 @@ ut.commit();</programlisting>
       <para>To log process history information in a database like this, you need to register the logger
       on your session (or working memory) like this:</para>
       <programlisting>
-StatefulKnowledgeSession session = ...
-new WorkingMemoryDbLogger(session);</programlisting>
+StatefulKnowledgeSession ksession = ...
+WorkingMemoryDbLogger logger = new WorkingMemoryDbLogger(ksession);
+
+// invoke methods one your session here
+
+logger.dispose();</programlisting>
+
       <para>Note that this logger is just a logger like any other audit logger.  This means you can add one
-      or more filters using the addFilter method to make sure that only relevant information is stored in the
+      or more filters using the We refer to the JPA and Hibernate
+    documentation for more information on how to do this.addFilter method to make sure that only relevant information is stored in the
       database.  If you use more than one filter, only information that is accepted by all your filters will
-      be persisted in the database.</para>
+      be persisted in the database.  You should dispose the logger when it is no longer needed.</para>
 
       <para>To specify the database where the information should be stored, modify the hibernate.cfg.xml file.
       By default, it uses an in memory database (H2).  Check out the hibernate documentation if you do not
@@ -308,6 +332,11 @@ new WorkingMemoryDbLogger(session);</programlisting>
       to retrieve all process instances, one specific process instance (by id), all process instances for one
       specific process, all node instances of a specific process instance, etc.  You can of course easily create
       your own hibernate queries or access the information in the database directly.</para>
+
+      <para>By default, the audit logger uses the H2 in-memory database that is recreated on startup.  You can
+      however change this default by including your own hibernate.cfg.xml configuration file.  This allows you
+      for example to change the underlying database, etc.  We refer to the Hibernate documentation for more
+      information on how to do this.</para>
     </section>
 
   </section>
