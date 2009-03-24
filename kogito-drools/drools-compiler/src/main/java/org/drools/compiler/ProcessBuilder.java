@@ -115,19 +115,21 @@ public class ProcessBuilder {
                 e.printStackTrace( System.err );
             }
             
-            if (packageBuilder.getPackage() != null) {
+            PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry(process.getPackageName());
+            org.drools.rule.Package p = pkgRegistry.getPackage();
+            
+            if (p != null) {
             
 	            ProcessDescr processDescr = new ProcessDescr();
 	            processDescr.setName(process.getPackageName());
 	            processDescr.setResource( resource );
-	            PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
 	            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
 	            Dialect dialect = dialectRegistry.getDialect( "java" );
 	            dialect.init(processDescr);
 	
 	            ProcessBuildContext buildContext = new ProcessBuildContext(
 	        		this.packageBuilder,
-	                this.packageBuilder.getPackage(),
+	                p,
 	                process,
 	                processDescr,
 	                dialectRegistry,
@@ -137,7 +139,7 @@ public class ProcessBuilder {
 	            if (process instanceof WorkflowProcess) {
 	            	buildNodes( (WorkflowProcess) process, buildContext );
 	            }
-	            this.packageBuilder.getPackage().addProcess( process );
+	            p.addProcess( process );
 	
 	            pkgRegistry.compileAll();                
 	            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
