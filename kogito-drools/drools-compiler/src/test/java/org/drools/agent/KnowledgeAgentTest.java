@@ -63,7 +63,7 @@ public class KnowledgeAgentTest extends TestCase {
     
     public void testDummy() {}
     
-    public void FIXME_testModifyFileUrl() throws Exception {
+    public void  testModifyFileUrl() throws Exception {
         String rule1 = "";
         rule1 += "package org.drools.test\n";
         rule1 += "global java.util.List list\n";
@@ -172,7 +172,7 @@ public class KnowledgeAgentTest extends TestCase {
         kagent.monitorResourceChangeEvents( false );        
     }
 
-    public void FIXME_testModifyPackageUrl() throws Exception {
+    public void  testModifyPackageUrl() throws Exception {
         String rule1 = "";
         rule1 += "package org.drools.test\n";
         rule1 += "global java.util.List list\n";
@@ -291,7 +291,7 @@ public class KnowledgeAgentTest extends TestCase {
     }
 
 
-    public void FIXME_testDeletePackageUrl() throws Exception {
+    public void testDeletePackageUrl() throws Exception {
         String rule1 = "";
         rule1 += "package org.drools.test1\n";
         rule1 += "global java.util.List list\n";
@@ -399,7 +399,7 @@ public class KnowledgeAgentTest extends TestCase {
         kagent.monitorResourceChangeEvents( false );
     }
 
-    public void FIXME_testOldSchoolPackageUrl() throws Exception {
+    public void  testOldSchoolPackageUrl() throws Exception {
         String rule1 = "";
         rule1 += "package org.drools.test\n";
         rule1 += "global java.util.List list\n";
@@ -483,7 +483,7 @@ public class KnowledgeAgentTest extends TestCase {
 
     }
 
-    public void FIXME_testModifyFile() throws IOException,
+    public void  testModifyFile() throws IOException,
                                 InterruptedException {
         String rule1 = "";
         rule1 += "package org.drools.test\n";
@@ -593,7 +593,7 @@ public class KnowledgeAgentTest extends TestCase {
         kagent.monitorResourceChangeEvents( false );
     }
     
-    public void FIXME_testModifyDirectory() throws IOException,
+    public void  testModifyDirectory() throws IOException,
                                      InterruptedException {
         // adds 2 files to a dir and executes then adds one and removes one and detects changes
         String rule1 = "";
