@@ -41,7 +41,7 @@ public class SuggestionCompletionEngineBuilder {
     private List                       keywordDSLItems = new ArrayList();
     private List                       anyScopeDSLItems = new ArrayList();
     private List<String>                globalCollections = new ArrayList();
-
+ 
 
     public SuggestionCompletionEngineBuilder() {
     }
@@ -187,7 +187,6 @@ public class SuggestionCompletionEngineBuilder {
 		}
 
 	}
-
 
 
 
