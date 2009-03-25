@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalWorkingMemory;
@@ -30,64 +31,25 @@ import org.drools.spi.PropagationContext;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
+ * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
-public class WorkingMemoryEventSupport
-    implements
-    Externalizable {
-    /**
-     *
-     */
-    private static final long                      serialVersionUID = 400L;
-    private List<WorkingMemoryEventListener> listeners        = new CopyOnWriteArrayList<WorkingMemoryEventListener>();
-
-    public WorkingMemoryEventSupport() {
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        listeners   = (List<WorkingMemoryEventListener>)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(listeners);
-    }
-
-    public void addEventListener(final WorkingMemoryEventListener listener) {
-        if ( !this.listeners.contains( listener ) ) {
-            this.listeners.add( listener );
-        }
-    }
-
-    public void removeEventListener(final WorkingMemoryEventListener listener) {
-        this.listeners.remove( listener );
-    }
-
-    public List getEventListeners() {
-        return Collections.unmodifiableList( this.listeners );
-    }
-
-    public int size() {
-        return this.listeners.size();
-    }
-
-    public boolean isEmpty() {
-        return this.listeners.isEmpty();
-    }
+public class WorkingMemoryEventSupport extends AbstractEventSupport<WorkingMemoryEventListener> {
 
     public void fireObjectInserted(final PropagationContext propagationContext,
                                    final FactHandle handle,
                                    final Object object,
                                    final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<WorkingMemoryEventListener> iter = getEventListenersIterator();
 
-        final ObjectInsertedEvent event = new ObjectInsertedEvent( workingMemory,
-                                                                   propagationContext,
-                                                                   handle,
-                                                                   object );
+        if (iter.hasNext()) {
+            final ObjectInsertedEvent event = new ObjectInsertedEvent(workingMemory,
+                    propagationContext,
+                    handle,
+                    object);
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((WorkingMemoryEventListener) this.listeners.get( i )).objectInserted( event );
+            do {
+                iter.next().objectInserted(event);
+            } while (iter.hasNext());
         }
     }
 
@@ -96,18 +58,18 @@ public class WorkingMemoryEventSupport
                                   final Object oldObject,
                                   final Object object,
                                   final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<WorkingMemoryEventListener> iter = getEventListenersIterator();
 
-        final ObjectUpdatedEvent event = new ObjectUpdatedEvent( workingMemory,
-                                                                 propagationContext,
-                                                                 handle,
-                                                                 oldObject,
-                                                                 object );
+        if (iter.hasNext()) {
+            final ObjectUpdatedEvent event = new ObjectUpdatedEvent(workingMemory,
+                    propagationContext,
+                    handle,
+                    oldObject,
+                    object);
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((WorkingMemoryEventListener) this.listeners.get( i )).objectUpdated( event );
+            do {
+                iter.next().objectUpdated(event);
+            } while (iter.hasNext());
         }
     }
 
@@ -115,22 +77,21 @@ public class WorkingMemoryEventSupport
                                     final FactHandle handle,
                                     final Object oldObject,
                                     final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<WorkingMemoryEventListener> iter = getEventListenersIterator();
 
-        final ObjectRetractedEvent event = new ObjectRetractedEvent( workingMemory,
-                                                                     propagationContext,
-                                                                     handle,
-                                                                     oldObject );
+        if (iter.hasNext()) {
+            final ObjectRetractedEvent event = new ObjectRetractedEvent(workingMemory,
+                    propagationContext,
+                    handle,
+                    oldObject);
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((WorkingMemoryEventListener) this.listeners.get( i )).objectRetracted( event );
+            do {
+                iter.next().objectRetracted(event);
+            } while (iter.hasNext());
         }
     }
 
     public void reset() {
-        this.listeners.clear();
+        this.clear();
     }
-
 }

@@ -16,147 +16,103 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.event.rule.ActivationCancelledCause;
-import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 
+import java.util.Iterator;
+
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
+ * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
-public class AgendaEventSupport
-    implements
-    Externalizable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 400L;
-    private List<AgendaEventListener> listeners = new CopyOnWriteArrayList<AgendaEventListener>();
+public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener> {
 
     public AgendaEventSupport() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        listeners   = (List<AgendaEventListener>)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(listeners);
-    }
-
-    public void addEventListener(final AgendaEventListener listener) {
-        if ( !this.listeners.contains( listener ) ) {
-            this.listeners.add( listener );
-        }
-    }
-
-    public void removeEventListener(final AgendaEventListener listener) {
-        this.listeners.remove( listener );
-    }
-
-    public List<AgendaEventListener> getEventListeners() {
-        return Collections.unmodifiableList( this.listeners );
-    }
-
-    public int size() {
-        return this.listeners.size();
-    }
-
-    public boolean isEmpty() {
-        return this.listeners.isEmpty();
-    }
-
     public void fireActivationCreated(final Activation activation,
                                       final WorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
-        final ActivationCreatedEvent event = new ActivationCreatedEvent( activation );
+        if (iter.hasNext()) {
+            final ActivationCreatedEvent event = new ActivationCreatedEvent(activation);
 
-        for ( AgendaEventListener listener: listeners) {
-            listener.activationCreated( event, workingMemory );
+            do{
+                iter.next().activationCreated(event, workingMemory);
+            }  while (iter.hasNext());
         }
     }
 
     public void fireActivationCancelled(final Activation activation,
                                         final WorkingMemory workingMemory,
                                         final ActivationCancelledCause cause) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
-        final ActivationCancelledEvent event = new ActivationCancelledEvent( activation,
-                                                                             cause );
+        if (iter.hasNext()) {
+            final ActivationCancelledEvent event = new ActivationCancelledEvent(activation, cause);
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event,
-                                                                                 workingMemory);
+            do{
+                iter.next().activationCancelled(event, workingMemory);
+            }  while (iter.hasNext());
         }
     }
 
     public void fireBeforeActivationFired(final Activation activation,
                                           final WorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
-        final BeforeActivationFiredEvent event = new BeforeActivationFiredEvent( activation );
+        if (iter.hasNext()) {
+            final BeforeActivationFiredEvent event = new BeforeActivationFiredEvent(activation);
 
-        for ( AgendaEventListener listener: listeners) {
-            listener.beforeActivationFired( event, workingMemory );
+            do{
+                iter.next().beforeActivationFired(event, workingMemory);
+            }  while (iter.hasNext());
         }
     }
 
     public void fireAfterActivationFired(final Activation activation,
                                          final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
-        final AfterActivationFiredEvent event = new AfterActivationFiredEvent( activation );
+        if (iter.hasNext()) {
+            final AfterActivationFiredEvent event = new AfterActivationFiredEvent(activation);
 
-        for ( AgendaEventListener listener: listeners) {
-            listener.afterActivationFired( event, workingMemory );
+            do{
+                iter.next().afterActivationFired(event, workingMemory);
+            }  while (iter.hasNext());
         }
     }
 
     public void fireAgendaGroupPopped(final AgendaGroup agendaGroup,
                                       final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
-        final AgendaGroupPoppedEvent event = new AgendaGroupPoppedEvent( agendaGroup );
+        if (iter.hasNext()) {
+            final AgendaGroupPoppedEvent event = new AgendaGroupPoppedEvent(agendaGroup);
 
-        for ( AgendaEventListener listener: listeners) {
-            listener.agendaGroupPopped( event, workingMemory );
+            do{
+                iter.next().agendaGroupPopped(event, workingMemory);
+            }  while (iter.hasNext());
         }
     }
 
     public void fireAgendaGroupPushed(final AgendaGroup agendaGroup,
                                       final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
-        final AgendaGroupPushedEvent event = new AgendaGroupPushedEvent( agendaGroup );
+        if (iter.hasNext()) {
+            final AgendaGroupPushedEvent event = new AgendaGroupPushedEvent(agendaGroup);
 
-        for ( AgendaEventListener listener: listeners) {
-            listener.agendaGroupPushed( event, workingMemory );
+            do{
+                iter.next().agendaGroupPushed(event, workingMemory);
+            }  while (iter.hasNext());
         }
     }
 
     public void reset() {
-        this.listeners.clear();
+        this.clear();
     }
 }
