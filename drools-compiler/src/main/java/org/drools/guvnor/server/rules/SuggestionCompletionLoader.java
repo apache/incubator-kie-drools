@@ -36,6 +36,7 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.asm.ClassFieldInspector;
+import org.drools.util.asm.ClassMethodInspector;
 
 /**
  * This utility class loads suggestion completion stuff for the package
@@ -276,6 +277,7 @@ public class SuggestionCompletionLoader {
      */
     private void populateModelInfo(final PackageDescr pkgDescr,
                                    final List jars) {
+    	//FIX nheron
         for (final Iterator it = pkgDescr.getImports().iterator(); it.hasNext();) {
             final ImportDescr imp = (ImportDescr) it.next();
             final String className = imp.getTarget();
@@ -411,7 +413,7 @@ public class SuggestionCompletionLoader {
         fields = removeIrrelevantFields(fields);
 
         this.builder.addFieldsForType(shortTypeName, fields);
-
+        //FIX Nheron
         Method[] methods = clazz.getMethods();
         List<String> modifierStrings = new ArrayList<String>();
         for (Method method : methods) {
@@ -431,7 +433,12 @@ public class SuggestionCompletionLoader {
             final String fieldType = getFieldType(type);
             this.builder.addFieldType(shortTypeName + "." + field, fieldType);
         }
-
+        ClassMethodInspector methodInspector = new ClassMethodInspector(clazz,inspector);
+        for (String methodName : methodInspector.getMethodNames()){
+        	for (String paramType : methodInspector.getMethodFields(methodName)){
+        		this.builder.getInstance().addMethodFields(shortTypeName,methodName, paramType);
+        	}	
+        }
     }
 
     String getShortNameOfClass(final String clazz) {
