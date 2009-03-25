@@ -11,7 +11,7 @@
       <para>So where do we get started, there are so many use cases and so much functionality in a
         rule engine such as Drools that it becomes beguiling. Have no fear my intrepid adventurer,
         the complexity is layered and you can ease yourself into with simple use cases.</para>
-      <para>Stateless session, not utilising inference, form the simplest of use case. A stateless
+      <para>Stateless session, not utilising inference, forms the simplest of use case. A stateless
         session can be called like a function passing it some data and then receiving some results
         back. Some common use cases for stateless sessions are, but not limited to:</para>
       <itemizedlist>
@@ -356,13 +356,32 @@ ksession.fireAllRules();</programlisting>
     if ( person.getName().equals( “Chuck” ) ) {
         System.out.println( “Hello Chuck” );
     }
-}<itemizedlist><listitem><para>Methods are called directly.</para></listitem><listitem><para>Specific instances are passed.</para></listitem></itemizedlist></programlisting>
+}</programlisting>
+      <itemizedlist>
+        <listitem>
+          <para>Methods are called directly.</para>
+        </listitem>
+        <listitem>
+          <para>Specific instances are passed.</para>
+        </listitem>
+      </itemizedlist>
       <programlisting>rule “Hello World”
     when
         Person( name == “Chuck” )
     then
         System.out.println( “Hello Chuck” );
-end<itemizedlist><listitem><para>Rules execute by matching against data inserted into the engine.</para></listitem><listitem>Rules can never be called directly.</listitem><listitem><para>Specific instances cannot be passed to a rule.</para></listitem></itemizedlist></programlisting>
+        end</programlisting>
+      <itemizedlist>
+        <listitem>
+          <para>Rules execute by matching against data inserted into the engine.</para>
+        </listitem>
+        <listitem>
+          <para>Rules can never be called directly.</para>
+        </listitem>
+        <listitem>
+          <para>Specific instances cannot be passed to a rule.</para>
+        </listitem>
+      </itemizedlist>
     </section>
     <section>
       <title>Cross Products</title>
@@ -414,7 +433,10 @@ room:kitchen sprinker:kitchen
 room:livingroom sprinker:livingroom
 room:bedroom sprinker:bedroom</programlisting>
     </section>
-    <section><title>XXXX</title><para/><programlisting>public class Cashflow {
+    <section>
+      <title>Execution Control</title>
+      <para/>
+      <programlisting>public class Cashflow {
     private Date   date;
     private double amount;
     private int    type;
@@ -432,19 +454,20 @@ public AccountPeriod {
     private Date start;
     private Dte end
     // getter and setter methods here
-}</programlisting><para>By
-        now you already know how to create KnowledgeBases and how to instantiate facts to populate
-        the StatefulKnowledgeSession, so tables will be used to show the state of the inserted data,
-        as it makes things clearer for illustration purposes. The tables below show a single fact
-        was inserted for the Account and a series of debit's and credit's as Cashflows over two
-        quarters for that Account were inserted.</para><informaltable frame="void">
+}</programlisting>
+      <para>By now you already know how to create KnowledgeBases and how to instantiate facts to
+        populate the StatefulKnowledgeSession, so tables will be used to show the state of the
+        inserted data, as it makes things clearer for illustration purposes. The tables below show a
+        single fact was inserted for the Account and a series of debit's and credit's as Cashflows
+        over two quarters for that Account were inserted.</para>
+      <table border="0">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="2" align="left">Account</th>
+                    <th colspan="2" align="left" valign="top">Account</th>
                   </tr>
                   <tr align="center">
                     <th>accountNo</th>
@@ -457,10 +480,10 @@ public AccountPeriod {
                     <td>0</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="4" align="left">Cashflow</th>
@@ -473,13 +496,13 @@ public AccountPeriod {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>12-jan-09</td>
                     <td>100</td>
                     <td>CREDIT</td>
                     <td>1</td>
                   </tr>
-                  <tr style="background-color:#ccccff">
+                  <tr>
                     <td>2-feb-09</td>
                     <td>200</td>
                     <td>DEBIT</td>
@@ -491,24 +514,26 @@ public AccountPeriod {
                     <td>CREDIT</td>
                     <td>1</td>
                   </tr>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>09-mar-09</td>
                     <td>75</td>
                     <td>CREDIT</td>
                     <td>1</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>Two rules can be used to determine the debit and credit for that quarter
-        and update the Account balance. The two rules below constraint the Cashflows for an Account
-        for a given time period. Notice the "&amp;&amp;" which use short cut syntax to avoid
-        repeating the field name twice.</para><informaltable frame="void">
+      </table>
+      <para>Two rules can be used to determine the debit and credit for that quarter and update the
+        Account balance. The two rules below constraint the Cashflows for an Account for a given
+        time period. Notice the "&amp;&amp;" which use short cut syntax to avoid repeating the field
+        name twice.</para>
+      <informaltable frame="void">
         <tbody>
           <tr>
-            <td>
+            <td align="left" valign="top">
               <programlisting>rule “increase balance for AccountPeriod Credits”
 when
     ap : AccountPeriod()
@@ -521,7 +546,7 @@ then
     acc.balance  += $amount;
 end</programlisting>
             </td>
-            <td>
+            <td align="left" valign="top">
               <programlisting>rule “decrease balance for AccountPeriod Debits” 
 when 
     ap : AccountPeriod() 
@@ -536,13 +561,15 @@ end</programlisting>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>If the AccountPeriod is set to the first quarter we constraint the
-        “increase balance for AccountPeriod Credits” to two rows of data and “decrease balance for
-        AccountPeriod Debits” to one row of data.</para><informaltable frame="void">
+      </informaltable>
+      <para>If the AccountPeriod is set to the first quarter we constraint the “increase balance for
+        AccountPeriod Credits” to two rows of data and “decrease balance for AccountPeriod Debits”
+        to one row of data.</para>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="2" align="left">AccountPeriod</th>
@@ -558,15 +585,16 @@ end</programlisting>
                     <td>31-mar-09</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><informaltable frame="void">
+      </table>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="3" align="left">Cashflow</th>
@@ -578,21 +606,21 @@ end</programlisting>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>12-jan-09</td>
                     <td>100</td>
                     <td>CREDIT</td>
                   </tr>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>09-mar-09</td>
                     <td>75</td>
                     <td>CREDIT</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="3" align="left">Cashflow</th>
@@ -604,58 +632,60 @@ end</programlisting>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="background-color:#ccccff">
+                  <tr>
                     <td>02-feb-09</td>
                     <td>200</td>
                     <td>DEBIT</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>The two Cashflow tables above represent the matched data for the two
-        rules, the data is matched during the insertion stage and as you found in the previous
-        chapter does not fire straight away, until fireAllRules() is called. Intstead the rule plus
-        it's matched data is placed on the Agenda and referred to as an Activation. The Agenda is a
-        table of Activations that are able to fire and have their consequences executed, when
-        fireAllRules() is called. Each of the Activations on the Agneda are executed in turn. Notice
-        that the order of execution so far is considered arbitrary.</para><informaltable
-        frame="void">
+      </table>
+      <para>The two Cashflow tables above represent the matched data for the two rules, the data is
+        matched during the insertion stage and as you found in the previous chapter does not fire
+        straight away, until fireAllRules() is called. Intstead the rule plus it's matched data is
+        placed on the Agenda and referred to as an Activation. The Agenda is a table of Activations
+        that are able to fire and have their consequences executed, when fireAllRules() is called.
+        Each of the Activations on the Agneda are executed in turn. Notice that the order of
+        execution so far is considered arbitrary.</para>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="3" align="left">Agenda</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>1</td>
                     <td>increase balance</td>
                     <td rowspan="3">arbitrary</td>
                   </tr>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>2</td>
                     <td>decrease balance</td>
                   </tr>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>3</td>
                     <td>increase balance</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>After each of the above activations are fired, the Account has a balance
-        of -25.</para><informaltable frame="void">
+      </table>
+      <para>After each of the above activations are fired, the Account has a balance of -25.</para>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="2" align="left">Account</th>
@@ -671,16 +701,18 @@ end</programlisting>
                     <td>-25</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>If the AccountPeriod is updated to Q2, we have just a single matched row
-        of data, and thus just a single Activation on the Agenda.</para><informaltable frame="void">
+      </table>
+      <para>If the AccountPeriod is updated to Q2, we have just a single matched row of data, and
+        thus just a single Activation on the Agenda.</para>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="2" align="left">AccountPeriod</th>
@@ -696,15 +728,16 @@ end</programlisting>
                     <td>30-jun-09</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><informaltable frame="void">
+      </table>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="3" align="left">Cashflow</th>
@@ -716,16 +749,16 @@ end</programlisting>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>18-may-09</td>
                     <td>50</td>
                     <td>CREDIT</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="3" align="left">Cashflow</th>
@@ -736,17 +769,24 @@ end</programlisting>
                     <th>type</th>
                   </tr>
                 </thead>
-                <tbody><tr><td></td><td></td><td></td></tr></tbody>
-              </informaltable>
+                <tbody>
+                  <tr>
+                    <td/>
+                    <td/>
+                    <td/>
+                  </tr>
+                </tbody>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>The firing of that Activation results in a balance of
-        50.</para><informaltable frame="void">
+      </table>
+      <para>The firing of that Activation results in a balance of 50.</para>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="2" align="left">Account</th>
@@ -762,18 +802,20 @@ end</programlisting>
                     <td>50</td>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>So what happens if you don't want the order of Activation execution to
-        be arbitrary? When there is one or more Activations on the Agenda they are said to be in
-        conflict, and a conflict resolver strategy is used to determine the order of execution. At
-        the simplest level the default strategy uses salience to determine rule priority. Each rule
-        has a default value of 0, the higher the value the higher the priority. To illustrate this a
-        rule to print the Account balance can be added, we want this rule to be executed after all
-        the debit's and credit's have been applied for this rule, by setting the rule to have a
-        salience of below 0 we ensure it fires afterwards.</para><informaltable frame="void">
+      </table>
+      <para>So what happens if you don't want the order of Activation execution to be arbitrary?
+        When there is one or more Activations on the Agenda they are said to be in conflict, and a
+        conflict resolver strategy is used to determine the order of execution. At the simplest
+        level the default strategy uses salience to determine rule priority. Each rule has a default
+        value of 0, the higher the value the higher the priority. To illustrate this a rule to print
+        the Account balance can be added, we want this rule to be executed after all the debit's and
+        credit's have been applied for this rule, by setting the rule to have a salience of below 0
+        we ensure it fires afterwards.</para>
+      <table border="0px">
         <tbody>
           <tr>
             <td>
@@ -788,55 +830,57 @@ end</programlisting>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>The table below shows the resulting Agenda, the 3 debit and credit rules
-        are shown to be arbitrary order, while the print rule is shown to execute
-        aftwards.</para><informaltable frame="void">
+      </table>
+      <para>The table below shows the resulting Agenda, the 3 debit and credit rules are shown to be
+        arbitrary order, while the print rule is shown to execute aftwards.</para>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
-              <informaltable frame="box" rules="all">
+            <td align="left" valign="top">
+              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
                     <th colspan="3" align="left">Agenda</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>1</td>
                     <td>increase balance</td>
                     <td rowspan="3">arbitrary</td>
                   </tr>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>2</td>
                     <td>decrease balance</td>
                   </tr>
-                  <tr style="background-color:#ffcc99">
+                  <tr>
                     <td>3</td>
                     <td>increase balance</td>
                   </tr>
-                  <tr style="background-color:#ccccff">
+                  <tr>
                     <td>4</td>
                     <td>print balance</td>
                     <td/>
                   </tr>
                 </tbody>
-              </informaltable>
+              </table>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>Earlier we showed how rules would equate to SQL, which can often be
-        helpful for people with an SQL background when understanding rules. The two ruels above can
-        be represented with two views and a trigger for each view, as below:</para><informaltable
-        frame="void">
+      </table>
+      <para>Earlier we showed how rules would equate to SQL, which can often be helpful for people
+        with an SQL background when understanding rules. The two ruels above can be represented with
+        two views and a trigger for each view, as below:</para>
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
+            <td align="left" valign="top">
               <programlisting>select * from Account acc, Cashflow cf, AccountPeriod ap      
 where acc.accountNo == cf.accountNo and 
       cf.type == CREDIT cf.date >= ap.start and 
       cf.date &lt;= ap.end</programlisting>
             </td>
-            <td>
+            <td align="left" valign="top">
               <programlisting>select * from Account acc, Cashflow cf, AccountPeriod ap 
 where acc.accountNo == cf.accountNo and 
       cf.type == DEBIT cf.date >= ap.start and 
@@ -844,26 +888,27 @@ where acc.accountNo == cf.accountNo and
             </td>
           </tr>
           <tr>
-            <td>
+            <td align="left" valign="top">
               <programlisting>trigger : acc.balance += cf.amount</programlisting>
             </td>
-            <td>
+            <td align="left" valign="top">
               <programlisting>trigger : acc.balance -= cf.amount</programlisting>
             </td>
           </tr>
         </tbody>
-      </informaltable><para>Drools also features ruleflow-group attributes which allows workflow
-        diagrams to declaratively specify when rules are allowed to fire. The screenshot below is
-        taken from Eclipse using the Drools plugin. It has two ruleflow-group nodes that ensures the
-        calculation rules are executed before the reporting
-            rules.</para><mediaobject><imageobject><imagedata
-            fileref="images/Chapter-Quick_Start/ruleflow.png"
-            /></imageobject></mediaobject>
+      </table>
+      <para>Drools also features ruleflow-group attributes which allows workflow diagrams to
+        declaratively specify when rules are allowed to fire. The screenshot below is taken from
+        Eclipse using the Drools plugin. It has two ruleflow-group nodes that ensures the
+        calculation rules are executed before the reporting rules.</para>
+      <mediaobject>
+        <imageobject><imagedata fileref="images/Chapter-Quick_Start/ruleflow.png"/></imageobject>
+      </mediaobject>
       <para>The use of the ruleflow-group attribute in a rule is shown below.</para>
-      <informaltable frame="void">
+      <table border="0px">
         <tbody>
           <tr>
-            <td>
+            <td align="left" valign="top">
               <programlisting>rule “increase balance for AccountPeriod Credits”
      ruleflow-group “calculation”
 when
@@ -877,7 +922,7 @@ then
     acc.balance  += $amount;
 end</programlisting>
             </td>
-            <td>
+            <td align="left" valign="top">
               <programlisting>rule “Print blance for AccountPeriod”
         ruleflow-group “report”
     when
@@ -889,6 +934,7 @@ end</programlisting>
             </td>
           </tr>
         </tbody>
-      </informaltable></section>
+      </table>
+    </section>
   </section>
 </chapter>
