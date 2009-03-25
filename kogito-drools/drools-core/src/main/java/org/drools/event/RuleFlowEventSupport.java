@@ -16,14 +16,6 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.instance.ProcessInstance;
@@ -31,250 +23,209 @@ import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.spi.RuleFlowGroup;
 
+import java.util.Iterator;
+
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
-public class RuleFlowEventSupport implements Externalizable {
+public class RuleFlowEventSupport extends AbstractEventSupport<RuleFlowEventListener> {
 
     // TODO separate out process level stuff
 
-    private static final long                 serialVersionUID = 400L;
-    private List<RuleFlowEventListener> listeners        = new CopyOnWriteArrayList<RuleFlowEventListener>();
+    public void fireBeforeRuleFlowProcessStarted(final ProcessInstance instance,
+                                                 final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-    public RuleFlowEventSupport() {
-    }
+        if (iter.hasNext()) {
+            final RuleFlowStartedEvent event = new RuleFlowStartedEvent(instance);
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        listeners   = (List<RuleFlowEventListener>)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(listeners);
-    }
-
-    public void addEventListener(final RuleFlowEventListener listener) {
-        if ( !this.listeners.contains( listener ) ) {
-            this.listeners.add( listener );
+            do{
+                iter.next().beforeRuleFlowStarted(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
-    public void removeEventListener(final RuleFlowEventListener listener) {
-        this.listeners.remove( listener );
-    }
+    public void fireAfterRuleFlowProcessStarted(final ProcessInstance instance,
+                                                final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-    public List<RuleFlowEventListener> getEventListeners() {
-        return Collections.unmodifiableList( this.listeners );
-    }
+        if (iter.hasNext()) {
+            final RuleFlowStartedEvent event = new RuleFlowStartedEvent(instance);
 
-    public int size() {
-        return this.listeners.size();
-    }
-
-    public boolean isEmpty() {
-        return this.listeners.isEmpty();
-    }
-
-    public void fireBeforeRuleFlowProcessStarted(
-            final ProcessInstance instance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
-
-        final RuleFlowStartedEvent event = new RuleFlowStartedEvent( instance );
-
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.beforeRuleFlowStarted( event, workingMemory );
+            do {
+                iter.next().afterRuleFlowStarted(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
-    public void fireAfterRuleFlowProcessStarted(
-            final ProcessInstance instance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
+    public void fireBeforeRuleFlowProcessCompleted(final WorkflowProcessInstance instance,
+                                                   final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowStartedEvent event = new RuleFlowStartedEvent( instance );
+        if (iter.hasNext()) {
+            final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent(instance);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.afterRuleFlowStarted( event, workingMemory );
-        }
-    }
-
-    public void fireBeforeRuleFlowProcessCompleted(
-            final WorkflowProcessInstance instance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
-
-        final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent( instance );
-
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.beforeRuleFlowCompleted( event, workingMemory );
+            do {
+                iter.next().beforeRuleFlowCompleted(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
-    public void fireAfterRuleFlowProcessCompleted(
-            final WorkflowProcessInstance instance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
+    public void fireAfterRuleFlowProcessCompleted(final WorkflowProcessInstance instance,
+                                                  final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent( instance );
+        if (iter.hasNext()) {
+            final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent(instance);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.afterRuleFlowCompleted( event, workingMemory );
+            do {
+                iter.next().afterRuleFlowCompleted(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireBeforeRuleFlowGroupActivated(final RuleFlowGroup ruleFlowGroup,
                                                  final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent( ruleFlowGroup );
+        if (iter.hasNext()) {
+            final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(ruleFlowGroup);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.beforeRuleFlowGroupActivated( event, workingMemory );
+            do {
+                iter.next().beforeRuleFlowGroupActivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireAfterRuleFlowGroupActivated(final RuleFlowGroup ruleFlowGroup,
                                                 final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent( ruleFlowGroup );
+        if (iter.hasNext()) {
+            final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(ruleFlowGroup);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.afterRuleFlowGroupActivated( event, workingMemory );
+            do{
+                iter.next().afterRuleFlowGroupActivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireBeforeRuleFlowGroupDeactivated(final RuleFlowGroup ruleFlowGroup,
                                                    final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent( ruleFlowGroup );
+        if (iter.hasNext()) {
+            final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(ruleFlowGroup);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.beforeRuleFlowGroupDeactivated( event, workingMemory );
+            do{
+                iter.next().beforeRuleFlowGroupDeactivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireAfterRuleFlowGroupDeactivated(final RuleFlowGroup ruleFlowGroup,
                                                   final InternalWorkingMemory workingMemory) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent( ruleFlowGroup );
+        if (iter.hasNext()) {
+            final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(ruleFlowGroup);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.afterRuleFlowGroupDeactivated( event, workingMemory );
-        }
-    }
-
-    public void fireBeforeRuleFlowNodeTriggered(
-            final NodeInstance ruleFlowNodeInstance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
-
-        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
-
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.beforeRuleFlowNodeTriggered( event, workingMemory );
+            do {
+                iter.next().afterRuleFlowGroupDeactivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
-    public void fireAfterRuleFlowNodeTriggered(
-            final NodeInstance ruleFlowNodeInstance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
+    public void fireBeforeRuleFlowNodeTriggered(final NodeInstance ruleFlowNodeInstance,
+                                                final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
+        if (iter.hasNext()) {
+            final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent(ruleFlowNodeInstance);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.afterRuleFlowNodeTriggered( event, workingMemory );
-        }
-    }
-
-    public void fireBeforeRuleFlowNodeLeft(
-            final NodeInstance ruleFlowNodeInstance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
-
-        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
-
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.beforeRuleFlowNodeLeft( event, workingMemory );
+            do {
+                iter.next().beforeRuleFlowNodeTriggered(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
-    public void fireAfterRuleFlowNodeLeft(
-            final NodeInstance ruleFlowNodeInstance,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
+    public void fireAfterRuleFlowNodeTriggered(final NodeInstance ruleFlowNodeInstance,
+                                               final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent(ruleFlowNodeInstance);
+
+            do{
+                iter.next().afterRuleFlowNodeTriggered(event, workingMemory);
+            } while (iter.hasNext());
         }
+    }
 
-        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
+    public void fireBeforeRuleFlowNodeLeft(final NodeInstance ruleFlowNodeInstance,
+                                           final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            listener.afterRuleFlowNodeLeft( event, workingMemory );
+        if (iter.hasNext()) {
+            final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent(ruleFlowNodeInstance);
+
+            do{
+                iter.next().beforeRuleFlowNodeLeft(event, workingMemory);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterRuleFlowNodeLeft(final NodeInstance ruleFlowNodeInstance,
+                                          final InternalWorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent(ruleFlowNodeInstance);
+
+            do{
+                iter.next().afterRuleFlowNodeLeft(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireBeforeVariableChange(final ProcessInstance instance,
-                                            final String name,
-                                            final Object value,
-                                            WorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
+                                         final String name,
+                                         final Object value,
+                                         WorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value );
+        if (iter.hasNext()) {
+            final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            if(listener instanceof RuleFlowEventListenerExtension) {
-                ((RuleFlowEventListenerExtension) listener).beforeVariableChange(event, workingMemory);
-            }
+            do{
+                RuleFlowEventListener listener = iter.next();
+                if (listener instanceof RuleFlowEventListenerExtension) {
+                    ((RuleFlowEventListenerExtension) listener).beforeVariableChange(event, workingMemory);
+                }
+            } while (iter.hasNext());
         }
     }
 
-     public void fireAfterVariableChange(final ProcessInstance instance,
-                                            final String name,
-                                            final Object value,
-                                            WorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
-            return;
-        }
+    public void fireAfterVariableChange(final ProcessInstance instance,
+                                        final String name,
+                                        final Object value,
+                                        WorkingMemory workingMemory) {
+        final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
-        final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value );
+        if (iter.hasNext()) {
+            final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value);
 
-        for ( RuleFlowEventListener listener: listeners ) {
-            if(listener instanceof RuleFlowEventListenerExtension) {
-                ((RuleFlowEventListenerExtension) listener).afterVariableChange(event, workingMemory);
-            }
-            
+            do{
+                RuleFlowEventListener listener = iter.next();
+                if (listener instanceof RuleFlowEventListenerExtension) {
+                    ((RuleFlowEventListenerExtension) listener).afterVariableChange(event, workingMemory);
+                }
+            } while (iter.hasNext());
         }
     }
 
     public void reset() {
-        this.listeners.clear();
+        this.clear();
     }
-
 }

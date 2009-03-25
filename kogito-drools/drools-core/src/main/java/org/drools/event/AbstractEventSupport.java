@@ -86,4 +86,8 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
     public boolean isEmpty() {
         return this.listeners.isEmpty();
     }
+        
+    public void clear() {
+        this.listeners.clear();
+    }
 }
