@@ -513,7 +513,7 @@ public class PackageBuilder {
                 Package pkg = (Package) DroolsStreamUtils.streamIn( is );
                 is.close();
                 addPackage( pkg );
-            } else if ( ResourceType.ChangeSet.equals( type )) {
+            } else if ( ResourceType.CHANGE_SET.equals( type )) {
                 ((InternalResource) resource).setResourceType( type );
                 XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
                 if ( resource instanceof ClassPathResource ) {
