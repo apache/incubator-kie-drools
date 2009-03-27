@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -18,6 +19,8 @@ import java.util.List;
 import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.util.StringUtils;
+
+import com.sun.net.ssl.HttpsURLConnection;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
@@ -120,6 +123,9 @@ public class UrlResource extends BaseResource
                 return file.lastModified();
             } else {
                 URLConnection conn = getURL().openConnection();
+                if ( conn instanceof HttpURLConnection ) {
+                    ((HttpURLConnection) conn).setRequestMethod( "HEAD" );
+                }
                 long date = conn.getLastModified();
                 return date;
             }
