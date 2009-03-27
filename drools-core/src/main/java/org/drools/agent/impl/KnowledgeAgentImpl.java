@@ -148,7 +148,7 @@ public class KnowledgeAgentImpl
             } else {
                 if ( ((InternalResource) resource).getResourceType() == ResourceType.PKG ) {
                     changeSetState.pkgs.add( resource );
-                } else if ( ((InternalResource) resource).getResourceType() == ResourceType.ChangeSet ) {
+                } else if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
                     // @TODO
                     continue;
                 }
@@ -166,7 +166,7 @@ public class KnowledgeAgentImpl
         }
 
         for ( Resource resource : changeSet.getResourcesRemoved() ) {
-            if ( ((InternalResource) resource).getResourceType() == ResourceType.ChangeSet ) {
+            if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
                 processChangeSet( resource,
                                   changeSetState );
             } else if ( changeSetState.scanDirectories && ((InternalResource) resource).isDirectory() ) {
@@ -185,7 +185,7 @@ public class KnowledgeAgentImpl
         // are we going to need kbuilder to build these resources?
         for ( Resource resource : this.resources.keySet() ) {
             this.listener.debug( "KnowledgeAgent ChangeSet requires KnowledgeBuilder" );
-            if ( ((InternalResource) resource).getResourceType() != ResourceType.ChangeSet && ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
+            if ( ((InternalResource) resource).getResourceType() != ResourceType.CHANGE_SET && ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
                 changeSetState.needsKnowledgeBuilder = true;
                 break;
             }

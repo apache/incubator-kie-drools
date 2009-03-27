@@ -87,7 +87,7 @@ public class ChangeSetTest extends TestCase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml",
                                                             getClass() ),
-                      ResourceType.ChangeSet );
+                      ResourceType.CHANGE_SET );
         assertFalse( kbuilder.hasErrors() );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
