@@ -47,6 +47,8 @@ public class ReteooStatelessSession
     private GlobalResolver              globalResolver            = new MapGlobalResolver();
 
     private GlobalExporter              globalExporter;
+    
+    private SessionConfiguration        sessionConf; 
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
@@ -60,6 +62,7 @@ public class ReteooStatelessSession
 
     public ReteooStatelessSession(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
+        this.sessionConf = new SessionConfiguration(); // create one of these and re-use
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -68,6 +71,7 @@ public class ReteooStatelessSession
         agendaFilter = (AgendaFilter) in.readObject();
         globalResolver = (GlobalResolver) in.readObject();
         globalExporter = (GlobalExporter) in.readObject();
+        this.sessionConf = new SessionConfiguration(); // create one of these and re-use
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -85,7 +89,7 @@ public class ReteooStatelessSession
         synchronized ( this.ruleBase.getPackagesMap() ) {
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                                 this.ruleBase,
-                                                                new SessionConfiguration(),
+                                                                this.sessionConf,
                                                                 EnvironmentFactory.newEnvironment() );
 
             wm.setGlobalResolver( this.globalResolver );
