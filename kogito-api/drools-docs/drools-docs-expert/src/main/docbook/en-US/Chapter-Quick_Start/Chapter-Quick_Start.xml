@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
-  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-  xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
-  xmlns:html="http://www.w3.org/1999/xhtml" xml:base="./">
+<chapter version="5.0" xml:base="./" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml">
   <title>Quick Start</title>
+
   <section>
     <title>The Basics</title>
+
     <section>
       <title>Stateless Knowledge Session</title>
-      <para>So where do we get started, there are so many use cases and so much functionality in a
-        rule engine such as Drools that it becomes beguiling. Have no fear my intrepid adventurer,
-        the complexity is layered and you can ease yourself into with simple use cases.</para>
-      <para>Stateless session, not utilising inference, forms the simplest of use case. A stateless
-        session can be called like a function passing it some data and then receiving some results
-        back. Some common use cases for stateless sessions are, but not limited to:</para>
+
+      <para>So where do we get started, there are so many use cases and so
+      much functionality in a rule engine such as Drools that it becomes
+      beguiling. Have no fear my intrepid adventurer, the complexity is
+      layered and you can ease yourself into with simple use cases.</para>
+
+      <para>Stateless session, not utilising inference, forms the simplest of
+      use case. A stateless session can be called like a function passing it
+      some data and then receiving some results back. Some common use cases
+      for stateless sessions are, but not limited to:</para>
+
       <itemizedlist>
         <listitem>
           <para>Validation</para>
+
           <itemizedlist>
             <listitem>
               <para>Is this person legible for a mortgage</para>
             </listitem>
           </itemizedlist>
         </listitem>
+
         <listitem>
           <para>Calculation</para>
+
           <itemizedlist>
             <listitem>
               <para>Mortgage premium</para>
             </listitem>
           </itemizedlist>
         </listitem>
+
         <listitem>
           <para>Routing/Filtering</para>
+
           <itemizedlist>
             <listitem>
-              <para>Filtering incoming messages, such as emails, into folders</para>
+              <para>Filtering incoming messages, such as emails, into
+              folders</para>
             </listitem>
+
             <listitem>
               <para>Sending incoming message to a destinatino</para>
             </listitem>
           </itemizedlist>
         </listitem>
       </itemizedlist>
-      <para>So lets start with a very simple example using a driving license application.</para>
+
+      <para>So lets start with a very simple example using a driving license
+      application.</para>
+
       <programlisting>public class Applicant {
     private String name;
     private int age;
@@ -51,10 +71,13 @@
     // getter and setter methods here
 }
 </programlisting>
-      <para>Now we have our data model we can write our first rule, we assume the application starts
-        off valid and rules would be used to disqualify the application. As this is a simple
-        validation use case we will add a single rule to disqualify the applicant if they are
-        younger than 18.</para>
+
+      <para>Now we have our data model we can write our first rule, we assume
+      the application starts off valid and rules would be used to disqualify
+      the application. As this is a simple validation use case we will add a
+      single rule to disqualify the applicant if they are younger than
+      18.</para>
+
       <programlisting>package com.company.license
 
 rule "Is of valid age"
@@ -63,43 +86,57 @@ when
 then
     $a.setValid( false );
 end</programlisting>
-      <para>To make the engine aware of data, so it can be processed against the rules, we have to
-        "insert" the data, much like with a database. When the Applicant instance is inserted into
-        the engine it is evaluated against the constraints of the rules, in this case just two
-        constraint for one rule. We say two because the type Applicant is the first object type
-        constraint, and the "age &lt; 18" is the second field constraint. An object type constraint
-        plus it's zero or more field constraints is referred to as a pattern. When an inserted
-        instance satisfies both the object type constraint and all the field constraints, it is said
-        to be matched. The "$a" is a binding and allows the matched object to be referenced in the
-        consquence, so it's properties can be updated, the $ is optional, but it helps to
-        differentiate the variables from the fields. This part of the engine is often referred to as
-        pattern matchin, i.e. the matching of patterns against the inserted data.</para>
-      <para>Let's assume that the rules are in the same folder as the classes, so we can use the
-        classpath resource loader to build our first KnowledgeBase. A KnowledgeBase is what we call
-        our collection of compiled rules, which are compiled using the KnowledgeBuilder.</para>
+
+      <para>To make the engine aware of data, so it can be processed against
+      the rules, we have to "insert" the data, much like with a database. When
+      the Applicant instance is inserted into the engine it is evaluated
+      against the constraints of the rules, in this case just two constraint
+      for one rule. We say two because the type Applicant is the first object
+      type constraint, and the "age &lt; 18" is the second field constraint.
+      An object type constraint plus it's zero or more field constraints is
+      referred to as a pattern. When an inserted instance satisfies both the
+      object type constraint and all the field constraints, it is said to be
+      matched. The "$a" is a binding and allows the matched object to be
+      referenced in the consquence, so it's properties can be updated, the $
+      is optional, but it helps to differentiate the variables from the
+      fields. This part of the engine is often referred to as pattern matchin,
+      i.e. the matching of patterns against the inserted data.</para>
+
+      <para>Let's assume that the rules are in the same folder as the classes,
+      so we can use the classpath resource loader to build our first
+      KnowledgeBase. A KnowledgeBase is what we call our collection of
+      compiled rules, which are compiled using the KnowledgeBuilder.</para>
+
       <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClasspathResource( "licenseApplication.drl", getClass() ),
               ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
 }  </programlisting>
-      <para>The above looks on the classpath for the "licenseApplication.drl" file, using the given
-        classes getResource() method. The ResourceType here is DRL, short for "Drools Rule
-        Language". Once the drl has be added we can check the KnowledgeBuilder for any errors. If
-        there are no errors, we are now ready to build our session and execute against some
-        data:</para>
+
+      <para>The above looks on the classpath for the "licenseApplication.drl"
+      file, using the given classes getResource() method. The ResourceType
+      here is DRL, short for "Drools Rule Language". Once the drl has be added
+      we can check the KnowledgeBuilder for any errors. If there are no
+      errors, we are now ready to build our session and execute against some
+      data:</para>
+
       <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 Applicant applicant = new Applicant( "Mr John Smith", 16 );
 assertTrue( applicant.isValid() );
 ksession.execute( applicant );
 assertFalse( applicant.isValid() );
 </programlisting>
-      <para>The above executes the data against the rules, the applicant is under the age of 18, so
-        it marked invalid.</para>
-      <para>So far we've only used a single instance, but what if want to use more than one? We can
-        also execute against an Iterable, such a a collection. Lets add another class called
-        Application, which has the date of the application and we'll move the boolean valid field to
-        the Application class.</para>
+
+      <para>The above executes the data against the rules, the applicant is
+      under the age of 18, so it marked invalid.</para>
+
+      <para>So far we've only used a single instance, but what if want to use
+      more than one? We can also execute against an Iterable, such a a
+      collection. Lets add another class called Application, which has the
+      date of the application and we'll move the boolean valid field to the
+      Application class.</para>
+
       <programlisting>public class Applicant {
     private String name;
     private int age;
@@ -112,8 +149,10 @@ public class Application {
     private boolean valid;
     // getter and setter methods here
 }</programlisting>
-      <para>And we can also add another rule, that validates the Application was made within a
-        period of time.</para>
+
+      <para>And we can also add another rule, that validates the Application
+      was made within a period of time.</para>
+
       <programlisting>package com.company.license
 
 rule "Is of valid age"
@@ -131,9 +170,12 @@ then
     $a.setValid( false );
 end
 </programlisting>
-      <para>Unfortunately in java an array does not implement h the Iterable interface, so we have
-        to use the JDK converter, asList(...). So code below executes against an Iterable, where
-        each of the collection elements are inserted before any matched rules are fired.</para>
+
+      <para>Unfortunately in java an array does not implement h the Iterable
+      interface, so we have to use the JDK converter, asList(...). So code
+      below executes against an Iterable, where each of the collection
+      elements are inserted before any matched rules are fired.</para>
+
       <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 Applicant applicant = new Applicant( "Mr John Smith", 16 );
 Application application = new Application();
@@ -141,42 +183,74 @@ assertTrue( application() );
 ksession.execute( Arrays.asList( new Object[] { application, applicant } ) );
 assertFalse( application() );
 </programlisting>
-      <para>The two execute methods execute(Object object ) and execute(Iterable objects) are
-        actually convenience methods for the interface BatchExecutor's method execute(Command
-        command). This allows for more than just fact insertion, and also handles "out" parameters
-        and results.</para>
+
+      <para>The two execute methods execute(Object object ) and
+      execute(Iterable objects) are actually convenience methods for the
+      interface BatchExecutor's method execute(Command command).</para>
+
+      <para>The CommandFactory is used to return commands, the following is
+      equivalent of execute( Iterable it ):</para>
+
+      <programlisting>ksession.execute( CommandFactory.newInsertIterable( new Object[] { application, applicant } ) );
+</programlisting>
+
+      <para>Where the the BatchExecutor and CommandFactory becomes useful is
+      while working with multiple Commands and out identifiers for
+      results.</para>
+
+      <programlisting>List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
+cmds.add( CommandFactory.newInsert( new Person( "Mr John Smith" ), "mrSmith" );
+cmds.add( CommandFactory.newInsert( new Person( "Mr John Doe" ), "mrDoe" );
+BatchExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+assertEquals( new Person( "Mr John Smith" ), results.getValue( "mrSmith" ) );
+</programlisting>
+
+      <para>CommandFactory supports many other Commands that can be used in
+      the BatchExecutor like StartProcess, Query, SetGlobal.</para>
     </section>
+
     <section>
       <title>Stateful Knowledge Session</title>
-      <para>Stateful sessions are longer lived and allow iterative changes over time. Some common
-        use cases for stateful sessions are, but not limited to:</para>
+
+      <para>Stateful sessions are longer lived and allow iterative changes
+      over time. Some common use cases for stateful sessions are, but not
+      limited to:</para>
+
       <itemizedlist>
         <listitem>
           <para>Monitoring</para>
+
           <itemizedlist>
             <listitem>
-              <para>Stock market monitorig and analysis for semi-automatic buying.</para>
+              <para>Stock market monitorig and analysis for semi-automatic
+              buying.</para>
             </listitem>
           </itemizedlist>
         </listitem>
+
         <listitem>
           <para>Diagnostics</para>
+
           <itemizedlist>
             <listitem>
               <para>fault finding, medical diagnostics</para>
             </listitem>
           </itemizedlist>
         </listitem>
+
         <listitem>
           <para>Logistics</para>
+
           <itemizedlist>
             <listitem>
               <para>parcel tracking and delivery provisioning</para>
             </listitem>
           </itemizedlist>
         </listitem>
+
         <listitem>
           <para>Compliance</para>
+
           <itemizedlist>
             <listitem>
               <para>Validation of legality for market trades.</para>
@@ -184,9 +258,20 @@ assertFalse( application() );
           </itemizedlist>
         </listitem>
       </itemizedlist>
-      <para>We can use a fire alarm example to explore the monitoring use case. The simple example
-        has just 4 classes. We are monitoring the rooms in a house, each room has one sprinkler. If
-        a fire starts in a room, we represent that with a single Fire instance.</para>
+
+      <para>Unlike a stateless session the dispose() method must be called
+      afterwards to ensure there are no memory leaks, as the KnowledgeBase
+      contained references to StatefulKnowledgeSessions when they are created.
+      StatefulKnowledgeSession also supports the BatchExecutor interface like
+      StatelessKnowledgeSession, the only difference is that when used with
+      stateful the FireAllRules command is not automatically called at the
+      end.</para>
+
+      <para>We can use a fire alarm example to explore the monitoring use
+      case. The simple example has just 4 classes. We are monitoring the rooms
+      in a house, each room has one sprinkler. If a fire starts in a room, we
+      represent that with a single Fire instance.</para>
+
       <programlisting>public class Room {
     private String name
     // getter and setter methods here
@@ -203,16 +288,22 @@ public class Fire {
 public class Alarm {
 }
 </programlisting>
-      <para>In the previous section on stateless sessions the concepts of inserting and matching
-        against data was introduced. That example assumed only a single instance of each object type
-        was ever inserted and thus only used literal constraints. However a house has many rooms, so
-        rules have the need to express joins that constraint to the desired objects, this can be
-        done using a binding as a variable constraint in a pattern. This join process results in
-        what is called cross products, which are covered in the next section.</para>
-      <para>When a fire occurs an instance of the Fire class is created, for that room, and insert
-        it. The rule uses a binding on the room field of the Fire to constrain to the Sprinkler for
-        that room, which is currently off. When this rule fires and the consequence is executed the
-        sprinkler is turned on</para>
+
+      <para>In the previous section on stateless sessions the concepts of
+      inserting and matching against data was introduced. That example assumed
+      only a single instance of each object type was ever inserted and thus
+      only used literal constraints. However a house has many rooms, so rules
+      have the need to express joins that constraint to the desired objects,
+      this can be done using a binding as a variable constraint in a pattern.
+      This join process results in what is called cross products, which are
+      covered in the next section.</para>
+
+      <para>When a fire occurs an instance of the Fire class is created, for
+      that room, and insert it. The rule uses a binding on the room field of
+      the Fire to constrain to the Sprinkler for that room, which is currently
+      off. When this rule fires and the consequence is executed the sprinkler
+      is turned on</para>
+
       <programlisting>rule "When there is a fire turn on the sprinkler"
 when
     Fire($room : room)
@@ -221,18 +312,25 @@ then
     modify( $sprinkler ) { setOn( true ) };
     System.out.println( "Turn off the sprinkler for room " + $room.getName() );
 end</programlisting>
-      <para>Where as the stateless session used standard java syntax to modify a field, in the above
-        rule we use the modify keyword, which acts as a sort of with statement, that contains a
-        series of comma separated java expressions. Stateless sessions do not have inference, so the
-        engine does not need to be aware of changes to data, however a stateful session does. The
-        modify keyword allows the setters to modify the data, while make the engine aware of those
-        changes so it can reason over them, this process is called inference.</para>
-      <para>So far we have rules that tell us when matching data exists, but what about when it
-        doesn't exist? What about when there stops being a Fire? Previously the constraints have
-        been propositional logic where the engine is constraining against individual intances,
-        Drools also has support for first order logic that allows you to look at sets of data. The
-        'not' keyword matches when something does not exist. So for a Room with a Sprinkler that is
-        on when the Fire for that room stops existing we can turn off the sprinkler.</para>
+
+      <para>Where as the stateless session used standard java syntax to modify
+      a field, in the above rule we use the modify keyword, which acts as a
+      sort of with statement, that contains a series of comma separated java
+      expressions. Stateless sessions do not have inference, so the engine
+      does not need to be aware of changes to data, however a stateful session
+      does. The modify keyword allows the setters to modify the data, while
+      make the engine aware of those changes so it can reason over them, this
+      process is called inference.</para>
+
+      <para>So far we have rules that tell us when matching data exists, but
+      what about when it doesn't exist? What about when there stops being a
+      Fire? Previously the constraints have been propositional logic where the
+      engine is constraining against individual intances, Drools also has
+      support for first order logic that allows you to look at sets of data.
+      The 'not' keyword matches when something does not exist. So for a Room
+      with a Sprinkler that is on when the Fire for that room stops existing
+      we can turn off the sprinkler.</para>
+
       <programlisting>rule "When the fire is gone turn on the sprinkler"
 when
     $room : Room( )
@@ -242,10 +340,13 @@ then
     modify( $sprinkler ) { setOn( false ) };
     System.out.println( "Turn off the sprinkler for room " + $room.getName() );
 end</programlisting>
-      <para>While there is a Sprinkler per room, there is just a single Alarm for the building. An
-        Alarm is created when a Fire is occurs, but only one Alarm is needed for the entire
-        building, no matter how many Fires occur. Previously 'not' was introduced, the compliment to
-        ths is 'exists' which matches for one or more of something.</para>
+
+      <para>While there is a Sprinkler per room, there is just a single Alarm
+      for the building. An Alarm is created when a Fire is occurs, but only
+      one Alarm is needed for the entire building, no matter how many Fires
+      occur. Previously 'not' was introduced, the compliment to ths is
+      'exists' which matches for one or more of something.</para>
+
       <programlisting>rule "Raise the alarm when we have one or more fires"
 when
     exists Fire()
@@ -253,8 +354,10 @@ then
     insert( new Alarm() );
     System.out.println( "Raise the alarm" );
 end</programlisting>
-      <para>Likewise when there are no Fires we want to remove the alarm, so the 'not' keyword can
-        be used again.</para>
+
+      <para>Likewise when there are no Fires we want to remove the alarm, so
+      the 'not' keyword can be used again.</para>
+
       <programlisting>rule "Lower the alarm when all the fires have gone"
 when
     not Fire()
@@ -265,8 +368,11 @@ then
 end
 
 </programlisting>
-      <para>Finally there is a general health status message, that is printed when the application
-        first starts and after the Alarm is removed and all Sprinklers have been turned off.</para>
+
+      <para>Finally there is a general health status message, that is printed
+      when the application first starts and after the Alarm is removed and all
+      Sprinklers have been turned off.</para>
+
       <programlisting>rule "Status output when things are ok"
 when
     not Alarm()
@@ -274,11 +380,14 @@ when
 then
     System.out.println( "Everything is ok" );
 end</programlisting>
-      <para>The above rules should be placed in a single drl file and saved to the classpath using
-        the file name "fireAlarm.drl", as per the stateless session example. We can then build a
-        KnowledgeBase as before, just using the new name "fireAlarm.drl". The difference is this
-        time we create a stateful session from the kbase, where as before we created a stateless
-        session.</para>
+
+      <para>The above rules should be placed in a single drl file and saved to
+      the classpath using the file name "fireAlarm.drl", as per the stateless
+      session example. We can then build a KnowledgeBase as before, just using
+      the new name "fireAlarm.drl". The difference is this time we create a
+      stateful session from the kbase, where as before we created a stateless
+      session.</para>
+
       <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClasspathResource( "fireAlarm.drl", getClass() ),
               ResourceType.DRL );
@@ -286,11 +395,14 @@ if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
 }  
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</programlisting>
-      <para>With the session created it is now possible to iteratvely work with it over time. Four
-        Rooms are created and inserted, a Sprinkler for each room is also inserted. At this point
-        the engine has done all it's matching, but no rules have fired. calling "fireAllRules" on
-        the ksession allows the matched rules to fire, currently that is just the health
-        message.</para>
+
+      <para>With the session created it is now possible to iteratvely work
+      with it over time. Four Rooms are created and inserted, a Sprinkler for
+      each room is also inserted. At this point the engine has done all it's
+      matching, but no rules have fired. calling "fireAllRules" on the
+      ksession allows the matched rules to fire, currently that is just the
+      health message.</para>
+
       <programlisting>Room kitchen = new Room( "kitchen" );
 Room bedroom = new Room( "bedroom" );
 Room office = new Room( "office" );
@@ -314,12 +426,16 @@ ksession.insert( livingRoomSprinkler );
 
 ksession.fireAllRules()
 </programlisting>
+
       <programlisting>&gt; Everything is ok</programlisting>
-      <para>We now create two fires and insert them, this time a referenced is kept for the returned
-        FactHandle. The FactHandle is an internal engine reference to the inserted instance and
-        allows that instance to be retracted or modified at a later point in time. With the Fires
-        now in the engine, once "fireAllRules" is called, the Alarm is raised and the respectively
-        Sprinklers are turned on.</para>
+
+      <para>We now create two fires and insert them, this time a referenced is
+      kept for the returned FactHandle. The FactHandle is an internal engine
+      reference to the inserted instance and allows that instance to be
+      retracted or modified at a later point in time. With the Fires now in
+      the engine, once "fireAllRules" is called, the Alarm is raised and the
+      respectively Sprinklers are turned on.</para>
+
       <programlisting>Fire kitchenFire = new Fire( kitchen );
 Fire officeFire = new Fire( office );
 
@@ -327,67 +443,88 @@ FactHandle kitchenFireHandle = kession.insert( kitchenFire );
 FactHandle officeFireHandle = ksession.insert( officeFire );
 
 ksession.fireAllRules();</programlisting>
+
       <programlisting>&gt; Raise the alarm
 &gt; Turn on the sprinkler for room kitchen
 &gt; Turn on the sprinkler for room office</programlisting>
-      <para>After a while the fires will be put out and the Fire intances are retracted. This
-        results in the Sprinklers being turned off, the Alarm being lowered and eventually the
-        health message is printed again.</para>
+
+      <para>After a while the fires will be put out and the Fire intances are
+      retracted. This results in the Sprinklers being turned off, the Alarm
+      being lowered and eventually the health message is printed again.</para>
+
       <programlisting>ksession.retract( kitchenFire );
 ksession.retract( officeFire );
 
 ksession.fireAllRules();</programlisting>
+
       <programlisting>&gt; Turn on the sprinkler for room office
 &gt; Turn on the sprinkler for room kitchen
 &gt; Lower the alarm
 &gt; Everything is ok</programlisting>
-      <para>Every one still with me? That wasn't so hard and already I'm hoping you can start to see
-        the value and power of a declarative rule system.</para>
+
+      <para>Every one still with me? That wasn't so hard and already I'm
+      hoping you can start to see the value and power of a declarative rule
+      system.</para>
     </section>
   </section>
+
   <section>
     <title>A Little Theory</title>
+
     <section>
       <title>Methods versus Rules</title>
-      <para>People often confuse methods and rules, and new rule users regular ask, "how do I call a
-        rule?". After the last section, you are now feeling like a rule expert and the answer to
-        that is obvsious, but just to summarise.</para>
+
+      <para>People often confuse methods and rules, and new rule users regular
+      ask, "how do I call a rule?". After the last section, you are now
+      feeling like a rule expert and the answer to that is obvsious, but just
+      to summarise.</para>
+
       <programlisting>public void helloWorld(Person person) {
     if ( person.getName().equals( “Chuck” ) ) {
         System.out.println( “Hello Chuck” );
     }
 }</programlisting>
+
       <itemizedlist>
         <listitem>
           <para>Methods are called directly.</para>
         </listitem>
+
         <listitem>
           <para>Specific instances are passed.</para>
         </listitem>
       </itemizedlist>
+
       <programlisting>rule “Hello World”
     when
         Person( name == “Chuck” )
     then
         System.out.println( “Hello Chuck” );
         end</programlisting>
+
       <itemizedlist>
         <listitem>
-          <para>Rules execute by matching against data inserted into the engine.</para>
+          <para>Rules execute by matching against data inserted into the
+          engine.</para>
         </listitem>
+
         <listitem>
           <para>Rules can never be called directly.</para>
         </listitem>
+
         <listitem>
           <para>Specific instances cannot be passed to a rule.</para>
         </listitem>
       </itemizedlist>
     </section>
+
     <section>
       <title>Cross Products</title>
-      <para>Earlier the term "cross product" was mentioned, which is the result of a join. Imagine
-        for a moment when using the previous data the following rules where used, with no field
-        constraints:</para>
+
+      <para>Earlier the term "cross product" was mentioned, which is the
+      result of a join. Imagine for a moment when using the previous data the
+      following rules where used, with no field constraints:</para>
+
       <programlisting>rule
 when
     $room : Room()
@@ -395,9 +532,11 @@ when
 then
     System.out.println( "room:" + $room.getName() + " sprinkler:" + $sprinkler.getRoom().getName() );
 end</programlisting>
-      <para>In SQL terms this would be like doing "select * from Room, Sprinkler" and every row in
-        the Room table would be joined with every row in the Sprinkler table resulting in the
-        following output:</para>
+
+      <para>In SQL terms this would be like doing "select * from Room,
+      Sprinkler" and every row in the Room table would be joined with every
+      row in the Sprinkler table resulting in the following output:</para>
+
       <programlisting>room:office sprinker:office
 room:office sprinker:kitchen
 room:office sprinker:livingroom
@@ -414,10 +553,13 @@ room:bedroom sprinker:office
 room:bedroom sprinker:kitchen
 room:bedroom sprinker:livingroom
 room:bedroom sprinker:bedroom</programlisting>
-      <para>These cross products can obviously become huge as well as returning potentially
-        incorrect data. The size of cross products is often source of performance problems for new
-        rule authors. From this it can be seen that it's always desirable to constrain the cross
-        products, which is done with the variable constriant.</para>
+
+      <para>These cross products can obviously become huge as well as
+      returning potentially incorrect data. The size of cross products is
+      often source of performance problems for new rule authors. From this it
+      can be seen that it's always desirable to constrain the cross products,
+      which is done with the variable constriant.</para>
+
       <programlisting>rule
 when
     $room : Room()
@@ -425,17 +567,27 @@ when
 then
     System.out.println( "room:" + $room.getName() + " sprinkler:" + $sprinkler.getRoom().getName() );
 end</programlisting>
-      <para>Resulting in just for rows of data, with the correct Sprinkler for the Room. In SQL
-        (actually HQL) terms that is like "select * from Room, Sprinkler where Room ==
-        Sprinkler.room"</para>
+
+      <para>Resulting in just for rows of data, with the correct Sprinkler for
+      the Room. In SQL (actually HQL) terms that is like "select * from Room,
+      Sprinkler where Room == Sprinkler.room"</para>
+
       <programlisting>room:office sprinker:office
 room:kitchen sprinker:kitchen
 room:livingroom sprinker:livingroom
 room:bedroom sprinker:bedroom</programlisting>
     </section>
+
     <section>
-      <title>Execution Control</title>
-      <para/>
+      <title>Activations, Agenda and Conflict Sets.</title>
+
+      <para>So far the data and matching process has been simple and small. To
+      mix things up a bit a new example will be explored that handles cashflow
+      calculations over date periods and the state of the engine will be
+      illustrateively shown at key stages to help get a better understanding
+      of what is actually going on under the hood. Three classes will be used,
+      as shown below.</para>
+
       <programlisting>public class Cashflow {
     private Date   date;
     private double amount;
@@ -455,69 +607,99 @@ public AccountPeriod {
     private Dte end
     // getter and setter methods here
 }</programlisting>
-      <para>By now you already know how to create KnowledgeBases and how to instantiate facts to
-        populate the StatefulKnowledgeSession, so tables will be used to show the state of the
-        inserted data, as it makes things clearer for illustration purposes. The tables below show a
-        single fact was inserted for the Account and a series of debit's and credit's as Cashflows
-        over two quarters for that Account were inserted.</para>
+
+      <para>By now you already know how to create KnowledgeBases and how to
+      instantiate facts to populate the StatefulKnowledgeSession, so tables
+      will be used to show the state of the inserted data, as it makes things
+      clearer for illustration purposes. The tables below show a single fact
+      was inserted for the Account and a series of debit's and credit's as
+      Cashflows over two quarters for that Account were inserted.</para>
+
       <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="2" align="left" valign="top">Account</th>
+                    <th align="left" colspan="2" valign="top">Account</th>
                   </tr>
+
                   <tr align="center">
                     <th>accountNo</th>
+
                     <th>balance</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>1</td>
+
                     <td>0</td>
                   </tr>
                 </tbody>
               </table>
             </td>
+
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="4" align="left">Cashflow</th>
+                    <th align="left" colspan="4">Cashflow</th>
                   </tr>
+
                   <tr align="center">
                     <th>date</th>
+
                     <th>amount</th>
+
                     <th>type</th>
+
                     <th>accountNo</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>12-jan-09</td>
+
                     <td>100</td>
+
                     <td>CREDIT</td>
+
                     <td>1</td>
                   </tr>
+
                   <tr>
                     <td>2-feb-09</td>
+
                     <td>200</td>
+
                     <td>DEBIT</td>
+
                     <td>1</td>
                   </tr>
+
                   <tr>
                     <td>18-may-09</td>
+
                     <td>50</td>
+
                     <td>CREDIT</td>
+
                     <td>1</td>
                   </tr>
+
                   <tr>
                     <td>09-mar-09</td>
+
                     <td>75</td>
+
                     <td>CREDIT</td>
+
                     <td>1</td>
                   </tr>
                 </tbody>
@@ -526,10 +708,13 @@ public AccountPeriod {
           </tr>
         </tbody>
       </table>
-      <para>Two rules can be used to determine the debit and credit for that quarter and update the
-        Account balance. The two rules below constraint the Cashflows for an Account for a given
-        time period. Notice the "&amp;&amp;" which use short cut syntax to avoid repeating the field
-        name twice.</para>
+
+      <para>Two rules can be used to determine the debit and credit for that
+      quarter and update the Account balance. The two rules below constraint
+      the Cashflows for an Account for a given time period. Notice the
+      "&amp;&amp;" which use short cut syntax to avoid repeating the field
+      name twice.</para>
+
       <informaltable frame="void">
         <tbody>
           <tr>
@@ -540,12 +725,13 @@ when
     acc : Account( $accountNo : accountNo )
     CashFlow( type == CREDIT,
               accountNo == $accountNo,
-              date >= ap.start &amp;&amp; &lt;= ap.end,
+              date &gt;= ap.start &amp;&amp; &lt;= ap.end,
               $ammount : ammount )
 then
     acc.balance  += $amount;
 end</programlisting>
             </td>
+
             <td align="left" valign="top">
               <programlisting>rule “decrease balance for AccountPeriod Debits” 
 when 
@@ -553,7 +739,7 @@ when
     acc : Account( $accountNo : accountNo ) 
     CashFlow( type == DEBIT, 
               accountNo == $accountNo,
-              date >= ap.start &amp;&amp; &lt;= ap.end, 
+              date &gt;= ap.start &amp;&amp; &lt;= ap.end, 
               $ammount : ammount ) 
 then 
     acc.balance -= $amount; 
@@ -562,26 +748,33 @@ end</programlisting>
           </tr>
         </tbody>
       </informaltable>
-      <para>If the AccountPeriod is set to the first quarter we constraint the “increase balance for
-        AccountPeriod Credits” to two rows of data and “decrease balance for AccountPeriod Debits”
-        to one row of data.</para>
-      <table border="0px">
+
+      <para>If the AccountPeriod is set to the first quarter we constraint the
+      “increase balance for AccountPeriod Credits” to two rows of data and
+      “decrease balance for AccountPeriod Debits” to one row of data.</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="2" align="left">AccountPeriod</th>
+                    <th align="left" colspan="2">AccountPeriod</th>
                   </tr>
+
                   <tr align="center">
                     <th>start</th>
+
                     <th>end</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>01-jan-09</td>
+
                     <td>31-mar-09</td>
                   </tr>
                 </tbody>
@@ -590,51 +783,70 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <table border="0px">
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="3" align="left">Cashflow</th>
+                    <th align="left" colspan="3">Cashflow</th>
                   </tr>
+
                   <tr align="center">
                     <th>date</th>
+
                     <th>amount</th>
+
                     <th>type</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>12-jan-09</td>
+
                     <td>100</td>
+
                     <td>CREDIT</td>
                   </tr>
+
                   <tr>
                     <td>09-mar-09</td>
+
                     <td>75</td>
+
                     <td>CREDIT</td>
                   </tr>
                 </tbody>
               </table>
             </td>
+
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="3" align="left">Cashflow</th>
+                    <th align="left" colspan="3">Cashflow</th>
                   </tr>
+
                   <tr align="center">
                     <th>date</th>
+
                     <th>amount</th>
+
                     <th>type</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>02-feb-09</td>
+
                     <td>200</td>
+
                     <td>DEBIT</td>
                   </tr>
                 </tbody>
@@ -643,35 +855,47 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <para>The two Cashflow tables above represent the matched data for the two rules, the data is
-        matched during the insertion stage and as you found in the previous chapter does not fire
-        straight away, until fireAllRules() is called. Intstead the rule plus it's matched data is
-        placed on the Agenda and referred to as an Activation. The Agenda is a table of Activations
-        that are able to fire and have their consequences executed, when fireAllRules() is called.
-        Each of the Activations on the Agneda are executed in turn. Notice that the order of
-        execution so far is considered arbitrary.</para>
-      <table border="0px">
+
+      <para>The two Cashflow tables above represent the matched data for the
+      two rules, the data is matched during the insertion stage and as you
+      found in the previous chapter does not fire straight away, until
+      fireAllRules() is called. Intstead the rule plus it's matched data is
+      placed on the Agenda and referred to as an Activation. The Agenda is a
+      table of Activations that are able to fire and have their consequences
+      executed, when fireAllRules() is called. Each of the Activations on the
+      Agneda are executed in turn. Notice that the order of execution so far
+      is considered arbitrary.</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="3" align="left">Agenda</th>
+                    <th align="left" colspan="3">Agenda</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>1</td>
+
                     <td>increase balance</td>
+
                     <td rowspan="3">arbitrary</td>
                   </tr>
+
                   <tr>
                     <td>2</td>
+
                     <td>decrease balance</td>
                   </tr>
+
                   <tr>
                     <td>3</td>
+
                     <td>increase balance</td>
                   </tr>
                 </tbody>
@@ -680,24 +904,32 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <para>After each of the above activations are fired, the Account has a balance of -25.</para>
-      <table border="0px">
+
+      <para>After each of the above activations are fired, the Account has a
+      balance of -25.</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="2" align="left">Account</th>
+                    <th align="left" colspan="2">Account</th>
                   </tr>
+
                   <tr align="center">
                     <th>accountNo</th>
+
                     <th>balance</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>1</td>
+
                     <td>-25</td>
                   </tr>
                 </tbody>
@@ -706,25 +938,33 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <para>If the AccountPeriod is updated to Q2, we have just a single matched row of data, and
-        thus just a single Activation on the Agenda.</para>
-      <table border="0px">
+
+      <para>If the AccountPeriod is updated to Q2, we have just a single
+      matched row of data, and thus just a single Activation on the
+      Agenda.</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="2" align="left">AccountPeriod</th>
+                    <th align="left" colspan="2">AccountPeriod</th>
                   </tr>
+
                   <tr align="center">
                     <th>start</th>
+
                     <th>end</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>01-apr-09</td>
+
                     <td>30-jun-09</td>
                   </tr>
                 </tbody>
@@ -733,47 +973,63 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <table border="0px">
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="3" align="left">Cashflow</th>
+                    <th align="left" colspan="3">Cashflow</th>
                   </tr>
+
                   <tr align="center">
                     <th>date</th>
+
                     <th>amount</th>
+
                     <th>type</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>18-may-09</td>
+
                     <td>50</td>
+
                     <td>CREDIT</td>
                   </tr>
                 </tbody>
               </table>
             </td>
+
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="3" align="left">Cashflow</th>
+                    <th align="left" colspan="3">Cashflow</th>
                   </tr>
+
                   <tr align="center">
                     <th>date</th>
+
                     <th>amount</th>
+
                     <th>type</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
-                    <td/>
-                    <td/>
-                    <td/>
+                    <td />
+
+                    <td />
+
+                    <td />
                   </tr>
                 </tbody>
               </table>
@@ -781,24 +1037,31 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
+
       <para>The firing of that Activation results in a balance of 50.</para>
-      <table border="0px">
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="2" align="left">Account</th>
+                    <th align="left" colspan="2">Account</th>
                   </tr>
+
                   <tr align="center">
                     <th>accountNo</th>
+
                     <th>balance</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>1</td>
+
                     <td>50</td>
                   </tr>
                 </tbody>
@@ -807,15 +1070,19 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <para>So what happens if you don't want the order of Activation execution to be arbitrary?
-        When there is one or more Activations on the Agenda they are said to be in conflict, and a
-        conflict resolver strategy is used to determine the order of execution. At the simplest
-        level the default strategy uses salience to determine rule priority. Each rule has a default
-        value of 0, the higher the value the higher the priority. To illustrate this a rule to print
-        the Account balance can be added, we want this rule to be executed after all the debit's and
-        credit's have been applied for this rule, by setting the rule to have a salience of below 0
-        we ensure it fires afterwards.</para>
-      <table border="0px">
+
+      <para>So what happens if you don't want the order of Activation
+      execution to be arbitrary? When there is one or more Activations on the
+      Agenda they are said to be in conflict, and a conflict resolver strategy
+      is used to determine the order of execution. At the simplest level the
+      default strategy uses salience to determine rule priority. Each rule has
+      a default value of 0, the higher the value the higher the priority. To
+      illustrate this a rule to print the Account balance can be added, we
+      want this rule to be executed after all the debit's and credit's have
+      been applied for this rule, by setting the rule to have a salience of
+      below 0 we ensure it fires afterwards.</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td>
@@ -831,36 +1098,50 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <para>The table below shows the resulting Agenda, the 3 debit and credit rules are shown to be
-        arbitrary order, while the print rule is shown to execute aftwards.</para>
-      <table border="0px">
+
+      <para>The table below shows the resulting Agenda, the 3 debit and credit
+      rules are shown to be arbitrary order, while the print rule is shown to
+      execute aftwards.</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
-              <table border="1" cellpadding="3" ccellspacing="0" style="border-style:solid; border-spacing:0; border-collapse:collapse">
+              <table border="1" ccellspacing="0" cellpadding="3"
+                     style="border-style:solid; border-spacing:0; border-collapse:collapse">
                 <thead>
                   <tr>
-                    <th colspan="3" align="left">Agenda</th>
+                    <th align="left" colspan="3">Agenda</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
                     <td>1</td>
+
                     <td>increase balance</td>
+
                     <td rowspan="3">arbitrary</td>
                   </tr>
+
                   <tr>
                     <td>2</td>
+
                     <td>decrease balance</td>
                   </tr>
+
                   <tr>
                     <td>3</td>
+
                     <td>increase balance</td>
                   </tr>
+
                   <tr>
                     <td>4</td>
+
                     <td>print balance</td>
-                    <td/>
+
+                    <td />
                   </tr>
                 </tbody>
               </table>
@@ -868,44 +1149,58 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
-      <para>Earlier we showed how rules would equate to SQL, which can often be helpful for people
-        with an SQL background when understanding rules. The two ruels above can be represented with
-        two views and a trigger for each view, as below:</para>
-      <table border="0px">
+
+      <para>Earlier we showed how rules would equate to SQL, which can often
+      be helpful for people with an SQL background when understanding rules.
+      The two ruels above can be represented with two views and a trigger for
+      each view, as below:</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
               <programlisting>select * from Account acc, Cashflow cf, AccountPeriod ap      
 where acc.accountNo == cf.accountNo and 
-      cf.type == CREDIT cf.date >= ap.start and 
+      cf.type == CREDIT cf.date &gt;= ap.start and 
       cf.date &lt;= ap.end</programlisting>
             </td>
+
             <td align="left" valign="top">
               <programlisting>select * from Account acc, Cashflow cf, AccountPeriod ap 
 where acc.accountNo == cf.accountNo and 
-      cf.type == DEBIT cf.date >= ap.start and 
+      cf.type == DEBIT cf.date &gt;= ap.start and 
       cf.date &lt;= ap.end</programlisting>
             </td>
           </tr>
+
           <tr>
             <td align="left" valign="top">
               <programlisting>trigger : acc.balance += cf.amount</programlisting>
             </td>
+
             <td align="left" valign="top">
               <programlisting>trigger : acc.balance -= cf.amount</programlisting>
             </td>
           </tr>
         </tbody>
       </table>
-      <para>Drools also features ruleflow-group attributes which allows workflow diagrams to
-        declaratively specify when rules are allowed to fire. The screenshot below is taken from
-        Eclipse using the Drools plugin. It has two ruleflow-group nodes that ensures the
-        calculation rules are executed before the reporting rules.</para>
+
+      <para>Drools also features ruleflow-group attributes which allows
+      workflow diagrams to declaratively specify when rules are allowed to
+      fire. The screenshot below is taken from Eclipse using the Drools
+      plugin. It has two ruleflow-group nodes that ensures the calculation
+      rules are executed before the reporting rules.</para>
+
       <mediaobject>
-        <imageobject><imagedata fileref="images/Chapter-Quick_Start/ruleflow.png"/></imageobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Quick_Start/ruleflow.png" />
+        </imageobject>
       </mediaobject>
-      <para>The use of the ruleflow-group attribute in a rule is shown below.</para>
-      <table border="0px">
+
+      <para>The use of the ruleflow-group attribute in a rule is shown
+      below.</para>
+
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
@@ -916,12 +1211,13 @@ when
     acc : Account( $accountNo : accountNo )
     CashFlow( type == CREDIT,
               accountNo == $accountNo,
-              date >= ap.start &amp;&amp; &lt;= ap.end,
+              date &gt;= ap.start &amp;&amp; &lt;= ap.end,
               $ammount : ammount )
 then
     acc.balance  += $amount;
 end</programlisting>
             </td>
+
             <td align="left" valign="top">
               <programlisting>rule “Print blance for AccountPeriod”
         ruleflow-group “report”
@@ -935,6 +1231,106 @@ end</programlisting>
           </tr>
         </tbody>
       </table>
+    </section>
+  </section>
+
+  <section>
+    <title></title>
+
+    <para></para>
+
+    <section>
+      <title>KnowledgeBase by Configuration using Changesets</title>
+
+      <para>The programmatic api has been used so far to build a
+      KnowledgeBase, quite often it's more desirable to this via
+      configuration. To facilitate this drools supports the changeset.xml
+      which contains a list of resources, it's recursive so it can actually
+      also point to other changeset.xml. Currently the changeset has a single
+      "add" element, support for remove and modify will be added in the future
+      for more powerful incremental changes over time. There is currently no
+      XSD for the xml, we hope to add one soon, so a few examples will be
+      shown to give the jist of things. A resource approach is used that uses
+      a prefix of the used protocol, it supports all the protocolols provided
+      by java.net.URL, such as file" and "http", as well as an additional
+      "classpath". Currently the type attribute must always be specified for a
+      resource, it is not inferred from the file name extension. Here is a
+      simple example that points to a http location for some rules.</para>
+
+      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+   &lt;add&gt;
+       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+
+      <para>To use the above xml the code is almost identical as before,
+      except we change the ResourceType to CHANGE_SET.</para>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newClasspathResource( "myChangeSet.xml", getClass() ),
+              ResourceType.CHANGE_SET );
+if ( kbuilder.hasErrors() ) {
+    System.err.println( builder.getErrors().toString() );
+}  </programlisting>
+
+      <para>Change sets can include any number of resources and even supports
+      additional configuration information, which currently is only needed for
+      decision tables. Below the example is expanded to load the rules from a
+      http url location and an excel decision table from the classpath.</para>
+
+      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+  &lt;add&gt;
+       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
+       &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
+           &lt;decisiontable-conf input-type="XLS" worksheet-name="Tables_2" /&gt;
+       &lt;/resource&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+
+      <para>It is also possible to specify a directory, where the contents of
+      that directory will be added, it is expected that all the contents are
+      of the type specified, type is not yet inferred from file name
+      extensions.</para>
+
+      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+  &lt;add&gt;
+       &lt;resource source='file://myfolder/' type='DRL' /&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+    </section>
+
+    <section>
+      <title>Knowledge Agent</title>
+
+      <para>The KnowlegeAgent provides automatic loading, caching and
+      re-loading, of resources and is configured from a properties files. The
+      KnowledgeAgent can update or rebuild this KnowlegeBase as the resources
+      it uses are changed. The strategy for this is determined by the
+      configuration given to the factory, but it is typically pull based using
+      regular polling. We hope to add push based updates and rebuilds in
+      future versions. </para>
+
+      <programlisting>KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
+KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
+
+      <para>The KnowledgeAgent will continously scan all the added resources,
+      using a default polling of 60s, and if their last modified date is
+      updated it will rebuild the cached KnowledgeBase using the new
+      resources. Note the previous KnowledgeBase reference will still exist
+      and you'll have to call getKnowledgeBase() to accessly the newly built
+      KnowledgeBase. If a directory is specified as part of the change set,
+      the entire contents of that directory will be scanned for
+      changes.</para>
     </section>
   </section>
 </chapter>
