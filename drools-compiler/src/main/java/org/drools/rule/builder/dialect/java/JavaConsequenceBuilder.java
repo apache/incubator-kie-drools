@@ -234,6 +234,16 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
             return;
         }
+        
+        if ( d.getEnd() <= 0 ) {
+            // not correctly parse
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          context.getRuleDescr(),
+                                                          originalCode,
+                                                          "Incorrect syntax for expression: " + d.getModifyExpression() + "\n" ) );
+
+            return;
+        }        
         String retString = ClassUtils.canonicalName( ret );
 
         // adding modify expression
@@ -246,7 +256,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         consequence.append( "; " );
         // adding the modifyRetract call:
         consequence.append( "modifyRetract( __obj__ ); " );
-
+        
         // the following is a hack to preserve line breaks.
         String originalBlock = originalCode.substring( d.getStart() - 1,
                                                        d.getEnd() );

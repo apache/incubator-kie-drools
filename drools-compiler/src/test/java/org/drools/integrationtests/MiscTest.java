@@ -512,6 +512,56 @@ public class MiscTest extends TestCase {
         }
         assertTrue( kbuilder.hasErrors() );
     }    
+    
+    public void testInvalidModify1() throws Exception {
+        String str = "";
+        str += "package org.drools \n";
+        str += "import org.drools.Person\n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    no-loop \n";
+        str += "when \n";
+        str += "    $i : Cheese() \n";
+        str += "then \n";
+        str += "    modify( $i ); ";
+        str += "    list.add( $i ); \n";
+        str += "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.err.println( kbuilder.getErrors() );
+        }
+        assertTrue( kbuilder.hasErrors() );
+    }     
+    
+    public void testInvalidModify2() throws Exception {
+        String str = "";
+        str += "package org.drools \n";
+        str += "import org.drools.Person\n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    no-loop \n";
+        str += "when \n";
+        str += "    $i : Cheese() \n";
+        str += "then \n";
+        str += "    modify( $i ) { setType( \"stilton\" ); setType( \"stilton\" );}; ";
+        str += "    list.add( $i ); \n";
+        str += "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.err.println( kbuilder.getErrors() );
+        }
+        assertTrue( kbuilder.hasErrors() );
+    }     
 
     public void testIncrementOperator() throws Exception {
         String str = "";
