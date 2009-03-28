@@ -86,7 +86,6 @@ public class SessionInfo {
     @PreUpdate 
     public void update() {
         // we always increase the last modification date for each action, so we know there will be an update
-        System.out.println( "pre persist/update event" );
         byte[] newByteArray = this.helper.getSnapshot();
         if ( !Arrays.equals( newByteArray,
                              this.rulesByteArray ) ) {

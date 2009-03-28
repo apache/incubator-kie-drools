@@ -43,7 +43,8 @@ public class JPAProcessInstanceManager
             return null;
         }
         processInstanceInfo.updateLastReadDate();
-        ProcessInstance processInstance = (ProcessInstance) processInstanceInfo.getProcessInstance();
+        ProcessInstance processInstance = (ProcessInstance)
+        	processInstanceInfo.getProcessInstance(workingMemory);
         Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess( processInstance.getProcessId() );
         if ( process == null ) {
             throw new IllegalArgumentException( "Could not find process " + processInstance.getProcessId() );

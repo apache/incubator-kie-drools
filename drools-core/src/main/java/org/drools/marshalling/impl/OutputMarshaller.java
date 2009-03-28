@@ -28,11 +28,8 @@ import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.process.core.context.swimlane.SwimlaneContext;
-import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
-import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.process.instance.timer.TimerInstance;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaNode;
@@ -49,8 +46,6 @@ import org.drools.reteoo.CollectNode.CollectContext;
 import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -58,15 +53,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
-import org.drools.workflow.instance.node.CompositeContextNodeInstance;
-import org.drools.workflow.instance.node.ForEachNodeInstance;
-import org.drools.workflow.instance.node.HumanTaskNodeInstance;
-import org.drools.workflow.instance.node.JoinInstance;
-import org.drools.workflow.instance.node.MilestoneNodeInstance;
-import org.drools.workflow.instance.node.RuleSetNodeInstance;
-import org.drools.workflow.instance.node.SubProcessNodeInstance;
-import org.drools.workflow.instance.node.TimerNodeInstance;
-import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
 public class OutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
@@ -744,164 +730,13 @@ public class OutputMarshaller {
                               }
                           } );
         for ( org.drools.runtime.process.ProcessInstance processInstance : processInstances ) {
-            stream.writeShort( PersisterEnums.PROCESS_INSTANCE );
-            writeProcessInstance( context,
-                                  (RuleFlowProcessInstance) processInstance );
+            stream.writeShort(PersisterEnums.PROCESS_INSTANCE);
+            String processType = ((ProcessInstanceImpl) processInstance).getProcess().getType();
+            stream.writeUTF(processType);
+            ProcessMarshallerRegistry.INSTANCE.getMarshaller(processType)
+            	.writeProcessInstance(context, processInstance);
         }
         stream.writeShort( PersisterEnums.END );
-    }
-
-    public static void writeProcessInstance(MarshallerWriteContext context,
-                                            RuleFlowProcessInstance processInstance) throws IOException {
-        ObjectOutputStream stream = context.stream;
-        stream.writeLong( processInstance.getId() );
-        stream.writeUTF( processInstance.getProcessId() );
-        stream.writeInt( processInstance.getState() );
-        stream.writeLong( processInstance.getNodeInstanceCounter() );
-
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
-        Map<String, Object> variables = variableScopeInstance.getVariables();
-        List<String> keys = new ArrayList<String>( variables.keySet() );
-        Collections.sort( keys,
-                          new Comparator<String>() {
-                              public int compare(String o1,
-                                                 String o2) {
-                                  return o1.compareTo( o2 );
-                              }
-                          } );
-        stream.writeInt( keys.size() );
-        for ( String key : keys ) {
-            stream.writeUTF( key );
-            stream.writeObject( variables.get( key ) );
-        }
-
-        SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) processInstance.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
-        Map<String, String> swimlaneActors = swimlaneContextInstance.getSwimlaneActors();
-        stream.writeInt( swimlaneActors.size() );
-        for ( Map.Entry<String, String> entry : swimlaneActors.entrySet() ) {
-            stream.writeUTF( entry.getKey() );
-            stream.writeUTF( entry.getValue() );
-        }
-
-        List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( processInstance.getNodeInstances() );
-        Collections.sort( nodeInstances,
-                          new Comparator<NodeInstance>() {
-                              public int compare(NodeInstance o1,
-                                                 NodeInstance o2) {
-                                  return (int) (o1.getId() - o2.getId());
-                              }
-                          } );
-        for ( NodeInstance nodeInstance : nodeInstances ) {
-            stream.writeShort( PersisterEnums.NODE_INSTANCE );
-            writeNodeInstance( context,
-                               nodeInstance );
-        }
-        stream.writeShort( PersisterEnums.END );
-    }
-
-    public static void writeNodeInstance(MarshallerWriteContext context,
-                                         NodeInstance nodeInstance) throws IOException {
-        ObjectOutputStream stream = context.stream;
-        stream.writeLong( nodeInstance.getId() );
-        stream.writeLong( nodeInstance.getNodeId() );
-        if ( nodeInstance instanceof RuleSetNodeInstance ) {
-            stream.writeShort( PersisterEnums.RULE_SET_NODE_INSTANCE );
-        } else if ( nodeInstance instanceof HumanTaskNodeInstance ) {
-            stream.writeShort( PersisterEnums.HUMAN_TASK_NODE_INSTANCE );
-            stream.writeLong( ((HumanTaskNodeInstance) nodeInstance).getWorkItem().getId() );
-        } else if ( nodeInstance instanceof WorkItemNodeInstance ) {
-            stream.writeShort( PersisterEnums.WORK_ITEM_NODE_INSTANCE );
-            stream.writeLong( ((WorkItemNodeInstance) nodeInstance).getWorkItem().getId() );
-        } else if ( nodeInstance instanceof SubProcessNodeInstance ) {
-            stream.writeShort( PersisterEnums.SUB_PROCESS_NODE_INSTANCE );
-            stream.writeLong( ((SubProcessNodeInstance) nodeInstance).getProcessInstanceId() );
-        } else if ( nodeInstance instanceof MilestoneNodeInstance ) {
-            stream.writeShort( PersisterEnums.MILESTONE_NODE_INSTANCE );
-            List<Long> timerInstances = 
-            	((MilestoneNodeInstance) nodeInstance).getTimerInstances();
-            if (timerInstances != null) {
-            	stream.writeInt(timerInstances.size());
-            	for (Long id: timerInstances) {
-            		stream.writeLong(id);
-            	}
-            } else {
-            	stream.writeInt(0);
-            }
-        } else if ( nodeInstance instanceof TimerNodeInstance ) {
-            stream.writeShort( PersisterEnums.TIMER_NODE_INSTANCE );
-            stream.writeLong( ((TimerNodeInstance) nodeInstance).getTimerId() );
-        } else if ( nodeInstance instanceof JoinInstance ) {
-            stream.writeShort( PersisterEnums.JOIN_NODE_INSTANCE );
-            Map<Long, Integer> triggers = ((JoinInstance) nodeInstance).getTriggers();
-            stream.writeInt( triggers.size() );
-            List<Long> keys = new ArrayList<Long>( triggers.keySet() );
-            Collections.sort( keys,
-                              new Comparator<Long>() {
-                                  public int compare(Long o1,
-                                                     Long o2) {
-                                      return o1.compareTo( o2 );
-                                  }
-                              } );
-            for ( Long key : keys ) {
-                stream.writeLong( key );
-                stream.writeInt( triggers.get( key ) );
-            }
-        } else if ( nodeInstance instanceof CompositeContextNodeInstance ) {
-            stream.writeShort( PersisterEnums.COMPOSITE_NODE_INSTANCE );
-            CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) compositeNodeInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
-            Map<String, Object> variables = variableScopeInstance.getVariables();
-            List<String> keys = new ArrayList<String>( variables.keySet() );
-            Collections.sort( keys,
-                              new Comparator<String>() {
-                                  public int compare(String o1,
-                                                     String o2) {
-                                      return o1.compareTo( o2 );
-                                  }
-                              } );
-            stream.writeInt( keys.size() );
-            for ( String key : keys ) {
-                stream.writeUTF( key );
-                stream.writeObject( variables.get( key ) );
-            }
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( compositeNodeInstance.getNodeInstances() );
-            Collections.sort( nodeInstances,
-                              new Comparator<NodeInstance>() {
-                                  public int compare(NodeInstance o1,
-                                                     NodeInstance o2) {
-                                      return (int) (o1.getId() - o2.getId());
-                                  }
-                              } );
-            for ( NodeInstance subNodeInstance : nodeInstances ) {
-                stream.writeShort( PersisterEnums.NODE_INSTANCE );
-                writeNodeInstance( context,
-                                   subNodeInstance );
-            }
-            stream.writeShort( PersisterEnums.END );
-        } else if ( nodeInstance instanceof ForEachNodeInstance ) {
-            stream.writeShort( PersisterEnums.FOR_EACH_NODE_INSTANCE );
-            ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) nodeInstance;
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( forEachNodeInstance.getNodeInstances() );
-            Collections.sort( nodeInstances,
-                              new Comparator<NodeInstance>() {
-                                  public int compare(NodeInstance o1,
-                                                     NodeInstance o2) {
-                                      return (int) (o1.getId() - o2.getId());
-                                  }
-                              } );
-            for ( NodeInstance subNodeInstance : nodeInstances ) {
-                if ( subNodeInstance instanceof CompositeContextNodeInstance ) {
-                    stream.writeShort( PersisterEnums.NODE_INSTANCE );
-                    writeNodeInstance( context,
-                                       subNodeInstance );
-                }
-            }
-            stream.writeShort( PersisterEnums.END );
-        } else {
-            // TODO ForEachNodeInstance
-            // TODO timer manager
-            throw new IllegalArgumentException( "Unknown node instance type: " + nodeInstance );
-        }
     }
 
     public static void writeWorkItems(MarshallerWriteContext context) throws IOException {
