@@ -20,15 +20,15 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProcessInstanceMarshaller;
 import org.drools.marshalling.impl.ProcessMarshallerRegistry;
-import org.drools.marshalling.impl.RuleFlowProcessInstanceMarshaller;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.runtime.process.ProcessInstance;
-import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.hibernate.annotations.CollectionOfElements;
 
 @Entity
@@ -94,13 +94,14 @@ public class ProcessInstanceInfo {
         return state;
     }
 
-    public ProcessInstance getProcessInstance() {
+    public ProcessInstance getProcessInstance(WorkingMemory workingMemory) {
         if (processInstance == null) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream(
                         processInstanceByteArray);
                 MarshallerReaderContext context = new MarshallerReaderContext(
-                        bais, null, null, null);
+                        bais, (InternalRuleBase) workingMemory.getRuleBase(), null, null);
+                context.wm = (InternalWorkingMemory) workingMemory;
                 ProcessInstanceMarshaller marshaller = getMarshallerFromContext(context);
                 processInstance = marshaller.readProcessInstance(context);
                 context.close();

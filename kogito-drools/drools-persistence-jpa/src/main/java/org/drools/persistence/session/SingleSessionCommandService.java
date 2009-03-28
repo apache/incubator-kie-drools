@@ -152,7 +152,7 @@ public class SingleSessionCommandService
                 if ( ut != null ) {
                     ut.rollback();
                 }
-                throw new RuntimeException( "Could insert session data",
+                throw new RuntimeException( "Could not find session data for id " + sessionId,
                                             t1 );
             } catch ( Throwable t2 ) {
                 throw new RuntimeException( "Could not rollback transaction",
