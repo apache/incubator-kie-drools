@@ -18,15 +18,12 @@ package org.drools.reteoo;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -154,7 +151,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         // always add the default entry point
         EntryPointNode epn = new EntryPointNode( this.reteooBuilder.getIdGenerator().getNextId(),
                                                  RuleBasePartitionId.MAIN_PARTITION,
-                                                 this.config.isMultithreadEvaluation(),
+                                                 this.getConfig().isMultithreadEvaluation(),
                                                  this.rete,
                                                  EntryPoint.DEFAULT );
         epn.attach();
@@ -277,8 +274,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
     
                 if ( keepReference ) {
                     super.addStatefulSession( session );
-                    for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
-                        addEventListener( (RuleBaseEventListener) it.next() );
+                    for (Object listener : session.getRuleBaseUpdateListeners()) {
+                        addEventListener((RuleBaseEventListener) listener);
                     }
                 }
     
@@ -292,8 +289,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
             try {
                 stream.close();
             } catch ( IOException e ) {
-                new RuntimeException( "Unable to close stream",
-                                      e );
+                throw new RuntimeException( "Unable to close stream", e );
             }
         }
         return session;
@@ -312,16 +308,16 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                    environment );
     }
 
-    public StatefulSession newStatefulSession(int id,
+    StatefulSession newStatefulSession(int id,
                                               final SessionConfiguration sessionConfig,
                                               final Environment environment) {
-        if ( this.config.isSequential() ) {
+        if ( this.getConfig().isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
-        ReteooStatefulSession session = null;
+        ReteooStatefulSession session  ;
 
         synchronized ( this.pkgs ) {
-            ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );;
+            ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.getConfig().getExecutorService() );
             session = new ReteooStatefulSession( id,
                                                  this,
                                                  executor,
@@ -332,8 +328,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
             if ( sessionConfig.isKeepReference() ) {
                 super.addStatefulSession( session );
-                for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
-                    addEventListener( (RuleBaseEventListener) it.next() );
+                for (Object listener : session.getRuleBaseUpdateListeners()) {
+                    addEventListener((RuleBaseEventListener) listener);
                 }
             }
 
@@ -441,7 +437,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public StatelessSession newStatelessSession() {
 
         //orders the rules
-        if ( this.config.isSequential() ) {
+        if ( this.getConfig().isSequential() ) {
             this.reteooBuilder.order();
         }
 
@@ -470,7 +466,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public void addPackages(Collection<Package> pkgs) {
         super.addPackages( pkgs );
-        if ( this.config.isSequential() ) {
+        if ( this.getConfig().isSequential() ) {
             this.reteooBuilder.setOrdered( false );
         }        
     }
@@ -479,7 +475,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         List<Package> list = new ArrayList<Package>();
         list.add( newPkg );
         super.addPackages( list );
-        if ( this.config.isSequential() ) {
+        if ( this.getConfig().isSequential() ) {
             this.reteooBuilder.setOrdered( false );
         }
     }
