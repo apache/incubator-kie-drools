@@ -126,7 +126,7 @@ public class UrlResource extends BaseResource
                 if ( conn instanceof HttpURLConnection ) {
                     ((HttpURLConnection) conn).setRequestMethod( "HEAD" );
                 }
-                long date = conn.getLastModified();
+                long date =  conn.getHeaderFieldDate("Last-Modified", 0); //conn.getLastModified(); to keep mic happy :)
                 return date;
             }
         } catch ( IOException e ) {

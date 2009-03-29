@@ -25,30 +25,28 @@ public class ResourceChangeScannerImpl
     private Map<Resource, Set<ResourceChangeNotifier>> resources;
     private Set<Resource>                              directories;
     private SystemEventListener                        listener;
+    private int                                        interval;
 
     public ResourceChangeScannerImpl() {
         this.listener = SystemEventListenerFactory.getSystemEventListener();
         this.resources = new HashMap<Resource, Set<ResourceChangeNotifier>>();
         this.directories = new HashSet<Resource>();
-        this.scannerScheduler = new ProcessChangeSet( this.resources,
-                                                      this,
-                                                      this.listener );
-        setInterval( 60 );
+        this.interval = 60;
         this.listener.info( "ResourceChangeScanner created with default interval=60" );
     }
-    
+
     public void setSystemEventListener(SystemEventListener listener) {
         this.listener = listener;
-    }    
+    }
 
     public void configure(ResourceChangeScannerConfiguration configuration) {
-        setInterval( ((ResourceChangeScannerConfigurationImpl) configuration).getInterval() );
-        this.listener.info( "ResourceChangeScanner reconfigured with interval=" + ( getInterval() ) );
-        
+        this.interval = ((ResourceChangeScannerConfigurationImpl) configuration).getInterval();
+        this.listener.info( "ResourceChangeScanner reconfigured with interval=" + getInterval() );
+
         // restart it if it's already running.
-        if ( this.scannerScheduler.isRunning() ) {
+        if ( this.scannerScheduler != null && this.scannerScheduler.isRunning() ) {
             stop();
-            start();           
+            start();
         }
     }
 
@@ -194,24 +192,34 @@ public class ResourceChangeScannerImpl
     }
 
     public void setInterval(int interval) {
-        this.scannerScheduler.setInterval( interval );
-    }
+        this.interval = interval;
+        this.listener.info( "ResourceChangeScanner reconfigured with interval=" + getInterval() );
 
-    public int getInterval() {
-        return this.scannerScheduler.getInterval();
-    }
-
-    public void start() {
-        if ( !this.scannerScheduler.isRunning() ) {
-            this.scannerScheduler.setScan( true );
-            thread = new Thread( this.scannerScheduler );
-            thread.start();
+        if ( this.scannerScheduler != null && this.scannerScheduler.isRunning() ) {
+            stop();
+            start();
         }
     }
 
+    public int getInterval() {
+        return this.interval;
+    }
+
+    public void start() {
+        this.scannerScheduler = new ProcessChangeSet( this.resources,
+                                                      this,
+                                                      this.listener,
+                                                      this.interval );
+        thread = new Thread( this.scannerScheduler );
+        thread.start();
+    }
+
     public void stop() {
-        this.scannerScheduler.setScan( false );
-        this.thread.interrupt();
+        if ( this.scannerScheduler != null && this.scannerScheduler.isRunning() ) {
+            this.scannerScheduler.stop();
+            this.thread.interrupt();
+            this.scannerScheduler = null;
+        }
     }
 
     public void reset() {
@@ -233,22 +241,21 @@ public class ResourceChangeScannerImpl
 
         ProcessChangeSet(Map<Resource, Set<ResourceChangeNotifier>> resources,
                          ResourceChangeScannerImpl scanner,
-                         SystemEventListener listener) {
+                         SystemEventListener listener,
+                         int interval) {
             this.resources = resources;
             this.scanner = scanner;
             this.listener = listener;
-        }
-
-        public void setInterval(long interval) {
             this.interval = interval;
+            this.scan = true;
         }
 
         public int getInterval() {
             return (int) this.interval;
         }
 
-        public void setScan(boolean scan) {
-            this.scan = scan;
+        public void stop() {
+            this.scan = false;
         }
 
         public boolean isRunning() {
@@ -263,7 +270,7 @@ public class ResourceChangeScannerImpl
                 while ( this.scan ) {
                     Exception exception = null;
                     //System.out.println( "BEFORE : sync this.resources" );
-                    synchronized ( this.resources ) {      
+                    synchronized ( this.resources ) {
                         //System.out.println( "DURING : sync this.resources" );
                         // lock the resources, as we don't want this modified while processing
                         this.scanner.scan();
@@ -275,10 +282,10 @@ public class ResourceChangeScannerImpl
                     } catch ( InterruptedException e ) {
                         exception = e;
                     }
-                    
-                    if ( this.scan && exception != null) {
-                        this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted, but shutdown was not scheduled",
-                                                                       exception ) );                        
+
+                    if ( this.scan && exception != null ) {
+                        this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted, but shutdown was not requested",
+                                                                       exception ) );
                     }
                 }
                 this.listener.info( "ResourceChangeNotification scanner has stopped" );
