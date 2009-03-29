@@ -171,7 +171,7 @@ public class ReteooBuilder
             }
 
             ruleBase.getAgendaGroupRuleTotals().put( agendaGroup,
-                                                     new Integer( i ) );
+                    i );
         }
         ordered = true;
     }
@@ -221,7 +221,7 @@ public class ReteooBuilder
     }
 
     public BaseNode[] getTerminalNodes(final Rule rule) {
-        return (BaseNode[]) this.rules.get( rule );
+        return this.rules.get( rule );
     }
 
     public void removeRule(final Rule rule) {
@@ -276,11 +276,11 @@ public class ReteooBuilder
             if ( id == null ) {
                 return this.nextId++;
             }
-            return id.intValue();
+            return id;
         }
 
         public void releaseId(int id) {
-            this.recycledIds.add( new Integer( id ) );
+            this.recycledIds.add(id );
         }
 
         public int getLastId() {
