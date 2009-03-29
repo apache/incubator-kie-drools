@@ -463,35 +463,28 @@ public class KnowledgeAgentImpl
     }
 
     public void monitorResourceChangeEvents(boolean monitor) {
-        if ( this.changeSetNotificationDetector == null ) {
-            if ( monitor ) {
-                // we are going to start the monitor, so initialise it
-                this.changeSetNotificationDetector = new ChangeSetNotificationDetector( this,
-                                                                                        this.queue,
-                                                                                        this.listener );
-            } else if ( this.changeSetNotificationDetector == null ) {
-                // do nothing, we aren't starting the monitor and the monitorResourceChangeEvents field is null
-                return;
-            }
+        
+        if ( !monitor && this.changeSetNotificationDetector != null) {
+            // we are running, but it wants to stop
+            // this will stop the thread
+            this.changeSetNotificationDetector.stop();
+            this.thread.interrupt();
+            this.changeSetNotificationDetector = null;
+        } else if ( monitor && this.changeSetNotificationDetector == null ) {
+            this.changeSetNotificationDetector = new ChangeSetNotificationDetector( this,
+                                                                                    this.queue,
+                                                                                    this.listener );
+            this.thread = new Thread( this.changeSetNotificationDetector );
+            this.thread.start();
         }
 
-        if ( !this.changeSetNotificationDetector.monitor && monitor ) {
-            // If the thread is not running and we are trying to start it, we must create a new Thread
-            this.thread = new Thread( this.changeSetNotificationDetector );
-            this.changeSetNotificationDetector.monitor = true;
-            this.thread.start();
-        } else {
-            // this will stop the thread
-            this.changeSetNotificationDetector.monitor = false;
-            this.thread.interrupt();
-        }
     }
 
     public static class ChangeSetNotificationDetector
         implements
         Runnable {
         private LinkedBlockingQueue<ChangeSet> queue;
-        public volatile boolean                monitor;
+        private volatile boolean                monitor;
         private KnowledgeAgentImpl             kagent;
         private SystemEventListener            listener;
 
@@ -501,6 +494,11 @@ public class KnowledgeAgentImpl
             this.queue = queue;
             this.kagent = kagent;
             this.listener = listener;
+            this.monitor = true;
+        }
+        
+        public void stop() {
+            this.monitor = false;
         }
 
         public void run() {
