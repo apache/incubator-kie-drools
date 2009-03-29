@@ -123,71 +123,74 @@ public class KnowledgeAgentImpl
 
     public void processChangeSet(ChangeSet changeSet,
                                  ChangeSetState changeSetState) {
-        for ( Resource resource : changeSet.getResourcesAdded() ) {
-            if ( ((InternalResource) resource).isDirectory() ) {
-                this.resourceDirectories.add( resource );
-                this.listener.debug( "KnowledgeAgent subscribing to directory=" + resource );
-                this.notifier.subscribeResourceChangeListener( this,
-                                                               resource );
-                // if it's a dir, subscribe it's children first
-                for ( Resource child : ((InternalResource) resource).listResources() ) {
-                    if ( ((InternalResource) child).isDirectory() ) {
-                        continue; // ignore sub directories
+        synchronized ( this.resources ) {
+            
+            for ( Resource resource : changeSet.getResourcesAdded() ) {
+                if ( ((InternalResource) resource).isDirectory() ) {
+                    this.resourceDirectories.add( resource );
+                    this.listener.debug( "KnowledgeAgent subscribing to directory=" + resource );
+                    this.notifier.subscribeResourceChangeListener( this,
+                                                                   resource );
+                    // if it's a dir, subscribe it's children first
+                    for ( Resource child : ((InternalResource) resource).listResources() ) {
+                        if ( ((InternalResource) child).isDirectory() ) {
+                            continue; // ignore sub directories
+                        }
+                        ((InternalResource) child).setResourceType( ((InternalResource) resource).getResourceType() );
+                        ResourceMapping mapping = this.resources.get( child );
+                        if ( mapping == null ) {
+                            this.listener.debug( "KnowledgeAgent subscribing to directory content resource=" + child );
+                            this.notifier.subscribeResourceChangeListener( this,
+                                                                           child );
+                            mapping = new ResourceMapping( child );
+                            this.resources.put( child,
+                                                mapping );
+                        }
                     }
-                    ((InternalResource) child).setResourceType( ((InternalResource) resource).getResourceType() );
-                    ResourceMapping mapping = this.resources.get( child );
+                } else {
+                    if ( ((InternalResource) resource).getResourceType() == ResourceType.PKG ) {
+                        changeSetState.pkgs.add( resource );
+                    } else if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
+                        // @TODO
+                        continue;
+                    }
+    
+                    ResourceMapping mapping = this.resources.get( resource );
                     if ( mapping == null ) {
-                        this.listener.debug( "KnowledgeAgent subscribing to directory content resource=" + child );
+                        this.listener.debug( "KnowledgeAgent subscribing to resource=" + resource );
                         this.notifier.subscribeResourceChangeListener( this,
-                                                                       child );
-                        mapping = new ResourceMapping( child );
-                        this.resources.put( child,
+                                                                       resource );
+                        mapping = new ResourceMapping( resource );
+                        this.resources.put( resource,
                                             mapping );
                     }
                 }
-            } else {
-                if ( ((InternalResource) resource).getResourceType() == ResourceType.PKG ) {
-                    changeSetState.pkgs.add( resource );
-                } else if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
-                    // @TODO
-                    continue;
-                }
-
-                ResourceMapping mapping = this.resources.get( resource );
-                if ( mapping == null ) {
-                    this.listener.debug( "KnowledgeAgent subscribing to resource=" + resource );
-                    this.notifier.subscribeResourceChangeListener( this,
-                                                                   resource );
-                    mapping = new ResourceMapping( resource );
-                    this.resources.put( resource,
-                                        mapping );
+            }
+    
+            for ( Resource resource : changeSet.getResourcesRemoved() ) {
+                if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
+                    processChangeSet( resource,
+                                      changeSetState );
+                } else if ( changeSetState.scanDirectories && ((InternalResource) resource).isDirectory() ) {
+                    this.listener.debug( "KnowledgeAgent unsubscribing from directory resource=" + resource );
+                    this.resourceDirectories.remove( resource );
+                    this.notifier.unsubscribeResourceChangeListener( this,
+                                                                     resource );
+                } else {
+                    this.listener.debug( "KnowledgeAgent unsubscribing from resource=" + resource );
+                    this.resources.remove( resource );
+                    this.notifier.unsubscribeResourceChangeListener( this,
+                                                                     resource );
                 }
             }
-        }
-
-        for ( Resource resource : changeSet.getResourcesRemoved() ) {
-            if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
-                processChangeSet( resource,
-                                  changeSetState );
-            } else if ( changeSetState.scanDirectories && ((InternalResource) resource).isDirectory() ) {
-                this.listener.debug( "KnowledgeAgent unsubscribing from directory resource=" + resource );
-                this.resourceDirectories.remove( resource );
-                this.notifier.unsubscribeResourceChangeListener( this,
-                                                                 resource );
-            } else {
-                this.listener.debug( "KnowledgeAgent unsubscribing from resource=" + resource );
-                this.resources.remove( resource );
-                this.notifier.unsubscribeResourceChangeListener( this,
-                                                                 resource );
-            }
-        }
-
-        // are we going to need kbuilder to build these resources?
-        for ( Resource resource : this.resources.keySet() ) {
-            this.listener.debug( "KnowledgeAgent ChangeSet requires KnowledgeBuilder" );
-            if ( ((InternalResource) resource).getResourceType() != ResourceType.CHANGE_SET && ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
-                changeSetState.needsKnowledgeBuilder = true;
-                break;
+    
+            // are we going to need kbuilder to build these resources?
+            for ( Resource resource : this.resources.keySet() ) {
+                this.listener.debug( "KnowledgeAgent ChangeSet requires KnowledgeBuilder" );
+                if ( ((InternalResource) resource).getResourceType() != ResourceType.CHANGE_SET && ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
+                    changeSetState.needsKnowledgeBuilder = true;
+                    break;
+                }
             }
         }
 

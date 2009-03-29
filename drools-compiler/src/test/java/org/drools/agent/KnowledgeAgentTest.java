@@ -7,10 +7,14 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import junit.framework.TestCase;
 
@@ -51,6 +55,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         server.start();
     }
+    
 
     protected void tearDown() throws Exception {
         fileManager.tearDown();
@@ -60,8 +65,6 @@ public class KnowledgeAgentTest extends TestCase {
         
         server.stop();
     }
-    
-    public void testDummy() {}
     
     public void  testModifyFileUrl() throws Exception {
         String rule1 = "";
@@ -73,7 +76,6 @@ public class KnowledgeAgentTest extends TestCase {
         rule1 += "list.add( drools.getRule().getName() );\n";
         rule1 += "end\n";
         File f1 = fileManager.newFile( "rule1.drl" );
-        f1.deleteOnExit();
         Writer output = new BufferedWriter( new FileWriter( f1 ) );
         output.write( rule1 );
         output.close();
@@ -87,7 +89,6 @@ public class KnowledgeAgentTest extends TestCase {
         rule2 += "list.add( drools.getRule().getName() );\n";
         rule2 += "end\n";
         File f2 = fileManager.newFile( "rule2.drl" );
-        f2.deleteOnExit();
         output = new BufferedWriter( new FileWriter( f2 ) );
         output.write( rule2 );
         output.close();
@@ -102,7 +103,6 @@ public class KnowledgeAgentTest extends TestCase {
         xml += "    </add> ";
         xml += "</change-set>";
         File fxml = fileManager.newFile( "changeset.xml" );
-        fxml.deleteOnExit();
         output = new BufferedWriter( new FileWriter( fxml ) );
         output.write( xml );
         output.close();
@@ -210,7 +210,6 @@ public class KnowledgeAgentTest extends TestCase {
         xml += "    </add> ";
         xml += "</change-set>";
         File fxml = fileManager.newFile( "changeset.xml" );
-        fxml.deleteOnExit();
         Writer output = new BufferedWriter( new FileWriter( fxml ) );
         output.write( xml );
         output.close();
@@ -443,7 +442,6 @@ public class KnowledgeAgentTest extends TestCase {
         xml += "    </add> ";
         xml += "</change-set>";
         File fxml = fileManager.newFile( "changeset.xml" );
-        fxml.deleteOnExit();
         Writer output = new BufferedWriter( new FileWriter( fxml ) );
         output.write( xml );
         output.close();
@@ -494,7 +492,6 @@ public class KnowledgeAgentTest extends TestCase {
         rule1 += "list.add( drools.getRule().getName() );\n";
         rule1 += "end\n";
         File f1 = fileManager.newFile( "rule1.drl" );
-        f1.deleteOnExit();
         Writer output = new BufferedWriter( new FileWriter( f1 ) );
         output.write( rule1 );
         output.close();
@@ -508,7 +505,6 @@ public class KnowledgeAgentTest extends TestCase {
         rule2 += "list.add( drools.getRule().getName() );\n";
         rule2 += "end\n";
         File f2 = fileManager.newFile( "rule2.drl" );
-        f2.deleteOnExit();
         output = new BufferedWriter( new FileWriter( f2 ) );
         output.write( rule2 );
         output.close();
@@ -523,7 +519,6 @@ public class KnowledgeAgentTest extends TestCase {
         xml += "    </add> ";
         xml += "</change-set>";
         File fxml = fileManager.newFile( "changeset.xml" );
-        fxml.deleteOnExit();
         output = new BufferedWriter( new FileWriter( fxml ) );
         output.write( xml );
         output.close();
