@@ -21,10 +21,10 @@ import java.util.List;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
-import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
+import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleTerminalNode;
@@ -105,7 +105,7 @@ public class ReteooRuleBuilder {
             context.setRule( rule );
             
             // if running in STREAM mode, calculate temporal distance for events
-            if( EventProcessingMode.STREAM.equals( rulebase.getConfiguration().getEventProcessingMode() ) ) {
+            if( EventProcessingOption.STREAM.equals( rulebase.getConfiguration().getEventProcessingMode() ) ) {
                 TemporalDependencyMatrix temporal = this.utils.calculateTemporalDistance( subrules[i] );
                 context.setTemporalDistance( temporal );
             }

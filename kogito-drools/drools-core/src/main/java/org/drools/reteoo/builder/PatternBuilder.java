@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
@@ -164,7 +164,7 @@ public class PatternBuilder
             } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
                 betaConstraints.add( constraint );
                 if( isNegative && 
-                    context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingMode.STREAM && 
+                    context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && 
                     pattern.getObjectType().isEvent() && 
                     constraint.isTemporal() ) {
                     checkDelaying( context, constraint );
@@ -271,7 +271,7 @@ public class PatternBuilder
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );
-        if( objectType.isEvent() && EventProcessingMode.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
+        if( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
             long expirationOffset = 0;
             for( TypeDeclaration type : context.getRuleBase().getTypeDeclarations() ) {
                 if( type.getObjectType().isAssignableFrom( objectType ) ) {

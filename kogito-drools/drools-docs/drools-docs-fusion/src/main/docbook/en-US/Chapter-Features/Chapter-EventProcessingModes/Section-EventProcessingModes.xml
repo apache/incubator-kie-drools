@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>Event Processing Modes</title>	
-	
-	<xi:include href="Section-EventProcessingModes_CloudMode.xml" />
-	
-	<xi:include href="Section-EventProcessingModes_StreamMode.xml" />
-		
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Event Processing Modes</title>
+
+  <para>Rules engines in general have a well known way of processing data and
+  rules and provide the application with the results. Also, there is not many
+  requirements on how facts should be presented to the rules engine, specially
+  because in general, the processing itself is time independent. That is a
+  good assumption for most scenarios, but not for all of them. When the
+  requirements include the processing of real time or near real time events,
+  time becomes and important variable of the reasoning process.</para>
+
+  <para>The following sections will explain the impact of time on rules
+  reasoning and the two modes provided by Drools for the reasoning process.
+  </para>
+
+  <xi:include href="Section-EventProcessingModes_CloudMode.xml" />
+
+  <xi:include href="Section-EventProcessingModes_StreamMode.xml" />
 </section>

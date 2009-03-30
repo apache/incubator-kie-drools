@@ -20,7 +20,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
-import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -31,6 +30,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.conf.EventProcessingOption;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
@@ -38,7 +38,6 @@ import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
-import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.PseudoClockScheduler;
 
@@ -314,7 +313,7 @@ public class CepEspTest extends TestCase {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
         final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
         final RuleBase ruleBase = loadRuleBase( reader,
                                                 rbconf );
 
@@ -676,7 +675,7 @@ public class CepEspTest extends TestCase {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
         final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
         final RuleBase ruleBase = loadRuleBase( reader,
                                                 rbconf );
 
@@ -809,7 +808,7 @@ public class CepEspTest extends TestCase {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleLengthWindow.drl" ) );
         final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
         final RuleBase ruleBase = loadRuleBase( reader,
                                                 rbconf );
 
@@ -894,7 +893,7 @@ public class CepEspTest extends TestCase {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_DelayingNot.drl" ) );
         final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
-        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        rbconf.setEventProcessingMode( EventProcessingOption.STREAM );
         final RuleBase ruleBase = loadRuleBase( reader,
                                                 rbconf );
 

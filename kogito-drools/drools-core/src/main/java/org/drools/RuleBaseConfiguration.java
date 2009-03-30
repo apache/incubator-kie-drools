@@ -37,6 +37,7 @@ import org.drools.conf.AlphaThresholdOption;
 import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.CompositeKeyDepthOption;
 import org.drools.conf.ConsequenceExceptionHandlerOption;
+import org.drools.conf.EventProcessingOption;
 import org.drools.conf.IndexLeftBetaMemoryOption;
 import org.drools.conf.IndexRightBetaMemoryOption;
 import org.drools.conf.KnowledgeBaseOption;
@@ -134,7 +135,7 @@ public class RuleBaseConfiguration
     private String                         consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
 
-    private EventProcessingMode            eventProcessingMode;
+    private EventProcessingOption          eventProcessingMode;
 
     // if "true", rulebase builder will try to split 
     // the rulebase into multiple partitions that can be evaluated
@@ -203,7 +204,7 @@ public class RuleBaseConfiguration
         advancedProcessRuleIntegration = in.readBoolean();
         multithread = in.readBoolean();
         maxThreads = in.readInt();
-        eventProcessingMode = (EventProcessingMode) in.readObject();
+        eventProcessingMode = (EventProcessingOption) in.readObject();
     }
 
     /**
@@ -291,8 +292,8 @@ public class RuleBaseConfiguration
             setMultithreadEvaluation( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.maxThreads" ) ) {
             setMaxThreads( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt( value ) );
-        } else if ( name.equals( "drools.eventProcessingMode" ) ) {
-            setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( StringUtils.isEmpty( value ) ? "cloud" : value ) );
+        } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
+            setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( StringUtils.isEmpty( value ) ? "cloud" : value ) );
         }
     }
 
@@ -340,8 +341,8 @@ public class RuleBaseConfiguration
             Boolean.toString( isMultithreadEvaluation() );
         } else if ( name.equals( "drools.maxThreads" ) ) {
             return Integer.toString( getMaxThreads() );
-        } else if ( name.equals( "drools.eventProcessingMode" ) ) {
-            return getEventProcessingMode().toExternalForm();
+        } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
+            return getEventProcessingMode().getMode();
         }
 
         return null;
@@ -433,7 +434,7 @@ public class RuleBaseConfiguration
 
         setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( "drools.maxThreads",
                                                                              "-1" ) ) );
-        setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( this.chainedProperties.getProperty( "drools.eventProcessingMode",
+        setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( this.chainedProperties.getProperty( EventProcessingOption.PROPERTY_NAME,
                                                                                                                   "cloud" ) ) );
     }
 
@@ -522,11 +523,11 @@ public class RuleBaseConfiguration
         this.assertBehaviour = assertBehaviour;
     }
 
-    public EventProcessingMode getEventProcessingMode() {
+    public EventProcessingOption getEventProcessingMode() {
         return this.eventProcessingMode;
     }
 
-    public void setEventProcessingMode(final EventProcessingMode mode) {
+    public void setEventProcessingMode(final EventProcessingOption mode) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.eventProcessingMode = mode;
     }
@@ -1144,58 +1145,6 @@ public class RuleBaseConfiguration
         }
     }
 
-    /**
-     * An enum for the valid event processing modes.
-     * 
-     * When the rulebase is compiled in the CLOUD (default) event processing mode,
-     * it behaves just like a regular rulebase.
-     * 
-     * When the rulebase is compiled in the STREAM event processing mode, additional
-     * assumptions are made. These assumptions allow the engine to perform a few optimisations
-     * like:
-     * 
-     * <li> reasoning over absence of events (NOT CE), automatically adds an appropriate duration attribute
-     * to the rule in order to avoid early rule firing. </li>
-     * <li> memory management techniques may be employed when an event no longer can match other events
-     * due to session clock continuous increment. </li>
-     * 
-     * @author etirelli
-     *
-     */
-    public static enum EventProcessingMode {
-
-        CLOUD(
-                "cloud"), STREAM(
-                "stream");
-
-        private String string;
-
-        EventProcessingMode(String mode) {
-            this.string = mode;
-        }
-
-        public String getId() {
-            return string;
-        }
-
-        public String toString() {
-            return string;
-        }
-
-        public String toExternalForm() {
-            return this.string;
-        }
-
-        public static EventProcessingMode determineAssertBehaviour(String mode) {
-            if ( STREAM.getId().equalsIgnoreCase( mode ) ) {
-                return STREAM;
-            } else if ( CLOUD.getId().equalsIgnoreCase( mode ) ) {
-                return CLOUD;
-            }
-            throw new IllegalArgumentException( "Illegal enum value '" + mode + "' for EventProcessingMode" );
-        }
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeBaseOption> T getOption(Class<T> option) {
         if ( MaintainTMSOption.class.equals( option ) ) {
@@ -1230,6 +1179,8 @@ public class RuleBaseConfiguration
                 throw new RuntimeDroolsException("Unable to resolve ConsequenceExceptionHandler class: "+consequenceExceptionHandler, e);
             }
             return (T) ConsequenceExceptionHandlerOption.get( handler );
+        } else if ( EventProcessingOption.class.equals( option ) ) {
+            return (T) getEventProcessingMode();
         }
         return null;
         
@@ -1262,6 +1213,8 @@ public class RuleBaseConfiguration
             setCompositeKeyDepth( ((CompositeKeyDepthOption) option).getDepth() );
         } else if ( option instanceof ConsequenceExceptionHandlerOption) {
             setConsequenceExceptionHandler( ((ConsequenceExceptionHandlerOption) option).getHandler().getName() );
+        } else if ( option instanceof EventProcessingOption ) {
+            setEventProcessingMode( (EventProcessingOption) option );
         } 
 
     }
