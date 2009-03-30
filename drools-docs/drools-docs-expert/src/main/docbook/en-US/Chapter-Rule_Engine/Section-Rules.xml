@@ -207,16 +207,16 @@ public void cheddarCheese(Cheese cheese) {
   <section>
     <title>First Order Logic</title>
 
-    <para>Rules are written using First Order Logic, or predicate logic, which
+    <para>Rules are written using First Order Logic, or Predicate Logic, which
     extends Propositional Logic. <ulink
     url="http://en.wikipedia.org/wiki/Emil_Leon_Post">Emil Leon Post</ulink>
     was the first to develop an inference based system using symbols to
-    express logic - as a consequence of this he was able to prove that any
+    express logic. As a consequence of this he was able to prove that any
     logical system (including mathematics) could be expressed with such a
     system.</para>
 
     <para>A proposition is a statement that can be classified as true or
-    false. If the truth can be determined from statement alone it is said to
+    false. If the truth can be determined from the statement alone it is said to
     be a "closed statement". In programming terms this is an expression that
     does not reference any variables:</para>
 
@@ -228,14 +228,14 @@ public void cheddarCheese(Cheese cheese) {
 
     <programlisting>Person.sex == "male"</programlisting>
 
-    <para>With SQL if we look at the conclusion's action as simply returning
+    <para>With SQL, the conclusion's action is to return
     the matched fact to the user:</para>
 
     <programlisting>select * from Person where Person.sex == "male"</programlisting>
 
     <para>For any rows, which represent our facts, that are returned we have
     inferred that those facts are male people. The following diagram shows how
-    the above SQL statement and People table can be represented in terms of an
+    the above SQL statement and Person table can be represented in terms of an
     Inference Engine.</para>
 
     <figure>
@@ -248,58 +248,57 @@ public void cheddarCheese(Cheese cheese) {
       </mediaobject>
     </figure>
 
-    <para>So in Java we can say that a simple proposition is of the form
-    'variable' 'operator' 'value' - where we often refer to 'value' as being a
-    literal value - a proposition can be thought as a field constraint.
-    Further to this proposition can be combined with conjunctive and
-    disjunctive connectives, which is the logic theorists way of saying
-    '&amp;&amp;' and '||'. The following shows two open propositional
-    statements connected together with a single disjunctive connective.</para>
+    <para>In Java we can write simple proposition as a boolean expression
+    'variable' 'operator' 'value', where 'value' frequently is a
+    literal value, and such a proposition can be thought of as a field constraint.
+    Furthermore, such a proposition can be combined with conjunctive and
+    disjunctive connectives, which is the logic theorists' denomination for
+    '&amp;&amp;' and '||'. The following expression shows two open propositional
+    statements connected with a single disjunctive connective.</para>
 
     <programlisting role="JAVA">person.getEyeColor().equals("blue") || person.getEyeColor().equals("green")</programlisting>
 
     <para>This can be expressed using a disjunctive Conditional Element
-    connective - which actually results in the generation of two rules, to
+    connective which actually results in the generation of two rules, to
     represent the two possible logic outcomes.</para>
 
     <programlisting role="JAVA">Person( eyeColour == "blue" ) || Person( eyeColor == "green" )</programlisting>
 
     <para>Disjunctive field constraints connectives could also be used and
-    would not result in multiple rule generation.</para>
+    would not result in multiple rules.</para>
 
     <programlisting role="JAVA">Person( eyeColour == "blue"||"green" )</programlisting>
 
     <para>Propositional Logic is not Turing complete, limiting the problems
     you can define, because it cannot express criteria for the structure of
     data. First Order Logic (FOL), or Predicate Logic, extends Propositional
-    Logic with two new quantifier concepts to allow expressions defining
-    structure - specifically universal and existential quantifiers. Universal
-    quantifiers allow you to check that something is true for everything;
+    Logic with two quantifier concepts to allow expressions defining
+    structure, i.e., the universal and existential quantifiers. Universal
+    quantifiers allow you to check that something is true for everything,
     normally supported by the <code>forall</code> conditional element. Existential
     quantifiers check for the existence of something, in that it occurs at
-    least once - this is supported with <code>not</code> and <code>exists</code> conditional
+    least once, this being supported with <code>not</code> and <code>exists</code> conditional
     elements.</para>
 
-    <para>Imagine we have two classes - Student and Module. Module represents
+    <para>Imagine we have two classes: Student and Module. Module represents
     each of the courses the Student attended for that semester, referenced by
     the List collection. At the end of the semester each Module has a score.
     If the Student has a Module score below 40 then they will fail that
-    semester - the existential quantifier can be used used with the "less than
+    semester. The existential quantifier can be used used with the "less than
     40" open proposition to check for the existence of a Module that is true
     for the specified criteria.</para>
 
     <programlisting role="JAVA"><![CDATA[public class Student {
-    private String name;
-    private List modules;
-
+    private String       name;
+    private List&lt;Module&gt; modules;
     ...
     }]]></programlisting>
 
     <programlisting role="JAVA">    
     public class Module {
-    private String name;
-    private String studentName;
-    private int score;
+    private String  name;
+    private Student student;
+    private int     score;
      ...
     }
     </programlisting>
@@ -311,10 +310,8 @@ public void cheddarCheese(Cheese cheese) {
     <programlisting role="JAVA">    
     List failedStudents = new ArrayList();
     
-    for ( Iterator studentIter = students.iterator(); studentIter.hasNext();) {
-        Student student = ( Student ) studentIter.next();
-        for ( Iterator it = student.getModules.iterator(); it.hasNext(); ) {
-            Module module = ( Module ) it.next();
+    for ( Student student: students ) {
+        for ( Module module: student.getModules ) {
             if ( module.getScore() &lt; 40  ) {
                 failedStudents.add( student ) ;
                 break;
@@ -326,8 +323,8 @@ public void cheddarCheese(Cheese cheese) {
     <para>Early SQL implementations were not Turing complete as they did not
     provide quantifiers to access the structure of data. Modern SQL engines do
     allow nesting of SQL, which can be combined with keywords like 'exists'
-    and 'in'. The following show SQL and a Rule to return a set of Students
-    who have failed the semester.</para>
+    and 'in'. The following snippets show SQL to return a set of students
+    who have failed the semester, and a rule firing for such students.</para>
 
     <programlisting role="SQL">
 select
@@ -349,7 +346,11 @@ where exists (
     <programlisting role="JAVA">
     rule "Failed_Students"
     when
-        exists( $student : Student() &amp;&amp; Module( student == $student, score &lt; 40 ) )
+    	$s : Student()
+        exists Module( student == $s, score &lt; 40 )
+    then
+        # record $student as flunked
+    end
     </programlisting>
   </section>
 </section>
