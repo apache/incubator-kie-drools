@@ -261,7 +261,7 @@ assertEquals( new Person( "Mr John Smith" ), results.getValue( "mrSmith" ) );
 
       <para>Unlike a stateless session the dispose() method must be called
       afterwards to ensure there are no memory leaks, as the KnowledgeBase
-      contained references to StatefulKnowledgeSessions when they are created.
+      contains references to StatefulKnowledgeSessions when they are created.
       StatefulKnowledgeSession also supports the BatchExecutor interface like
       StatelessKnowledgeSession, the only difference is that when used with
       stateful the FireAllRules command is not automatically called at the
