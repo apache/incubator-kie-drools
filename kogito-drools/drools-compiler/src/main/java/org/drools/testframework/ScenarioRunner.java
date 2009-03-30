@@ -2,12 +2,7 @@ package org.drools.testframework;
 
 import static org.mvel2.MVEL.eval;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import org.drools.FactHandle;
 import org.drools.RuleBase;
@@ -85,6 +80,10 @@ public class ScenarioRunner {
         runScenario(scenario, resolver, this.workingMemory);
 	}
 
+    interface Populate {
+        public void go();
+    }
+
 	private void runScenario(final Scenario scenario,
 			final TypeResolver resolver, final InternalWorkingMemory wm)
 			throws ClassNotFoundException {
@@ -97,37 +96,54 @@ public class ScenarioRunner {
 
 		TestingEventListener listener = null;
 
+        List<Populate> toPopulate = new ArrayList<Populate>();
+
 		for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
-			FactData fact = (FactData) iterator.next();
-			Object f = eval("new " + getTypeName(resolver, fact) + "()");
-			populateFields(fact, globalData, f);
+			final FactData fact = (FactData) iterator.next();
+			final Object f = eval("new " + getTypeName(resolver, fact) + "()");
+            toPopulate.add(new Populate() {
+                public void go() {
+                    populateFields(fact, globalData, f);
+                }
+            });
 			globalData.put(fact.name, f);
 			wm.setGlobal(fact.name, f);
 		}
+
+        doPopulate(toPopulate);
 
 		for (Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext();) {
 			Fixture fx = iterator.next();
 
 			if (fx instanceof FactData) {
 				//deal with facts and globals
-				FactData fact = (FactData)fx;
-				Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + getTypeName(resolver, fact) + "()");
+				final FactData fact = (FactData)fx;
+				final Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + getTypeName(resolver, fact) + "()");
 				if (fact.isModify) {
 					if (!this.factHandles.containsKey(fact.name)) {
 						throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
 					}
-					populateFields(fact, populatedData, f);
-					this.workingMemory.update(this.factHandles.get(fact.name), f);
+                    toPopulate.add(new Populate() {
+                        public void go() {
+                            populateFields(fact, populatedData, f);
+                            workingMemory.update(factHandles.get(fact.name), f);
+                        }
+                    });
 				} else /* a new one */ {
-					populateFields(fact, populatedData, f);
-					populatedData.put(fact.name, f);
-					this.factHandles.put(fact.name, wm.insert(f));
+                    populatedData.put(fact.name, f);
+                    toPopulate.add(new Populate() {
+                        public void go() {
+                            populateFields(fact, populatedData, f);
+                            factHandles.put(fact.name, wm.insert(f));
+                        }
+                    });
 				}
 			} else if (fx instanceof RetractFact) {
 				RetractFact f = (RetractFact)fx;
 				this.workingMemory.retract(this.factHandles.get(f.name));
 				this.populatedData.remove(f.name);
 			} else if (fx instanceof ExecutionTrace) {
+                doPopulate(toPopulate);
 				ExecutionTrace executionTrace = (ExecutionTrace)fx;
 				//create the listener to trace rules
 
@@ -148,6 +164,7 @@ public class ScenarioRunner {
 
 
 			} else if (fx instanceof Expectation) {
+                doPopulate(toPopulate);
 					Expectation assertion = (Expectation) fx;
 					if (assertion instanceof VerifyFact) {
 						verify((VerifyFact) assertion);
@@ -162,7 +179,14 @@ public class ScenarioRunner {
 
 
 		}
+        
+        doPopulate(toPopulate);
 	}
+
+    private void doPopulate(List<Populate> toPopulate) {
+        for (Populate p : toPopulate) {p.go();}
+        toPopulate.clear();
+    }
 
     private String getTypeName(TypeResolver resolver, FactData fact) throws ClassNotFoundException {
 
