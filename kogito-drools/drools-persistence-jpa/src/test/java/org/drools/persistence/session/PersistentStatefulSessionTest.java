@@ -19,6 +19,12 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessEvent;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.process.ProcessNodeLeftEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.ProcessStartedEvent;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.persistence.jpa.JPAKnowledgeService;
@@ -267,6 +273,84 @@ public class PersistentStatefulSessionTest extends TestCase {
         }
         assertNull( processInstance );
 
+    }
+    
+    public void testProcessListener() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ClassPathResource( "WorkItemsProcess.rf" ),
+                      ResourceType.DRF );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                 emf );
+
+        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        final List<ProcessEvent> events = new ArrayList<ProcessEvent>();
+        ProcessEventListener listener = new ProcessEventListener() {
+			public void afterNodeLeft(ProcessNodeLeftEvent event) {
+				System.out.println("After node left: " + event.getNodeInstance().getNodeName());
+				events.add(event);				
+			}
+			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+				System.out.println("After node triggered: " + event.getNodeInstance().getNodeName());
+				events.add(event);				
+			}
+			public void afterProcessCompleted(ProcessCompletedEvent event) {
+				System.out.println("After process completed");
+				events.add(event);				
+			}
+			public void afterProcessStarted(ProcessStartedEvent event) {
+				System.out.println("After process started");
+				events.add(event);				
+			}
+			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+				System.out.println("Before node left: " + event.getNodeInstance().getNodeName());
+				events.add(event);				
+			}
+			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+				System.out.println("Before node triggered: " + event.getNodeInstance().getNodeName());
+				events.add(event);				
+			}
+			public void beforeProcessCompleted(ProcessCompletedEvent event) {
+				System.out.println("Before process completed");
+				events.add(event);				
+			}
+			public void beforeProcessStarted(ProcessStartedEvent event) {
+				System.out.println("Before process started");
+				events.add(event);				
+			}
+        };
+        ksession.addEventListener(listener);
+        
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        System.out.println( "Started process instance " + processInstance.getId() );
+        
+        assertEquals(12, events.size());
+        assertTrue(events.get(0) instanceof ProcessStartedEvent);
+        assertTrue(events.get(1) instanceof ProcessNodeTriggeredEvent);
+        assertTrue(events.get(2) instanceof ProcessNodeLeftEvent);
+        assertTrue(events.get(3) instanceof ProcessNodeTriggeredEvent);
+        assertTrue(events.get(4) instanceof ProcessNodeLeftEvent);
+        assertTrue(events.get(5) instanceof ProcessNodeTriggeredEvent);
+        assertTrue(events.get(6) instanceof ProcessNodeTriggeredEvent);
+        assertTrue(events.get(7) instanceof ProcessNodeLeftEvent);
+        assertTrue(events.get(8) instanceof ProcessNodeTriggeredEvent);
+        assertTrue(events.get(9) instanceof ProcessNodeLeftEvent);
+        assertTrue(events.get(10) instanceof ProcessNodeTriggeredEvent);
+        assertTrue(events.get(11) instanceof ProcessStartedEvent);
+        
+        ksession.removeEventListener(listener);
+        events.clear();
+        
+        processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        System.out.println( "Started process instance " + processInstance.getId() );
+        
+        assertTrue(events.isEmpty());
     }
 
     public void testPersistenceSubProcess() {

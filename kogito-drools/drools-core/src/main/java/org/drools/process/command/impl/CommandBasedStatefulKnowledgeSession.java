@@ -2,7 +2,7 @@ package org.drools.process.command.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
@@ -73,9 +73,9 @@ public class CommandBasedStatefulKnowledgeSession
     private CommandService                                                    commandService;
     private transient WorkItemManager                                         workItemManager;
 
-    public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
-    public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
-    public Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners;
+    public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners = new HashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
+    public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners = new HashMap<AgendaEventListener, AgendaEventListenerWrapper>();
+    public Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners = new HashMap<ProcessEventListener, ProcessEventListenerWrapper>();
 
     public CommandBasedStatefulKnowledgeSession(CommandService commandService) {
         this.commandService = commandService;
@@ -321,7 +321,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
+        ProcessEventListenerWrapper wrapper = this.mappedProcessListeners.remove( listener );
 
         commandService.execute( new RemoveEventListenerCommand( wrapper ) );
     }
