@@ -1,19 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>Stream Mode</title>
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Stream Mode</title>
 
+  <para>The STREAM processing mode is the mode of choice when the application
+  needs to process streams of events. It adds a few common requirements to the
+  regular processing, but enables a whole lot of features that make stream
+  event processing a lot simpler.</para>
 
-	<section>
-		<title>Role of Session Clock in Stream mode</title>
-	</section>
-	<section>
-		<title>Negative Patterns in Stream Mode</title>
-	</section>
+  <para>The main requirements to use STREAM mode are:</para>
 
+  <itemizedlist>
+    <listitem>
+      <para>Events in each stream must be time-ordered. I.e., inside a given
+      stream, events that happened first must be inserted first into the
+      engine.</para>
+    </listitem>
+
+    <listitem>
+      <para>The engine will force synchronization between streams through the
+      use of the session clock, so, although the application does not need to
+      enforce time ordering between streams, the use of non-time-synchronized
+      streams may result in some unexpected results.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Given that the above requirements are met, the application may enable
+  the STREAM mode using the following API:</para>
+
+  <programlisting>KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+config.setOption( EventProcessingOption.STREAM );</programlisting>
+
+  <para>Or, the equivalent property:</para>
+
+  <programlisting>drools.eventProcessingMode = stream</programlisting>
+
+  <para>When using the STREAM, the engine knows the concept of flow of time
+  and the concept of "now", i.e., the engine understands how old events are
+  based on the current timestamp read from the Session Clock. This
+  characteristic allows the engine to provide the following additional
+  features to the application:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Sliding Window support</para>
+    </listitem>
+
+    <listitem>
+      <para>Automatic Event Lifecycle Management</para>
+    </listitem>
+
+    <listitem>
+      <para>Automatic Rule Delaying when using Negative Patterns</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>All these features are explained in the following sections.</para>
+
+  <section>
+    <title>Role of Session Clock in Stream mode</title>
+  </section>
+
+  <section>
+    <title>Negative Patterns in Stream Mode</title>
+  </section>
 </section>
