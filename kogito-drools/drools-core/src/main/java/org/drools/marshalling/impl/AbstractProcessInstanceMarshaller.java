@@ -83,7 +83,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
 				stream.writeUTF(entry.getKey());
 				stream.writeUTF(entry.getValue());
 			}
-		}
+		}else{
+            stream.writeInt(0);
+        }
 		List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( workFlow.getNodeInstances() );
         Collections.sort( nodeInstances,
                           new Comparator<NodeInstance>() {
