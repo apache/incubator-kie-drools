@@ -52,7 +52,7 @@
     summary of the language follows.</para>
 
     <example>
-      <title>Example <indexterm>
+      <title>A rule in XML<indexterm>
           <primary>XML Rule</primary>
         </indexterm></title>
 
@@ -206,21 +206,22 @@
 </programlisting>
     </example>
 
-    <para>Referring to the above example: Notice the key parts, the
-    declaration for the Drools 4, schema, imports, globals, functions, and the
-    rules. Most of the elements are self explanatory if you have some
-    understanding of the Drools 4 features.</para>
+    <para>In the preceding XML text you will see the typical XML
+      element, the package declaration, imports, globals, functions,
+      and the rule itself. Most of the elements are self explanatory
+      if you have some  understanding of the Drools features.</para>
 
-    <para>Imports: import the types you wish to use in the rule.</para>
+    <para>The <code>import</code> elements import the types you wish to
+      use in the rule.</para>
 
-    <para>Globals: These are global objects that can be referred to in the
-    rules.</para>
+    <para>The <code>global</code> elements define global objects that can
+      be referred to in the rules.</para>
 
-    <para>Functions: this is a declaration of functions to be used in the
-    rules. You have to specify return types, a unique name and parameters, in
-    the body goes a snippet of code.</para>
+    <para>The <code>function</code> contains a function declaration, for
+      a function to be used in the rules. You have to specify a return type,
+      a unique name and parameters, in the body goes a snippet of code.</para>
 
-    <para>Rule: see below.</para>
+    <para>The rule is discussed below.</para>
 
     <example>
       <title>Detail of rule element</title>
@@ -265,12 +266,12 @@
 	</programlisting>
     </example>
 
-    <para>Referring to the above rule detail:</para>
-
-    <para>The rule has a LHS and RHS (conditions and consequence) sections.
+    <para>In the above detail of the rule we see that the rule has LHS
+      and RHS (conditions and consequence) sections.
     The RHS is simple, it is just a block of semantic code that will be
-    executed when the rule is activated. The LHS is slightly more complicated,
-    certainly more so then past versions.</para>
+    executed when the rule is activated. The LHS is slightly more
+    complicated as it contains nested elements for conditional elements,
+    constraints and restrictions.</para>
 
 
 <!--
@@ -285,15 +286,15 @@
 
     <para>A key element of the LHS is the Pattern element. This allows you to
     specify a type (class) and perhaps bind a variable to an instance of that
-    class. Nested under the pattern object are constraints and conditional
-	elements that have to be met. The Predicate and Return Value constraints 
+    class. Nested under the pattern object are constraints and restrictions
+	that have to be met. The Predicate and Return Value constraints 
 	allow Java expressions to be embedded.</para>
 
     <para>That leaves the conditional elements, not, exists, and, or etc. They
     work like their DRL counterparts. Elements that are nested under and an
     "and" element are logically "anded" together. Likewise with "or" (and you
-    can nest things further). "Exists" and "Not" work around Patterns, to check
-    for the existence or non existence of a fact meeting its
+    can nest things further). "Exists" and "Not" work around patterns, to check
+    for the existence or nonexistence of a fact meeting the pattern's
     constraints.</para>
 
     <para>The Eval element allows the execution of a valid snippet of Java

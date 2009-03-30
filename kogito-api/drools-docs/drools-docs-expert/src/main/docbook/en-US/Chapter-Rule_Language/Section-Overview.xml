@@ -72,14 +72,15 @@
     <emphasis role="bold">then</emphasis>
         <replaceable>RHS</replaceable>
 <emphasis role="bold">end</emphasis>
-</programlisting>Its really that simple. Mostly punctuation is not needed,
+</programlisting>It's really that simple. Mostly punctuation is not needed,
     even the double quotes for "name" are optional, as are newlines.
     Attributes are simple (always optional) hints to how the rule should
     behave. LHS is the conditional parts of the rule, which follows a certain
     syntax which is covered below. RHS is basically a block that allows
     dialect specific semantic code to be executed.</para>
 
-    <para>It is important to note that white space is not important, EXCEPT in
+    <para>It is important to note that white space is not important,
+      <empahsis>except</empahsis> in
     these case of domain specific languages, in which case each line is
     processed before the following line (and spaces may be significant to the
     domain language).</para>

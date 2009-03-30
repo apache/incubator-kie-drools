@@ -15,8 +15,8 @@
   <para>Drools 5 introduces standardized error messages. This standardization
   aims to help users to find and resolve problems in a easier and faster way.
   In this section you will learn how to identify and interpret those error
-  messages as well some tips on how to solve the problems associated with
-  them.</para>
+  messages, and you will also receive some tips on how to solve the problems
+  associated with them.</para>
 
   <section>
     <title>Message format</title>
@@ -59,8 +59,8 @@
     <section>
       <title>101: No viable alternative</title>
 
-      <para>Most common kind of error, means that the parser came to a
-      decision point but it couldn't identify an alternative. Here as some
+      <para>Indicates the most common errors, where the parser came to a
+      decision point but  couldn't identify an alternative. Here are some
       examples:</para>
 
       <example>
@@ -82,7 +82,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>At first moment seems to be a valid syntax, but it is not (exits
+      <para>At first glance this seems to be valid syntax, but it is not (exits
       != exists). Let's take a look at next example:</para>
 
       <example>
@@ -110,7 +110,7 @@
       In this case, it is missing the rule name.</para>
 
       <para>No viable alternative error occurs also when you have lexical
-      problems. Here is a sample of lexical problem:</para>
+      problems. Here is a sample of a lexical problem:</para>
 
       <example>
         <programlisting>1: rule simple_rule
@@ -134,8 +134,8 @@
       <tip>
         <para>Usually the Line and Column information are accurate, but in
         some cases (like unclosed quotes), the parser generates a 0:-1
-        position. In this case you should check if you didn't forget to close
-        quotes nor brackets.</para>
+        position. In this case you should check whether you didn't forget to close
+        quotes, apostrophes or parentheses.</para>
       </tip>
     </section>
 
@@ -170,7 +170,7 @@
         reached the end of source.</para>
       </tip>
 
-      <para>The following code generates more than one error messages:</para>
+      <para>The following code generates more than one error message:</para>
 
       <example>
         <programlisting>1: package org.drools;
@@ -207,16 +207,16 @@
       just replace the commas (",") by AND operator ("&amp;&amp;").</para>
 
       <tip>
-        <para>Some situations you can get more than one error message. Try to
+        <para>In some situations you can get more than one error message. Try to
         fix one by one, starting at the first one. Some error messages are
-        generated as consequences of others.</para>
+        generated merely as consequences of other errors.</para>
       </tip>
     </section>
 
     <section>
       <title>103: Failed predicate</title>
 
-      <para>A validating semantic predicates evaluated to false. Usually this
+      <para>A validating semantic predicate evaluated to false. Usually these
       semantic predicates are used to identify soft keywords. This sample
       shows exactly this situation:</para>
 
@@ -249,19 +249,20 @@
       </itemizedlist>
 
       <para>The <emphasis role="bold">fdsfdsfds</emphasis> text is invalid and
-      the parser couldn’t identify it as the RULE soft keyword.</para>
+      the parser couldn’t identify it as the soft keyword "rule".</para>
 
       <tip>
-        <para>This error is very similar to 102: Mismatched input but usually
-        involve soft keywords.</para>
+        <para>This error is very similar to 102: Mismatched input, but usually
+        involves soft keywords.</para>
       </tip>
     </section>
 
     <section>
       <title>104: Trailing semi-colon not allowed</title>
 
-      <para>This error is associated with EVAL clause (at EVAL expression you
-      cannot use a semi-colon). Check this sample:</para>
+      <para>This error is associated with the "eval" clause, where its
+      expression may not be terminated with a semi-colon. Check this
+	example:</para>
 
       <example>
         <programlisting>1: rule simple_rule
@@ -272,7 +273,7 @@
 </programlisting>
       </example>
 
-      <para>Due its trailling semi-colon at eval, we get this error
+      <para>Due to the trailing semi-colon within eval, we get this error
       message:</para>
 
       <itemizedlist>
@@ -282,7 +283,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>This is the simpler problem to fix: just remove the
+      <para>This problem is simple to fix: just remove the
       semi-colon.</para>
     </section>
 
@@ -290,9 +291,9 @@
       <title>105: Early Exit</title>
 
       <para>The recognizer came to a (..)+ EBNF subrule that must match an
-      alternative at least once, but the subrule did not match anything. To
-      simplify: the parser followed a path that there is no way out. This
-      example tries to illustrates it:</para>
+      alternative at least once, but the subrule did not match anything.
+      Simply put: the parser has entered a branch from where there is no
+	way out. This example tries to illustrates it:</para>
 
       <example>
         <programlisting>1: template test_error
@@ -311,8 +312,8 @@
       </itemizedlist>
 
       <para>To fix this problem it is necessary to remove the numeric value
-      (as it is not a valid sentence nor a valid data type to begin a new
-      slot).</para>
+      as it is neither a valid data type which might begin a new template
+      slot nor a possible start for any other rule file construct.</para>
     </section>
   </section>
 
