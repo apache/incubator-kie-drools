@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
+import java.math.BigDecimal;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
@@ -303,10 +304,18 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
+
+
     public static class BigDecimalEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
+
+        static boolean isEqual(Object value1, Object value2) {
+            if (!(value1 instanceof BigDecimal ) || !(value2 instanceof BigDecimal)) return false;
+            return  ((BigDecimal)value1).compareTo((BigDecimal) value2) == 0;
+
+        }
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalEqualEvaluator();
 
@@ -319,11 +328,12 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getBigDecimalValue();
+            final BigDecimal value2 = object2.getBigDecimalValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
-            return value1.equals( value2 );
+
+            return isEqual(value1, value2);
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -332,7 +342,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right == null;
             }
-            return value.equals( ((ObjectVariableContextEntry) context).right );
+            return isEqual(value, ((ObjectVariableContextEntry) context).right);
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -341,7 +351,8 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value == null;
             }
-            return ((ObjectVariableContextEntry) context).left.equals( value );
+
+            return isEqual(((ObjectVariableContextEntry) context).left, value);
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -353,7 +364,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value1 == null ) {
                 return value2 == null;
             }
-            return value1.equals( value2 );
+            return isEqual(value1, value2);
         }
 
         public String toString() {
@@ -369,6 +380,9 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalNotEqualEvaluator();
 
+
+
+
         public BigDecimalNotEqualEvaluator() {
             super( ValueType.BIG_DECIMAL_TYPE,
                    Operator.NOT_EQUAL );
@@ -382,7 +396,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value1 == null ) {
                 return value2 != null;
             }
-            return !value1.equals( value2 );
+            return !BigDecimalEqualEvaluator.isEqual(value1, value2 );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -391,7 +405,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right != null;
             }
-            return !value.equals( ((ObjectVariableContextEntry) context).right );
+            return !BigDecimalEqualEvaluator.isEqual(value, ((ObjectVariableContextEntry) context).right);
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -400,7 +414,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value != null;
             }
-            return !((ObjectVariableContextEntry) context).left.equals( value );
+            return !BigDecimalEqualEvaluator.isEqual(((ObjectVariableContextEntry) context).left,  value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -412,7 +426,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value1 == null ) {
                 return value2 != null;
             }
-            return !value1.equals( value2 );
+            return !BigDecimalEqualEvaluator.isEqual(value1, value2 );
         }
 
         public String toString() {
