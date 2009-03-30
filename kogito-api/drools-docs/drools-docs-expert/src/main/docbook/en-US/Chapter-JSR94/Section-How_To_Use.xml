@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
   <title>How To Use</title>
 
   <para>There are two parts to working with JSR94. The first part is the
@@ -53,7 +53,7 @@ RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServ
       API</title>
 
       <programlisting>// Get the RuleAdministration 
-RuleAdministration ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
+RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
 LocalRuleExecutionSetProvider ruleExecutionSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
 
 // Create a Reader for the drl
@@ -66,8 +66,8 @@ RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecution
     </example>
 
     <para>"ruleExecutionSetProvider.createRuleExecutionSet( reader, null )" in
-    the above example takes a null parameter for the properties map; however it
-    can actually be used to provide configuration for the incoming source.
+    the above example takes a null parameter for the properties map; however
+    it can actually be used to provide configuration for the incoming source.
     When null is passed the default is used to load the input as a drl.
     Allowed keys for a map are "source" and "dsl". "source" takes "drl" or
     "xml" as its value; set "source" to "drl" to load a drl or to "xml" to
@@ -106,7 +106,7 @@ RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecution
       <title>Register the RuleExecutionSet</title>
 
       <programlisting>// Register the RuleExecutionSet with the RuleAdministrator
-String uri = ruleExectionSet.getName();
+String uri = ruleExecutionSet.getName();
 ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</programlisting>
     </example>
   </section>
