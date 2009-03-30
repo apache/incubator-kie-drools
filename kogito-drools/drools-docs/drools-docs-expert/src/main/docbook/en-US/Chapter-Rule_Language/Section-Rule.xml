@@ -27,11 +27,11 @@
   specific evaluation sequence or point in time, at any time during the life
   time of the engine "when" this occurs, do that Rule.</para>
 
-  <para>A rule must have a name, and be a unique name for the rule package. If
-  you define a rule twice in the same DRL it produce an error while loading.
-  If you add a DRL that has includes a rule name already in the package, it
-  will replace the previous rule. If a rule name is to have spaces, then it
-  will need to be in double quotes (it is best to always use double
+  <para>A rule must have a name, unique within its rule package. If
+  you define a rule twice in the same DRL it produces an error while loading.
+  If you add a DRL that includes a rule name already in the package, it
+  replaces the previous rule. If a rule name is to have spaces, then it
+  will need to be enclosd in double quotes (it is best to always use double
   quotes).</para>
 
   <para>Attributes are optional, and are described below (they are best kept
@@ -75,8 +75,8 @@ end</programlisting>
     <title>Rule Attributes</title>
 
     <para>Rule attributes provide a declarative way to influence the behavior
-    of the rule, some are quite simple, while others are part of complex sub
-    systems; such as ruleflow. To get the most from Drools you should make
+    of the rule. Some are quite simple, while others are part of complex sub
+    systems such as ruleflow. To get the most from Drools you should make
     sure you have a proper understanding of each attribute.</para>
 
     <figure>
@@ -84,139 +84,159 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Language/rule_attributes.png" format="PNG" />
+	  <imagedata align="center" fileref="images/Chapter-Rule_Language/rule_attributes.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
     <variablelist>
-	<varlistentry>
-		<term>no-loop</term>
+      <varlistentry>
+	<term>no-loop</term>
 	
-		<listitem>
-		<para>default value : false</para>
+	<listitem>
+	  <para>default value: false</para>
 	
-			<para>type : Boolean</para>
+	  <para>type: Boolean</para>
 	
-			<para>When the Rule's consequence modifies a fact it may cause the Rule to activate again, causing recursion. Setting no-loop to true means the attempt to create the Activation for the current set of data will be ignored.</para>
-		</listitem>
+	  <para>When the Rule's consequence modifies a fact it may cause
+	    the Rule to activate again, causing recursion. Setting no-loop
+	    to true means the attempt to create the Activation for the
+	    current set of data will be ignored.</para>
+	</listitem>
 				
-		</varlistentry>
+      </varlistentry>
 	
-		<varlistentry>
-			<term>lock-on-active</term>
+      <varlistentry>
+	<term>lock-on-active</term>
 	
-			<listitem>
-				<para>default value : false</para>
+	<listitem>
+	  <para>default value: false</para>
+	  
+	  <para>type: Boolean</para>
+	  <para>Whenever a ruleflow-group becomes active or an
+	    agenda-group receives the focus, any rule within that
+	    group that has lock-on-active set to true will not be
+	    activated any more; irrespective of the origin of the
+	    update, the activation of a matching rule is discarded.
+	    This is a stronger version of no-loop, because the change
+	    could now be caused not only by the rule itself. It's
+	    ideal for calculation rules where you have a number of
+	    rules that modify a fact and you don't want any rule
+	    re-matching and firing again. Only when the ruleflow-group
+	    is no longer active or the agenda-group loses the focus
+	    those rules with lock-on-active set to true become
+	    eligible again for their activations to be placed onto
+	    the agenda.</para>
+	</listitem>
+      </varlistentry>
+	
+      <varlistentry>
+	<term>salience</term>
+	
+	<listitem>
+	  <para>default value : 0</para>
+	
+	  <para>type : integer</para>
+	
+	  <para>Each rule has a salience attribute that can be assigned
+	    an Integer number, defaults to zero, the Integer and can be
+	    negative or positive. Salience is a form of priority where
+	    rules with higher salience values are given higher priority
+	    when ordered in the Activation queue.</para>
+	</listitem>
+      </varlistentry>
+	
+	
+      <varlistentry>
+	<term>agenda-group</term>
+	
+	<listitem>
+	  <para>default value: MAIN</para>
+	  
+	  <para>type: String</para>
 		
-				<para>type : Boolean</para>
-		<para>when a ruleflow-group becomes active or an agenda-group receives the focus any rules that have lock-on-active set to try cannot place activations onto the agenda, the rules are matched and the resulting activations discarded. This is a stronger version of no-loop. It's ideally for calculation rules where you have a number of rules that will modify a fact and you don't want any rule re-matching and firing. In summary fire these currently active rules and only these rules, no matter how the data changes, do not allow any more activations for the rules with the attribute set to true. When the ruleflow-group is no longer active or agenda-group loses the focus those rules with lock-on-active set to true can once again add activations onto the agenda.</para>
-			</listitem>
-		</varlistentry>
+	  <para>Agenda group's allow the user to partition the Agenda providing more execution control. Only rules in the focus group are allowed to fire.</para>
+	</listitem>
+      </varlistentry>
 	
-		<varlistentry>
-			<term>salience</term>
+      <varlistentry>
+	<term>auto-focus</term>
 	
-			<listitem>
-				<para>default value : 0</para>
-	
-				<para>type : integer</para>
-	
-				<para>Each rule has a salience attribute that can be assigned an Integer number, defaults to zero, the Integer and can be negative or positive. Salience is a form of priority where rules with higher salience values are given higher priority when ordered in the Activation queue.</para>
-			</listitem>
-		</varlistentry>
-	
-	
-		<varlistentry>
-			<term>agenda-group</term>
-	
-			<listitem>
-				<para>default value : MAIN</para>
-		
-				<para>type : String</para>
-		
-				<para>Agenda group's allow the user to partition the Agenda providing more execution control. Only rules in the focus group are allowed to fire.</para>
-			</listitem>
-		</varlistentry>
-	
-		<varlistentry>
-			<term>auto-focus</term>
-	
-			<listitem>
-				<para>default value false</para>
+	<listitem>
+	  <para>default value: false</para>
+	  
+	  <para>type: Boolean</para>
 				
-				<para>type : Boolean</para>
+	  <para>When a rule is activated if the <literal>auto-focus value is true and the Rule's </literal> <literal>agenda-group</literal> does not have focus then it is given focus, allowing the rule to potentially fire.</para>
+	</listitem>
+      </varlistentry>
+	
+      <varlistentry>
+	<term>activation-group</term>
+	
+	<listitem>
+	  <para>default value: N/A</para>
 				
-				<para>When a rule is activated if the <literal>auto-focus value is true and the Rule's </literal> <literal>agenda-group</literal> does not have focus then it is given focus, allowing the rule to potentially fire.</para>
-			</listitem>
-		</varlistentry>
-	
-		<varlistentry>
-			<term>activation-group</term>
-	
-			<listitem>
-				<para>default value : N/A</para>
+	  <para>type: String</para>
 				
-				<para>type : String</para>
+	  <para>Rules that belong to the same named activation-group will only fire exclusively. In other words, the first rule in an activation-group to fire will cancel the other rules activations (stop them from firing). The Activation group attribute is any string, as long as the string is identical for all the rules you need to be in the one group.</para>
 				
-				<para>Rules that belong to the same named activation-group will only fire exclusively. In other words, the first rule in an activation-group to fire will cancel the other rules activations (stop them from firing). The Activation group attribute is any string, as long as the string is identical for all the rules you need to be in the one group.</para>
+	  <para>NOTE: this used to be called Xor group, but technically its not quite an Xor, but you may hear people mention Xor group, just swap that term in your mind with activation-group.</para>
+	</listitem>
+      </varlistentry>
+	
+      <varlistentry>
+	<term>dialect</term>
+	
+	<listitem>
+	  <para>default value : as specified by the package</para>
 				
-				<para>NOTE: this used to be called Xor group, but technically its not quite an Xor, but you may hear people mention Xor group, just swap that term in your mind with activation-group.</para>
-			</listitem>
-		</varlistentry>
-	
-		<varlistentry>
-			<term>dialect</term>
-	
-			<listitem>
-				<para>default value : as specified by the package</para>
+	  <para>type : String</para>
 				
-				<para>type : String</para>
+	  <para>possible values: "java" or "mvel"</para>
 				
-				<para>possible values: "java" or "mvel"</para>
+	  <para>The dialect species the language to be used for any code
+	    expressions in the LHS or the RHS code block. Currently two dialects are available, Java and MVEL. While the dialect can be specified at the package level, this attribute allows the package definition to be overridden.</para>
+	</listitem>
+      </varlistentry>
+	
+	
+      <varlistentry>
+	<term>date-effective</term>
+	
+	<listitem>
+	  <para>default value: N/A</para>	
 				
-				<para>The dialect species the language to be used for any code
-				expressions in the LHS or the RHS code block. Currently two dialects are available, Java and MVEL. While the dialect can be specified at the package level, this attribute allows the package definition to be overridden.</para>
-			</listitem>
-		</varlistentry>
-	
-	
-		<varlistentry>
-			<term>date-effective</term>
-	
-			<listitem>
-				<para>default value : N/A</para>	
+	  <para>type: String, which contains a date and time definition</para>
 				
-				<para>type : String, which contains a Date/Time definition</para>
+	  <para>A rule can only activate if the current date and time is after date-effective attribute.</para>
+	</listitem>
+      </varlistentry>
+	
+      <varlistentry>	
+	<term>date-expires</term>
+	
+	<listitem>
+	  <para>default value: N/A</para>
 				
-				<para>A rule can only activate if the current date and time is after date-effective attribute.</para>
-			</listitem>
-		</varlistentry>
-	
-		<varlistentry>	
-			<term>date-expires</term>
-	
-			<listitem>
-				<para>default value : N/A</para>
+	  <para>type: String, which contains a date and time definition</para>
 				
-				<para>type : String, which contains a Date/Time definition</para>
-				
-				<para>A rule cannot activate if the current date and time is after date-expires attribute.</para>
-			</listitem>
-		</varlistentry>
+	  <para>A rule cannot activate if the current date and time is after date-expires attribute.</para>
+	</listitem>
+      </varlistentry>
 	
-		<varlistentry>
-			<term>duration</term>
+      <varlistentry>
+	<term>duration</term>
 	
-			<listitem>
-				<para>default value : no default value</para>
+	<listitem>
+	  <para>default value: no default value</para>
 	
-				<para>type : long</para>
+	  <para>type: long</para>
 	
-				<para>The duration dictates that the rule will fire after a specified duration, if it is still true.</para>
-			</listitem>
-		</varlistentry>
-	</variablelist>
+	  <para>The duration dictates that the rule will fire after a specified duration, if it is still true.</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
 
     <example>
       <title>Some attribute examples</title>
@@ -235,7 +255,7 @@ end</programlisting>
     <para>The Left Hand Side (LHS) is a common name for the conditional part
     of the rule. It consists of zero or more Conditional Elements. If the LHS
     is left empty it is re-written as eval(true), which means the rule is
-    always true, and will be activated with a new Working Memory session is
+    always true, and will be activated when a new Working Memory session is
     created.</para>
 
     <figure>
@@ -249,7 +269,7 @@ end</programlisting>
     </figure>
 
     <example>
-      <title>Rule Syntax Overview Example</title>
+      <title>Rule without a Conditional Element</title>
 
       <programlisting>rule "no CEs"
 when
@@ -267,21 +287,21 @@ then
 end</programlisting>
     </example>
 
-    <para>Conditional elements work on one or more Patterns (which are
-    described bellow). The most common one is "and" which is implicit when you
-    have multiple Patterns in the LHS of a rule that are not connected in
-    anyway. Note that an 'and' cannot have a leading declaration binding like
-    'or' - this is obvious when you think about it. A declaration can only
-    reference a single Fact, when the 'and' is satisfied it matches more than
+    <para>Conditional elements work on one or more <emphasis>patterns</emphasis> (which are
+    described below). The most common one is "and" which is implicit when you
+    have multiple patterns in the LHS of a rule that are not connected in
+    any way. Note that an 'and' cannot have a leading declaration binding like
+    'or'. This is obvious, since a declaration can only
+    reference a single fact, and when the 'and' is satisfied it matches more than
     one fact - which fact would the declaration bind to?</para>
 
     <section>
       <title>Pattern</title>
 
-      <para>The Pattern element is the most important Conditional Element. The
+      <para>The pattern element is the most important Conditional Element. The
       entity relationship diagram below provides an overview of the various
-      parts that make up the Pattern's constraints and how they work together;
-      each is then covered in more detail with rail road diagrams and
+      parts that make up the pattern's constraints and how they work together;
+      each is then covered in more detail with railroad diagrams and
       examples.</para>
 
       <figure>
@@ -297,7 +317,7 @@ end</programlisting>
 
       <para>At the top of the ER diagram you can see that the pattern consists
       of zero or more constraints and has an optional pattern binding. The
-      rail road diagram below shows the syntax for this.</para>
+      railroad diagram below shows the syntax for this.</para>
 
       <figure>
         <title>Pattern</title>
@@ -310,12 +330,12 @@ end</programlisting>
         </mediaobject>
       </figure>
 
-      <para>At the simplest, with no constraints, it simply matches against a
-      type, in the following case the type is "Cheese". This means the pattern
+      <para>In its simplest form, with no constraints, it simply matches against a
+      type. In the following case the type is "Cheese", which means that the pattern
       will match against all Cheese objects in the Working Memory.</para>
 
       <example>
-        <title>Pattern</title>
+        <title>Simple Pattern</title>
 
         <programlisting>Cheese( )</programlisting>
       </example>
@@ -326,15 +346,15 @@ end</programlisting>
       to more easily differentiation between variables and fields.</para>
 
       <example>
-        <title>Pattern</title>
+        <title>Pattern with a binding variable</title>
 
         <programlisting>$c : Cheese( )</programlisting>
       </example>
 
-      <para>Inside of the Pattern parenthesis is where all the action happens.
+      <para>Inside of the pattern parenthesis is where all the action happens.
       A constraint can be either a Field Constraint, Inline Eval (called a
       predicate in 3.0) or a Constraint Group. Constraints can be separated by
-      the following symbols ',', '&amp;&amp;' or '||'.</para>
+      the following symbols: ',', '&amp;&amp;' or '||'.</para>
 
       <figure>
         <title>Constraints</title>
@@ -371,7 +391,7 @@ end</programlisting>
       </figure>
 
       <para>The ',' (comma) character is used to separate constraint groups.
-      It has an implicit 'and' connective semantics.<example>
+      It has implicit 'and' connective semantics.<example>
           <title>Constraint Group connective ','</title>
 
           <programlisting># Cheese type is stilton and price &lt; 10 and age is mature.
@@ -486,21 +506,21 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           objects follow the Java bean pattern, then fields are exposed using
           "getXXX" or "isXXX" methods (these are methods that take no
           arguments, and return something). You can access fields either by
-          using the bean-name convention (so "getType" can be accessed as
+          using the bean naming convention (so "getType" can be accessed as
           "type") - we use the standard jdk Introspector class to do this
           mapping.</para>
 
-          <para>For example, referring to our Cheese class, the following :
-          Cheese(type == ...) uses the getType() method on the a cheese
+          <para>For example, referring to our Cheese class, the pattern
+          Cheese(type == ...) applies the getType() method to a Cheese
           instance. If a field name cannot be found it will resort to calling
           the name as a no argument method; "toString()" on the Object for
           instance can be used with Cheese(toString == ..) - you use the full
-          name of the method with correct capitalization, but not brackets. Do
+          name of the method with correct capitalization, but without parentheses. Do
           please make sure that you are accessing methods that take no
-          parameters, and are in-fact "accessors" (as in, they don't change
-          the state of the object in a way that may effect the rules -
-          remember that the rule engine effectively caches the results of its
-          matching in between invocations to make it faster).</para>
+          parameters, and are in-fact "accessors" which don't change
+          the state of the object in a way that may effect the rules.
+          Remember that the rule engine effectively caches the results of its
+          matching in between invocations to make it faster.</para>
         </section>
 
         <section>
@@ -554,14 +574,15 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
             </mediaobject>
           </figure>
 
-          <para>You can do checks against fields that are or maybe null, using
+          <para>You can do checks against fields that are or may be null, using
           == and != as you would expect, and the literal "null" keyword, like:
           Cheese(type != null). If a field is null the evaluator will not
-          throw an exception and will only return true if the value is a null
-          check. Coercion is always attempted if the field and the value are
+          throw an exception and will only return true if the value is null.
+          Coercion is always attempted if the field and the value are
           of different types; exceptions will be thrown if bad coercions are
-          attempted. i.e. if "ten" is provided as a string in a number
-          evaluator, where as "10" would coerce to a numeric 10. Coercion is
+          attempted. For instance, if "ten" is provided as a string in a number
+          evaluator an exception is thrown, whereas "10" would coerce to a
+	  numeric 10. Coercion is
           always in favor of the field type and not the value type.</para>
         </section>
 
@@ -595,11 +616,11 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <para>Valid operators are dependent on the field type. Generally
             they are self explanatory based on the type of data: for instance,
-            for date fields, "&lt;" means "before" and so on. "Matches" is
+            for date fields, "&lt;" means "before". "Matches" is
             only applicable to string fields, "contains" and "not contains" is
             only applicable to Collection type fields. These operators can be
             used with any value and coercion to the correct value for the
-            evaluator and filed will be attempted, as mention in the "Values"
+            evaluator and field will be attempted, as mentioned in the "Values"
             section.</para>
 
             <simplesect>
@@ -609,7 +630,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
                   <primary>regular expression</primary>
                 </indexterm>Regular Expression. Typically that regexp is a
               String, but variables that resolve to a valid regexp are also
-              allowed. It is important to note that <emphasis>different from
+              allowed. It is important to note that, <emphasis>different from
               Java</emphasis>, if you write a String regexp directly on the
               source file, <emphasis>you don't need to escape '\'</emphasis>.
               Example:</para>
@@ -627,9 +648,9 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
               <para>Any valid Java <indexterm>
                   <primary>regular expression</primary>
                 </indexterm>Regular Expression can be used to match String
-              fields. Returns true when the match is false. Typically that
+              fields. This operator returns true when the match is false. Typically that
               regexp is a String, but variables that resolve to a valid regexp
-              are also allowed.It is important to note that
+              are also allowed. It is important to note that,
               <emphasis>different from Java</emphasis>, if you write a String
               regexp directly on the source file, <emphasis>you don't need to
               escape '\'</emphasis>. Example:</para>
@@ -664,7 +685,7 @@ CheeseCounter( cheeses contains $var ) // contains with a variable</programlisti
               <para><literal>'not contains'</literal> is used to check if a
               field's <indexterm>
                   <primary>Collection</primary>
-                </indexterm>Collection or array does not contains an
+                </indexterm>Collection or array does not contain an
               object.</para>
 
               <example>
@@ -672,23 +693,23 @@ CheeseCounter( cheeses contains $var ) // contains with a variable</programlisti
 
                 <programlisting>CheeseCounter( cheeses not contains "cheddar" ) // not contains with a String literal
 CheeseCounter( cheeses not contains $var ) // not contains with a variable</programlisting>
+              </example>
 
-                <blockquote>
-                  <para><emphasis role="bold">NOTE: </emphasis>for backward
+              <blockquote>
+                <para><emphasis role="bold">NOTE: </emphasis>for backward
                   compatibility, the '<emphasis
                   role="bold">excludes</emphasis>' operator is supported as a
                   synonym for '<emphasis role="bold">not
                   contains</emphasis>'.</para>
-                </blockquote>
-              </example>
+              </blockquote>
             </simplesect>
 
             <simplesect>
               <title>memberOf</title>
 
-              <para><literal>'memberOf' is used to check if a field is a
+              <para><literal>'memberOf'</literal> is used to check if a field is a
               member of a collection or array; that collection must be be a
-              variable.</literal></para>
+              variable.</para>
 
               <example>
                 <title>Literal Constraints with Collections</title>
@@ -700,9 +721,9 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             <simplesect>
               <title>not memberOf</title>
 
-              <para><literal>'not memberOf' is used to check if a field is not
+              <para><literal>'not memberOf'</literal> is used to check if a field is not
               a member of a collection or array; that collection must be be a
-              variable.</literal></para>
+              variable.</para>
 
               <example>
                 <title>Literal Constraints with Collections</title>
@@ -714,18 +735,17 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             <simplesect>
               <title>soundslike</title>
 
-              <para><literal>Similar to 'matches', but checks if a word has
+              <para>Similar to <literal>'matches'</literal>, but checks if a word has
               almost the same sound as the given value. Uses the 'Soundex'
               algorithm
-              (http://en.wikipedia.org/wiki/Soundex)</literal></para>
+              (<literal>http://en.wikipedia.org/wiki/Soundex</literal>).</para>
 
               <example>
                 <title>Text with soundslike (Sounds Like)</title>
 
                 <programlisting>Cheese( name soundslike 'foobar' )</programlisting>
-
-                <para>This will match a cheese with a name of "fubar"</para>
               </example>
+                <para>This will match a cheese with a name of "fubar"</para>
             </simplesect>
           </section>
 
@@ -749,7 +769,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
 
             <para>Literal Restrictions using the '==' operator, provide for
             faster execution as we can index using hashing to improve
-            performance;</para>
+            performance.</para>
 
             <simplesect>
               <title>Numeric</title>
@@ -794,9 +814,9 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             <simplesect>
               <title>Boolean</title>
 
-              <para>only true or false can be used. 0 and 1 are not
-              recognized, nor is <literal>Cheese ( smelly )</literal> is
-              allowed</para>
+              <para>Only true or false can be used; 0 and 1 are not
+              recognized. A Boolean field alone (as in
+		<code>Cheese( smelly )</code> is not permitted.</para>
 
               <example>
                 <title>Boolean Literal Restriction</title>
@@ -809,7 +829,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
               <title>Qualified Identifier</title>
 
               <para>Enums can be used as well, both jdk1.4 and jdk5 style
-              enums are supported - for the later you must be executing on a
+              enums are supported. For the latter you must be executing on a
               jdk5 environment.</para>
 
               <example>
@@ -854,12 +874,11 @@ Cheese( type == likes )</programlisting>
               <para>'likes' is our variable, our Declaration, that is bound to
               the favouriteCheese field for any matching Person instance and
               is used to constrain the type of Cheese in the following
-              Pattern. Any valid Java variable name can be used, including
-              '$'; which you will often see used to help differentiate
+              pattern. Any valid Java variable name can be used, and it may
+		be prefixed with a '$', which you will often see used to help differentiate
               declarations from fields. The example below shows a declaration
-              bound to the Patterns Object Type instance itself and used with
-              a 'contains' operator, note the optional use of '$' this
-              time.</para>
+              bound to the pattern's Object Type instance itself and used with
+              a 'contains' operator. Note the optional use of '$'.</para>
             </example>
 
             <example>
@@ -992,28 +1011,28 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" ) // mixing muti 
           </mediaobject>
         </figure>
 
-        <para>A <indexterm>
+        <para>An <indexterm>
             <primary>Predicate</primary>
           </indexterm>inline-eval constraint can use any valid dialect
         expression as long as it is evaluated to a primitive boolean - avoid
-        using any Drools keywords as Declaration identifiers. the expression
-        must be time constant. Any previous bound variable, from the current
+        using any Drools keywords as Declaration identifiers. The expression
+        must be time constant. Any previously bound variable, from the current
         or previous pattern, can be used; autovivification is also used to
-        auto create field binding variables. When an identifier is found that
+        auto-create field binding variables. When an identifier is found that
         is not a current variable the builder looks to see if the identifier
-        is a field on the current object type, if it is, the field is auto
-        created as a variable of the same name; this is autovivification of
-        field variables inside of inline evals.</para>
+        is a field on the current object type, if it is, the field binding
+	is auto-created as a variable of the same name. This is called
+	autovivification of field variables inside of inline evals.</para>
 
-        <para>This example will find all pairs of male/femal people where the
-        male is 2 years older than the female; the boyAge variable is auto
-        created as part of the autovivification process.</para>
+        <para>This example will find all male-female pairs where the
+        male is 2 years older than the female; the boyAge variable is
+	auto-created by the autovivification process.</para>
 
         <example>
           <title>Return Value operator</title>
 
           <programlisting>Person( girlAge : age, sex = "F" )
-Person( eval( girlAge == boyAge + 2 ), sex = 'M' )
+Person( eval( age == girlAge + 2 ), sex = 'M' )
 </programlisting>
         </example>
       </section>
@@ -1167,23 +1186,19 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
       </figure>
 
       <example>
-        <title>infixAnd</title>
+        <title>infixOr</title>
 
         <programlisting>Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType ) //infixOr
 (Cheese( cheeseType : type ) or (Person( favouriteCheese == cheeseType ) and Person( favouriteCheese == cheeseType  ) ) //infixOr with grouping</programlisting>
       </example>
 
       <para>The 'or' Conditional Element also allows for optional pattern
-      binding; which means each resulting subrule will bind it's pattern to
-      the pattern binding.</para>
+      binding; which means each resulting subrule will bind its pattern to
+      the pattern binding. Each pattern must be bound separately,
+      using eponymous variables:</para>
 
       <example>
         <title>or with binding</title>
-
-        <programlisting>pensioner : (or Person( sex == "f", age &gt; 60 ) 
-                Person( sex == "m", age &gt; 65 ) )</programlisting>
-
-        <para>Explicit binding on each Pattern is also allowed.</para>
 
         <programlisting>(or pensioner : Person( sex == "f", age &gt; 60 ) 
     pensioner : Person( sex == "m", age &gt; 65 ) )</programlisting>
@@ -1196,8 +1211,9 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
       match, activate and fire - there is no shortcutting.</para>
 
       <para>The best way to think of the OR conditional element is as a
-      shortcut for generating 2 additional rules. When you think of it that
-      way, its clear that for a single rule there could be multiple
+      shortcut for generating two or more similar rules. When you think
+      of it that
+      way, it's clear that for a single rule there could be multiple
       activations if both sides of the OR conditional element are true.</para>
     </section>
 
@@ -1217,7 +1233,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
       <para>Eval is essentially a catch all which allows any semantic code
       (that returns a primitive boolean) to be executed. This can refer to
       variables that were bound in the LHS of the rule, and functions in the
-      rule package. Over use of eval reduces the declaratives of your rules
+      rule package. Overuse of eval reduces the declarative-ness of your rules
       and can result in a poor performing engine. While 'evals' can be used
       anywhere in the Pattern the best practice is to add it as the last
       conditional element in the LHS of a rule.</para>
@@ -1274,7 +1290,7 @@ eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a functio
 
         <programlisting>not Bus(color == "red") //brackets are optional for this simple pattern
 not ( Bus(color == "red", number == 42) ) //brackets are optional for this simple case
-not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' infix used here as ony two patterns 
+not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' infix used here as only two patterns 
                                                       (but brackets are required).</programlisting>
       </example>
     </section>
@@ -1296,10 +1312,12 @@ not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' inf
       <para>'exists' is first order logic's Existential Quantifier and checks
       for the existence of something in the Working Memory. Think of exist as
       meaning "at least one..". It is different from just having the Pattern
-      on its own; which is more like saying "for each one of...". if you use
-      exist with a Pattern, then the rule will only activate once regardless
+      on its own; which is more like saying "for each one of...". If you use
+      exist with a Pattern, then the rule will only activate at most once,
+      regardless
       of how much data there is in working memory that matches that
-      condition.</para>
+      condition. Since only the existence matters, no bindings will be
+      established.</para>
 
       <para>An 'exist' statement must be followed by parentheses around the
       CEs that it applies to. In the simplest case of a single pattern (like
@@ -1312,7 +1330,7 @@ not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' inf
       </example>
 
       <example>
-        <title>Atleast one red Bus</title>
+        <title>At least one red Bus</title>
 
         <programlisting>exists Bus(color == "red")
 exists ( Bus(color == "red", number == 42) ) //brackets are optional
@@ -1368,7 +1386,7 @@ then
     # all asserted Bus facts are red
 end
 </programlisting>
-        </example> The above is exactly the same as writing:</para>
+        </example></para>
 
       <para>Another example of multi-pattern forall:<example>
           <title>Multi-Pattern Forall</title>
@@ -1404,10 +1422,10 @@ end
 </programlisting>
         </example></para>
 
-      <para>As a side note, forall Conditional Element is equivalent to
-      writing:</para>
+      <para>As a side note, <code>not( forall( p1 p2 p3...))</code> is
+	equivalent to writing:</para>
 
-      <programlisting>not( <replaceable>&lt;first pattern&gt;</replaceable> and not ( and <replaceable>&lt;remaining patterns&gt;</replaceable> ) )</programlisting>
+      <programlisting>not(p1 and not(and p2 p3...))</programlisting>
 
       <para>Also, it is important to note that <emphasis role="bold">forall is
       a scope delimiter</emphasis>, so it can use any previously bound
@@ -1493,7 +1511,8 @@ end
       as it may produce unexpected results. Consider the example provided earlier, but
       now slightly modified as follows:</para>
       
-      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+ruleflow-group "test"
 lock-on-active true
 when
     $p : Person( ) 
@@ -1502,7 +1521,8 @@ then
     modify ($p) {} #Assign person to sales region 1 in a modify block
 end
 
-rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+rule "Apply a discount to people in the city of Raleigh"
+ruleflow-group "test"
 lock-on-active true
 when
     $p : Person( ) 
@@ -1558,7 +1578,8 @@ end
 		the graph is fairly simple, an even easier solution is to modify your rules as follows:
 		</para>
 
-      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+ruleflow-group "test"
 lock-on-active true
 when
     $p : Person(address.state == "NC" )  
@@ -1566,7 +1587,8 @@ then
     modify ($p) {} #Assign person to sales region 1 in a modify block
 end
 
-rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+rule "Apply a discount to people in the city of Raleigh"
+ruleflow-group "test"
 lock-on-active true
 when
     $p : Person(address.city == "Raleigh" )  
@@ -1589,7 +1611,8 @@ end
 	  the following use of <emphasis role="bold">from</emphasis> causes both rules to fire as expected:	  
 	  </para>
 	  
-	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+ruleflow-group "test"
 lock-on-active true
 when
     $p : Person($addresses : addresses)
@@ -1598,7 +1621,8 @@ then
     modify ($p) {} #Assign person to sales region 1 in a modify block
 end
 
-rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+rule "Apply a discount to people in the city of Raleigh"
+ruleflow-group "test"
 lock-on-active true
 when
     $p : Person($addresses : addresses)
@@ -1610,7 +1634,8 @@ end
 	
 	  <para>However, the following slightly different approach does exhibit the problem:</para>
 	  
-	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1" ruleflow-group "test"
+	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+ruleflow-group "test"
 lock-on-active true
 when
     $assessment : Assessment()
@@ -1621,7 +1646,8 @@ then
     modify ($assessment) {} #Modify assessment in a modify block
 end
 
-rule "Apply a discount to people in the city of Raleigh" ruleflow-group "test"
+rule "Apply a discount to people in the city of Raleigh"
+ruleflow-group "test"
 lock-on-active true
 when
     $assessment : Assessment()
@@ -1663,9 +1689,6 @@ end</programlisting></para>
 	  that checks whether the discount has already been applied. If so, the rule does not
 	  activate.</para>
 	  	    
-      <para>The next example shows how we can reason over the results of a
-      hibernate query. The Restaurant pattern will reason over and bind with
-      each result in turn:</para>
     </section>
 
     <section>
@@ -1906,7 +1929,7 @@ then
 end
 </programlisting>
 
-        <para>In the above example, sum is an AccumulateFunction and will sum
+        <para>In the above example, sum is an Accumulate Function and will sum
         the $value of all OrderItems and return the result.</para>
 
         <para>Drools 4.0 ships with the following built in accumulate
@@ -2077,7 +2100,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     need imperative and/or conditional code in the RHS, then maybe you should
     be breaking that rule down into multiple rules. The main purpose of the
     RHS is to insert, retractor modify working memory data. To assist with
-    there there are a few convenience methods you can use to modify working
+    that there are a few convenience methods you can use to modify working
     memory; without having to first reference a working memory
     instance.</para>
 
@@ -2098,7 +2121,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     <para>"retract(handle);" removes an object from working memory.</para>
 
     <para>These convenience methods are basically macros that provide short
-    cuts to the KnowldgeHelper instance (refer to the KnowledgeHelper
+    cuts to the KnowledgeHelper instance (refer to the KnowledgeHelper
     interface for more advanced operations). The KnowledgeHelper interface is
     made available to the RHS code block as a variable called "drools". If you
     provide "Property Change Listeners" to your Java beans that you are

@@ -16,17 +16,17 @@
     <para>FIXME: add syntax diagram for declare</para>
   </warning>
 
-  <para>Type Declarations have two main goals in the rules engine: allow the
-  declaration of new types and/or allow the declaration of metadata for
+  <para>Type declarations have two main goals in the rules engine: to allow the
+  declaration of new types, and to allow the declaration of metadata for
   types.</para>
 
   <itemizedlist>
     <listitem>
       <para><emphasis role="bold">Declaring new types:</emphasis> Drools works
       out of the box with plain POJOs as facts. Although, sometimes the users
-      may want to define the model directly into the rules engine, without
+      may want to define the model directly to the rules engine, without
       worrying to create their models in a lower level language like Java.
-      Another times, there is a domain model already built, but eventually the
+      At other times, there is a domain model already built, but eventually the
       user wants or needs to complement this model with additional entities
       that are used mainly during the reasoning process.</para>
     </listitem>
@@ -100,9 +100,9 @@
 <emphasis role="bold">end</emphasis></programlisting>
       </example></para>
 
-    <para>When you declare a new fact type, Drools will bytecode generate at
-    compile time a POJO that implements the fact type. The generated Java
-    class will be a one-to-one javabean mapping of the type definition. So,
+    <para>When you declare a new fact type, Drools will, at compile time,
+      generate bytecode implementing a POJO that represents the fact type. The generated Java
+    class will be a one-to-one Java Bean mapping of the type definition. So,
     for the previous example, the generated Java class would be:</para>
 
     <para><example>
@@ -202,7 +202,7 @@
     declaration.</para>
 
     <para>For instance, if there is a class org.drools.examples.Person, and
-    one wants to declare metadata for it, just to the following:</para>
+    one wants to declare metadata for it, just write the following code:</para>
 
     <example>
       <title>declaring metadata for an existing type</title>
@@ -248,7 +248,7 @@
 
     <para>The first important thing to realize is that a declared fact will
     belong to the package where it was declared. So, for instance, in the
-    example bellow, <emphasis>Person</emphasis> will belong to the
+    example below, <emphasis>Person</emphasis> will belong to the
     <emphasis>org.drools.examples</emphasis> package, and so the generated
     class fully qualified name will be:
     <emphasis>org.drools.examples.Person</emphasis>.</para>

@@ -213,12 +213,12 @@
 
     <para>Another improvement on DRL language is the ability to escape hard
     keywords on rule text. This new feature enables you to use your existing
-    domain objects without worring about keyword collision. To escape a word,
-    simple type it between a grave accent, like this:</para>
+    domain objects without worrying about keyword collision. To escape a word,
+    simple type it between grave accents, like this:</para>
 
     <programlisting>Holiday( `when` == "july" )</programlisting>
 
-    <para>The escape should be used everywehere in rule text, except at code
+    <para>The escape should be used everywehere in rule text, except within code
     expressions in the LHS or RHS code block. Here are examples of
     usage:</para>
 
