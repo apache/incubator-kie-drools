@@ -8,18 +8,18 @@
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
   <title>Rete Algorithm</title>
 
-  <para>The RETE algorithm was invented by Dr. Charles Forgy and documented in
+  <para>The <emphasis>Rete</emphasis> algorithm was invented by Dr. Charles Forgy and documented in
   his PhD thesis in 1978-79. A simplified version of the paper was published
   in 1982 (<ulink
   url="http://citeseer.ist.psu.edu/context/505087/0">http://citeseer.ist.psu.edu/context/505087/0</ulink>).
-  The word RETE is latin for "net" meaning network. The RETE algorithm can be broken
-  into 2 parts: rule compilation and runtime execution.</para>
+  The latin word "rete" means "net" or "network". The Rete algorithm can be
+  broken into 2 parts: rule compilation and runtime execution.</para>
 
   <para>The compilation algorithm describes how the Rules in the Production
-  Memory to generate an efficient discrimination network. In non-technical
-  terms, a discrimination network is used to filter data. The idea is to
-  filter data as it propagates through the network. At the top of the network
-  the nodes would have many matches and as we go down the network, there would be 
+  Memory are processed to generate an efficient discrimination network. In
+  non-technical terms, a discrimination network is used to filter data as 
+  it propagates through the network. The nodes at the top of the network
+  would have many matches, and as we go down the network, there would be 
   fewer matches. At the very bottom of the network are the terminal nodes. In Dr.
   Forgy's 1982 paper, he described 4 basic nodes: root, 1-input, 2-input and
   terminal.</para>
@@ -42,7 +42,7 @@
   cycles. To make things efficient, the engine should only pass the object to
   the nodes that match the object type. The easiest way to do this is to
   create an ObjectTypeNode and have all 1-input and 2-input nodes descend from
-  it. This way, if an application asserts a new account, it won't propagate to
+  it. This way, if an application asserts a new Account, it won't propagate to
   the nodes for the Order object. In Drools when an object is asserted it
   retrieves a list of valid ObjectTypesNodes via a lookup in a HashMap from
   the object's Class; if this list doesn't exist it scans all the ObjectTypeNodes finding valid matches which it caches in the list. This enables Drools
@@ -65,9 +65,9 @@
   support other operations. For example, <code>Account.name == "Mr Trout"</code> is a
   literal condition. When a rule has multiple literal conditions for a single
   object type, they are linked together. This means that if an application
-  asserts an account object, it must first satisfy the first literal condition
+  asserts an Account object, it must first satisfy the first literal condition
   before it can proceed to the next AlphaNode. In Dr. Forgy's paper, he refers
-  to these as IntraElement conditions. The following shows the AlphaNode
+  to these as IntraElement conditions. The following diagram shows the AlphaNode
   combinations for Cheese( name == "cheddar", strength == "strong" ):</para>
 
   <figure>
@@ -86,10 +86,10 @@
   ObjectTypeNode it adds the literal value as a key to the HashMap with the
   AlphaNode as the value. When a new instance enters the ObjectType node,
   rather than propagating to each AlphaNode, it can instead retrieve the
-  correct AlphaNode from the HashMap - avoiding unnecessary literal
+  correct AlphaNode from the HashMap,thereby avoiding unnecessary literal
   checks.</para>
 
-  <para>There are two two-input nodes; JoinNode and NotNode - both are
+  <para>There are two two-input nodes, JoinNode and NotNode, and both are
   types of BetaNodes. BetaNodes are used to compare 2 objects, and their
   fields, to each other. The objects may be the same or different types. By
   convention we refer to the two inputs as left and right. The left input for
@@ -120,16 +120,16 @@
   network we use a LeftInputNodeAdapter - this takes an Object as an input and
   propagates a single Object Tuple.</para>
 
-  <para>Terminal nodes are used to indicate a single rule has matched all its
-  conditions - at this point we say the rule has a full match. A rule with an
+  <para>Terminal nodes are used to indicate a single rule having matched all its
+  conditions; at this point we say the rule has a full match. A rule with an
   'or' conditional disjunctive connective results in subrule generation for
   each possible logically branch; thus one rule can have multiple terminal
   nodes.</para>
 
   <para>Drools also performs node sharing. Many rules repeat the same
-  patterns, node sharing allows us to collapse those patterns so that they
+  patterns, and node sharing allows us to collapse those patterns so that they
   don't have to be re-evaluated for every single instance. The following two
-  rules share the first same pattern, but not the last:</para>
+  rules share the first pattern, but not the last:</para>
 
   <programlisting>
     <![CDATA[
@@ -155,7 +155,7 @@
     ]]>
   </programlisting>
 
-  <para>As you can see below, the compiled Rete network shows the alpha node is
+  <para>As you can see below, the compiled Rete network shows that the alpha node is
   shared, but the beta nodes are not. Each beta node has its own TerminalNode. Had
   the second pattern been the same it would have also been shared.</para>
 
