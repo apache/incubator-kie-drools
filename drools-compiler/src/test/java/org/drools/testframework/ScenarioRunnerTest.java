@@ -145,6 +145,45 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    /**
+     * to check for re-ordering..
+     * @throws Exception
+     */
+    public void testPopulateNestedWrongOrder() throws Exception {
+        Scenario sc = new Scenario();
+        List facts = ls( new FactData( "OuterFact",
+                                       "p1",
+                                       ls( new FieldData( "name",
+                                                          "mic" ),
+                                           new FieldData( "innerFact",
+                                                          "=c1" ) ),
+                                       false ),
+                         new FactData( "Cheese",
+                                       "c1",
+                                       ls( new FieldData( "type",
+                                                          "cheddar" ),
+                                           new FieldData( "price",
+                                                          "42" ) ),
+                                       false ) );
+
+        sc.fixtures.addAll( facts );
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.OuterFact" );
+        ScenarioRunner runner = new ScenarioRunner( sc,
+                                                    resolver,
+                                                    new MockWorkingMemory() );
+
+        assertTrue( runner.populatedData.containsKey( "c1" ) );
+        assertTrue( runner.populatedData.containsKey( "p1" ) );
+
+        OuterFact o = (OuterFact) runner.populatedData.get("p1");
+        assertNotNull(o.getInnerFact());
+
+    }
+
+
     public void testPopulateEmpty() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
