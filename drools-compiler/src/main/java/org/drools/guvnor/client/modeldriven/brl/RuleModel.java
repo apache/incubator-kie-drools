@@ -43,6 +43,25 @@ public class RuleModel
         }
         return null;
     }
+    /*
+     * Get the bound fact of a rhs action
+     * Fix nheron
+     */
+    public ActionInsertFact getRhsBoundFact(final String var){
+    	if (this.rhs==null){
+    		return null;
+    	}
+        for ( int i = 0; i < this.rhs.length; i++ ) {
+
+            if ( this.rhs[i] instanceof ActionInsertFact ) {
+                final ActionInsertFact p = (ActionInsertFact) this.rhs[i];
+                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
+                    return p;
+                }
+            }
+        }
+    	return null;
+    }
 
     /**
      * @return A list of bound facts (String). Or empty list if none are found.
@@ -63,7 +82,26 @@ public class RuleModel
         return list;
 
     }
+    /**
+     * @return A list of bound facts of the rhs(String). Or empty list if none are found.
+     * Fix nheron
+     */
+    public List getRhsBoundFacts() {
+        if ( this.rhs == null ) {
+            return null;
+        }
+        final List list = new ArrayList();
+        for ( int i = 0; i < this.rhs.length; i++ ) {
+            if ( this.rhs[i] instanceof ActionInsertFact ) {
+                final ActionInsertFact p = (ActionInsertFact) this.rhs[i];
+                if ( p.getBoundName() != null ) {
+                    list.add( p.getBoundName() );
+                }
+            }
+        }
+        return list;
 
+    }
     /**
      *
      * @param idx Remove this index from the LHS.
@@ -330,6 +368,15 @@ public class RuleModel
                             result.add( con.fieldBinding );
                         }
                     }
+                }
+            }
+        }
+        for ( int i = 0; i < this.rhs.length; i++ ) {
+        	IAction pat = this.rhs[i];
+            if (pat instanceof ActionInsertFact) {
+            	ActionInsertFact fact = (ActionInsertFact) pat;
+                if (fact.isBound()) {
+                    result.add( fact.getBoundName() );
                 }
             }
         }

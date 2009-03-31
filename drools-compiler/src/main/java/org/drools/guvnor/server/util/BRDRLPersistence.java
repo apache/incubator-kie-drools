@@ -246,7 +246,6 @@ public class BRDRLPersistence implements BRLPersistence {
 				}
 			}
 		}
-
 		/**
 		 * Recursively process the nested constraints. It will only put brackets
 		 * in for the ones that aren't at top level. This makes for more
@@ -376,30 +375,56 @@ public class BRDRLPersistence implements BRLPersistence {
 			if (isDSLEnhanced) {
 				buf.append(">");
 			}
-			if (action.fieldValues.length == 0) {
+			if (action.fieldValues.length == 0 && action.getBoundName() == null) {
 				buf.append((isLogic) ? "insertLogical( new " : "insert( new ");
 
 				buf.append(action.factType);
 				buf.append("() );\n");
 			} else {
 				buf.append(action.factType);
-				buf.append(" fact");
-				buf.append(idx);
+				if (action.getBoundName()==null)
+				{
+					buf.append(" fact");
+					buf.append(idx);
+				} else {
+					buf.append(" " + action.getBoundName());
+				}
 				buf.append(" = new ");
 				buf.append(action.factType);
 				buf.append("();\n");
-				generateSetMethodCalls("fact" + idx, action.fieldValues);
+				if (action.getBoundName()==null)
+				{
+					generateSetMethodCalls("fact" + idx, action.fieldValues);
+				}else{
+					generateSetMethodCalls(action.getBoundName(), action.fieldValues);
+				}
+					
 				buf.append("\t\t");
 				if (isDSLEnhanced) {
 					buf.append(">");
 				}
 				if (isLogic) {
-					buf.append("insertLogical( fact");
+					buf.append("insertLogical(");
+					if (action.getBoundName()==null){
+						buf.append("fact");
+						buf.append(idx++);
+					}else{
+						buf.append(action.getBoundName());
+					}
+					buf.append(" );\n");
 				} else {
-					buf.append("insert( fact");
+					buf.append("insert(");
+					if (action.getBoundName()==null){
+						buf.append("fact");
+						buf.append(idx++);
+					}else {
+						buf.append(action.getBoundName());
+					}
+
+					buf.append(" );\n");
 				}
-				buf.append(idx++);
-				buf.append(" );\n");
+//				buf.append(idx++);
+//				buf.append(" );\n");
 			}
 		}
 
