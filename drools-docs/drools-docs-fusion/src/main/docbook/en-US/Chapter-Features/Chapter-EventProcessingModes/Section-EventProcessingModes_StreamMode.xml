@@ -64,9 +64,79 @@ config.setOption( EventProcessingOption.STREAM );</programlisting>
 
   <section>
     <title>Role of Session Clock in Stream mode</title>
+
+    <para>When running the engine in CLOUD mode, the session clock is used
+    only to time stamp the arriving events that don't have a previously
+    defined timestamp attribute. Although, in STREAM mode, the Session Clock
+    assumes an even more important role. </para>
+
+    <para>In STREAM mode, the session clock is responsible for keeping the
+    current timestamp, and based on it, the engine does all the temporal
+    calculations on event's aging, synchronizes streams from multiple sources,
+    schedules future tasks and so on.</para>
+
+    <para>Check the documentation on the Session Clock section to know how to
+    configure and use different session clock implementations.</para>
   </section>
 
   <section>
     <title>Negative Patterns in Stream Mode</title>
+
+    <para>Negative patterns behave different in STREAM mode when compared to
+    CLOUD mode. In CLOUD mode, the engine assumes that all facts and events
+    are known in advance (there is no concept of flow of time) and so,
+    negative patterns are evaluated immediately.</para>
+
+    <para>When running in STREAM mode, negative patterns with temporal
+    constraints may require the engine to wait for a time period before
+    activating a rule. The time period is automatically calculated by the
+    engine in a way that the user does not need to use any tricks to achieve
+    the desired result.</para>
+
+    <para>For instance:</para>
+
+    <para><example>
+        <title>a rule that activates immediately upon matching</title>
+
+        <programlisting>rule "Sound the alarm"
+when
+    $f : FireDetected( )
+    not( SprinklerActivated( ) )
+then
+    // sound the alarm
+end
+</programlisting>
+      </example>The above rule has no temporal constraints that would require
+    delaying the rule, and so, the rule activates immediately. The following
+    rule on the other hand, must wait for 10 seconds before activating, since
+    it may take up to 10 seconds for the sprinklers to activate:</para>
+
+    <para><example>
+        <title>a rule that automatically delays activation due to temporal
+        constraints</title>
+
+        <programlisting>rule "Sound the alarm"
+when
+    $f : FireDetected( )
+    not( SprinklerActivated( this after[0s,10s] $f ) )
+then
+    // sound the alarm
+end</programlisting>
+      </example>This behaviour allows the engine to keep consistency when
+    dealing with negative patterns and temporal constraints at the same time.
+    The above would be the same as writing the rule as bellow, but does not
+    burden the user to calculate and explicitly write the appropriate duration
+    parameter:<example>
+        <title>same rule with explicit duration parameter</title>
+
+        <programlisting>rule "Sound the alarm"
+    duration( 10s )
+when
+    $f : FireDetected( )
+    not( SprinklerActivated( this after[0s,10s] $f ) )
+then
+    // sound the alarm
+end</programlisting>
+      </example></para>
   </section>
 </section>
