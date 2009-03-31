@@ -36,7 +36,7 @@
   <programlisting>KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( EventProcessingOption.STREAM );</programlisting>
 
-  <para>Or, the equivalent property:</para>
+  <para>Or, the equivalent property: </para>
 
   <programlisting>drools.eventProcessingMode = stream</programlisting>
 
@@ -68,7 +68,7 @@ config.setOption( EventProcessingOption.STREAM );</programlisting>
     <para>When running the engine in CLOUD mode, the session clock is used
     only to time stamp the arriving events that don't have a previously
     defined timestamp attribute. Although, in STREAM mode, the Session Clock
-    assumes an even more important role. </para>
+    assumes an even more important role.</para>
 
     <para>In STREAM mode, the session clock is responsible for keeping the
     current timestamp, and based on it, the engine does all the temporal
