@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>Sliding Windows</title>	
-	
-	<xi:include href="Section-SlidingWindows_SlidingTimeWindows.xml" />
-	
-	<xi:include href="Section-SlidingWindows_SlidingLengthWindows.xml" />
-	
-	
-	
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Sliding Windows</title>
+
+  <para>Sliding Window is a way to scope the events of interest as a the ones
+  belonging to a window that is constantly moving. The two most common sliding
+  window implementations are time based windows and length based windows.
+  </para>
+
+  <para>The next sections will detail each of them.</para>
+
+  <important>
+    <para>Sliding Windows are only available when running the engine in STREAM
+    mode. Check the Event Processing Mode section for details on how the
+    STREAM mode works.</para>
+  </important>
+
+  <xi:include href="Section-SlidingWindows_SlidingTimeWindows.xml" />
+
+  <xi:include href="Section-SlidingWindows_SlidingLengthWindows.xml" />
 </section>
