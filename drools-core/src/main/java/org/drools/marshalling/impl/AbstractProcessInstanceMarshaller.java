@@ -117,10 +117,10 @@ public abstract class AbstractProcessInstanceMarshaller implements
 	            stream.writeShort( PersisterEnums.RULE_SET_NODE_INSTANCE );
 	        } else if ( nodeInstance instanceof HumanTaskNodeInstance ) {
 	            stream.writeShort( PersisterEnums.HUMAN_TASK_NODE_INSTANCE );
-	            stream.writeLong( ((HumanTaskNodeInstance) nodeInstance).getWorkItem().getId() );
+	            stream.writeLong( ((HumanTaskNodeInstance) nodeInstance).getWorkItemId() );
 	        } else if ( nodeInstance instanceof WorkItemNodeInstance ) {
 	            stream.writeShort( PersisterEnums.WORK_ITEM_NODE_INSTANCE );
-	            stream.writeLong( ((WorkItemNodeInstance) nodeInstance).getWorkItem().getId() );
+	            stream.writeLong( ((WorkItemNodeInstance) nodeInstance).getWorkItemId() );
 	        } else if ( nodeInstance instanceof SubProcessNodeInstance ) {
 	            stream.writeShort( PersisterEnums.SUB_PROCESS_NODE_INSTANCE );
 	            stream.writeLong( ((SubProcessNodeInstance) nodeInstance).getProcessInstanceId() );

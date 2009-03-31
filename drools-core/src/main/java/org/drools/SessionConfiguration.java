@@ -78,6 +78,8 @@ public class SessionConfiguration
     private WorkItemManagerFactory         workItemManagerFactory;
     private CommandService                 commandService; 
 
+    private transient ClassLoader          classLoader;
+    
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
         out.writeBoolean( immutable );
@@ -100,17 +102,30 @@ public class SessionConfiguration
      * @param properties
      */
     public SessionConfiguration(Properties properties) {
-        init( properties );
+        init( null, properties );
     }
 
     /**
      * Creates a new session configuration with default configuration options.
      */
     public SessionConfiguration() {
-        init( null );
+        init( null, null );
+    }
+    
+    public SessionConfiguration(ClassLoader classLoader) {
+    	init ( classLoader, null );
     }
 
-    private void init(Properties properties) {
+    private void init(ClassLoader classLoader, Properties properties) {
+    	
+    	if ( classLoader != null ) {
+            this.classLoader = classLoader;
+        } else if ( Thread.currentThread().getContextClassLoader() != null ) {
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+        } else {
+            this.classLoader = this.getClass().getClassLoader();
+        }
+    	
         this.immutable = false;
 
         this.chainedProperties = new ChainedProperties( "session.conf" );
@@ -407,4 +422,13 @@ public class SessionConfiguration
             setClockType( ClockType.resolveClockType( ((ClockTypeOption) option ).getClockType() ) );
         }
     }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
 }
