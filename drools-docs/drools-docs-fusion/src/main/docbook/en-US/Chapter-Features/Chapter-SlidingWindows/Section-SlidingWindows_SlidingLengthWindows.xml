@@ -1,12 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>Sliding Length Windows</title>	
-	
-	
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Sliding Length Windows</title>
+
+  <para>Sliding Length Windows work the same way as Time Windows, but discard
+  events based on the arrival of new events instead of flow of time.</para>
+
+  <para>For instance, if the user wants to consider only the last 10 IBM Stock
+  Ticks, independent of how old they are, the pattern would look like
+  this:</para>
+
+  <programlisting>StockTick( company == "IBM" ) over window:length( 10 )</programlisting>
+
+  <para>As you can see, the pattern is similar to the one presented in the
+  previous section, but instead of using window:time to define the sliding
+  window, it uses window:length.</para>
+
+  <para>Using a similar example to the one in the previous section, if the
+  user wants to sound an alarm in case the average temperature over the last
+  100 readings from a sensor is above the threshold value, the rule would look
+  like:</para>
+
+  <para><example>
+      <title>aggregating values over length windows</title>
+
+      <programlisting>rule "Sound the alarm in case temperature rises above threshold"
+when
+    TemperatureThreshold( $max : max )
+    Number( doubleValue &gt; $max ) from accumulate(
+        SensorReading( $temp : temperature ) over window:length( 100 ),
+        average( $temp ) )
+then
+    // sound the alarm
+end</programlisting>
+    </example>The engine will keep only the last 100 readings.</para>
 </section>
