@@ -39,7 +39,7 @@ config.setOption( ClockTypeOption.get("realtime") );
     <para>To configure the pseudo session clock, do:</para>
 
     <programlisting>KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-config.setOption( ClockTypeOption.get("realtime") );</programlisting>
+config.setOption( ClockTypeOption.get("pseudo") );</programlisting>
 
     <para>As an example of how to control the pseudo session clock:</para>
 
