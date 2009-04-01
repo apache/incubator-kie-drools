@@ -232,14 +232,16 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     }
     
     public void workItemAborted(WorkItem workItem) {
-        if ( getWorkItem().getId() == workItem.getId() ) {
+        if ( workItemId == workItem.getId()
+        		|| ( workItemId == -1 && getWorkItem().getId() == workItem.getId()) ) {
             removeEventListeners();
             triggerCompleted(workItem);
         }
     }
 
     public void workItemCompleted(WorkItem workItem) {
-        if ( getWorkItem().getId() == workItem.getId() ) {
+        if ( workItemId == workItem.getId()
+        		|| ( workItemId == -1 && getWorkItem().getId() == workItem.getId()) ) {
             removeEventListeners();
             triggerCompleted(workItem);
         }

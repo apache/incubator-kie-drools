@@ -676,14 +676,14 @@ public abstract class AbstractWorkingMemory
         executeQueuedActions();
 
         int fireCount = 0;
-        try {
-            if ( this.firing.compareAndSet( false,
-                                            true ) ) {
+        if ( this.firing.compareAndSet( false,
+                                        true ) ) {
+            try {
                 fireCount = this.agenda.fireAllRules( agendaFilter,
                                                       fireLimit );
+            } finally {
+                this.firing.set( false );
             }
-        } finally {
-            this.firing.set( false );
         }
         return fireCount;
     }
