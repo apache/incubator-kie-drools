@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>Inferred expiration policy</title>	
-		
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Inferred expiration offset</title>
+
+  <para>Another way for the engine to calculate the expiration offset for a
+  given event is implicitly, by analyzing the temporal constraints in the
+  rules. For instance, given the following rule:</para>
+
+  <para><example>
+      <title>example rule with temporal constraints</title>
+
+      <programlisting>rule "correlate orders"
+when
+    $bo : BuyOrderEvent( $id : id ) 
+    $ae : AckEvent( id == $id, this after[0,10s] $bo )
+then
+    // do something
+end
+</programlisting>
+    </example>Analyzing the above rule, the engine automatically calculates
+  that whenever a BuyOrderEvent matches, it needs to store it for up to 10
+  seconds to wait for matching AckEvent's. So, the implicit expiration offset
+  for BuyOrderEvent will be 10 seconds. AckEvent, on the other hand, can only
+  match existing BuyOrderEvent's, and so its expiration offset will be zero
+  seconds.</para>
+
+  <para>The engine will make this analysis for the whole rulebase and find the
+  offset for every event type. Whenever an implicit expiration offset clashes
+  with the explicit expiration offset, then engine will use the greater of the
+  two.</para>
 </section>
