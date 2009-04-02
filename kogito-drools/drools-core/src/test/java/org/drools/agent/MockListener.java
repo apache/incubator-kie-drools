@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockListener
-    implements
-    AgentEventListener {
+        implements
+        AgentEventListener {
 
-	public List exceptions = new ArrayList();
+    public List exceptions = new ArrayList();
 
     public void debug(String message) {
 
 
     }
 
-    public void exception(Exception e) {
+    public void exception(String message, Throwable e) {
+        exceptions.add(e);
+    }
+
+    public void exception(Throwable e) {
         exceptions.add(e);
 
     }
@@ -37,19 +41,19 @@ public class MockListener
     public void debug(String message,
                       Object object) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void info(String message,
                      Object object) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void warning(String message,
                         Object object) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

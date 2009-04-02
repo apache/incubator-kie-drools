@@ -35,8 +35,13 @@ public class PrintStreamSystemEventListener
         print.println( "[" +  time() + ":debug] " + message + " object=" + object );
     }    
 
-    public void exception(Exception e) {
-        print.println( "[" +  time() + ":exception " );
+     public void exception(String message, Throwable e) {
+        print.println( "[" +  time() + ":exception] " + message );
+        e.printStackTrace( print );
+    }
+
+    public void exception(Throwable e) {
+        print.println( "[" +  time() + ":exception]" );
         e.printStackTrace( print );
     }
 

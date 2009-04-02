@@ -658,7 +658,10 @@ public class RuleAgentTest extends TestCase {
             public void debug(String message) {
             }
 
-            public void exception(Exception e) {
+            public void exception(String message, Throwable e) {
+            }
+
+            public void exception(Throwable e) {
             }
 
             public void info(String message) {
@@ -862,7 +865,11 @@ public class RuleAgentTest extends TestCase {
 
         }
 
-        public void exception(Exception e) {
+        public void exception(String message, Throwable e) {
+            this.exceptionCalled = true;
+        }
+
+        public void exception(Throwable e) {
             this.exceptionCalled = true;
         }
 
