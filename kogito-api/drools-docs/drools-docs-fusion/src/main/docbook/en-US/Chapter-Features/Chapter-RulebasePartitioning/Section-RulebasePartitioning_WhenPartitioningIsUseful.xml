@@ -1,16 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>When partitioning is useful</title>	
-	
-	
-	<section>
-		<title>When partitioning is useful</title> 						
-	</section>
-			
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>When partitioning is useful</title>
+
+    <para>Knowledge base partitioning is a very powerful feature for specific
+    scenarios, but it is not a general case solution. To understand if this
+    feature would be useful for a given scenario, the user may follow the
+    checklist bellow:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Does your hardware contains multiple processors?</para>
+      </listitem>
+
+      <listitem>
+        <para>Does your knowledge session process a high volume of
+        facts?</para>
+      </listitem>
+
+      <listitem>
+        <para>Are the LHS of your rules expensive to evaluate? (ex: use
+        expensive "from" expressions)</para>
+      </listitem>
+
+      <listitem>
+        <para>Does your knowledge base contains hundreds or more rules?</para>
+      </listitem>
+    </orderedlist>
+
+    <para>If the answer to all the questions above is "yes", then this feature
+    will probably increase the overall performance of your rulebase
+    evaluation. </para>
 </section>
