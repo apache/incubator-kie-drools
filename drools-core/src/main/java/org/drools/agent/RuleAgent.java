@@ -548,7 +548,12 @@ public class RuleAgent {
                 return d.toString();
             }
 
-            public void exception(Exception e) {
+            public void exception(String message, Throwable e) {
+                System.err.println( "RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow." );
+                e.printStackTrace( System.err );
+            }
+
+            public void exception(Throwable e) {
                 System.err.println( "RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow." );
                 e.printStackTrace( System.err );
             }
