@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook">
-	<title>Multithreading management</title>	
-	
-	
-	<section>
-		<title>Multithreading management</title> 	
-	</section>
-			
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Multithreading management</title>
+
+    <para>Drools offers a simple configuration option for users to control the
+    size of the worker thread's pool.</para>
+
+    <para>To define the maximum size for the thread pool, the user may use the
+    following configuration option:</para>
+
+    <para><example>
+        <title>setting the maximum number of threads for rule evaluation to
+        5</title>
+
+        <programlisting>KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+config.setOption( MaxThreadsOption.get(5) );
+</programlisting>
+      </example></para>
+
+    <para>The equivalent property is:</para>
+
+    <programlisting>drools.maxThreads = &lt;-1|1..n&gt;</programlisting>
+
+    <para>The default value for this configuration is 3 and a negative number
+    means the engine will try to spawn as many threads as there are partitions
+    in the rulebase.</para>
+
+    <warning>
+      <para>It is usually dangerous to set this option with a negative number.
+      Always set it with a sensible positive number of threads.</para>
+    </warning>
 </section>

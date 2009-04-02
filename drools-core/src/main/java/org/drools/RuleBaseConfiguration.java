@@ -43,7 +43,9 @@ import org.drools.conf.IndexRightBetaMemoryOption;
 import org.drools.conf.KnowledgeBaseOption;
 import org.drools.conf.LogicalOverrideOption;
 import org.drools.conf.MaintainTMSOption;
+import org.drools.conf.MaxThreadsOption;
 import org.drools.conf.MultiValueKnowledgeBaseOption;
+import org.drools.conf.MultithreadEvaluationOption;
 import org.drools.conf.RemoveIdentitiesOption;
 import org.drools.conf.SequentialAgendaOption;
 import org.drools.conf.SequentialOption;
@@ -106,6 +108,8 @@ import org.mvel2.MVEL;
  * drools.consequenceExceptionHandler = <qualified class name>
  * drools.ruleBaseUpdateHandler = <qualified class name>
  * drools.sessionClock = <qualified class name>
+ * drools.maxThreads = <-1|1..n>
+ * drools.multithreadEvaluation = <true|false>
  * 
  */
 public class RuleBaseConfiguration
@@ -288,10 +292,10 @@ public class RuleBaseConfiguration
             setConflictResolver( RuleBaseConfiguration.determineConflictResolver( StringUtils.isEmpty( value ) ? DepthConflictResolver.class.getName() : value ) );
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
             setAdvancedProcessRuleIntegration( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
-        } else if ( name.equals( "drools.multithreadEvaluation" ) ) {
+        } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
             setMultithreadEvaluation( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
-        } else if ( name.equals( "drools.maxThreads" ) ) {
-            setMaxThreads( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt( value ) );
+        } else if ( name.equals( MaxThreadsOption.PROPERTY_NAME ) ) {
+            setMaxThreads( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt( value ) );
         } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
             setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( StringUtils.isEmpty( value ) ? "cloud" : value ) );
         }
@@ -337,9 +341,9 @@ public class RuleBaseConfiguration
             return getConflictResolver().getClass().getName();
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
             return Boolean.toString( isAdvancedProcessRuleIntegration() );
-        } else if ( name.equals( "drools.multithreadEvaluation" ) ) {
-            Boolean.toString( isMultithreadEvaluation() );
-        } else if ( name.equals( "drools.maxThreads" ) ) {
+        } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
+            return Boolean.toString( isMultithreadEvaluation() );
+        } else if ( name.equals( MaxThreadsOption.PROPERTY_NAME ) ) {
             return Integer.toString( getMaxThreads() );
         } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
             return getEventProcessingMode().getMode();
@@ -429,11 +433,11 @@ public class RuleBaseConfiguration
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );
 
-        setMultithreadEvaluation( Boolean.valueOf( this.chainedProperties.getProperty( "drools.multithreadEvaluation",
+        setMultithreadEvaluation( Boolean.valueOf( this.chainedProperties.getProperty( MultithreadEvaluationOption.PROPERTY_NAME,
                                                                                        "false" ) ).booleanValue() );
 
-        setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( "drools.maxThreads",
-                                                                             "-1" ) ) );
+        setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( MaxThreadsOption.PROPERTY_NAME,
+                                                                             "3" ) ) );
         setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( this.chainedProperties.getProperty( EventProcessingOption.PROPERTY_NAME,
                                                                                                                   "cloud" ) ) );
     }
@@ -1181,6 +1185,10 @@ public class RuleBaseConfiguration
             return (T) ConsequenceExceptionHandlerOption.get( handler );
         } else if ( EventProcessingOption.class.equals( option ) ) {
             return (T) getEventProcessingMode();
+        } else if ( MaxThreadsOption.class.equals( option ) ) {
+            return (T) MaxThreadsOption.get( getMaxThreads() );
+        } else if ( MultithreadEvaluationOption.class.equals( option ) ) {
+            return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
         }
         return null;
         
@@ -1215,6 +1223,10 @@ public class RuleBaseConfiguration
             setConsequenceExceptionHandler( ((ConsequenceExceptionHandlerOption) option).getHandler().getName() );
         } else if ( option instanceof EventProcessingOption ) {
             setEventProcessingMode( (EventProcessingOption) option );
+        } else if ( option instanceof MaxThreadsOption ) {
+            setMaxThreads( ((MaxThreadsOption) option).getMaxThreads() );
+        } else if ( option instanceof MultithreadEvaluationOption ) {
+            setMultithreadEvaluation( ((MultithreadEvaluationOption) option).isMultithreadEvaluation() );
         } 
 
     }
