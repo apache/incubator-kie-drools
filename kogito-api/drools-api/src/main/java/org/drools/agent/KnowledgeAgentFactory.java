@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.ProviderInitializationException;
+import org.drools.io.ResourceFactory;
 
 /**
  * <p>
@@ -58,10 +59,21 @@ import org.drools.ProviderInitializationException;
  * for this property.
  * </p>
  * 
+ * <p>
  * KnowledgeAgents can take a empty KnowledgeBase or a populated one. If a populated KnowledgeBase is provided, the KnowledgeAgent
  * will iterate KnowledgeBase and subscribe to the Resource that it finds. While it is possible for the KnowledgeBuilder to build
  * all resources found in a directory, that information is lost by the KnowledgeBuilder so those directories will not be continuously scanned.
  * Only directories specified as part of the applyChangeSet(Resource) method are monitored.
+ * </p>
+ * 
+ * <p>
+ * Resource scanning is not on by default, it's a service and must be started, the same is for notification. This can be done via the ResourceFactory
+ * </p>
+ * 
+ * <pre>
+ * ResourceFactory.getResourceChangeNotifierService().start();
+ * ResourceFactory.getResourceChangeScannerService().start();
+ * </pre>
  * 
  * @see org.drools.agent.KnowledgeAgent
  * @see org.drools.agent.KnowledgeAgentConfiguration
