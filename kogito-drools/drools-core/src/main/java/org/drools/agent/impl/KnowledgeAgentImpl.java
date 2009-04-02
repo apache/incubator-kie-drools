@@ -22,6 +22,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
+import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
@@ -352,7 +353,12 @@ public class KnowledgeAgentImpl
             //            // reset the resources map, so it can now be rebuilt
             //            this.resources.clear();
 
-            this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            if ( this.kbase != null ) {
+                // re-use the KnowledgeBaseConfiguration if possible
+                this.kbase = KnowledgeBaseFactory.newKnowledgeBase( ((InternalRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration() );
+            } else {
+                this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            }
 
             if ( changeSetState.needsKnowledgeBuilder ) {
 
