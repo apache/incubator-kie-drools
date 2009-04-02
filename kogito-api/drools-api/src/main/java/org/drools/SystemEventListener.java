@@ -34,7 +34,9 @@ public interface SystemEventListener {
     /**
      * An exception occurred.
      */
-    public void exception(Exception e);
+    public void exception(String message, Throwable e);
+
+    public void exception(Throwable e);
 
     /**
      * These should not be logged, just shown if needed.
