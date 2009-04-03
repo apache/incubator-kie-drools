@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -694,6 +695,11 @@ public class Rule
     public String getMetaAttribute(final String identifier) {
         return (String) this.metaAttributes.get( identifier );
     }
+    
+    public Collection<String> listMetaAttributes() {
+        return this.metaAttributes.keySet();
+    }
+    
 	public void setParent(Rule parent) {
 		this.parent = parent;
 	}

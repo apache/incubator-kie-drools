@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,8 @@ import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
+import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -192,6 +195,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         this.queryResults.put( query,
                                node );
     }
+    
+    
 
     public static class WorkingMemoryReteAssertAction
         implements
@@ -343,6 +348,22 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                 ((EventFactHandle)factHandle).getEntryPoint().retract( factHandle );
             }
         }
+    }
+
+    public Collection< ? extends FactHandle> getFactHandles() {
+        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
+    }
+
+    public Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter) {
+        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
+    }
+
+    public Collection< ? extends Object> getObjects() {
+        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
+    }
+
+    public Collection< ? extends Object> getObjects(ObjectFilter filter) {
+        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
     }
 
 }
