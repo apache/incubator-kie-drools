@@ -67,7 +67,7 @@ import org.drools.io.ResourceFactory;
  * </p>
  * 
  * <p>
- * Resource scanning is not on by default, it's a service and must be started, the same is for notification. This can be done via the ResourceFactory
+ * Resource scanning is not on by default, it's a service and must be started, the same is for notification. This can be done via the ResourceFactory.
  * </p>
  * 
  * <pre>

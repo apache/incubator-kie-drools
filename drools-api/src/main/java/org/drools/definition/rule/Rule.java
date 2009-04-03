@@ -1,13 +1,18 @@
 package org.drools.definition.rule;
 
+import java.util.Collection;
+
 import org.drools.definition.KnowledgeDefinition;
 
 public interface Rule
     extends
     KnowledgeDefinition {
-
+    
+    String getPackageName();
+    
     String getName();
 
-    public String getPackageName();
-
+    Collection<String> listMetaAttributes();
+    
+    String getMetaAttribute(final String identifier);
 }

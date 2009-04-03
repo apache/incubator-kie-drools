@@ -1,5 +1,10 @@
 package org.drools.runtime.rule;
 
+import java.util.Collection;
+
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.runtime.ObjectFilter;
+
 /**
  * <p>An entry-point is an abstract channel through where facts are inserted into the engine.</p>
  * <p>Drools 5 supports multiple entry-points into a single <code>StatefulKnowledgeBase</code>: the
@@ -55,4 +60,59 @@ public interface WorkingMemoryEntryPoint {
     void update(FactHandle handle,
                 Object object);
 
+    /**
+     * Returns the fact handle associated with the given object. It is important to note that this 
+     * method behaves in accordance with the configured assert behaviour for this knowledge base
+     * (either IDENTITY or EQUALITY).
+     *  
+     * @param object 
+     *               the fact for which the fact handle will be returned.
+     * 
+     * @return the fact handle for the given object, or null in case no fact handle was found for the
+     *         given object.
+     *         
+     * @see KnowledgeBaseConfiguration
+     */
+    FactHandle getFactHandle(Object object);
+
+    /**
+     * Returns the object associated with the given FactHandle.
+     * 
+     * @param factHandle
+     * @return
+     */
+    Object getObject(FactHandle factHandle);
+
+    /**
+     * Returns all facts from the current session.
+     * 
+     * @return
+     */
+    Collection< ? extends Object > getObjects();
+
+    /**
+     * Returns all facts from the current session that are accepted by the given <code>ObjectFilter</code>.
+     * 
+     * @param filter the filter to be applied to the returned collection of facts.
+     *  
+     * @return
+     */
+    Collection< ? extends Object > getObjects(ObjectFilter filter);
+
+    /**
+     * Returns all <code>FactHandle</code>s from the current session.
+     * 
+     * @return
+     */
+    Collection< ? extends FactHandle> getFactHandles();
+
+    /**
+     * Returns all <code>FactHandle</code>s from the current session for which the facts are accepted by 
+     * the given filter.
+     * 
+     * @param filter the filter to be applied to the returned collection of <code>FactHandle</code>s.
+     * 
+     * @return
+     */
+    Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter);    
 }
