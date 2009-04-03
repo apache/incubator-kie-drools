@@ -20,9 +20,9 @@ import org.drools.io.Resource;
  * </p>
  * 
  * <p>
- * Always check the hasErrors() method after an addition, you should not add more resources
- * or get the KnowledgePackages if there are errors; KnowledgePackages() will return empty
- * if there are errors.
+ * It is best practice to always check the hasErrors() method after an addition, you should not add 
+ * more resources or get the KnowledgePackages if there are errors. KnowledgePackages() will return 
+ * an empty list if there are errors.
  * </p>
  * 
  * <p>
