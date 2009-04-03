@@ -47,6 +47,7 @@ import org.drools.rule.TimeMachine;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.impl.BatchExecutionResultImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -539,6 +540,26 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void startBatchExecution() {
         // TODO Auto-generated method stub
         
+    }
+
+    public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Collection< ? extends Object> getObjects() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Collection< ? extends Object> getObjects(ObjectFilter filter) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

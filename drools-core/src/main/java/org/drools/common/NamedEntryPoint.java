@@ -5,6 +5,7 @@ package org.drools.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.FactException;
@@ -12,6 +13,7 @@ import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
+import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
@@ -482,5 +484,37 @@ public class NamedEntryPoint
     public RuleBase getRuleBase() {
         return this.ruleBase;
     }
+    
+    public FactHandle getFactHandle(Object object) {
+        return this.objectStore.getHandleForObject( object );
+    }
+
+    public Object getObject(org.drools.runtime.rule.FactHandle factHandle) {
+        return this.objectStore.getObjectForHandle( (InternalFactHandle) factHandle );
+    }    
+    
+    public Collection< ? extends FactHandle> getFactHandles() {
+        return new ObjectStoreWrapper( this.objectStore,
+                                       null,
+                                       ObjectStoreWrapper.FACT_HANDLE );
+    }
+
+    public Collection< ? extends FactHandle> getFactHandles(org.drools.runtime.ObjectFilter filter) {
+        return new ObjectStoreWrapper( this.objectStore,
+                                       filter,
+                                       ObjectStoreWrapper.FACT_HANDLE );
+    }
+
+    public Collection< ? > getObjects() {
+        return new ObjectStoreWrapper( this.objectStore,
+                                       null,
+                                       ObjectStoreWrapper.OBJECT );
+    }
+
+    public Collection< ? > getObjects(org.drools.runtime.ObjectFilter filter) {
+        return new ObjectStoreWrapper( this.objectStore,
+                                       filter,
+                                       ObjectStoreWrapper.OBJECT );
+    }    
 
 }

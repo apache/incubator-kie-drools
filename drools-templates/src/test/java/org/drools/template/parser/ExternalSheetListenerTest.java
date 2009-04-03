@@ -436,6 +436,26 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     return null;
                 }
+
+                public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Collection< ? extends Object> getObjects() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Collection< ? extends Object> getObjects(ObjectFilter filter) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}
