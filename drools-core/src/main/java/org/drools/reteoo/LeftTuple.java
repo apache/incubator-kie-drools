@@ -311,16 +311,15 @@ public class LeftTuple
      * Returns the fact handles in reverse order
      */
     public InternalFactHandle[] getFactHandles() {
-        final List list = new ArrayList();
+        InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
         LeftTuple entry = this;
         while ( entry != null ) {
-            list.add( entry.handle );
+            handles[entry.index] = entry.handle;
             entry = entry.parent;
         }
-
-        return (InternalFactHandle[]) list.toArray( new InternalFactHandle[list.size()] );
+        return handles;
     }
-
+    
     public long getRecency() {
         return this.recency;
     }
