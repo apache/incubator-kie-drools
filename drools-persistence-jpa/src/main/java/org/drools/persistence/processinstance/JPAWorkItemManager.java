@@ -19,6 +19,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     private WorkingMemory workingMemory;
 	private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private transient Map<Long, WorkItemInfo> workItems;
     
     public JPAWorkItemManager(WorkingMemory workingMemory) {
     	this.workingMemory = workingMemory;
@@ -32,6 +33,12 @@ public class JPAWorkItemManager implements WorkItemManager {
         em.persist(workItemInfo);
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
         workItemInfo.update();
+        
+		if (this.workItems == null) {
+        	this.workItems = new HashMap<Long, WorkItemInfo>();
+        }
+		workItems.put(workItem.getId(), workItemInfo);
+        
         WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
 	    if (handler != null) {
 	        handler.executeWorkItem(workItem, this);
@@ -53,6 +60,7 @@ public class JPAWorkItemManager implements WorkItemManager {
             } else {
                 System.err.println("Could not find work item handler for " + workItem.getName());
             }
+            workItems.remove(id);
             em.remove(workItemInfo);
         }
 	}
@@ -63,10 +71,21 @@ public class JPAWorkItemManager implements WorkItemManager {
     public void completeWorkItem(long id, Map<String, Object> results) {
         EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
         
-        WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
-        // work item may have been aborted
+        WorkItemInfo workItemInfo = null;
+        if (this.workItems != null) {
+	    	workItemInfo = this.workItems.get(id);
+	    	if (workItemInfo != null) {
+	    		workItemInfo = em.merge(workItemInfo);
+	    	}
+    	}
+        
+        if (workItemInfo == null) {
+        	workItemInfo = em.find(WorkItemInfo.class, id);
+        }
+        
+    	// work item may have been aborted
         if (workItemInfo != null) {
-        	WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem();
+    		WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem();
             workItem.setResults(results);
             ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.COMPLETED);
@@ -75,6 +94,9 @@ public class JPAWorkItemManager implements WorkItemManager {
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
             em.remove(workItemInfo);
+            if (workItems != null) {
+            	this.workItems.remove(workItem.getId());
+            }
             workingMemory.fireAllRules();
     	}
     }
@@ -82,10 +104,19 @@ public class JPAWorkItemManager implements WorkItemManager {
     public void abortWorkItem(long id) {
         EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
         
-        WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
-        // work item may have been aborted
+        WorkItemInfo workItemInfo = null;
+        if (this.workItems != null) {
+	    	workItemInfo = this.workItems.get(id);
+	    	em.merge(workItemInfo);
+    	}
+        
+        if (workItemInfo == null) {
+        	workItemInfo = em.find(WorkItemInfo.class, id);
+        }
+        
+    	// work item may have been aborted
         if (workItemInfo != null) {
-        	WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem();
+    		WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem();
             ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
@@ -93,14 +124,24 @@ public class JPAWorkItemManager implements WorkItemManager {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
             em.remove(workItemInfo);
+            if (workItems != null) {
+            	workItems.remove(workItem.getId());
+            }
             workingMemory.fireAllRules();
         }
     }
 
 	public WorkItem getWorkItem(long id) {
-	    EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
-	    
-		WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
+        WorkItemInfo workItemInfo = null;
+        if (this.workItems != null) {
+	    	workItemInfo = this.workItems.get(id);
+    	}
+        
+        if (workItemInfo == null) {
+            EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        	workItemInfo = em.find(WorkItemInfo.class, id);
+        }
+
         if (workItemInfo == null) {
             return null;
         }
@@ -114,5 +155,11 @@ public class JPAWorkItemManager implements WorkItemManager {
 	public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
         this.workItemHandlers.put(workItemName, handler);
 	}
+
+    public void clearWorkItems() {
+    	if (workItems != null) {
+    		workItems.clear();
+    	}
+    }
 
 }

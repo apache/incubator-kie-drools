@@ -17,16 +17,19 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
+import org.drools.audit.WorkingMemoryConsoleLogger;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.event.RuleFlowEventListener;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.GetProcessInstanceCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.process.core.timer.Timer;
+import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
@@ -81,7 +84,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
-        env.set( "drools.TransactionManager",
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -195,7 +198,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
-        env.set( "drools.TransactionManager",
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -398,7 +401,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
-        env.set( "drools.TransactionManager",
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
 
         Properties properties = new Properties();
@@ -419,6 +422,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         SingleSessionCommandService service = new SingleSessionCommandService( ruleBase,
                                                                                config,
                                                                                env );
+        int sessionId = service.getSessionId();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) service.execute( startProcessCommand );
@@ -430,7 +434,8 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( ruleBase,
+        service = new SingleSessionCommandService( sessionId,
+        		                                   ruleBase,
                                                    config,
                                                    env );
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
@@ -449,7 +454,8 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( subProcessInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( ruleBase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   ruleBase,
                                                    config,
                                                    env );
         CompleteWorkItemCommand completeWorkItemCommand = new CompleteWorkItemCommand();
@@ -457,7 +463,8 @@ public class SingleSessionCommandServiceTest extends TestCase {
         service.execute( completeWorkItemCommand );
         service.dispose();
 
-        service = new SingleSessionCommandService( ruleBase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   ruleBase,
                                                    config,
                                                    env );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
@@ -565,7 +572,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
-        env.set( "drools.TransactionManager",
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
 
         Properties properties = new Properties();
@@ -668,7 +675,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
-        env.set( "drools.TransactionManager",
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
 
         Properties properties = new Properties();

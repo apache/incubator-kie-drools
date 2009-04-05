@@ -2,6 +2,8 @@ package org.drools.persistence.processinstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -19,6 +21,7 @@ public class JPAProcessInstanceManager
     ProcessInstanceManager {
 
     private WorkingMemory workingMemory;
+    private transient Map<Long, ProcessInstance> processInstances;
 
     public void setWorkingMemory(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
@@ -30,12 +33,25 @@ public class JPAProcessInstanceManager
         em.persist( processInstanceInfo );
         ((ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
         processInstanceInfo.updateLastReadDate();
+        internalAddProcessInstance(processInstance);
     }
 
     public void internalAddProcessInstance(ProcessInstance processInstance) {
+    	if (this.processInstances == null) {
+        	this.processInstances = new HashMap<Long, ProcessInstance>();
+        }
+        processInstances.put(processInstance.getId(), processInstance);
     }
 
     public ProcessInstance getProcessInstance(long id) {
+    	ProcessInstance processInstance = null;
+    	if (this.processInstances != null) {
+	    	processInstance = this.processInstances.get(id);
+	    	if (processInstance != null) {
+	    		return processInstance;
+	    	}
+    	}
+    	
         EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
         ProcessInstanceInfo processInstanceInfo = em.find( ProcessInstanceInfo.class,
                                                            id );
@@ -43,7 +59,7 @@ public class JPAProcessInstanceManager
             return null;
         }
         processInstanceInfo.updateLastReadDate();
-        ProcessInstance processInstance = (ProcessInstance)
+        processInstance = (ProcessInstance)
         	processInstanceInfo.getProcessInstance(workingMemory);
         Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess( processInstance.getProcessId() );
         if ( process == null ) {
@@ -68,9 +84,19 @@ public class JPAProcessInstanceManager
         if ( processInstanceInfo != null ) {
             em.remove( processInstanceInfo );
         }
+        internalRemoveProcessInstance(processInstance);
     }
 
     public void internalRemoveProcessInstance(ProcessInstance processInstance) {
+    	if (this.processInstances != null) {
+            processInstances.remove( processInstance.getId() );
+        }
+    }
+    
+    public void clearProcessInstances() {
+    	if (processInstances != null) {
+    		processInstances.clear();
+    	}
     }
 
 }
