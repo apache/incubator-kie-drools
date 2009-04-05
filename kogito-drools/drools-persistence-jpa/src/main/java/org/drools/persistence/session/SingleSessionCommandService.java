@@ -19,7 +19,9 @@ import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.persistence.processinstance.JPAProcessInstanceManager;
 import org.drools.persistence.processinstance.JPASignalManager;
+import org.drools.persistence.processinstance.JPAWorkItemManager;
 import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
 import org.drools.reteoo.ReteooStatefulSession;
@@ -59,6 +61,16 @@ public class SingleSessionCommandService
               (SessionConfiguration) conf,
               env );
     }
+
+    public SingleSessionCommandService(int sessionId,
+    		                           RuleBase ruleBase,
+		                               SessionConfiguration conf,
+		                               Environment env) {
+		this( sessionId,
+		      new KnowledgeBaseImpl( ruleBase ),
+		      (SessionConfiguration) conf,
+		      env );
+	}
 
     public SingleSessionCommandService(KnowledgeBase kbase,
                                        KnowledgeSessionConfiguration conf,
@@ -140,13 +152,8 @@ public class SingleSessionCommandService
             ut.begin();
             registerRollbackSync();
             this.em.joinTransaction();
-
-            sessionInfo = this.em.find( SessionInfo.class,
-                                        sessionId );
-
-            //	System.out.println("committing");
+            sessionInfo = this.em.find( SessionInfo.class, sessionId );
             ut.commit();
-            //	System.out.println("commit complete");
         } catch ( Throwable t1 ) {
             try {
                 if ( ut != null ) {
@@ -160,20 +167,10 @@ public class SingleSessionCommandService
             }
         }
 
-        this.session = ((KnowledgeBaseImpl) kbase).ruleBase.newStatefulSession( (SessionConfiguration) conf,
-                                                                                this.env );
-        
-        // update the session id to be the same as the session info id
-        ((ReteooStatefulSession) this.session).setId( sessionId );
-        
-        this.ksession = new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session );
-        ((JPASignalManager) this.session.getSignalManager()).setCommandService( this );
-        
         this.marshallingHelper = new JPASessionMarshallingHelper( this.sessionInfo,
                                                                   kbase,
                                                                   conf,
                                                                   env );
-
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
 		this.ksession = this.marshallingHelper.getObject();
@@ -205,9 +202,11 @@ public class SingleSessionCommandService
                 localTransaction = true;
             }
 
-            EntityManager localEm = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
-            this.env.set( EnvironmentName.ENTITY_MANAGER,
-                          localEm );
+            EntityManager localEm = (EntityManager) env.get( EnvironmentName.ENTITY_MANAGER );
+            if (localEm == null ||  !localEm.isOpen()) {
+            	localEm = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
+            	this.env.set( EnvironmentName.ENTITY_MANAGER, localEm );
+            }
             
             if ( this.em == null ) {
                 // there must have been a rollback to lazily re-initialise the state
@@ -222,20 +221,27 @@ public class SingleSessionCommandService
             }
 
             this.em.joinTransaction();
-            //System.out.println( "1) exec ver : " + this.sessionInfo.getVersion() );
             this.sessionInfo.setDirty();
-            //System.out.println( "2) exec ver : " + this.sessionInfo.getVersion() );
 
             registerRollbackSync();
 
             T result = command.execute( ( ReteooWorkingMemory ) session );
-            //System.out.println( "3) exec ver : " + this.sessionInfo.getVersion() );
 
             if ( localTransaction ) {
                 // it's a locally created transaction so commit
                 ut.commit();
-            }
 
+                // cleanup local entity manager
+                if ( localEm.isOpen() ) {
+                    localEm.close();
+                }
+                this.env.set( EnvironmentName.ENTITY_MANAGER, null );
+                
+                // clean up cached process and work item instances
+                ((JPAProcessInstanceManager) ((ReteooWorkingMemory) session).getProcessInstanceManager()).clearProcessInstances();
+                ((JPAWorkItemManager) ((ReteooWorkingMemory) session).getWorkItemManager()).clearWorkItems();
+            }
+            
             return result;
 
         } catch ( Throwable t1 ) {
@@ -274,7 +280,7 @@ public class SingleSessionCommandService
         return sessionInfo.getId();
     }
 
-    public void registerRollbackSync() throws IllegalStateException,
+    private void registerRollbackSync() throws IllegalStateException,
                                       RollbackException,
                                       SystemException {
         TransactionManager txm = (TransactionManager) env.get( EnvironmentName.TRANSACTION_MANAGER );
@@ -290,8 +296,7 @@ public class SingleSessionCommandService
         }
 
         if ( map.get( this ) == null ) {
-            txm.getTransaction().registerSynchronization( new SynchronizationImpl( env,
-                                                                                   this ) );
+            txm.getTransaction().registerSynchronization( new SynchronizationImpl() );
             map.put( this,
                      this );
         }
@@ -305,36 +310,30 @@ public class SingleSessionCommandService
         //        }
     }
 
-    public static class SynchronizationImpl
+    private class SynchronizationImpl
         implements
         Synchronization {
-        private Environment                 env;
-        private SingleSessionCommandService cmdService;
-
-        public SynchronizationImpl(Environment env,
-                                   SingleSessionCommandService cmdService) {
-            this.env = env;
-            this.cmdService = cmdService;
-        }
 
         public void afterCompletion(int status) {
             if ( status != Status.STATUS_COMMITTED ) {
-                cmdService.rollback();
-                System.out.println( "after with local rollback: " + status );
+                rollback();
             }
 
             // always cleanup thread local whatever the result
             //rollbackRegistered.remove();
-            System.out.println( "cleanedup rollback sychronisation" );
             Map map = (Map) env.get( "synchronizations" );
-            map.remove( cmdService );
+            map.remove( SingleSessionCommandService.this );
 
-            // cleanup local resource entity manager, normally an EntityManager should be closed with the transaction it was bound to,
-            // if it was created inside the scope of the transaction, but adding this anyway just in case.
-            EntityManager localEm = (EntityManager) this.env.get( EnvironmentName.ENTITY_MANAGER );
+            // cleanup local entity manager
+            EntityManager localEm = (EntityManager) env.get( EnvironmentName.ENTITY_MANAGER );
             if ( localEm != null && localEm.isOpen() ) {
                 localEm.close();
             }
+            env.set( EnvironmentName.ENTITY_MANAGER, null );
+            
+            // clean up cached process and work item instances
+            ((JPAProcessInstanceManager) ((ReteooWorkingMemory) session).getProcessInstanceManager()).clearProcessInstances();
+            ((JPAWorkItemManager) ((ReteooWorkingMemory) session).getWorkItemManager()).clearWorkItems();
 
         }
 
@@ -375,7 +374,7 @@ public class SingleSessionCommandService
     //    }
     //}     
 
-    public void rollback() {
+    private void rollback() {
         // with em null, if someone tries to use this session it'll first restore it's state
         this.em.close();
         this.em = null;
