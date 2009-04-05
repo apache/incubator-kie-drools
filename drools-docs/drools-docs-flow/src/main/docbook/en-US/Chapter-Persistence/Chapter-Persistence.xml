@@ -221,10 +221,20 @@ ds.init();</programlisting>
     will automatically execute each method invocation on the engine in a separate transaction.
     If this is acceptable behaviour, you don't need to do anything else.  You can however
     also specify the transaction boundaries yourself.  This allows you for example to combine
-    multiple commands into one transaction.  We use the Java Transaction API (JTA) to specify
-    transaction boundaries, as shown below:
+    multiple commands into one transaction.  You need to register a transaction manager at
+    the environment before using user-defined transactions.  For example, the following sample
+    uses the Bitronix transaction manager.  Next, we use the Java Transaction API (JTA)
+    to specify transaction boundaries, as shown below:
 
     <programlisting>
+// create the entity manager factory and register it in the environment
+EntityManagerFactory emf =
+    Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+Environment env = KnowledgeBaseFactory.newEnvironment();
+env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
+env.set( EnvironmentName.TRANSACTION_MANAGER,
+         TransactionManagerServices.getTransactionManager() );
+
 // create a new knowledge session that uses JPA to store the runtime state
 StatefulKnowledgeSession ksession =
     JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
