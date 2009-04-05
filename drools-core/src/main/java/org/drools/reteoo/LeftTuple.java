@@ -313,8 +313,9 @@ public class LeftTuple
     public InternalFactHandle[] getFactHandles() {
         InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
         LeftTuple entry = this;
+        int i = 0;
         while ( entry != null ) {
-            handles[entry.index] = entry.handle;
+            handles[i++] = entry.handle;
             entry = entry.parent;
         }
         return handles;
