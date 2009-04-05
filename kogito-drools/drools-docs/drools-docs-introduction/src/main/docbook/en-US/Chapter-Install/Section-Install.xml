@@ -9,7 +9,7 @@
   <title>Installing and using</title>
 
   <para>Drools provides an Eclipse-based IDE (which is optional), but at its
-  core only Java 1.4 (J2SE) is required.</para>
+  core only Java 1.5 (Java SE) is required.</para>
 
   <para>A simple way to get started is to download and install the Eclipse
   plug-in - this will also require the Eclipse GEF framework to be installed
@@ -46,6 +46,11 @@
     up JBoss Rules</para>
 
     <itemizedlist>
+	<listitem>
+        <para>drools-api.jar - this provides the interfaces 
+	and factories. Drools-api also helps clearly show what is intended 
+	as a user api and what is just an engine api.</para>
+      </listitem>
       <listitem>
         <para>drools-core.jar - this is the core engine, runtime component.
         Contains both the RETE engine and the LEAPS engine. This is the only
