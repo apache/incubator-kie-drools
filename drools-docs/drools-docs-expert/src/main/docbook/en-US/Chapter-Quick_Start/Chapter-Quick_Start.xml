@@ -1103,7 +1103,7 @@ end</programlisting>
       rules are shown to be arbitrary order, while the print rule is shown to
       execute aftwards.</para>
 
-      <table border="1">
+      <table border="0">
         <tbody>
           <tr>
             <td align="left" valign="top">
