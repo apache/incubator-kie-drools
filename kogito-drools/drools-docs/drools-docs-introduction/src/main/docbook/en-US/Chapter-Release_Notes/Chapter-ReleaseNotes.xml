@@ -6,9 +6,11 @@
                     xmlns:m="http://www.w3.org/1998/Math/MathML"
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook">
-      <title>Drools 4.0 Release Notes</title>
+      <title>Drools Release Notes</title>
 
-      <xi:include href="Section-What_is_new.xml" />
+      <xi:include href="Section-What_is_new_Drools_5.xml" />
+
+      <xi:include href="Section-What_is_new_Drools_4.xml" />
 
       <xi:include href="Section-Upgrade_tips.xml" />
     </chapter>
