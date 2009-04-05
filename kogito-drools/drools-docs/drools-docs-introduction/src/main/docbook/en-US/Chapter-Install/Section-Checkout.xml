@@ -16,19 +16,19 @@
     <listitem>
       <para>Anonymous SVN</para>
 
-      <para>http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/</para>
+      <para>http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/</para>
     </listitem>
 
     <listitem>
       <para>Developers secured SVN</para>
 
-      <para>https://svn.labs.jboss.com/labs/jbossrules/trunk/</para>
+      <para>https://svn.jboss.org/repos/labs/labs/jbossrules/trunk/</para>
     </listitem>
   </itemizedlist>
 
 To checkout Drools source code just execute the following command.
 
-<programlisting>fmeyer:~/jboss $ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ jbossrules</programlisting>
+<programlisting>fmeyer:~/jboss $ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ jbossrules</programlisting>
 
 And wait to complete the files download.
 

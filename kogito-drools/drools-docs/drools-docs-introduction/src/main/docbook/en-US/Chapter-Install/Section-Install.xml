@@ -105,11 +105,11 @@
     <title>Runtime</title>
 
     <para>The "runtime" requirements mentioned here are if you are deploying
-    rules as their binary form (either as Package objects, or RuleBase objects
+    rules as their binary form (either as KnowledgePackage objects, or KnowledgeBase objects
     etc). This is an optional feature that allows you to keep your runtime
     very light. You may use drools-compiler to produce rule packages "out of
     process", and then deploy them to a runtime system. This runtime system
-    only requires drools-core.jar for execution. This is an optional
+    only requires drools-core.jar and drools-api for execution. This is an optional
     deployment pattern, and many people do not need to "trim" their
     application this much, but it is an ideal option for certain
     environments.</para>
@@ -118,8 +118,8 @@
   <section>
     <title>Installing IDE (Rule Workbench)</title>
 
-    <para>The rule workbench (for Eclipse) requires that you have Eclipse 3.2
-    or greater, as well as Eclipse GEF 3.2 or greater. You can install it
+    <para>The rule workbench (for Eclipse) requires that you have Eclipse 3.4
+    or greater, as well as Eclipse GEF 3.4 or greater. You can install it
     either by downloading the plug-in or, or using the update site.</para>
 
     <para>Another option is to use the JBoss IDE, which comes with all the
@@ -138,20 +138,11 @@
       website not recommended). JBoss IDE has GEF already, as do many other "distributions" of
       Eclipse, so this step may be redundant for some people.</para>
 
-      <para>First you open the Help-&gt;Software updates-&gt;Find and install
-      from the help menu. Then you choose the Calisto update site:</para>
+      <para>Open the Help-&gt;Software updates...-&gt;Available Software-&gt;Add Site...
+      from the help menu. Location is:</para>
 
-	  <para>If you aren't using Calisto you can use the following update site do download GEF</para>
-	  <programlisting>http://europa-mirror1.Eclipse.org/tools/gef/update-site/releases/</programlisting>
+	  <programlisting>http://download.eclipse.org/tools/gef/updates/releases/</programlisting>
 	
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Install/gef_update.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-
       <para>Next you choose the GEF plug-in:</para>
 
       <screenshot>
@@ -168,14 +159,16 @@
     </section>
 
     <section>
-      <title>Installing from zip file</title>
+      <title>Installing GEF and/or Drools plug-in from zip file</title>
 
-      <para>To install from the zip file, download and unzip the file. Inside
+      <para>To install from the zip file, download and unzip the file/files. Inside
       the zip you will see a plug-in directory, and the plug-in jar itself. You
       place the plug-in jar into your Eclipse applications plug-in directory,
       and restart Eclipse.</para>
-    </section>
-
+ 
+</section>
+</section>
+<!--
     <section>
       <title>Installing from the update site</title>
 
@@ -308,4 +301,5 @@
       the Rule Workbench for what you can do with it.</para>
     </section>
   </section>
+-->
 </section>

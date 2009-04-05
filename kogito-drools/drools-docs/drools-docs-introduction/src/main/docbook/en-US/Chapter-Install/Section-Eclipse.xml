@@ -52,7 +52,7 @@
 
     <para>With the <indexterm>
         <primary>Eclipse</primary>
-      </indexterm>Eclispe project files generated they can now be imported
+      </indexterm>Eclipse project files generated they can now be imported
     into Eclipse. When starting Eclipse open the workspace in the root of your
     subversion checkout.</para>
 
@@ -236,7 +236,7 @@
       </mediaobject>
     </screenshot>
   </section>
-
+<!--
   <section>
     <title>Building the update site</title>
 
@@ -255,8 +255,8 @@
     feature.xml. To do this, open the site.xml file in the drools-ide-update
     project, it should look something like this: <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;site&gt;
-   &lt;!-- change both the jar and the version number, make sure the new features jar is named
-        the same as what you put in --&gt;
+   &lt;!- change both the jar and the version number, make sure the new features jar is named
+        the same as what you put in -&gt;
    &lt;feature url="features/org.drools.ide_1.0.2.jar" id="org.drools.ide" version="1.0.2"&gt;
   &lt;category name="JBossRules"/&gt;
    &lt;/feature&gt;
@@ -272,7 +272,7 @@
 &lt;feature
   id="org.drools.ide"
   label="Drools Rule Workbench"
-  version="1.0.2"&gt; &lt;!-- UPDATE THIS !! --&gt;
+  version="1.0.2"&gt; &lt;!- UPDATE THIS !! -&gt;
 
    &lt;description&gt;
   JBoss Rules (Drools) Workbench for developers.
@@ -300,7 +300,7 @@
  id="org.drools.ide"
  download-size="0"
  install-size="0"
- version="1.0.0"/&gt; &lt;!-- THIS JUST HAS TO BE CONSISTENT WITH THE plug-in --&gt;
+ version="1.0.0"/&gt; &lt;!- THIS JUST HAS TO BE CONSISTENT WITH THE plug-in -&gt;
 
 &lt;/feature&gt;
 </programlisting> Change the version number in the FEATURE tag to be the same
@@ -315,5 +315,5 @@
     previous step). Now you can upload the site as is, and it will show up as
     a new version for Eclipse clients.</para>
   </section>
-  
+-->
 </section>
