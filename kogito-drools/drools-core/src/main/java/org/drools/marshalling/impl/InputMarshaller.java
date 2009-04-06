@@ -365,6 +365,12 @@ public class InputMarshaller {
         InternalFactHandle handle = new DefaultFactHandle( id,
                                                            object,
                                                            recency );
+        if(context.readBoolean()){
+            String  entryPoint = context.readUTF();
+            if(entryPoint != null && !entryPoint.equals("")){
+                handle.setEntryPoint(context.wm.getEntryPoints().get(entryPoint));
+            }
+        }
         return handle;
     }
 

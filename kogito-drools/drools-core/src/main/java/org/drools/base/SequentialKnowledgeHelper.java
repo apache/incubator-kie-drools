@@ -17,6 +17,7 @@ package org.drools.base;
  */
 
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.FactException;
@@ -47,6 +48,7 @@ public class SequentialKnowledgeHelper
     private Activation                         activation;
     private Tuple                              tuple;
     private final InternalWorkingMemoryActions workingMemory;
+    private IdentityHashMap<Object,FactHandle>              identityMap;
 
     public SequentialKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
@@ -57,6 +59,7 @@ public class SequentialKnowledgeHelper
         this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
+        this.identityMap = new IdentityHashMap<Object,FactHandle>();
     }
     
     public void reset() {
@@ -203,5 +206,13 @@ public class SequentialKnowledgeHelper
 
     public Map<String, ExitPoint> getExitPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
+    }
+
+    public IdentityHashMap<Object, FactHandle> getIdentityMap() {
+        return this.identityMap;
+    }
+
+    public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap) {
+        this.identityMap = identityMap;
     }
 }

@@ -320,6 +320,16 @@ public class LeftTuple
         }
         return handles;
     }
+     public InternalFactHandle[] toFactHandles() {
+        InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
+        LeftTuple entry = this;
+
+        while ( entry != null ) {
+            handles[entry.index] = entry.handle;
+            entry = entry.parent;
+        }
+        return handles;
+    }
     
     public long getRecency() {
         return this.recency;
