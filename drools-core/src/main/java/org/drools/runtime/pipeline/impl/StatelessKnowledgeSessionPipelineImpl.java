@@ -19,13 +19,16 @@ public class StatelessKnowledgeSessionPipelineImpl extends BaseEmitter
         this.ksession = ksession;
     }
 
-    public void insert(Object object,
-                       ResultHandler resultHandler) {
-        ClassLoader cl = ((InternalRuleBase) ((StatelessKnowledgeSessionImpl) this.ksession).getRuleBase()).getRootClassLoader();                
-        
-        StatelessKnowledgeSessionPipelineContextImpl context = new StatelessKnowledgeSessionPipelineContextImpl(ksession, cl, resultHandler );
-        
-        emit( object, context );        
+    public synchronized void insert(Object object,
+                                    ResultHandler resultHandler) {
+        ClassLoader cl = ((InternalRuleBase) ((StatelessKnowledgeSessionImpl) this.ksession).getRuleBase()).getRootClassLoader();
+
+        StatelessKnowledgeSessionPipelineContextImpl context = new StatelessKnowledgeSessionPipelineContextImpl( ksession,
+                                                                                                                 cl,
+                                                                                                                 resultHandler );
+
+        emit( object,
+              context );
     }
 
 }

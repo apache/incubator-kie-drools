@@ -18,7 +18,7 @@ import org.drools.process.command.QueryCommand;
 import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.rule.Declaration;
-import org.drools.runtime.BatchExecutionResults;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.help.BatchExecutionHelperProvider;
 import org.drools.runtime.impl.BatchExecutionImpl;
 import org.drools.runtime.impl.BatchExecutionResultImpl;
@@ -66,7 +66,7 @@ public class BatchExecutionHelperProviderImpl
                        GetGlobalCommand.class );
         xstream.alias( "get-objects",
                        GetObjectsCommand.class );
-        xstream.alias( "batch-execution-results",
+        xstream.alias( "execution-results",
                        BatchExecutionResultImpl.class );
         xstream.alias( "fire-all-rules",
                        FireAllRulesCommand.class );
@@ -509,7 +509,7 @@ public class BatchExecutionHelperProviderImpl
         public void marshal(Object object,
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
-            BatchExecutionResults result = (BatchExecutionResults) object;
+            ExecutionResults result = (ExecutionResults) object;
             for ( String identifier : result.getIdentifiers() ) {
                 writer.startNode( "result" );
                 writer.addAttribute( "identifier",
@@ -546,7 +546,7 @@ public class BatchExecutionHelperProviderImpl
         }
 
         public boolean canConvert(Class clazz) {
-            return BatchExecutionResults.class.isAssignableFrom( clazz );
+            return ExecutionResults.class.isAssignableFrom( clazz );
         }
     }
 

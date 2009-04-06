@@ -29,7 +29,7 @@ import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.BatchExecutionResults;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.Environment;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -204,7 +204,7 @@ public class StatelessKnowledgeSessionImpl
         return this.sessionGlobals;
     }
 
-    public BatchExecutionResults execute(Command command) {        
+    public ExecutionResults execute(Command command) {        
         ReteooWorkingMemory session = ( ReteooWorkingMemory ) newWorkingMemory();
         try {
             session.startBatchExecution();
@@ -224,7 +224,7 @@ public class StatelessKnowledgeSessionImpl
             if ( autoFireAllRules ) {
             	session.fireAllRules( this.agendaFilter );
             }
-            BatchExecutionResults result = session.getBatchExecutionResult();
+            ExecutionResults result = session.getExecutionResult();
             return result;
         } finally {
             session.endBatchExecution();

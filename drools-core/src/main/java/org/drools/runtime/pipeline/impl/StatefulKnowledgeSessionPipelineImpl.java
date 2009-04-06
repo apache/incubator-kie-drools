@@ -24,8 +24,8 @@ public class StatefulKnowledgeSessionPipelineImpl extends BaseEmitter
         this.entryPoint = ksession.getWorkingMemoryEntryPoint( entryPointName );
     }
 
-    public void insert(Object object,
-                       ResultHandler resultHandler) {
+    public synchronized void insert(Object object,
+                                    ResultHandler resultHandler) {
         ClassLoader cl = ((InternalRuleBase) ((StatefulKnowledgeSessionImpl) this.ksession).getRuleBase()).getRootClassLoader();
 
         StatefulKnowledgeSessionPipelineContextImpl context = new StatefulKnowledgeSessionPipelineContextImpl( this.ksession,

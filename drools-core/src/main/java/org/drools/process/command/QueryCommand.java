@@ -1,7 +1,7 @@
 package org.drools.process.command;
 
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.BatchExecutionResults;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 
@@ -47,7 +47,7 @@ public class QueryCommand  implements Command<QueryResults> {
         }
         
         if ( this.outIdentifier != null ) {
-            session.getBatchExecutionResult().getResults().put( this.outIdentifier, results );
+            session.getExecutionResult().getResults().put( this.outIdentifier, results );
         }
 
         return results;

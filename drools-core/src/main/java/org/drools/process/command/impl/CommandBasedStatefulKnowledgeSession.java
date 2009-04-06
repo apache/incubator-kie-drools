@@ -50,7 +50,7 @@ import org.drools.process.command.StartProcessCommand;
 import org.drools.process.command.UnregisterExitPointCommand;
 import org.drools.process.command.UpdateCommand;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.BatchExecutionResults;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
@@ -348,13 +348,13 @@ public class CommandBasedStatefulKnowledgeSession
         return commandService.execute( new GetEnvironmentCommand() );
     }
     
-    public BatchExecutionResults execute(Command command) {        
+    public ExecutionResults execute(Command command) {        
         try {            
             ((ReteooWorkingMemory)this.commandService.getSession()).startBatchExecution();
             
             this.commandService.execute( (org.drools.process.command.Command) command );
             
-            BatchExecutionResults result = ((ReteooWorkingMemory)this.commandService.getSession()).getBatchExecutionResult();
+            ExecutionResults result = ((ReteooWorkingMemory)this.commandService.getSession()).getExecutionResult();
             return result;
         } finally {
             ((ReteooWorkingMemory)this.commandService.getSession()).endBatchExecution();

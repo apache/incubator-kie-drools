@@ -1,6 +1,6 @@
 package org.drools.runtime.pipeline.impl;
 
-import org.drools.runtime.BatchExecutor;
+import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.pipeline.StatelessKnowledgeSessionPipelineContext;
@@ -30,7 +30,7 @@ public class StatelessKnowledgeSessionPipelineContextImpl extends BasePipelineCo
         return this.ksession;
     }
 
-    public BatchExecutor getBatchExecutor() {
+    public CommandExecutor getCommandExecutor() {
         return this.ksession;
     }
             

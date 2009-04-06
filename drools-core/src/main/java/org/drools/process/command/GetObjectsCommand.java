@@ -44,7 +44,7 @@ public class GetObjectsCommand
         if ( this.outIdentifier != null ) {
             List objects = new ArrayList( col );
             
-            session.getBatchExecutionResult().getResults().put( this.outIdentifier, objects );
+            session.getExecutionResult().getResults().put( this.outIdentifier, objects );
         }
         
         return col;

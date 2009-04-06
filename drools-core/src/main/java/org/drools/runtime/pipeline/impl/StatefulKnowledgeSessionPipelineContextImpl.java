@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.runtime.BatchExecutor;
+import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.pipeline.StatefulKnowledgeSessionPipelineContext;
@@ -34,7 +34,7 @@ public class StatefulKnowledgeSessionPipelineContextImpl extends BasePipelineCon
         return entryPoint;
     }
 
-    public BatchExecutor getBatchExecutor() {
+    public CommandExecutor getCommandExecutor() {
         return this.ksession;
     }
     
