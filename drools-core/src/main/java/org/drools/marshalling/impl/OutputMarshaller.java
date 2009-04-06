@@ -22,6 +22,7 @@ import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
@@ -276,6 +277,19 @@ public class OutputMarshaller {
 
         strategy.write( stream,
                         object );
+        if( handle.getEntryPoint() instanceof InternalWorkingMemoryEntryPoint ){
+            String entryPoint = ((InternalWorkingMemoryEntryPoint)handle.getEntryPoint()).getEntryPoint().getEntryPointId();
+            if(entryPoint!=null && !entryPoint.equals("")){
+                stream.writeBoolean(true);
+                stream.writeUTF(entryPoint);
+            }
+            else{
+                stream.writeBoolean(false);
+            }
+        }else{
+            stream.writeBoolean(false);
+        }
+
     }
 
     public static InternalFactHandle[] orderFacts(ObjectStore objectStore) {

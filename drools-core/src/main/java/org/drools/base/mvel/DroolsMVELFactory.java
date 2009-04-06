@@ -8,7 +8,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
@@ -33,7 +35,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     /**
      * Holds the instance of the variables.
      */
-    private Object[] tupleObjects;
+    private InternalFactHandle[] tupleObjects;
  
     private KnowledgeHelper knowledgeHelper;
  
@@ -79,7 +81,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
  
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        tupleObjects = (Object[]) in.readObject();
+        tupleObjects = (InternalFactHandle[]) in.readObject();
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         object = in.readObject();
         localDeclarations = (Map) in.readObject();
@@ -143,7 +145,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                            final WorkingMemory workingMemory,
                            final Map variables) {
         if (tuple != null) {
-            this.tupleObjects = ((LeftTuple) tuple).toObjectArray();
+            this.tupleObjects = ((LeftTuple) tuple).toFactHandles();
         }
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;
@@ -166,6 +168,10 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
  
     public Object getValue(final Declaration declaration) {
+        int i = declaration.getPattern().getOffset();
+        return this.tupleObjects[i].getObject();
+    }
+    public InternalFactHandle getFactHandle(final Declaration declaration){
         int i = declaration.getPattern().getOffset();
         return this.tupleObjects[i];
     }

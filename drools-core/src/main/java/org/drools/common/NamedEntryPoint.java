@@ -171,7 +171,7 @@ public class NamedEntryPoint
                 null );
     }
 
-    protected void update(final org.drools.runtime.rule.FactHandle factHandle,
+    public void update(final org.drools.runtime.rule.FactHandle factHandle,
                           final Object object,
                           final Rule rule,
                           final Activation activation) throws FactException {
@@ -484,11 +484,21 @@ public class NamedEntryPoint
     public RuleBase getRuleBase() {
         return this.ruleBase;
     }
-    
+        
     public FactHandle getFactHandle(Object object) {
         return this.objectStore.getHandleForObject( object );
     }
 
+    public EntryPoint getEntryPoint() {
+        return this.entryPoint;
+    }
+    
+    public InternalWorkingMemory getInternalWorkingMemory() {
+        return this.wm;
+    }
+    public FactHandle getFactHandleByIdentity(final Object object) {
+        return this.objectStore.getHandleForObjectIdentity( object );
+    }
     public Object getObject(org.drools.runtime.rule.FactHandle factHandle) {
         return this.objectStore.getObjectForHandle( (InternalFactHandle) factHandle );
     }    

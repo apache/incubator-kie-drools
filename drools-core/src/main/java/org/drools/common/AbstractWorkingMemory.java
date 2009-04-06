@@ -1260,12 +1260,14 @@ public abstract class AbstractWorkingMemory
                 // the hashCode and equality has changed, so we must update the
                 // EqualityKey
                 EqualityKey key = handle.getEqualityKey();
+                if(key != null){
                 key.removeFactHandle( handle );
 
                 // If the equality key is now empty, then remove it
                 if ( key.isEmpty() ) {
                     this.tms.remove( key );
                 }
+            }
             }
         } finally {
             this.lock.unlock();
@@ -1292,6 +1294,7 @@ public abstract class AbstractWorkingMemory
             final Object originalObject = handle.getObject();
 
             if ( this.maintainTms ) {
+                if(handle.getEqualityKey() != null ){
                 int status = handle.getEqualityKey().getStatus();
 
                 // now use an existing EqualityKey, if it exists, else create a
@@ -1306,6 +1309,7 @@ public abstract class AbstractWorkingMemory
                 }
 
                 handle.setEqualityKey( key );
+            }
             }
 
             this.handleFactory.increaseFactHandleRecency( handle );
@@ -1345,6 +1349,13 @@ public abstract class AbstractWorkingMemory
                 null,
                 null );
     }
+   public void update(final org.drools.runtime.rule.FactHandle factHandle,
+                       final Object object,
+                       final Rule rule,
+                       final Activation activation) throws FactException {
+
+       update((org.drools.FactHandle)factHandle, object, rule, activation);
+   }
 
     /**
      * modify is implemented as half way retract / assert due to the truth

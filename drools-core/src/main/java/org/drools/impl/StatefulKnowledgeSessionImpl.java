@@ -8,10 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.FactException;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.command.Command;
+import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -49,6 +51,8 @@ import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.rule.EntryPoint;
+import org.drools.rule.Rule;
 import org.drools.runtime.BatchExecutionResults;
 import org.drools.runtime.BatchExecutor;
 import org.drools.runtime.Environment;
@@ -322,6 +326,34 @@ public class StatefulKnowledgeSessionImpl
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
+    }
+
+    public void retract(org.drools.FactHandle factHandle, boolean removeLogical, boolean updateEqualsMap, Rule rule, Activation activation) throws FactException {
+        ((AbstractWorkingMemory)this.session).retract(factHandle, removeLogical, updateEqualsMap, rule, activation);
+    }
+
+    public void update(FactHandle factHandle, Object object, Rule rule, Activation activation) throws FactException {
+        ((AbstractWorkingMemory)this.session).update((org.drools.FactHandle)factHandle, object, rule, activation);
+    }
+
+    public void modifyRetract(org.drools.FactHandle factHandle, Rule rule, Activation activation) {
+        ((AbstractWorkingMemory)this.session).modifyRetract(factHandle, rule, activation);
+    }
+
+    public void modifyInsert(org.drools.FactHandle factHandle, Object object, Rule rule, Activation activation) {
+        ((AbstractWorkingMemory)this.session).modifyInsert(factHandle, object, rule, activation);
+    }
+
+    public EntryPoint getEntryPoint() {
+        return session.getEntryPoint();
+    }
+
+    public InternalWorkingMemory getInternalWorkingMemory() {
+        return session;
+    }
+
+    public org.drools.FactHandle getFactHandleByIdentity(Object object) {
+        return session.getFactHandleByIdentity(object);
     }
 
     public static abstract class AbstractImmutableCollection

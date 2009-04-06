@@ -349,6 +349,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             }
         }
     }
+  public EntryPoint getEntryPoint() {
+        return this.entryPoint;
+  }
+   public InternalWorkingMemory getInternalWorkingMemory() {
+        return this;
+    }
 
     public Collection< ? extends FactHandle> getFactHandles() {
         throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");

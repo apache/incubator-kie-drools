@@ -17,6 +17,7 @@ package org.drools.spi;
  */
 
 import java.io.Serializable;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.FactException;
@@ -127,4 +128,7 @@ public interface KnowledgeHelper
     
     public void halt();
 
+     public IdentityHashMap<Object, FactHandle> getIdentityMap();
+
+    public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap);
 }

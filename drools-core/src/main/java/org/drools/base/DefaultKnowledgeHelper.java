@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.FactException;
@@ -35,6 +36,10 @@ import org.drools.rule.Rule;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
@@ -52,12 +57,17 @@ public class DefaultKnowledgeHelper
     private Tuple                        tuple;
     private InternalWorkingMemoryActions workingMemory;
 
+    private IdentityHashMap<Object,FactHandle>              identityMap;
+
     public DefaultKnowledgeHelper() {
 
     }
 
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+
+       this.identityMap =  new IdentityHashMap<Object,FactHandle>();
+
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -67,6 +77,7 @@ public class DefaultKnowledgeHelper
         activation = (Activation) in.readObject();
         tuple = (Tuple) in.readObject();
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
+        identityMap = (IdentityHashMap<Object,FactHandle> ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -75,6 +86,7 @@ public class DefaultKnowledgeHelper
         out.writeObject( activation );
         out.writeObject( tuple );
         out.writeObject( workingMemory );
+         out.writeObject( identityMap );
     }
 
     public void setActivation(final Activation agendaItem) {
@@ -89,6 +101,7 @@ public class DefaultKnowledgeHelper
         this.subrule = null;
         this.activation = null;
         this.tuple = null;
+        this.identityMap.clear();
     }
 
     public void insert(final Object object) throws FactException {
@@ -98,11 +111,12 @@ public class DefaultKnowledgeHelper
 
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
+         FactHandle handle = this.workingMemory.insert( object,
                                    dynamic,
                                    false,
                                    this.rule,
                                    this.activation );
+         this.getIdentityMap().put(object, handle);
     }
 
     public void insertLogical(final Object object) throws FactException {
@@ -112,81 +126,99 @@ public class DefaultKnowledgeHelper
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
+      FactHandle handle = this.workingMemory.insert( object,
                                    dynamic,
                                    true,
                                    this.rule,
                                    this.activation );
+        this.getIdentityMap().put(object, handle);
     }
 
     public void update(final FactHandle handle,
                        final Object newObject) throws FactException {
         // only update if this fact exists in the wm
-        this.workingMemory.update( handle,
+
+        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
+                                .update( handle,
                                    newObject,
                                    this.rule,
                                    this.activation );
+        this.getIdentityMap().put(newObject, handle);
     }
 
     public void update(final Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
+        FactHandle handle = identityMap.get(object);
         if ( handle == null ) {
             throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
         // only update if this fact exists in the wm
-        this.workingMemory.update( handle,
+       ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
+                            .update( handle,
                                    object,
                                    this.rule,
                                    this.activation );
+       this.getIdentityMap().put(object, handle);
     }
 
     public void retract(final FactHandle handle) throws FactException {
-        this.workingMemory.retract( handle,
+        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
+                            .retract( handle,
                                     true,
                                     true,
                                     this.rule,
                                     this.activation );
+         this.getIdentityMap().remove(((InternalFactHandle)handle).getObject());
     }
 
     public void retract(final Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
+        FactHandle handle = getIdentityMap().get( object );
         if ( handle == null ) {
             throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
-        this.workingMemory.retract( handle,
+        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
+                           .retract( handle,
                                     true,
                                     true,
                                     this.rule,
                                     this.activation );
+        this.getIdentityMap().remove(object);
+
     }
 
     public void modifyRetract(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
-        this.workingMemory.modifyRetract( handle,
+        FactHandle handle =  getIdentityMap().get( object );
+        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
+                            .modifyRetract( handle,
                                           rule,
                                           activation );
     }
 
     public void modifyRetract(final FactHandle factHandle) {
-        this.workingMemory.modifyRetract( factHandle,
+        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)factHandle).getEntryPoint())
+                        .modifyRetract( factHandle,
                                           rule,
                                           activation );
     }
 
     public void modifyInsert(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
-        this.workingMemory.modifyInsert( handle,
+        FactHandle handle =  getIdentityMap().get( object );
+
+       ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
+                            .modifyInsert( handle,
                                          object,
                                          rule,
                                          activation );
+        this.getIdentityMap().put(object, handle);
     }
 
     public void modifyInsert(final FactHandle factHandle,
                              final Object object) {
-        this.workingMemory.modifyInsert( factHandle,
+        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)factHandle).getEntryPoint())
+                            .modifyInsert( factHandle,
                                          object,
                                          rule,
                                          activation );
+        this.getIdentityMap().put(object, factHandle);
     }
 
     public Rule getRule() {
@@ -243,12 +275,22 @@ public class DefaultKnowledgeHelper
     //    }
 
     public Object get(final Declaration declaration) {
-        return declaration.getValue( workingMemory,
+         InternalWorkingMemoryEntryPoint wmTmp = ((InternalWorkingMemoryEntryPoint)(this.tuple.get(declaration)).getEntryPoint());
+         
+        if(wmTmp != null){
+        Object object = declaration.getValue( wmTmp.getInternalWorkingMemory() ,
                                      this.tuple.get( declaration ).getObject() );
+
+                getIdentityMap().put(object, wmTmp.getFactHandleByIdentity(object));
+                return object;
+        }
+        return null;
+      //  return declaration.getValue( workingMemory,
+      //                               this.tuple.get( declaration ).getObject() );
     }
 
     public Declaration getDeclaration(final String identifier) {
-        return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
+             return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
     }
 
     public void halt() {
@@ -269,5 +311,19 @@ public class DefaultKnowledgeHelper
 
     public Map<String, ExitPoint> getExitPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
+    }
+
+    /**
+     * @return the identityMap
+     */
+    public IdentityHashMap<Object, FactHandle> getIdentityMap() {
+        return identityMap;
+}
+
+    /**
+     * @param identityMap the identityMap to set
+     */
+    public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap) {
+        this.identityMap = identityMap;
     }
 }
