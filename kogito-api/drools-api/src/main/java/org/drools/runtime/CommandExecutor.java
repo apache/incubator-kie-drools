@@ -18,7 +18,7 @@ import org.drools.command.Command;
  * 
  * <p>
  * Typically though you will want to execute a batch of commands, this can be achieved via the composite Command BatchExecution. Further to this
- * results are scoped to this execute call and return via the BatchExecutionResults:
+ * results are scoped to this execute call and return via the ExecutionResults:
  * </p>
  * 
  * <pre>
@@ -27,7 +27,7 @@ import org.drools.command.Command;
  * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
  * cmds.add( CommandFactory.newQuery( "Get People" "getPeople" );
  * 
- * BatchExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+ * ExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
  * results.getValue( "list1" ); // returns the ArrayList
  * results.getValue( "person" ); // returns the inserted fact Person
  * results.getValue( "Get People" );// returns the query as a QueryResults instance.
@@ -35,15 +35,15 @@ import org.drools.command.Command;
  * 
  * <p>
  * The CommandFactory details the supported commands, all of which can marshalled using XStream and the BatchExecutionHelper. BatchExecutionHelper provides details
- * on the xml format as well as how to use Drools Pipeline to automate the marshalling of BatchExecution and BatchExecutionResults.
+ * on the xml format as well as how to use Drools Pipeline to automate the marshalling of BatchExecution and ExecutionResults.
  * </p>
  */
-public interface BatchExecutor {
+public interface CommandExecutor {
     /**
-     * Execute the command and return a BatchExecutionResults for the results of the Command.
+     * Execute the command and return a ExecutionResults for the results of the Command.
      * 
      * @param command
      * @return
      */
-    public BatchExecutionResults execute(Command command);
+    public ExecutionResults execute(Command command);
 }

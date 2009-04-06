@@ -11,7 +11,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * call dispose(). Stateless sessions do not support
  * iterative insertions and fireAllRules from java code, the act of calling execute(...) is a single
  * shot method that will internally instantiate a StatefullKnowledgeSession, add all the user data and execute user commands, call fireAllRules, and then
- * call dispose(). While the main way to work with this class is via the BatchExecution Command as supported by the BatchExecutor interface, 
+ * call dispose(). While the main way to work with this class is via the BatchExecution Command as supported by the CommandExecutor interface, 
  * two convenience methods are provided for when simple object insertion is all that's required.
  * 
  * <p>
@@ -45,7 +45,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * 
  * <p>
  * The CommandFactory details the supported commands, all of which can marshalled using XStream and the BatchExecutionHelper. BatchExecutionHelper provides details
- * on the xml format as well as how to use Drools Pipeline to automate the marshalling of BatchExecution and BatchExecutionResults.
+ * on the xml format as well as how to use Drools Pipeline to automate the marshalling of BatchExecution and ExecutionResults.
  * </p>
  * 
  * <p>
@@ -69,7 +69,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </pre>
  * 
  * <p>
- * The third way is execution scopped globals using the BatchExecutor and SetGlobal Commands:
+ * The third way is execution scopped globals using the CommandExecutor and SetGlobal Commands:
  * </p>
  * 
  * <pre>
@@ -81,7 +81,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </pre>
  * 
  * <p>
- * The BatchExecutor interface also supports the ability to expert data via "out" parameters. Inserted facts, globals and query results can all be returned.
+ * The CommandExecutor interface also supports the ability to expert data via "out" parameters. Inserted facts, globals and query results can all be returned.
  * </p>
  * 
  * <pre>
@@ -90,17 +90,17 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
  * cmds.add( CommandFactory.newQuery( "Get People" "getPeople" );
  * 
- * BatchExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+ * ExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
  * results.getValue( "list1" ); // returns the ArrayList
  * results.getValue( "person" ); // returns the inserted fact Person
  * results.getValue( "Get People" );// returns the query as a QueryResults instance.
  * </pre>
  * 
  * 
- * @see org.drools.runtime.BatchExecutor
+ * @see org.drools.runtime.CommandExecutor
  * @see org.drools.runtime.command.CommandFactory
  * @see org.drools.runtime.command.BatchExecution
- * @see org.drools.runtime.command.BatchExecutionResults
+ * @see org.drools.runtime.ExecutionResults.BatchExecutionResults
  * @see org.drools.runtime.help.BatchExecutionHelp
  * @see org.drools.runtime.pipeline.PipelineFactory
  * @see org.drools.runtime.Globals
@@ -110,7 +110,7 @@ public interface StatelessKnowledgeSession
     extends
     StatelessRuleSession,
     StatelessProcessSession,
-    BatchExecutor,
+    CommandExecutor,
     KnowledgeRuntimeEventManager {
 
     /**

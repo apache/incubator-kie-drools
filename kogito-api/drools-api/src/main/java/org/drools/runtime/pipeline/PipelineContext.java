@@ -7,7 +7,7 @@ package org.drools.runtime.pipeline;
  */
 import java.util.Map;
 
-import org.drools.runtime.BatchExecutor;
+import org.drools.runtime.CommandExecutor;
 
 public interface PipelineContext {
 
@@ -21,6 +21,6 @@ public interface PipelineContext {
 
     ResultHandler getResultHandler();
     
-    BatchExecutor getBatchExecutor();
+    CommandExecutor getCommandExecutor();
 
 }

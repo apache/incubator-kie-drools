@@ -516,8 +516,8 @@ public class PipelineFactory {
      * 
      * <p>
      * The BatchExecutionHelper factory provides a pre-configured XStream instance used for marshalling Commands, specifically
-     * the BatchExecutionCommand and the BatchExecutionResults. It also contains docs on the xml formant and on how to use the pipeline 
-     * for marshalling BatchExecutionCommand and BatchExecutionResults.
+     * the BatchExecutionCommand and the ExecutionResults. It also contains docs on the xml formant and on how to use the pipeline 
+     * for marshalling BatchExecutionCommand and ExecutionResults.
      * </p>
      * 
      * @param xstream
@@ -540,8 +540,8 @@ public class PipelineFactory {
      * 
      * <p>
      * The BatchExecutionHelper factory provides a pre-configured XStream instance used for marshalling Commands, specifically
-     * the BatchExecutionCommand and the BatchExecutionResults. It also contains docs on the xml formant and on how to use the pipeline 
-     * for marshalling BatchExecutionCommand and BatchExecutionResults.
+     * the BatchExecutionCommand and the ExecutionResults. It also contains docs on the xml formant and on how to use the pipeline 
+     * for marshalling BatchExecutionCommand and ExecutionResults.
      * </p>
      * @param xstream
      * @return

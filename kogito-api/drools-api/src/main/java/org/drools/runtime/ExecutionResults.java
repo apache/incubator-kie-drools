@@ -10,7 +10,7 @@ import java.util.Collection;
  * 
  *
  */
-public interface BatchExecutionResults {
+public interface ExecutionResults {
 
     Collection<String> getIdentifiers();
 

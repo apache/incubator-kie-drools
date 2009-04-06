@@ -162,7 +162,7 @@ import com.thoughtworks.xstream.XStream;
  * <p>
  * The pipeline can be used to handle this end to end, notice the part where the configured XStream instance is passed "BatchExecutionHelper.newXStreamMarshaller()".
  * This will take a given xml, transform it and then execute it as a BatchExecution Command. Notice the Pipeline also handles the marshalling
- * of the BatchExecutionResults back out to XML.
+ * of the ExecutionResults back out to XML.
  * </p>
  * <pre>
  * Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
