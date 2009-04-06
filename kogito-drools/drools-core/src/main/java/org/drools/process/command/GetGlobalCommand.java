@@ -27,7 +27,7 @@ public class GetGlobalCommand
 
     public Object execute(ReteooWorkingMemory session) {
         Object object = session.getGlobal( this.identifier );
-        session.getBatchExecutionResult().getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
+        session.getExecutionResult().getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
                                                             object );
         return object;
     }

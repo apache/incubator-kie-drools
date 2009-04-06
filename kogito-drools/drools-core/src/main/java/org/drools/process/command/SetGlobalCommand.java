@@ -21,7 +21,7 @@ public class SetGlobalCommand
 
     public Void execute(ReteooWorkingMemory session) {
         if ( this.out ) {
-            session.getBatchExecutionResult().getResults().put( ( this.outIdentifier != null ) ? this.outIdentifier : this.identifier, 
+            session.getExecutionResult().getResults().put( ( this.outIdentifier != null ) ? this.outIdentifier : this.identifier, 
                                                                 object );
         }
         

@@ -84,7 +84,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.runtime.BatchExecutionResults;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.ExitPoint;
@@ -216,7 +216,7 @@ public abstract class AbstractWorkingMemory
 
     private Environment                                                       environment;
     
-    private BatchExecutionResults                                              batchExecutionResult;
+    private ExecutionResults                                              batchExecutionResult;
 
     // ------------------------------------------------------------
     // Constructors
@@ -1843,7 +1843,7 @@ public abstract class AbstractWorkingMemory
         this.batchExecutionResult = new BatchExecutionResultImpl();
     }
     
-    public BatchExecutionResultImpl getBatchExecutionResult() {
+    public BatchExecutionResultImpl getExecutionResult() {
         return ( BatchExecutionResultImpl ) this.batchExecutionResult;
     }
     

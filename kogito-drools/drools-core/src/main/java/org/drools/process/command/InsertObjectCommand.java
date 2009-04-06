@@ -15,7 +15,7 @@ public class InsertObjectCommand implements Command<FactHandle> {
 	
 	public FactHandle execute(ReteooWorkingMemory session) {
 	    if ( outIdentifier != null ) {
-	        session.getBatchExecutionResult().getResults().put( this.outIdentifier, object );
+	        session.getExecutionResult().getResults().put( this.outIdentifier, object );
 	    }
 		return session.insert(object);
 	}
