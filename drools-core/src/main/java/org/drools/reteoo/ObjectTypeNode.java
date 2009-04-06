@@ -352,21 +352,7 @@ public class ObjectTypeNode extends ObjectSource
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
         return this.objectType.equals( other.objectType ) && this.source.equals( other.source );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected void addObjectSink(final ObjectSink objectSink) {
-        super.addObjectSink( objectSink );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected void removeObjectSink(final ObjectSink objectSink) {
-        super.removeObjectSink( objectSink );
-    }
+    }    
 
     /**
      * Checks if a modify action on this object type may

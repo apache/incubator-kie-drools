@@ -191,13 +191,6 @@ public class AlphaNode extends ObjectSource
         return memory;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected void addObjectSink(final ObjectSink objectSink) {
-        super.addObjectSink( objectSink );
-    }
-
     public String toString() {
         return "[AlphaNode(" + this.id + ") constraint=" + this.constraint + "]";
     }
