@@ -56,7 +56,7 @@ import org.drools.runtime.rule.StatefulRuleSession;
  * </pre>
  * 
  * <p>
- * Like StatelessKnowledgeSession this also implements BatchExecutor which can be used to script a StatefulKnowledgeSession. See BatchExecutor
+ * Like StatelessKnowledgeSession this also implements CommandExecutor which can be used to script a StatefulKnowledgeSession. See CommandExecutor
  * for more details.
  * </p>
  * 
@@ -66,7 +66,7 @@ public interface StatefulKnowledgeSession
     extends
     StatefulRuleSession,
     StatefulProcessSession,
-    BatchExecutor,
+    CommandExecutor,
     KnowledgeRuntime {
 
     int getId();

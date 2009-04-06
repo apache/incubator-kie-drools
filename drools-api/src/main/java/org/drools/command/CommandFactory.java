@@ -8,12 +8,12 @@ import org.drools.runtime.ObjectFilter;
 
 /**
  * <p>
- * The CommandFactory returns Commands that can be used by classes that implement BatchExecutor. Typically more than one Command
+ * The CommandFactory returns Commands that can be used by classes that implement CommandExecutor. Typically more than one Command
  * will want to be executed, where is where the BatchExecution comes in, which takes a List of commands, think of it as CompositeCommand.
  * </p> 
  * 
  * <p>
- * Out of the box marshalling to XML is support for the Commands, specifically the BatchExecution command and BatchExecutionResults, using the Drools Pipeline. If the 
+ * Out of the box marshalling to XML is support for the Commands, specifically the BatchExecution command and ExecutionResults, using the Drools Pipeline. If the 
  * drools-transformer-xstream is added then the PipelineFactory can be used in conjunction with the BatchExecutionHelper to marshall to and from XML. BatchExecutionHelper
  * also provides additional documentation on the supported XML format.
  * </p>
@@ -35,7 +35,7 @@ public class CommandFactory {
     }
 
     /**
-     * Inserts a new instance but references via the outIdentifier, which is returned as part of the BatchExecutionResults
+     * Inserts a new instance but references via the outIdentifier, which is returned as part of the ExecutionResults
      * 
      * @param object
      * @param outIdentifier
@@ -81,14 +81,14 @@ public class CommandFactory {
     }
 
     /**
-     * Sets the global but also when the out parameter is true specifies that the global is added to the BatchExecutionResults.
+     * Sets the global but also when the out parameter is true specifies that the global is added to the ExecutionResults.
      * 
      * @param identifier
      *     The identifier of the global
      * @param object
      *     The instance to be set as the global.
      * @param out
-     *     When true the global will be added to the BatchExecutionResults using the global's identifier.
+     *     When true the global will be added to the ExecutionResults using the global's identifier.
      * @return
      */
     public static Command newSetGlobal(String identifier,
@@ -100,15 +100,15 @@ public class CommandFactory {
     }
 
     /**
-     * Sets the global but also specifies that the global is added to the BatchExecutionResults. Instead of using the 
-     * global's identifier it uses the outIdentifier when being added to the BatchExecutionResults.
+     * Sets the global but also specifies that the global is added to the ExecutionResults. Instead of using the 
+     * global's identifier it uses the outIdentifier when being added to the ExecutionResults.
      * 
      * @param identifier
      *     The identifier of the global
      * @param object
      *     The instance to be set as the global.
      * @param outIdentifier
-     *     The identifier used to store the global in the BatchExecutionResults
+     *     The identifier used to store the global in the ExecutionResults
      * @return
      */
     public static Command newSetGlobal(String identifier,
@@ -120,7 +120,7 @@ public class CommandFactory {
     }
 
     /**
-     * Gets the global and adds it to the BatchExecutionResults
+     * Gets the global and adds it to the ExecutionResults
      * @param identifier
      * @return
      */
@@ -134,7 +134,7 @@ public class CommandFactory {
      * @param identifier
      *     The identifier of the global
      * @param outIdentifier
-     *     The identifier used in the BatchExecutionResults to store the global.
+     *     The identifier used in the ExecutionResults to store the global.
      * @return
      */
     public static Command newGetGlobal(String identifier,
@@ -174,11 +174,11 @@ public class CommandFactory {
     }
     
     /**
-     * Executes a query. The query results will be added to the BatchExecutionResults using the 
+     * Executes a query. The query results will be added to the ExecutionResults using the 
      * given identifier.
      * 
      * @param identifier
-     *     The identifier to be used for the results when added to the BatchExecutionResults
+     *     The identifier to be used for the results when added to the ExecutionResults
      * @param name
      *     The name of the query to execute
      * @return
@@ -191,10 +191,10 @@ public class CommandFactory {
     
     /**
      * Executes a query using the given parameters. The query results will be added to the 
-     * BatchExecutionResults using the given identifier.
+     * ExecutionResults using the given identifier.
      * 
      * @param identifier
-     *      The identifier to be used for the results when added to the BatchExecutionResults
+     *      The identifier to be used for the results when added to the ExecutionResults
      * @param name
      *      The name of the query to execute
      * @param arguments
