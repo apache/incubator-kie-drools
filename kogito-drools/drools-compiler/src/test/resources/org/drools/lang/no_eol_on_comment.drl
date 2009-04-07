@@ -1,0 +1,13 @@
+#### a comment
+// another comment
+package org.drools
+
+// another comment
+# ### one more
+
+rule "test something"
+    when
+      p: Person( street == "Low" && sss[1] == 234 )
+    then
+end 
+# comment in the last line without EOL
