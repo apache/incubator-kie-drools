@@ -3924,6 +3924,15 @@ public class RuleParserTest extends TestCase {
         assertNotNull( walker );
     }
 
+    public void testNoEOLOnCommentInTheLastLine() throws Exception {
+        parseResource( "compilation_unit",
+                       "compilation_unit",
+                       "no_eol_on_comment.drl" );
+
+        assertFalse( parser.hasErrors() );
+        assertNotNull( walker );
+    }
+
     public void testRuleOldSyntax1() throws Exception {
         final String source = "rule \"Test\" when ( not $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
 
