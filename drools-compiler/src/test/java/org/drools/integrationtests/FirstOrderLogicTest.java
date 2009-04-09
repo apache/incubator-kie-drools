@@ -10,9 +10,12 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -24,12 +27,17 @@ import org.drools.SpecialString;
 import org.drools.State;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -1057,6 +1065,46 @@ public class FirstOrderLogicTest extends TestCase {
                              results.get( 0 ) );
         Assert.assertEquals( "accumulate",
                              results.get( 1 ) );
+    }
+
+    public void testFromWithOr() throws Exception {
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_FromWithOr.drl" ) ),
+                     ResourceType.DRL );
+        
+        if( builder.hasErrors() ) {
+            System.out.println( builder.getErrors() );
+        }
+        assertFalse( builder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        final List<Address> results = new ArrayList<Address>();
+        session.setGlobal( "results",
+                                 results );
+
+        Address a1 = new Address();
+        a1.setZipCode("12345");
+        Address a2 = new Address();
+        a2.setZipCode("54321");
+        Address a3 = new Address();
+        a3.setZipCode("99999");
+        
+        Person p = new Person();
+        p.addAddress(a1);
+        p.addAddress(a2);
+        p.addAddress(a3);
+        
+        session.insert( p);
+        session.fireAllRules();   
+        
+        assertEquals( 2, results.size() );
+        assertTrue( results.contains( a1 ) );
+        assertTrue( results.contains( a2 ) );
+
     }
 
 }
