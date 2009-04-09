@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/lang/DRL.g 2009-03-14 14:28:59
+// $ANTLR 3.1.1 src/main/resources/org/drools/lang/DRL.g 2009-04-09 16:58:53
 
 	package org.drools.lang;
 
@@ -1748,32 +1748,35 @@ public class DRLLexer extends Lexer {
         try {
             int _type = SH_STYLE_SINGLE_LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/lang/DRL.g:1879:2: ( '#' ( options {greedy=false; } : . )* EOL )
-            // src/main/resources/org/drools/lang/DRL.g:1879:4: '#' ( options {greedy=false; } : . )* EOL
+            // src/main/resources/org/drools/lang/DRL.g:1879:2: ( '#' (~ ( '\\r' | '\\n' ) )* ( EOL )? )
+            // src/main/resources/org/drools/lang/DRL.g:1879:4: '#' (~ ( '\\r' | '\\n' ) )* ( EOL )?
             {
             match('#'); if (state.failed) return ;
-            // src/main/resources/org/drools/lang/DRL.g:1879:8: ( options {greedy=false; } : . )*
+            // src/main/resources/org/drools/lang/DRL.g:1879:8: (~ ( '\\r' | '\\n' ) )*
             loop17:
             do {
                 int alt17=2;
                 int LA17_0 = input.LA(1);
 
-                if ( (LA17_0=='\r') ) {
-                    alt17=2;
-                }
-                else if ( (LA17_0=='\n') ) {
-                    alt17=2;
-                }
-                else if ( ((LA17_0>='\u0000' && LA17_0<='\t')||(LA17_0>='\u000B' && LA17_0<='\f')||(LA17_0>='\u000E' && LA17_0<='\uFFFF')) ) {
+                if ( ((LA17_0>='\u0000' && LA17_0<='\t')||(LA17_0>='\u000B' && LA17_0<='\f')||(LA17_0>='\u000E' && LA17_0<='\uFFFF')) ) {
                     alt17=1;
                 }
 
 
                 switch (alt17) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DRL.g:1879:35: .
+            	    // src/main/resources/org/drools/lang/DRL.g:1879:9: ~ ( '\\r' | '\\n' )
             	    {
-            	    matchAny(); if (state.failed) return ;
+            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
+            	        input.consume();
+            	    state.failed=false;
+            	    }
+            	    else {
+            	        if (state.backtracking>0) {state.failed=true; return ;}
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        recover(mse);
+            	        throw mse;}
+
 
             	    }
             	    break;
@@ -1783,7 +1786,24 @@ public class DRLLexer extends Lexer {
                 }
             } while (true);
 
-            mEOL(); if (state.failed) return ;
+            // src/main/resources/org/drools/lang/DRL.g:1879:24: ( EOL )?
+            int alt18=2;
+            int LA18_0 = input.LA(1);
+
+            if ( (LA18_0=='\n'||LA18_0=='\r') ) {
+                alt18=1;
+            }
+            switch (alt18) {
+                case 1 :
+                    // src/main/resources/org/drools/lang/DRL.g:1879:24: EOL
+                    {
+                    mEOL(); if (state.failed) return ;
+
+                    }
+                    break;
+
+            }
+
             if ( state.backtracking==0 ) {
                _channel=HIDDEN; setText("//"+getText().substring(1));
             }
@@ -1803,43 +1823,63 @@ public class DRLLexer extends Lexer {
         try {
             int _type = C_STYLE_SINGLE_LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/lang/DRL.g:1885:2: ( '//' ( options {greedy=false; } : . )* EOL )
-            // src/main/resources/org/drools/lang/DRL.g:1885:4: '//' ( options {greedy=false; } : . )* EOL
+            // src/main/resources/org/drools/lang/DRL.g:1885:2: ( '//' (~ ( '\\r' | '\\n' ) )* ( EOL )? )
+            // src/main/resources/org/drools/lang/DRL.g:1885:4: '//' (~ ( '\\r' | '\\n' ) )* ( EOL )?
             {
             match("//"); if (state.failed) return ;
 
-            // src/main/resources/org/drools/lang/DRL.g:1885:9: ( options {greedy=false; } : . )*
-            loop18:
+            // src/main/resources/org/drools/lang/DRL.g:1885:9: (~ ( '\\r' | '\\n' ) )*
+            loop19:
             do {
-                int alt18=2;
-                int LA18_0 = input.LA(1);
+                int alt19=2;
+                int LA19_0 = input.LA(1);
 
-                if ( (LA18_0=='\r') ) {
-                    alt18=2;
-                }
-                else if ( (LA18_0=='\n') ) {
-                    alt18=2;
-                }
-                else if ( ((LA18_0>='\u0000' && LA18_0<='\t')||(LA18_0>='\u000B' && LA18_0<='\f')||(LA18_0>='\u000E' && LA18_0<='\uFFFF')) ) {
-                    alt18=1;
+                if ( ((LA19_0>='\u0000' && LA19_0<='\t')||(LA19_0>='\u000B' && LA19_0<='\f')||(LA19_0>='\u000E' && LA19_0<='\uFFFF')) ) {
+                    alt19=1;
                 }
 
 
-                switch (alt18) {
+                switch (alt19) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DRL.g:1885:36: .
+            	    // src/main/resources/org/drools/lang/DRL.g:1885:10: ~ ( '\\r' | '\\n' )
             	    {
-            	    matchAny(); if (state.failed) return ;
+            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
+            	        input.consume();
+            	    state.failed=false;
+            	    }
+            	    else {
+            	        if (state.backtracking>0) {state.failed=true; return ;}
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        recover(mse);
+            	        throw mse;}
+
 
             	    }
             	    break;
 
             	default :
-            	    break loop18;
+            	    break loop19;
                 }
             } while (true);
 
-            mEOL(); if (state.failed) return ;
+            // src/main/resources/org/drools/lang/DRL.g:1885:25: ( EOL )?
+            int alt20=2;
+            int LA20_0 = input.LA(1);
+
+            if ( (LA20_0=='\n'||LA20_0=='\r') ) {
+                alt20=1;
+            }
+            switch (alt20) {
+                case 1 :
+                    // src/main/resources/org/drools/lang/DRL.g:1885:25: EOL
+                    {
+                    mEOL(); if (state.failed) return ;
+
+                    }
+                    break;
+
+            }
+
             if ( state.backtracking==0 ) {
                _channel=HIDDEN; 
             }
@@ -1865,29 +1905,29 @@ public class DRLLexer extends Lexer {
             match("/*"); if (state.failed) return ;
 
             // src/main/resources/org/drools/lang/DRL.g:1890:9: ( options {greedy=false; } : . )*
-            loop19:
+            loop21:
             do {
-                int alt19=2;
-                int LA19_0 = input.LA(1);
+                int alt21=2;
+                int LA21_0 = input.LA(1);
 
-                if ( (LA19_0=='*') ) {
-                    int LA19_1 = input.LA(2);
+                if ( (LA21_0=='*') ) {
+                    int LA21_1 = input.LA(2);
 
-                    if ( (LA19_1=='/') ) {
-                        alt19=2;
+                    if ( (LA21_1=='/') ) {
+                        alt21=2;
                     }
-                    else if ( ((LA19_1>='\u0000' && LA19_1<='.')||(LA19_1>='0' && LA19_1<='\uFFFF')) ) {
-                        alt19=1;
+                    else if ( ((LA21_1>='\u0000' && LA21_1<='.')||(LA21_1>='0' && LA21_1<='\uFFFF')) ) {
+                        alt21=1;
                     }
 
 
                 }
-                else if ( ((LA19_0>='\u0000' && LA19_0<=')')||(LA19_0>='+' && LA19_0<='\uFFFF')) ) {
-                    alt19=1;
+                else if ( ((LA21_0>='\u0000' && LA21_0<=')')||(LA21_0>='+' && LA21_0<='\uFFFF')) ) {
+                    alt21=1;
                 }
 
 
-                switch (alt19) {
+                switch (alt21) {
             	case 1 :
             	    // src/main/resources/org/drools/lang/DRL.g:1890:35: .
             	    {
@@ -1897,7 +1937,7 @@ public class DRLLexer extends Lexer {
             	    break;
 
             	default :
-            	    break loop19;
+            	    break loop21;
                 }
             } while (true);
 
@@ -1948,9 +1988,9 @@ public class DRLLexer extends Lexer {
 
     public void mTokens() throws RecognitionException {
         // src/main/resources/org/drools/lang/DRL.g:1:8: ( WS | INT | FLOAT | STRING | BOOL | ACCUMULATE | COLLECT | FROM | NULL | OVER | THEN | WHEN | AT | EQUALS | SEMICOLON | DOT_STAR | COLON | EQUAL | NOT_EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | ARROW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC )
-        int alt20=39;
-        alt20 = dfa20.predict(input);
-        switch (alt20) {
+        int alt22=39;
+        alt22 = dfa22.predict(input);
+        switch (alt22) {
             case 1 :
                 // src/main/resources/org/drools/lang/DRL.g:1:10: WS
                 {
@@ -2257,23 +2297,23 @@ public class DRLLexer extends Lexer {
     }
 
 
-    protected DFA20 dfa20 = new DFA20(this);
-    static final String DFA20_eotS =
+    protected DFA22 dfa22 = new DFA22(this);
+    static final String DFA22_eotS =
         "\2\uffff\1\42\1\45\1\uffff\1\42\7\26\1\uffff\1\60\1\uffff\1\62"+
         "\1\uffff\1\42\1\65\1\67\11\uffff\2\42\1\uffff\1\42\4\uffff\11\26"+
         "\15\uffff\11\26\1\116\1\117\1\26\1\121\2\26\1\124\1\125\1\126\2"+
         "\uffff\1\116\1\uffff\2\26\3\uffff\3\26\1\134\1\26\1\uffff\1\26\1"+
         "\137\1\uffff";
-    static final String DFA20_eofS =
+    static final String DFA22_eofS =
         "\140\uffff";
-    static final String DFA20_minS =
+    static final String DFA22_minS =
         "\1\11\1\uffff\1\60\1\56\1\uffff\1\0\1\150\1\141\1\143\1\157\1\165"+
         "\1\166\1\150\1\uffff\1\75\1\uffff\1\52\1\uffff\3\75\11\uffff\1\46"+
         "\1\174\1\uffff\1\52\4\uffff\1\165\1\145\1\154\1\157\1\143\2\154"+
         "\2\145\15\uffff\1\145\1\156\1\163\1\155\1\165\2\154\1\162\1\156"+
         "\2\60\1\145\1\60\1\155\1\145\3\60\2\uffff\1\60\1\uffff\1\165\1\143"+
         "\3\uffff\1\154\1\164\1\141\1\60\1\164\1\uffff\1\145\1\60\1\uffff";
-    static final String DFA20_maxS =
+    static final String DFA22_maxS =
         "\1\u00ff\1\uffff\1\76\1\71\1\uffff\1\uffff\2\162\1\143\1\157\1"+
         "\165\1\166\1\150\1\uffff\1\75\1\uffff\1\52\1\uffff\3\75\11\uffff"+
         "\1\46\1\174\1\uffff\1\57\4\uffff\1\165\1\145\1\154\1\157\1\143\2"+
@@ -2281,15 +2321,15 @@ public class DRLLexer extends Lexer {
         "\156\2\u00ff\1\145\1\u00ff\1\155\1\145\3\u00ff\2\uffff\1\u00ff\1"+
         "\uffff\1\165\1\143\3\uffff\1\154\1\164\1\141\1\u00ff\1\164\1\uffff"+
         "\1\145\1\u00ff\1\uffff";
-    static final String DFA20_acceptS =
+    static final String DFA22_acceptS =
         "\1\uffff\1\1\2\uffff\1\4\10\uffff\1\15\1\uffff\1\17\1\uffff\1\21"+
         "\3\uffff\2\31\1\32\1\33\1\34\1\35\1\36\1\37\1\40\2\uffff\1\44\1"+
         "\uffff\1\47\1\30\1\3\1\2\11\uffff\1\22\1\16\1\20\1\41\1\23\1\25"+
         "\1\24\1\27\1\26\1\42\1\43\1\45\1\46\22\uffff\1\5\1\13\1\uffff\1"+
         "\10\2\uffff\1\11\1\12\1\14\5\uffff\1\7\2\uffff\1\6";
-    static final String DFA20_specialS =
+    static final String DFA22_specialS =
         "\5\uffff\1\0\132\uffff}>";
-    static final String[] DFA20_transitionS = {
+    static final String[] DFA22_transitionS = {
             "\2\1\1\uffff\2\1\22\uffff\1\1\1\22\1\4\1\40\1\25\1\42\1\36"+
             "\1\5\1\27\1\30\2\42\1\35\1\2\1\20\1\41\12\3\1\21\1\17\1\24\1"+
             "\16\1\23\1\42\1\15\32\26\1\31\1\42\1\32\1\42\1\25\1\26\1\10"+
@@ -2401,34 +2441,34 @@ public class DRLLexer extends Lexer {
             ""
     };
 
-    static final short[] DFA20_eot = DFA.unpackEncodedString(DFA20_eotS);
-    static final short[] DFA20_eof = DFA.unpackEncodedString(DFA20_eofS);
-    static final char[] DFA20_min = DFA.unpackEncodedStringToUnsignedChars(DFA20_minS);
-    static final char[] DFA20_max = DFA.unpackEncodedStringToUnsignedChars(DFA20_maxS);
-    static final short[] DFA20_accept = DFA.unpackEncodedString(DFA20_acceptS);
-    static final short[] DFA20_special = DFA.unpackEncodedString(DFA20_specialS);
-    static final short[][] DFA20_transition;
+    static final short[] DFA22_eot = DFA.unpackEncodedString(DFA22_eotS);
+    static final short[] DFA22_eof = DFA.unpackEncodedString(DFA22_eofS);
+    static final char[] DFA22_min = DFA.unpackEncodedStringToUnsignedChars(DFA22_minS);
+    static final char[] DFA22_max = DFA.unpackEncodedStringToUnsignedChars(DFA22_maxS);
+    static final short[] DFA22_accept = DFA.unpackEncodedString(DFA22_acceptS);
+    static final short[] DFA22_special = DFA.unpackEncodedString(DFA22_specialS);
+    static final short[][] DFA22_transition;
 
     static {
-        int numStates = DFA20_transitionS.length;
-        DFA20_transition = new short[numStates][];
+        int numStates = DFA22_transitionS.length;
+        DFA22_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA20_transition[i] = DFA.unpackEncodedString(DFA20_transitionS[i]);
+            DFA22_transition[i] = DFA.unpackEncodedString(DFA22_transitionS[i]);
         }
     }
 
-    class DFA20 extends DFA {
+    class DFA22 extends DFA {
 
-        public DFA20(BaseRecognizer recognizer) {
+        public DFA22(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 20;
-            this.eot = DFA20_eot;
-            this.eof = DFA20_eof;
-            this.min = DFA20_min;
-            this.max = DFA20_max;
-            this.accept = DFA20_accept;
-            this.special = DFA20_special;
-            this.transition = DFA20_transition;
+            this.decisionNumber = 22;
+            this.eot = DFA22_eot;
+            this.eof = DFA22_eof;
+            this.min = DFA22_min;
+            this.max = DFA22_max;
+            this.accept = DFA22_accept;
+            this.special = DFA22_special;
+            this.transition = DFA22_transition;
         }
         public String getDescription() {
             return "1:1: Tokens : ( WS | INT | FLOAT | STRING | BOOL | ACCUMULATE | COLLECT | FROM | NULL | OVER | THEN | WHEN | AT | EQUALS | SEMICOLON | DOT_STAR | COLON | EQUAL | NOT_EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | ARROW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC );";
@@ -2438,10 +2478,10 @@ public class DRLLexer extends Lexer {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA20_5 = input.LA(1);
+                        int LA22_5 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA20_5>='\u0000' && LA20_5<='\uFFFF')) ) {s = 4;}
+                        if ( ((LA22_5>='\u0000' && LA22_5<='\uFFFF')) ) {s = 4;}
 
                         else s = 34;
 
@@ -2450,7 +2490,7 @@ public class DRLLexer extends Lexer {
             }
             if (state.backtracking>0) {state.failed=true; return -1;}
             NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 20, _s, input);
+                new NoViableAltException(getDescription(), 22, _s, input);
             error(nvae);
             throw nvae;
         }
