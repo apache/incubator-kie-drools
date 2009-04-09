@@ -29,7 +29,7 @@ public class Person
 
     private Cheese            cheese;
 
-    private List              addresses = new ArrayList();
+    private List<Address>   addresses = new ArrayList<Address>();
 
 //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 //        name    = (String)in.readObject();
@@ -58,14 +58,6 @@ public class Person
 //        out.writeObject(addresses);
 //    }
 
-    public List getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List addresses) {
-        this.addresses = addresses;
-    }
-
     public Person() {
 
     }
@@ -81,6 +73,18 @@ public class Person
         this( name,
               "",
               0 );
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+    
+    public void addAddress( Address address ) {
+        this.addresses.add( address );
     }
 
     public Person(final String name,

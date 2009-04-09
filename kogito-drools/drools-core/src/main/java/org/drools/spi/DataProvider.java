@@ -6,7 +6,7 @@ import java.util.Iterator;
 import org.drools.rule.Declaration;
 import org.drools.WorkingMemory;
 
-public interface DataProvider extends Serializable {
+public interface DataProvider extends Serializable, Cloneable {
 
     public Declaration[] getRequiredDeclarations();
     
@@ -16,5 +16,7 @@ public interface DataProvider extends Serializable {
                                WorkingMemory wm,
                                PropagationContext ctx,
                                Object providerContext);
+
+    public DataProvider clone();
 
 }

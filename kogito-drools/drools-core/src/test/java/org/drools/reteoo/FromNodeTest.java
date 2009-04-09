@@ -340,6 +340,8 @@ public class FromNodeTest extends TestCase {
         implements
         DataProvider {
 
+        private static final long serialVersionUID = -6003158511821491524L;
+        
         private Collection collection;
 
         public Declaration[] getRequiredDeclarations() {
@@ -359,6 +361,10 @@ public class FromNodeTest extends TestCase {
 
         public Object createContext() {
             return null;
+        }
+        
+        public DataProvider clone() {
+            return this;
         }
     }
 

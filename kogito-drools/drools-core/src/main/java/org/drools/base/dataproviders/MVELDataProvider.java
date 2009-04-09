@@ -103,4 +103,11 @@ public class MVELDataProvider
             return Collections.singletonList( result ).iterator();
         }
     }
+    
+    public DataProvider clone() {
+        // not sure this is safe, but at this point we don't have a classloader
+        // reference to compile a new copy of the data provider. My require
+        // refactory later.
+        return this;
+    }
 }

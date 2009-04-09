@@ -160,7 +160,7 @@ public class GroupElement extends ConditionalElement
         if ( this.isAnd() || this.isOr() || this.isExists() ) {
 
             // if parent is of the same type as current node,
-            // then merge this childs with parent childs
+            // then merge this children with parent children
             if ( parent.getType() == this.getType() ) {
 
                 // we must keep the order so, save index

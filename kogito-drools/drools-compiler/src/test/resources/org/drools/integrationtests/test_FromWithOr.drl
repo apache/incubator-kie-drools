@@ -1,0 +1,17 @@
+package org.drools
+
+global java.util.List results
+ 
+rule "Hello World"
+when
+  $p  : Person( add:addresses )
+  $a1 : Address( zipCode == "99999") from add
+  and
+  ( 
+    $a2 : Address( zipCode == "12345") from add
+    or 
+    $a2 : Address( zipCode == "54321") from add
+  )
+then
+    results.add( $a2 );
+end

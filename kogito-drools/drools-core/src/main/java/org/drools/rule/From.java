@@ -45,8 +45,7 @@ public class From extends ConditionalElement
     }
 
     public Object clone() {
-        // TODO Auto-generated method stub
-        return null;
+        return new From( this.dataProvider.clone() );
     }
 
     public Map getInnerDeclarations() {
