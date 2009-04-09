@@ -1,14 +1,12 @@
 package org.drools.runtime.process;
 
-import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.KnowledgeContext;
 
-public interface ProcessContext {
+public interface ProcessContext  extends KnowledgeContext {
 
     ProcessInstance getProcessInstance();
 
     NodeInstance getNodeInstance();
-
-    KnowledgeRuntime getKnowledgeRuntime();
 
     Object getVariable(String variableName);
 
