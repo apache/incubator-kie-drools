@@ -23,17 +23,22 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
+import org.drools.io.Resource;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -2639,16 +2644,16 @@ public class RuleParserTest extends TestCase {
         final PatternDescr pattern = forall.getBasePattern();
         assertEquals( "Person",
                       pattern.getObjectType() );
-        assertEquals( "$village", 
-                      ((FromDescr)pattern.getSource()).getDataSource().toString() );
+        assertEquals( "$village",
+                      ((FromDescr) pattern.getSource()).getDataSource().toString() );
         final List remaining = forall.getRemainingPatterns();
         assertEquals( 1,
                       remaining.size() );
         final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
-        assertEquals( "$cheesery", 
-                      ((FromDescr)cheese.getSource()).getDataSource().toString() );
+        assertEquals( "$cheesery",
+                      ((FromDescr) cheese.getSource()).getDataSource().toString() );
     }
 
     public void testMemberof() throws Exception {
@@ -3925,12 +3930,17 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testNoEOLOnCommentInTheLastLine() throws Exception {
-        parseResource( "compilation_unit",
-                       "compilation_unit",
-                       "no_eol_on_comment.drl" );
+        final String fileName = "no_eol_on_comment.drl";
 
+        // forcing ANTLR to use an input stream as a source
+        final URL url = getClass().getResource( fileName );
+        final Resource resource = ResourceFactory.newUrlResource( url );
+        
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkg = parser.parse( resource.getInputStream() );
+        
         assertFalse( parser.hasErrors() );
-        assertNotNull( walker );
+        assertNotNull( pkg );
     }
 
     public void testRuleOldSyntax1() throws Exception {
@@ -3997,7 +4007,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Operator.EQUAL",
                       qualifiedIdentifierRestrictionDescr.getText() );
     }
-    
+
     public void testTypeWithMetaData() throws Exception {
 
         parseResource( "compilation_unit",
@@ -4010,7 +4020,7 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( 3,
                       declarations.size() );
-    }    
+    }
 
     private Object parse(String parserRuleName,
                          String treeRuleName,

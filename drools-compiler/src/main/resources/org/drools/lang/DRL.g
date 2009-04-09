@@ -1876,15 +1876,15 @@ DOUBLE_PIPE
 	;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
-	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
+	:	'#' (~('\r'|'\n'))* EOL?
                 { $channel=HIDDEN; setText("//"+getText().substring(1));}
 	;
         
         
 C_STYLE_SINGLE_LINE_COMMENT	
-	:	'//' ( options{greedy=false;} : .)* EOL // ('\r')? '\n' 
+	:	'//' (~('\r'|'\n'))* EOL?
                 { $channel=HIDDEN; }
-	;
+    ;
 
 MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
