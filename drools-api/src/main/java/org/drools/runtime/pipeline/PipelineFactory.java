@@ -209,8 +209,8 @@ public class PipelineFactory {
     }
     
     
-    public static KnowledgeRuntimeCommand newBatchExecutor() {
-        return getCorePipelineProvider().newBatchExecutor();
+    public static KnowledgeRuntimeCommand newCommandExecutor() {
+        return getCorePipelineProvider().newCommandExecutor();
     }    
 
     

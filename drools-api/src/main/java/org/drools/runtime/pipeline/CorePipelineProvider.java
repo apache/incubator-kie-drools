@@ -16,7 +16,7 @@ public interface CorePipelineProvider {
 
     Pipeline newStatelessKnowledgeSessionPipeline(StatelessKnowledgeSession ksession);
     
-    KnowledgeRuntimeCommand newBatchExecutor();
+    KnowledgeRuntimeCommand newCommandExecutor();
     
     KnowledgeRuntimeCommand newInsertObjectCommand();
     
