@@ -121,7 +121,7 @@ import com.thoughtworks.xstream.XStream;
  *     &lt;query out-identifier='cheeses2' name='cheesesWithParams'&gt;
  *         &lt;string>stilton&lt;/string&gt;
  *         &lt;string>cheddar&lt;/string&gt;
- *     &lt;/query>";
+ *     &lt;/query&gt;;
  * &lt;/batch-execution&gt;
  * </pre>
  * 
