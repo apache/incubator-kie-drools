@@ -41,8 +41,8 @@ import com.thoughtworks.xstream.XStream;
  * The insert element supports an 'out-identifier' attribute, this means the insert object will also be returned as part of the <batch-execution-results> payload.
  * </p>
  * <pre>
- * &lt;batch-execution out-identifier='userVar' &gt;
- *     &lt;insert&gt;
+ * &lt;batch-execution &gt;
+ *     &lt;insert out-identifier='userVar' &gt;
  *     ....
  *     &lt;/insert&gt;
  * &lt;/batch-execution&gt;
