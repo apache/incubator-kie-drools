@@ -113,7 +113,7 @@ import com.thoughtworks.xstream.XStream;
  * <p>
  * While the 'out' attribute is useful in returning specific instances as a result payload, we often wish to run actual querries. Both parameter
  * and parameterless querries are supported. The 'name' attribute is the name of the query to be called, and the 'out-identifier' is the identifier
- * to be used for the query results in the &lt;batch-execution-results&g; payload.
+ * to be used for the query results in the &lt;batch-execution-results&gt; payload.
  * </p>
  * <pre>
  * &lt;batch-execution&gt;
