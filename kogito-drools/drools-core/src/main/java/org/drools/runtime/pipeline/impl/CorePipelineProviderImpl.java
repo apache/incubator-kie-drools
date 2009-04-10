@@ -33,8 +33,8 @@ public class CorePipelineProviderImpl
         return new StatelessKnowledgeSessionPipelineImpl( ksession );
     }
     
-    public KnowledgeRuntimeCommand newBatchExecutor() {
-        return new BatchExecutorStage();
+    public KnowledgeRuntimeCommand newCommandExecutor() {
+        return new ExecutorStage();
     }
 
     public KnowledgeRuntimeCommand newStatefulKnowledgeSessionInsert() {
