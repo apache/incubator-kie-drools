@@ -9,7 +9,7 @@ import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 
-public class BatchExecutorStage extends BaseEmitter
+public class ExecutorStage extends BaseEmitter
     implements
     KnowledgeRuntimeCommand {
 
