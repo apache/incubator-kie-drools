@@ -188,7 +188,7 @@ import com.thoughtworks.xstream.XStream;
  * The results would look like following xml:
  * </p>
  * <pre>
- * &lt;batch-execution-results&gt;
+ * &lt;execution-results&gt;
  *   &lt;result identifier='outStilton'&gt;
  *     &lt;org.drools.Cheese&gt;
  *       &lt;type&gt;stilton&lt;/type&gt;
@@ -196,7 +196,7 @@ import com.thoughtworks.xstream.XStream;
  *       &lt;price&gt;30&lt;/price&gt;
  *     &lt;/org.drools.Cheese&gt;
  *   &lt;/result&gt;
- * &lt;/batch-execution-results&gt;
+ * &lt;/execution-results&gt;
  * </pre>
  * 
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
