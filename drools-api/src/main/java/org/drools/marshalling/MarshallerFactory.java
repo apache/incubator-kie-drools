@@ -56,7 +56,7 @@ import org.drools.ProviderInitializationException;
  * </pre>
  * 
  * <p>
- * Not that the acceptance checking order is in the natural order of the supplied array.
+ * Note that the acceptance checking order is in the natural order of the supplied array.
  * </p>
  *
  */
