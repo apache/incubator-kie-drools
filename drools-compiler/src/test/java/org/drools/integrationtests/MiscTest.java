@@ -6361,4 +6361,36 @@ public class MiscTest extends TestCase {
         assertEquals( "Hello World",
                       list.get( 0 ) );
     }
+    
+    public void testJBRules2055() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_JBRules2055.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results",
+                            results );
+        ksession.insert( new Cheese("stilton") );
+        ksession.insert( new Cheese("brie") );
+        ksession.insert( new Cheese("muzzarella") );
+        ksession.insert( new Person( "bob", "stilton" ) );
+        ksession.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( "stilton",
+                      results.get( 0 ) );
+        assertEquals( "brie",
+                      results.get( 1 ) );
+        
+    }
 }
