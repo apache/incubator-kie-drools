@@ -282,7 +282,7 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public void networkUpdated() {
-        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks(), true );
     }
 
     /**
@@ -361,21 +361,21 @@ public class ObjectTypeNode extends ObjectSource
      * @param sinks
      * @return
      */
-    private boolean canSkipOnModify(final Sink[] sinks) {
+    private boolean canSkipOnModify(final Sink[] sinks, final boolean rootCall) {
         // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
         boolean hasConstraints = false;
         for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
             if ( sinks[i] instanceof AlphaNode || sinks[i] instanceof AccumulateNode || sinks[i] instanceof CollectNode || sinks[i] instanceof FromNode ) {
                 hasConstraints = true;
             } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
-                hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
+                hasConstraints = rootCall || this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
             } else if ( sinks[i] instanceof EvalConditionNode ) {
                 hasConstraints = this.usesDeclaration( ((EvalConditionNode) sinks[i]).getCondition() );
             }
             if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
-                hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
+                hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks(), false );
             } else if ( !hasConstraints && sinks[i] instanceof LeftTupleSource ) {
-                hasConstraints = !this.canSkipOnModify( ((LeftTupleSource) sinks[i]).getSinkPropagator().getSinks() );
+                hasConstraints = !this.canSkipOnModify( ((LeftTupleSource) sinks[i]).getSinkPropagator().getSinks(), false );
             }
         }
 
