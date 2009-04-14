@@ -28,31 +28,31 @@
 
 To checkout Drools source code just execute the following command.
 
-<programlisting>fmeyer:~/jboss $ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ jbossrules</programlisting>
+<programlisting>fmeyer:~/jboss $ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ trunk</programlisting>
 
 And wait to complete the files download.
 
-<programlisting>A    jbossrules/drools-repository
-A    jbossrules/drools-repository/.classpath
-A    jbossrules/drools-repository/.project
-A    jbossrules/drools-repository/doc
-A    jbossrules/drools-repository/doc/repository_layout.jpeg
-A    jbossrules/drools-repository/doc/high_level_design.jpeg
-A    jbossrules/drools-repository/doc/javadoc
-A    jbossrules/drools-repository/doc/javadoc/serialized-form.html
-A    jbossrules/drools-repository/doc/javadoc/index-all.html
-A    jbossrules/drools-repository/doc/javadoc/stylesheet.css
-A    jbossrules/drools-repository/doc/javadoc/allclasses-frame.html
-A    jbossrules/drools-repository/doc/javadoc/package-list
-A    jbossrules/drools-repository/doc/javadoc/overview-tree.html
-A    jbossrules/drools-repository/doc/javadoc/org
-A    jbossrules/drools-repository/doc/javadoc/org/drools
-A    jbossrules/drools-repository/doc/javadoc/org/drools/repository
-A    jbossrules/drools-repository/doc/javadoc/org/drools/repository/class-use
-A    jbossrules/drools-repository/doc/javadoc/org/drools/repository/class-use/RuleSet.html
-A    jbossrules/drools-repository/doc/javadoc/org/drools/repository/class-use/RulesRepositoryException.html
-A    jbossrules/drools-repository/doc/javadoc/org/drools/repository/class-use/RulesRepository.html
-A    jbossrules/drools-repository/doc/javadoc/org/drools/repository/RuleSet.html
+<programlisting>A    trunk/drools-repository
+A    trunk/drools-repository/.classpath
+A    trunk/drools-repository/.project
+A    trunk/drools-repository/doc
+A    trunk/drools-repository/doc/repository_layout.jpeg
+A    trunk/drools-repository/doc/high_level_design.jpeg
+A    trunk/drools-repository/doc/javadoc
+A    trunk/drools-repository/doc/javadoc/serialized-form.html
+A    trunk/drools-repository/doc/javadoc/index-all.html
+A    trunk/drools-repository/doc/javadoc/stylesheet.css
+A    trunk/drools-repository/doc/javadoc/allclasses-frame.html
+A    trunk/drools-repository/doc/javadoc/package-list
+A    trunk/drools-repository/doc/javadoc/overview-tree.html
+A    trunk/drools-repository/doc/javadoc/org
+A    trunk/drools-repository/doc/javadoc/org/drools
+A    trunk/drools-repository/doc/javadoc/org/drools/repository
+A    trunk/drools-repository/doc/javadoc/org/drools/repository/class-use
+A    trunk/drools-repository/doc/javadoc/org/drools/repository/class-use/RuleSet.html
+A    trunk/drools-repository/doc/javadoc/org/drools/repository/class-use/RulesRepositoryException.html
+A    trunk/drools-repository/doc/javadoc/org/drools/repository/class-use/RulesRepository.html
+A    trunk/drools-repository/doc/javadoc/org/drools/repository/RuleSet.html
 
 ....
 
@@ -60,41 +60,41 @@ snip
 
 ....
 
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltz
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltz/waltz.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/manners
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/manners/manners.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltzdb
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltzdb/waltzdb.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/TroubleTicketWithDSL.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/TroubleTicket.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/calculate.rfm
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/generation.rf
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/calculate.rf
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/registerNeighbor.rfm
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/killAll.rfm
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/registerNeighbor.rf
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/conway-agendagroup.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/killAll.rf
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/conway-ruleflow.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/generation.rfm
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/ticketing.dsl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/StateExampleUsingSalience.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/golf.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/LogicalAssertionsNotPingPong.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/StateExampleDynamicRule.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/sudoku
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/sudoku/sudoku.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/HelloWorld.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/ExamplePolicyPricing.xls
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/HonestPolitician.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/Fibonacci.drl
-A    jbossrules/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/StateExampleUsingAgendGroup.drl
-A    jbossrules/drools-examples/drools-examples-drl/pom.xml
-A    jbossrules/drools-examples/drools-examples-drl/build.xml
- U   jbossrules
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltz
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltz/waltz.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/manners
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/manners/manners.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltzdb
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/benchmark/waltzdb/waltzdb.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/TroubleTicketWithDSL.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/TroubleTicket.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/calculate.rfm
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/generation.rf
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/calculate.rf
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/registerNeighbor.rfm
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/killAll.rfm
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/registerNeighbor.rf
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/conway-agendagroup.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/killAll.rf
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/conway-ruleflow.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/conway/generation.rfm
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/ticketing.dsl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/StateExampleUsingSalience.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/golf.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/LogicalAssertionsNotPingPong.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/StateExampleDynamicRule.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/sudoku
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/sudoku/sudoku.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/HelloWorld.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/ExamplePolicyPricing.xls
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/HonestPolitician.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/Fibonacci.drl
+A    trunk/drools-examples/drools-examples-drl/src/main/rules/org/drools/examples/StateExampleUsingAgendGroup.drl
+A    trunk/drools-examples/drools-examples-drl/pom.xml
+A    trunk/drools-examples/drools-examples-drl/build.xml
+ U   trunk
 Checked out revision 13656.</programlisting>
 
 
@@ -110,7 +110,7 @@ Checked out revision 13656.</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Install/svn_checkout1.jpg" />
+        <imagedata fileref="images/Chapter-Install/svn_checkout1.png" />
       </imageobject>
     </mediaobject>
   </screenshot>
@@ -120,7 +120,7 @@ Checked out revision 13656.</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Install/svn_checkout2.jpg" />
+        <imagedata fileref="images/Chapter-Install/svn_checkout2.png" />
       </imageobject>
     </mediaobject>
   </screenshot>
@@ -130,7 +130,7 @@ Checked out revision 13656.</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Install/svn_checkout3.jpg" />
+        <imagedata fileref="images/Chapter-Install/svn_checkout3.png" />
       </imageobject>
     </mediaobject>
   </screenshot>
