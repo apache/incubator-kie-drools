@@ -12,23 +12,23 @@
     <title>Building the Source</title>
 
     <para>Now that we have the source the next step is to build and install
-    the source. Since version 3.1 Drools uses <indexterm><primary>Maven 2</primary></indexterm> to build the system. There are two profiles
+    the source. Since version 3.1 Drools uses Maven 2 to build the system. There are two profiles
     available which enable the associated modules "documentation" and
     "Eclipse"; this enables quicker building of the core modules for
     developers. The Eclipse profile will download Eclipse into the
     drools-Eclipse folder, which is over 100MB download (It depends on your operating system), however this only
     needs to be done once; if you wish you can move that Eclipse download into
     another location and specify it with
-    -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror. The
+    -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror. The
     following builds all the jars, the documentation and the Eclipse zip with
     a local folder specified to avoid downloading Eclipse:</para>
 
-    <para><programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror </programlisting></para>
+    <para><programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror </programlisting></para>
 
     <para>You can produce distribution builds, which puts everything into
     zips, as follows:
-<programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror
-mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror
+<programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror
+mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror
 </programlisting></para>
 
     <para>Note that install must be done first as javadoc:javadoc won't work
@@ -52,7 +52,7 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/mvn_install4.jpg" />
+          <imagedata fileref="images/Chapter-Install/mvn_install4.png" />
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -63,12 +63,12 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
 
 	<para>
 		The building of the manual is now integrated into the maven build process, and is built by either using the profile (-Ddocumentation) switch or 
-		cding into the main directory. The manual can still be built from ant command line too by cding into the documentation/manual itself.
+		cding into the main directory.
 	</para>
 
     <para>Drools uses <indexterm>
         <primary>docbook</primary>
-      </indexterm>Docbook for this manual. Ant is used internally in maven to build documents and this build produces three different formats, 
+      </indexterm>Docbook for this manual. Maven is used to build documents and this build produces three different formats, 
       all sharing the same images directory.</para>
 
     <itemizedlist>
@@ -95,112 +95,112 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
     </itemizedlist>
 
     <para>The manual can be generated from the project pom.xml by
-    calling <literal>'mvn package'</literal> in the documentation directory or adding the -Ddocumentation switch when you build the sources, 
-	with the generated documentation being copied to <literal>'target/</literal>. What actually happens is that maven
-    call a separate ant build.xml for the manual, located at
-    <literal>documentation/manual</literal>; the documentation is generated
-    into <literal>documentation/manual/build</literal> before being copied to
-    <literal>'target/'.</literal>
+    calling <literal>'mvn package'</literal> in the drools-docs directory or adding the -Ddocumentation switch when you build the sources.
+    Documentation is generated into each drools-docs subdirectory's <literal>'target/'</literal> directory. Running <literal>'mvn -Ddocumentation package assembly:assembly'</literal>
+    in the Drools project root generates and copies the documentation into a zip file. This zip file is located in the root folders <literal>'target/'</literal>
+    directory.
 
-    <programlisting>fmeyer:~/projects/jbossrules/documentation $ mvn clean package
+    <programlisting>[trikkola@trikkola trunk]$ mvn -Ddocumentation clean package assembly:assembly
 [INFO] Scanning for projects...
-[INFO] ----------------------------------------------------------------------------
-[INFO] Building Drools :: Documentation
-[INFO]    task-segment: [install]
-[INFO] ----------------------------------------------------------------------------
-[INFO] [antrun:run {execution: manual}]
-[INFO] Executing tasks
- [delete] Deleting directory /Users/fernandomeyer/projects/jbossrules/documentation/manual/build
-
-clean:
-
-all.doc:
-
-lang.all:
-
-lang.misc:
-   [copy] Copying 188 files to /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/shared/images
-   [copy] Copying 1 file to /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/shared/css
-
-lang.dochtml:
-  [mkdir] Created dir: /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/html
-   [copy] Copying 1 file to /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/html
-   [java] Writing bk01-toc.html for book
-   [java] Writing pr01.html for preface(preface)
-   [java] Writing ch01s02.html for section
-   [java] Writing ch01s03.html for section
-   [java] Writing ch01s04.html for section
-   [java] Writing ch01s05.html for section
-   [java] Writing ch01s06.html for section
-   [java] Writing ch01.html for chapter
-   [java] Writing ch02s02.html for section
-   [java] Writing ch02s03.html for section
-   [java] Writing ch02s04.html for section
-   [java] Writing ch02s05.html for section
-   [java] Writing ch02.html for chapter
-   [java] Writing ch03s02.html for section
-   [java] Writing ch03s03.html for section
-   [java] Writing ch03s04.html for section
-   [java] Writing ch03s05.html for section
-   [java] Writing ch03s06.html for section
-   [java] Writing ch03s07.html for section
-   [java] Writing ch03s08.html for section
-   [java] Writing ch03s09.html for section
-   [java] Writing ch03.html for chapter
-   [java] Writing ch04.html for chapter
-   [java] Writing ch05.html for chapter
-   [java] Writing ch06s02.html for section
-   [java] Writing ch06s03.html for section
-   [java] Writing ch06s04.html for section
-   [java] Writing ch06s05.html for section
-   [java] Writing ch06.html for chapter
-   [java] Writing ch07s02.html for section
-   [java] Writing ch07s03.html for section
-   [java] Writing ch07.html for chapter
-   [java] Writing ch08.html for chapter
-   [java] Writing ch09.html for chapter
-   [java] Writing ch10s02.html for section
-   [java] Writing ch10.html for chapter
-   [java] Writing ch11.html for chapter
-   [java] Writing pt01.html for part
-   [java] Writing ix01.html for index
-   [java] Writing title.html for book
+[INFO] Reactor build order:
+[INFO]   Drools
+[INFO]   Drools :: API
+[INFO]   Drools :: Core
+[INFO]   Drools :: Compiler
+[INFO]   Drools :: Templates
+[INFO]   Drools :: Decision Tables
+[INFO]   Drools :: JSR-94 API Module
+[INFO]   Drools :: Pipeline :: Transformer :: Smooks
+[INFO]   Drools :: Pipeline :: Transformer :: JAXB
+[INFO]   Drools :: Pipeline :: Transformer :: XStream
+[INFO]   Drools :: Pipeline :: Transformer :: JXLS
+[INFO]   Drools :: Pipeline :: Messenger :: JMS
+[INFO]   Drools :: Pipeline
+[INFO]   Drools :: Process :: WorkItems
+[INFO]   Drools :: Process :: Task
+[INFO]   Drools :: Process :: BAM
+[INFO]   Drools :: Process
+[INFO]   Drools :: Persistence :: JPA
+[INFO]   Drools :: Server
+[INFO]   Drools :: Verifier
+[INFO]   Drools :: Ant Task
+[INFO]   Drools :: Repository
+[INFO]   Drools :: Guvnor
+[INFO]   Drools :: Microcontainer
+[INFO]   Drools :: Clips
+[INFO]   Drools :: Solver parent
+[INFO]   Drools :: Solver core
+[INFO]   Drools :: Solver examples
+[INFO] Searching repository for plugin with prefix: 'assembly'.
+WAGON_VERSION: 1.0-beta-2
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Drools
+[INFO]    task-segment: [clean, package]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean]
+[INFO] [site:attach-descriptor]
+[INFO] Preparing source:jar
+[WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] No goals needed for project - skipping
+[INFO] [source:jar {execution: default}]
+[INFO] Preparing source:test-jar
+[WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[WARNING] Removing: test-jar from forked lifecycle, to prevent recursive invocation.
+[INFO] No goals needed for project - skipping
+[INFO] [source:test-jar {execution: default}]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Drools :: API
+[INFO]    task-segment: [clean, package]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean]
+[INFO] Deleting directory /home/trikkola/jboss-drools/trunk/drools-api/target
 
 ...snip ...
 
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] ------------------------------------------------------------------------
+[INFO] Drools ................................................ SUCCESS [59.889s]
+[INFO] Drools :: API ......................................... SUCCESS [4.832s]
+[INFO] Drools :: Core ........................................ SUCCESS [11.027s]
+[INFO] Drools :: Compiler .................................... SUCCESS [10.400s]
+[INFO] Drools :: Templates ................................... SUCCESS [1.018s]
+[INFO] Drools :: Decision Tables ............................. SUCCESS [1.179s]
+[INFO] Drools :: JSR-94 API Module ........................... SUCCESS [1.001s]
+[INFO] Drools :: Pipeline :: Transformer :: Smooks ........... SUCCESS [0.651s]
+[INFO] Drools :: Pipeline :: Transformer :: JAXB ............. SUCCESS [0.711s]
+[INFO] Drools :: Pipeline :: Transformer :: XStream .......... SUCCESS [0.465s]
+[INFO] Drools :: Pipeline :: Transformer :: JXLS ............. SUCCESS [0.481s]
+[INFO] Drools :: Pipeline :: Messenger :: JMS ................ SUCCESS [0.879s]
+[INFO] Drools :: Pipeline .................................... SUCCESS [0.006s]
+[INFO] Drools :: Process :: WorkItems ........................ SUCCESS [1.526s]
+[INFO] Drools :: Process :: Task ............................. SUCCESS [3.104s]
+[INFO] Drools :: Process :: BAM .............................. SUCCESS [0.580s]
+[INFO] Drools :: Process ..................................... SUCCESS [0.005s]
+[INFO] Drools :: Persistence :: JPA .......................... SUCCESS [0.958s]
+[INFO] Drools :: Server ...................................... SUCCESS [2.216s]
+[INFO] Drools :: Verifier .................................... SUCCESS [1.836s]
+[INFO] Drools :: Ant Task .................................... SUCCESS [0.722s]
+[INFO] Drools :: Repository .................................. SUCCESS [3.925s]
+[INFO] Drools :: Guvnor ...................................... SUCCESS [19.850s]
+[INFO] Drools :: Microcontainer .............................. SUCCESS [0.676s]
+[INFO] Drools :: Clips ....................................... SUCCESS [1.464s]
+[INFO] Drools :: Solver parent ............................... SUCCESS [0.527s]
+[INFO] Drools :: Solver core ................................. SUCCESS [2.209s]
+[INFO] Drools :: Solver examples ............................. SUCCESS [4.689s]
+[INFO] ------------------------------------------------------------------------
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESSFUL
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 51 seconds
-[INFO] Finished at: Mon Jul 21 12:03:38 BRT 2007
-[INFO] Final Memory: 5M/10M
+[INFO] Total time: 2 minutes 24 seconds
+[INFO] Finished at: Tue Apr 07 15:11:14 EEST 2009
+[INFO] Final Memory: 48M/178M
 [INFO] ------------------------------------------------------------------------&gt;</programlisting>
     </para>
     <para>The generated manual can be found in the
-    <literal>target\drools-documentation$VERSION.jar'</literal> file, a compressed archive with all formats.</para>
+    <literal>target\drools-docs$VERSION.jar'</literal> file, a compressed archive with all formats.</para>
 
-    <screenshot>
-      <screeninfo>Generated documentation</screeninfo>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Install/manual4.jpg" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <para>The manual was first generated into the manual's
-    <literal>build</literal> directory, as shown below, before being copied
-    across.</para>
-
-    <screenshot>
-      <screeninfo>Generated documentation</screeninfo>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Install/manual3.jpg" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
   </section>
+
 </section>
