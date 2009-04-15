@@ -155,11 +155,11 @@ public class KnowledgeBaseImpl
     }    
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession() {
-        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null );
+        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, null );
     }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {        
-        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, conf );
+        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, conf );
     } 
 
     public void removeKnowledgePackage(String packageName) {
