@@ -3,6 +3,8 @@ package org.drools.agent;
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListener;
 import org.drools.io.Resource;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 /**
  * The KnolwedgeAgentFactory provides detailed information on how to create and use the KnowledgeAgent.
@@ -25,6 +27,19 @@ public interface KnowledgeAgent {
      *     The KnowledgeBase
      */
     KnowledgeBase getKnowledgeBase();
+    
+    
+    /**
+     * StatelessKnowledgeSession created from here will always have the execute() method called against the latest built KnowledgeBase
+     * @return
+     */
+    StatelessKnowledgeSession newStatelessKnowledgeSession();
+    
+    /**
+     * StatelessKnowledgeSession created from here will always have the execute() method called against the latest built KnowledgeBase
+     * @return
+     */    
+    StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf);
 
     void monitorResourceChangeEvents(boolean monitor);
 
