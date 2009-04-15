@@ -548,4 +548,54 @@ public class PersistentStatefulSessionTest extends TestCase {
         assertNull( processInstance );
     }
 
+    public void testSetFocus() {
+        String str = "";
+        str += "package org.drools.test\n";
+        str += "global java.util.List list\n";
+        str += "rule rule1\n";
+        str += "agenda-group \"badfocus\"";
+        str += "when\n";
+        str += "  Integer(intValue > 0)\n";
+        str += "then\n";
+        str += "  list.add( 1 );\n";
+        str += "end\n";
+        str += "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                 emf );
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
+                 TransactionManagerServices.getTransactionManager() );
+        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        List list = new ArrayList();
+
+        ksession.setGlobal( "list",
+                            list );
+
+        ksession.insert( 1 );
+        ksession.insert( 2 );
+        ksession.insert( 3 );
+        ksession.getAgenda().getAgendaGroup("badfocus").setFocus();
+
+        ksession.fireAllRules();
+
+        assertEquals( 3,
+                      list.size() );
+
+    }
+
 }
