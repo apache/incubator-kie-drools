@@ -86,7 +86,7 @@ public class ObjectSinkNodeList
     public void add(final ObjectSinkNode node) {
         if ( this.firstNode == null ) {
             this.firstNode = node;
-            this.lastNode = node;;
+            this.lastNode = node;
         } else {
             this.lastNode.setNextObjectSinkNode( node );
             node.setPreviousObjectSinkNode( this.lastNode );
@@ -114,7 +114,7 @@ public class ObjectSinkNodeList
         } else {
             if ( this.firstNode == node ) {
                 removeFirst();
-            } else if ( this.lastNode == node ) {
+            } else {
                 removeLast();
             }
         }
