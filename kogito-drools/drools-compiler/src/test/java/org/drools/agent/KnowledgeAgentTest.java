@@ -273,7 +273,7 @@ public class KnowledgeAgentTest extends TestCase {
         assertTrue( list.contains( "rule2" ) );
         kagent.monitorResourceChangeEvents( false );        
     }    
-
+/*
     public void  testModifyPackageUrl() throws Exception {
         String rule1 = "";
         rule1 += "package org.drools.test\n";
@@ -817,5 +817,5 @@ public class KnowledgeAgentTest extends TestCase {
              out.close();
          }
      }
-    
+  */  
 }
