@@ -1172,7 +1172,7 @@ public class SampleDataSource2 {
       <para>Snapshots, URLS and binary packages:</para>
 
       <para>URLs are central to how built packages are provided. The BRMS
-      provides packages via URLs (for download and use by the Rule Agent).
+      provides packages via URLs (for download and use by the Knowledge Agent).
       These URLs take the form of:
       http://&lt;server&gt;/drools-guvnor/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
 
@@ -1182,7 +1182,7 @@ public class SampleDataSource2 {
       package, not a snapshot). You can use these in the agent, or you can
       paste them into your browser and it will download them as a file.</para>
 
-      <para>Refer to the section on the Rule Agent for details on how you can
+      <para>Refer to the section on the Knowledge Agent for details on how you can
       use these URLs (and binary downloads) in your application, and how rules
       can be updated on the fly.</para>
 
@@ -1397,15 +1397,15 @@ public class SampleDataSource2 {
 
     <para>Its all very interesting to manage rules, but how to you use or
     "consume" them in your application? This section covers the usage of the
-    RuleAgent deployment component that automates most of this for you.</para>
+    KnowledgeAgent deployment component that automates most of this for you.</para>
 
     <section>
-      <title>The Rule Agent</title>
+      <title>The Knowledge Agent</title>
 
-      <para>The rule agent is a component which is embedded in the core
-      runtime of the rules engine. To use this, you don't need any extra
+      <para>The knowledge agent is a component which is embedded in the Drools API. 
+      To use this, you don't need any extra
       components. In fact, if you are using Guvnor, your application should
-      only need to include the drools-core dependencies in its classpath
+      only need to include the drools-api and drools-core dependencies in its classpath
       (drools and mvel jars only), and no other rules specific
       dependencies.</para>
 
@@ -1418,131 +1418,41 @@ public class SampleDataSource2 {
       the ant task), you are ready to use the agent in your target
       application.</para>
 
-      <para>To use the rule agent, you will use a call in your applications
-      code like:</para>
+<para>The Following example constructs an agent that will build a new KnowledgeBase from the files specified in the path String. It will poll those files every 60 seconds, which is the default, to see if they are updated. If new files are found it will construct a new KnowledgeBase. If the change set specifies a resource that is a directory it's contents will be scanned for changes too.</para>
 
-      <programlisting>RuleAgent agent = RuleAgent.newRuleAgent("/MyRules.properties");     
-RuleBase rb = agent.getRuleBase(); 
-rb.newStatefulSession.... 
-//now assert your facts into the session and away you go !
+      <programlisting>
+ KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+ kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
+ KnowledgeBase kbase = kagent.getKnowledgeBase();
 </programlisting>
 
-      <para>IMPORTANT: You should only have one instance of the RuleAgent per
-      rulebase you are using. This means you should (for example) keep the
-      agent in a singleton, JNDI (or similar). In practice most people are
-      using frameworks like Seam or Spring - in which case they will take care
-      of managing this for you (in fact in Seam - it is already integrated -
-      you can inject rulebases into Seam components). Note that the RuleBase
-      can be used multiple times by multiple threads if needed (no need to
-      have multiple copies of it).</para>
+<para>The KnowledgeAgent can accept a configuration that allows for some of the defaults to be changed. An example property is "drools.agent.scanDirectories", by default any specified directories are scanned for new additions, it is possible to disable this.</para>
 
-      <para>This assumes that there is a MyRules.properties in the root of
-      your classpath. You can also pass in a Properties object with the
-      parameters set up (the parameters are discussed next).</para>
+ <programlisting>KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-      <para>The following shows the content of MyRules.properties:</para>
+ KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+ kaconf.setProperty( "drools.agent.scanDirectories",
+                     "false" ); // we do not want to scan directories, just files
+       
+ KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
+                                                                  kaconf );
+ kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add</programlisting>
+ 
 
-      <programlisting>##
-## RuleAgent configuration file example
-##
+ <para>An example of the change-set.xml.</para>
 
-newInstance=true
-file=/foo/bar/boo.pkg /foo/bar/boo2.pkg
-dir=/my/dir
-url=http://some.url/here http://some.url/here
-localCacheDir=/foo/bar/cache
-poll=30
+ <programlisting><![CDATA[<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+        xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >
+        <add> 
+          <resource source='http://localhost:9000/TEST.pkg' type='PKG' />
+        </add> 
+</change-set>]]></programlisting>
 
+ <para>Resource scanning is not on by default, it's a service and must be started, the same is for notification. This can be done via the ResourceFactory.</para>
 
-name=MyConfig</programlisting>
-
-      <para>You can only have one type of key in each configuration (eg only
-      one "file", "dir" etc - even though you can specify multiple items by
-      space separating them). Note also, instead of a discrete properties
-      file, you can construct a java.utils.Properties object, and pass it in
-      to the RuleBase methods.</para>
-
-      <para>Referring to the above example, the "keys" in the properties
-      are:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>newInstance</para>
-
-          <para>Setting this to "true" means that the RuleBase instance will
-          be created fresh each time there is a change. this means you need to
-          do agent.getRuleBase() to get the new updated rulebase (any existing
-          ones in use will be untouched). The default is false, which means
-          rulebases are updated "in place" - ie you don't need to keep calling
-          getRuleBase() to make sure you have the latest rules (also any
-          StatefulSessions will be updated automatically with rule
-          changes).</para>
-        </listitem>
-
-        <listitem>
-          <para>file</para>
-
-          <para>This is a space-separated list of files - each file is a
-          binary package as exported by Guvnor. You can have one or many. The
-          name of the file is not important. Each package must be in its own
-          file.</para>
-
-          <para>NOTE: it is also possible to specify .drl files - and it will
-          compile it into the package. However, note that for this to work,
-          you will need the drools-compiler dependencies in your applications
-          classpath (as opposed to just the runtime dependencies).</para>
-
-          <para>Please note that if the path has a space in it, you will need
-          to put double quotes around it (as the space is used to separate
-          different items, and it will not work otherwise). Generally spaces
-          in a path name are best to avoid.</para>
-        </listitem>
-
-        <listitem>
-          <para>dir</para>
-
-          <para>This is similar to file, except that instead of specifying a
-          list of files you specify a directory, and it will pick up all the
-          files in there (each one is a package) and add them to the rulebase.
-          Each package must be in its own file.</para>
-
-          <para>Please note that if the path has a space in it, you will need
-          to put double quotes around it (as the space is used to separate
-          different items, and it will not work otherwise). Generally spaces
-          in a path name are best to avoid.</para>
-        </listitem>
-
-        <listitem>
-          <para>url</para>
-
-          <para>This is a space separated list of URLs to Guvnor which is
-          exposing the packages (see below for more details).</para>
-        </listitem>
-
-        <listitem>
-          <para>localCacheDir</para>
-
-          <para>This is used in conjunction with the url above, so that if the
-          Guvnor is down (the url is not accessible) then if the runtime has
-          to start up, it can start up with the last known "good" versions of
-          the packages.</para>
-        </listitem>
-
-        <listitem>
-          <para>poll</para>
-
-          <para>This is set to the number of seconds to check for changes to
-          the resources (a timer is used).</para>
-        </listitem>
-
-        <listitem>
-          <para>name</para>
-
-          <para>This is used to specify the name of the agent which is used
-          when logging events (as typically you would have multiple agents in
-          a system).</para>
-        </listitem>
-      </itemizedlist>
+ <programlisting>ResourceFactory.getResourceChangeNotifierService().start();
+ResourceFactory.getResourceChangeScannerService().start();</programlisting>
 
       <para>Following shows the deployment screen of Guvnor, which provides
       URLs and downloads of packages.</para>
@@ -1560,13 +1470,13 @@ name=MyConfig</programlisting>
       </figure>
 
       <para>You can see the "Package URI" - this is the URL that you would
-      copy and paste into the agent .properties file to specify that you want
+      copy and paste into the change-set.xml file to specify that you want
       this package. It specifies an exact version (in this case to a snapshot)
       - each snapshot has its own URL. If you want the "latest" - then replace
       "NewSnapshot" with "LATEST".</para>
 
       <para>You can also download a .pkg file from here, which you can drop in
-      a directory and use the "file" or "dir" feature of the RuleAgent if
+      a directory and use the "file" or "dir" feature of the KnowledgeAgent if
       needed (in some cases people will not want to have the runtime
       automatically contact Guvnor for updates - but that is generally the
       easiest way for many people).</para>
@@ -1589,7 +1499,7 @@ name=MyConfig</programlisting>
       <para>A "restful" style of interface is provided, with URLs defining
       what knowledgebase is being accessed. Client applications then execute
       knowledgebases remotely via HTTP(S). The rule execution server uses the
-      rule agent described in the sections above.</para>
+      knowledge agent described in the sections above.</para>
 
       <section>
         <title>Configuration and deployment</title>
@@ -1616,8 +1526,8 @@ name=MyConfig</programlisting>
         healthy.</para>
 
         <para>To configure a "knowledgebase" - you create a properties file
-        with a rule agent configuration in it (see the section above for
-        details on the options in the rule agent configuration). The name of
+        with a knowledge agent configuration in it (see the section above for
+        details on the options in the knowledge agent configuration). The name of
         this properties file will be the name in the URL that you use to
         access this servive. So lets take the example of
         teamallocation.properties: an agent configuration for a service that
@@ -1805,13 +1715,13 @@ name=MyConfig</programlisting>
       <title>Manual deployment</title>
 
       <para>This section is only needed for advanced users who are integrating
-      deployment into their own mechanism. Normally you should use the rule
+      deployment into their own mechanism. Normally you should use the knowledge
       agent.</para>
 
       <para>For those who do not wish to use the automatic deployment of the
-      RuleAgent, "rolling your own" is quite simple. The binary packages
+      KnowledgeAgent, "rolling your own" is quite simple. The binary packages
       emitted by Guvnor are serialized Package objects. You can deserialize
-      them and add them into any rulebase - essentially that is all you need
+      them and add them into any knowledgebase - essentially that is all you need
       to do.</para>
 
       <para>From Guvnor, binary packages are provided either from the latest
@@ -1861,7 +1771,7 @@ name=MyConfig</programlisting>
       <title>URLs</title>
 
       <para>There are a few other URLs which are handy to know exist. The
-      package deployment URL mentioned in the section about rule agent
+      package deployment URL mentioned in the section about knowledge agent
       deployment also has a few other features: By appending .drl to the end
       of a URL, you will show the generated DRL for that package. eg:
       /package/testPDSGetPackage/LATEST.drl - will show the DRL (not the
