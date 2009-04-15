@@ -29,6 +29,7 @@ import org.drools.definition.process.Process;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.io.ResourceChangeListener;
 import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
@@ -38,6 +39,8 @@ import org.drools.rule.Function;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.util.DroolsStreamUtils;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.SemanticModules;
@@ -316,6 +319,14 @@ public class KnowledgeAgentImpl
         }
     }
 
+    public StatelessKnowledgeSession newStatelessKnowledgeSession() {
+        return new StatelessKnowledgeSessionImpl( null, this, null );
+    }
+
+    public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {
+        return new StatelessKnowledgeSessionImpl( null, this, conf );
+    }
+    
     //    public void resourceModified(ResourceModifiedEvent event) {
     //        ResourceMapping mapping = this.resources.get( event.getResource() );
     //        System.out.println( "modified : " + event.getResource() );
@@ -411,6 +422,13 @@ public class KnowledgeAgentImpl
                     }
                 }
             }
+            
+            InternalRuleBase ruleBase = ( InternalRuleBase ) ((KnowledgeBaseImpl)this.kbase).ruleBase;
+            synchronized ( ruleBase.getPackagesMap() ) {
+                if ( ruleBase.getConfiguration().isSequential() ) {
+                    ruleBase.getReteooBuilder().order();
+                }
+            } 
 
             //            for ( Resource child : changeSetState.pkgs ) {
             //                try {
@@ -554,4 +572,6 @@ public class KnowledgeAgentImpl
             this.changeSetNotificationDetector.monitor = false;
         }
     }
+
+
 }
