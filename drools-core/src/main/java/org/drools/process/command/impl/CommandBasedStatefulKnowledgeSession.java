@@ -16,11 +16,15 @@ import org.drools.impl.StatefulKnowledgeSessionImpl.ProcessEventListenerWrapper;
 import org.drools.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
 import org.drools.process.command.AbortWorkItemCommand;
 import org.drools.process.command.AddEventListenerCommand;
+import org.drools.process.command.AgendaGroupSetFocusCommand;
+import org.drools.process.command.ClearActivationGroupCommand;
+import org.drools.process.command.ClearAgendaCommand;
+import org.drools.process.command.ClearAgendaGroupCommand;
+import org.drools.process.command.ClearRuleFlowGroupCommand;
 import org.drools.process.command.CommandService;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.FireUntilHaltCommand;
-import org.drools.process.command.GetAgendaCommand;
 import org.drools.process.command.GetAgendaEventListenersCommand;
 import org.drools.process.command.GetEnvironmentCommand;
 import org.drools.process.command.GetFactHandleCommand;
@@ -50,8 +54,8 @@ import org.drools.process.command.StartProcessCommand;
 import org.drools.process.command.UnregisterExitPointCommand;
 import org.drools.process.command.UpdateCommand;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.Environment;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.ObjectFilter;
@@ -59,10 +63,13 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.runtime.rule.ActivationGroup;
 import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
+import org.drools.runtime.rule.AgendaGroup;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.RuleFlowGroup;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
 
@@ -72,6 +79,7 @@ public class CommandBasedStatefulKnowledgeSession
 
     private CommandService                                                    commandService;
     private transient WorkItemManager                                         workItemManager;
+    private transient Agenda												  agenda;
 
     public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners = new HashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
     public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners = new HashMap<AgendaEventListener, AgendaEventListenerWrapper>();
@@ -189,7 +197,59 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public Agenda getAgenda() {
-        return this.commandService.execute( new GetAgendaCommand() );
+        if ( agenda == null ) {
+            agenda = new Agenda() {
+				public void clear() {
+                    ClearAgendaCommand command = new ClearAgendaCommand();
+                    commandService.execute( command );
+				}
+
+				public ActivationGroup getActivationGroup(final String name) {
+					return new ActivationGroup() {
+						public void clear() {
+							ClearActivationGroupCommand command = new ClearActivationGroupCommand();
+							command.setName(name);
+						    commandService.execute( command );
+						}
+						public String getName() {
+							return name;
+						}
+					};
+				}
+
+				public AgendaGroup getAgendaGroup(final String name) {
+					return new AgendaGroup() {
+						public void clear() {
+							ClearAgendaGroupCommand command = new ClearAgendaGroupCommand();
+							command.setName(name);
+						    commandService.execute( command );
+						}
+						public String getName() {
+							return name;
+						}
+						public void setFocus() {
+							AgendaGroupSetFocusCommand command = new AgendaGroupSetFocusCommand();
+							command.setName(name);
+						    commandService.execute( command );
+						}
+					};
+				}
+
+				public RuleFlowGroup getRuleFlowGroup(final String name) {
+					return new RuleFlowGroup() {
+						public void clear() {
+							ClearRuleFlowGroupCommand command = new ClearRuleFlowGroupCommand();
+							command.setName(name);
+						    commandService.execute( command );
+						}
+						public String getName() {
+							return name;
+						}
+					};
+				}
+            };
+        }
+        return agenda;
     }
 
     public FactHandle getFactHandle(Object object) {
