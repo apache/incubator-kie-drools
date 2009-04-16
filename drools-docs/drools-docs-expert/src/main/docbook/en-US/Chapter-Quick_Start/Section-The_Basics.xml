@@ -1,6 +1,469 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
-"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
-<section>
-  <title>The Basics</title>
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+
+    <title>The Basics</title>
+
+    <section>
+      <title>Stateless Knowledge Session</title>
+
+      <para>So where do we get started, there are so many use cases and so
+      much functionality in a rule engine such as Drools that it becomes
+      beguiling. Have no fear my intrepid adventurer, the complexity is
+      layered and you can ease yourself into with simple use cases.</para>
+
+      <para>Stateless session, not utilising inference, forms the simplest of
+      use case. A stateless session can be called like a function passing it
+      some data and then receiving some results back. Some common use cases
+      for stateless sessions are, but not limited to:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Validation</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Is this person legible for a mortgage</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Calculation</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Mortgage premium</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Routing/Filtering</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Filtering incoming messages, such as emails, into
+              folders</para>
+            </listitem>
+
+            <listitem>
+              <para>Sending incoming message to a destinatino</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>So lets start with a very simple example using a driving license
+      application.</para>
+
+      <programlisting>public class Applicant {
+    private String name;
+    private int age;
+    private boolean valid;
+    // getter and setter methods here
+}
+</programlisting>
+
+      <para>Now we have our data model we can write our first rule, we assume
+      the application starts off valid and rules would be used to disqualify
+      the application. As this is a simple validation use case we will add a
+      single rule to disqualify the applicant if they are younger than
+      18.</para>
+
+      <programlisting>package com.company.license
+
+rule "Is of valid age"
+when
+    $a : Applicant( age &lt; 18 )
+then
+    $a.setValid( false );
+end</programlisting>
+
+      <para>To make the engine aware of data, so it can be processed against
+      the rules, we have to "insert" the data, much like with a database. When
+      the Applicant instance is inserted into the engine it is evaluated
+      against the constraints of the rules, in this case just two constraint
+      for one rule. We say two because the type Applicant is the first object
+      type constraint, and the "age &lt; 18" is the second field constraint.
+      An object type constraint plus it's zero or more field constraints is
+      referred to as a pattern. When an inserted instance satisfies both the
+      object type constraint and all the field constraints, it is said to be
+      matched. The "$a" is a binding and allows the matched object to be
+      referenced in the consquence, so it's properties can be updated, the $
+      is optional, but it helps to differentiate the variables from the
+      fields. This part of the engine is often referred to as pattern matchin,
+      i.e. the matching of patterns against the inserted data.</para>
+
+      <para>Let's assume that the rules are in the same folder as the classes,
+      so we can use the classpath resource loader to build our first
+      KnowledgeBase. A KnowledgeBase is what we call our collection of
+      compiled rules, which are compiled using the KnowledgeBuilder.</para>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newClasspathResource( "licenseApplication.drl", getClass() ),
+              ResourceType.DRL );
+if ( kbuilder.hasErrors() ) {
+    System.err.println( builder.getErrors().toString() );
+}  </programlisting>
+
+      <para>The above looks on the classpath for the "licenseApplication.drl"
+      file, using the given classes getResource() method. The ResourceType
+      here is DRL, short for "Drools Rule Language". Once the drl has be added
+      we can check the KnowledgeBuilder for any errors. If there are no
+      errors, we are now ready to build our session and execute against some
+      data:</para>
+
+      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+Applicant applicant = new Applicant( "Mr John Smith", 16 );
+assertTrue( applicant.isValid() );
+ksession.execute( applicant );
+assertFalse( applicant.isValid() );
+</programlisting>
+
+      <para>The above executes the data against the rules, the applicant is
+      under the age of 18, so it marked invalid.</para>
+
+      <para>So far we've only used a single instance, but what if want to use
+      more than one? We can also execute against an Iterable, such a a
+      collection. Lets add another class called Application, which has the
+      date of the application and we'll move the boolean valid field to the
+      Application class.</para>
+
+      <programlisting>public class Applicant {
+    private String name;
+    private int age;
+    // getter and setter methods here
+}
+
+
+public class Application {
+    private Date dateApplied;
+    private boolean valid;
+    // getter and setter methods here
+}</programlisting>
+
+      <para>And we can also add another rule, that validates the Application
+      was made within a period of time.</para>
+
+      <programlisting>package com.company.license
+
+rule "Is of valid age"
+when
+    Applicant( age &lt; 18 )
+    $a : Application()     
+then
+    $a.setValid( false );
+end
+
+rule "Application was made this year"
+when
+    $a : Application( dateApplied &gt; "01-jan-2009" )     
+then
+    $a.setValid( false );
+end
+</programlisting>
+
+      <para>Unfortunately in java an array does not implement h the Iterable
+      interface, so we have to use the JDK converter, asList(...). So code
+      below executes against an Iterable, where each of the collection
+      elements are inserted before any matched rules are fired.</para>
+
+      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+Applicant applicant = new Applicant( "Mr John Smith", 16 );
+Application application = new Application();
+assertTrue( application() );
+ksession.execute( Arrays.asList( new Object[] { application, applicant } ) );
+assertFalse( application() );
+</programlisting>
+
+      <para>The two execute methods execute(Object object ) and
+      execute(Iterable objects) are actually convenience methods for the
+      interface BatchExecutor's method execute(Command command).</para>
+
+      <para>The CommandFactory is used to return commands, the following is
+      equivalent of execute( Iterable it ):</para>
+
+      <programlisting>ksession.execute( CommandFactory.newInsertIterable( new Object[] { application, applicant } ) );
+</programlisting>
+
+      <para>Where the the BatchExecutor and CommandFactory becomes useful is
+      while working with multiple Commands and out identifiers for
+      results.</para>
+
+      <programlisting>List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
+cmds.add( CommandFactory.newInsert( new Person( "Mr John Smith" ), "mrSmith" );
+cmds.add( CommandFactory.newInsert( new Person( "Mr John Doe" ), "mrDoe" );
+BatchExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+assertEquals( new Person( "Mr John Smith" ), results.getValue( "mrSmith" ) );
+</programlisting>
+
+      <para>CommandFactory supports many other Commands that can be used in
+      the BatchExecutor like StartProcess, Query, SetGlobal.</para>
+    </section>
+
+    <section>
+      <title>Stateful Knowledge Session</title>
+
+      <para>Stateful sessions are longer lived and allow iterative changes
+      over time. Some common use cases for stateful sessions are, but not
+      limited to:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Monitoring</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Stock market monitorig and analysis for semi-automatic
+              buying.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Diagnostics</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>fault finding, medical diagnostics</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Logistics</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>parcel tracking and delivery provisioning</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Compliance</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Validation of legality for market trades.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>Unlike a stateless session the dispose() method must be called
+      afterwards to ensure there are no memory leaks, as the KnowledgeBase
+      contains references to StatefulKnowledgeSessions when they are created.
+      StatefulKnowledgeSession also supports the BatchExecutor interface like
+      StatelessKnowledgeSession, the only difference is that when used with
+      stateful the FireAllRules command is not automatically called at the
+      end.</para>
+
+      <para>We can use a fire alarm example to explore the monitoring use
+      case. The simple example has just 4 classes. We are monitoring the rooms
+      in a house, each room has one sprinkler. If a fire starts in a room, we
+      represent that with a single Fire instance.</para>
+
+      <programlisting>public class Room {
+    private String name
+    // getter and setter methods here
+}
+public classs Sprinkler {
+    private Room room;
+    private boolean on;
+    // getter and setter methods here
+}
+public class Fire {
+    private Room room;
+    // getter and setter methods here
+}
+public class Alarm {
+}
+</programlisting>
+
+      <para>In the previous section on stateless sessions the concepts of
+      inserting and matching against data was introduced. That example assumed
+      only a single instance of each object type was ever inserted and thus
+      only used literal constraints. However a house has many rooms, so rules
+      have the need to express joins that constraint to the desired objects,
+      this can be done using a binding as a variable constraint in a pattern.
+      This join process results in what is called cross products, which are
+      covered in the next section.</para>
+
+      <para>When a fire occurs an instance of the Fire class is created, for
+      that room, and insert it. The rule uses a binding on the room field of
+      the Fire to constrain to the Sprinkler for that room, which is currently
+      off. When this rule fires and the consequence is executed the sprinkler
+      is turned on</para>
+
+      <programlisting>rule "When there is a fire turn on the sprinkler"
+when
+    Fire($room : room)
+    $sprinkler : Sprinkler( room == $room, on == false )
+then
+    modify( $sprinkler ) { setOn( true ) };
+    System.out.println( "Turn on the sprinkler for room " + $room.getName() );
+end</programlisting>
+
+      <para>Where as the stateless session used standard java syntax to modify
+      a field, in the above rule we use the modify keyword, which acts as a
+      sort of with statement, that contains a series of comma separated java
+      expressions. Stateless sessions typically do not use inference, which
+      can be explicitly turned off by using the "sequential mode", so the
+      engine does not need to be aware of changes to data, however a stateful
+      session does. The modify keyword allows the setters to modify the data,
+      while make the engine aware of those changes so it can reason over them,
+      this process is called inference.</para>
+
+      <para>So far we have rules that tell us when matching data exists, but
+      what about when it doesn't exist? What about when there stops being a
+      Fire? Previously the constraints have been propositional logic where the
+      engine is constraining against individual intances, Drools also has
+      support for first order logic that allows you to look at sets of data.
+      The 'not' keyword matches when something does not exist. So for a Room
+      with a Sprinkler that is on when the Fire for that room stops existing
+      we can turn off the sprinkler.</para>
+
+      <programlisting>rule "When the fire is gone turn off the sprinkler"
+when
+    $room : Room( )
+    $sprinkler : Sprinkler( room == $room, on == true )
+    not Fire( room == $room )
+then
+    modify( $sprinkler ) { setOn( false ) };
+    System.out.println( "Turn off the sprinkler for room " + $room.getName() );
+end</programlisting>
+
+      <para>While there is a Sprinkler per room, there is just a single Alarm
+      for the building. An Alarm is created when a Fire is occurs, but only
+      one Alarm is needed for the entire building, no matter how many Fires
+      occur. Previously 'not' was introduced, the compliment to ths is
+      'exists' which matches for one or more of something.</para>
+
+      <programlisting>rule "Raise the alarm when we have one or more fires"
+when
+    exists Fire()
+then
+    insert( new Alarm() );
+    System.out.println( "Raise the alarm" );
+end</programlisting>
+
+      <para>Likewise when there are no Fires we want to remove the alarm, so
+      the 'not' keyword can be used again.</para>
+
+      <programlisting>rule "Lower the alarm when all the fires have gone"
+when
+    not Fire()
+    $alarm : Alarm()
+then
+    retract( $alarm );
+    System.out.println( "Lower the alarm" );
+end
+
+</programlisting>
+
+      <para>Finally there is a general health status message, that is printed
+      when the application first starts and after the Alarm is removed and all
+      Sprinklers have been turned off.</para>
+
+      <programlisting>rule "Status output when things are ok"
+when
+    not Alarm()
+    not Sprinkler( on === true ) 
+then
+    System.out.println( "Everything is ok" );
+end</programlisting>
+
+      <para>The above rules should be placed in a single drl file and saved to
+      the classpath using the file name "fireAlarm.drl", as per the stateless
+      session example. We can then build a KnowledgeBase as before, just using
+      the new name "fireAlarm.drl". The difference is this time we create a
+      stateful session from the kbase, where as before we created a stateless
+      session.</para>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newClasspathResource( "fireAlarm.drl", getClass() ),
+              ResourceType.DRL );
+if ( kbuilder.hasErrors() ) {
+    System.err.println( builder.getErrors().toString() );
+}  
+StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</programlisting>
+
+      <para>With the session created it is now possible to iteratvely work
+      with it over time. Four Rooms are created and inserted, a Sprinkler for
+      each room is also inserted. At this point the engine has done all it's
+      matching, but no rules have fired. calling "fireAllRules" on the
+      ksession allows the matched rules to fire, currently that is just the
+      health message.</para>
+
+      <programlisting>Room kitchen = new Room( "kitchen" );
+Room bedroom = new Room( "bedroom" );
+Room office = new Room( "office" );
+Room livingRoom = new Room( "livingroom" );
+
+ksession.insert( kitchen );
+ksession.insert( bedroom );
+ksession.insert( office );
+ksession.insert( livingRoom );
+
+Sprinkler kitchenSprinkler = new Sprinkler( kitchen );
+Sprinkler bedroomSprinkler = new Sprinkler( bedroom );
+Sprinkler officeSprinkler = new Sprinkler( office );
+Sprinkler livingRoomSprinkler = new Sprinkler( livingRoom );
+
+
+ksession.insert( kitchenSprinkler );
+ksession.insert( bedroomSprinkler );
+ksession.insert( officeSprinkler );
+ksession.insert( livingRoomSprinkler );
+
+ksession.fireAllRules()
+</programlisting>
+
+      <programlisting>&gt; Everything is ok</programlisting>
+
+      <para>We now create two fires and insert them, this time a referenced is
+      kept for the returned FactHandle. The FactHandle is an internal engine
+      reference to the inserted instance and allows that instance to be
+      retracted or modified at a later point in time. With the Fires now in
+      the engine, once "fireAllRules" is called, the Alarm is raised and the
+      respectively Sprinklers are turned on.</para>
+
+      <programlisting>Fire kitchenFire = new Fire( kitchen );
+Fire officeFire = new Fire( office );
+
+FactHandle kitchenFireHandle = ksession.insert( kitchenFire );
+FactHandle officeFireHandle = ksession.insert( officeFire );
+
+ksession.fireAllRules();</programlisting>
+
+      <programlisting>&gt; Raise the alarm
+&gt; Turn on the sprinkler for room kitchen
+&gt; Turn on the sprinkler for room office</programlisting>
+
+      <para>After a while the fires will be put out and the Fire intances are
+      retracted. This results in the Sprinklers being turned off, the Alarm
+      being lowered and eventually the health message is printed again.</para>
+
+      <programlisting>ksession.retract( kitchenFireHandle );
+ksession.retract( officeFireHandle );
+
+ksession.fireAllRules();</programlisting>
+
+      <programlisting>&gt; Turn on the sprinkler for room office
+&gt; Turn on the sprinkler for room kitchen
+&gt; Lower the alarm
+&gt; Everything is ok</programlisting>
+
+      <para>Every one still with me? That wasn't so hard and already I'm
+      hoping you can start to see the value and power of a declarative rule
+      system.</para>
+    </section>
+
 </section>

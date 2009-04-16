@@ -6,10 +6,11 @@
          xmlns:ns="http://docbook.org/ns/docbook"
          xmlns:m="http://www.w3.org/1998/Math/MathML"
          xmlns:html="http://www.w3.org/1999/xhtml">
-  <title>Quick Start</title>
+  <title>User Guide</title>
 
- <xi:include href="Section-The_Basics.xml" />
- <xi:include href="Section-A_Little_More_Theory.xml" />
- <xi:include href="Section-More_On_Building_And_Deploying.xml" />
- 
+  <xi:include href="Section-Building.xml" />
+
+  <xi:include href="Section-Deploying.xml" />
+  
+  <xi:include href="Section-Running.xml" />
 </chapter>

@@ -8,53 +8,13 @@
 		<title>Drools Expert User Guide</title>
 
 		<releaseinfo>5.0.0.SNAPSHOT</releaseinfo>
-
-		<author>
-			<personname>
-				<firstname>Mark</firstname>
-				<surname>Proctor</surname>
-			</personname>
-		</author>
-
-		<author>
-			<personname>
-				<firstname>Michael</firstname>
-				<surname>Neale</surname>
-			</personname>
-		</author>
-
-		<author>
-			<personname>
-				<firstname>Edson</firstname>
-				<surname>Tirelli</surname>
-			</personname>
-		</author>
 	</info>
-
-	<!--
-		<preface id="preface" revision="2"> <title>Preface</title>
-
-		<mediaobject> <imageobject> <imagedata fileref="drools_logo.png" />
-		</imageobject> </mediaobject> <para /> </preface>
-	-->
-
-	<xi:include href="Acknowledgements.xml" />
-    
+    <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
 	<xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />    
-	
-	<xi:include href="Chapter-Rule_Engine/Chapter-Rule_Engine.xml" />
-
-	<xi:include href="Chapter-Decision_Tables/Chapter-Spreadsheet.xml" />
-
-	<xi:include href="Chapter-IDE/Chapter-QuickStart.xml" />
-
-	<xi:include href="Chapter-Deployment/Chapter-DepymentAndTest.xml" />
-
-	<xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />
-
-	<xi:include href="Chapter-Rule_Language/Chapter-RuleLanguage.xml" />
-
-	<xi:include href="Chapter-Examples/Chapter-Examples.xml" />
-
-	<index />
+    <xi:include href="Chapter-User_Guide/Chapter-User_Guide.xml" />    
+    <xi:include href="Chapter-Language_Reference/Chapter-Language_Reference.xml" />    
+    <xi:include href="Chapter-Authoring/Chapter-Authoring.xml" />        
+    <xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />      
+    <xi:include href="Chapter-Examples/Chapter-Examples.xml" />   
+	<!--index /-->
 </book>
