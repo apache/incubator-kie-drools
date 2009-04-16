@@ -27,6 +27,7 @@ import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
@@ -51,6 +52,7 @@ public class KnowledgeAgentTest extends TestCase {
         this.server = new Server( 9000 );
         ResourceHandler resourceHandler = new ResourceHandler();        
         resourceHandler.setResourceBase( fileManager.getRootDirectory().getPath() );
+        System.out.println("root : " + fileManager.getRootDirectory().getPath() );
 
         server.setHandler( resourceHandler );
 
@@ -62,6 +64,7 @@ public class KnowledgeAgentTest extends TestCase {
         fileManager.tearDown();
         ResourceFactory.getResourceChangeNotifierService().stop();
         ResourceFactory.getResourceChangeScannerService().stop();
+        ((ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService()).reset();
         ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
         
         server.stop();
@@ -258,6 +261,7 @@ public class KnowledgeAgentTest extends TestCase {
         rule1 += "then\n";
         rule1 += "list.add( drools.getRule().getName() );\n";
         rule1 += "end\n";
+        System.out.println("root : " + f1.getPath() );
         output = new BufferedWriter( new FileWriter( f1 ) );
         output.write( rule1 );
         output.close();
@@ -268,12 +272,12 @@ public class KnowledgeAgentTest extends TestCase {
 
         assertEquals( 2,
                       list.size() );
-
+        
         assertTrue( list.contains( "rule3" ) );
         assertTrue( list.contains( "rule2" ) );
         kagent.monitorResourceChangeEvents( false );        
     }    
-/*
+
     public void  testModifyPackageUrl() throws Exception {
         String rule1 = "";
         rule1 += "package org.drools.test\n";
@@ -816,6 +820,5 @@ public class KnowledgeAgentTest extends TestCase {
          } finally {
              out.close();
          }
-     }
-  */  
+     } 
 }

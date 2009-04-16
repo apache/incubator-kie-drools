@@ -109,13 +109,15 @@ public class KnowledgeAgentImpl
     }
 
     public void applyChangeSet(ChangeSet changeSet) {
-        this.listener.info( "KnowledgAgent applying ChangeSet" );
-        ChangeSetState changeSetState = new ChangeSetState();
-        changeSetState.scanDirectories = this.scanDirectories;
-        processChangeSet( changeSet,
-                          changeSetState );
-
-        rebuildResources( changeSetState );
+        synchronized ( this.resources ) {
+            this.listener.info( "KnowledgAgent applying ChangeSet" );
+            ChangeSetState changeSetState = new ChangeSetState();
+            changeSetState.scanDirectories = this.scanDirectories;
+            processChangeSet( changeSet,
+                              changeSetState );
+    
+            rebuildResources( changeSetState );
+        }
         //buildResourceMapping( this.kbase );
     }
 
@@ -377,8 +379,8 @@ public class KnowledgeAgentImpl
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
                 for ( Resource resource : this.resources.keySet() ) {
-                    this.listener.debug( "KnowledgeAgent building resource=" + resource );
                     if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
+                        this.listener.debug( "KnowledgeAgent building resource=" + resource );
                         // .pks are handled as a special case.
                         kbuilder.add( resource,
                                       ((InternalResource) resource).getResourceType() );

@@ -211,6 +211,11 @@ public class ResourceChangeNotifierImpl
         this.thread.interrupt();
         this.processChangeSet = null;
     }
+    
+    public void reset() {
+        this.subscriptions.clear();
+        this.monitors.clear();        
+    }
 
     private Thread           thread;
     private ProcessChangeSet processChangeSet;
