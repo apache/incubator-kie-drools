@@ -78,7 +78,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </pre>
  * 
  * <p>
- * The CommandExecutor interface also supports the ability to expert data via "out" parameters. Inserted facts, globals and query results can all be returned.
+ * The CommandExecutor interface also supports the ability to export data via "out" parameters. Inserted facts, globals and query results can all be returned.
  * </p>
  * 
  * <pre>
