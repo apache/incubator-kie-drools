@@ -49,9 +49,6 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </p>
  * 
  * <p>
- * while the above example
- * </p>
- * 
  * StatelessKnowledgeSessions support globals, scoped in a number of ways. I'll cover the non-command way first,
  * as commands are scoped to a specific execution call. Globals can be resolved in three ways. The StatelessKnowledgeSession 
  * supports getGlobals(), which returns a Globals instance. These globals are shared for ALL execution calls, so be especially careful of mutable
