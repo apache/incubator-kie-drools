@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.Agenda;
 import org.drools.common.InternalAgenda;
 import org.drools.runtime.rule.AgendaGroup;
 

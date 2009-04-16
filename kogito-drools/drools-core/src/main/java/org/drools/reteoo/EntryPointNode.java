@@ -164,7 +164,9 @@ public class EntryPointNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        // do nothing, dummy method to impl the interface
+        // this method was silently failing, so I am now throwing an exception to make
+        // sure no one calls it by mistake
+        throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
     }
 
     /**

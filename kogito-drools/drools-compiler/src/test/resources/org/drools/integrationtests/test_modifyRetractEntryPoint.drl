@@ -1,0 +1,24 @@
+package org.drools;
+
+global java.util.List results;
+
+declare StockTick
+    @role( event )
+end
+
+rule "Test entry point 1"
+when
+    $st : StockTick( company == "ACME", price > 10 ) from entry-point "stream1"
+then
+    results.add( Double.valueOf( $st.getPrice() ) );
+    modify( $st ) { setPrice( 110 ) }
+end
+
+rule "Test entry point 2"
+when
+    $st : StockTick( company == "ACME", price > 100 ) from entry-point "stream1"
+then
+    results.add( Double.valueOf( $st.getPrice() ) );
+    retract( $st );
+end
+
