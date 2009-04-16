@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+
+            
+    <title>A Little Theory</title>
+
+    <section>
+      <title>Methods versus Rules</title>
+
+      <para>People often confuse methods and rules, and new rule users regular
+      ask, "how do I call a rule?". After the last section, you are now
+      feeling like a rule expert and the answer to that is obvsious, but just
+      to summarise.</para>
+
+      <programlisting>public void helloWorld(Person person) {
+    if ( person.getName().equals( "Chuck" ) ) {
+        System.out.println( "Hello Chuck" );
+    }
+}</programlisting>
+
+      <itemizedlist>
+        <listitem>
+          <para>Methods are called directly.</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific instances are passed.</para>
+        </listitem>
+      </itemizedlist>
+
+      <programlisting>rule "Hello World"
+    when
+        Person( name == "Chuck" )
+    then
+        System.out.println( "Hello Chuck" );
+        end</programlisting>
+
+      <itemizedlist>
+        <listitem>
+          <para>Rules execute by matching against data inserted into the
+          engine.</para>
+        </listitem>
+
+        <listitem>
+          <para>Rules can never be called directly.</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific instances cannot be passed to a rule.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Cross Products</title>
+
+      <para>Earlier the term "cross product" was mentioned, which is the
+      result of a join. Imagine for a moment when using the previous data the
+      following rules where used, with no field constraints:</para>
+
+      <programlisting>rule
+when
+    $room : Room()
+    $sprinkler : Sprinkler()
+then
+    System.out.println( "room:" + $room.getName() + " sprinkler:" + $sprinkler.getRoom().getName() );
+end</programlisting>
+
+      <para>In SQL terms this would be like doing "select * from Room,
+      Sprinkler" and every row in the Room table would be joined with every
+      row in the Sprinkler table resulting in the following output:</para>
+
+      <programlisting>room:office sprinker:office
+room:office sprinker:kitchen
+room:office sprinker:livingroom
+room:office sprinker:bedroom
+room:kitchen sprinker:office
+room:kitchen sprinker:kitchen
+room:kitchen sprinker:livingroom
+room:kitchen sprinker:bedroom
+room:livingroom sprinker:office
+room:livingroom sprinker:kitchen
+room:livingroom sprinker:livingroom
+room:livingroom sprinker:bedroom
+room:bedroom sprinker:office
+room:bedroom sprinker:kitchen
+room:bedroom sprinker:livingroom
+room:bedroom sprinker:bedroom</programlisting>
+
+      <para>These cross products can obviously become huge as well as
+      returning potentially incorrect data. The size of cross products is
+      often source of performance problems for new rule authors. From this it
+      can be seen that it's always desirable to constrain the cross products,
+      which is done with the variable constriant.</para>
+
+      <programlisting>rule
+when
+    $room : Room()
+    $sprinkler : Sprinkler( room == $room )
+then
+    System.out.println( "room:" + $room.getName() + " sprinkler:" + $sprinkler.getRoom().getName() );
+end</programlisting>
+
+      <para>Resulting in just for rows of data, with the correct Sprinkler for
+      the Room. In SQL (actually HQL) terms that is like "select * from Room,
+      Sprinkler where Room == Sprinkler.room"</para>
+
+      <programlisting>room:office sprinker:office
+room:kitchen sprinker:kitchen
+room:livingroom sprinker:livingroom
+room:bedroom sprinker:bedroom</programlisting>
+    </section>
+
+    <section>
+      <title>Activations, Agenda and Conflict Sets.</title>
+
+      <para>So far the data and matching process has been simple and small. To
+      mix things up a bit a new example will be explored that handles cashflow
+      calculations over date periods and the state of the engine will be
+      illustrateively shown at key stages to help get a better understanding
+      of what is actually going on under the hood. Three classes will be used,
+      as shown below.</para>
+
+      <programlisting>public class Cashflow {
+    private Date   date;
+    private double amount;
+    private int    type;
+    long           accountNo;
+    // getter and setter methods here
+}
+
+public class Account {
+    private long   accountNo;
+    private double balance;
+    // getter and setter methods here
+}
+
+public AccountPeriod {
+    private Date start;
+    private Dte end
+    // getter and setter methods here
+}</programlisting>
+
+      <para>By now you already know how to create KnowledgeBases and how to
+      instantiate facts to populate the StatefulKnowledgeSession, so tables
+      will be used to show the state of the inserted data, as it makes things
+      clearer for illustration purposes. The tables below show a single fact
+      was inserted for the Account and a series of debit's and credit's as
+      Cashflows over two quarters for that Account were inserted.</para>
+
+      <figure>
+        <title>CashFlows and Account</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Quick_Start/tables1.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Two rules can be used to determine the debit and credit for that
+      quarter and update the Account balance. The two rules below constraint
+      the Cashflows for an Account for a given time period. Notice the
+      "&amp;&amp;" which use short cut syntax to avoid repeating the field
+      name twice.</para>
+
+      <informaltable frame="void">
+        <tbody>
+          <tr>
+            <td align="left" valign="top">
+              <programlisting>rule "increase balance for AccountPeriod Credits"
+when
+    ap : AccountPeriod()
+    acc : Account( $accountNo : accountNo )
+    CashFlow( type == CREDIT,
+              accountNo == $accountNo,
+              date &gt;= ap.start &amp;&amp; &lt;= ap.end,
+              $ammount : ammount )
+then
+    acc.balance  += $amount;
+end</programlisting>
+            </td>
+
+            <td align="left" valign="top">
+              <programlisting>rule "decrease balance for AccountPeriod Debits" 
+when 
+    ap : AccountPeriod() 
+    acc : Account( $accountNo : accountNo ) 
+    CashFlow( type == DEBIT, 
+              accountNo == $accountNo,
+              date &gt;= ap.start &amp;&amp; &lt;= ap.end, 
+              $ammount : ammount ) 
+then 
+    acc.balance -= $amount; 
+end</programlisting>
+            </td>
+          </tr>
+        </tbody>
+      </informaltable>
+
+      <para>If the AccountPeriod is set to the first quarter we constraint the
+      "increase balance for AccountPeriod Credits" to two rows of data and
+      "decrease balance for AccountPeriod Debits" to one row of data.</para>
+
+      <figure>
+        <title>CashFlows and Account</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Quick_Start/tables2.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The two Cashflow tables above represent the matched data for the
+      two rules, the data is matched during the insertion stage and as you
+      found in the previous chapter does not fire straight away, until
+      fireAllRules() is called. Intstead the rule plus it's matched data is
+      placed on the Agenda and referred to as an Activation. The Agenda is a
+      table of Activations that are able to fire and have their consequences
+      executed, when fireAllRules() is called. Each of the Activations on the
+      Agneda are executed in turn. Notice that the order of execution so far
+      is considered arbitrary.</para>
+
+      <figure>
+        <title>CashFlows and Account</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Quick_Start/tables7.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>After each of the above activations are fired, the Account has a
+      balance of -25.</para>
+
+      <figure>
+        <title>CashFlows and Account</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Quick_Start/tables3.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>If the AccountPeriod is updated to Q2, we have just a single
+      matched row of data, and thus just a single Activation on the
+      Agenda.</para>
+
+      <figure>
+        <title>CashFlows and Account</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Quick_Start/tables4.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The firing of that Activation results in a balance of 25.</para>
+
+      <figure>
+        <title>CashFlows and Account</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Quick_Start/tables5.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>So what happens if you don't want the order of Activation
+      execution to be arbitrary? When there is one or more Activations on the
+      Agenda they are said to be in conflict, and a conflict resolver strategy
+      is used to determine the order of execution. At the simplest level the
+      default strategy uses salience to determine rule priority. Each rule has
+      a default value of 0, the higher the value the higher the priority. To
+      illustrate this a rule to print the Account balance can be added, we
+      want this rule to be executed after all the debit's and credit's have
+      been applied for this rule, by setting the rule to have a salience of
+      below 0 we ensure it fires afterwards.</para>
+
+      <table border="0">
+        <tbody>
+          <tr>
+            <td>
+              <programlisting>rule "Print blance for AccountPeriod"
+        salience -50
+    when
+        ap : AccountPeriod()
+        acc : Account( )        
+    then
+        System.out.println( acc.accountNo + " : " acc.balance );    
+end</programlisting>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <para>The table below shows the resulting Agenda, the 3 debit and credit
+      rules are shown to be arbitrary order, while the print rule is shown to
+      execute aftwards.</para>
+
+      <figure>
+        <title>CashFlows and Account</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Quick_Start/tables6.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Earlier we showed how rules would equate to SQL, which can often
+      be helpful for people with an SQL background when understanding rules.
+      The two ruels above can be represented with two views and a trigger for
+      each view, as below:</para>
+
+      <table border="0">
+        <tbody>
+          <tr>
+            <td align="left" valign="top">
+              <programlisting>select * from Account acc, Cashflow cf, AccountPeriod ap      
+where acc.accountNo == cf.accountNo and 
+      cf.type == CREDIT cf.date &gt;= ap.start and 
+      cf.date &lt;= ap.end</programlisting>
+            </td>
+
+            <td align="left" valign="top">
+              <programlisting>select * from Account acc, Cashflow cf, AccountPeriod ap 
+where acc.accountNo == cf.accountNo and 
+      cf.type == DEBIT cf.date &gt;= ap.start and 
+      cf.date &lt;= ap.end</programlisting>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="left" valign="top">
+              <programlisting>trigger : acc.balance += cf.amount</programlisting>
+            </td>
+
+            <td align="left" valign="top">
+              <programlisting>trigger : acc.balance -= cf.amount</programlisting>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <para>Drools also features ruleflow-group attributes which allows
+      workflow diagrams to declaratively specify when rules are allowed to
+      fire. The screenshot below is taken from Eclipse using the Drools
+      plugin. It has two ruleflow-group nodes that ensures the calculation
+      rules are executed before the reporting rules.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Quick_Start/ruleflow.png" />
+        </imageobject>
+      </mediaobject>
+
+      <para>The use of the ruleflow-group attribute in a rule is shown
+      below.</para>
+
+      <table border="0">
+        <tbody>
+          <tr>
+            <td align="left" valign="top">
+              <programlisting>rule "increase balance for AccountPeriod Credits"
+     ruleflow-group "calculation"
+when
+    ap : AccountPeriod()
+    acc : Account( $accountNo : accountNo )
+    CashFlow( type == CREDIT,
+              accountNo == $accountNo,
+              date &gt;= ap.start &amp;&amp; &lt;= ap.end,
+              $ammount : ammount )
+then
+    acc.balance  += $amount;
+end</programlisting>
+            </td>
+
+            <td align="left" valign="top">
+              <programlisting>rule "Print blance for AccountPeriod"
+        ruleflow-group "report"
+    when
+        ap : AccountPeriod()
+        acc : Account( )        
+    then
+        System.out.println( acc.accountNo + " : " acc.balance );    
+end</programlisting>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+ 
+
+</section>
