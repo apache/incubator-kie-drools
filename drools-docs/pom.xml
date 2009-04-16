@@ -188,13 +188,13 @@
           <formats>
             <!--format>
               <formatName>pdf</formatName>
-              <stylesheetResource>classpath:/org/jboss/pdf.xsl</stylesheetResource>
+              <stylesheetResource>classpath:/org/jboss/pdf.xsl</stylesheetResource -->
               <!--
                 <stylesheetResource>classpath:/fo/docbook.xsl</stylesheetResource>
               -->
-              <!--finalName>${artifactId}.pdf</finalName-->
+              <!-- finalName>${artifactId}.pdf</finalName -->
               <!-- profilingTypeName>two_pass</profilingTypeName -->
-            <!--/format-->
+            <!-- /format -->
             <format>
               <formatName>html_single</formatName>
               <stylesheetResource>classpath:/org/jboss/xhtml-single.xsl</stylesheetResource>
