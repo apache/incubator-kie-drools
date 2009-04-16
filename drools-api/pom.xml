@@ -79,7 +79,7 @@
     </plugins>
   </build>
   
-    <!--reporting>
+    <reporting>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -88,9 +88,9 @@
               
                 <configuration>
                     <aggregate>false</aggregate>
-                    <doclet>ydoc.doclets.YStandard</doclet>
+                    <!-- doclet>ydoc.doclets.YStandard</doclet>
                     <docletPath>                        ${ydoc.home}/lib/ydoc.jar${path.separator}${ydoc.home}/lib/class2svg.jar${path.separator}${ydoc.home}/resources
-                    </docletPath>
+                    </docletPath-->
                     <additionalparam>-umlautogen -tag y.precondition -tag y.postcondition -tag y.complexity -tag param -tag return -tag see -tag y.uml
                     </additionalparam>                            
                     <links>
@@ -121,5 +121,5 @@
                 </configuration>
             </plugin>
         </plugins>
-    </reporting--> 
+    </reporting> 
 </project>
