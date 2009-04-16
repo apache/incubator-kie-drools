@@ -171,9 +171,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final Object object) throws FactException {
-        //Retract fact in the RHS will always look at the WM,
-        //because you have special methods to retract facts from the entry point
-        FactHandle handle = this.workingMemory.getObjectStore().getHandleForObject(object);
+        FactHandle handle =  getIdentityMap().get( object );
         if ( handle == null ) {
             throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
         }

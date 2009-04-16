@@ -225,6 +225,68 @@ public class StreamsTest extends TestCase {
 
     }
     
+    public void testModifyRetracOnEntryPointFacts() throws Exception {
+        // read in the source
+        KnowledgeBase kbase = loadKnowledgeBase( "test_modifyRetractEntryPoint.drl" );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        final List<? extends Number> results = new ArrayList<Number>();
+        session.setGlobal( "results",
+                           results );
+
+        StockTick tick5 = new StockTick( 5,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+        StockTick tick6 = new StockTick( 6,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis() );
+        StockTick tick7 = new StockTick( 7,
+                                         "ACME",
+                                         30,
+                                         System.currentTimeMillis() );
+        StockTick tick8 = new StockTick( 8,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis() );
+
+        WorkingMemoryEntryPoint entry = session.getWorkingMemoryEntryPoint( "stream1" );
+
+        InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
+        InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
+        InternalFactHandle handle7 = (InternalFactHandle) entry.insert( tick7 );
+        InternalFactHandle handle8 = (InternalFactHandle) entry.insert( tick8 );
+
+        assertNotNull( handle5 );
+        assertNotNull( handle6 );
+        assertNotNull( handle7 );
+        assertNotNull( handle8 );
+
+        assertTrue( handle5.isEvent() );
+        assertTrue( handle6.isEvent() );
+        assertTrue( handle7.isEvent() );
+        assertTrue( handle8.isEvent() );
+
+        session.fireAllRules();
+
+        System.out.println(results);
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( 30,
+                      ((Number)results.get( 0 )).intValue() );
+        assertEquals( 110,
+                      ((Number)results.get( 1 )).intValue() );
+        
+        // the 3 non-matched facts continue to exist in the entry point
+        assertEquals( 3, 
+                      entry.getObjects().size() );
+        // but no fact was inserted into the main session
+        assertEquals( 0, 
+                      session.getObjects().size() );
+
+    }
+    
     public void testGetEntryPointList() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPointReference.drl" );

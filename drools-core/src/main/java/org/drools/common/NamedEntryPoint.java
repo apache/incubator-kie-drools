@@ -400,9 +400,13 @@ public class NamedEntryPoint
                                                                                       -1,
                                                                                       -1,
                                                                                       entryPoint );
+            
+            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                          handle.getObject() );            
 
             this.entryPointNode.assertObject( handle,
                                               propagationContext,
+                                              typeConf,
                                               this.wm );
 
             this.wm.getWorkingMemoryEventSupport().fireObjectUpdated( propagationContext,

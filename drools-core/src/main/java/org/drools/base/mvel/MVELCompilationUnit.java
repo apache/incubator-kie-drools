@@ -356,9 +356,13 @@ public class MVELCompilationUnit
             Thread.currentThread().setContextClassLoader( classLoader );
 
             AbstractParser.setLanguageLevel( languageLevel );
-            Serializable expr = compiler.compile( parserContext );
-
-            Thread.currentThread().setContextClassLoader( tempClassLoader );
+            Serializable expr = null;
+            try {
+                expr = compiler.compile( parserContext );
+            } finally {
+                // make sure that in case of exceptions the context classloader is properly restored
+                Thread.currentThread().setContextClassLoader( tempClassLoader );
+            }
 
             return expr;
         }
