@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml">
+  <title>Building</title>
+
+  <figure>
+    <title>org.drools.builder</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-User_Guide/builder.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <section>
+    <title>Building using Code</title>
+
+    <para>The KnowledgeBuilder is responsible for taking source files, such as
+    a .drl file or an xls file, and turning them into a KnowledgePackage of
+    rule and process definitions which a KnowledgeBase can consume. It uses
+    the ResourceType enum to tell it the type of the resource it is being
+    asked to build.</para>
+
+    <para>The ResourceFactory provides capabilities to load Resources from a
+    number of sources; such as Reader, ClassPath, URL, File, ByteArray.
+    Binaries, such as xls decision tables, should not use a Reader based
+    Resource handler, which is only suitable for text based resource</para>
+
+    <figure>
+      <title>KnowledgeBuilder</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilder.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The KnowlegeBuilder is created using the
+    KnowledgeBuilderFactory.</para>
+
+    <figure>
+      <title>KnowledgeBuilderFactory</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>A KnowledgeBuilder can be created using the default
+    configuration.</para>
+
+    <example>
+      <title>Creating a new KnowledgeBuilder</title>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();</programlisting>
+    </example>
+
+    <para>A configuration can be created using the KnowledgeBuilderFactory
+    this allows the behaviour of the KnowledgeBuilder to modified. The most
+    common usage is to provide a custom ClassLoader so that the kbuilder can
+    resolve classes that are not in the default classpath. The first parameter
+    is for Properties and is optional and may be left null in which case the
+    default options will be used. The options parameter can be used for things
+    like changing the dialect or registering new accumulator functions.</para>
+
+    <example>
+      <title>Creating a new KnowledgeBuilder with a custom ClassLoader</title>
+
+      <programlisting>KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader );
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
+</programlisting>
+    </example>
+
+    <para>Resources, of any type, can be add iteratively. Below a DRL is
+    added. Unlike Drools 4.0 PackageBuilder the KnowledgeBuilder can now
+    handle multiple namespaces, so you can just keep adding resources
+    regardless of namespace.</para>
+
+    <example>
+      <title>Adding DRL Resources</title>
+
+      <programlisting>kbuilder.add( ResourceFactory.newFileResource( "/project/myrules.drl" ),
+              ResourceType.DRL);
+</programlisting>
+    </example>
+
+    <para>It is best practice to always check the hasErrors() method after an
+    addition, you should not add more resources or get the KnowledgePackages
+    if there are errors. KnowledgePackages() will return an empty list if
+    there are errors.</para>
+
+    <example>
+      <title>Validating</title>
+
+      <programlisting>if( kbuilder.hasErrors() ) {
+    System.out.println( kbuilder.getErrors() );
+    return;
+}
+</programlisting>
+    </example>
+
+    <para>When all the resources has been added and there are no errors the
+    Collection of KnowledgePackages can be retrieved, it's a Collection as
+    there is one KnowledgePackage per package namespace; These
+    KnowledgePackages are serialisable and often used as a unit of
+    deployment.</para>
+
+    <example>
+      <title>Getting the KnowledgePackages</title>
+
+      <programlisting>Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
+</programlisting>
+    </example>
+
+    <para>The final examples puts it all together.</para>
+
+    <example>
+      <title>Putting it together</title>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+if( kbuilder.hasErrors() ) {
+    System.out.println( kbuilder.getErrors() );
+    return;
+}
+
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newFileResource( "/project/myrules1.drl" ),
+              ResourceType.DRL);
+kbuilder.add( ResourceFactory.newFileResource( "/project/myrules2.drl" ),
+              ResourceType.DRL);
+
+if( kbuilder.hasErrors() ) {
+    System.out.println( kbuilder.getErrors() );
+    return;
+}
+
+Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
+</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>Building using Configuration and the ChangeSet XML</title>
+
+    <para>Instead of adding the resources to create definitions
+    programmatically it is also possible to do it confiugrably via the
+    ChangeSet XML. There is currently no XSD schema for the change-set, but we
+    hope to add one soon. However the XML is very simple. The XML supports
+    three elements add, remove, modify - however currently only the add
+    element is supported - the later will be supprted as we eventually move to
+    support iterative changes. The following example loads a single DRL
+    file.</para>
+
+    <example>
+      <title>Simple ChangeSet XML</title>
+
+      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+            xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+   &lt;add&gt;
+      &lt;resource source='file:/project/myrules.drl' type='DRL' /&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+    </example>
+
+    <para>Notice the "file:" prefix, this signifies the protocol for the
+    resource. The ChangeSet supports all the protocolols provided by
+    java.net.URL, such as file" and "http", as well as an additional
+    "classpath". Currently the type attribute must always be specified for a
+    resource, it is not inferred from the file name extension. While using the
+    ClassPath resource loader in java allows you to specify the ClassLoader to
+    be used to locate the resource, from the XML this is not possible. Instead
+    the ClassLoader will default to the one used by the KnowledgeBuilder
+    unless the ChangeSet XML is itself loaded by the ClassPath resource, in
+    which case it'll use the ClassLoader specified for that resource.</para>
+
+    <para>You currently still need to use the API to load that ChangeSet, but
+    we will add support for containers such as Spring in the future, so the
+    process of creating a KnowledgeBase becomes 100% XML configuration.
+    Loading resources using the XML couldn't be simpler, as it's just another
+    ResourceType.</para>
+
+    <example>
+      <title>Loading the ChangeSet XML</title>
+
+      <programlisting>kbuilder.add( ResourceFactory.newUrlResource( url ), ResourceType.ChangeSet );
+</programlisting>
+    </example>
+
+    <para>Change sets can include any number of resources and even supports
+    additional configuration information, which currently is only needed for
+    decision tables. Below the example is expanded to load the rules from a
+    http url location and an excel decision table from the classpath.</para>
+
+    <example>
+      <title>ChangeSet XML with resource configuration</title>
+
+      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+  &lt;add&gt;
+       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
+       &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
+           &lt;decisiontable-conf input-type="XLS" worksheet-name="Tables_2" /&gt;
+       &lt;/resource&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+    </example>
+
+    <para>The ChangeSet is especailly useful when working with KnowledgeAgent,
+    as it allows for change notification and automatic rebuilding of the
+    KnowledgeBase, which is covered in more detail in the section on the
+    KnowledgeAgent under Deploying.</para>
+
+    <para>Directories can also be specified, in such a situation all resources
+    in that folder are added, although currently it expected all resources in
+    that folder to be of the same type. If you use the KnowledgeAgent it will
+    provide a continous scanning for added, modified or removed resources and
+    rebuild the cached KnowledgeBase. The KnowledgeAgent provides more
+    information on this.</para>
+
+    <example>
+      <title>ChangeSet XML which adds a directories contents</title>
+
+      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+            xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+   &lt;add&gt;
+      &lt;resource source='file:/projects/myproject/myrules' type='DRL' /&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+    </example>
+  </section>
+</section>

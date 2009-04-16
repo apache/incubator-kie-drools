@@ -1,0 +1,1788 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml">
+  <title>Running</title>
+
+  <para></para>
+
+  <section>
+    <title>KnowledgeBase</title>
+
+    <para>The KnowlegeBase is a repository of all the application's knowledge
+    definitions. It will contain rules, processes, functions, type models. The
+    KnowledgeBase itself does not contain data, instead sessions are created
+    from the KnowledgeBase in which data can be inserted and process instances
+    started. Creating the KnowlegeBase can be heavy, where as session creation
+    is very light, so it is recommended that KnowleBase's be cached where
+    possible to allow for repeated session creation.</para>
+
+    <example>
+      <title>Creating a new KnowledgeBuilder</title>
+
+      <programlisting>KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>StatefulKnowledgeSession</title>
+
+    <para>The StatefulKnowledgeSession stores and executes on the runtime data
+    and is created fom the KnowledgeBase.</para>
+
+    <figure>
+      <title>StatefulKnowledgeSession</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/StatefulKnowledgeSession.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <example>
+      <title>Add KnowledgePackages to a KnowledgeBase</title>
+
+      <programlisting>StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>KnowledgeRuntime</title>
+
+    <section>
+      <title>WorkingMemoryEntryPoint</title>
+
+      <para>The WorkingMemoryEntry provides the methods around inserting,
+      updating and retrieving facts. The term EntyPoint is related to the fact
+      that we have multiple partitions in a WorkingMemory and you can choose
+      which one you are inserting into, although this use case is aimed at
+      event processing and covered in more detail in the Fusion manual, most
+      rule based applications will work with the default entry point
+      alone.</para>
+
+      <para>The KnowledgeRuntime interface provides the main interaction with
+      the engine and is available in rule consequences and process actions. In
+      this manual the focus is on the methods and interfaces related to rules
+      and the process ones will be ignored for now. But you'll notice that hte
+      KnowledgeRuntime inherits methods from both the WorkingMemory and the
+      ProcessRuntime, this provides a unified api to work with process and
+      rules. When working with rules three interfaces form the
+      KnowledgeRuntime; WorkingMemoryEntryPoint, WorkingMemory and and the
+      KnowledgeRuntime itself.</para>
+
+      <figure>
+        <title>WorkingMemoryEntryPoint</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEntryPoint.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <section>
+        <title>Insertion</title>
+
+        <para>"Insert" is the act of telling the <code>WorkingMemory</code>
+        about a fact, which you do by
+        <code>ksession.insert(yourObject)</code>, for example. When you insert
+        a fact, it is examined for matches against the rules. This means
+        <emphasis>all</emphasis> of the work for deciding about firing or not
+        firing a rule is done during insertion; no rule, however, is executed
+        until you call <code>fireAllRules()</code>, which you call
+        <code>fireAllRules()</code> after you have finished inserting your
+        facts. It is a common misunderstanding for people to think the
+        condition evaluation happens when you call
+        <code>fireAllRules()</code>. Expert systems typically use the term
+        <code>assert</code> or <code>assertion</code> to refer to facts made
+        available to the system. However due to the <code>assert</code> being
+        a keyword in most languages we have moved to use the
+        <code>insert</code> keyword; so expect to hear the two used
+        interchangeably.</para>
+
+        <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
+        However, when the rules are executed, they can assert new objects 
+        thus causing new work to be needed. 
+      -->
+
+        <para>When an Object is inserted it returns a <code>FactHandle</code>.
+        This <code>FactHandle</code> is the token used to represent your
+        inserted object within the <code>WorkingMemory</code>. It is also used
+        for interactions with the <code>WorkingMemory</code> when you wish to
+        retract or modify an object.</para>
+
+        <programlisting>Cheese stilton = new Cheese("stilton");
+FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
+
+        <para>As mentioned in the KnowledgeBase section a WorkingMemory may
+        operate in two assertion modes, i.e., equality or identity, with
+        identity being default.</para>
+
+        <para><emphasis>Identity</emphasis> means that the Working Memory uses
+        an <code>IdentityHashMap</code> to store all asserted objects. New
+        instance assertions always result in the return of a new
+        <code>FactHandle</code>, but if an instance is asserted again then it
+        returns the original fact handle, i.e., it ignores repeated insertions
+        for the same fact.</para>
+
+        <para><emphasis>Equality</emphasis> means that the Working Memory uses
+        a <code>HashMap</code> to store all asserted Objects. New instance
+        assertions will only return a new <code>FactHandle</code> if no equal
+        objects have been asserted.</para>
+      </section>
+
+      <section>
+        <title>Retraction</title>
+
+        <para>"Retraction" is the removal of a fact from the Working Memory,
+        which means it will no longer track and match that fact, and any rules
+        that are activated and dependent on that fact will be cancelled. Note
+        that it is possible to have rules that depend on the nonexistence of a
+        fact, in which case retracting a fact may cause a rule to activate
+        (see the <code>not</code> and <code>exist</code> keywords). Retraction
+        is done using the <code>FactHandle</code> that was returned during the
+        assert.</para>
+
+        <programlisting>Cheese stilton = new Cheese("stilton");
+FactHandle stiltonHandle = ksession.insert( stilton );
+....
+ksession.retract( stiltonHandle );            </programlisting>
+      </section>
+
+      <section>
+        <title>Update</title>
+
+        <para>The Rule Engine must be notified of modified Facts, so that they
+        can be reprocessed. Internally, modification is actually a retract and
+        then an insert; so it removes the fact from the
+        <code>WorkingMemory</code> and then inserts it again. You must use the
+        <code>update</code> method to notify the <code>WorkingMemory</code> of
+        changed objects for those objects that are not able to notify the
+        <code>WorkingMemory</code> themselves. Notice that <code>update</code>
+        always takes the modified object as a second parameter, which allows
+        you to specify new instances for immutable objects. The
+        <code>update</code> method can only be used with objects that have
+        shadow proxies turned on. The update keyworld is only used from java,
+        inside of a rule the "modify" keyword is supported and provides block
+        setters.</para>
+
+        <programlisting>Cheese stilton = new Cheese("stilton");
+FactHandle stiltonHandle = workingMemory.insert( stilton );
+....
+stilton.setPrice( 100 );
+workingMemory.update( stiltonHandle, stilton );              </programlisting>
+      </section>
+    </section>
+
+    <section>
+      <title>WorkingMemory</title>
+
+      <para>The WorkingMemory provides access to the Agenda, query executions
+      as well getting access to named EntyPoints,</para>
+
+      <figure>
+        <title>WorkingMemory</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/WorkingMemory.png"
+                       format=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <section>
+        <title>Query</title>
+
+        <para>Querries can be defined in the KnowlegeBase which can be called,
+        with optional parameters, to return the matching results. Any bound
+        identifier in the query can be accessed using the get(String
+        identifier) method.</para>
+
+        <figure>
+          <title>QueryResults</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-User_Guide/QueryResults.png"
+                         format=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>QueryResultsRow</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-User_Guide/QueryResultsRow.png"
+                         format=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <example>
+          <title>Simple Query Example</title>
+
+          <programlisting>QueryResults results = ksession.getQueryResults( "my query", new Object[] { "string" } );
+for ( QueryResultsRow row : results ) {
+    System.out.println( row.get( "varName" ) );
+}</programlisting>
+        </example>
+      </section>
+    </section>
+
+    <section>
+      <title>KnowledgeRuntime</title>
+
+      <para>The KnowledgeRuntime provides further methods that are applicable
+      to both rules and processes. Such as setting globals and registering
+      ExitPoints.</para>
+
+      <figure>
+        <title>KnowledgeRuntime</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntime.png"
+                       format=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <section>
+        <title>Globals</title>
+
+        <para>Globals are named objects that can be passed in to the rule
+        engine, without needing to insert them. Most often these are used for
+        static information, or for services that are used in the RHS of a
+        rule, or perhaps as a means to return objects from the rule engine. If
+        you use a global on the LHS of a rule, make sure it is immutable. A
+        global must first be declared in a rules file before it can be set on
+        the session.</para>
+
+        <programlisting>global java.util.List list</programlisting>
+
+        <para>With the Knowledge Base now aware of the global identifier and
+        its type, it is now possible to call <code>ksession.setGlobal</code>
+        for any session. Failure to declare the global type and identifier
+        first will result in an exception being thrown. To set the global on
+        the session use <code>ksession.setGlobal(identifier,
+        value)</code>:</para>
+
+        <programlisting>List list = new ArrayList();
+ksession.setGlobal("list", list);           </programlisting>
+
+        <para>If a rule evaluates on a global before you set it you will get a
+        <code>NullPointerException</code>.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>StatefulRuleSession</title>
+
+      <para>The StatefulRuleSession is inheritted by the
+      StatefulKnowledgeSession and provides the rule related methods that are
+      relevant from outside of the engine.</para>
+
+      <figure>
+        <title>StatefulRuleSession</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/StatefulRuleSession.png"
+                       format=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <section>
+        <title>Agenda Filters</title>
+
+        <figure>
+          <title>AgendaFilters</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-User_guide/AgendaFilter.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Agenda filters are optional implementations of the filter
+        interface which are used to allow or deny the firing of an activation.
+        What you filter on is entirely up to the implementation. Drools 4.0
+        used to supply some out of the box filters, which have not be exposed
+        in drools 5.0 drools-api, but they are simple to implement and the
+        Drools 4.0 code base can be referred to.</para>
+
+        <para>To use a filter specify it while calling
+        <code>FireAllRules</code>. The following example permits only rules
+        ending in the string <emphasis>Test</emphasis>. All others will be
+        filtered out. <programlisting>ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Agenda</title>
+
+    <para>The Agenda is a RETE feature. During actions on the
+    <code>WorkingMemory</code>, rules may become fully matched and eligible
+    for execution; a single Working Memory Action can result in multiple
+    eligible rules. When a rule is fully matched an Activation is created,
+    referencing the rule and the matched facts, and placed onto the Agenda.
+    The Agenda controls the execution order of these Activations using a
+    Conflict Resolution strategy.</para>
+
+    <para>The engine cycles repeatedly through two phases:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Working Memory Actions. This is where most of the work takes
+        place, either in the <code>Consequence</code> (the RHS itself) or the
+        main Java application process. Once the <code>Consequence</code> has
+        finished or the main Java application process calls
+        <code>fireAllRules()</code> the engine switches to the Agenda
+        Evaluation phase.</para>
+      </listitem>
+
+      <listitem>
+        <para>Agenda Evaluation. This attempts to select a rule to fire. If no
+        rule is found it exits, otherwise it fires the found rule, switching
+        the phase back to Working Memory Actions.</para>
+      </listitem>
+    </orderedlist>
+
+    <figure>
+      <title>Two Phase Execution</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Rule_Engine/Two_Phase.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The process repeats until the agenda is clear, in which case control
+    returns to the calling application. When Working Memory Actions are taking
+    place, no rules are being fired.</para>
+
+    <figure>
+      <title>Agenda</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/Agenda.png" format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <section>
+      <title>Conflict Resolution</title>
+
+      <para>Conflict resolution is required when there are multiple rules on
+      the agenda, the basics to this are covered in the "Quick Start" chapter.
+      As firing a rule may have side effects on working memory, the rule
+      engine needs to know in what order the rules should fire (for instance,
+      firing ruleA may cause ruleB to be removed from the agenda).</para>
+
+      <para>The default conflict resolution strategies employed by Drools are:
+      Salience and LIFO (last in, first out).</para>
+
+      <para>The most visible one is "salience" or priority, in which case a
+      user can specify that a certain rule has a higher priority (by giving it
+      a higher number) than other rules. In that case, the rule with higher
+      salience will be preferred. LIFO priorities are based on the assigned
+      Working Memory Action counter value, with all rules created during the
+      same action receiving the same value. The execution order of a set of
+      firings with the same priority value is arbitrary.</para>
+
+      <para>As a general rule, it is a good idea not to count on the rules
+      firing in any particular order, and to author the rules without worrying
+      about a "flow".</para>
+
+      <para>Drools 4.0 supported custom conflict resolution strategies, while
+      this capability still exists in Drools it has not yet been exposed to
+      the end user via drools-api in Drools 5.0.</para>
+    </section>
+
+    <section>
+      <title>AgendaGroup</title>
+
+      <figure>
+        <title>AgendaGroup</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/AgendaGroup.png"
+                       format=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Agenda groups are a way to partition rules (activations, actually)
+      on the agenda. At any one time, only one group has "focus" which means
+      that activations for rules in that group only will take effect. You can
+      also have rules with "auto focus" which means that the focus is taken
+      for its agenda group when that rule's conditions are true.</para>
+
+      <para>Agenda groups are known as "modules" in CLIPS terminology. They
+      provide a handy way to create a "flow" between grouped rules. You can
+      switch the group which has focus either from within the rule engine, or
+      via the API. If your rules have a clear need for multiple "phases" or
+      "sequences" of processing, consider using agenda-groups for this
+      purpose.</para>
+
+      <para>Each time <code>setFocus()</code> is called it pushes that Agenda
+      Group onto a stack. When the focus group is empty it is popped from the
+      stack and the focus group that is now on top evaluates. An Agenda Group
+      can appear in multiple locations on the stack. The default Agenda Group
+      is "MAIN", with all rules which do not specify an Agenda Group being in
+      this group. It is also always the first group on the stack, given focus
+      initially, by default.</para>
+
+      <para><programlisting>ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting></para>
+    </section>
+
+    <section>
+      <title>ActivationGroup</title>
+
+      <figure>
+        <title>ActivationGroup</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/ActivationGroup.png"
+                       format=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>An activation group is group of rules associated together by the
+      "activation-group" rule attribute. In this group only one rule can fire,
+      after that rule has fired all the other rules are cancelled. The clear()
+      method can be called at any time, which cancels all of the activations
+      before one has a chance to fire. <programlisting>ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting></para>
+    </section>
+
+    <section>
+      <title>RuleFlowGroup</title>
+
+      <figure>
+        <title>RuleFlowGroup</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/RuleFlowGroup.png"
+                       format=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>A rule flow group is a group of rules associated by the
+      "ruleflow-group" rule attribute. These rules can only fire when the
+      group is activate. The group itself can only become active when the
+      ruleflow diagram representing it pr<programlisting>ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Event Model</title>
+
+    <para>The event package provides means to be notified of rule engine
+    events, including rules firing, objects being asserted, etc. This allows
+    you, for instance, to separate logging and auditing activities from the
+    main part of your application (and the rules).</para>
+
+    <para>The KnowlegeRuntimeEventManager is implemented by the
+    KnowledgeRuntime which provides two interfaces, WorkingMemoryEventManager
+    and ProcessEventManager. We will only cover the WorkingMemoryEventManager
+    here.</para>
+
+    <figure>
+      <title>KnowledgeRuntimeEventManager</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeEventManager.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The WorkingMemoryEventManager allows for listeners to be added and
+    removed, so that events for the working memory and the agenda can be
+    listened to.</para>
+
+    <figure>
+      <title>WorkingMemoryEventManager</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEventManager.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <example>
+      <title>Adding an AgendaEventListener</title>
+
+      <programlisting>ksession.addEventListener( new DefaultAgendaEventListener() {                            
+   public void afterActivationFired(AfterActivationFiredEvent event) {
+       super.afterActivationFired( event );
+       System.out.println( event );
+   }
+});     </programlisting>
+    </example>
+
+    <para>Drools also provides <code>DebugWorkingMemoryEventListener</code>,
+    <code>DebugAgendaEventListener</code> which implement each method with a
+    debug print statement. To print all Working Memory events, you add a
+    listener like this:</para>
+
+    <example>
+      <title>Creating a new KnowledgeBuilder</title>
+
+      <programlisting>ksession.addEventListener( new DebugWorkingMemoryEventListener() );     </programlisting>
+    </example>
+
+    <para>All emitted events implement the KnowlegeRuntimeEvent interface
+    which can be used to retrieve the actual KnowlegeRuntime the event
+    originated from.</para>
+
+    <figure>
+      <title>KnowlegeRuntimeEvent</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeEvent.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The events currently supported are:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>ActivationCreatedEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ActivationCancelledEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>BeforeActivationFiredEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>AfterActivationFiredEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>AgendaGroupPushedEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>AgendaGroupPoppedEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ObjectInsertEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ObjectRetractedEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ObjectUpdatedEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ProcessCompletedEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ProcessNodeLeftEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ProcessNodeTriggeredEvent</para>
+      </listitem>
+
+      <listitem>
+        <para>ProcessStartEvent</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>KnowledgeRuntimeLogger</title>
+
+    <para>The KnowledgeRuntimeLogger uses the comprehensive event system in
+    Drools to create an audit log that can be used log the execution of drools
+    for later inspection, in tools such as the Eclipse audit viewer. </para>
+
+    <figure>
+      <title>KnowledgeRuntimeLoggerFactory</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeLoggerFactory.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <example>
+      <title>FileLogger</title>
+
+      <programlisting>KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "logdir/mylogfile");
+....
+logger.close();     </programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>StatelessKnowledgeSession</title>
+
+    <para>The <code>StatelessKnowledgeSession</code> wraps the
+    <code>StatefulKnowledgeSession</code>, instead of extending it. Its main
+    focus is on decision service type scenarios. It removes the need to call
+    dispose(). Stateless sessions do not support iterative insertions and
+    fireAllRules from java code, the act of calling execute(...) is a single
+    shot method that will internally instantiate a StatefullKnowledgeSession,
+    add all the user data and execute user commands, call fireAllRules, and
+    then call dispose(). While the main way to work with this class is via the
+    BatchExecution Command as supported by the CommandExecutor interface, two
+    convenience methods are provided for when simple object insertion is all
+    that's required. The CommandExecutor and BatchExecution are talked about
+    in detail in their own section.</para>
+
+    <figure>
+      <title>StatelessKnowledgeSession</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/StatelessKnowledgeSession.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Simple example showing a stateless session executing for a given
+    collection of java objects using the convenience api. It will iterate the
+    collection inserting each element in turn</para>
+
+    <example>
+      <title>Simple StatelessKnowledgeSession execution with a
+      Collection</title>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newFileSystemResource( fileName ), ResourceType.DRL );
+assertFalse( kbuilder.hasErrors() );     
+if (kbuilder.hasErrors() ) {
+    System.out.println( kbuilder.getErrors() );
+}
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+ksession.execute( collection );     </programlisting>
+    </example>
+
+    <para>If this was done as a single Command it would be as follows: </para>
+
+    <example>
+      <title>Simple StatelessKnowledgeSession execution with InsertElements
+      Command</title>
+
+      <programlisting>ksession.execute( CommandFactory.newInsertElements( collection ) );  </programlisting>
+    </example>
+
+    <para>Note if you wanted to insert the collection itself, and not the
+    iterate and insert the elements, then CommandFactory.newInsert( collection
+    ) would do the job.</para>
+
+    <para>The CommandFactory details the supported commands, all of which can
+    marshalled using XStream and the BatchExecutionHelper.
+    BatchExecutionHelper provides details on the xml format as well as how to
+    use Drools Pipeline to automate the marshalling of BatchExecution and
+    ExecutionResults.</para>
+
+    <para>StatelessKnowledgeSessions support globals, scoped in a number of
+    ways. I'll cover the non-command way first, as commands are scoped to a
+    specific execution call. Globals can be resolved in three ways. The
+    StatelessKnowledgeSession supports getGlobals(), which returns a Globals
+    instance. These globals are shared for ALL execution calls, so be
+    especially careful of mutable globals in these cases - as often execution
+    calls can be executing simultaneously in different threads. Globals also
+    supports a delegate, which adds a second way of resolving globals. Calling
+    of setGlobal(String, Object) will actually be set on an internal
+    Collection, identifiers in this internal Collection will have priority
+    over supplied delegate, if one is added. If an identifier cannot be found
+    in the internal Collection, it will then check the delegate Globals, if
+    one has been set.</para>
+
+    <example>
+      <title>Session scoped global</title>
+
+      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+ksession.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
+ksession.execute( collection ); // this will now execute and will be able to resolve the "hbnSession" identifier.  </programlisting>
+    </example>
+
+    <para>The third way is execution scopped globals using the CommandExecutor
+    and SetGlobal Commands: </para>
+
+    <example>
+      <title>Execute scoped global</title>
+
+      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+ksession.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
+ksession.execute( collection ); // this will now execute and will be able to resolve the "hbnSession" identifier.  </programlisting>
+    </example>
+
+    <para>The CommandExecutor interface also supports the ability to expert
+    data via "out" parameters. Inserted facts, globals and query results can
+    all be returned.</para>
+
+    <example>
+      <title>Out identifiers</title>
+
+      <programlisting> List cmds = new ArrayList();
+ cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
+ cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
+ cmds.add( CommandFactory.newQuery( "Get People" "getPeople" );
+ 
+ ExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+ results.getValue( "list1" ); // returns the ArrayList
+ results.getValue( "person" ); // returns the inserted fact Person
+ results.getValue( "Get People" );// returns the query as a QueryResults instance.
+ </programlisting>
+    </example>
+
+    <section>
+      <title><link linkend="sequential">Sequential Mode</link></title>
+
+      <para>With Rete you have a stateful session where objects can be
+      asserted and modified over time, and where rules can also be added and
+      removed. Now what happens if we assume a stateless session, where after
+      the initial data set no more data can be asserted or modified and rules
+      cannot be added or removed? Certainly it won't be necessary to
+      re-evaluate rules, and the engine will be able to operate in a
+      simplified way.</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Order the Rules by salience and position in the ruleset (by
+          setting a sequence attribute on the rule terminal node).</para>
+        </listitem>
+
+        <listitem>
+          <para>Create an array, one element for each possible rule
+          activation; element position indicates firing order.</para>
+        </listitem>
+
+        <listitem>
+          <para>Turn off all node memories, except the right-input Object
+          memory.</para>
+        </listitem>
+
+        <listitem>
+          <para>Disconnect the LeftInputAdapterNode propagation, and let the
+          Object plus the Node be referenced in a Command object, which is
+          added to a list on the WorkingMemory for later execution.</para>
+        </listitem>
+
+        <listitem>
+          <para>Assert all objects, and, when all assertions are finished and
+          thus right-input node memories are populated, check the Command list
+          and execute each in turn.</para>
+        </listitem>
+
+        <listitem>
+          <para>All resulting Activations should be placed in the array, based
+          upon the determined sequence number of the Rule. Record the first
+          and last populated elements, to reduce the iteration range.</para>
+        </listitem>
+
+        <listitem>
+          <para>Iterate the array of Activations, executing populated element
+          in turn.</para>
+        </listitem>
+
+        <listitem>
+          <para>If we have a maximum number of allowed rule executions, we can
+          exit our network evaluations early to fire all the rules in the
+          array.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>The LeftInputAdapterNode no longer creates a Tuple, adding the
+      Object, and then propagate the Tuple – instead a Command Object is
+      created and added to a list in the Working Memory. This Command Object
+      holds a reference to the LeftInputAdapterNode and the propagated Object.
+      This stops any left-input propagations at insertion time, so that we
+      know that a right-input propagation will never need to attempt a join
+      with the left-inputs (removing the need for left-input memory). All
+      nodes have their memory turned off, including the left-input Tuple
+      memory but excluding the right-input Object memory, which means that the
+      only node remembering an insertion propagation is the right-input Object
+      memory. Once all the assertions are finished and all right-input
+      memories populated, we can then iterate the list of LeftInputAdatperNode
+      Command objects calling each in turn; they will propagate down the
+      network attempting to join with the right-input objects; not being
+      remembered in the left input, as we know there will be no further object
+      assertions and thus propagations into the right-input memory.</para>
+
+      <para>There is no longer an Agenda, with a priority queue to schedule
+      the Tuples, instead there is simply an array for the number of rules.
+      The sequence number of the RuleTerminalNode indicates the element with
+      the array to place the Activation. Once all Command Objects have
+      finished we can iterate our array checking each element in turn and
+      firing the Activations if they exist. To improve performance in the
+      array we remember the first and last populated cells. The network is
+      constructed where each RuleTerminalNode is given a sequence number,
+      based on a salience number and its order of being added to the
+      network.</para>
+
+      <para>Typically the right-input node memories are HashMaps, for fast
+      Object retraction; here, as we know there will be no Object retractions,
+      we can use a list when the values of the Object are not indexed. For
+      larger numbers of Objects indexed HashMaps provide a performance
+      increase; if we know an Object type has a low number of instances then
+      indexing is probably not of an advantage and an Object list can be
+      used.</para>
+
+      <para>Sequential mode can only be used with a StatelessSession and is
+      off by default. To turn on either set the
+      RuleBaseConfiguration.setSequential to true or set the rulebase.conf
+      property drools.sequential to true. Sequential mode can fall back to a
+      dynamic agenda with setSequentialAgenda to either
+      SequentialAgenda.SEQUENTIAL or SequentialAgenda.DYNAMIC set by a call or
+      via the "drools.sequential.agenda" property.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Pipeline</title>
+
+    <para>The PipelineFactory and associated classes are there to help with
+    the automation of getting information into and out of Drools, especially
+    when using services, such as JMS, and non pojo data sources. Transformers
+    for Smooks, JAXB, Xstream and Jxls are povided. Smooks is an ETL tooling
+    and can work with a variety of data sources, JAXB is a Java standard aimed
+    at working with XSDs, while XStream is a simple and fast xml serialisation
+    framework and finally Jxls allows for loading of pojos from an excel
+    decision table. minimal information on these technologies will be provided
+    here and it is expected for the user to consult the relevant user guide
+    for each.</para>
+
+    <figure>
+      <title>PipelineFactory</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/PipelineFactory.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Pipeline is not meant as a replacement for products like the more
+    powerful Camel, but is aimed as a complimentary framework that ultimately
+    can be integrated into more powerful pipeline frameworks. Instead it is a
+    simple framework aimed at the specific Drools use cases.</para>
+
+    <para>In Drools a pipeline is a series of stages that operate on and
+    propagate a given payload. Typically this starts with a Pipeline instance
+    which is responsible for taking the payload, creating a PipelineContext
+    for it and propagating that to the first Receiver stage. Two types of
+    Pipelines are provided, both requiring a different PipelineContexts.
+    StatefulKnowledgeSessionPipeline and StatelessKnowledgeSessionPipeline.
+    Notice that both factory methods take the relevant session as an
+    argument.</para>
+
+    <example>
+      <title>StatefulKnowledgeSessionPipeline</title>
+
+      <programlisting>Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline( ksession );
+pipeline.setReceiver( receiver );</programlisting>
+    </example>
+
+    <para>A pipeline is then made up of a chain of Stages that can implement
+    both the Emitter and the Receiver interfaces. The Emitter interface means
+    the stage can propagate a payload and the Receiver interface means it can
+    receive a payload. This is why the Pipeline interface only implements
+    Emitter and Stage and not Receiver, as it is the first instance in the
+    chain. The Stage interface allows a custom exception handler to be set on
+    the stage.</para>
+
+    <example>
+      <title>StageExceptionHandler</title>
+
+      <programlisting>Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
+transformer.setStageExceptionHandler( new StageExceptionHandler() { .... } );
+</programlisting>
+    </example>
+
+    <para>The Transformer interface above extends both Stage, Emitter and
+    Receiver, other than providing those interface methods as a single type,
+    it's other role is that of a marker interface that indicates the role of
+    the instance that implements it. We have several other marker interfaces
+    such as Expression and Action, both of which also extend Stage, Emitter
+    and Receiver. One of the stages should be responsible for setting a result
+    value on the PipelineContext. It is the role of the ResultHandler
+    interface, that the user implements that is responsible for executing on
+    these results or simply setting them an object that the user can retrieve
+    them from.</para>
+
+    <example>
+      <title>StageExceptionHandler</title>
+
+      <programlisting>ResultHandler resultHandler = new ResultHandlerImpl();
+pipeline.insert( factHandle, resultHandler );  
+System.out.println( resultHandler );
+...
+public class ResultHandlerImpl implements ResultHandler {
+    Object result;
+
+    public void handleResult(Object result) {
+        this.result = result;
+    }
+
+    public Object getResult() {
+        return this.result;
+    }
+}
+</programlisting>
+    </example>
+
+    <para>While the above example shows a simple handler that simply assigns
+    the result to a field that the user can access, it could do more complex
+    work like sending the object as a message.</para>
+
+    <para>Pipeline is provides an adapter to insert the payload and internally
+    create the correct PipelineContext. Two types of Pipelines are provided,
+    both requiring a different PipelineContext.
+    StatefulKnowledgeSessionPipeline and StatelessKnowledgeSessionPipeline.
+    Pipeline itself implements both Stage and Emitter, this means it's a Stage
+    in a pipeline and emits the payload to a receiver. It does not implement
+    Receiver itself, as it the start adapter for the pipeline. PipelineFactory
+    provides methods to create both of the two Pipeline.
+    StatefulKnowledgeSessionPipeline is constructed as below, with the
+    receiver set.</para>
+
+    <para>In general it easier to construct the pipelines in reverse, for
+    example the following one handles loading xml data from disk, transforming
+    it with xstream and then inserting the object:</para>
+
+    <example>
+      <title>Constructing a pipeline</title>
+
+      <programlisting>// Make the results, in this case the FactHandles, available to the user 
+Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
+
+// Insert the transformed object into the session associated with the PipelineContext
+KnowledgeRuntimeCommand insertStage = PipelineFactory.newStatefulKnowledgeSessionInsert();
+insertStage.setReceiver( executeResultHandler );
+       
+// Create the transformer instance and create the Transformer stage, where we are going from Xml to Pojo.
+XStream xstream = new XStream();
+Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
+transformer.setReceiver( insertStage );
+
+// Create the start adapter Pipeline for StatefulKnowledgeSessions
+Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline( ksession );
+pipeline.setReceiver( transformer );
+
+// Instantiate a simple result handler and load and insert the XML
+ResultHandlerImpl resultHandler = new ResultHandlerImpl();
+pipeline.insert( ResourceFactory.newClassPathResource( "path/facts.xml", getClass() ),
+                 resultHandler );
+</programlisting>
+    </example>
+
+    <para>While the above example is for loading a resource from disk it is
+    also possible to work from a running messaging service. Drools currently
+    provides a single Service for JMS, called JmsMessenger. Support for other
+    Services will be added later. Below shows part of a unit test which
+    illustrates part of the JmsMessenger in action:</para>
+
+    <example>
+      <title>Using JMS with Pipeline</title>
+
+      <programlisting>// as this is a service, it's more likely the results will be logged or sent as a return message 
+Action resultHandlerStage = PipelineFactory.newExecuteResultHandler();
+
+// Insert the transformed object into the session associated with the PipelineContext
+KnowledgeRuntimeCommand insertStage = PipelineFactory.newStatefulKnowledgeSessionInsert();
+insertStage.setReceiver( resultHandlerStage );
+
+// Create the transformer instance and create the Transformer stage, where we are going from Xml to Pojo. Jaxb needs an array of the available classes
+JAXBContext jaxbCtx = KnowledgeBuilderHelper.newJAXBContext( classNames,
+                                                              kbase );
+Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
+Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
+transformer.setReceiver( insertStage );
+
+// payloads for JMS arrive in a Message wrapper, we need to unwrap this object
+Action unwrapObjectStage = PipelineFactory.newJmsUnwrapMessageObject();
+unwrapObjectStage.setReceiver( transformer );
+
+// Create the start adapter Pipeline for StatefulKnowledgeSessions
+Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline( ksession );
+pipeline.setReceiver( unwrapObjectStage );
+
+// Services, like JmsMessenger take a ResultHandlerFactory implementation, this is because a result handler must be created for each incoming message.
+ResultHandleFactoryImpl factory = new ResultHandleFactoryImpl();
+Service messenger = PipelineFactory.newJmsMessenger( pipeline,
+                                                     props,
+                                                     destinationName,
+                                                     factory );
+messenger.start();
+</programlisting>
+    </example>
+
+    <section>
+      <title>Xstream Transformer</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>JAXB Transformer</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Smooks Transformer</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Smooks Transformer</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>JMS Messenger</title>
+
+      <para></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Commands and the CommandExecutor</title>
+
+    <para>Drools has the concept of stateful or stateless sessions, we've
+    already covered stateful. Where stateful is the standard working memory
+    that can be worked with iteratively over time. Stateless is a one off
+    execution of a working memory with a provided data set and optionally
+    returning some results with the session disposed at the end, prohibiting
+    further iterative interactions. You can think of stateless as treating a
+    rule engine like a function call with optional return results.</para>
+
+    <para>In Drools 4 we supported these two paradigms but the way the user
+    interacted with them was different. StatelessSession used an execute(...)
+    method which would insert a collection of objects as facts.
+    StatefulSession didn't have this method and insert used the more
+    traditional insert(...) method. The other issue was the StatelessSession
+    did not return any results, the user was expected to map globals
+    themselves to get results, and it wasn't possible to do anything else
+    other than insert objects, users could not start processes or execute
+    querries.</para>
+
+    <para>Drools 5.0 addresses all of these issues and more. The foundations
+    for this is the CommandExecutor interface, which both the stateful and
+    stateless interfaces extend creating consistency and
+    ExecutionResults:</para>
+
+    <figure>
+      <title>CommandExecutor</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/CommandExecutor.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>ExecutionResults</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/ExecutionResults.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The CommandFactory allows for commands to be executed on those
+    sessions, only only difference being the StatelessKnowledgeSession
+    executes fireAllRules() at the end before disposing the session. The
+    current supported commands are:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>FireAllRules</para>
+      </listitem>
+
+      <listitem>
+        <para>GetGlobal</para>
+      </listitem>
+
+      <listitem>
+        <para>SetGlobal</para>
+      </listitem>
+
+      <listitem>
+        <para>InsertObject</para>
+      </listitem>
+
+      <listitem>
+        <para>InsertElements</para>
+      </listitem>
+
+      <listitem>
+        <para>Query</para>
+      </listitem>
+
+      <listitem>
+        <para>StartProcess</para>
+      </listitem>
+
+      <listitem>
+        <para>BatchExecution</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>InsertObject will insert a single object, with an optional out
+    identifier. InsertElements will iterate an Iterable inserting each of the
+    elements. What this means is that StatelessKnowledgeSession are no longer
+    limited to just inserting objects, they can now start processes or execute
+    querries and in any order.</para>
+
+    <example>
+      <title>Insert Command</title>
+
+      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+ExecutionResults bresults = ksession.execute( CommandFactory.newInsert( new Cheese( "stilton" ), "stilton_id" ) );
+Stilton stilton = bresults.getValue( "stilton_id" );
+</programlisting>
+    </example>
+
+    <para>The execute method always returns an ExecutionResults instance,
+    which allows access to any command results if they specify an out
+    identifier such as the "stilton_id" above.</para>
+
+    <example>
+      <title>InsertElements Command</title>
+
+      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+Command cmd = CommandFactory.newInsertElements( Arrays.asList( Object[] { 
+                  new Cheese( "stilton" ),
+                  new Cheese( "brie" ),
+                  new Cheese( "cheddar" ),
+              });
+ExecutionResults bresults = ksession.execute( cmd );
+</programlisting>
+    </example>
+
+    <para>What you say, the method only allows for a single command? That's
+    Where the BatchExecution comes in, this is a composite command that takes
+    a list of commands and will iterate and execute each command in turn. This
+    means you can insert some objects, start a process, call fireAllRules and
+    execute a query all in a single execute(...) call - much more
+    powerful.</para>
+
+    <para>As mentioned the StatelessKnowledgeSession by default will execute
+    fireAllRules() automatically at the end. However the keen eyed reader
+    probably has already noticed the FireAllRules command and wondering how
+    that works with a StatelessKnowledgeSession. The FireAllRules command is
+    allowed and using it will disable the automatic execution at the end,
+    think of using it as a sort of manual override.</para>
+
+    <para>So this is great, we've brought consistency to how
+    StatelessKnowledgeSession and StatefullKnowledgeSession work and also
+    brought in support for more than just inserting objects. What about result
+    handling? Rather than using parameters, like my first attempt which always
+    bugged me, these commands support out identifiers. Any command that has an
+    out identifier set on it will add it's results to the returned
+    ExecutionResults instance. Let's look at a simple example to see how this
+    works.</para>
+
+    <example>
+      <title>BatchExecution Command</title>
+
+      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+
+List cmds = new ArrayList();        
+cmds.add( CommandFactory.newInsertObject( new Cheese( "stilton", 1), "stilton") );
+cmds.add( CommandFactory.newStartProcess( "process cheeses" ) );
+cmds.add( CommandFactory.newQuery( "cheeses" ) );
+ExecutionResults bresults = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
+Cheese stilton = ( Cheese ) bresults.getValue( "silton" );
+</programlisting>
+    </example>
+
+    <para>So in the above example you saw how multiple commands where executed
+    two of which populate the ExecutionResults. The query command defaults to
+    use the same identifier as the query name, but it can also be mapped to a
+    different identifier.</para>
+
+    <para>So now we have consistency across stateless and stateful sessions,
+    ability to execute a variety of commands and an elegant way to deal with
+    results. Does it get better than this? Absolutely we've built a custom
+    XStream marshaller that can be used with the Drools Pipeline to get XML
+    scripting, which is perfect for services. Here are two simple xml samples
+    for the BatchExecution and ExecutionResults.</para>
+
+    <example>
+      <title>Simple BatchExecution XML</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;insert out-identifier='outStilton'&gt;
+      &lt;org.drools.Cheese&gt;
+         &lt;type&gt;stilton&lt;/type&gt;
+         &lt;price&gt;25&lt;/price&gt;
+         &lt;oldPrice&gt;0&lt;/oldPrice&gt;
+      &lt;/org.drools.Cheese&gt;
+   &lt;/insert&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <example>
+      <title>Simple ExecutionResults XML</title>
+
+      <programlisting>&lt;execution-results&gt;
+   &lt;result identifier='outStilton'&gt;
+      &lt;org.drools.Cheese&gt;
+         &lt;type&gt;stilton&lt;/type&gt;
+         &lt;oldPrice&gt;0&lt;/oldPrice&gt;        
+         &lt;price&gt;30&lt;/price&gt;
+      &lt;/org.drools.Cheese&gt;
+   &lt;/result&gt;
+&lt;/execution-results&gt;
+</programlisting>
+    </example>
+
+    <para>I've mentioned the pipeline previously, it allows for a series of
+    stages to be used together to help with getting data into and out of
+    sessions. There is a stage that supports the CommandExecutor interface and
+    allows the pipeline to script either a stateful or stateless session. The
+    pipeline setup is trivial:</para>
+
+    <example>
+      <title>Pipeline use for CommandExecutor</title>
+
+      <programlisting>Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
+
+Action assignResult = PipelineFactory.newAssignObjectAsResult();
+assignResult.setReceiver( executeResultHandler );
+
+Transformer outTransformer = PipelineFactory.newXStreamToXmlTransformer( BatchExecutionHelper.newXStreamMarshaller() );
+outTransformer.setReceiver( assignResult );
+
+KnowledgeRuntimeCommand cmdExecution = PipelineFactory.newCommandExecutor();
+batchExecution.setReceiver( cmdExecution );
+
+Transformer inTransformer = PipelineFactory.newXStreamFromXmlTransformer( BatchExecutionHelper.newXStreamMarshaller() );
+inTransformer.setReceiver( batchExecution );
+
+Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline( ksession );
+pipeline.setReceiver( inTransformer );
+</programlisting>
+    </example>
+
+    <para>The key thing here to note is the use of the BatchExecutionHelper to
+    provide a specially configured XStream with custom converters for our
+    Commands and the new BatchExecutor stage.</para>
+
+    <para>Using the pipeline is very simple, you must provide your own
+    implementation of the ResultHandler, which is called if the pipeline
+    executes the ExecuteResultHandler stage.</para>
+
+    <figure>
+      <title>Pipeline ResultHandler</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/ResultHandler.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <example>
+      <title>Simple Pipeline ResultHandler</title>
+
+      <programlisting>public static class ResultHandlerImpl implements ResultHandler {
+    Object object;
+
+    public void handleResult(Object object) {
+       this.object = object;
+    }
+
+    public Object getObject() {
+        return this.object;
+    }
+}
+</programlisting>
+    </example>
+
+    <example>
+      <title>Using a Pipeline</title>
+
+      <programlisting>ResultHandler resultHandler = new ResultHandlerImpl();
+pipeline.insert( inXml, resultHandler );
+</programlisting>
+    </example>
+
+    <para>Earlier a BatchExecution was created with java to insert some
+    objects and execute a query. The XML representation to be used with the
+    pipeline for that example is shown below, for added fun I've added
+    parameters to the query.</para>
+
+    <example>
+      <title>BatchExecution Marshalled to XML</title>
+
+      <programlisting>&lt;batch-execution&gt;
+  &lt;insert out-identifier="stilton"&gt;
+    &lt;org.drools.Cheese&gt;
+      &lt;type&gt;stilton&lt;/type&gt;
+      &lt;price&gt;1&lt;/price&gt;
+    &lt;/org.drools.Cheese&gt;
+  &lt;/insert&gt;
+  &lt;query out-identifier='cheeses2' name='cheesesWithParams'&gt;
+    &lt;string&gt;stilton&lt;/string&gt;
+    &lt;string&gt;cheddar&lt;/string&gt;
+  &lt;/query&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>The CommandExecutor returns an ExecutionResults, this too is handled
+    by the pipeline code snippet. A similar output for the
+    &lt;batch-execution&gt; xml sample above would be:</para>
+
+    <example>
+      <title>ExecutionResults Marshalled to XML</title>
+
+      <programlisting>&lt;execution-results&gt;
+  &lt;result identifier="stilton"&gt;
+    &lt;org.drools.Cheese&gt;
+      &lt;type&gt;stilton&lt;/type&gt;
+      &lt;price&gt;2&lt;/price&gt;
+    &lt;/org.drools.Cheese&gt;
+  &lt;/result&gt;        
+  &lt;result identifier='cheeses2'&gt;
+    &lt;query-results&gt;
+      &lt;identifiers&gt;
+        &lt;identifier&gt;cheese&lt;/identifier&gt;
+      &lt;/identifiers&gt;
+      &lt;row&gt;
+        &lt;org.drools.Cheese&gt;
+          &lt;type&gt;cheddar&lt;/type&gt;
+          &lt;price&gt;2&lt;/price&gt;
+          &lt;oldPrice&gt;0&lt;/oldPrice&gt;
+        &lt;/org.drools.Cheese&gt;
+      &lt;/row&gt;
+      &lt;row&gt;
+        &lt;org.drools.Cheese&gt;
+          &lt;type&gt;cheddar&lt;/type&gt;
+          &lt;price&gt;1&lt;/price&gt;
+          &lt;oldPrice&gt;0&lt;/oldPrice&gt;
+        &lt;/org.drools.Cheese&gt;
+      &lt;/row&gt;
+    &lt;/query-results&gt;
+  &lt;/result&gt;
+&lt;/execution-results&gt;
+</programlisting>
+    </example>
+
+    <para>The BatchExecutionHelper provides a configured XStream instance to
+    support the marshalling of BatchExecutions, where the resulting xml can be
+    used as a message format, as shown above. Configured converters only exist
+    for the commands supported via the CommandFactory. The user may add other
+    converters for their user objects. This is very useful for scripting
+    stateless of stateful knowledge sessions, especially when services are
+    involed.</para>
+
+    <para>There is current no xsd for schema validation, however we will try
+    to outline the basic format here and the drools-transformer-xstream module
+    has an illustrative unit test in the XStreamBatchExecutionTest unit test.
+    The root element is &lt;batch-execution&gt; and it can contain zero or
+    more commands elements.</para>
+
+    <example>
+      <title>Root XML element</title>
+
+      <programlisting>&lt;batch-execution&gt;
+...
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>This contains a list of elements that represent commands, the
+    supported commands is limited to those Commands provided by the
+    CommandFactory. The most basic of these is the &lt;insert&gt; element,
+    which inserts objects. The contents of the insert element is the user
+    object, as dictated by XStream.</para>
+
+    <example>
+      <title>Insert with Out Identifier Command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;insert&gt;
+      ....
+   &lt;/insert&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>The insert element supports an 'out-identifier' attribute, this
+    means the insert object will also be returned as part of the
+    payload.</para>
+
+    <example>
+      <title>Insert with Out Identifier Command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;insert out-identifier='userVar'&gt;
+      ....
+   &lt;/insert&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>It's also possible to insert a collection of objects using the
+    &lt;insert-elements&gt; element, however this command does not support an
+    out-identifier. The org.domain.UserClass is just an illustrative user
+    object that xstream would serialise.</para>
+
+    <example>
+      <title>Insert Elements command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;insert-elements&gt;
+      &lt;org.domain.UserClass&gt;
+         ...
+      &lt;/org.domain.UserClass&gt;
+      &lt;org.domain.UserClass&gt;
+         ...
+      &lt;/org.domain.UserClass&gt;
+      &lt;org.domain.UserClass&gt;
+         ...
+      &lt;/org.domain.UserClass&gt;
+   &lt;/insert-elements&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>Next there is the &lt;set-global&gt; element, which sets a global
+    for the session.</para>
+
+    <example>
+      <title>Insert Elements command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;set-global identifier='userVar'&gt;
+      &lt;org.domain.UserClass&gt;
+         ...
+      &lt;/org.domain.UserClass&gt;
+   &lt;/set-global&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>&lt;set-global&gt; also supports two other optional attributes 'out'
+    and 'out-identifier'. 'out' is a boolean and when set the global will be
+    added to the &lt;batch-execution-results&amp;g; payload using the name
+    from the 'identifier' attribute. 'out-identifier' works like 'out' but
+    additionally allows you to override the identifier used in the
+    &lt;batch-execution-results&amp;g; payload.</para>
+
+    <example>
+      <title>Set Global Command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;set-global identifier='userVar1' out='true'&gt;
+      &lt;org.domain.UserClass&gt;
+         ...
+      &lt;/org.domain.UserClass&gt;
+   &lt;/set-global&gt;
+   &lt;set-global identifier='userVar2' out-identifier='alternativeUserVar2'&gt;
+      &lt;org.domain.UserClass&gt;
+         ...
+      &lt;/org.domain.UserClass&gt;
+   &lt;/set-global&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>There is also a &lt;get-global&gt; element, which has no contents
+    but does support an 'out-identifier' attribute, there is no need for an
+    'out' attribute as we assume that a &lt;get-global&gt; is always an
+    'out'.</para>
+
+    <example>
+      <title>Get Global Command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;get-global identifier='userVar1' /&gt;
+   &lt;get-global identifier='userVar2' out-identifier='alternativeUserVar2'/&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>While the 'out' attribute is useful in returning specific instances
+    as a result payload, we often wish to run actual querries. Both parameter
+    and parameterless querries are supported. The 'name' attribute is the name
+    of the query to be called, and the 'out-identifier' is the identifier to
+    be used for the query results in the &lt;execution-results&gt;
+    payload.</para>
+
+    <example>
+      <title>Query Command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;query out-identifier='cheeses' name='cheeses'/&gt;
+   &lt;query out-identifier='cheeses2' name='cheesesWithParams'&gt;
+      &lt;string&gt;stilton&lt;/string&gt;
+      &lt;string&gt;cheddar&lt;/string&gt;
+   &lt;/query&gt;
+&lt;/batch-execution&gt;
+</programlisting>
+    </example>
+
+    <para>Drools is no longer just about rules, os the &lt;start-process&gt;
+    command is also supported and accepts optional parameters. Other process
+    related methods will be added later, like interacting with work
+    items.</para>
+
+    <example>
+      <title>Start Process Command</title>
+
+      <programlisting>&lt;batch-execution&gt;
+   &lt;startProcess processId='org.drools.actions'&gt;
+      &lt;parameter identifier='person'&gt;
+         &lt;org.drools.TestVariable&gt;
+            &lt;name&gt;John Doe&lt;/name&gt;
+          &lt;/org.drools.TestVariable&gt;
+       &lt;/parameter&gt;
+   &lt;/startProcess&gt;
+&lt;/batch-execution
+</programlisting>
+    </example>
+
+    <para>Support for more commands will be added over time.</para>
+  </section>
+
+  <section>
+    <title>Marshalling</title>
+
+    <para>The MarshallerFactory is used to marshal and unmarshal
+    StatefulKnowledgeSessions.</para>
+
+    <figure>
+      <title>MarshallerFactory</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/MarshallerFactory.png"
+                     format=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>At the simplest the MarshallerFactory can be used as follows:</para>
+
+    <example>
+      <title>Simple Marshaller Example</title>
+
+      <programlisting>// ksession is the StatefulKnowledgeSession
+// kbase is the KnowledgeBase
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+Marshaller marshaller = MarshallerFactory.newMarshaller( kbase );
+marshaller.marshall( baos, ksession );
+baos.close();
+</programlisting>
+    </example>
+
+    <para>However with marshalling you need more flexibility when dealing with
+    referenced user data. To achieve this we have the
+    ObjectMarshallingStrategy interface. Two implementations are provided, but
+    the user can implement their own. The two supplied are
+    IdentityMarshallingStrategy and SerializeMarshallingStrategy.
+    SerializeMarshallingStrategy is the default, as used in the example above
+    and it just calls the Serializable or Externalizable methods on a user
+    instance. IdentityMarshallingStrategy instead creates an int id for each
+    user object and stores them in a Map the id is written to the stream. When
+    unmarshalling it simply looks to the IdentityMarshallingStrategy map to
+    retrieve the instance. This means that if you use the
+    IdentityMarshallingStrategy it's stateful for the life of the Marshaller
+    instance and will create ids and keep references to all objects that it
+    attempts to marshal. Here is he code to use a
+    IdentityMarshallingStrategy.</para>
+
+    <example>
+      <title>IdentityMarshallingStrategy</title>
+
+      <programlisting>ByteArrayOutputStream baos = new ByteArrayOutputStream();
+Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[] { MarshallerFactory.newIdentityMarshallingStrategy() } );
+marshaller.marshall( baos, ksession );
+baos.close();
+</programlisting>
+    </example>
+
+    <para>For added flexability we can't assume that a single strategy is
+    suitable for this we have added the ObjectMarshallingStrategyAcceptor
+    interface that each ObjectMarshallingStrategy has. The Marshaller has a
+    chain of strategies and when it attempts to read or write a user object it
+    iterates the strategies asking if they accept responsability for
+    marshalling the user object. One one implementation is provided the
+    ClassFilterAcceptor. This allows strings and wild cards to be used to
+    match class names. The default is "*.*", so in the above the
+    IdentityMarshallingStrategy is used which has a default "*.*"
+    acceptor.</para>
+
+    <para>But lets say we want to serialise all classes except for one given
+    package, where we will use identity lookup, we could do the
+    following:</para>
+
+    <example>
+      <title>IdentityMarshallingStrategy with Acceptor</title>
+
+      <programlisting>ByteArrayOutputStream baos = new ByteArrayOutputStream();
+ObjectMarshallingStrategyAcceptor identityAceceptor = MarshallerFactory.newClassFilterAcceptor( new String[] { "org.domain.pkg1.*" } );
+ObjectMarshallingStrategy identityStratetgy = MarshallerFactory.newIdentityMarshallingStrategy( identityAceceptor );
+Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[] { identityStratetgy, MarshallerFactory.newSerializeMarshallingStrategy() } );
+marshaller.marshall( baos, ksession );
+baos.close();
+</programlisting>
+    </example>
+
+    <para>Note that the acceptance checking order is in the natural order of
+    the supplied array.</para>
+  </section>
+
+  <section>
+    <title>Persistence and Transactions</title>
+
+    <para>Long term out of the box persistence with JPA is possible with
+    Drools. You will need to have JTA installed, for development purposes we
+    recommend Bitronix as it's simple to setup and works embedded, but for
+    production use JBoss Transactions is recommended.</para>
+
+    <example>
+      <title>Simple exapmle using transactions</title>
+
+      <programlisting>Environment env = KnowledgeBaseFactory.newEnvironment();
+env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, Persistence.createEntityManagerFactory( "emf-name" ) );
+env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
+          
+StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env ); // KnowledgeSessionConfiguration may be null, and a default will be used
+int sessionId = ksession.getId();
+ 
+UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+ut.begin();
+ksession.insert( data1 );
+ksession.insert( data2 );
+ksession.startProcess( "process1" );
+ut.commit();
+</programlisting>
+    </example>
+
+    <para>To use a JPA the Environment must be set with both the
+    EntityManagerFactory and the TransactionManager. If rollback occurs the
+    ksession state is also rolled back, so you can continue to use it after a
+    rollback. To load a previous persisted StatefulKnowledgeSession you'll
+    need the id, as shown below:</para>
+
+    <example>
+      <title>Loading a StatefulKnowledgeSession</title>
+
+      <programlisting>StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
+</programlisting>
+    </example>
+
+    <para>To enable persistence the following classes must be added to your
+    persistence.xml, as in the example below:</para>
+
+    <example>
+      <title>Configuring JPA</title>
+
+      <programlisting>&lt;persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA"&gt;
+   &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
+   &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;       
+   &lt;class&gt;org.drools.persistence.session.SessionInfo&lt;/class&gt;
+   &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
+   &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceEventInfo&lt;/class&gt;
+   &lt;class&gt;org.drools.persistence.processinstance.WorkItemInfo&lt;/class&gt;
+   &lt;properties&gt;
+         &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;            
+         &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
+         &lt;property name="hibernate.hbm2ddl.auto" value="update" /&gt;
+         &lt;property name="hibernate.show_sql" value="true" /&gt;
+         &lt;property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" /&gt;
+   &lt;/properties&gt;
+&lt;/persistence-unit&gt;
+</programlisting>
+    </example>
+
+    <para>The jdbc JTA data source would need to be previously bound, Bitronix
+    provides a number of ways of doing this and it's docs shoud be contacted
+    for more details, however for quick start help here is the programmatic
+    approach:</para>
+
+    <example>
+      <title>Configuring JTA DataSource</title>
+
+      <programlisting>PoolingDataSource ds = new PoolingDataSource();
+ds.setUniqueName( "jdbc/BitronixJTADataSource" );
+ds.setClassName( "org.h2.jdbcx.JdbcDataSource" );
+ds.setMaxPoolSize( 3 );
+ds.setAllowLocalTransactions( true );
+ds.getDriverProperties().put( "user", "sa" );
+ds.getDriverProperties().put( "password", "sasa" );
+ds.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
+ds.init();
+</programlisting>
+    </example>
+
+    <para>Bitronix also provides a simple embedded JNDI service, ideal for
+    testing, to use it add a jndi.properties file to your META-INF and add the
+    following line to it:</para>
+
+    <example>
+      <title>JNDI properties</title>
+
+      <programlisting>java.naming.factory.initial=bitronix.tm.jndi.BitronixInitialContextFactory
+</programlisting>
+    </example>
+  </section>
+</section>

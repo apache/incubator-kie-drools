@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+
+   <title>More on building and deploying</title>
+
+
+    <section>
+      <title>KnowledgeBase by Configuration using Changesets</title>
+
+      <para>The programmatic api has been used so far to build a
+      KnowledgeBase, quite often it's more desirable to this via
+      configuration. To facilitate this drools supports the changeset.xml
+      which contains a list of resources, it's recursive so it can actually
+      also point to other changeset.xml. Currently the changeset has a single
+      "add" element, support for remove and modify will be added in the future
+      for more powerful incremental changes over time. There is currently no
+      XSD for the xml, we hope to add one soon, so a few examples will be
+      shown to give the jist of things. A resource approach is used that uses
+      a prefix of the used protocol, it supports all the protocolols provided
+      by java.net.URL, such as file" and "http", as well as an additional
+      "classpath". Currently the type attribute must always be specified for a
+      resource, it is not inferred from the file name extension. Here is a
+      simple example that points to a http location for some rules.</para>
+
+      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+   &lt;add&gt;
+       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+
+      <para>To use the above xml the code is almost identical as before,
+      except we change the ResourceType to CHANGE_SET.</para>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newClasspathResource( "myChangeSet.xml", getClass() ),
+              ResourceType.CHANGE_SET );
+if ( kbuilder.hasErrors() ) {
+    System.err.println( builder.getErrors().toString() );
+}  </programlisting>
+
+      <para>Change sets can include any number of resources and even supports
+      additional configuration information, which currently is only needed for
+      decision tables. Below the example is expanded to load the rules from a
+      http url location and an excel decision table from the classpath.</para>
+
+      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+  &lt;add&gt;
+       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
+       &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
+           &lt;decisiontable-conf input-type="XLS" worksheet-name="Tables_2" /&gt;
+       &lt;/resource&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+
+      <para>It is also possible to specify a directory, where the contents of
+      that directory will be added, it is expected that all the contents are
+      of the type specified, type is not yet inferred from file name
+      extensions.</para>
+
+      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+  &lt;add&gt;
+       &lt;resource source='file://myfolder/' type='DRL' /&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+    </section>
+
+    <section>
+      <title>Knowledge Agent</title>
+
+      <para>The KnowlegeAgent provides automatic loading, caching and
+      re-loading, of resources and is configured from a properties files. The
+      KnowledgeAgent can update or rebuild this KnowlegeBase as the resources
+      it uses are changed. The strategy for this is determined by the
+      configuration given to the factory, but it is typically pull based using
+      regular polling. We hope to add push based updates and rebuilds in
+      future versions.</para>
+
+      <programlisting>KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
+KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
+
+      <para>The KnowledgeAgent will continously scan all the added resources,
+      using a default polling of 60s, and if their last modified date is
+      updated it will rebuild the cached KnowledgeBase using the new
+      resources. Note the previous KnowledgeBase reference will still exist
+      and you'll have to call getKnowledgeBase() to accessly the newly built
+      KnowledgeBase. If a directory is specified as part of the change set,
+      the entire contents of that directory will be scanned for
+      changes.</para>
+    </section>         
+    
+</section>
