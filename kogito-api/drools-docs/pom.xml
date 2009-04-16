@@ -186,7 +186,7 @@
             -->
           </imageResource>
           <formats>
-            <format>
+            <!--format>
               <formatName>pdf</formatName>
               <stylesheetResource>classpath:/org/jboss/pdf.xsl</stylesheetResource>
               <!--
@@ -194,7 +194,7 @@
               -->
               <finalName>${artifactId}.pdf</finalName>
               <!-- profilingTypeName>two_pass</profilingTypeName -->
-            </format>
+            </format-->
             <format>
               <formatName>html_single</formatName>
               <stylesheetResource>classpath:/org/jboss/xhtml-single.xsl</stylesheetResource>
