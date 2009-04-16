@@ -8,16 +8,32 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Type Declaration</title>
 
-  <note>
-    <para><replaceable>(updated to Drools 5.0)</replaceable></para>
-  </note>
+  <figure>
+    <title>meta_data</title>
 
-  <warning>
-    <para>FIXME: add syntax diagram for declare</para>
-  </warning>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Rule_Language/meta_data.png"
+                   format="PNG" scalefit="1"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
 
-  <para>Type declarations have two main goals in the rules engine: to allow the
-  declaration of new types, and to allow the declaration of metadata for
+  <figure>
+    <title>type_declaration</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Rule_Language/type_declaration.png"
+                   format="PNG" scalefit="1"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Type declarations have two main goals in the rules engine: to allow
+  the declaration of new types, and to allow the declaration of metadata for
   types.</para>
 
   <itemizedlist>
@@ -25,8 +41,8 @@
       <para><emphasis role="bold">Declaring new types:</emphasis> Drools works
       out of the box with plain POJOs as facts. Although, sometimes the users
       may want to define the model directly to the rules engine, without
-      worrying to create their models in a lower level language like Java.
-      At other times, there is a domain model already built, but eventually the
+      worrying to create their models in a lower level language like Java. At
+      other times, there is a domain model already built, but eventually the
       user wants or needs to complement this model with additional entities
       that are used mainly during the reasoning process.</para>
     </listitem>
@@ -101,9 +117,10 @@
       </example></para>
 
     <para>When you declare a new fact type, Drools will, at compile time,
-      generate bytecode implementing a POJO that represents the fact type. The generated Java
-    class will be a one-to-one Java Bean mapping of the type definition. So,
-    for the previous example, the generated Java class would be:</para>
+    generate bytecode implementing a POJO that represents the fact type. The
+    generated Java class will be a one-to-one Java Bean mapping of the type
+    definition. So, for the previous example, the generated Java class would
+    be:</para>
 
     <para><example>
         <title>generated Java class for the previous Person fact type
@@ -202,7 +219,8 @@
     declaration.</para>
 
     <para>For instance, if there is a class org.drools.examples.Person, and
-    one wants to declare metadata for it, just write the following code:</para>
+    one wants to declare metadata for it, just write the following
+    code:</para>
 
     <example>
       <title>declaring metadata for an existing type</title>
@@ -270,7 +288,7 @@
     <para>Declared types, as discussed previously, are generated at knowledge
     base compilation time, i.e., the application will only have access to them
     at application run time. As so, these classes are not available for direct
-    reference from the application. </para>
+    reference from the application.</para>
 
     <para>Drools then provides an interface through which the users can handle
     declared types from the application code:
@@ -313,7 +331,7 @@ int age = personType.get( bob, "age" );
 
     <para>The API also includes other helpful methods, like setting all the
     attributes at once, reading values from a Map, or read all attributes at
-    once, populating a Map. </para>
+    once, populating a Map.</para>
 
     <para>Although the API is similar to Java reflection (yet much simpler to
     use), it does not use reflection underneath, relying in much more
