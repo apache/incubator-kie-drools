@@ -7,7 +7,7 @@
 	<info>
 		<title>Drools Expert User Guide</title>
 
-		<versioninfo>5.0.0</infoversion>
+		<releaseinfo>5.0.0</releaseinfo>
 	</info>
     <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
 	<xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />    
