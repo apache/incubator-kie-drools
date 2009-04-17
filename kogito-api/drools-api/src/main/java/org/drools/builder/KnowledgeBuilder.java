@@ -71,7 +71,8 @@ import org.drools.io.Resource;
  * </pre>     
  * 
  * <p>
- * The KnowledgeBuilder can also be built from configuration using the xml change-set format and the ResourceType.ChangeSet value. While change-set
+ * The KnowledgeBuilder can also be built from configuration using the xml change-set format and the ResourceType.ChangeSet value. 
+ * There is no .xsd schema yet for this XML, but hte format is very simple. While change-set
  * supports add, remove, modify as elements. KnowledgeBuilder will only process add. If the resource element provided points to a directory, all
  * files found in that directory will be added. Currently the knowledge type is not derived from the .ext extension of the file and must be explicitely
  * set in the XML for the resource. It is expected that all resources in the directory, when the directory is a given resource, are all of the specified
@@ -80,7 +81,7 @@ import org.drools.io.Resource;
  * <pre>
  * &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
  *             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
- *             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+ *             xs:schemaLocation='change-set drools-change-set-5.0.xsd' &gt;
  *  &lt;add&gt;
  *       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
  *       &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
@@ -92,9 +93,9 @@ import org.drools.io.Resource;
  * </pre>
  * 
  * <pre>
- * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
- * kbuilder.add( ResourceFactory.newUrlResource( url ),
- *               ResourceType.ChangeSet );
+ * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
+ *                                                                  kaconf );
+ * kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
  * </pre>
  * 
  */
