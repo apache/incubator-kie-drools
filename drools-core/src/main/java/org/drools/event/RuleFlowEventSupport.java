@@ -16,14 +16,13 @@ package org.drools.event;
  * limitations under the License.
  */
 
+import java.util.Iterator;
+
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.spi.RuleFlowGroup;
-
-import java.util.Iterator;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -59,7 +58,7 @@ public class RuleFlowEventSupport extends AbstractEventSupport<RuleFlowEventList
         }
     }
 
-    public void fireBeforeRuleFlowProcessCompleted(final WorkflowProcessInstance instance,
+    public void fireBeforeRuleFlowProcessCompleted(final ProcessInstance instance,
                                                    final InternalWorkingMemory workingMemory) {
         final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
@@ -72,7 +71,7 @@ public class RuleFlowEventSupport extends AbstractEventSupport<RuleFlowEventList
         }
     }
 
-    public void fireAfterRuleFlowProcessCompleted(final WorkflowProcessInstance instance,
+    public void fireAfterRuleFlowProcessCompleted(final ProcessInstance instance,
                                                   final InternalWorkingMemory workingMemory) {
         final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
