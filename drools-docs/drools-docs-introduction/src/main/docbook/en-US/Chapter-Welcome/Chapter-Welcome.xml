@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Welcome</title>
+
+  <screenshot>
+    <screeninfo>Setup TortoiseSVN checkout</screeninfo>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Welcome/drools_logo.png" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
+
+  <para>I've always stated that end business users struggle understanding the
+  differences between rules and processes, and more recently rules and event
+  processing. For them they have this problem in their mind and they just want
+  to model it using some software. The traditional way of using two vendor
+  offerings forces the business user to work with a process oriented or rules
+  oriented approach which just gets in the way, often with great confusion
+  over which tool they should be using to model which bit.</para>
+
+  <para>PegaSystems and Microsoft have done a great job of showing that the
+  two can be combined and a behavioural modelling approach can be used. This
+  allows the business user to work more naturally where the full range of
+  approaches is available to them, without the tools getting in the way. From
+  being process oriented to rule oriented or shades of grey in the middle -
+  whatever suites the problem being modelled at that time.</para>
+
+  <para>Drools 5.0 takes this one step further by not only adding workflow
+  with Drools Flow but also adding event processing with Drools Fusion,
+  creating a more holistic approach to software development. Where the term
+  holistic is used for emphasizing the importance of the whole and the
+  interdependence of its parts. Drools 5.0 is the launch of what we call the
+  Business Logic integration Platform (BLiP) .</para>
+
+  <para>Drools 5.0 is now split into 4 modules, each with their own manual -
+  Guvnor, Expert, Fusion and Flow. Guvnor is our web based governance system,
+  traditionally referred to in the rules world as a BRMS. We decided to move
+  away from the BRMS term to a play on governance as it's not rules specific.
+  Expert is the traditional rules engine. Fusion is the event processing side,
+  it's a play on data/sensor fusion terminology. Finally there is Flow which
+  is our workflow module.</para>
+</chapter>

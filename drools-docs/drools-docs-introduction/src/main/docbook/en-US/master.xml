@@ -8,7 +8,7 @@
 
 		<releaseinfo>5.0.0</releaseinfo>
 
-		<author>
+		<!--author>
 			<personname>
 				<firstname>Mark</firstname>
 				<surname>Proctor</surname>
@@ -27,7 +27,7 @@
 				<firstname>Edson</firstname>
 				<surname>Tirelli</surname>
 			</personname>
-		</author>
+		</author-->
 	</info>
 
 	<!--
@@ -37,6 +37,8 @@
 		</imageobject> </mediaobject> <para /> </preface>
 	-->
 
+    <xi:include href="Chapter-Welcome/Chapter-Welcome.xml" />
+    
 	<xi:include href="Chapter-Release_Notes/Chapter-ReleaseNotes.xml" />
 
 	<xi:include href="Chapter-Install/Chapter-Install.xml" />

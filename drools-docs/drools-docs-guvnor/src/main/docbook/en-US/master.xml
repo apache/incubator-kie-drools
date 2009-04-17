@@ -13,7 +13,7 @@
 
     <releaseinfo>5.0.0</releaseinfo>
 
-    <author>
+    <!--author>
       <firstname>Michael</firstname>
       <surname>Neale</surname>
     </author>
@@ -21,7 +21,7 @@
     <author>
       <firstname>Fernando</firstname>
       <surname>Meyer</surname>
-    </author>
+    </author-->
   </info>
 
 <!--
