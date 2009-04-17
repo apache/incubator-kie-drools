@@ -13,7 +13,7 @@
 
     <releaseinfo>5.0.0</releaseinfo>
 
-    <author>
+    <!--author>
       <firstname>Kris</firstname>
       <surname>Verlaenen</surname>
     </author>
@@ -31,7 +31,7 @@
     <author>
       <firstname>Edson</firstname>
       <surname>Tirelli</surname>
-    </author>
+    </author-->
     
   </info>
 
