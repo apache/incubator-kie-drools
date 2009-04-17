@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0" xml:base="./" xmlns="http://docbook.org/ns/docbook"
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
   xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
@@ -14,7 +14,7 @@
     years. Very briefly speaking, in Drools decision tables are a way to generate rules driven from
     the data entered into a spreadsheet. All the usual features of a spreadsheet for data capture
     and manipulation can be taken advantage of.</para>
-  <section>
+  <section  >
     <title>When to use Decision tables</title>
     <para>Decision tables my want to be considered as a course of action if rules exist that can be
       expressed as rule templates + data. In each row of a decision table, data is collected that is
@@ -29,7 +29,7 @@
     <para>Decision tables also provide a degree of insulation from the underlying object
       model.</para>
   </section>
-  <section>
+  <section >
     <title>Overview</title>
     <para>Here are some examples of real world decision tables (slightly edited to protect the
       innocent).</para>
@@ -86,7 +86,7 @@
       </mediaobject>
     </screenshot>
   </section>
-  <section>
+  <section >
     <title>How decision tables work</title>
     <para>The key point to keep in mind is that in a decision table, each row is a rule, and each
       column in that row is either a condition or action for that rule.</para>
@@ -170,7 +170,7 @@
         could be multiple constraints on one "column".</para>
     </note>
   </section>
-  <section>
+  <section > 
     <title>Keywords and syntax</title>
     <section>
       <title>Syntax of templates</title>
@@ -239,7 +239,7 @@
         leave the cell above blank, the same applies to condition columns). With this style anything
         can be placed in the consequence (not just one method call).</para>
     </section>
-    <section>
+    <section >
       <title>Keywords</title>
       <para>The following table describes the keywords that are pertinent to the rule table
         structure.</para>
@@ -386,7 +386,7 @@
       </screenshot>
     </section>
   </section>
-  <section>
+  <section >
     <title>Creating and integrating Spreadsheet based Decision Tables</title>
     <para>The API to use spreadsheet based decision tables is in the drools-decisiontables module.
       There is really only one class to look at: SpreadsheetCompiler. This class will take
@@ -405,7 +405,7 @@
         </mediaobject>
       </screenshot></para>
   </section>
-  <section>
+  <section >
     <title>Managing business rules in decision tables.</title>
     <section>
       <title>Workflow and collaboration.</title>
@@ -445,7 +445,7 @@
         </listitem>
       </orderedlist>
     </section>
-    <section>
+    <section >
       <title>Using spreadsheet features</title>
       <para>Features of applications like Excel can be used to provide assistance in entering data
         into spreadsheets, such as validating fields. Lists that are stored in other worksheets can
@@ -464,7 +464,7 @@
         http://www.drools.org/Business+rules+in+decision+tables+explained</para>
     </section>
   </section>
-  <section>
+  <section >
     <title>Rule Templates</title>
     <para>Related to decision tables (but not necessarily requiring a spreadsheet) are "Rule
       Templates" (in the drools-templates module). These use any tablular data source as a source of
