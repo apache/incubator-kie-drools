@@ -11,7 +11,7 @@
   <info>
     <title>Drools Guvnor</title>
 
-    <releaseinfo>5.0.0.SNAPSHOT</releaseinfo>
+    <versioninfo>5.0.0</infoversion>
 
     <author>
       <firstname>Michael</firstname>
