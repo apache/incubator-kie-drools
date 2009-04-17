@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>drools</artifactId>
 		<groupId>org.drools</groupId>
-		<version>5.0.0</version>
+		<version>5.0.1.SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>drools-compiler</artifactId>
