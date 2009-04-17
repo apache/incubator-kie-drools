@@ -83,7 +83,11 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
 
     public void setState(final int state) {
-        this.state = state;
+        internalSetState(state);
+    }
+    
+    public void internalSetState(final int state) {
+    	this.state = state;
     }
 
     public int getState() {
