@@ -81,13 +81,13 @@ end
 
 rule "Gross Total"
     agenda-group "checkout"
-    dialect "mvel"
+    dialect "java"
 	when
 	    $order : Order( grossTotal == -1)
 		Number( total : doubleValue ) from accumulate( Purchase( $price : product.price ),
    			        			   				 	   sum( $price ) )
 	then	
-	    modify( $order ) { grossTotal = total };
+	    modify( $order ) { setGrossTotal( total ) };
 	    textArea.append( "\ngross total=" + total + "\n" );
 end
 
