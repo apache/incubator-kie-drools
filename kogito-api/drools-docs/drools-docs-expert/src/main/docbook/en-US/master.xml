@@ -15,6 +15,7 @@
     <xi:include href="Chapter-Language_Reference/Chapter-Language_Reference.xml" />    
     <xi:include href="Chapter-Authoring/Chapter-Authoring.xml" />        
     <xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />      
+    <xi:include href="Chapter-IDE/Chapter-QuickStart.xml" /> 
     <xi:include href="Chapter-Examples/Chapter-Examples.xml" />   
 	<!--index /-->
 </book>
