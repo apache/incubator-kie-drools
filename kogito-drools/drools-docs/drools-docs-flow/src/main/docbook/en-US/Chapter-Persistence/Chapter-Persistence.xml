@@ -267,7 +267,7 @@ ut.commit();</programlisting>
     <para>Guvnor is a sub-project that provides exactly that: it consists of a repository
     for storing different kinds of knowledge (not only process definitions but also rules, object
     models, etc.), allows easy retrieval of this knowledge (for example using WebDAV or by using
-    a rule agent that automatically downloads the information from Guvnor when creating a knowledge
+    a knowledge agent that automatically downloads the information from Guvnor when creating a knowledge
     base), and provides a web application that allows business users to view and possibly update
     the information in the knowledge repository.  Check out the Drools Guvnor documentation for
     more information on how to do this.</para>
