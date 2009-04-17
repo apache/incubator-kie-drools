@@ -8,7 +8,7 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Authoring</title>
 
-  <section xml:base="../../">
+  <section xml:base="../">
     <title>Decision tables in spreadsheets</title>
 
     <para>Decision tables are a "precise yet compact" (ref. Wikipedia) way of
