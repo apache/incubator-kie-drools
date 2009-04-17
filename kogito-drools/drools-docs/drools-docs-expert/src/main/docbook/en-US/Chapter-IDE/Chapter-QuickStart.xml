@@ -2,7 +2,7 @@
 <chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
-  xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook" xml:base="./">
+  xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
   <title>The (Eclipse based) Rule IDE</title>
 
   <para>
@@ -27,14 +27,14 @@
   <figure>
     <title>Overview</title>
 
-    <mediaobject>
+    <mediaobject xml:base="../">
       <imageobject>
         <imagedata align="center" fileref="images/Chapter-IDE/all.jpg" format="JPG" scalefit="1" />
       </imageobject>
     </mediaobject>
   </figure>
 
-  <section>
+  <section xml:base="../">
     <title>Features outline</title>
 
     <para>The rules IDE has the following features</para>
@@ -110,7 +110,7 @@
     and features. All of the power of Eclipse is available.</para>
   </section>
 
-  <section>
+  <section xml:base="../">
     <title>Creating a Rule project</title>
 
     <para>The aim of the new project wizard is to setup an executable scaffold
@@ -161,7 +161,7 @@
     rules you will need to run them in a unit test of course.</para>
   </section>
 
-  <section>
+  <section xml:base="../">
     <title>Creating a new rule and wizards</title>
 
     <para>You can create a rule simple as an empty text ".drl" file, or use
@@ -202,7 +202,7 @@
     you don't want !</para>
   </section>
 
-  <section>
+  <section xml:base="../">
     <title>Textual rule editor</title>
 
     <para>The rule editor is where rule managers and developers will be
@@ -252,7 +252,7 @@
     </figure>
   </section>
 
-<section>
+<section xml:base="../">
   <title>Guided editor (rule GUI)</title>
   <para>
     A new feature of the Drools IDE (since version 4) is the guided editor for rules. This is similar to the web based editor that is available in the BRMS. This allows you to build rules in a GUI driven fashion, based on your object model. 
@@ -284,7 +284,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
 //then pass the outputDRL to the PackageBuilder as normal</programlisting>
 </section>
 
-  <section>
+  <section xml:base="../">
     <title>Views</title>
 
     <para>When debugging an application using a Drools engine, these views
@@ -496,7 +496,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
     </section>
   </section>
 
-  <section>
+  <section xml:base="../">
     <title>Domain Specific Languages</title>
 
     <para>Domain Specific Languages (dsl) allow you to create a language that
@@ -578,7 +578,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
     </section>
   </section>
 
-  <section>
+  <section xml:base="../">
     <title>The Rete View</title>
 
     <para>The Rete Tree View shows you the current Rete Network for your drl
@@ -615,7 +615,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
     on "Generate Rete View".</para>
   </section>
 
-  <section>
+  <section xml:base="../">
     <title>Large drl files</title>
 
     <para>Depending on the JDK you use, it may be necessary to increase the
@@ -640,7 +640,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
   </section>
 
 
-    <section>
+    <section xml:base="../">
 
       <title>Debugging rules</title>
 
@@ -661,7 +661,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       continue, etc.).  You can also use the debug views to inspect the content of the
       working memory and agenda.</para>
 
-<section>
+<section >
      <title>Creating breakpoints</title>
      <para>You can add/remove rule breakpoints in drl files in two ways, similar to adding
      breakpoints to Java files:</para>
