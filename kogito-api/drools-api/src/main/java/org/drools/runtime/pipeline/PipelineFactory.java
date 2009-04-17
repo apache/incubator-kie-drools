@@ -509,8 +509,8 @@ public class PipelineFactory {
      * </p>
      * 
      * <pre>
-     * XStream xstream = new XStream();
-     * Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
+     * Marshaller marshaller = jaxbCtx.createMarshaller();
+     * Transformer transformer = PipelineFactory.newJaxbToXmlTransformer( marshaller );
      * transformer.setReceiver( receiver );
      * </pre>
      * 

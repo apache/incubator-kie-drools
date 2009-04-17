@@ -636,7 +636,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
     <para>The KnowledgeRuntimeLogger uses the comprehensive event system in
     Drools to create an audit log that can be used log the execution of drools
-    for later inspection, in tools such as the Eclipse audit viewer. </para>
+    for later inspection, in tools such as the Eclipse audit viewer.</para>
 
     <figure>
       <title>KnowledgeRuntimeLoggerFactory</title>
@@ -706,7 +706,7 @@ StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 ksession.execute( collection );     </programlisting>
     </example>
 
-    <para>If this was done as a single Command it would be as follows: </para>
+    <para>If this was done as a single Command it would be as follows:</para>
 
     <example>
       <title>Simple StatelessKnowledgeSession execution with InsertElements
@@ -748,7 +748,7 @@ ksession.execute( collection ); // this will now execute and will be able to res
     </example>
 
     <para>The third way is execution scopped globals using the CommandExecutor
-    and SetGlobal Commands: </para>
+    and SetGlobal Commands:</para>
 
     <example>
       <title>Execute scoped global</title>
@@ -1064,30 +1064,150 @@ messenger.start();
       <title>Xstream Transformer</title>
 
       <para></para>
+
+      <example>
+        <title>XStream FromXML transformer stage</title>
+
+        <programlisting>XStream xstream = new XStream();
+Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
+transformer.setReceiver( nextStage );</programlisting>
+      </example>
+
+      <example>
+        <title>XStream ToXML transformer stage</title>
+
+        <programlisting>XStream xstream = new XStream();
+Transformer transformer = PipelineFactory.newXStreamToXmlTransformer( xstream );
+transformer.setReceiver( receiver );</programlisting>
+      </example>
     </section>
 
     <section>
       <title>JAXB Transformer</title>
 
       <para></para>
+
+      <example>
+        <title>JAXB XSD Generation into the KnowlegeBuilder</title>
+
+        <programlisting>Options xjcOpts = new Options();
+xjcOpts.setSchemaLanguage( Language.XMLSCHEMA );
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+String[] classNames = KnowledgeBuilderHelper.addXsdModel( ResourceFactory.newClassPathResource( "order.xsd",
+                                                                                                getClass() ),
+                                                          kbuilder,
+                                                          xjcOpts,
+                                                          "xsd" );
+</programlisting>
+      </example>
+
+      <example>
+        <title>JAXB FromXML transformer stage</title>
+
+        <programlisting>JAXBContext jaxbCtx = KnowledgeBuilderHelper.newJAXBContext( classNames,
+                                                               kbase );
+Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
+Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
+transformer.setReceiver( receiver );
+</programlisting>
+      </example>
+
+      <example>
+        <title>JAXB ToXML transformer stage</title>
+
+        <programlisting>Marshaller marshaller = jaxbCtx.createMarshaller();
+Transformer transformer = PipelineFactory.newJaxbToXmlTransformer( marshaller );
+transformer.setReceiver( receiver );
+</programlisting>
+      </example>
     </section>
 
     <section>
       <title>Smooks Transformer</title>
 
       <para></para>
+
+      <example>
+        <title>Smooks FromSource transformer stage</title>
+
+        <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+Transformer transformer = PipelineFactory.newSmooksFromSourceTransformer( smooks,
+                                                                          "orderItem" );
+transformer.setReceiver( receiver );</programlisting>
+      </example>
+
+      <example>
+        <title>Smooks ToSource transformer stage</title>
+
+        <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+
+Transformer transformer = PipelineFactory.newSmooksToSourceTransformer( smooks );
+transformer.setReceiver( receiver );</programlisting>
+      </example>
     </section>
 
     <section>
-      <title>Smooks Transformer</title>
+      <title> JXLS (Excel/Calc/CSV) Transformer</title>
 
-      <para></para>
+      <para>Transforms from an Excel spread to a Map of pojos pojos using
+      jXLS, the resulting map is set as the propagating object. You may need
+      to use splitters and MVEL expressions to split up the transformation to
+      insert individual pojos. Note you must provde an XLSReader, which
+      references the mapping file and also an MVEL string which will
+      instantiate the map. The mvel expression is pre-compiled but executedon
+      each usage of the transformation. </para>
+
+      <example>
+        <title>JXLS transformer stage</title>
+
+        <programlisting>XLSReader mainReader = ReaderBuilder.buildFromXML( ResourceFactory.newClassPathResource( "departments.xml", getClass() ).getInputStream() );
+Transformer transformer = PipelineFactory.newJxlsTransformer(mainReader, "[ 'departments' : new java.util.ArrayList(), 'company' : new org.drools.runtime.pipeline.impl.Company() ]");
+ </programlisting>
+      </example>
     </section>
 
     <section>
       <title>JMS Messenger</title>
 
-      <para></para>
+      <para>Creates a new JmsMessenger which runs as a service in it's own
+      thread. It expects an existing JNDI entry for "ConnectionFactory" Which
+      will be used to create the MessageConsumer which will feed into the
+      specified pipeline.</para>
+
+      <example>
+        <title>JMS Messenger stage</title>
+
+        <programlisting>// as this is a service, it's more likely the results will be logged or sent as a return message 
+Action resultHandlerStage = PipelineFactory.newExecuteResultHandler();
+
+// Insert the transformed object into the session associated with the PipelineContext
+KnowledgeRuntimeCommand insertStage = PipelineFactory.newStatefulKnowledgeSessionInsert();
+insertStage.setReceiver( resultHandlerStage );
+
+// Create the transformer instance and create the Transformer stage, where we are going from Xml to Pojo. Jaxb needs an array of the available classes
+JAXBContext jaxbCtx = KnowledgeBuilderHelper.newJAXBContext( classNames,
+                                                             kbase );
+Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
+Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
+transformer.setReceiver( insertStage );
+
+// payloads for JMS arrive in a Message wrapper, we need to unwrap this object
+Action unwrapObjectStage = PipelineFactory.newJmsUnwrapMessageObject();
+unwrapObjectStage.setReceiver( transformer );
+
+// Create the start adapter Pipeline for StatefulKnowledgeSessions
+Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline( ksession );
+pipeline.setReceiver( unwrapObjectStage );
+
+// Services, like JmsMessenger take a ResultHandlerFactory implementation, this is because a result handler must be created for each incoming message.
+ResultHandleFactoryImpl factory = new ResultHandleFactoryImpl();
+Service messenger = PipelineFactory.newJmsMessenger( pipeline,
+                                                     props,
+                                                     destinationName,
+                                                     factory );
+</programlisting>
+      </example>
     </section>
   </section>
 
