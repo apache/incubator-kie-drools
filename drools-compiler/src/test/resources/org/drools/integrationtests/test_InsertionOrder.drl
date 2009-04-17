@@ -1,0 +1,13 @@
+package org.drools
+ 
+global java.util.List results;
+
+rule "direct"
+    when
+        m : Move(x : first, y : second)
+        not Win(value == y)
+    then
+        Win win = new Win(m.getSecond()); 
+        results.add( win );
+        insert( win );
+end
