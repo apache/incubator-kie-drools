@@ -17,8 +17,8 @@ import org.drools.io.ResourceFactory;
  * 
  * <p>
  * The Following example constructs an agent that will build a new KnowledgeBase from the files specified in the path String.
- * It will poll those files every 60 seconds, which is the default, to see if they are updated. If new files are found it will construct a new 
- * KnowledgeBase. If the change set specifies a resource that is a directory it's contents will be scanned for changes  too.
+ * It will poll those files every 60 seconds, which is the default when polling is enabled and the service started, to see if they are updated. 
+ * If new files are found it will construct a new KnowledgeBase. If the change set specifies a resource that is a directory it's contents will be scanned for changes  too.
  * </p>
  * 
  * <pre>
