@@ -58,7 +58,9 @@ public class CompositeClassLoader extends ClassLoader
         
         // still not found so search the parent ClassLoader
         if ( this.hasParent && cls == null ) {
-            cls = getParent().loadClass( name );
+            cls = Class.forName( name,
+                           true,
+                           getParent() );
         }        
 
         if ( resolve ) {
