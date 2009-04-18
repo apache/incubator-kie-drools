@@ -115,6 +115,8 @@ public class ConfFileUtils {
                 builder.append( line );
                 builder.append( "\n" );
             }
+            
+            reader.close();
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to read " + url.toExternalForm() );
         }        
