@@ -293,8 +293,10 @@ public class JavaDialectRuntimeData
                                             InstantiationException,
                                             IllegalAccessException {
         final Object invoker = getInvokers().get( className );
-        wire( className,
-              invoker );
+        if ( invoker != null ) {
+            wire( className,        
+                  invoker );
+        }
     }
 
     public void wire(final String className,

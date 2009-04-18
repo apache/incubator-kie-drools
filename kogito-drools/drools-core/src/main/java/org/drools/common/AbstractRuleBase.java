@@ -474,6 +474,14 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
                 // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
                 for (Package newPkg : newPkgs) {
                     Package pkg = this.pkgs.get(newPkg.getName());
+                    
+                    // this needs to go here, as functions will set a java dialect to dirty
+                    if (newPkg.getFunctions() != null) {
+                        for (Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet()) {
+                            pkg.addFunction(entry.getValue());
+                        }
+                    }
+                    
                     pkg.getDialectRuntimeRegistry().onBeforeExecute();
                     // with the classloader recreated for all byte[] classes, we should now merge and wire any new accessors
                     pkg.getClassFieldAccessorStore().merge(newPkg.getClassFieldAccessorStore());
@@ -481,12 +489,6 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
 
                 for (Package newPkg : newPkgs) {
                     Package pkg = this.pkgs.get(newPkg.getName());
-
-                    if (newPkg.getFunctions() != null) {
-                        for (Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet()) {
-                            pkg.addFunction(entry.getValue());
-                        }
-                    }
 
                     // we have to do this before the merging, as it does some classloader resolving
                     TypeDeclaration lastType = null;
