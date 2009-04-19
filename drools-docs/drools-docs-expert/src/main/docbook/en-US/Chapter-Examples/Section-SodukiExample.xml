@@ -65,21 +65,16 @@
       of the rules which are executing to solve the puzzle in a human readable
       form.</para>
 
-      <para><computeroutput>Rule #3 determined the value at (4,1) could not be
-      4 as this value already exists in the same column at (8,1) Rule #3
-      determined the value at (5,5) could not be 2 as this value already
-      exists in the same row at (5,6) Rule #7 determined (3,5) is 2 as this is
-      the only possible cell in the column that can have this value Rule #1
-      cleared the other PossibleCellValues for (3,5) as a ResolvedCellValue of
-      2 exists for this cell. Rule #1 cleared the other PossibleCellValues for
-      (3,5) as a ResolvedCellValue of 2 exists for this cell. ... Rule #3
-      determined the value at (1,1) could not be 1 as this value already
-      exists in the same zone at (2,1) Rule #6 determined (1,7) is 1 as this
-      is the only possible cell in the row that can have this value Rule #1
-      cleared the other PossibleCellValues for (1,7) as a ResolvedCellValue of
-      1 exists for this cell. Rule #6 determined (1,1) is 8 as this is the
-      only possible cell in the row that can have this value
-      </computeroutput></para>
+      <para><screen>Rule #3 determined the value at (4,1) could not be 4 as this value already exists in the same column at (8,1)
+Rule #3 determined the value at (5,5) could not be 2 as this value already exists in the same row at (5,6)
+Rule #7 determined (3,5) is 2 as this is the only possible cell in the column that can have this value
+Rule #1 cleared the other PossibleCellValues for (3,5) as a ResolvedCellValue of 2 exists for this cell.
+Rule #1 cleared the other PossibleCellValues for (3,5) as a ResolvedCellValue of 2 exists for this cell.
+... 
+Rule #3 determined the value at (1,1) could not be 1 as this value already  exists in the same zone at (2,1)
+Rule #6 determined (1,7) is 1 as this is the only possible cell in the row that can have this value
+Rule #1 cleared the other PossibleCellValues for (1,7) as a ResolvedCellValue of 1 exists for this cell.
+Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that can have this value</screen></para>
 
       <para>Once all of the activated rules for the solving logic have
       executed, the engine executes a second rule base to check that the
