@@ -8,10 +8,6 @@
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
   <title>Function</title>
 
-  <note>
-    <para><replaceable>(updated to Drools 4.0)</replaceable></para>
-  </note>
-
   <figure>
     <title>function</title>
 
@@ -23,15 +19,14 @@
   </figure>
 
   <para>Functions are a way to put semantic code in your rule source file, as
-  opposed to in normal Java classes. They can't do anything more then what you
-  can do with helper classes (in fact, the compiler generates the helper class
-  for you behind the scenes). The main advantage of using functions in a rule
+  opposed to in normal Java classes. They can't do anything more than what you
+  can do with helper classes. (In fact, the compiler generates the helper class
+  for you behind the scenes.) The main advantage of using functions in a rule
   is that you can keep the logic all in one place, and you can change the
-  functions as needed (this can be a good and bad thing). Functions are most
+  functions as needed (which can be a good or a bad thing). Functions are most
   useful for invoking actions on the consequence ("then") part of a rule,
-  especially if that particular action is used over and over (perhaps with
-  only differing parameters for each rule - for example the contents of an
-  email message).</para>
+  especially if that particular action is used over and over again, perhaps
+  with only differing parameters for each rule.</para>
 
   <para>A typical function declaration looks like:</para>
 
@@ -41,18 +36,19 @@
 </programlisting>
 
   <para>Note that the "function" keyword is used, even though its not really
-  part of Java. Parameters to the function are just like a normal method (and
-  you don't have to have parameters if they are not needed). Return type is
-  just like a normal method.</para>
+  part of Java. Parameters to the function are defined as for a method, and
+  you don't have to have parameters if they are not needed. The return type
+  is defined just like in a regular method.</para>
 
-  <para>An alternative to the use of a function, could be to use a static
-  method in a helper class: Foo.hello(). Drools 4.0 supports the use of
+  <para>Alternatively, you could use a static method in a helper class,
+  e.g., <code>Foo.hello()</code>. Drools supports the use of
   function imports, so all you would need to do is:</para>
 
   <programlisting>import function my.package.Foo.hello</programlisting>
 
-  <para>In both cases above, to use the function, just call it by its name in
-  the consequence or inside a semantic code block. Example:</para>
+  <para>Irrespective of the way the function is defined or imported, you
+  use a function by calling it by its name, in the consequence or inside
+  a semantic code block. Example:</para>
 
   <programlisting>rule "using a static function"
 when 
