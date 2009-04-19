@@ -8,17 +8,14 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Overview</title>
 
-  <note>
-    <para><replaceable>(updated to Drools 4.0)</replaceable></para>
-  </note>
-
-  <para>Drools 4.0 has a "native" rule language that is non XML textual
-  format. This format is very light in terms of punctuation, and supports
+  <para>Drools has a "native" rule language. 
+  This format is very light in terms of punctuation, and supports
   natural and domain specific languages via "expanders" that allow the
   language to morph to your problem domain. This chapter is mostly concerted
-  with the native rule format. The Diagrams used are known as "rail road"
-  diagrams, and are basically flow charts for the language terms. For the
-  technically very keen, you can also refer to "DRL.g" which is the Antlr3
+  with this native rule format. The diagrams used to present the syntax are
+  known as "railroad" diagrams, and they are basically flow charts for the
+  language terms. The
+  technically very keen may also refer to "DRL.g" which is the Antlr3
   grammar for the rule language. If you use the Rule Workbench, a lot of the
   rule structure is done for you with content assistance, for example, type
   "ru" and press ctrl+space, and it will build the rule structure for

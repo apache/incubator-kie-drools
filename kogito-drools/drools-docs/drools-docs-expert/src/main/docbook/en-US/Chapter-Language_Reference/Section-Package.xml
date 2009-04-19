@@ -8,10 +8,6 @@
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
   <title>Package</title>
 
-  <note>
-    <para><replaceable>(updated to Drools 4.0)</replaceable></para>
-  </note>
-
   <para>A package is a collection of rules and other related constructs, such
   as imports and globals. The package members are typically related to each
   other - perhaps HR rules, for instance. A package represents a namespace,
@@ -22,10 +18,10 @@
   <para>It is possible to assemble rules from multiple rule sources, and have
   one top level package configuration that all the rules are kept under (when
   the rules are assembled). Although, it is not possible to merge into the
-  same package resources declared under different names. A single Rulebase,
-  can though, contain multiple packages built on it. A common structure, is to
+  same package resources declared under different names. A single Rulebase
+  may, however, contain multiple packages built on it. A common structure is to
   have all the rules for a package in the same file as the package declaration
-  (so that is it entirely self contained).</para>
+  (so that is it entirely self-contained).</para>
 
   <para>The following railroad diagram shows all the components that may make
   up a package. Note that a package <emphasis>must</emphasis> have a namespace and be declared
@@ -62,8 +58,9 @@
 
     <para>Import statements work like import statements in Java. You need to
     specify the fully qualified paths and type names for any objects you want
-    to use in the rules. Drools automatically imports classes from the same
-    named Java package and from the java.lang package.</para>
+    to use in the rules. Drools automatically imports classes from the
+    Java package of the same name, and also from the package
+    <code>java.lang</code>.</para>
   </section>
 
   <section>
@@ -80,14 +77,14 @@
       </mediaobject>
     </figure>
 
-    <para>The expander statement (optional) is used to specify domain specific
-    language (DSL) configurations (which are normally stored in a separate
-    file). This provides clues to the parser how to understand what you are
-    raving on about in your rules. It is important to note that in Drools 4.0
-    (that is different from Drools 3.x) the expander declaration is mandatory
-    for the tools to provide you context assistacnce and to avoid error reporting,
-    but the API allows the program to apply DSL templates, even if the
-    expanders are not declared in the source file.</para>
+    <para>The optional expander statement is used to specify domain specific
+    language (DSL) configurations, which are normally stored in a separate
+    file. This provides clues to the parser how to understand such
+    specific text in your rules. Since Drools 4.0, the expander declaration
+    is mandatory for the tools to provide context sensitive assistance and to
+    avoid error reporting. The API, however, allows the program to apply
+    DSL templates even if the expanders are not declared in the source
+    file.</para>
   </section>
 
   <section>
@@ -104,18 +101,18 @@
       </mediaobject>
     </figure>
 
-    <para>Globals are global variables. They are used to make application
-    objects available to the rules, and are typically used to provide data or
-    services that the rules use (specially application services used in rule
-    consequences), to return data from the rules (like logs or values added in
-    rules consequence) or for the rules to interact with the application doing
-    callbacks. Globals are not inserted into the Working Memory so they should
-    never be reasoned over; you should use them in rules' LHS only if the global has a
+    <para>With global you define global variables. They are used to make
+    application objects available to the rules. Typically, they are used
+    to provide data or services that the rules use, especially application
+    services used in rule consequences, and to return data from the rules,
+    like logs or values added in rule consequences, or for the rules to
+    interact with the application, doing callbacks. Globals are not 
+    inserted into the Working Memory, and therefore a global should never be
+    used to establish conditions in rules except when it has a
     constant immutable value. The engine cannot be notified about value
-    changes of globals, and does not track their changes. Incorrect use
-    of globals in constraints may yield
-    surprising results - surprising in a bad way, like when a doctor says
-    "thats interesting" to a chest XRay of yours.</para>
+    changes of globals and does not track their changes. Incorrect use
+    of globals in constraints may yield surprising results - surprising
+    in a bad way.</para>
 
     <para>If multiple packages declare globals with the same identifier they
     must be of the same type and all of them will reference the same global
@@ -159,18 +156,18 @@ wm.setGlobal( "myGlobalList", list );
     Hibernate query.</para>
 
     <para>One example may be an instance of a Email service. In your
-    integration code that is calling the rule engine, you get your
+    integration code that is calling the rule engine, you obtain your
     emailService object, and then set it in the working memory. In the DRL,
-    you declare that you have a global of type EmailService, and give it a
+    you declare that you have a global of type EmailService, and give it the
     name "email". Then in your rule consequences, you can use things like
     email.sendSMS(number, message).</para>
 
     <para>Globals are not designed to share data between rules and they should
     never be used for that purpose. Rules always reason and react to the
-    working memory state, so if you want to "share" data between rules, assert
-    the data to the working memory.</para>
+    working memory state, so if you want to pass data from rule to rule, assert
+    the data as facts into the working memory.</para>
 
-    <para>It is strongly discouraged to set (or change) a global value from
+    <para>It is strongly discouraged to set or change a global value from
     inside your rules. We recommend to you always set the value from your
     application using the working memory interface.</para>
   </section>
