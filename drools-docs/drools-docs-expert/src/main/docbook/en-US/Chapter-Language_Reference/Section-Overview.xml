@@ -80,9 +80,8 @@
     dialect specific semantic code to be executed.</para>
 
     <para>It is important to note that white space is not important,
-      <empahsis>except</empahsis> in
-    these case of domain specific languages, in which case each line is
-    processed before the following line (and spaces may be significant to the
-    domain language).</para>
+      <emphasis>except</emphasis> in
+    the case of domain specific languages, where lines are processed
+    one by one and spaces may be significant to the domain language.</para>
   </section>
 </section>

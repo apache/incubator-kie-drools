@@ -14,13 +14,14 @@
 
     <title>Keywords</title>
 
-    <para>Drools 5 introduces the concept of Hard and Soft keywords.</para>
+    <para>Drools 5 introduces the concept of <emphasis>hard</emphasis> and
+    <emphasis>soft</emphasis> keywords.</para>
 
     <para>Hard keywords are reserved, you cannot use any hard keyword when
     naming your domain objects, properties, methods, functions and other
     elements that are used in the rule text.</para>
 
-    <para>Here is a list of hard keywords that must be avoided as identifiers
+    <para>Here is the list of hard keywords that must be avoided as identifiers
     when writing rules:</para>
 
     <itemizedlist>
@@ -62,7 +63,7 @@
     </itemizedlist>
 
     <para>Soft keywords are just recognized in their context, enabling you to
-    use this words in any other place you wish. Here is a list of soft
+    use these words in any other place you wish. Here is a list of the soft
     keywords:</para>
 
     <itemizedlist>
@@ -211,15 +212,15 @@
     method name in camel case, like notSomething() or accumulateSomething() -
     there are no issues with that scenario.</para>
 
-    <para>Another improvement on DRL language is the ability to escape hard
-    keywords on rule text. This new feature enables you to use your existing
+    <para>Another improvement of the DRL language is the ability to escape hard
+    keywords on rule text. This feature enables you to use your existing
     domain objects without worrying about keyword collision. To escape a word,
-    simple type it between grave accents, like this:</para>
+    simply enclose it in grave accents, like this:</para>
 
     <programlisting>Holiday( `when` == "july" )</programlisting>
 
     <para>The escape should be used everywehere in rule text, except within code
-    expressions in the LHS or RHS code block. Here are examples of
+    expressions in the LHS or RHS code block. Here are examples of proper
     usage:</para>
 
     <programlisting>rule "validate holiday by eval" 
