@@ -18,20 +18,20 @@
     </mediaobject>
   </figure>
 
-  <para>A query contains the structure of the LHS of a rule only (you don't
-  specify "when" or "then"). It is simply a way to query the working memory
-  for facts that match the conditions stated. A query has an optional set of
-  parameters, each of which can also be optionally typed. If type is not
-  given then Object type is assumed. The engine will attempt to co-erce 
-  the values as needed. Query names are global to the RuleBase, so do
-  not add queries of the same name to different packages for the same Rule
-  Base.</para>
+  <para>A query is a simple way to search the working memory for facts that
+  match the stated conditions. Therefore, it contains only the structure of
+  the LHS of a rule, so that you specify neither "when" nor "then". A query
+  has an optional set of parameters, each of which can be optionally typed.
+  If the type is not given, the type Object is assumed. The engine will
+  attempt to coerce the values as needed. Query names are global to the
+  RuleBase; so do not add queries of the same name to different packages
+  for the same RuleBase.</para>
 
-  <para>To return the results use WorkingMemory.getQueryResults("name"),
+  <para>To return the results use <code>WorkingMemory.getQueryResults("name")</code>,
   where "name" is the query's name.  This returns a list of query results,
-  which allow you to to get to the objects that matched the query.</para>
+  which allow you to retrieve the objects that matched the query.</para>
 
-  <para>The first example creates a simple query for all the people over
+  <para>The first example presents a simple query for all the people over
   the age of 30. The second one, using parameters, combines the age limit
   with a location.</para>
 
@@ -51,9 +51,9 @@ end</programlisting>
 end</programlisting>
   </example>
 
-  <para>We iterate over the returned QueryResults using a standard 'for' loop.
-  Each element returns a QueryResult which we can use to access each of the
-  columns in the Tuple. Those columns can be accessed by bound declaration name
+  <para>We iterate over the returned QueryResults using a standard "for" loop.
+  Each element is a QueryResult which we can use to access each of the
+  columns in the tuple. These columns can be accessed by bound declaration name
   or index position.</para>
 
   <example>
