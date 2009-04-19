@@ -39,7 +39,7 @@
     <para><emphasis role="bold">1st Block:</emphasis> This area identifies the
     error code.</para>
 
-    <para><emphasis role="bold">2nd Block:</emphasis> Line:column
+    <para><emphasis role="bold">2nd Block:</emphasis> Line and column
     information.</para>
 
     <para><emphasis role="bold">3rd Block:</emphasis> Some text describing the
@@ -105,12 +105,12 @@
         </listitem>
       </itemizedlist>
 
-      <para>This message means that the parser could identify the <emphasis
-      role="bold">WHEN</emphasis> hard keyword, but it is not an option here.
-      In this case, it is missing the rule name.</para>
+      <para>This message means that the parser encountered the token
+      <emphasis role="bold">WHEN</emphasis>, actually a hard keyword, but
+      it's in the wrong place since the the rule name is missing.</para>
 
-      <para>No viable alternative error occurs also when you have lexical
-      problems. Here is a sample of a lexical problem:</para>
+      <para>The error "no viable alternative" also occurs when you make
+      a simple lexical mistake. Here is a sample of a lexical problem:</para>
 
       <example>
         <programlisting>1: rule simple_rule
@@ -119,7 +119,7 @@
 4:   then
 5: end
 </programlisting>
-      </example>
+      </example><!-- " close the quote, restore editor sanity -->
 
       <para>The above code misses to close the quotes and because of this the
       parser generates this error message:</para>
@@ -142,8 +142,8 @@
     <section>
       <title>102: Mismatched input</title>
 
-      <para>Indicates that the parser was looking for a particular symbol that
-      it didn’t ﬁnd at the current input position. Here are some
+      <para>This error indicates that the parser was looking for a particular
+      symbol that it didn’t ﬁnd at the current input position. Here are some
       samples:</para>
 
       <example>
@@ -261,7 +261,7 @@
       <title>104: Trailing semi-colon not allowed</title>
 
       <para>This error is associated with the "eval" clause, where its
-      expression may not be terminated with a semi-colon. Check this
+      expression may not be terminated with a semicolon. Check this
 	example:</para>
 
       <example>
@@ -273,7 +273,7 @@
 </programlisting>
       </example>
 
-      <para>Due to the trailing semi-colon within eval, we get this error
+      <para>Due to the trailing semicolon within eval, we get this error
       message:</para>
 
       <itemizedlist>
@@ -290,10 +290,10 @@
     <section>
       <title>105: Early Exit</title>
 
-      <para>The recognizer came to a (..)+ EBNF subrule that must match an
+      <para>The recognizer came to a subrule in the grammar that must match an
       alternative at least once, but the subrule did not match anything.
       Simply put: the parser has entered a branch from where there is no
-	way out. This example tries to illustrates it:</para>
+      way out. This example illustrates it:</para>
 
       <example>
         <programlisting>1: template test_error
@@ -320,7 +320,7 @@
   <section>
     <title>Other Messages</title>
 
-    <para>If you get any other message, means that something bad happened, so
+    <para>Any other message means that something bad has happened, so
     please contact the development team.</para>
   </section>
 </section>
