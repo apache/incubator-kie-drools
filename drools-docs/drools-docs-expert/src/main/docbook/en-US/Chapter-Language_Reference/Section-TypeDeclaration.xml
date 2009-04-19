@@ -39,9 +39,9 @@
   <itemizedlist>
     <listitem>
       <para><emphasis role="bold">Declaring new types:</emphasis> Drools works
-      out of the box with plain POJOs as facts. Although, sometimes the users
+      out of the box with plain Java objects as facts. Sometimes, however, users
       may want to define the model directly to the rules engine, without
-      worrying to create their models in a lower level language like Java. At
+      worrying about creating models in a lower level language like Java. At
       other times, there is a domain model already built, but eventually the
       user wants or needs to complement this model with additional entities
       that are used mainly during the reasoning process.</para>
@@ -51,7 +51,7 @@
       <para><emphasis role="bold">Declaring metadata:</emphasis> facts may
       have meta information associated to them. Examples of meta information
       include any kind of data that is not represented by the fact attributes
-      and are consistent among all instances of that fact type. This meta
+      and is consistent among all instances of that fact type. This meta
       information may be queried at runtime by the engine and used in the
       reasoning process.</para>
     </listitem>
@@ -61,11 +61,11 @@
     <title>Declaring New Types</title>
 
     <para>To declare a new type, all you need to do is use the keyword
-    <emphasis role="bold">declare</emphasis>, followed by the list of fields
+    <emphasis role="bold">declare</emphasis>, followed by the list of fields,
     and the keyword <emphasis role="bold">end</emphasis>.</para>
 
     <example>
-      <title>declaring a new fact type: Address</title>
+      <title>Declaring a new fact type: Address</title>
 
       <programlisting><emphasis role="bold">declare</emphasis> Address
    number : int
@@ -101,10 +101,10 @@
 
     <para>You may avoid having to write the fully qualified name of a class
     every time you write it by using the <emphasis
-    role="bold">import</emphasis> clause, previously discussed.</para>
+    role="bold">import</emphasis> clause, as previously discussed.</para>
 
     <para><example>
-        <title>avoiding the need to use fully qualified class names by using
+        <title>Avoiding the need to use fully qualified class names by using
         import</title>
 
         <programlisting><emphasis role="bold">import</emphasis> java.util.Date
@@ -117,7 +117,8 @@
       </example></para>
 
     <para>When you declare a new fact type, Drools will, at compile time,
-    generate bytecode implementing a POJO that represents the fact type. The
+    generate bytecode that implements a Java class representing the fact
+    type. The
     generated Java class will be a one-to-one Java Bean mapping of the type
     definition. So, for the previous example, the generated Java class would
     be:</para>
@@ -137,18 +138,17 @@
     // toString
 }
 </programlisting>
-      </example>Since it is a simple POJO, the generated class can be used
-    transparently in the rules, like any other fact.</para>
+      </example>Since the generated class is a simple Java class, it can
+      be used transparently in the rules, like any other fact.</para>
 
     <para><example>
-        <title>using the declared types in rules</title>
+        <title>Using the declared types in rules</title>
 
         <programlisting><emphasis role="bold">rule</emphasis> "Using a declared Type"
 <emphasis role="bold">when</emphasis> 
     $p : Person( name == "Bob" )
 <emphasis role="bold">then</emphasis>
-    System.out.println( "The name of the person is "+ )
-    <emphasis>// lets insert Mark, that is Bob's mate</emphasis>
+    <emphasis>// Insert Mark, who is Bob's mate.</emphasis>
     Person mark = new Person();
     mark.setName("Mark");
     insert( mark );
@@ -161,19 +161,19 @@
     <title>Declaring Metadata</title>
 
     <para>Metadata may be assigned to several different constructions in
-    Drools, like fact types, fact attributes and rules. Drools uses the
+    Drools: fact types, fact attributes and rules. Drools uses the
     <emphasis role="bold">@</emphasis> symbol to introduce metadata, and it
     always uses the form:</para>
 
-    <para><programlisting>@matadata_key( metadata_value )</programlisting>The
-    parenthesis and the metadata_value are optional.</para>
+    <para><programlisting>@<emphasis>metadata_key</emphasis>( <emphasis>metadata_value</emphasis> )</programlisting>The
+    parenthesized <emphasis>metadata_value</emphasis> is optional.</para>
 
     <para>For instance, if you want to declare a metadata attribute like
     <emphasis>author</emphasis>, whose value is <emphasis>Bob</emphasis>, you
     could simply write:</para>
 
     <example>
-      <title>declaring an arbitrary metadata attribute</title>
+      <title>Declaring a metadata attribute</title>
 
       <programlisting>@author( Bob )</programlisting>
     </example>
@@ -183,11 +183,11 @@
     available for querying at runtime. Drools allows the declaration of
     metadata both for fact types and for fact attributes. Any metadata that is
     declared before the fields of a fact type are assigned to the fact type,
-    while metadata declared after an attribute are assigned to the attribute
-    in particular.</para>
+    while metadata declared after an attribute are assigned to that
+    particular attribute.</para>
 
     <example>
-      <title>declaring metadata attributes for fact types and
+      <title>Declaring metadata attributes for fact types and
       attributes</title>
 
       <programlisting><emphasis role="bold">import</emphasis> java.util.Date
@@ -202,12 +202,12 @@
 <emphasis role="bold">end</emphasis></programlisting>
     </example>
 
-    <para>In the previous example, there are two metadata declared for the
+    <para>In the previous example, there are two metadata items declared for the
     fact type (<emphasis>@author</emphasis> and
-    <emphasis>@dateOfCreation</emphasis>), and two more defined for the name
+    <emphasis>@dateOfCreation</emphasis>) and two more defined for the name
     attribute (<emphasis>@key</emphasis> and <emphasis>@maxLength</emphasis>).
     Please note that the <emphasis>@key</emphasis> metadata has no value, and
-    so the parenthesis and the value were omitted.</para>
+    so the parentheses and the value were omitted.</para>
   </section>
 
   <section>
@@ -219,11 +219,11 @@
     declaration.</para>
 
     <para>For instance, if there is a class org.drools.examples.Person, and
-    one wants to declare metadata for it, just write the following
+    one wants to declare metadata for it, it's possible to write the following
     code:</para>
 
     <example>
-      <title>declaring metadata for an existing type</title>
+      <title>Declaring metadata for an existing type</title>
 
       <programlisting><emphasis role="bold">import</emphasis> org.drools.examples.Person
 
@@ -236,11 +236,11 @@
 
     <para>Instead of using the import, it is also possible to reference the
     class by its fully qualified name, but since the class will also be
-    referenced in the rules, usually it is shorter to add the import and use
+    referenced in the rules, it is usually shorter to add the import and use
     the short class name everywhere.</para>
 
     <example>
-      <title>declaring metadata using the fully qualified class name</title>
+      <title>Declaring metadata using the fully qualified class name</title>
 
       <programlisting><emphasis role="bold">declare</emphasis> org.drools.examples.Person
     <emphasis>@author</emphasis>( Bob )
@@ -255,24 +255,24 @@
     <para>Declared types are usually used inside rules files, while Java
     models are used when sharing the model between rules and applications.
     Although, sometimes, the application may need to access and handle facts
-    from the declared types, specially when the application is wrapping the
-    rules engine and providing higher level, domain specific, user interfaces
+    from the declared types, especially when the application is wrapping the
+    rules engine and providing higher level, domain specific user interfaces
     for rules management.</para>
 
     <para>In such cases, the generated classes can be handled as usual with
-    the Java Reflection APIs, but as we know, that usually requires a lot of
-    work for small results. This way, Drools provides a simplified API for the
+    the Java Reflection API, but, as we know, that usually requires a lot of
+    work for small results. Therefore, Drools provides a simplified API for the
     most common fact handling the application may want to do.</para>
 
     <para>The first important thing to realize is that a declared fact will
     belong to the package where it was declared. So, for instance, in the
     example below, <emphasis>Person</emphasis> will belong to the
-    <emphasis>org.drools.examples</emphasis> package, and so the generated
-    class fully qualified name will be:
+    <emphasis>org.drools.examples</emphasis> package, and so the
+    fully qualified name of the generated class will be
     <emphasis>org.drools.examples.Person</emphasis>.</para>
 
     <example>
-      <title>declaring a type in the org.drools.examples package</title>
+      <title>Declaring a type in the org.drools.examples package</title>
 
       <programlisting><emphasis role="bold">package</emphasis> org.drools.examples
 
@@ -287,16 +287,16 @@
 
     <para>Declared types, as discussed previously, are generated at knowledge
     base compilation time, i.e., the application will only have access to them
-    at application run time. As so, these classes are not available for direct
-    reference from the application.</para>
+    at application run time. Therefore, these classes are not available for
+    direct reference from the application.</para>
 
-    <para>Drools then provides an interface through which the users can handle
+    <para>Drools then provides an interface through which users can handle
     declared types from the application code:
     org.drools.definition.type.FactType. Through this interface, the user can
     instantiate, read and write fields in the declared fact types.</para>
 
     <example>
-      <title>handling declared fact types through the API</title>
+      <title>Handling declared fact types through the API</title>
 
       <programlisting>// get a reference to a knowledge base with a declared type:
 KnowledgeBase kbase = ...
@@ -330,21 +330,11 @@ int age = personType.get( bob, "age" );
     </example>
 
     <para>The API also includes other helpful methods, like setting all the
-    attributes at once, reading values from a Map, or read all attributes at
-    once, populating a Map.</para>
+    attributes at once, reading values from a Map, or reading all attributes at
+    once, into a Map.</para>
 
     <para>Although the API is similar to Java reflection (yet much simpler to
-    use), it does not use reflection underneath, relying in much more
-    performant bytecode generated accessors.</para>
-
-    <para></para>
-
-    <para></para>
-
-    <para></para>
-
-    <para></para>
-
-    <para></para>
+    use), it does not use reflection underneath, relying on much more
+    performant accessors implemented in generated bytecode.</para>
   </section>
 </section>
