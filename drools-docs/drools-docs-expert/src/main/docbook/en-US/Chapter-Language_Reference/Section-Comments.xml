@@ -8,10 +8,6 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Comments</title>
 
-  <note>
-    <para><replaceable>(updated to Drools 4.0)</replaceable></para>
-  </note>
-
   <para>Comments are sections of text that are ignored by the rule engine.
   They are stripped out when they are encountered, except inside semantic code
   blocks, like the RHS of a rule.</para>
