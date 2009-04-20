@@ -9,9 +9,8 @@
   <title>How To Use</title>
 
   <para>There are two parts to working with JSR94. The first part is the
-  administrative api that deals with building and register RuleExecutionSets,
-  the second part is runtime session execution of those
-  RuleExecutionSets.</para>
+  administrative API that deals with building and registering RuleExecutionSet objects,
+  the second part is runtime session execution of these RuleExecutionSets.</para>
 
   <section>
     <title>Building and Registering RuleExecutionSets</title>
@@ -19,24 +18,26 @@
     <para>The RuleServiceProviderManager manages the registration and
     retrieval of RuleServiceProviders. The Drools RuleServiceProvider
     implementation is automatically registered via a static block when the
-    class is loaded using Class.forName; in much the same way as JDBC
+    class is loaded using Class.forNamem, in much the same way as JDBC
     drivers.</para>
 
     <para><example>
         <title>Automatic RuleServiceProvider Registration</title>
 
-        <programlisting>// RuleServiceProviderImpl is registered to "http://drools.org/" via a static initialization block
+        <programlisting>// RuleServiceProviderImpl is registered to "http://drools.org/"
+// via a static initialization block
 Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
 
 // Get the rule service provider from the provider manager.
-RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");</programlisting>
+RuleServiceProvider ruleServiceProvider =
+  RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");</programlisting>
       </example>The RuleServiceProvider provides access to the RuleRuntime and
-    RuleAdministration APIs. The RuleAdministration provides an administration
-    API for the management of RuleExecutionSets, making it possible to
+    RuleAdministrator APIs. The RuleAdministrator provides an administration
+    API for the management of RuleExecutionSet objects, making it possible to
     register a RuleExecutionSet that can then be retrieved via the
     RuleRuntime.</para>
 
-    <para>First you need to create a RuleExecutionSet before it can be
+    <para>First, you need to create a RuleExecutionSet before it can be
     registered; RuleAdministrator provides factory methods to return an empty
     LocalRuleExecutionSetProvider or RuleExecutionSetProvider. The
     LocalRuleExecutionSetProvider should be used to load a RuleExecutionSets
@@ -49,19 +50,21 @@ RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServ
     used.</para>
 
     <example>
-      <title>Registering a LocalRuleExecutionSet with the RuleAdministration
+      <title>Registering a LocalRuleExecutionSet with the RuleAdministrator
       API</title>
 
       <programlisting>// Get the RuleAdministration 
 RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
-LocalRuleExecutionSetProvider ruleExecutionSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+LocalRuleExecutionSetProvider ruleExecutionSetProvider =
+  ruleAdministrator.getLocalRuleExecutionSetProvider( null );
 
 // Create a Reader for the drl
 URL drlUrl = new URL("http://mydomain.org/sources/myrules.drl");
 Reader drlReader = new InputStreamReader(  drlUrl.openStream()  );
 
 // Create the RuleExecutionSet for the drl
-RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecutionSet( drlReader, null );
+RuleExecutionSet ruleExecutionSet =
+  ruleExecutionSetProvider.createRuleExecutionSet( drlReader, null );
 </programlisting>
     </example>
 
@@ -69,9 +72,9 @@ RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecution
     the above example takes a null parameter for the properties map; however
     it can actually be used to provide configuration for the incoming source.
     When null is passed the default is used to load the input as a drl.
-    Allowed keys for a map are "source" and "dsl". "source" takes "drl" or
-    "xml" as its value; set "source" to "drl" to load a drl or to "xml" to
-    load an xml source; xml will ignore any "dsl" key/value settings. The
+    Allowed keys for a map are "source" and "dsl". The key "source" takes "drl" or
+    "xml" as its value; you set "source" to "drl" to load a DRL, or to "xml" to
+    load an XML source; "xml" will ignore any "dsl" key/value settings. The
     "dsl" key can take a Reader or a String (the contents of the dsl) as a
     value.</para>
 
@@ -80,7 +83,8 @@ RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecution
 
       <programlisting>// Get the RuleAdministration 
 RuleAdministration ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
-LocalRuleExecutionSetProvider ruleExecutionSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+LocalRuleExecutionSetProvider ruleExecutionSetProvider =
+  ruleAdministrator.getLocalRuleExecutionSetProvider( null );
 
 // Create a Reader for the drl
 URL drlUrl = new URL("http://mydomain.org/sources/myrules.drl");
@@ -94,13 +98,14 @@ properties.put( "source", "drl" );
 properties.put( "dsl", dslReader );
 
 // Create the RuleExecutionSet for the drl and dsl
-RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecutionSet( reader, properties );
+RuleExecutionSet ruleExecutionSet =
+  ruleExecutionSetProvider.createRuleExecutionSet( reader, properties );
 </programlisting>
     </example>
 
-    <para>When registering a RuleExecutionSet you must specify the name, to be
-    used for its retrieval. There is also a field to pass properties, this is
-    currently unused so just pass null.</para>
+    <para>When registering a RuleExecutionSet you must specify the name to be
+    used for its retrieval. There is also a field to pass properties, which is
+    currently unused - so just pass null.</para>
 
     <example>
       <title>Register the RuleExecutionSet</title>
@@ -124,20 +129,21 @@ ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</progra
     </example>
 
     <para>To create a rule session you must use one of the two RuleRuntime
-    public constants - "RuleRuntime.STATEFUL_SESSION_TYPE" and
-    "RuleRuntime.STATELESS_SESSION_TYPE" along with the uri to the
+    public constants. These are "RuleRuntime.STATEFUL_SESSION_TYPE" and
+    "RuleRuntime.STATELESS_SESSION_TYPE", accompanying the URI to the
     RuleExecutionSet you wish to instantiate a RuleSession for. The properties
     map can be null, or it can be used to specify globals, as shown in the
-    next section. The createRuleSession(....) method returns a RuleSession
+    next section. The createRuleSession(...) method returns a RuleSession
     instance which must then be cast to StatefulRuleSession or
     StatelessRuleSession.</para>
 
     <example>
       <title>Stateful Rule</title>
 
-      <programlisting>(StatefulRuleSession) session = ruleRuntime.createRuleSession( uri,
-                                                               null,
-                                                               RuleRuntime.STATEFUL_SESSION_TYPE );
+      <programlisting>(StatefulRuleSession) session =
+  ruleRuntime.createRuleSession( uri,
+                                 null,
+                                 RuleRuntime.STATEFUL_SESSION_TYPE );
 session.addObject( new PurchaseOrder( "lots of cheese" ) );
 session.executeRules();</programlisting>
     </example>
@@ -149,9 +155,10 @@ session.executeRules();</programlisting>
     <example>
       <title>Stateless</title>
 
-      <programlisting>(StatelessRuleSession) session = ruleRuntime.createRuleSession( uri,
-                                                                null,
-                                                                RuleRuntime.STATELESS_SESSION_TYPE );
+      <programlisting>(StatelessRuleSession) session =
+  ruleRuntime.createRuleSession( uri,
+                                 null,
+                                 RuleRuntime.STATELESS_SESSION_TYPE );
 List list = new ArrayList();
 list.add( new PurchaseOrder( "even more cheese" ) );
 
@@ -162,18 +169,22 @@ results = session.executeRules( list );</programlisting>
     <section>
       <title>Globals</title>
 
-      <para>It is possible to support globals with JSR94, in a none portable
-      manner, by using the properties map passed to the RuleSession factory
-      method. Globals must be defined in the drl or xml file first, otherwise
-      an Exception will be thrown. the key represents the identifier declared
-      in the drl or xml and the value is the instance you wish to be used in
-      the execution. In the following example the results are collected in an
+      <para>It is possible to support globals with JSR94, in a manner that is
+      not portable, by using the properties map passed to the RuleSession factory
+      method. Globals must be defined in the DRL or XML file first, otherwise
+      an exception will be thrown. The key represents the identifier declared
+      in the DRL or XML, and the value is the instance you wish to be used in
+      the execution. In the following example the results are collected in a
       java.util.List which is used as global:</para>
 
       <programlisting>java.util.List globalList = new java.util.ArrayList( );
 java.util.Map map = new java.util.HashMap( );
 map.put( "list", globalList ); 
-//Open a stateless Session StatelessRuleSession srs = (StatelessRuleSession) runtime.createRuleSession( "SistersRules", map, RuleRuntime.STATELESS_SESSION_TYPE );
+//Open a stateless Session
+StatelessRuleSession srs =
+  (StatelessRuleSession) runtime.createRuleSession( "SistersRules",
+                                                    map,
+                                                    RuleRuntime.STATELESS_SESSION_TYPE );
 ...
 // Persons added to List
 // call executeRules( ) giving a List of Objects as parameter
@@ -188,12 +199,12 @@ import org.drools.jsr94.rules.Person;
 global java.util.List list
 rule FindSisters 
 when 
-$person1 : Person ( $name1:name ) 
-$person2 : Person ( $name2:name ) 
-eval( $person1.hasSister($person2) ) 
+    $person1 : Person ( $name1:name ) 
+    $person2 : Person ( $name2:name ) 
+    eval( $person1.hasSister($person2) ) 
 then 
-list.add($person1.getName() + " and " + $person2.getName() +" are sisters"); 
-assert( $person1.getName() + " and " + $person2.getName() +" are sisters"); 
+    list.add($person1.getName() + " and " + $person2.getName() +" are sisters"); 
+    assert( $person1.getName() + " and " + $person2.getName() +" are sisters"); 
 end</programlisting>
     </section>
   </section>
