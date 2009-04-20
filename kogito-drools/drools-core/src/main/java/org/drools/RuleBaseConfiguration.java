@@ -91,26 +91,28 @@ import org.mvel2.MVEL;
  */
 
 /**
- * drools.maintainTms = <true|false>
- * drools.sequential = <true|false>
- * drools.sequential.agenda = <sequential|dynamic>
- * drools.removeIdentities = <true|false>
- * drools.shareAlphaNodes  = <true|false>
- * drools.shareBetaNodes = <true|false>
- * drools.alphaNodeHashingThreshold = <1...n>
- * drools.compositeKeyDepth  =<1..3>
- * drools.indexLeftBetaMemory = <true/false>
- * drools.indexRightBetaMemory = <true/false>
- * drools.assertBehaviour = <identity|equality>
- * drools.logicalOverride = <discard|preserve>
- * drools.executorService = <qualified class name>
- * drools.conflictResolver = <qualified class name>
- * drools.consequenceExceptionHandler = <qualified class name>
- * drools.ruleBaseUpdateHandler = <qualified class name>
- * drools.sessionClock = <qualified class name>
- * drools.maxThreads = <-1|1..n>
- * drools.multithreadEvaluation = <true|false>
- * 
+ * Available configuration options:
+ * <pre>
+ * drools.maintainTms = &lt;true|false&gt;
+ * drools.sequential = &lt;true|false&gt;
+ * drools.sequential.agenda = &lt;sequential|dynamic&gt;
+ * drools.removeIdentities = &lt;true|false&gt;
+ * drools.shareAlphaNodes  = &lt;true|false&gt;
+ * drools.shareBetaNodes = &lt;true|false&gt;
+ * drools.alphaNodeHashingThreshold = &lt;1...n&gt;
+ * drools.compositeKeyDepth  =&lt;1..3&gt;
+ * drools.indexLeftBetaMemory = &lt;true/false&gt;
+ * drools.indexRightBetaMemory = &lt;true/false&gt;
+ * drools.assertBehaviour = &lt;identity|equality&gt;
+ * drools.logicalOverride = &lt;discard|preserve&gt;
+ * drools.executorService = &lt;qualified class name&gt;
+ * drools.conflictResolver = &lt;qualified class name&gt;
+ * drools.consequenceExceptionHandler = &lt;qualified class name&gt;
+ * drools.ruleBaseUpdateHandler = &lt;qualified class name&gt;
+ * drools.sessionClock = &lt;qualified class name&gt;
+ * drools.maxThreads = &lt;-1|1..n&gt;
+ * drools.multithreadEvaluation = &lt;true|false&gt;
+ * </pre>
  */
 public class RuleBaseConfiguration
     implements
@@ -233,7 +235,6 @@ public class RuleBaseConfiguration
      * it will be used as the parent class loader for this rulebase class loaders, otherwise,
      * the RuleBaseConfiguration.class.getClassLoader() class loader will be used.
      *
-     * @param properties
      */
     public RuleBaseConfiguration() {
         init( null,
