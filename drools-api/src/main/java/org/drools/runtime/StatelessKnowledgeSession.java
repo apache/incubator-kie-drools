@@ -7,10 +7,10 @@ import org.drools.runtime.process.StatelessProcessSession;
 import org.drools.runtime.rule.StatelessRuleSession;
 
 /**
- * StatelessKnowledgeSessions are convenience api, that wraps a StatefulKnowledgeSession. It removes the need to
+ * StatelessKnowledgeSession provides a convenience API, wrapping StatefulKnowledgeSession. It avoids the need to
  * call dispose(). Stateless sessions do not support
- * iterative insertions and fireAllRules from java code, the act of calling execute(...) is a single
- * shot method that will internally instantiate a StatefullKnowledgeSession, add all the user data and execute user commands, call fireAllRules, and then
+ * iterative insertions and fireAllRules from Java code, the act of calling execute(...) is a single
+ * shot method that will internally instantiate a StatefulKnowledgeSession, add all the user data and execute user commands, call fireAllRules, and then
  * call dispose(). While the main way to work with this class is via the BatchExecution Command as supported by the CommandExecutor interface, 
  * two convenience methods are provided for when simple object insertion is all that's required.
  * 
@@ -44,8 +44,8 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </p>
  * 
  * <p>
- * The CommandFactory details the supported commands, all of which can marshalled using XStream and the BatchExecutionHelper. BatchExecutionHelper provides details
- * on the xml format as well as how to use Drools Pipeline to automate the marshalling of BatchExecution and ExecutionResults.
+ * The CommandFactory details the supported commands, all of which can be marshalled using XStream and the BatchExecutionHelper. BatchExecutionHelper provides details
+ * on the XML format as well as how to use Drools Pipeline to automate the marshalling of BatchExecution and ExecutionResults.
  * </p>
  * 
  * <p>
@@ -58,7 +58,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * the internal Collection, it will then check the delegate Globals, if one has been set.
  * </p>
  * 
- * <p>code snippet for setting a session scoped global:</p>
+ * <p>Code snippet for setting a session scoped global:</p>
  * <pre>
  * StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
  * ksession.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
@@ -112,7 +112,6 @@ public interface StatelessKnowledgeSession
 
     /**
      * Return the Globals store
-     * @param globalResolver
      */
     Globals getGlobals();
 
