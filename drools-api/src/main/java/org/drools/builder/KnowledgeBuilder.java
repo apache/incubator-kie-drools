@@ -15,7 +15,7 @@ import org.drools.io.Resource;
  * 
  * <p>
  * The ResourceFactory provides capabilities to load Resources from a number of sources; such as
- * Reader, ClassPath, URL, File, ByteArray. Binaries, such as xls decision tables,
+ * Reader, ClassPath, URL, File, ByteArray. Binaries, such as XLS decision tables,
  * should not use a Reader based Resource handler, which is only suitable for text based resources.
  * </p>
  * 
@@ -71,17 +71,17 @@ import org.drools.io.Resource;
  * </pre>     
  * 
  * <p>
- * The KnowledgeBuilder can also be built from configuration using the xml change-set format and the ResourceType.ChangeSet value. 
- * There is no .xsd schema yet for this XML, but hte format is very simple. While change-set
- * supports add, remove, modify as elements. KnowledgeBuilder will only process add. If the resource element provided points to a directory, all
- * files found in that directory will be added. Currently the knowledge type is not derived from the .ext extension of the file and must be explicitely
- * set in the XML for the resource. It is expected that all resources in the directory, when the directory is a given resource, are all of the specified
- * type.
+ * The KnowledgeBuilder can also be built from a configuration using the XML change-set format and
+ * the ResourceType.CHANGE_SET value. While change-set supports add, remove, and modify as elements.
+ * KnowledgeBuilder will only process add. If the resource element provided points to a directory, all
+ * files found in that directory will be added. Currently the knowledge type is not derived from the
+ * file extension and must be explicitly set in the XML for the resource. It is expected that all
+ * resources in a directory given resource are of the specified type.
  * </p>
  * <pre>
  * &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
  *             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
- *             xs:schemaLocation='change-set drools-change-set-5.0.xsd' &gt;
+ *             xs:schemaLocation='drools-change-set-5.0.xsd' &gt;
  *  &lt;add&gt;
  *       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
  *       &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
@@ -105,18 +105,25 @@ public interface KnowledgeBuilder
     ProcessBuilder {
 
     /**
-     * A a resource of the ResourceType from a given URL.
+     * Add a resource of the given ResourceType, using the default resource configuration.
      * 
-     * @param url
-     * @param type
+     * @param resource the Resource to add
+     * @param type the resource type
      */
     void add(Resource resource,
              ResourceType type);
 
+   
     /**
-    * A a resource of the ResourceType from a given URL, using the provided ResourceConfiguration.
-    * Currently only only decision tables use this, via the DecisionTableResourceConfiguration class.
-    */
+     * Add a resource of the given ResourceType, using the provided ResourceConfiguration.
+     * Resources can be created by calling any of the "newX" factory methods of
+     * ResourceFactory. The kind of resource (DRL,  XDRL, DSL,... CHANGE_SET) must be
+     * indicated by the second argument.
+     *
+     * @param resource the Resource to add
+     * @param type the resource type
+     * @param configuration the resource configuration
+     */
     void add(Resource resource,
              ResourceType type,
              ResourceConfiguration configuration);
