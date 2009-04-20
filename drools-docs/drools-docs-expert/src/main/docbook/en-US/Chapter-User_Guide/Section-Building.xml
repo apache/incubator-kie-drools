@@ -154,10 +154,80 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <para>Instead of adding the resources to create definitions
     programmatically it is also possible to do it by configuration, via the
     ChangeSet XML. The simple XML file supports
-    three elements: add, remove, and modify. Currently only the add
-    element is supported, and the others will be implemented to
-    support iterative changes. The following example loads a single DRL
-    file.</para>
+    three elements: add, remove, and modify, each of which has a sequence
+    of &lt;resource&gt; subelements defining a configuration entity. The
+    following XML schema is <emphasis>not</emphasis> normative and
+    intended for illustration only.</para>
+
+    <example>
+      <title>XML Schema for ChangeSet XML (not normative)</title>
+
+      <programlisting>&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://drools.org/drools-5.0/change-set"
+           targetNamespace="http://drools.org/drools-5.0/change-set"&gt;
+
+  &lt;xs:element name="change-set" type="ChangeSet"/&gt;
+
+  &lt;xs:complexType name="ChangeSet"&gt;
+    &lt;xs:choice maxOccurs="unbounded"&gt;
+      &lt;xs:element name="add"    type="Operation"/&gt;
+      &lt;xs:element name="remove" type="Operation"/&gt;
+      &lt;xs:element name="modify" type="Operation"/&gt;
+    &lt;/xs:choice&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="Operation"&gt;
+    &lt;xs:sequence&gt;
+      &lt;xs:element name="resource" type="Resource"
+                  maxOccurs="unbounded"/&gt;
+    &lt;/xs:sequence&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="Resource"&gt;
+    &lt;xs:sequence&gt;
+      <!-- To be used with &lt;resource type="DTABLE"...&gt> -->
+      &lt;xs:element name="decisiontable-conf" type="DecTabConf"
+                  minOccurs="0"/&gt;
+    &lt;/xs:sequence&gt;
+    <!-- java.net.URL, plus "classpath" protocol -->
+    &lt;xs:attribute name="source" type="xs:string"/&gt;
+    &lt;xs:attribute name="type"   type="ResourceType"/&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="DecTabConf"&gt;
+    &lt;xs:attribute name="input-type"     type="DecTabInpType"/&gt;
+    &lt;xs:attribute name="worksheet-name" type="xs:string"
+                  use="optional"/&gt;
+  &lt;/xs:complexType&gt;
+
+  <!-- according to org.drools.builder.ResourceType -->
+  &lt;xs:simpleType name="ResourceType"&gt;
+    &lt;xs:restriction base="xs:string"&gt;
+      &lt;xs:enumeration value="DRL"/&gt;
+      &lt;xs:enumeration value="XDRL"/&gt;
+      &lt;xs:enumeration value="DSL"/&gt;
+      &lt;xs:enumeration value="DSLR"/&gt;
+      &lt;xs:enumeration value="DRF"/&gt;
+      &lt;xs:enumeration value="DTABLE"/&gt;
+      &lt;xs:enumeration value="PKG"/&gt;
+      &lt;xs:enumeration value="BRL"/&gt;
+      &lt;xs:enumeration value="CHANGE_SET"/&gt;
+    &lt;/xs:restriction&gt;
+  &lt;/xs:simpleType&gt;
+
+  <!-- according to org.drools.builder.DecisionTableInputType -->
+  &lt;xs:simpleType name="DecTabInpType"&gt;
+    &lt;xs:restriction base="xs:string"&gt;
+      &lt;xs:enumeration value="XLS"/&gt;
+      &lt;xs:enumeration value="CSV"/&gt;
+    &lt;/xs:restriction&gt;
+  &lt;/xs:simpleType&gt;
+
+&lt;/xs:schema&gt;</programlisting>
+    </example>
+    
+    <para>Currently only the add element is supported, but the others will be implemented to
+    support iterative changes. The following example loads a single DRL file.</para>
 
     <example>
       <title>Simple ChangeSet XML</title>
@@ -185,8 +255,8 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 
     <para>Currently you still need to use the API to load that ChangeSet, but
     we will add support for containers such as Spring in the future, so that the
-    process of creating a KnowledgeBase can be donw completely by XML configuration.
-    Loading resources using the XML couldn't be simpler, as it's just another
+    process of creating a KnowledgeBase can be done completely by XML configuration.
+    Loading resources using an XML file couldn't be simpler, as it's just another
     ResourceType.</para>
 
     <example>
@@ -217,20 +287,20 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
-    <para>The ChangeSet is especailly useful when working with KnowledgeAgent,
+    <para>The ChangeSet is especially useful when working with KnowledgeAgent,
     as it allows for change notification and automatic rebuilding of the
     KnowledgeBase, which is covered in more detail in the section on the
     KnowledgeAgent, under Deploying.</para>
 
     <para>Directories can also be specified, to add all resources
-    in that folder. Currently it expected that all resources in
+    in that folder. Currently it is expected that all resources in
     that folder are of the same type. If you use the KnowledgeAgent it will
     provide a continous scanning for added, modified or removed resources and
     rebuild the cached KnowledgeBase. The KnowledgeAgent provides more
     information on this.</para>
 
     <example>
-      <title>ChangeSet XML which adds a directories contents</title>
+      <title>ChangeSet XML which adds a directory's contents</title>
 
       <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
