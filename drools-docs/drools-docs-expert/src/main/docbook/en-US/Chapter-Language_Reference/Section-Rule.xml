@@ -2153,42 +2153,86 @@ public class AverageAccumulateFunction implements AccumulateFunction {
   <section>
     <title>The Right Hand Side (then)</title>
 
-    <para>The Right Hand Side (RHS) is a common name for the consequence or
-    action part of the rule; this part should contain a list of actions to be
-    executed. It is bad practice to use imperative or conditional code in the
-    RHS of a rule; as a rule should be atomic in nature - "when this, then do
-    this", not "when this, maybe do this". The RHS part of a rule should also
-    be kept small, thus keeping it declarative and readable. If you find you
-    need imperative and/or conditional code in the RHS, then maybe you should
-    be breaking that rule down into multiple rules. The main purpose of the
-    RHS is to insert, retractor modify working memory data. To assist with
-    that there are a few convenience methods you can use to modify working
-    memory; without having to first reference a working memory
-    instance.</para>
 
-    <para>"update(object, handle);" will tell the engine that an object has
-    changed (one that has been bound to something on the LHS) and rules may
-    need to be reconsidered.</para>
+    <section>
+      <title>Usage</title>
+
+      <para>The Right Hand Side (RHS) is a common name for the consequence or
+      action part of the rule; this part should contain a list of actions to be
+      executed. It is bad practice to use imperative or conditional code in the
+      RHS of a rule; as a rule should be atomic in nature - "when this, then do
+      this", not "when this, maybe do this". The RHS part of a rule should also
+      be kept small, thus keeping it declarative and readable. If you find you
+      need imperative and/or conditional code in the RHS, then maybe you should
+      be breaking that rule down into multiple rules. The main purpose of the
+      RHS is to insert, retractor modify working memory data. To assist with
+      that there are a few convenience methods you can use to modify working
+      memory; without having to first reference a working memory
+      instance.</para>
+
+      <para>"update(object, handle);" will tell the engine that an object has
+      changed (one that has been bound to something on the LHS) and rules may
+      need to be reconsidered.</para>
     
-    <para>"update(object);"  can also be used, here the KnowledgeHelper will
-    lookup the facthandle for you, via an identity check, for the passed object.</para>      
+      <para>"update(object);"  can also be used, here the KnowledgeHelper will
+      lookup the facthandle for you, via an identity check, for the passed object.</para>      
 
-    <para>"insert(new Something());" will place a new object of your creation
-    in working memory.</para>
+      <para>"insert(new Something());" will place a new object of your creation
+      in working memory.</para>
 
-    <para>"insertLogical(new Something());" is similar to insert, but the
-    object will be automatically retracted when there are no more facts to
-    support the truth of the currently firing rule.</para>
+      <para>"insertLogical(new Something());" is similar to insert, but the
+      object will be automatically retracted when there are no more facts to
+      support the truth of the currently firing rule.</para>
 
-    <para>"retract(handle);" removes an object from working memory.</para>
+      <para>"retract(handle);" removes an object from working memory.</para>
+ 
+      <para>These convenience methods are basically macros that provide short
+      cuts to the KnowledgeHelper instance (refer to the KnowledgeHelper
+      interface for more advanced operations). The KnowledgeHelper interface is
+      made available to the RHS code block as a variable called "drools". If you
+      provide "Property Change Listeners" to your Java beans that you are
+      inserting into the engine, you can avoid the need to call "update" when
+      the object changes.</para>
+    </section>
 
-    <para>These convenience methods are basically macros that provide short
-    cuts to the KnowledgeHelper instance (refer to the KnowledgeHelper
-    interface for more advanced operations). The KnowledgeHelper interface is
-    made available to the RHS code block as a variable called "drools". If you
-    provide "Property Change Listeners" to your Java beans that you are
-    inserting into the engine, you can avoid the need to call "update" when
-    the object changes.</para>
+    <section>
+      <title>The modify Statement</title>
+
+      <para>This language extension provides a structured approach to
+      fact updates. It combines the update operation with a number of
+      setter calls to change the object's fields.</para>
+
+          <example>
+      <title>The modify statement</title>
+
+      <programlisting><emphasis role="bold">modify ( </emphasis><emphasis>fact-expression</emphasis><emphasis role="bold">  {</emphasis>
+    <emphasis>expression</emphasis> [ <emphasis role="bold">,</emphasis> <emphasis>expression</emphasis> ]
+<emphasis role="bold">}</emphasis></programlisting>
+    </example>
+
+      <para>The parenthesized fact-expression must yield a fact object reference.
+      The expression list in the block should consist of setter calls for the given
+      object, to be written without the usual object reference, which is
+      automatically prepended by the compiler.</para>
+
+      <para>The example illustrates a simple fact modification.</para>
+
+  <example>
+    <title>A modify statement</title>
+
+    <programlisting>rule "modify stilton"
+when
+    $stilton : Cheese(type == "stilton")
+then
+    modify( $stilton ){
+        setPrice( 20 ),
+        setAge( "overripe" )
+    }
+end</programlisting>
+  </example>
+
+    </section>
+
   </section>
 
   <section>
