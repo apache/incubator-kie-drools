@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://drools.org/drools-5.0/change-set" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:change-set="http://drools.org/drools-5.0/change-set">
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema-instance"/>
+  <xsd:element name="change-set">
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element ref="change-set:add"/>
+        <xsd:element ref="change-set:remove"/>
+      </xsd:choice>
+      <xsd:attribute ref="xs:schemaLocation" use="required"/>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="add">
+    <xsd:complexType mixed="true">
+      <xsd:sequence>
+        <xsd:element minOccurs="0" maxOccurs="unbounded" ref="change-set:resource"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="remove">
+    <xsd:complexType mixed="true">
+      <xsd:sequence>
+        <xsd:element minOccurs="0" maxOccurs="unbounded" ref="change-set:resource"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="resource">
+    <xsd:complexType>
+      <!-- URL to the resource, can be file based -->
+      <xsd:attribute name="source" use="required" type="xsd:anyURI"/>
+      <!-- for example, DRL, or PKG -->
+      <xsd:attribute name="type" use="required" type="xsd:string"/>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
