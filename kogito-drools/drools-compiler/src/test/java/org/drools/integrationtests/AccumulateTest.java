@@ -14,6 +14,8 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
+import org.drools.Order;
+import org.drools.OrderItem;
 import org.drools.OuterClass;
 import org.drools.Person;
 import org.drools.RuleBase;
@@ -1442,6 +1444,35 @@ public class AccumulateTest extends TestCase {
                       results.size() );
         assertEquals( new Integer( 45 ),
                       results.get( 0 ) );
+    }
+
+    public void testAccumulateMVELWithModify() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMVELwithModify.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final StatefulSession wm = ruleBase.newStatefulSession();
+        final List<Number> results = new ArrayList<Number>();
+        wm.setGlobal( "results",
+                      results );
+
+        Order order = new Order(1, "Bob");
+        OrderItem item1 = new OrderItem( order, 1, "maquilage", 1, 10 );
+        OrderItem item2 = new OrderItem( order, 2, "perfume", 1, 5 );
+        order.addItem( item1 );
+        order.addItem( item2 );
+        
+        wm.insert( order );
+        wm.insert( item1 );
+        wm.insert( item2 );
+        wm.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 15,
+                      results.get( 0 ).intValue() );
+        assertEquals( 15.0, 
+                      order.getTotal() );
     }
 
     public void testAccumulateGlobals() throws Exception {

@@ -461,6 +461,7 @@ public class AccumulateNode extends BetaNode {
 
         // update result object 
         accctx.result.getFactHandle().setObject( result );
+        workingMemory.getFactHandleFactory().increaseFactHandleRecency( accctx.result.getFactHandle() );
 
         evaluateResultConstraints( leftTuple,
                                    context,

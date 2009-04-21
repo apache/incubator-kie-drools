@@ -37,6 +37,16 @@ public class Order implements Serializable {
     private OrderStatus status;
 
     private Date date;
+    
+    private double total;
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
 
     public Order() {
         this( 0, "Bob" );

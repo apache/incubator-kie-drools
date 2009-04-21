@@ -91,5 +91,9 @@ public class InitialFactHandle extends DefaultFactHandle {
     public String toExternalForm() {
         return "InitialFact";
     }
+    
+    public InitialFactHandle clone() {
+        return this;
+    }
 
 }

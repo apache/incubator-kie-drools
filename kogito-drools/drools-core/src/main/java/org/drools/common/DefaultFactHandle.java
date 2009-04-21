@@ -98,6 +98,10 @@ public class DefaultFactHandle
     public int getObjectHashCode() {
         return this.objectHashCode;
     }
+    
+    protected void setObjectHashCode( int hashCode ) {
+        this.objectHashCode = hashCode;
+    }
 
     /**
      * @see Object
@@ -190,5 +194,15 @@ public class DefaultFactHandle
 
     public void setEntryPoint(WorkingMemoryEntryPoint sourceNode) {
         this.entryPoint = sourceNode;
+    }
+    
+    public DefaultFactHandle clone() {
+        DefaultFactHandle clone =  new DefaultFactHandle(this.id, this.object, this.recency);
+        clone.entryPoint = this.entryPoint;
+        clone.key = this.key;
+        clone.leftTuple = this.leftTuple;
+        clone.rightTuple = this.rightTuple;
+        clone.objectHashCode = this.objectHashCode;
+        return clone;
     }
 }
