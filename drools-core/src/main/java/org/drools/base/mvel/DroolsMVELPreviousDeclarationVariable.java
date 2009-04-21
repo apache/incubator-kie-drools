@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NamedEntryPoint;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.mvel2.integration.VariableResolver;

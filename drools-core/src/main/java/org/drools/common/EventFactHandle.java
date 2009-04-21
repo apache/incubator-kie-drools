@@ -6,10 +6,10 @@ public class EventFactHandle extends DefaultFactHandle {
 
     private static final long serialVersionUID = 5997141759543399455L;
 
-    private long startTimestamp;
-    private long duration;
-    private boolean expired;
-    private long activationsCount;
+    private long              startTimestamp;
+    private long              duration;
+    private boolean           expired;
+    private long              activationsCount;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -54,11 +54,11 @@ public class EventFactHandle extends DefaultFactHandle {
      * @param timestamp the timestamp of the occurrence of this event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
-    public EventFactHandle( final int id, 
-                            final Object object,
-                            final long recency,
-                            final long timestamp,
-                            final long duration ) {
+    public EventFactHandle(final int id,
+                           final Object object,
+                           final long recency,
+                           final long timestamp,
+                           final long duration) {
         super( id,
                object,
                recency );
@@ -132,8 +132,24 @@ public class EventFactHandle extends DefaultFactHandle {
     public void increaseActivationsCount() {
         this.activationsCount++;
     }
-    
+
     public void decreaseActivationsCount() {
         this.activationsCount--;
+    }
+
+    public EventFactHandle clone() {
+        EventFactHandle clone = new EventFactHandle( getId(),
+                                                      getObject(),
+                                                      getRecency(),
+                                                      startTimestamp,
+                                                      duration );
+        clone.activationsCount = activationsCount;
+        clone.expired = expired;
+        clone.setEntryPoint( getEntryPoint() );
+        clone.setEqualityKey( getEqualityKey() );
+        clone.setLeftTuple( getLeftTuple() );
+        clone.setRightTuple( getRightTuple() );
+        clone.setObjectHashCode( getObjectHashCode() );
+        return clone;
     }
 }

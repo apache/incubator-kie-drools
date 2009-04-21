@@ -23,7 +23,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public interface InternalFactHandle
     extends
-    FactHandle {
+    FactHandle, Cloneable {
     public int getId();
 
     public long getRecency();
@@ -62,5 +62,7 @@ public interface InternalFactHandle
     public WorkingMemoryEntryPoint getEntryPoint();
     
     public void setEntryPoint( WorkingMemoryEntryPoint ep );
+    
+    public InternalFactHandle clone();
     
 }

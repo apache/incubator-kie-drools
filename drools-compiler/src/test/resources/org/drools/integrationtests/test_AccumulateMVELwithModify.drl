@@ -1,0 +1,16 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "Accumulate with modify" 
+        dialect "mvel"
+    when
+        $o : Order( total == 0 )
+    	Number( $total : doubleValue ) from accumulate(  
+    	      OrderItem( order == $o, $p : price ),
+              sum( $p ) )
+    then
+        modify( $o ) { total = $total }
+        results.add( $total );
+end  
+

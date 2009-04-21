@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
@@ -43,7 +42,11 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
  
     private Map localDeclarations;
  
-    private Map previousDeclarations;
+    private Map<String, Declaration> previousDeclarations;
+    
+    // this is a cache for previously declared objects in case they 
+    // get retracted during the execution of an MVEL consequence
+    private Map<String, Object> previousDeclarationsObjectCache; 
  
     private Map globals;
  
@@ -52,7 +55,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     private Map localVariables;
  
     public DroolsMVELFactory() {
- 
+        previousDeclarationsObjectCache = new HashMap<String, Object>();
     }
  
     public DroolsMVELFactory(final Map previousDeclarations,
@@ -68,7 +71,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                              final Map localDeclarations,
                              final Map globals,
                              final String[] inputIdentifiers) {
-        this.previousDeclarations = previousDeclarations;
+        this.previousDeclarations = (Map<String, Declaration>) previousDeclarations;
         this.localDeclarations = localDeclarations;
         this.globals = globals;
  
@@ -77,6 +80,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                 isResolveable(inputIdentifiers[i]);
             }
         }
+        previousDeclarationsObjectCache = new HashMap<String, Object>();
     }
  
     public void readExternal(ObjectInput in) throws IOException,
@@ -85,7 +89,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         object = in.readObject();
         localDeclarations = (Map) in.readObject();
-        previousDeclarations = (Map) in.readObject();
+        previousDeclarations = (Map<String, Declaration>) in.readObject();
         globals = (Map) in.readObject();
         workingMemory = (WorkingMemory) in.readObject();
         localVariables = (Map) in.readObject();
@@ -161,15 +165,31 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         else {
             this.localVariables = variables;
         }
+        
+        if( this.previousDeclarations != null ) {
+            // take a snapshot of required objects for variable resolution
+            for( Map.Entry<String, Declaration> entry : this.previousDeclarations.entrySet() ) {
+                Declaration decl = knowledgeHelper != null ? knowledgeHelper.getDeclaration( entry.getValue().getIdentifier() ) : entry.getValue();
+                this.previousDeclarationsObjectCache.put( entry.getKey(), getTupleObjectFor( decl ) );
+            }
+        }
     }
  
+    private Object getTupleObjectFor(Declaration declaration) {
+        int i = declaration.getPattern().getOffset();
+        return ( i < this.tupleObjects.length ) ? this.tupleObjects[i].getObject() : null;
+    }
+
     public KnowledgeHelper getKnowledgeHelper() {
         return this.knowledgeHelper;
     }
  
     public Object getValue(final Declaration declaration) {
-        int i = declaration.getPattern().getOffset();
-        return this.tupleObjects[i].getObject();
+        if( this.previousDeclarationsObjectCache.containsKey( declaration.getIdentifier() ) ) {
+            return this.previousDeclarationsObjectCache.get( declaration.getIdentifier() );
+        } else {
+            return getTupleObjectFor( declaration );
+        }
     }
     public InternalFactHandle getFactHandle(final Declaration declaration){
         int i = declaration.getPattern().getOffset();
