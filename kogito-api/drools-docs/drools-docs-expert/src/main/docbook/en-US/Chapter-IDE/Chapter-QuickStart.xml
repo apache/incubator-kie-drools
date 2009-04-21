@@ -26,15 +26,16 @@
   on Eclipse, and integrators are free to use their tools of choice, as always
   ! Plenty of people use IntelliJ with rules, for instance.</para>
 
-  <para>Note: You can get the plug-in either as a zip to download, or from an
-  update site. Refer to the chapter on installation.</para>
+  <note><para>You can get the plug-in either as a zip to download, or from an
+  update site. Refer to the chapter on installation.</para></note>
 
   <figure>
     <title>Overview</title>
 
     <mediaobject xml:base="../">
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-IDE/all.jpg" format="JPG" scalefit="1" />
+        <imagedata align="center" contentwidth="10in"
+                   fileref="images/Chapter-IDE/all.jpg" format="JPG" scalefit="1" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -656,8 +657,8 @@ logger.writeToDisk();</programlisting>
     <para>Rulesets of 4,000 rules or greater should set the permanent
     generation to at least 128Mb.</para>
 
-    <para>Note that this may also apply to compiling large numbers of rules
-    in general - as there is generally one or more classes per rule.</para>
+    <note><para>This may also apply to compiling large numbers of rules
+    in general, as there is generally one or more classes per rule.</para></note>
 
     <para>As an alternative to the above, you may put rules in a file with the
     ".rule" extension, and the background builder will not try to compile them
@@ -732,6 +733,7 @@ logger.writeToDisk();</programlisting>
           you can also select   the "Debug ..." menu item to open a new dialog
           for creating, managing and running debug configurations (see the
           screenshot below).</para>
+        </listitem>
 
         <listitem>
           <para>Select the "Drools Application" item in the left tree and click
