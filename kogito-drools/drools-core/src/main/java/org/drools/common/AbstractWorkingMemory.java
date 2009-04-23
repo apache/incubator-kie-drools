@@ -1472,7 +1472,13 @@ public abstract class AbstractWorkingMemory
                 WorkingMemoryAction action = null;
 
                 while ( (action = actionQueue.poll()) != null ) {
-                    action.execute( this );
+                    try {
+                        action.execute( this );
+                    } catch ( Exception e ) {
+                        System.err.println("************************************************");
+                        System.err.println("Exception caught while executing action: "+action.toString());
+                        e.printStackTrace();
+                    }
                 }
                 evaluatingActionQueue = false;
             }

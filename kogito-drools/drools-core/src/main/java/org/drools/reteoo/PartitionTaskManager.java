@@ -106,9 +106,16 @@ public class PartitionTaskManager {
          * @see Runnable
          */
         public void run() {
-            Action action = queue.poll();
-            if( action != null ) {
-                action.execute( workingMemory );
+            try {
+                Action action = queue.poll();
+                if( action != null ) {
+                    action.execute( workingMemory );
+                }
+            } catch( Exception e ) {
+                System.err.println("*******************************************************************************************************");
+                System.err.println("Partition task manager caught an unexpected exception: "+e.getMessage());
+                System.err.println("Drools is capturing the exception to avoid thread death. Please report stack trace to development team.");
+                e.printStackTrace();
             }
         }
 
