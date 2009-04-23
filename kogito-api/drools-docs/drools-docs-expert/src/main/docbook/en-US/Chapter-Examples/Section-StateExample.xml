@@ -119,7 +119,8 @@ D finished
 
 				<mediaobject>
 					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/StateExample/state_example_audit1.png" />
+						<imagedata width="100%"
+                            fileref="images/Chapter-Examples/StateExample/state_example_audit1.png" />
 					</imageobject>
 				</mediaobject>
 			</figure>

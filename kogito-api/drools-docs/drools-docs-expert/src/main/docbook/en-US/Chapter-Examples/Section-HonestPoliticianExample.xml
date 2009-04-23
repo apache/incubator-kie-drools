@@ -130,7 +130,8 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Examples/HonestPoliticianExample/honest_politician_audit.png" />
+          <imagedata width="100%"
+                     fileref="images/Chapter-Examples/HonestPoliticianExample/honest_politician_audit.png" />
         </imageobject>
       </mediaobject>
     </figure>

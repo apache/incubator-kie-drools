@@ -24,11 +24,10 @@
       XML, but we hope to add one soon. A few examples will be
       shown to give you the gist of things. A resource approach is employed
       that uses a prefix to indicate the protocol. All the protocols provided
-      by java.net.URL, such as "file" and "http" are supported, as well as an
+      by java.net.URL, such as "file" and "http", are supported, as well as an
       additional "classpath". Currently the type attribute must always be
       specified for a resource, as it is not inferred from the file name extension.
-      Here is a
-      simple example that points to a http location for some rules.</para>
+      Here is a simple example that points to a http location for some rules.</para>
 
       <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
              xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
@@ -40,7 +39,7 @@
 </programlisting>
 
       <para>To use the above XML the code is almost identical as before,
-      except we change the ResourceType to CHANGE_SET.</para>
+      except we change the resource type to <code>CHANGE_SET</code>.</para>
 
       <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClasspathResource( "myChangeSet.xml", getClass() ),
@@ -84,9 +83,9 @@ if ( kbuilder.hasErrors() ) {
     <section>
       <title>Knowledge Agent</title>
 
-      <para>The KnowlegeAgent provides automatic loading, caching and
+      <para>The Knowlege Agent provides automatic loading, caching and
       re-loading of resources and is configured from a properties files. The
-      KnowledgeAgent can update or rebuild this KnowlegeBase as the resources
+      Knowledge Agent can update or rebuild this Knowlege Base as the resources
       it uses are changed. The strategy for this is determined by the
       configuration given to the factory, but it is typically pull based using
       regular polling. We hope to add push based updates and rebuilds in
@@ -96,12 +95,12 @@ if ( kbuilder.hasErrors() ) {
 kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
 KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
 
-      <para>The KnowledgeAgent will continously scan all the added resources,
+      <para>A <code>KnowledgeAgent</code> object will continously scan all the added resources,
       using a default polling interval of 60s, and if their last modified date is
-      updated it will rebuild the cached KnowledgeBase using the new
-      resources. Note that the previous KnowledgeBase reference will still exist
+      updated it will rebuild the cached Knowledge Base using the new
+      resources. Note that the previous <code>KnowledgeBase</code> reference will still exist
       and you'll have to call getKnowledgeBase() to access the newly built
-      KnowledgeBase. If a directory is specified as part of the change set,
+      KnowledgeB ase. If a directory is specified as part of the change set,
       the entire contents of that directory will be scanned for
       changes.</para>
     </section>         

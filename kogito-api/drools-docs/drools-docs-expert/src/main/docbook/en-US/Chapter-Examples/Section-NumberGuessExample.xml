@@ -94,7 +94,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/NumberGuessExample/numberguess-ruleflow.png" />
+            <imagedata width="100%"
+                     fileref="images/Chapter-Examples/NumberGuessExample/numberguess-ruleflow.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -120,7 +121,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/NumberGuessExample/numberguess-ruleflow-properties.png" />
+            <imagedata width="100%"
+                     fileref="images/Chapter-Examples/NumberGuessExample/numberguess-ruleflow-properties.png" />
           </imageobject>
         </mediaobject>
       </figure>

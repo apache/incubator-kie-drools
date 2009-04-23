@@ -7,7 +7,10 @@
     Author: Mark Newton (mark.newton@jboss.org)
 -->
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+                xmlns:d="http://docbook.org/ns/docbook"
+                exclude-result-prefixes="d">
+
 
   <!-- We need to add this as it's needed later for a check -->
   <xsl:param name="confidential" select="0"/>
@@ -201,6 +204,13 @@ Copied from fo/params.xsl
 
 <xsl:template match="filename">
   <xsl:call-template name="inline.monoseq"/>
+</xsl:template>
+
+<!--
+WL: add <kw> for keywords: bold, monospaced
+-->
+<xsl:template match="d:kw">
+  <xsl:call-template name="inline.boldmonoseq"/>
 </xsl:template>
 
 </xsl:stylesheet>

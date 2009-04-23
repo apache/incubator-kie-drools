@@ -27,8 +27,8 @@
   up a package. Note that a package <emphasis>must</emphasis> have a namespace and be declared
   using standard Java conventions for package names; i.e., no spaces, unlike
   rule names which allow spaces. In terms of the order of elements, they can
-  appear in any order in the rule file, with the exception of the "package"
-  and "expander" statements being at the top of the file, before any rules
+  appear in any order in the rule file, with the exception of the <kw>package</kw>
+  and <kw>expander</kw> statements being at the top of the file, before any rules
   appear. In all cases, the semicolons are optional.</para>
 
   <figure>
@@ -101,7 +101,7 @@
       </mediaobject>
     </figure>
 
-    <para>With global you define global variables. They are used to make
+    <para>With <kw>global</kw> you define global variables. They are used to make
     application objects available to the rules. Typically, they are used
     to provide data or services that the rules use, especially application
     services used in rule consequences, and to return data from the rules,
@@ -151,8 +151,8 @@ wm.setGlobal( "myGlobalList", list );
     <para>Note that these are just named instances of objects that you pass in
     from your application to the working memory. This means you can pass in
     any object you want: you could pass in a service locator, or perhaps a
-    service itself. With the new 'from' element it is now common to pass a
-    Hibernate session as a global, to allow 'from' to pull data from a named
+    service itself. With the new <kw>from</kw> element it is now common to pass a
+    Hibernate session as a global, to allow <kw>from</kw> to pull data from a named
     Hibernate query.</para>
 
     <para>One example may be an instance of a Email service. In your

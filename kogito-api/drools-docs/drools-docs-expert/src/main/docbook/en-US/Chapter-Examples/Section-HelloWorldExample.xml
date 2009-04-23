@@ -10,18 +10,18 @@
 
   <screen><emphasis role="bold">Name:</emphasis> Hello World
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.HelloWorldExample
-<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> HelloWorld.drl
 <emphasis role="bold">Objective:</emphasis> demonstrate basic rules in use</screen>
 
   <para>The "Hello World" example shows a simple example of rules usage, and
   both the MVEL and Java dialects.</para>
 
-  <para>In this example it will be shown how to build knowledgebases and sessions
-  and how to add audit logging and debug outputs, this information is ommitted
+  <para>This example demonstrates how to build knowledgebases and sessions.
+  Also, audit logging and debug outputs are shown, which is ommitted
   from other examples as it's all very similar. KnowledgeBuilder is used to turn
-  a drl source file into Package objects which the KnowledgeBase can consume,
-  add takes a Resource interface and ResourceType as parameters. Resource can be 
+  a DRL source file into Package objects which the KnowledgeBase can consume.
+  The add method takes a Resource interface and ResourceType as parameters. Resource can be 
   used to retrieve a source drl file from various locations, in this case the
   drl file is being retrieved from the classpath using ResourceFactory; but it could come from
   the disk or a url. In this case we only add a single drl source file, but
@@ -147,7 +147,8 @@ ksession.dispose();    </programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/HelloWorldExample/helloworld_agenda1.png" />
+        <imagedata width="100%"
+                     fileref="images/Chapter-Examples/HelloWorldExample/helloworld_agenda1.png" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -201,7 +202,7 @@ Goodbye cruel world</programlisting>
   the changes at the end of the block.</para>
 
   <example>
-    <title>HelloWorld example: rule "Hello World"</title>
+    <title>HelloWorld: rule "Hello World"</title>
 
     <programlisting>rule "Hello World"
       dialect "mvel"
@@ -235,7 +236,7 @@ end</programlisting>
   dialect is activated and placed on the agenda.</para>
 
   <figure>
-    <title>Hello World : rule "Hello World" Agenda View</title>
+    <title>Hello World: rule "Hello World" Agenda View</title>
 
     <mediaobject>
       <imageobject>
@@ -273,11 +274,12 @@ end</programlisting>
   Activation executed event.</para>
 
   <figure>
-    <title>Hello World : Audit View</title>
+    <title>Hello World: Audit View</title>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/HelloWorldExample/helloworld_auditview1.png" />
+        <imagedata width="100%"
+                   fileref="images/Chapter-Examples/HelloWorldExample/helloworld_auditview1.png" />
       </imageobject>
     </mediaobject>
   </figure>

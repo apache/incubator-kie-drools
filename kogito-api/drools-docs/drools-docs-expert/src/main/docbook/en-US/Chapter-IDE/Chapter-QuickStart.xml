@@ -34,8 +34,8 @@
 
     <mediaobject xml:base="../">
       <imageobject>
-        <imagedata align="center" contentwidth="10in"
-                   fileref="images/Chapter-IDE/all.jpg" format="JPG" scalefit="1" />
+        <imagedata width="100%"
+                   fileref="images/Chapter-IDE/all.jpg" format="JPG" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -426,7 +426,8 @@ String outputDRL = write.marshall(read.unmarshal(brl));
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-IDE/audit.jpg" scalefit="1" width="100%" />
+          <imagedata width="100%"
+                     fileref="images/Chapter-IDE/audit.jpg" />
         </imageobject>
       </mediaobject>
 
@@ -550,7 +551,8 @@ logger.writeToDisk();</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-IDE/dsl_editor.jpg" format="JPG" />
+            <imagedata width="100%"
+                       align="center" fileref="images/Chapter-IDE/dsl_editor.jpg" format="JPG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -675,7 +677,8 @@ logger.writeToDisk();</programlisting>
           <title>Debugging</title>
            <mediaobject>
              <imageobject>
-               <imagedata align="center" fileref="images/Chapter-IDE/debug-overview.png" format="PNG"/>
+               <imagedata width="100%"
+                     align="center" fileref="images/Chapter-IDE/debug-overview.png" format="PNG"/>
              </imageobject>
            </mediaobject>
         </figure>
@@ -721,7 +724,8 @@ logger.writeToDisk();</programlisting>
           <title>Debug as Drools Application</title>
            <mediaobject>
              <imageobject>
-               <imagedata align="center" fileref="images/Chapter-IDE/debugAsDrools.png" format="PNG" role="" />
+               <imagedata width="100%"
+                     align="center" fileref="images/Chapter-IDE/debugAsDrools.png" format="PNG" role="" />
              </imageobject>
            </mediaobject>
         </figure>
@@ -768,7 +772,8 @@ logger.writeToDisk();</programlisting>
           <title>Debug as Drools Application Configuration</title>
            <mediaobject>
              <imageobject>
-               <imagedata align="center" fileref="images/Chapter-IDE/debug_rules_configuration.png" format="PNG" role="" />
+               <imagedata width="100%"
+                     align="center" fileref="images/Chapter-IDE/debug_rules_configuration.png" format="PNG" role="" />
              </imageobject>
            </mediaobject>
         </figure>
@@ -788,7 +793,8 @@ logger.writeToDisk();</programlisting>
           <title>Debugging</title>
            <mediaobject>
              <imageobject>
-               <imagedata align="center" fileref="images/Chapter-IDE/debug.png" format="PNG"/>
+               <imagedata width="100%"
+                     align="center" fileref="images/Chapter-IDE/debug.png" format="PNG"/>
              </imageobject>
            </mediaobject>
         </figure>
