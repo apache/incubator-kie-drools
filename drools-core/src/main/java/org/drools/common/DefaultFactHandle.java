@@ -142,6 +142,10 @@ public class DefaultFactHandle
         this.entryPoint = null;
     }
 
+    public boolean isValid() {
+        return ( this.id != -1 );
+    }
+    
     public Object getObject() {
         return this.object;
     }

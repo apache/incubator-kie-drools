@@ -39,6 +39,8 @@ public interface InternalFactHandle
     public void setRecency(long recency);
 
     public void invalidate();
+    
+    public boolean isValid();
 
     public int getObjectHashCode();
     
