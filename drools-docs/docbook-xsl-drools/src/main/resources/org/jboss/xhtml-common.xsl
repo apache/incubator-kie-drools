@@ -17,9 +17,16 @@
 
    <xsl:import href="common.xsl" />
   
-  <!-- Ignore image scaling in html version -->
-  <xsl:param name="ignore.image.scaling" select="1"/>
-  
+   <!-- Do not ignore image scaling in html version -->
+   <xsl:param name="ignore.image.scaling" select="0"/>
+   <xsl:param name="graphicsize.extension" select="0"></xsl:param>
+
+   <!-- WL: failed experiments - postponed
+   <xsl:param name="use.extensions" select="1"></xsl:param>
+   <xsl:param name="graphicsize.use.img.src.path" select="1"></xsl:param>
+   <xsl:param name="keep.relative.image.uris" select="1"></xsl:param>
+   -->
+
   <xsl:param name="generate.legalnotice.link" select="1"/>
   <xsl:param name="generate.revhistory.link" select="0"/>
   
@@ -39,7 +46,6 @@
   <xsl:param name="siteLinkText" select="'JBoss.org'"/>
   <xsl:param name="docLinkText" select="'Community Documentation'"/>
 
-   <xsl:param name="graphicsize.extension">0</xsl:param>
    
    <!-- Placement of titles -->
    <xsl:param name="formal.title.placement">

@@ -15,7 +15,8 @@
   with this native rule format. The diagrams used to present the syntax are
   known as "railroad" diagrams, and they are basically flow charts for the
   language terms. The
-  technically very keen may also refer to "DRL.g" which is the Antlr3
+  technically very keen may also refer to <filename>DRL.g</filename> which is 
+  the Antlr3
   grammar for the rule language. If you use the Rule Workbench, a lot of the
   rule structure is done for you with content assistance, for example, type
   "ru" and press ctrl+space, and it will build the rule structure for
@@ -24,7 +25,7 @@
   <section>
     <title>A rule file</title>
 
-    <para>A rule file is typically a file with a .drl extension. In a drl file
+    <para>A rule file is typically a file with a .drl extension. In a DRL file
     you can have multiple rules, queries and functions, as well as some
     resource declarations like imports, globals and attributes that are
     assigned and used by your rules and queries. However, you are also able to
