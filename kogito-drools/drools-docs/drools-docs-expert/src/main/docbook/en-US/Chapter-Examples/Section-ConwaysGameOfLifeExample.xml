@@ -48,7 +48,8 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway1.png" />
+		<imagedata width="100%"
+                     fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway1.png" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -98,7 +99,8 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway2.png" />
+		<imagedata width="100%"
+                     fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway2.png" />
         </imageobject>
       </mediaobject>
     </figure>

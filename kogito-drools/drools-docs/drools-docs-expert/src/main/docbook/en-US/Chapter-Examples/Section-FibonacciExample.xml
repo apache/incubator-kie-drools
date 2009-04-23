@@ -101,7 +101,8 @@ end</programlisting>
 
 			<mediaobject>
 				<imageobject>
-					<imagedata fileref="images/Chapter-Examples/FibonacciExample/fibonacci1.png" />
+					<imagedata width="100%"
+                     fileref="images/Chapter-Examples/FibonacciExample/fibonacci1.png" />
 				</imageobject>
 			</mediaobject>
 		</figure>

@@ -204,7 +204,7 @@
       </itemizedlist>
 
       <para>Note that the second problem is related to the first. To fix it,
-      just replace the commas (",") by AND operator ("&amp;&amp;").</para>
+      just replace the commas (',') by AND operator ('&amp;&amp;').</para>
 
       <tip>
         <para>In some situations you can get more than one error message. Try to
@@ -249,7 +249,7 @@
       </itemizedlist>
 
       <para>The <emphasis role="bold">fdsfdsfds</emphasis> text is invalid and
-      the parser couldn’t identify it as the soft keyword "rule".</para>
+      the parser couldn’t identify it as the soft keyword <kw>rule</kw>.</para>
 
       <tip>
         <para>This error is very similar to 102: Mismatched input, but usually
@@ -260,7 +260,7 @@
     <section>
       <title>104: Trailing semi-colon not allowed</title>
 
-      <para>This error is associated with the "eval" clause, where its
+      <para>This error is associated with the <kw>eval</kw> clause, where its
       expression may not be terminated with a semicolon. Check this
 	example:</para>
 

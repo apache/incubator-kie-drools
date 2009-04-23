@@ -6,16 +6,17 @@
 	<title>Examples</title>
 	<section>
 
-		<title>Getting the examples</title>
+		<title>Getting the Examples</title>
 
 		<para>Make sure the Drools Eclipse plugin is installed, which
-			needs GEF dependency installed first. Then download and extract the
+			needs the Graphical Editing Framework (GEF) dependency installed
+                        first. Then download and extract the
 			drools-examples zip file, which includes an already created Eclipse
 			project. Import that project into a new Eclipse workspace. The rules
 			all have example classes that execute the rules. If you want to try
 			the examples in another project (or another IDE) then you will need
-			to setup the dependencies by hand of course. Many, but not all of the
-			examples are documented below, enjoy :)</para>
+			to set up the dependencies by hand, of course. Many, but not all of the
+			examples are documented below, enjoy!</para>
 	</section>
 
 	<xi:include href="Section-HelloWorldExample.xml" />

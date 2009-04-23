@@ -61,8 +61,8 @@
     <title>Declaring New Types</title>
 
     <para>To declare a new type, all you need to do is use the keyword
-    <emphasis role="bold">declare</emphasis>, followed by the list of fields,
-    and the keyword <emphasis role="bold">end</emphasis>.</para>
+    <kw>declare</kw>, followed by the list of fields,  and the keyword
+    <kw>end</kw>.</para>
 
     <example>
       <title>Declaring a new fact type: Address</title>
@@ -76,14 +76,14 @@
     </example>
 
     <para>The previous example declares a new fact type called
-    <emphasis>Address</emphasis>. This fact type will have 3 attributes:
-    <emphasis>number</emphasis>, <emphasis>streetName</emphasis> and
-    <emphasis>city</emphasis>. Each attribute has a type that can be any valid
+    <code>Address</code>. This fact type will have three attributes:
+    <code>number</code>, <code>streetName</code> and <code>city</code>.
+    Each attribute has a type that can be any valid
     Java type, including any other class created by the user or even other
     fact types previously declared.</para>
 
     <para>For instance, we may want to declare another fact type
-    <emphasis>Person</emphasis>:</para>
+    <code>Person</code>:</para>
 
     <para><example>
         <title>declaring a new fact type: Person</title>
@@ -95,13 +95,13 @@
 <emphasis role="bold">end</emphasis>
 </programlisting>
       </example>As we can see on the previous example,
-    <emphasis>dateOfBirth</emphasis> is of type <code>java.util.Date</code>,
-    from the Java API, while <emphasis>address</emphasis> is of the previously
+    <code>dateOfBirth</code> is of type <code>java.util.Date</code>,
+    from the Java API, while <code>address</code> is of the previously
     defined fact type Address.</para>
 
     <para>You may avoid having to write the fully qualified name of a class
-    every time you write it by using the <emphasis
-    role="bold">import</emphasis> clause, as previously discussed.</para>
+    every time you write it by using the <kw>import</kw> clause, as previously
+    discussed.</para>
 
     <para><example>
         <title>Avoiding the need to use fully qualified class names by using
@@ -162,14 +162,13 @@
 
     <para>Metadata may be assigned to several different constructions in
     Drools: fact types, fact attributes and rules. Drools uses the
-    <emphasis role="bold">@</emphasis> symbol to introduce metadata, and it
-    always uses the form:</para>
+    at sign ('@') to introduce metadata, and it always uses the form:</para>
 
     <para><programlisting>@<emphasis>metadata_key</emphasis>( <emphasis>metadata_value</emphasis> )</programlisting>The
     parenthesized <emphasis>metadata_value</emphasis> is optional.</para>
 
     <para>For instance, if you want to declare a metadata attribute like
-    <emphasis>author</emphasis>, whose value is <emphasis>Bob</emphasis>, you
+    <code>author</code>, whose value is <emphasis>Bob</emphasis>, you
     could simply write:</para>
 
     <example>
@@ -203,11 +202,10 @@
     </example>
 
     <para>In the previous example, there are two metadata items declared for the
-    fact type (<emphasis>@author</emphasis> and
-    <emphasis>@dateOfCreation</emphasis>) and two more defined for the name
-    attribute (<emphasis>@key</emphasis> and <emphasis>@maxLength</emphasis>).
-    Please note that the <emphasis>@key</emphasis> metadata has no value, and
-    so the parentheses and the value were omitted.</para>
+    fact type (<code>@author</code> and <code>@dateOfCreation</code>) and two 
+    more defined for the name attribute (<code>@key</code> and
+    <code>@maxLength</code>). Please note that the <code>@key</code> metadata
+    has no value, and so the parentheses and the value were omitted.</para>
   </section>
 
   <section>
@@ -266,10 +264,10 @@
 
     <para>The first important thing to realize is that a declared fact will
     belong to the package where it was declared. So, for instance, in the
-    example below, <emphasis>Person</emphasis> will belong to the
-    <emphasis>org.drools.examples</emphasis> package, and so the
+    example below, <code>Person</code> will belong to the
+    <code>org.drools.examples</code> package, and so the
     fully qualified name of the generated class will be
-    <emphasis>org.drools.examples.Person</emphasis>.</para>
+    <code>org.drools.examples.Person</code>.</para>
 
     <example>
       <title>Declaring a type in the org.drools.examples package</title>
@@ -292,7 +290,7 @@
 
     <para>Drools then provides an interface through which users can handle
     declared types from the application code:
-    org.drools.definition.type.FactType. Through this interface, the user can
+    <code>org.drools.definition.type.FactType</code>. Through this interface, the user can
     instantiate, read and write fields in the declared fact types.</para>
 
     <example>
