@@ -58,7 +58,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/excel.png"
+            <imagedata width="100%"
+                       fileref="images/Chapter-Decision_Tables/excel.png"
                        format="PNG" />
           </imageobject>
         </mediaobject>
@@ -79,7 +80,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/open_office.png" />
+            <imagedata width="100%"
+                       fileref="images/Chapter-Decision_Tables/open_office.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -118,7 +120,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/multi_table.png" />
+            <imagedata width="100%"
+                       fileref="images/Chapter-Decision_Tables/multi_table.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -136,7 +139,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/row_col.png" />
+            <imagedata width="100%"
+                       fileref="images/Chapter-Decision_Tables/row_col.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -158,7 +162,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/expanded.png" />
+            <imagedata width="100%"
+                       fileref="images/Chapter-Decision_Tables/expanded.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -535,7 +540,8 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Decision_Tables/Key.png" />
+              <imagedata width="100%"
+                         fileref="images/Chapter-Decision_Tables/Key.png" />
             </imageobject>
           </mediaobject>
         </screenshot>

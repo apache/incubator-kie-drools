@@ -83,8 +83,8 @@ then
                         " sprinkler:" + $sprinkler.getRoom().getName() );
 end</programlisting>
 
-      <para>In SQL terms this would be like doing "select * from Room,
-      Sprinkler" and every row in the Room table would be joined with every
+      <para>In SQL terms this would be like doing <code>select * from Room,
+      Sprinkler</code> and every row in the Room table would be joined with every
       row in the Sprinkler table resulting in the following output:</para>
 
       <programlisting>room:office sprinker:office
@@ -121,7 +121,7 @@ end</programlisting>
 
       <para>This results in just four rows of data, with the correct Sprinkler
       for each Room. In SQL (actually HQL) the corresponding query would be
-      "select * from Room, Sprinkler where Room == Sprinkler.room"</para>
+      <code>select * from Room, Sprinkler where Room == Sprinkler.room</code>.</para>
 
       <programlisting>room:office sprinkler:office
 room:kitchen sprinkler:kitchen
@@ -139,7 +139,7 @@ room:bedroom sprinkler:bedroom</programlisting>
       of what is actually going on under the hood. Three classes will be used,
       as shown below.</para>
 
-      <programlisting>public class Cashflow {
+      <programlisting>public class CashFlow {
     private Date   date;
     private double amount;
     private int    type;
@@ -159,26 +159,28 @@ public AccountPeriod {
     // getter and setter methods here
 }</programlisting>
 
-      <para>By now you already know how to create KnowledgeBases and how to
-      instantiate facts to populate the StatefulKnowledgeSession, so tables
+      <para>By now you already know how to create Knowledge Bases and how to
+      instantiate facts to populate the <code>StatefulKnowledgeSession</code>, so tables
       will be used to show the state of the inserted data, as it makes things
       clearer for illustration purposes. The tables below show that a single fact
-      was inserted for the Account. Also inserted are a series of debits and credits
-      as Cashflows for that Account, extending over two quarters.</para>
+      was inserted for the <code>Account</code>. Also inserted are a series of debits
+      and credits as <code>CashFlow</code> objects for that account, extending over two
+      quarters.</para>
 
       <figure>
         <title>CashFlows and Account</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Quick_Start/tables1.png" />
+            <imagedata width="100%"
+                       fileref="images/Chapter-Quick_Start/tables1.png" />
           </imageobject>
         </mediaobject>
       </figure>
 
       <para>Two rules can be used to determine the debit and credit for that
       quarter and update the Account balance. The two rules below constrain
-      the Cashflows for an Account for a given time period. Notice the
+      the cashflows for an account for a given time period. Notice the
       "&amp;&amp;" which use short cut syntax to avoid repeating the field
       name twice.</para>
 
@@ -216,12 +218,12 @@ end</programlisting>
         </tbody>
       </informaltable>
 
-      <para>If the AccountPeriod is set to the first quarter we constrain the
-      "increase balance for credits" to fire on two rows of data and
+      <para>If the <code>AccountPeriod</code> is set to the first quarter we constrain the
+      rule "increase balance for credits" to fire on two rows of data and
       "decrease balance for debits" to act on one row of data.</para>
 
       <figure>
-        <title>CashFlows and Account</title>
+        <title>AccountingPeriod, CashFlows and Account</title>
 
         <mediaobject>
           <imageobject>
@@ -230,10 +232,11 @@ end</programlisting>
         </mediaobject>
       </figure>
 
-      <para>The two Cashflow tables above represent the matched data for the
+      <para>The two cashflow tables above represent the matched data for the
       two rules. The data is matched during the insertion stage and, as you
       discovered in the previous chapter, does not fire straight away, but only
-      after fireAllRules() is called. Meanwhile, rule plus its matched data is
+      after <code>fireAllRules()</code> is called. Meanwhile, the rule plus its 
+      matched data is
       placed on the Agenda and referred to as an Activation. The Agenda is a
       table of Activations that are able to fire and have their consequences
       executed, as soon as fireAllRules() is called. Activations on the
@@ -250,7 +253,7 @@ end</programlisting>
         </mediaobject>
       </figure>
 
-      <para>After all of the above activations are fired, the Account has a
+      <para>After all of the above activations are fired, the account has a
       balance of -25.</para>
 
       <figure>
@@ -263,7 +266,7 @@ end</programlisting>
         </mediaobject>
       </figure>
 
-      <para>If the AccountPeriod is updated to the second quarter, we have just
+      <para>If the <code>AccountPeriod</code> is updated to the second quarter, we have just
       a single matched row of data, and thus just a single Activation on the
       Agenda.</para>
 
@@ -295,7 +298,7 @@ end</programlisting>
       is used to determine the order of execution. At the simplest level the
       default strategy uses salience to determine rule priority. Each rule has
       a default value of 0, the higher the value the higher the priority. To
-      illustrate this we add a rule to print the Account balance, where we
+      illustrate this we add a rule to print the account balance, where we
       want this rule to be executed after all the debits and credits have
       been applied for all accounts. We achieve this by assigning a negative
       salience to this rule so that it fires after all rules with the default
@@ -318,7 +321,7 @@ end</programlisting>
         </tbody>
       </table>
 
-      <para>The table below depicts the resulting Agenda. The 3 debit and credit
+      <para>The table below depicts the resulting Agenda. The three debit and credit
       rules are shown to be in arbitrary order, while the print rule is ranked
       last, to execute afterwards.</para>
 

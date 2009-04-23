@@ -22,22 +22,23 @@
     <title>Building using Code</title>
 
     <para>The KnowledgeBuilder is responsible for taking source files, such as
-    a .drl file or an .xls file, and turning them into a KnowledgePackage of
-    rule and process definitions which a KnowledgeBase can consume. An object
-    of the class ResourceType indicates the type of resource it is being
+    a DRL file or an Excel file, and turning them into a Knowledge Package of
+    rule and process definitions which a Knowledge Base can consume. An object
+    of the class <code>ResourceType</code> indicates the type of resource it is being
     asked to build.</para>
 
-    <para>The ResourceFactory provides capabilities to load Resources from a
+    <para>The <code>ResourceFactory</code> provides capabilities to load resources from a
     number of sources, such as Reader, ClassPath, URL, File, or ByteArray.
-    Binaries, such as .xls decision tables, should not use a Reader based
-    Resource handler, which is only suitable for text based resources.</para>
+    Binaries, such as decision tables (Excel .xls files), should not use a Reader based
+    resource handler, which is only suitable for text based resources.</para>
 
     <figure>
       <title>KnowledgeBuilder</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilder.png"></imagedata>
+          <imagedata width="100%"
+                     fileref="images/Chapter-User_Guide/KnowledgeBuilder.png"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -50,7 +51,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"></imagedata>
+          <imagedata width="100%"
+                     fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -64,11 +66,11 @@
       <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();</programlisting>
     </example>
 
-    <para>A configuration can be created using the KnowledgeBuilderFactory.
-    This allows the behavior of the KnowledgeBuilder to modified. The most
-    common usage is to provide a custom ClassLoader so that the kbuilder can
-    resolve classes that are not in the default classpath. The first parameter
-    is for Properties and is optional, i.e., it may be left null, in which case the
+    <para>A configuration can be created using the <code>KnowledgeBuilderFactory</code>.
+    This allows the behavior of the Knowledge Builder to be modified. The most
+    common usage is to provide a custom class loader so that the <code>KnowledgeBuilder</code>
+    object can resolve classes that are not in the default classpath. The first parameter
+    is for properties and is optional, i.e., it may be left null, in which case the
     default options will be used. The options parameter can be used for things
     like changing the dialect or registering new accumulator functions.</para>
 
@@ -80,8 +82,8 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
 </programlisting>
     </example>
 
-    <para>Resources of any type can be added iteratively. Below, a DRL is
-    added. Unlike Drools 4.0 PackageBuilder the KnowledgeBuilder can now
+    <para>Resources of any type can be added iteratively. Below, a DRL file is
+    added. Unlike Drools 4.0 Package Builder, the Knowledge Builder can now
     handle multiple namespaces, so you can just keep adding resources
     regardless of namespace.</para>
 
@@ -93,9 +95,9 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
 </programlisting>
     </example>
 
-    <para>It is best practice to always check the hasErrors() method after an
-    addition. You should not add more resources or retrieve the KnowledgePackages
-    if there are errors. getKnowledgePackages() returns an empty list if
+    <para>It is best practice to always check the <code>hasErrors()</code> method after an
+    addition. You should not add more resources or retrieve the Knowledge Packages
+    if there are errors. <code>getKnowledgePackages()</code> returns an empty list if
     there are errors.</para>
 
     <example>
@@ -109,9 +111,9 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     </example>
 
     <para>When all the resources have been added and there are no errors the
-    collection of KnowledgePackages can be retrieved. It is a Collection because
-    there is one KnowledgePackage per package namespace. These
-    KnowledgePackages are serializable and often used as a unit of
+    collection of Knowledge Packages can be retrieved. It is a Collection because
+    there is one Knowledge Package per package namespace. These
+    Knowledge Packages are serializable and often used as a unit of
     deployment.</para>
 
     <example>
@@ -242,22 +244,22 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
-    <para>Notice the "file:" prefix, this signifies the protocol for the
-    resource. The ChangeSet supports all the protocols provided by
+    <para>Notice the <code>file:</code> prefix, which signifies the protocol for the
+    resource. The Change Set supports all the protocols provided by
     java.net.URL, such as "file" and "http", as well as an additional
     "classpath". Currently the type attribute must always be specified for a
     resource, as it is not inferred from the file name extension. Using the
-    ClassPath resource loader in Java allows you to specify the ClassLoader to
+    ClassPath resource loader in Java allows you to specify the Class Loader to
     be used to locate the resource but this is not possible from XML. Instead,
-    the ClassLoader will default to the one used by the KnowledgeBuilder
+    the Class Loader will default to the one used by the Knowledge Builder
     unless the ChangeSet XML is itself loaded by the ClassPath resource, in
-    which case it will use the ClassLoader specified for that resource.</para>
+    which case it will use the Class Loader specified for that resource.</para>
 
     <para>Currently you still need to use the API to load that ChangeSet, but
     we will add support for containers such as Spring in the future, so that the
-    process of creating a KnowledgeBase can be done completely by XML configuration.
+    process of creating a Knowledge Base can be done completely by XML configuration.
     Loading resources using an XML file couldn't be simpler, as it's just another
-    ResourceType.</para>
+    resource type.</para>
 
     <example>
       <title>Loading the ChangeSet XML</title>
@@ -266,7 +268,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
-    <para>Changesets can include any number of resources, and they even support
+    <para>ChangeSets can include any number of resources, and they even support
     additional configuration information, which currently is only needed for
     decision tables. Below, the example is expanded to load rules from a
     http URL location, and an Excel decision table from the classpath.</para>
@@ -287,16 +289,16 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
-    <para>The ChangeSet is especially useful when working with KnowledgeAgent,
+    <para>The ChangeSet is especially useful when working with a Knowledge Agent,
     as it allows for change notification and automatic rebuilding of the
-    KnowledgeBase, which is covered in more detail in the section on the
-    KnowledgeAgent, under Deploying.</para>
+    Knowledge Base, which is covered in more detail in the section on the
+    Knowledge Agent, under Deploying.</para>
 
     <para>Directories can also be specified, to add all resources
     in that folder. Currently it is expected that all resources in
-    that folder are of the same type. If you use the KnowledgeAgent it will
+    that folder are of the same type. If you use the Knowledge Agent it will
     provide a continous scanning for added, modified or removed resources and
-    rebuild the cached KnowledgeBase. The KnowledgeAgent provides more
+    rebuild the cached Knowledge Base. The KnowledgeAgent provides more
     information on this.</para>
 
     <example>

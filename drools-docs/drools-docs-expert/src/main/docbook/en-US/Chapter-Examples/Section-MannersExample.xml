@@ -31,8 +31,9 @@
         <mediaobject>
 
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Examples/MannersExample/guests_at_table.png"
-                       format="PNG" scalefit="1" />
+            <imagedata width="100%"
+                     align="center" fileref="images/Chapter-Examples/MannersExample/guests_at_table.png"
+                       format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -126,8 +127,9 @@
           <mediaobject>
 
             <imageobject>
-		    <imagedata align="center" fileref="images/Chapter-Examples/MannersExample/manners_activity_diagram.png"
-                         format="PNG" scalefit="1" />
+		    <imagedata width="100%"
+                     align="center" fileref="images/Chapter-Examples/MannersExample/manners_activity_diagram.png"
+                         format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>
