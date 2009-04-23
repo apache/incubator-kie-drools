@@ -2,8 +2,6 @@ package org.drools.runtime.rule;
 
 import java.util.Collection;
 
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.runtime.ObjectFilter;
 import org.drools.time.SessionClock;
 
 /**
