@@ -1,0 +1,21 @@
+package com.sample
+ 
+import java.util.List;
+
+global List list
+
+rule "Sample Rule" ruleflow-group "Group1" salience 20
+	when
+		s: String()
+	then
+	    System.out.println("Clearing ruleflow-group");
+	    drools.getWorkingMemory().getAgenda().clearAndCancelRuleFlowGroup("Group1");
+end
+
+rule "Sample Rule 2" ruleflow-group "Group1"
+	when
+		s: String()
+	then
+	    System.out.println("Adding string " + s);
+		list.add(s);
+end
