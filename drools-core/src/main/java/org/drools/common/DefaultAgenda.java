@@ -950,7 +950,11 @@ public class DefaultAgenda
 
         if ( activation.getRuleFlowGroupNode() != null ) {
             final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-            ruleFlowGroup.removeActivation( activation );
+            // it is possible that the ruleflow group is no longer active if it was
+            // cleared during execution of this activation
+            if (ruleFlowGroup.isActive()) {
+            	ruleFlowGroup.removeActivation( activation );
+            }
         }
 
         // if the tuple contains expired events 
