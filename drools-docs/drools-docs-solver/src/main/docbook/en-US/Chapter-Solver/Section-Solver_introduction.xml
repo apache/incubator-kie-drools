@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section  version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
   <title>Solver introduction</title>
 
   <section>
     <title>What is a Solver?</title>
 
-    <para>Drools-solver combines a search algorithm with the power of the
-    drools rule engine to solve planning problems. Good examples of such
-    planning problems include:</para>
+    <para>Drools-solver combines a search algorithm with the power of the drools rule engine to solve planning problems.
+    Good examples of such planning problems include:</para>
 
     <itemizedlist>
       <listitem>
@@ -37,102 +33,90 @@
       </listitem>
 
       <listitem>
-        <para><ulink
-        url="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The
-        traveling salesman problem</ulink></para>
+        <para><ulink url="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The traveling salesman
+        problem</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="http://mat.gsia.cmu.edu/TOURN/">The traveling
-        tournament problem</ulink></para>
+        <para><ulink url="http://mat.gsia.cmu.edu/TOURN/">The traveling tournament problem</ulink></para>
       </listitem>
 
       <listitem>
-        <para>Miss manners too (although drools-solver would solve this
-        differently than the pure drools rule engine example)</para>
+        <para>Miss manners too (although drools-solver would solve this differently than the pure drools rule engine
+        example)</para>
       </listitem>
     </itemizedlist>
 
-    <para>A planning problem consists out of a number of constraints.
-    Generally, there are 3 types of constraints:</para>
+    <para>A planning problem consists out of a number of constraints. Generally, there are 3 types of
+    constraints:</para>
 
     <itemizedlist>
       <listitem>
-        <para>A <emphasis>(negative) hard constraint</emphasis> must not be
-        broken. For example: <emphasis>1 teacher can not teach 2 different
-        lessons at the same time</emphasis>.</para>
+        <para>A <emphasis>(negative) hard constraint</emphasis> must not be broken. For example: <emphasis>1 teacher can
+        not teach 2 different lessons at the same time</emphasis>.</para>
       </listitem>
 
       <listitem>
-        <para>A <emphasis>(negative) soft constraint</emphasis> should not be
-        broken if it can be avoided. For example: <emphasis>Teacher A does not
-        like to teach on Friday afternoon</emphasis>.</para>
+        <para>A <emphasis>(negative) soft constraint</emphasis> should not be broken if it can be avoided. For example:
+        <emphasis>Teacher A does not like to teach on Friday afternoon</emphasis>.</para>
       </listitem>
 
       <listitem>
-        <para>A <emphasis>positive constraint (or reward)</emphasis> should be
-        fulfilled if possible. For example: <emphasis>Teacher B likes to teach
-        on Monday morning</emphasis>.</para>
+        <para>A <emphasis>positive constraint (or reward)</emphasis> should be fulfilled if possible. For example:
+        <emphasis>Teacher B likes to teach on Monday morning</emphasis>.</para>
       </listitem>
     </itemizedlist>
 
-    <para>These constraints define the <emphasis>score function</emphasis> of
-    a planning problem. This is where the drools rule engine comes into play:
-    <emphasis role="bold">adding constraints with score rules is easy and
+    <para>These constraints define the <emphasis>score function</emphasis> of a planning problem. This is where the
+    drools rule engine comes into play: <emphasis role="bold">adding constraints with score rules is easy and
     scalable</emphasis>.</para>
 
-    <para>A planning problem has a number of <emphasis>solutions</emphasis>.
-    Each solution has a score. We can break down the solutions of a planning
-    problem into 3 categories:</para>
+    <para>A planning problem has a number of <emphasis>solutions</emphasis>. Each solution has a score. There are 3
+    categories of solutions:</para>
 
     <itemizedlist>
       <listitem>
-        <para>A <emphasis>possible solution</emphasis> is a solution that does
-        or does not break any number of constraints. Planning problems tend to
-        have a incredibly large number of possible solutions. Most of those
+        <para>A <emphasis>possible solution</emphasis> is a solution that does or does not break any number of
+        constraints. Planning problems tend to have a incredibly large number of possible solutions. Most of those
         solutions are worthless.</para>
       </listitem>
 
       <listitem>
-        <para>A <emphasis>feasible solution</emphasis> is a solution that does
-        not break any (negative) hard constraints. The number of feasible
-        solutions tends to be relative to the number of possible solutions.
-        Sometimes there are no feasible solutions.</para>
+        <para>A <emphasis>feasible solution</emphasis> is a solution that does not break any (negative) hard
+        constraints. The number of feasible solutions tends to be relative to the number of possible solutions.
+        Sometimes there are no feasible solutions. Every feasible solution is a possible solution.</para>
       </listitem>
 
       <listitem>
-        <para>An <emphasis>optimal solution</emphasis> is a solution with the
-        highest score. Planning problems tend to have 1 or a few optimal
-        solutions. There is always at least 1 optimal solution, even in the
-        remote case that it's not a feasible solution because there are no
-        feasible solutions.</para>
+        <para>An <emphasis>optimal solution</emphasis> is a solution with the highest score. Planning problems tend to
+        have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the remote case that
+        it's not a feasible solution because there are no feasible solutions.</para>
       </listitem>
     </itemizedlist>
 
-    <para>Drools-solver supports several search algorithms to efficiently wade
-    through the incredbly large number of possible solutions. <emphasis
-    role="bold">It makes it easy to switch the search algorithm</emphasis>, by
-    simply changing the solver configuration.</para>
+    <para>Drools-solver supports several search algorithms to efficiently wade through the incredbly large number of
+    possible solutions. <emphasis role="bold">It makes it easy to switch the search algorithm</emphasis>, by simply
+    changing the solver configuration.</para>
   </section>
 
   <section>
     <title>Status of drools-solver</title>
 
-    <para>Drools-solver is an <emphasis role="bold">experimental</emphasis>
-    module of Drools. The API is far from stable and backward incompatible
-    changes occur now and then. A recipe to upgrade and apply those API
-    changes between versions will be maintained soon.</para>
+    <para>Drools-solver is an <emphasis role="bold">beta</emphasis> module of Drools. The API is almost stable but
+    backward incompatible changes can occur. With the recipe called
+    <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and deal with any backwards
+    incompatible changes between versions. You can find this recipe in subversion and in every release.</para>
 
-    <para>You can download an alfa release of Drools-solver from <ulink
-    url="http://www.jboss.org/drools/downloads.html">the drools download
-    site</ulink>.</para>
+    <para>You can download a beta release of Drools-solver from <ulink
+    url="http://www.jboss.org/drools/downloads.html">the drools download site</ulink>. It is also available on
+    <ulink />the jboss maven repository.</para>
   </section>
 
   <section>
     <title>Building drools-solver and running an example</title>
 
-    <para>You can also easily build it from source yourself. Check out drools
-    from subversion and do a maven 2 build with the solver profile:</para>
+    <para>You can also easily build it from source yourself. Check out drools from subversion and do a maven 2 build
+    with the solver profile:</para>
 
     <programlisting>$ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ drools
 ...
@@ -140,29 +124,28 @@ $ cd drools
 $ mvn -Dmaven.test.skip clean install
 ...</programlisting>
 
-    <para>After that, you can run any example directly from the command line,
-    for example to run the n queens example, run:</para>
+    <para>After that, you can run any example directly from the command line, for example to run the n queens example,
+    run:</para>
 
     <programlisting>$ cd drools-solver/drools-solver-examples/
 $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
 ...</programlisting>
 
-    <para>You will use drools-solver with the latest, unstable snapshot of the
-    drools rule engine. If you would rather use a stable version of the drools
-    rule engine, edit <literal>/drools-solver/pom.xml</literal> and overwrite
-    the drools jar versions, before building and running the examples:</para>
+    <para>You will use drools-solver with the latest, unstable snapshot of the drools rule engine. If you would rather
+    use a stable version of the drools rule engine, edit <literal>/drools-solver/pom.xml</literal> and overwrite the
+    drools jar versions, before building and running the examples:</para>
 
     <programlisting>    &lt;dependencyManagement&gt;
         &lt;dependencies&gt;
             &lt;dependency&gt;
                 &lt;groupId&gt;org.drools&lt;/groupId&gt;
                 &lt;artifactId&gt;drools-core&lt;/artifactId&gt;
-                &lt;version&gt;4.0.3&lt;/version&gt;
+                &lt;version&gt;5.0.1&lt;/version&gt;
             &lt;/dependency&gt;
             &lt;dependency&gt;
                 &lt;groupId&gt;org.drools&lt;/groupId&gt;
                 &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
-                &lt;version&gt;4.0.3&lt;/version&gt;
+                &lt;version&gt;5.0.1&lt;/version&gt;
             &lt;/dependency&gt;
         &lt;/dependencies&gt;
     &lt;/dependencyManagement&gt;</programlisting>
