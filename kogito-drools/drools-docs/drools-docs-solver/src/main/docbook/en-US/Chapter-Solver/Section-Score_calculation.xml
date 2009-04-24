@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section  version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
   <title>Score calculation with a rule engine</title>
 
   <section>
     <title>Rule based score calculation</title>
 
-    <para>The score calculation of a planning problem is based on constraints
-    (such as hard constraints, soft constraints, rewards, ...). A rules
-    engine, such as drools, makes it easy to implement those constraints as
+    <para>The score calculation of a planning problem is based on constraints (such as hard constraints, soft
+    constraints, rewards, ...). A rules engine, such as drools, makes it easy to implement those constraints as
     <emphasis>score rules</emphasis>.</para>
 
-    <para>Here's an example of a constraint implemented as a score rule in
-    drools:</para>
+    <para>Here's an example of a constraint implemented as a score rule in drools:</para>
 
     <programlisting>rule "multipleQueensHorizontal"
     when
@@ -27,118 +22,86 @@
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end</programlisting>
 
-    <para>This score rule will fire once for every 2 queens with the same
-    <literal>y</literal>. The <literal>(id &gt; $id)</literal> condition is
-    needed to assure that for 2 queens A and B, it can only fire for (A, B)
-    and not for (B, A), (A, A) or (B, B). Let's take a closer look at this
-    score rule on the starting solution of 4 queens:</para>
+    <para>This score rule will fire once for every 2 queens with the same <literal>y</literal>. The <literal>(id &gt;
+    $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for (A, B) and not for (B,
+    A), (A, A) or (B, B). Let's take a closer look at this score rule on the starting solution of 4 queens:</para>
 
     <figure>
       <title>Starting solution for the 4 queens puzzle</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/unsolvedNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/unsolvedNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>In this starting solution the multipleQueensHorizontal score rule
-    will fire for 6 queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and
-    (C, D). Because none of the queens are on the same vertical or diagonal
-    line, this starting solution will have a score of <literal>-6</literal>.
-    An optimal solution of 4 queens has a score of
+    <para>In this starting solution the multipleQueensHorizontal score rule will fire for 6 queen couples: (A, B), (A,
+    C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this
+    starting solution will have a score of <literal>-6</literal>. An optimal solution of 4 queens has a score of
     <literal>0</literal>.</para>
 
-    <para>You need to add your score rules drl files in the solver
-    configuration, for example:</para>
+    <para>You need to add your score rules drl files in the solver configuration, for example:</para>
 
     <programlisting>    &lt;scoreDrl&gt;/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;</programlisting>
 
-    <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if
-    needed.</para>
+    <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed.</para>
 
-    <para>It's recommended to use drools in forward-chaining mode (which is
-    the default behaviour), as for most solver implementations this will
-    create the effect of a <emphasis>delta based score calculation</emphasis>
-    instead of a full score calculation on each solution evaluation. For
-    example, if a single queen moves from y <literal>0</literal> to
-    <literal>3</literal>, it won't bother to recalculate the "multiple queens
-    on the same horizontal line" constraint for queens with y
-    <literal>1</literal> or <literal>2</literal>. This is a huge performance
-    gain. <emphasis role="bold">Drools-solver gives you this huge performance
-    gain without forcing you to write a very complicated delta based score
-    calculation algorithm.</emphasis> Just let the drools rule engine do the
-    hard work.</para>
+    <para>It's recommended to use drools in forward-chaining mode (which is the default behaviour), as for solver
+    implementations this will create the effect of a <emphasis>delta based score calculation</emphasis> instead of a
+    full score calculation on each solution evaluation. For example, if a single queen moves from y <literal>0</literal>
+    to <literal>3</literal>, it won't bother to recalculate the "multiple queens on the same horizontal line" constraint
+    for queens with y <literal>1</literal> or <literal>2</literal>. This is a huge performance gain. <emphasis
+    role="bold">Drools-solver gives you this huge performance gain without forcing you to write a very complicated delta
+    based score calculation algorithm.</emphasis> Just let the drools rule engine do the hard work.</para>
 
-    <para><emphasis role="bold">Adding more constraints is <emphasis
-    role="bold">easy and </emphasis>scalable</emphasis> (if you understand the
-    drools rule syntax). This allows you to add it a bunch of soft constraint
-    score rules on top of the hard constraints score rules with little effort
-    and at a reasonable performance cost. For example, for a freight routing
-    problem you could add a soft constraint to avoid the certain flagged
-    highways at rush hour.</para>
+    <para><emphasis role="bold">Adding more constraints is <emphasis role="bold">easy and </emphasis>scalable</emphasis>
+    (once you understand the drools rule syntax). This allows you to add it a bunch of soft constraint score rules on
+    top of the hard constraints score rules with little effort and at a reasonable performance cost. For example, for a
+    freight routing problem you could add a soft constraint to avoid the certain flagged highways at rush hour.</para>
   </section>
 
   <section>
-    <title>The ScoreCalculator interface</title>
+    <title>The ScoreDefinition interface</title>
 
-    <para>The <literal>ScoreCalculator</literal> interface allows the solver
-    to calculate the score of the currently evaluated solution. The score must
-    a <literal>Number</literal> instance and the instance type (for example
-    <literal>Double</literal> or <literal>Integer</literal>) must be stable
-    throughout the problem.</para>
+    <para>The <literal>ScoreDefinition</literal> interface defines the score representation. The score must a
+    <literal>Score</literal> instance and the instance type (for example <literal>DefaultHardAndSoftScore</literal>)
+    must be stable throughout the solver runtime.</para>
 
-    <para>The solver aims to find the solution with the highest score.
-    <emphasis>The best solution</emphasis> is the solution with the highest
-    score that it has encountered during its solving.</para>
+    <para>The solver aims to find the solution with the highest score. <emphasis>The best solution</emphasis> is the
+    solution with the highest score that it has encountered during its solving.</para>
 
-    <para>Most planning problems tend to use negative scores (the amount of
-    negative constraints being broken) with an impossible perfect score of 0.
-    This explains why the score of a solution of 4 queens is the negative of
-    the number of queen couples that can attack each other.</para>
+    <para>Most planning problems tend to use negative scores (the amount of negative constraints being broken) with an
+    impossible perfect score of 0. This explains why the score of a solution of 4 queens is the negative of the number
+    of queen couples which can attack each other.</para>
 
-    <para>A <literal>ScoreCalculator</literal> instance is configured in the
-    solver configuration:</para>
+    <para>A <literal>ScoreDefinition</literal> instance is configured in the solver configuration:</para>
 
-    <programlisting>    &lt;scoreCalculator&gt;
-        &lt;scoreCalculatorType&gt;SIMPLE&lt;/scoreCalculatorType&gt;
-    &lt;/scoreCalculator&gt;</programlisting>
+    <programlisting>    &lt;scoreDefinition&gt;
+        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+    &lt;/scoreDefinition&gt;</programlisting>
 
-    <para>There are a couple of build-in <literal>ScoreCalculator</literal>
-    implementations:</para>
+    <para>There are a couple of build-in <literal>ScoreDefinition</literal> implementations:</para>
 
     <itemizedlist>
       <listitem>
-        <para>SIMPLE: A <literal>SimpleScoreCalculator</literal> instance
-        which has a <literal>setScore(Number)</literal> method for use in the
-        score rules.</para>
+        <para>SIMPLE: The <literal>SimpleScoreDefinition</literal> defines the <literal>Score</literal> as a
+        <literal>SimpleScore</literal> which has a single int value, for example <literal>-123</literal>.</para>
       </listitem>
 
       <listitem>
-        <para>HARD_AND_SOFT_CONSTRAINTS: A
-        <literal>HardAndSoftConstraintScoreCalculator</literal> instance,
-        which has a <literal>setHardConstraintsBroken(Number)</literal> and a
-        <literal>setSoftConstraintsBroken(Number)</literal> method for use in
-        the score rules.</para>
-      </listitem>
-
-      <listitem>
-        <para>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS: A special
-        <literal>HardAndSoftConstraintScoreCalculator</literal> instance, for
-        more information see the javadocs.</para>
+        <para>HARD_AND_SOFT: The <literal>HardAndSoftScoreDefinition</literal> defines the <literal>Score</literal> as a
+        <literal>HardAndSoftScore</literal> which has a hard int value and a soft int value, for example
+        <literal>-123hard/-456soft</literal>.</para>
       </listitem>
     </itemizedlist>
 
-    <para>You can implement your own <literal>ScoreCalculator</literal>,
-    although the build-in score calculators should suffice for most
-    needs.</para>
+    <para>You can implement your own <literal>ScoreDefinition</literal>, although the build-in score definitions should
+    suffice for most needs.</para>
 
-    <para>The <literal>ScoreCalculator</literal> instance is asserted into the
-    working memory as a global called <literal>scoreCalculator</literal>. Your
-    score rules need to (indirectly) update that instance. Usually you 'll
-    make a single rule as an aggregation of the other rules to update the
-    score:</para>
+    <para>A <literal>ScoreCalculator</literal> instance is asserted into the working memory as a global called
+    <literal>scoreCalculator</literal>. Your score rules need to (indirectly) update that instance. Usually you 'll make
+    a single rule as an aggregation of the other rules to update the score:</para>
 
     <programlisting>global SimpleScoreCalculator scoreCalculator;
 
@@ -178,16 +141,13 @@ rule "hardConstraintsBroken"
         scoreCalculator.setScore(- $occurrenceCount.intValue());
 end</programlisting>
 
-    <para>Optionally, you can also weigh your constraints differently, by
-    multiplying the count of each score rule with its weight. For example in
-    freight routing, you can make 5 broken "avoid crossroads" soft constraints
-    count as much as 1 broken "avoid highways at rush hour" soft constraint.
-    This allows your business analysts to easily tweak the score function as
-    they see fit.</para>
+    <para>Optionally, you can also weigh your constraints differently, by multiplying the count of each score rule with
+    its weight. For example in freight routing, you can make 5 broken "avoid crossroads" soft constraints count as much
+    as 1 broken "avoid highways at rush hour" soft constraint. This allows your business analysts to easily tweak the
+    score function as they see fit.</para>
 
-    <para>Here's an example of all the NQueens constraints written as a single
-    rule, using multi pattern accumulates and making multipleQueensHorizontal
-    constraint outweigh the other constraints 5 times:</para>
+    <para>Here's an example of all the NQueens constraints written as a single rule, using multi pattern accumulates and
+    making multipleQueensHorizontal constraint outweigh the other constraints 5 times:</para>
 
     <programlisting>// Warning: This currently triggers backwards chaining instead of forward chaining and seriously hurts performance and scalability.
 rule "constraintsBroken"
@@ -220,64 +180,55 @@ end</programlisting>
 
     <itemizedlist>
       <listitem>
-        <para>If you know a certain constraint can never be broken, don't
-        bother writing a score rule for it. For example, the n queens example
-        doesn't have a "multipleQueensVertical" rule because a queen's
-        <literal>x</literal> never changes and the starting solution puts each
-        queen on a different <literal>x</literal>. This tends to give a huge
-        performance gain, not just because the score function is faster, but
-        mainly because most solver implementations will spend less time
-        evaluating unfeasible solutions.</para>
+        <para>If you know a certain constraint can never be broken, don't bother writing a score rule for it. For
+        example, the n queens example doesn't have a "multipleQueensVertical" rule because a queen's
+        <literal>x</literal> never changes and the starting solution puts each queen on a different
+        <literal>x</literal>. This tends to give a huge performance gain, not just because the score function is faster,
+        but mainly because most solver implementations will spend less time evaluating unfeasible solutions.</para>
       </listitem>
 
       <listitem>
-        <para>Verify that your score calculation happens in the correct Number
-        type. If you're making the sum of integer values, don't let drools use
-        Double's or your performance will hurt. Solver implementations will
-        usually spend most of their execution time running the score
-        function.</para>
+        <para>If you use tabu search, combine it with a <literal>relativeSelection</literal> selector. Take some time to
+        tweak the value of <literal>relativeSelection</literal>.</para>
       </listitem>
 
       <listitem>
-        <para>In case you haven't figured it out yet: performance (and
-        scalability) is very important for solving planning problems. What
-        good is a real-time freight routing solver that takes a day to find a
-        feasible solution? Even small and innocent looking problems can hide
-        an enormous problem size. For example, they probably still don't know
-        the optimal solution of the traveling tournament problem for as little
-        as 10 traveling teams.</para>
+        <para>Verify that your score calculation happens in the correct <literal>Number</literal> type. If you're making
+        the sum of integer values, don't let drools use Double's or your performance will hurt. Solver implementations
+        will usually spend most of their execution time running the score function.</para>
       </listitem>
 
       <listitem>
-        <para>Always remember that premature optimization is the root of all
-        evil. Make sure your design is flexible enough to allow configuration
-        based tweaking.</para>
+        <para>Always remember that premature optimization is the root of all evil. Make sure your design is flexible
+        enough to allow configuration based tweaking.</para>
       </listitem>
 
       <listitem>
-        <para>Currently, don't allow drools to backward chain instead of
-        forward chain, so avoid query's. It kills scalibilty.</para>
+        <para>Currently, don't allow drools to backward chain instead of forward chain, so avoid query's. It kills
+        scalibilty.</para>
       </listitem>
 
       <listitem>
-        <para>Currently, don't allow drools to switch to MVEL mode, for
-        performance. You can avoid this by using <literal>eval</literal> in
-        the score rules, for example: <literal>eval(day.getIndex() ==
-        $day1.getIndex() + 3)</literal>.</para>
+        <para>Currently, don't allow drools to switch to MVEL mode, for performance. You can avoid this by using
+        <literal>eval</literal> in the score rules, for example: <literal>eval(day.getIndex() == $day1.getIndex() +
+        3)</literal>.</para>
       </listitem>
 
       <listitem>
-        <para>For optimal performance, use at least java 1.6 and always use
-        server mode (<literal>java -server</literal>). We have seen
-        performance increases of 30% by switching from java 1.5 to 1.6 and 50%
-        by turning on server mode.</para>
+        <para>For optimal performance, use at least java 1.6 and always use server mode (<literal>java
+        -server</literal>). We have seen performance increases of 30% by switching from java 1.5 to 1.6 and 50% by
+        turning on server mode.</para>
       </listitem>
 
       <listitem>
-        <para>If you're doing performance tests, always remember that the JVM
-        needs to warm up. First load your solver and do a short run, before
-        you start benchmarking it.</para>
+        <para>If you're doing performance tests, always remember that the JVM needs to warm up. First load your solver
+        and do a short run, before you start benchmarking it.</para>
       </listitem>
     </itemizedlist>
+
+    <para>In case you haven't figured it out yet: performance (and scalability) is very important for solving planning
+    problems. What good is a real-time freight routing solver that takes a day to find a feasible solution? Even small
+    and innocent looking problems can hide an enormous problem size. For example, they probably still don't know the
+    optimal solution of the traveling tournament problem for as little as 10 traveling teams.</para>
   </section>
 </section>
