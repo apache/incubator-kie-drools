@@ -1,115 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section  version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
   <title>Local search solver</title>
 
   <section>
     <title>Overview</title>
 
-    <para>In number of possible solutions for a planning problem can be mind
-    blowing. For example:</para>
+    <para>In number of possible solutions for a planning problem can be mind blowing. For example:</para>
 
     <itemizedlist>
       <listitem>
-        <para>4 queens has 256 possible solutions (<literal>n ^ n</literal>)
-        and 2 optimal solutions.</para>
+        <para>4 queens has 256 possible solutions (<literal>n ^ n</literal>) and 2 optimal solutions.</para>
       </listitem>
 
       <listitem>
-        <para>5 queens has 3125 possible solutions (<literal>n ^ n</literal>)
-        and 1 optimal solution.</para>
+        <para>5 queens has 3125 possible solutions (<literal>n ^ n</literal>) and 1 optimal solution.</para>
       </listitem>
 
       <listitem>
-        <para>8 queens has 16777216 possible solutions (<literal>n ^
-        n</literal>) and 92 optimal solutions.</para>
+        <para>8 queens has 16777216 possible solutions (<literal>n ^ n</literal>) and 92 optimal solutions.</para>
       </listitem>
 
       <listitem>
-        <para>Most real-life planning problems have an incredible number of
-        possible solutions and only 1 optimal solution.</para>
+        <para>Most real-life planning problems have an incredible number of possible solutions and only 1 optimal
+        solution.</para>
       </listitem>
     </itemizedlist>
 
-    <para>An algorithm that checks every possible solution (even with pruning)
-    can easily run for a couple of years on a single real-life planning
-    problem. Most of the time, we are happy with a feasible solution found in
-    a limited amount of time. Local search tends to find a feasible solution
-    relatively fast. Because it acts very much like a human, it is also pretty
-    natural to program.</para>
+    <para>An algorithm that checks every possible solution (even with pruning) can easily run for a couple of years on a
+    single real-life planning problem. Most of the time, we are happy with a feasible solution found in a limited amount
+    of time. Local search tends to find a feasible solution relatively fast. Because it acts very much like a human, it
+    is also pretty natural to program.</para>
 
-    <para>Local search solves a problem making a move on the current solution
-    to change it into a better solution. It does that number of times till it
-    is satisfied with the solution. It starts with the starting
-    solution.</para>
+    <para>Local search solves a problem making a move on the current solution to change it into a better solution. It
+    does that number of times till it is satisfied with the solution. It starts with the starting solution.</para>
 
-    <para>A local search algorithm and the drools rule engine turn out to be a
-    really nice combination, because:</para>
+    <para>A local search algorithm and the drools rule engine turn out to be a really nice combination, because:</para>
 
     <itemizedlist>
       <listitem>
-        <para>A rule engine such as Drools is <emphasis role="bold">great for
-        calculating the score</emphasis> of a solution of a planning problem.
-        It make it easy to add additional soft or hard constraints such as "a
-        teacher shouldn't teach more then 7 hours a day". However it tends to
-        be too complex to use to actually find new solutions.</para>
+        <para>A rule engine such as Drools is <emphasis role="bold">great for calculating the score</emphasis> of a
+        solution of a planning problem. It make it easy to add additional soft or hard constraints such as "a teacher
+        shouldn't teach more then 7 hours a day". However it tends to be too complex to use to actually find new
+        solutions.</para>
       </listitem>
 
       <listitem>
-        <para>A local search algorithm is <emphasis role="bold">great at
-        finding new improving solutions</emphasis> for a planning problem,
-        without brute-forcing every possibility. However it needs to know the
-        score of a solution and normally offers no support in calculating that
-        score.</para>
+        <para>A local search algorithm is <emphasis role="bold">great at finding new improving solutions</emphasis> for
+        a planning problem, without brute-forcing every possibility. However it needs to know the score of a solution
+        and normally offers no support in calculating that score.</para>
       </listitem>
     </itemizedlist>
 
-    <para>Drools-solver's local search implementation combines both. On top of
-    that, it also offers additional support for benchmarking etc.</para>
+    <para>Drools-solver's local search implementation combines both. On top of that, it also offers additional support
+    for benchmarking etc.</para>
   </section>
 
   <section>
     <title>A move</title>
 
-    <para>A move is the change from a solution A to a solution B. For example,
-    below you can see a single move on the starting solution of 4 queens that
-    moves a single queen to another row:</para>
+    <para>A move is the change from a solution A to a solution B. For example, below you can see a single move on the
+    starting solution of 4 queens that moves a single queen to another row:</para>
 
     <figure>
       <title>A single move (4 queens example)</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/singleMoveNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/singleMoveNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>A move can have a small or large impact. In the above example, the
-    move of queen <emphasis>C0 to C2</emphasis> is a small move. Some moves
-    are the same move type. These are some possibilities for move types in n
-    queens:</para>
+    <para>A move can have a small or large impact. In the above example, the move of queen <emphasis>C0 to C2</emphasis>
+    is a small move. Some moves are the same move type. These are some possibilities for move types in n queens:</para>
 
     <itemizedlist>
       <listitem>
-        <para>Move a single queen to another row. This is a small move. For
-        example, move queen <emphasis>C0 to C2</emphasis>.</para>
+        <para>Move a single queen to another row. This is a small move. For example, move queen <emphasis>C0 to
+        C2</emphasis>.</para>
       </listitem>
 
       <listitem>
-        <para>Move all queens a number of rows down or up. This a big
-        move.</para>
+        <para>Move all queens a number of rows down or up. This a big move.</para>
       </listitem>
 
       <listitem>
-        <para>Move a single queen to another column. This is a small move. For
-        example, move queen <emphasis>C2 to A0</emphasis> (placing it on top
-        of queen A0).</para>
+        <para>Move a single queen to another column. This is a small move. For example, move queen <emphasis>C2 to
+        A0</emphasis> (placing it on top of queen A0).</para>
       </listitem>
 
       <listitem>
@@ -121,14 +101,12 @@
       </listitem>
     </itemizedlist>
 
-    <para>Because we have decided that all queens will be on the board at all
-    times and each queen has an appointed column (for performance reasons),
-    only the first 2 move types are usable in our example. Furthermore, we 're
-    only using the first move type in the example because we think it gives
-    the best performance, but you are welcome to prove us wrong.</para>
+    <para>Because we have decided that all queens will be on the board at all times and each queen has an appointed
+    column (for performance reasons), only the first 2 move types are usable in our example. Furthermore, we 're only
+    using the first move type in the example because we think it gives the best performance, but you are welcome to
+    prove us wrong.</para>
 
-    <para>Each of your move types will be an implementation of the
-    <literal>Move</literal> interface:</para>
+    <para>Each of your move types will be an implementation of the <literal>Move</literal> interface:</para>
 
     <programlisting>public interface Move {
 
@@ -140,8 +118,8 @@
 
 }</programlisting>
 
-    <para>Let's take a look at the <literal>Move</literal> implementation for
-    4 queens which moves a queen to a different row:</para>
+    <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
+    different row:</para>
 
     <programlisting>public class YChangeMove implements Move {
 
@@ -157,12 +135,10 @@
 
 }</programlisting>
 
-    <para>An instance of <literal>YChangeMove</literal> moves a queen from
-    it's current y to a different y.</para>
+    <para>An instance of <literal>YChangeMove</literal> moves a queen from it's current y to a different y.</para>
 
-    <para>Drool-solver calls the <literal>doMove(WorkingMemory)</literal>
-    method to do a move. The <literal>Move</literal> implementation must
-    notify the working memory of any changes it does on the solution
+    <para>Drool-solver calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
+    <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
     facts:</para>
 
     <programlisting>    public void doMove(WorkingMemory workingMemory) {
@@ -172,64 +148,56 @@
         workingMemory.modifyInsert(queenHandle, queen); // after changes are made
     }</programlisting>
 
-    <para>Drools-solver disables shadow facts for increased performance, so
-    you cannot use the <literal>workingMemory.update(FactHandle,
-    Object)</literal> method, instead you need to call the
-    <literal>workingMemory.modifyRetract(FactHandle)</literal> method before
-    modifying the fact and the <literal>workingMemory.modifyInsert(FactHandle,
-    Object)</literal> method after modifying the fact. Note that you can alter
-    multiple facts in a single move and effectively create a big move (also
-    known as a coarse-grained move).</para>
+    <para>Drools-solver disables shadow facts for increased performance, so you cannot use the
+    <literal>workingMemory.update(FactHandle, Object)</literal> method, instead you need to call the
+    <literal>workingMemory.modifyRetract(FactHandle)</literal> method before modifying the fact and the
+    <literal>workingMemory.modifyInsert(FactHandle, Object)</literal> method after modifying the fact. Note that you can
+    alter multiple facts in a single move and effectively create a big move (also known as a coarse-grained
+    move).</para>
 
-    <para>Drools-solver automatically filters out <emphasis>non doable
-    moves</emphasis> by calling the <literal>isDoable(WorkingMemory)</literal>
-    method on a move. A <emphasis>non doable move</emphasis> is:</para>
+    <para>Drools-solver automatically filters out <emphasis>non doable moves</emphasis> by calling the
+    <literal>isDoable(WorkingMemory)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
 
     <itemizedlist>
       <listitem>
-        <para>A move that changes nothing on the current solution. For
-        example, moving queen B0 to row 0 is not doable.</para>
+        <para>A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not
+        doable.</para>
       </listitem>
 
       <listitem>
-        <para>A move that is impossible to do on the current solution. For
-        example, moving queen B0 to row 10 is not doable because it would move
-        it outside the board limits.</para>
+        <para>A move that is impossible to do on the current solution. For example, moving queen B0 to row 10 is not
+        doable because it would move it outside the board limits.</para>
       </listitem>
     </itemizedlist>
 
-    <para>In the n queens example, a move which moves the queen from it's
-    current row to the same row isn't doable:</para>
+    <para>In the n queens example, a move which moves the queen from it's current row to the same row isn't
+    doable:</para>
 
     <programlisting>    public boolean isMoveDoable(WorkingMemory workingMemory) {
         int fromY = queen.getY();
         return fromY != toY;
     }</programlisting>
 
-    <para>Because we won't generate a move which can move a queen outside the
-    board limits, we don't need to check it. A move that is currently not
-    doable can become doable on a later solution.</para>
+    <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it. A
+    move that is currently not doable can become doable on a later solution.</para>
 
-    <para>Each move has an <emphasis>undo move</emphasis>: a move (usually of
-    the same type) which does the exact opposite. In the above example the
-    undo move of <emphasis>C0 to C2</emphasis> would be the move <emphasis>C2
-    to C0</emphasis>. An undo move can be created from a move, but only before
-    the move has been done on the current solution.</para>
+    <para>Each move has an <emphasis>undo move</emphasis>: a move (usually of the same type) which does the exact
+    opposite. In the above example the undo move of <emphasis>C0 to C2</emphasis> would be the move <emphasis>C2 to
+    C0</emphasis>. An undo move can be created from a move, but only before the move has been done on the current
+    solution.</para>
 
     <programlisting>    public Move createUndoMove(WorkingMemory workingMemory) {
         return new YChangeMove(queen, queen.getY());
     }</programlisting>
 
-    <para>Notice that if C0 would have already been moved to C2, the undo move
-    would create the move <emphasis>C2 to C2</emphasis>, instead of the move
-    <emphasis>C2 to C0</emphasis>.</para>
+    <para>Notice that if C0 would have already been moved to C2, the undo move would create the move <emphasis>C2 to
+    C2</emphasis>, instead of the move <emphasis>C2 to C0</emphasis>.</para>
 
-    <para>The local search solver can do and undo a move more than once, even
-    on different (successive) solutions.</para>
+    <para>The local search solver can do and undo a move more than once, even on different (successive)
+    solutions.</para>
 
-    <para>A move must implement the <literal>equals()</literal> and
-    <literal>hashcode()</literal> methods. 2 moves which make the same change
-    on a solution, must be equal.</para>
+    <para>A move must implement the <literal>equals()</literal> and <literal>hashcode()</literal> methods. 2 moves which
+    make the same change on a solution, must be equal.</para>
 
     <programlisting>    public boolean equals(Object o) {
         if (this == o) {
@@ -252,31 +220,26 @@
                 .toHashCode();
     }</programlisting>
 
-    <para>In the above example, the <literal>Queen</literal> class uses the
-    default <literal>Object</literal> <literal>equal()</literal> and
-    <literal>hashcode()</literal> implementations. Notice that it checks if
-    the other move is an instance of the same move type. This is important
-    because a move will be compared to a move with another move type if you're
-    using more then 1 move type.</para>
+    <para>In the above example, the <literal>Queen</literal> class uses the default <literal>Object</literal>
+    <literal>equal()</literal> and <literal>hashcode()</literal> implementations. Notice that it checks if the other
+    move is an instance of the same move type. This is important because a move will be compared to a move with another
+    move type if you're using more then 1 move type.</para>
 
-    <para>It's also recommended to implement the <literal>toString()</literal>
-    method as it allows you to read drools-solver's logging more
-    easily:</para>
+    <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read
+    drools-solver's logging more easily:</para>
 
     <programlisting>    public String toString() {
         return queen + " =&gt; " + toY;
     }</programlisting>
 
-    <para>Now that we can make a single move, let's take a look at generating
-    moves.</para>
+    <para>Now that we can make a single move, let's take a look at generating moves.</para>
   </section>
 
   <section>
     <title>Move generation</title>
 
-    <para>At each solution, local search will try all possible moves and pick
-    the best move to change to the next solution. It's up to you to generate
-    those moves. Let's take a look at all the possible moves on the starting
+    <para>At each solution, local search will try all possible moves and pick the best move to change to the next
+    solution. It's up to you to generate those moves. Let's take a look at all the possible moves on the starting
     solution of 4 queens:</para>
 
     <figure>
@@ -284,39 +247,31 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/possibleMovesNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/possibleMovesNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>As you can see, not all the moves are doable. At the starting
-    solution we have 12 doable moves (<literal>n * (n - 1)</literal>), one of
-    which will be move which changes the starting solution into the next
-    solution. Notice that the number of possible solutions is 256 (<literal>n
-    ^ n</literal>), much more that the amount of doable moves. Don't create a
-    move to every possible solution. Instead use moves which can be
-    sequentially combined to reach every possible solution.</para>
+    <para>As you can see, not all the moves are doable. At the starting solution we have 12 doable moves (<literal>n *
+    (n - 1)</literal>), one of which will be move which changes the starting solution into the next solution. Notice
+    that the number of possible solutions is 256 (<literal>n ^ n</literal>), much more that the amount of doable moves.
+    Don't create a move to every possible solution. Instead use moves which can be sequentially combined to reach every
+    possible solution.</para>
 
-    <para>It's highly recommended that you verify all solutions are connected
-    by your move set. This means that by combining a finite number of moves
-    you can reach any solution from any solution. Otherwise you're already
-    excluding solutions at the start. Especially if you're using only big
-    moves, you should check it. Just because big moves outperform small moves
-    in a short test run, it doesn't mean that they will outperform them in a
-    long test run.</para>
+    <para>It's highly recommended that you verify all solutions are connected by your move set. This means that by
+    combining a finite number of moves you can reach any solution from any solution. Otherwise you're already excluding
+    solutions at the start. Especially if you're using only big moves, you should check it. Just because big moves
+    outperform small moves in a short test run, it doesn't mean that they will outperform them in a long test
+    run.</para>
 
-    <para>You can mix different move types. Usually you're better off
-    preferring small (fine-grained) moves over big (course-grained) moves
-    because the score delta calculation will pay off more. However, as the
-    traveling tournament example proves, if you can remove a hard constraint
-    by using a certain set of big moves, you can win performance and
-    scalability. Try it yourself: run both the simple (small moves) and the
-    smart (big moves) version of the traveling tournament example. The smart
-    version evaluates a lot less unfeasible solutions, which enables it to
-    outperform and outscale the simple version.</para>
+    <para>You can mix different move types. Usually you're better off preferring small (fine-grained) moves over big
+    (course-grained) moves because the score delta calculation will pay off more. However, as the traveling tournament
+    example proves, if you can remove a hard constraint by using a certain set of big moves, you can win performance and
+    scalability. Try it yourself: run both the simple (small moves) and the smart (big moves) version of the traveling
+    tournament example. The smart version evaluates a lot less unfeasible solutions, which enables it to outperform and
+    outscale the simple version.</para>
 
-    <para>Move generation currently happens with a
-    <literal>MoveFactory</literal>:</para>
+    <para>Move generation currently happens with a <literal>MoveFactory</literal>:</para>
 
     <programlisting>public class NQueensMoveFactory extends CachedMoveListMoveFactory {
 
@@ -339,50 +294,43 @@
   <section>
     <title>A step</title>
 
-    <para>A step is the winning move. The local search solver tries every move
-    on the current solution and picks the best accepted move as the
-    step:</para>
+    <para>A step is the winning move. The local search solver tries every move on the current solution and picks the
+    best accepted move as the step:</para>
 
     <figure>
       <title>Decide the next step at step 0 (4 queens example)</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/decideNextStepNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/decideNextStepNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>Because the move <emphasis>B0 to B3</emphasis> has the highest score
-    (<literal>-3</literal>), it is picked as the next step. Notice that
-    <emphasis>C0 to C3</emphasis> (not shown) could also have been picked
-    because it also has the score <literal>-3</literal>. If multiple moves
-    have the same highest score, one is picked randomly, in this case
+    <para>Because the move <emphasis>B0 to B3</emphasis> has the highest score (<literal>-3</literal>), it is picked as
+    the next step. Notice that <emphasis>C0 to C3</emphasis> (not shown) could also have been picked because it also has
+    the score <literal>-3</literal>. If multiple moves have the same highest score, one is picked randomly, in this case
     <emphasis>B0 to B3</emphasis>.</para>
 
-    <para>The step is made and from that new solution, the local search solver
-    tries all the possible moves again, to decide the next step after that. It
-    continually does this in a loop, and we get something like this:</para>
+    <para>The step is made and from that new solution, the local search solver tries all the possible moves again, to
+    decide the next step after that. It continually does this in a loop, and we get something like this:</para>
 
     <figure>
       <title>All steps (4 queens example)</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/allStepsNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/allStepsNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>Notice that the local search solver doesn't use a search tree, but a
-    search path. The search path is highlighted by the green arrows. At each
-    step it tries all possible moves, but unless it's the step, it doesn't
-    investigate that solution further. This is one of the reasons why local
-    search is very scalable.</para>
+    <para>Notice that the local search solver doesn't use a search tree, but a search path. The search path is
+    highlighted by the green arrows. At each step it tries all possible moves, but unless it's the step, it doesn't
+    investigate that solution further. This is one of the reasons why local search is very scalable.</para>
 
-    <para>As you can see, the local search solver solves the 4 queens problem
-    by starting with the starting solution and make the following steps
-    sequentially:</para>
+    <para>As you can see, the local search solver solves the 4 queens problem by starting with the starting solution and
+    make the following steps sequentially:</para>
 
     <orderedlist>
       <listitem>
@@ -398,80 +346,68 @@
       </listitem>
     </orderedlist>
 
-    <para>If we turn on INFO logging, this is reflected into the
-    logging:</para>
+    <para>If we turn on INFO logging, this is reflected into the logging:</para>
 
     <programlisting>INFO  Solving with random seed (0).
-INFO  Initial score (-6.0) is starting best score. Updating best solution and best score.
+INFO  Initial score (-6) is starting best score. Updating best solution and best score.
 INFO  Step (0), time spend (0) doing next step ([Queen-1] 1 @ 0 =&gt; 3).
-INFO  New score (-3.0) is better then last best score (-6.0). Updating best solution and best score.
+INFO  New score (-3) is better then last best score (-6). Updating best solution and best score.
 INFO  Step (1), time spend (0) doing next step ([Queen-3] 3 @ 0 =&gt; 2).
-INFO  New score (-1.0) is better then last best score (-3.0). Updating best solution and best score.
+INFO  New score (-1) is better then last best score (-3). Updating best solution and best score.
 INFO  Step (2), time spend (15) doing next step ([Queen-0] 0 @ 0 =&gt; 1).
-INFO  New score (0.0) is better then last best score (-1.0). Updating best solution and best score.
+INFO  New score (0) is better then last best score (-1). Updating best solution and best score.
 INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
 
-    <para>Notice that the logging used the <literal>toString()</literal>
-    method from our <literal>Move</literal> implementation: <literal>[Queen-1]
-    1 @ 0 =&gt; 3</literal>.</para>
+    <para>Notice that the logging used the <literal>toString()</literal> method from our <literal>Move</literal>
+    implementation: <literal>[Queen-1] 1 @ 0 =&gt; 3</literal>.</para>
 
-    <para>The local search solver solves the 4 queens problem in 3 steps, by
-    evaluating only 37 possible solutions (3 steps with 12 moves each + 1
-    starting solution), which is only fraction of all 256 possible solutions.
-    It solves 16 queens in 31 steps, by evaluating only 7441 out of
-    18446744073709551616 possible solutions.</para>
+    <para>The local search solver solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3
+    steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible solutions. It solves 16
+    queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.</para>
   </section>
 
   <section>
     <title>Getting stuck in local optima</title>
 
-    <para>A <emphasis>simple local search</emphasis> always takes improving
-    moves. This may seem like a good thing, but it's not. It suffers from a
-    number of problems:</para>
+    <para>A <emphasis>simple local search</emphasis> always takes improving moves. This may seem like a good thing, but
+    it's not. It suffers from a number of problems:</para>
 
     <itemizedlist>
       <listitem>
-        <para>It can get stuck in a local optimum. For example if it reaches a
-        solution X with a score -1 and there is no improving move, it is
-        forced to take a next step that leads to a solution Y with score -2,
-        after that however, it's very real that it will pick the step back to
-        solution X with score -1. It will then start looping between solution
-        X and Y.</para>
+        <para>It can get stuck in a local optimum. For example if it reaches a solution X with a score -1 and there is
+        no improving move, it is forced to take a next step that leads to a solution Y with score -2, after that
+        however, it's very real that it will pick the step back to solution X with score -1. It will then start looping
+        between solution X and Y.</para>
       </listitem>
 
       <listitem>
-        <para>It can start walking in it's own footsteps, picking the same
-        next step at every step.</para>
+        <para>It can start walking in it's own footsteps, picking the same next step at every step.</para>
       </listitem>
     </itemizedlist>
 
-    <para>Of course drools-solver implements better local searches, such
-    <emphasis>tabu search</emphasis> and <emphasis>simulated
-    annealing</emphasis> which can avoid these problems. It's recommended to
-    never use a simple local search, unless you're absolutely sure there are
-    no local optima in your planning problem.</para>
+    <para>Of course drools-solver implements better local searches, such <emphasis>tabu search</emphasis> and
+    <emphasis>simulated annealing</emphasis> which can avoid these problems. It's recommended to never use a simple
+    local search, unless you're absolutely sure there are no local optima in your planning problem.</para>
   </section>
 
   <section>
     <title>Deciding the next step</title>
 
-    <para>The local search solver decides the next step with the aid of 3
-    configurable components:</para>
+    <para>The local search solver decides the next step with the aid of 3 configurable components:</para>
 
     <itemizedlist>
       <listitem>
-        <para>A <emphasis>selector</emphasis> which selects (or generates) the
-        possible moves of the current solution.</para>
+        <para>A <emphasis>selector</emphasis> which selects (or generates) the possible moves of the current
+        solution.</para>
       </listitem>
 
       <listitem>
-        <para>An <emphasis>accepter</emphasis> which filters out unacceptable
-        moves. It can also weigh a move it accepts.</para>
+        <para>An <emphasis>accepter</emphasis> which filters out unacceptable moves. It can also weigh a move it
+        accepts.</para>
       </listitem>
 
       <listitem>
-        <para>A <emphasis>forager</emphasis> which gathers all accepted moves
-        and picks the next step from them.</para>
+        <para>A <emphasis>forager</emphasis> which gathers all accepted moves and picks the next step from them.</para>
       </listitem>
     </itemizedlist>
 
@@ -480,73 +416,73 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/decideNextStepNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/decideNextStepNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>In the above example the selector generated the moves shown with the
-    blue lines, the accepter accepted all of them and the forager picked the
-    move <emphasis>B0 to B3</emphasis>.</para>
+    <para>In the above example the selector generated the moves shown with the blue lines, the accepter accepted all of
+    them and the forager picked the move <emphasis>B0 to B3</emphasis>.</para>
 
-    <para>If we turn on DEBUG logging, we can see the decision making in the
-    log:</para>
+    <para>If we turn on DEBUG logging, we can see the decision making in the log:</para>
 
     <programlisting>INFO  Solving with random seed (0).
-INFO  Initial score (-6.0) is starting best score. Updating best solution and best score.
+INFO  Initial score (-6) is starting best score. Updating best solution and best score.
 DEBUG     Move ([Queen-0] 0 @ 0 =&gt; 0) ignored because not doable.
-DEBUG     Move ([Queen-0] 0 @ 1 =&gt; 1) with score (-4.0) and acceptChance (1.0).
-DEBUG     Move ([Queen-0] 0 @ 2 =&gt; 2) with score (-4.0) and acceptChance (1.0).
+DEBUG     Move ([Queen-0] 0 @ 1 =&gt; 1) with score (-4) and acceptChance (1.0).
+DEBUG     Move ([Queen-0] 0 @ 2 =&gt; 2) with score (-4) and acceptChance (1.0).
 ...
-DEBUG     Move ([Queen-1] 1 @ 3 =&gt; 3) with score (-3.0) and acceptChance (1.0).
+DEBUG     Move ([Queen-1] 1 @ 3 =&gt; 3) with score (-3) and acceptChance (1.0).
 ...
-DEBUG     Move ([Queen-3] 3 @ 3 =&gt; 3) with score (-4.0) and acceptChance (1.0).
+DEBUG     Move ([Queen-3] 3 @ 3 =&gt; 3) with score (-4) and acceptChance (1.0).
 INFO  Step (0), time spend (0) doing next step ([Queen-1] 1 @ 0 =&gt; 3).
-INFO  New score (-3.0) is better then last best score (-6.0). Updating best solution and best score.
+INFO  New score (-3) is better then last best score (-6). Updating best solution and best score.
 ...</programlisting>
 
     <section>
       <title>Selector</title>
 
-      <para>A selector is currently based on a <literal>MoveFactory</literal>.
-      We're working on improving this.</para>
+      <para>A selector is currently based on a <literal>MoveFactory</literal>.</para>
 
       <programlisting>    &lt;selector&gt;
         &lt;moveFactoryClass&gt;org.drools.solver.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;</programlisting>
 
-      <para>You're not obligated to generate the same stable set of moves at
-      each step. You could start with generating only big moves initially, and
-      gradually switch to small moves. There's no build-in support for this
-      yet though.</para>
+      <para>You're not obligated to generate the same stable set of moves at each step. You could start with generating
+      only big moves initially, and gradually switch to small moves. There's no build-in support for this yet
+      though.</para>
+
+      <para>If there are many possible moves, it can become inefficient to evaluate all of them every step. With
+      relativeSelection only a random subset of them is evaluated:</para>
+
+      <programlisting>    &lt;selector&gt;
+       &lt;moveFactoryClass&gt;org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory&lt;/moveFactoryClass&gt;
+       &lt;relativeSelection&gt;0.002&lt;/relativeSelection&gt;
+    &lt;/selector&gt;</programlisting>
     </section>
 
     <section>
       <title>Accepter</title>
 
-      <para>An accepter is used (together with a forager) to active tabu
-      search, simulated annealing, great deluge, ... For each move it
-      generates an accept chance. If a move is rejected it is given an accept
-      chance of <literal>0.0</literal>.</para>
+      <para>An accepter is used (together with a forager) to active tabu search, simulated annealing, great deluge, ...
+      For each move it generates an accept chance. If a move is rejected it is given an accept chance of
+      <literal>0.0</literal>.</para>
 
-      <para>You can implement your own <literal>Accepter</literal>, although
-      the build-in accepters should suffice for most needs. You can also
-      combine multiple accepters.</para>
+      <para>You can implement your own <literal>Accepter</literal>, although the build-in accepters should suffice for
+      most needs. You can also combine multiple accepters.</para>
 
       <section>
         <title>Tabu search accepter</title>
 
-        <para>When tabu search takes steps it creates tabu's. It does not
-        accept a move as the next step if that move breaks tabu. Drools-solver
-        implements several tabu types:</para>
+        <para>When tabu search takes steps it creates tabu's. It does not accept a move as the next step if that move
+        breaks tabu. Drools-solver implements several tabu types:</para>
 
         <itemizedlist>
           <listitem>
-            <para><emphasis>Solution tabu</emphasis> makes recently visited
-            solutions tabu. It does not accept a move that leads to one of
-            those solutions. If you can spare the memory, don't be cheap on
-            the tabu size. We recommend this type of tabu because it tends to
-            give the best results and requires little or no tweaking.</para>
+            <para><emphasis>Solution tabu</emphasis> makes recently visited solutions tabu. It does not accept a move
+            that leads to one of those solutions. If you can spare the memory, don't be cheap on the tabu size. We
+            recommend this type of tabu because it tends to give the best results and requires little or no
+            tweaking.</para>
 
             <programlisting>    &lt;accepter&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
@@ -554,8 +490,8 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
           </listitem>
 
           <listitem>
-            <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It
-            does not accept a move equal to one of those steps.</para>
+            <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It does not accept a move equal to one of
+            those steps.</para>
 
             <programlisting>    &lt;accepter&gt;
         &lt;completeMoveTabuSize&gt;1000&lt;/completeMoveTabuSize&gt;
@@ -563,8 +499,7 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
           </listitem>
 
           <listitem>
-            <para><emphasis>Undo move tabu </emphasis>makes the undo move of
-            recent steps tabu.</para>
+            <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
 
             <programlisting>    &lt;accepter&gt;
         &lt;completeUndoMoveTabuSize&gt;1000&lt;/completeUndoMoveTabuSize&gt;
@@ -572,17 +507,15 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
           </listitem>
 
           <listitem>
-            <para><emphasis>Property tabu</emphasis> makes a property of
-            recent steps tabu. For example, it can make the queen tabu, so
-            that a recently moved queen can't be moved.</para>
+            <para><emphasis>Property tabu</emphasis> makes a property of recent steps tabu. For example, it can make the
+            queen tabu, so that a recently moved queen can't be moved.</para>
 
             <programlisting>    &lt;accepter&gt;
         &lt;completePropertyTabuSize&gt;1000&lt;/completePropertyTabuSize&gt;
     &lt;/accepter&gt;</programlisting>
 
-            <para>To use property tabu, your moves must implement the
-            <literal>TabuPropertyEnabled</literal> interface, for
-            example:</para>
+            <para>To use property tabu, your moves must implement the <literal>TabuPropertyEnabled</literal> interface,
+            for example:</para>
 
             <programlisting>public class YChangeMove implements Move, TabuPropertyEnabled {
 
@@ -606,51 +539,44 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
         &lt;completeUndoMoveTabuSize&gt;10&lt;/completeUndoMoveTabuSize&gt;
     &lt;/accepter&gt;</programlisting>
 
-        <para>If you pick a too small tabu size, your solver can still get
-        stuck in a local optimum. On the other hand, with the exception of
-        solution tabu, if you pick a too large tabu size, your solver can get
-        stuck by bouncing of the walls. Use the benchmarker to fine tweak your
-        configuration.</para>
+        <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
+        with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
+        the walls. Use the benchmarker to fine tweak your configuration.</para>
 
-        <para>A tabu search accepter should be combined with a
-        <emphasis>maximum score of all</emphasis> or <emphasis>first best
-        score improving</emphasis> forager.</para>
+        <para>A tabu search accepter should be combined with a <emphasis>maximum score of all</emphasis> or
+        <emphasis>first best score improving</emphasis> forager.</para>
       </section>
 
       <section>
         <title>Simulated annealing accepter</title>
 
-        <para>Simulated annealing does not pick the move with the highest
-        score, neither does it evaluate all moves. At least at first.</para>
+        <para>Simulated annealing does not pick the move with the highest score, neither does it evaluate all moves. At
+        least at first.</para>
 
-        <para>It gives unimproving moves a chance, depending on it's score and
-        the temperature. The <emphasis>temperature</emphasis> is relative to
-        how long it has been solving. In the end, it gradually turns into a
-        simple local search, only accepting improving moves.</para>
+        <para>It gives unimproving moves a chance, depending on it's score and the temperature. The
+        <emphasis>temperature</emphasis> is relative to how long it has been solving. In the end, it gradually turns
+        into a simple local search, only accepting improving moves.</para>
 
-        <para>A simulated annealing accepter should be combined with a
-        <emphasis>first randomly accepted</emphasis> forager.</para>
+        <para>A simulated annealing accepter should be combined with a <emphasis>first randomly accepted</emphasis>
+        forager.</para>
       </section>
     </section>
 
     <section>
       <title>Forager</title>
 
-      <para>A forager gathers all accepted moves and picks the move which is
-      the next step. A forager can choose to allow only a subset of all
-      selected moves to be evaluated, by quitting early if a suitable move has
-      been accepted.</para>
+      <para>A forager gathers all accepted moves and picks the move which is the next step. A forager can choose to
+      allow only a subset of all selected moves to be evaluated, by quitting early if a suitable move has been
+      accepted.</para>
 
-      <para>You can implement your own <literal>Forager</literal>, although
-      the build-in foragers should suffice for most needs.</para>
+      <para>You can implement your own <literal>Forager</literal>, although the build-in foragers should suffice for
+      most needs.</para>
 
       <section>
         <title>Maximum score of all forager</title>
 
-        <para>Allows all selected moves to be evaluated and picks the accepted
-        move with the highest score. If several accepted moves have the
-        highest score, one is picked randomly, weighted on their accept
-        chance.</para>
+        <para>Allows all selected moves to be evaluated and picks the accepted move with the highest score. If several
+        accepted moves have the highest score, one is picked randomly, weighted on their accept chance.</para>
 
         <programlisting>    &lt;forager&gt;
         &lt;foragerType&gt;MAX_SCORE_OF_ALL&lt;/foragerType&gt;
@@ -660,9 +586,8 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
       <section>
         <title>First best score improving forager</title>
 
-        <para>Picks the first accepted move that improves the best score. If
-        none improve the best score, it behaves exactly like the maximum score
-        of all forager.</para>
+        <para>Picks the first accepted move that improves the best score. If none improve the best score, it behaves
+        exactly like the maximum score of all forager.</para>
 
         <programlisting>    &lt;forager&gt;
         &lt;foragerType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/foragerType&gt;
@@ -672,9 +597,8 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
       <section>
         <title>First last step score improving forager</title>
 
-        <para>Picks the first accepted move that improves the last step score.
-        If none improve the last step score, it behaves exactly like the
-        maximum score of all forager.</para>
+        <para>Picks the first accepted move that improves the last step score. If none improve the last step score, it
+        behaves exactly like the maximum score of all forager.</para>
 
         <programlisting>    &lt;forager&gt;
         &lt;foragerType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/foragerType&gt;
@@ -684,9 +608,8 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
       <section>
         <title>First randomly accepted forager</title>
 
-        <para>Generates a random number for each accepted move and if the
-        move's accept chance is higher, it picks that move as the next
-        move.</para>
+        <para>Generates a random number for each accepted move and if the move's accept chance is higher, it picks that
+        move as the next move.</para>
 
         <programlisting>    &lt;forager&gt;
         &lt;foragerType&gt;FIRST_RANDOMLY_ACCEPTED&lt;/foragerType&gt;
@@ -698,29 +621,23 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
   <section>
     <title>Best solution</title>
 
-    <para>Because the current solution can degrade (especially in tabu search
-    and simulated annealing), the local search solver remembers the best
-    solution it has encountered through the entire search path. Each time the
-    current solution is better than the last best solution, the current
-    solution is cloned and referenced as the new best solution.</para>
+    <para>Because the current solution can degrade (especially in tabu search and simulated annealing), the local search
+    solver remembers the best solution it has encountered through the entire search path. Each time the current solution
+    is better than the last best solution, the current solution is cloned and referenced as the new best
+    solution.</para>
   </section>
 
   <section>
     <title>Finish</title>
 
-    <para>Sooner or later the local search solver will have to stop solving.
-    This can be because of a number of reasons: the time is up, the perfect
-    score has been reached, ... The only thing you can't depend on is on
-    finding the optimal solution (unless you know the optimal score), because
-    a local search solver doesn't know that when it finds the optimal
-    solution. For real-life problems this doesn't turn out to be much of a
-    problem, because finding the optimal solution would take years, so you 'll
-    want to finish early anyway.</para>
+    <para>Sooner or later the local search solver will have to stop solving. This can be because of a number of reasons:
+    the time is up, the perfect score has been reached, ... The only thing you can't depend on is on finding the optimal
+    solution (unless you know the optimal score), because a local search solver doesn't know that when it finds the
+    optimal solution. For real-life problems this doesn't turn out to be much of a problem, because finding the optimal
+    solution would take years, so you 'll want to finish early anyway.</para>
 
-    <para>You can configure when a local search solver needs to stop by
-    configuring a Finish. You can implement your own
-    <literal>Finish</literal>, although the build-in finishes should suffice
-    for most needs.</para>
+    <para>You can configure when a local search solver needs to stop by configuring a Finish. You can implement your own
+    <literal>Finish</literal>, although the build-in finishes should suffice for most needs.</para>
 
     <section>
       <title>TimeMillisSpendFinish</title>
@@ -737,17 +654,13 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
         &lt;maximumHouresSpend&gt;1&lt;/maximumHouresSpend&gt;
     &lt;/finish&gt;</programlisting>
 
-      <para>Note that the time taken by a
-      <literal>StartingSolutionInitializer</literal> also is taken into
-      account by this finish. So if you give the solver 2 minutes to solve
-      something, but the initializer takes 1 minute, the local search solver
-      will only have a minute left.</para>
+      <para>Note that the time taken by a <literal>StartingSolutionInitializer</literal> also is taken into account by
+      this finish. So if you give the solver 2 minutes to solve something, but the initializer takes 1 minute, the local
+      search solver will only have a minute left.</para>
 
-      <para>Note that if you use this finish, you will most likely sacrifice
-      reproducability. The best solution will depend on available CPU time,
-      not only because it influences the amount of steps taken, but also
-      because time gradient based algorithms (such as simulated annealing)
-      will probably act differently on each run.</para>
+      <para>Note that if you use this finish, you will most likely sacrifice reproducability. The best solution will
+      depend on available CPU time, not only because it influences the amount of steps taken, but also because time
+      gradient based algorithms (such as simulated annealing) will probably act differently on each run.</para>
     </section>
 
     <section>
@@ -763,56 +676,56 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
     <section>
       <title>FeasableScoreFinish</title>
 
-      <para>Finishes when a feasible score has been reached. You can also use
-      this finish if you know the perfect score, for example for 4
-      queens:</para>
+      <para>Finishes when a feasible score has been reached. You can also use this finish if you know the perfect score,
+      for example for 4 queens:</para>
 
       <programlisting>    &lt;finish&gt;
-        &lt;feasableScore&gt;0.0&lt;/feasableScore&gt;
+        &lt;feasableScore&gt;0&lt;/feasableScore&gt;
+    &lt;/finish&gt;</programlisting>
+
+      <para>For a solver problem with hard and soft contraints, you can define it like this:</para>
+
+      <programlisting>    &lt;finish&gt;
+        &lt;feasableScore&gt;0hard/-5000soft&lt;/feasableScore&gt;
     &lt;/finish&gt;</programlisting>
     </section>
 
     <section>
       <title>UnimprovedStepCountFinish</title>
 
-      <para>Finishes when the best score hasn't improved in a number of
-      steps:</para>
+      <para>Finishes when the best score hasn't improved in a number of steps:</para>
 
       <programlisting>    &lt;finish&gt;
         &lt;maximumUnimprovedStepCount&gt;100&lt;/maximumUnimprovedStepCount&gt;
     &lt;/finish&gt;</programlisting>
 
-      <para>If it hasn't improved recently, it's probably not going to improve
-      soon anyway and it's not worth the effort to continue. We have observed
-      that once a new best solution is found (even after a long time of no
-      improvement on the best solution), the next few step tend to improve the
-      best solution too.</para>
+      <para>If it hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort
+      to continue. We have observed that once a new best solution is found (even after a long time of no improvement on
+      the best solution), the next few step tend to improve the best solution too.</para>
     </section>
 
     <section>
       <title>Combining finishes</title>
 
-      <para>Finishes can be combined, for example: finish after 100 steps or
-      if a score of 0.0 has been reached:</para>
+      <para>Finishes can be combined, for example: finish after 100 steps or if a score of 0 has been reached:</para>
 
       <programlisting>    &lt;finish&gt;
         &lt;finishCompositionStyle&gt;OR&lt;/finishCompositionStyle&gt;
         &lt;maximumStepCount&gt;100&lt;/maximumStepCount&gt;
-        &lt;feasableScore&gt;0.0&lt;/feasableScore&gt;
+        &lt;feasableScore&gt;0&lt;/feasableScore&gt;
     &lt;/finish&gt;</programlisting>
 
-      <para>Alternatively you can use AND, for example: finish after reaching
-      a feasible score of at least -100 and no improvements in 5 steps:</para>
+      <para>Alternatively you can use AND, for example: finish after reaching a feasible score of at least -100 and no
+      improvements in 5 steps:</para>
 
       <programlisting>    &lt;finish&gt;
         &lt;finishCompositionStyle&gt;AND&lt;/finishCompositionStyle&gt;
         &lt;maximumUnimprovedStepCount&gt;5&lt;/maximumUnimprovedStepCount&gt;
-        &lt;feasableScore&gt;-100.0&lt;/feasableScore&gt;
+        &lt;feasableScore&gt;-100&lt;/feasableScore&gt;
     &lt;/finish&gt;</programlisting>
 
-      <para>This ensures it doesn't just finish after finding a feasible
-      solution, but also makes any obvious improvements on that solution
-      before finishing.</para>
+      <para>This ensures it doesn't just finish after finding a feasible solution, but also makes any obvious
+      improvements on that solution before finishing.</para>
     </section>
   </section>
 </section>

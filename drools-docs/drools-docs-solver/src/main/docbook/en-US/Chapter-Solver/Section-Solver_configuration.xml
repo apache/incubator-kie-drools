@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section  version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
   <title>Solver configuration</title>
 
   <section>
     <title>Types of solvers</title>
 
-    <para>Different solvers solve problems in different ways. Each type has
-    advantages and disadvantages. We 'll roughly discuss a few of the solver
-    types here. You can safely skip this section.</para>
+    <para>Different solvers solve problems in different ways. Each type has advantages and disadvantages. We 'll roughly
+    discuss a few of the solver types here. You can safely skip this section.</para>
 
     <section>
       <title>Brute force</title>
 
-      <para>Brute force creates and evaluates every possible solution, usually
-      by creating a search tree.</para>
+      <para>Brute force creates and evaluates every possible solution, usually by creating a search tree.</para>
 
       <para>Advantages:</para>
 
       <itemizedlist>
         <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal
-          solution, it finds all optimal solutions.</para>
+          <para>It finds an optimal solution. If there is more then 1 optimal solution, it finds all optimal
+          solutions.</para>
         </listitem>
 
         <listitem>
@@ -38,29 +33,27 @@
 
       <itemizedlist>
         <listitem>
-          <para>It has a horrible performance and scalability. Mostly unusable
-          for a real-world problem due to time constraints.</para>
+          <para>It has a horrible performance and scalability. Mostly unusable for a real-world problem due to time
+          constraints.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Brute force is currently not implemented in drools-solver. But we
-      have plans to implement it in the future, as a reference for validating
-      the output of the other solver types.</para>
+      <para>Brute force is currently not implemented in drools-solver. But we have plans to implement it in the future,
+      as a reference for validating the output of the other solver types.</para>
     </section>
 
     <section>
       <title>Branch and bound</title>
 
-      <para>Branch and bound is an improvement over brute force, as it prunes
-      away subsets of solutions which cannot have a better solution than the
-      best solution already found at that point.</para>
+      <para>Branch and bound is an improvement over brute force, as it prunes away subsets of solutions which cannot
+      have a better solution than the best solution already found at that point.</para>
 
       <para>Advantages:</para>
 
       <itemizedlist>
         <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal
-          solution, it can find all optimal solutions if needed.</para>
+          <para>It finds an optimal solution. If there is more then 1 optimal solution, it can find all optimal
+          solutions if needed.</para>
         </listitem>
       </itemizedlist>
 
@@ -72,17 +65,15 @@
         </listitem>
       </itemizedlist>
 
-      <para>Branch and bound is currently not implemented in
-      drools-solver.</para>
+      <para>Branch and bound is currently not implemented in drools-solver.</para>
     </section>
 
     <section>
       <title>Simplex</title>
 
-      <para>Simplex turns all constraints and data into a big equation, which
-      it transmutes into a mathematical function without local optima. It then
-      finds an optimal solution to the planning problem by finding an optima
-      of that mathematical function.</para>
+      <para>Simplex turns all constraints and data into a big equation, which it transmutes into a mathematical function
+      without local optima. It then finds an optimal solution to the planning problem by finding an optima of that
+      mathematical function.</para>
 
       <para>Advantages:</para>
 
@@ -96,8 +87,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>It's usually rather complex and mathematical to implement
-          constraints.</para>
+          <para>It's usually rather complex and mathematical to implement constraints.</para>
         </listitem>
       </itemizedlist>
 
@@ -107,37 +97,32 @@
     <section>
       <title>Local search (tabu search, simulated annealing, ...)</title>
 
-      <para>Local search starts from an initial solution and evolves that
-      single solution into a better and better solution. It uses a single
-      search path of solutions. At each solution in this path it evaluates a
-      number of possible moves on the solution and applies the most suitable
-      move to take the step to the next solution.</para>
+      <para>Local search starts from an initial solution and evolves that single solution into a better and better
+      solution. It uses a single search path of solutions. At each solution in this path it evaluates a number of
+      possible moves on the solution and applies the most suitable move to take the step to the next solution.</para>
 
-      <para>Local search works a lot like a human planner: it uses a single
-      search path and moves facts around to find a good feasible
-      solution.</para>
+      <para>Local search works a lot like a human planner: it uses a single search path and moves facts around to find a
+      good feasible solution.</para>
 
-      <para>A simple local search can easily get stuck in a local optima, but
-      improvements (such as tabu search and simulated annealing) address this
-      problem.</para>
+      <para>A simple local search can easily get stuck in a local optima, but improvements (such as tabu search and
+      simulated annealing) address this problem.</para>
 
       <para>Advantages:</para>
 
       <itemizedlist>
         <listitem>
-          <para>It's relatively simple and natural to implement constraints
-          (at least in drools-solver's implementation).</para>
+          <para>It's relatively simple and natural to implement constraints (at least in drools-solver's
+          implementation).</para>
         </listitem>
 
         <listitem>
-          <para>It's very scalable, even when adding extra constraints (at
-          least in drools-solver's implementation).</para>
+          <para>It's very scalable, even when adding extra constraints (at least in drools-solver's
+          implementation).</para>
         </listitem>
 
         <listitem>
-          <para>It generally needs to worry about less negative hard
-          constraints, because the move pattern can fulfill a number of the
-          negative hard constraints.</para>
+          <para>It generally needs to worry about less negative hard constraints, because the move pattern can fulfill a
+          number of the negative hard constraints.</para>
         </listitem>
       </itemizedlist>
 
@@ -149,28 +134,25 @@
         </listitem>
 
         <listitem>
-          <para>If the optimal score is unknown (which is usually the case),
-          it must be told when to stop looking (for example based on time
-          spend, user input, ...).</para>
+          <para>If the optimal score is unknown (which is usually the case), it must be told when to stop looking (for
+          example based on time spend, user input, ...).</para>
         </listitem>
       </itemizedlist>
 
-      <para>Drools-solver implements local search, including tabu search and
-      simulated annealing.</para>
+      <para>Drools-solver implements local search, including tabu search and simulated annealing.</para>
     </section>
   </section>
 
   <section>
     <title>The Solver interface</title>
 
-    <para>Every build-in solver implemented in drools-solver implements the
-    <literal>Solver</literal> interface:</para>
+    <para>Every build-in solver implemented in drools-solver implements the <literal>Solver</literal> interface:</para>
 
     <programlisting>public interface Solver {
 
     void setStartingSolution(Solution solution);
 
-    Number getBestScore();
+    Score getBestScore();
     Solution getBestSolution();
     
     void solve();
@@ -179,18 +161,15 @@
 
 }</programlisting>
 
-    <para>Solving a planning problem with drools-solver consists out of 4
-    steps:</para>
+    <para>Solving a planning problem with drools-solver consists out of 4 steps:</para>
 
     <orderedlist>
       <listitem>
-        <para>Build a solver, for example a tabu search solver for any NQueens
-        puzzle.</para>
+        <para>Build a solver, for example a tabu search solver for any NQueens puzzle.</para>
       </listitem>
 
       <listitem>
-        <para>Set a starting solution on the solver, for example a 4 Queens
-        puzzle instance.</para>
+        <para>Set a starting solution on the solver, for example a 4 Queens puzzle instance.</para>
       </listitem>
 
       <listitem>
@@ -202,18 +181,16 @@
       </listitem>
     </orderedlist>
 
-    <para>A <literal>Solver</literal> should currently directly be accessed
-    from a single thread. Support from accessing it from a different thread,
-    for example to finish solving early or to change the problem facts in
-    real-time, will be added in future releases.</para>
+    <para>A <literal>Solver</literal> should currently directly be accessed from a single thread. Support from accessing
+    it from a different thread, for example to finish solving early or to change the problem facts in real-time, will be
+    added in future releases.</para>
   </section>
 
   <section>
     <title>Building a solver</title>
 
-    <para>You can build a <literal>Solver</literal> instance with the
-    <literal>XmlSolverConfigurer</literal>. Configure it with a solver
-    configuration xml file:</para>
+    <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>. Configure
+    it with a solver configuration xml file:</para>
 
     <programlisting>    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
     configurer.configure("/org/drools/solver/examples/nqueens/solver/nqueensSolverConfig.xml");
@@ -224,11 +201,11 @@
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;localSearchSolver&gt;
     &lt;scoreDrl&gt;/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-    &lt;scoreCalculator&gt;
-        &lt;scoreCalculatorType&gt;SIMPLE&lt;/scoreCalculatorType&gt;
-    &lt;/scoreCalculator&gt;
+    &lt;scoreDefinition&gt;
+        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+    &lt;/scoreDefinition&gt;
     &lt;finish&gt;
-        &lt;feasableScore&gt;0.0&lt;/feasableScore&gt;
+        &lt;feasableScore&gt;0&lt;/feasableScore&gt;
     &lt;/finish&gt;
     &lt;selector&gt;
         &lt;moveFactoryClass&gt;org.drools.solver.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
@@ -241,21 +218,17 @@
     &lt;/forager&gt;
 &lt;/localSearchSolver&gt;</programlisting>
 
-    <para>This is a tabu search configuration for n queens. We 'll explain the
-    various parts of a configuration later in this manual.</para>
+    <para>This is a tabu search configuration for n queens. We 'll explain the various parts of a configuration later in
+    this manual.</para>
 
-    <para><emphasis role="bold">Drools-solver makes it relatively easy to
-    switch a solver type just by changing the configuration.</emphasis>
-    There's even a benchmark utility which allows you to play out different
-    configurations against each other and report the most appropriate
-    configuration for your problem. You could for example play out tabu search
-    versus simulated annealing, on 4 queens and 64 queens.</para>
+    <para><emphasis role="bold">Drools-solver makes it relatively easy to switch a solver type just by changing the
+    configuration.</emphasis> There's even a benchmark utility which allows you to play out different configurations
+    against each other and report the most appropriate configuration for your problem. You could for example play out
+    tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
 
-    <para>A solver has a single <literal>Random</literal> instance. Some
-    solver configurations use that instance a lot more than others. For
-    example simulated annealing depends highly on random numbers, while tabu
-    search only depends on it to deal with score ties. In any case, during
-    your testing it's advisable to set that <literal>Random</literal>
+    <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use that instance a lot
+    more than others. For example simulated annealing depends highly on random numbers, while tabu search only depends
+    on it to deal with score ties. In any case, during your testing it's advisable to set that <literal>Random</literal>
     instance, so your tests are reproducible.</para>
   </section>
 
@@ -264,11 +237,9 @@
 
     <para>A Solver can only solve 1 problem at a time.</para>
 
-    <para>You need to present the problem as a starting
-    <literal>Solution</literal> instance to the solver.</para>
+    <para>You need to present the problem as a starting <literal>Solution</literal> instance to the solver.</para>
 
-    <para>You need to implement the <literal>Solution</literal>
-    interface:</para>
+    <para>You need to implement the <literal>Solution</literal> interface:</para>
 
     <programlisting>public interface Solution {
 
@@ -278,8 +249,7 @@
 
 }</programlisting>
 
-    <para>For example, an NQueens instance just holds a list of all it's
-    queens:</para>
+    <para>For example, an NQueens instance just holds a list of all it's queens:</para>
 
     <programlisting>public class NQueens implements Solution {
 
@@ -292,10 +262,9 @@
     <section>
       <title>The getFacts method</title>
 
-      <para>All Objects returned by the <literal>getFacts()</literal> method
-      will be asserted into the drools working memory. Those facts can be used
-      by the score rules. For example, <literal>NQueens</literal> just returns
-      all <literal>Queen</literal> instances.</para>
+      <para>All Objects returned by the <literal>getFacts()</literal> method will be asserted into the drools working
+      memory. Those facts can be used by the score rules. For example, <literal>NQueens</literal> just returns all
+      <literal>Queen</literal> instances.</para>
 
       <programlisting>    public Collection&lt;? extends Object&gt; getFacts() {
         return queenList;
@@ -305,9 +274,8 @@
     <section>
       <title>The cloneSolution method</title>
 
-      <para>Most solvers use the <literal>cloneSolution()</literal> method to
-      clone the solution each time they encounter a new best solution. The
-      <literal>NQueens</literal> implementation just clones all
+      <para>Most solvers use the <literal>cloneSolution()</literal> method to clone the solution each time they
+      encounter a new best solution. The <literal>NQueens</literal> implementation just clones all
       <literal>Queen</literal> instances:</para>
 
       <programlisting>    public NQueens cloneSolution() {
@@ -320,12 +288,10 @@
         return clone;
     }</programlisting>
 
-      <para>The <literal>cloneSolution()</literal> method should clone no more
-      and no less than the parts of the <literal>Solution</literal> that can
-      change during solving. For example, in the lesson schedule example the
-      lessons are cloned, but teachers, groups and timeslots are not cloned
-      because only a lesson's appointed timeslot changes during
-      solving:</para>
+      <para>The <literal>cloneSolution()</literal> method should clone no more and no less than the parts of the
+      <literal>Solution</literal> that can change during solving. For example, in the lesson schedule example the
+      lessons are cloned, but teachers, groups and timeslots are not cloned because only a lesson's appointed timeslot
+      changes during solving:</para>
 
       <programlisting>    /**
      * Clone will only deep copy the lessons
@@ -348,8 +314,7 @@
   <section>
     <title>The starting solution</title>
 
-    <para>First, you will need to make a starting solution and set that on the
-    solver:</para>
+    <para>First, you will need to make a starting solution and set that on the solver:</para>
 
     <programlisting>solver.setStartingSolution(startingSolution);</programlisting>
   </section>
@@ -357,16 +322,15 @@
   <section>
     <title>A simple filler algorithm</title>
 
-    <para>For 4 queens we use a simple filler algorithm that creates a
-    starting solution with all queens on a different x and on the same y (with
-    y = 0).</para>
+    <para>For 4 queens we use a simple filler algorithm that creates a starting solution with all queens on a different
+    x and on the same y (with y = 0).</para>
 
     <figure>
       <title>Starting solution for the 4 queens puzzle</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/unsolvedNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/unsolvedNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -388,45 +352,39 @@
         return nQueens;
     }</programlisting>
 
-    <para>The starting solution will probably be far from optimal (or even
-    feasible). Here it's actually the worst possible solution. However, we 'll
-    let the solver find a much better solution for us anyway.</para>
+    <para>The starting solution will probably be far from optimal (or even feasible). Here, it's actually the worst
+    possible solution. However, we 'll let the solver find a much better solution for us anyway.</para>
 
     <section>
       <title>StartingSolutionInitializer</title>
 
-      <para>For large problems, a simple filler algorithm like
-      <literal>createNQueens(int)</literal> doesn't suffice. A (local search)
-      solver starting from a bad starting solution wastes a lot of time to
-      reach a solution which an initializer algorithm can generate in a
-      fraction of that time.</para>
+      <para>For large problems, a simple filler algorithm like <literal>createNQueens(int)</literal> doesn't suffice. A
+      (local search) solver starting from a bad starting solution wastes a lot of time to reach a solution which an
+      initializer algorithm can generate in a fraction of that time.</para>
 
-      <para>An initializer algorithm ussually works something like
-      this:</para>
+      <para>An initializer algorithm ussually works something like this:</para>
 
       <itemizedlist>
         <listitem>
-          <para>It sorts the unplanned elements in a queue according to some
-          general rules, for example by exam student size.</para>
+          <para>It sorts the unplanned elements in a queue according to some general rules, for example by exam student
+          size.</para>
         </listitem>
 
         <listitem>
-          <para>Next, it plans them in the order they come from the queue.
-          Each element is put the best still available spot.</para>
+          <para>Next, it plans them in the order they come from the queue. Each element is put the best, still available
+          spot.</para>
         </listitem>
 
         <listitem>
-          <para>It doesn't change an already planned element. It exits when
-          the queue is empty and all elements are planned.</para>
+          <para>It doesn't change an already planned element. It exits when the queue is empty and all elements are
+          planned.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Such an algorithm is very deterministic: it's really fast, but you
-      can't give it more time to generate an even better solution. In some
-      cases the solution it generates will be feasible, but in most cases it
-      won't. You 'll need a real solver to get to a feasible or more optimal
-      solution. Nevertheless you 'll want to such an initializer to give the
-      real solver a serious head start. You can do this by implementing the
+      <para>Such an algorithm is very deterministic: it's really fast, but you can't give it more time to generate an
+      even better solution. In some cases the solution it generates will be feasible, but in most cases it won't. You
+      'll need a real solver to get to a feasible or more optimal solution. Nevertheless you 'll want to such an
+      initializer to give the real solver a serious head start. You can do this by implementing the
       <literal>StartingSolutionInitializer</literal> interface:</para>
 
       <programlisting>public interface StartingSolutionInitializer extends SolverAware {
@@ -437,15 +395,12 @@
 
 }</programlisting>
 
-      <para>You'll need to set a (uninitialized) solution on the solver. Once
-      the solver starts, it will first call the
-      <literal>StartingSolutionInitializer</literal> to initialize the
-      solution. If the <literal>StartingSolutionInitializer</literal> adds,
-      edits or removes facts it needs to notify the workingMemory about this.
-      It can use score calculation during its intialization process.</para>
+      <para>You'll need to set a (uninitialized) solution on the solver. Once the solver starts, it will first call the
+      <literal>StartingSolutionInitializer</literal> to initialize the solution. If the
+      <literal>StartingSolutionInitializer</literal> adds, edits or removes facts it needs to notify the workingMemory
+      about this. It can use score calculation during its intialization process.</para>
 
-      <para>Here's an example on how you add the
-      <literal>StartingSolutionInitializer</literal> to the
+      <para>Here's an example on how you add the <literal>StartingSolutionInitializer</literal> to the
       configuration:</para>
 
       <programlisting>&lt;localSearchSolver&gt;
@@ -459,32 +414,28 @@
   <section>
     <title>Solving a problem</title>
 
-    <para>Solving a problem is quite easy once you have a solver and the
-    starting solution:</para>
+    <para>Solving a problem is quite easy once you have a solver and the starting solution:</para>
 
     <programlisting>    solver.setStartingSolution(startingSolution);
     solver.solve();
     Solution bestSolution = solver.getBestSolution();</programlisting>
 
-    <para>The <literal>solve()</literal> method will take a long time
-    (depending on the problem size and the solver configuration). The solver
-    will remember (actually clone) the best solution it encounters during its
-    solving. Depending on a number factors (including problem size, how long
-    you allow the solver to work, which solver type you use, ...), that best
-    solution will be a feasible or even an optimal solution.</para>
+    <para>The <literal>solve()</literal> method will take a long time (depending on the problem size and the solver
+    configuration). The solver will remember (actually clone) the best solution it encounters during its solving.
+    Depending on a number factors (including problem size, how long you allow the solver to work, which solver type you
+    use, ...), that best solution will be a feasible or even an optimal solution.</para>
 
     <figure>
-      <title>Best solution for the 4 queens puzzle (also an optimal
-      solution)</title>
+      <title>Best solution for the 4 queens puzzle (also an optimal solution)</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/solvedNQueens04.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Solver/solvedNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>After a problem is solved, you can reuse the same solver instance to
-    solve another problem (of the same problem type).</para>
+    <para>After a problem is solved, you can reuse the same solver instance to solve another problem (of the same
+    problem type).</para>
   </section>
 </section>
