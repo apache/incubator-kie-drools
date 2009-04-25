@@ -26,20 +26,19 @@ import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
 import org.drools.template.parser.TemplateDataListener;
 
+/**
+ * An object of this class acts as a template compiler, inserting spreadsheet
+ * data into templates. Template data may come from a resource or an
+ * InputStream, or you may provide a TemplateDataListener.
+ */
 public class DataProviderCompiler {
 
-    /**
-     * Generates DRL from the input stream containing the spreadsheet.
-     * 
-     * @param xlsStream
-     *            The stream to the spreadsheet. Uses the first worksheet found
-     *            for the decision tables, ignores others.
-     * @param type
-     *            The type of the file - InputType.CSV or InputType.XLS
-     * @param listener
-     * @return DRL xml, ready for use in drools.
-     * @throws IOException
-     */
+	/**
+	 * Generates DRL from a data provider for the spreadsheet data and templates.
+	 * @param dataProvider the data provider for the spreadsheet data
+	 * @param template the string containing the template resource name
+	 * @return the generated DRL text as a String
+	 */
     public String compile(final DataProvider dataProvider,
                           final String template) {
         final InputStream templateStream = this.getClass().getResourceAsStream( template );
@@ -47,6 +46,12 @@ public class DataProviderCompiler {
                         templateStream );
     }
 
+    /**
+	 * Generates DRL from a data provider for the spreadsheet data and templates.
+     * @param dataProvider the data provider for the spreadsheet data
+     * @param templateStream the InputStream for reading the templates
+     * @return the generated DRL text as a String
+     */
     public String compile(final DataProvider dataProvider,
                           final InputStream templateStream) {
         TemplateContainer tc = new DefaultTemplateContainer( templateStream );
@@ -55,6 +60,12 @@ public class DataProviderCompiler {
                         new TemplateDataListener( tc ) );
     }
 
+    /**
+     * Generates DRL from a data provider for the spreadsheet data and templates.
+     * @param dataProvider the data provider for the spreadsheet data
+     * @param listener a template data listener
+     * @return the generated DRL text as a String
+     */
     public String compile(final DataProvider dataProvider,
                           final TemplateDataListener listener) {
         List<DataListener> listeners = new ArrayList<DataListener>();
@@ -112,7 +123,7 @@ public class DataProviderCompiler {
         }
     }
 
-    private void closeStream(final InputStream stream) {
+    protected void closeStream(final InputStream stream) {
         try {
             stream.close();
         } catch ( final Exception e ) {
