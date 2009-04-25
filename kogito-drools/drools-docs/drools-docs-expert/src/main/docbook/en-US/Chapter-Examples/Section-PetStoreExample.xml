@@ -1,143 +1,191 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+  <section version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
                     xmlns:m="http://www.w3.org/1998/Math/MathML"
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-			<title>Pet Store Example</title>
+      <title>Pet Store Example</title>
 
-			<programlisting><emphasis role="bold">Name:</emphasis> Pet Store 
+      <programlisting><emphasis role="bold">Name:</emphasis> Pet Store 
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.PetStore
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> PetStore.drl
-<emphasis role="bold">Objective:</emphasis> Demonstrate use of Agenda Groups, Global Variables and integration with a GUI (including callbacks from within the Rules)
+<emphasis role="bold">Objective:</emphasis> Demonstrate use of Agenda Groups, Global Variables and integration with a GUI,
+including callbacks from within the rules
 </programlisting>
 
-			<para>The Pet Store example shows how to integrate Rules with a GUI (in this case a Swing based Desktop application). Within the rules file, it shows how to use agenda groups and auto-focus to control which of a set of rules is allowed to fire at any given time. It also shows mixing of Java and MVEL dialects within the rules, the use of accumulate functions and calling of Java functions from within the ruleset.</para>
+      <para>The Pet Store example shows how to integrate Rules with a GUI,
+      in this case a Swing based desktop application. Within the rules file,
+      it demonstrates how to use Agenda groups and auto-focus to control
+      which of a set of rules is allowed to fire at any given time. It also
+      illustrates the mixing of the Java and MVEL dialects within the rules,
+      the use of accumulate functions and the way of calling Java functions
+      from within the ruleset.</para>
 
-			<para>Like the rest of the the samples, all the Java Code is contained in one file. The PetStore.java contains the following principal classes (in addition to several minor classes to handle Swing Events)</para>
+      <para>All of the Java code is contained in one file,
+      <filename>PetStore.java</filename>, defining the following principal
+      classes (in addition to several classes to handle Swing Events):</para>
 
-			<itemizedlist>
-				<listitem>
-					<para><emphasis role="italic"> Petstore</emphasis> - containing the main() method that we will look at shortly.</para>
-				</listitem>
+      <itemizedlist>
+        <listitem>
+          <para><code>Petstore</code> contains the <code>main()</code>
+          method that we will look at shortly.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="italic">PetStoreUI</emphasis> - responsible for creating and displaying the Swing based GUI. It contains several smaller classes , mainly for responding to various GUI events such as mouse and button clicks.</para>
-				</listitem>
+        <listitem>
+          <para><code>PetStoreUI</code> is responsible for creating and
+          displaying the Swing based GUI. It contains several smaller
+          classes, mainly for responding to various GUI events such as
+          mouse button clicks.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="italic">TabelModel</emphasis> - for holding the table data. Think of it as a JavaBean that extends the Swing AbstractTableModel class.</para>
-				</listitem>
+        <listitem>
+          <para><code>TableModel</code> holds the table data. Think of it
+          as a JavaBean that extends the Swing class
+          <code>AbstractTableModel</code>.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="italic">CheckoutCallback</emphasis> - Allows the GUI to interact with the Rules.</para>
-				</listitem>
+        <listitem>
+          <para><code>CheckoutCallback</code> allows the GUI to interact
+          with the Rules.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="italic">Ordershow </emphasis> - the items that we wish to buy.</para>
-				</listitem>
+        <listitem>
+          <para><code>Ordershow</code> keeps the items that we wish to
+          buy.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="italic">Purchase</emphasis> - Details of the order and the products we are buying.</para>
-				</listitem>
+        <listitem>
+          <para><code>Purchase</code> stores details of the order and
+          the products we are buying.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="italic">Product</emphasis> - JavaBean holding details of the product available for purchase, and it's price.</para>
-				</listitem>
-			</itemizedlist>
+        <listitem>
+          <para><code>Product</code> is a JavaBean holding details of
+          the product available for purchase, and its price.</para>
+        </listitem>
+      </itemizedlist>
 
-			<para>Much of the Java code is either JavaBeans (simple enough to understand) or Swing based. We will touch on some Swing related points in the this tutorial , but a good place to get more Swing component information is <ulink url="???"><uri>http://java.sun.com/docs/books/tutorial/uiswing/</uri> available at the Sun Swing website.<citebiblioid /></ulink></para>
+      <para>Much of the Java code is either plain JavaBeans or Swing-based.
+      We will touch on some Swing-related points in the this tutorial, but
+      a good place to get more information on Swing components is
+      <ulink url="???">
+      <uri>http://java.sun.com/docs/books/tutorial/uiswing/</uri>
+      </ulink> at Sun's Swing website.</para>
 
-			<para>There are two important Rules related pieces of Java code in <emphasis role="italic">Petstore.java</emphasis>.</para>
+      <para>The pieces of Java code in <filename>Petstore.java</filename>
+      that relate to rules and facts are shown below.</para>
 
-			<example>
-				<title>Creating the PetStore RuleBase - extract from PetStore.java main() method</title>
+      <example>
+        <title>Creating the PetStore RuleBase in PetStore.main</title>
 
-				<programlisting><![CDATA[KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        <programlisting><![CDATA[KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-            kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
-                                                                        PetStore.class ),
-                                  ResourceType.DRL );
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
+                                                    PetStore.class ),
+              ResourceType.DRL );
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-            //RuleB
-            Vector<Product> stock = new Vector<Product>();
-            stock.add( new Product( "Gold Fish",
-                                    5 ) );
-            stock.add( new Product( "Fish Tank",
-                                    25 ) );
-            stock.add( new Product( "Fish Food",
-                                    2 ) );
+// Create the stock.
+Vector<Product> stock = new Vector<Product>();
+stock.add( new Product( "Gold Fish", 5 ) );
+stock.add( new Product( "Fish Tank", 25 ) );
+stock.add( new Product( "Fish Food", 2 ) );
 
-            //The callback is responsible for populating working memory and
-            // fireing all rules
-            PetStoreUI ui = new PetStoreUI( stock,
-                                            new CheckoutCallback( kbase ) );
-            ui.createAndShowGUI();
+// A callback is responsible for populating the
+// Working Memory and for firing all rules.
+PetStoreUI ui = new PetStoreUI( stock,
+                                new CheckoutCallback( kbase ) );
+ui.createAndShowGUI();
 ]]></programlisting>
-			</example>
+      </example>
 
-			<para>This code above loads the rules (drl) file from the classpath. Unlike other examples where the facts are asserted and fired straight away, this example defers this step to later. The way it does this is via the second last line where the PetStoreUI is created using a constructor the passes in the Vector called stock containing products, and an instance of the CheckoutCallback class containing the RuleBase that we have just loaded.</para>
+      <para>The code shown above loads the rules from a DRL file on the
+      classpath. Unlike other examples where the facts are asserted and
+      fired straight away, this example defers this step to later. The
+      way it does this is via the second last line where a
+      <code>PetStoreUI</code> object is created using a constructor 
+      accepting the <code>Vector</code> object <code>stock</code>
+      collecting our products, and an instance of
+      the <code>CheckoutCallback</code> class containing the Rule Base
+      that we have just loaded.</para>
 
-			<para>The actual Javacode that fires the rules is within the <emphasis role="italic">CheckoutCallBack.checkout()</emphasis> method. This is triggered (eventually) when the 'Checkout' button is pressed by the user.</para>
+      <para>The Java code that fires the rules is within the 
+      <code>CheckoutCallBack.checkout()</code> method. This is triggered
+      (eventually) when the Checkout button is pressed by the user.</para>
 
-			<example>
-				<title>Firing the Rules - extract from the CheckOutCallBack.checkout() method</title>
+      <example>
+        <title>Firing the Rules - extract from CheckoutCallBack.checkout()</title>
 
-				<programlisting><![CDATA[public String checkout(JFrame frame, List<Product> items) {
-            Order order = new Order();
+        <programlisting><![CDATA[public String checkout(JFrame frame, List<Product> items) {
+    Order order = new Order();
 
-            //Iterate through list and add to cart
-            for ( int i = 0; i < items.size(); i++ ) {
-                order.addItem( new Purchase( order,
-                                             (Product) items.get( i ) ) );
-            }
+    // Iterate through list and add to cart
+    for ( Product p: items ) {
+        order.addItem( new Purchase( order, p ) );
+    }
 
-            //add the JFrame to the ApplicationData to allow for user interaction
+    // Add the JFrame to the ApplicationData to allow for user interaction
 
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-            ksession.setGlobal( "frame",
-                                frame );
-            ksession.setGlobal( "textArea",
-                                this.output );
+    StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    ksession.setGlobal( "frame", frame );
+    ksession.setGlobal( "textArea", this.output );
 
-            ksession.insert( new Product( "Gold Fish",
-                                          5 ) );
-            ksession.insert( new Product( "Fish Tank",
-                                          25 ) );
-            ksession.insert( new Product( "Fish Food",
-                                          2 ) );
+    ksession.insert( new Product( "Gold Fish", 5 ) );
+    ksession.insert( new Product( "Fish Tank", 25 ) );
+    ksession.insert( new Product( "Fish Food", 2 ) );
 
-            ksession.insert( new Product( "Fish Food Sample",
-                                          0 ) );
+    ksession.insert( new Product( "Fish Food Sample", 0 ) );
 
-            ksession.insert( order );
-            ksession.fireAllRules();
+    ksession.insert( order );
+    ksession.fireAllRules();
 
-            //returns the state of the cart
-            return order.toString();
-        }
+    // Return the state of the cart
+    return order.toString();
+}
 ]]></programlisting>
-			</example>
+      </example>
 
-			<para>Two items get passed into this method; A handle to the JFrame Swing Component surrounding the output text frame (bottom of the GUI if / when you run the component). The second item is a list of order items; this comes from the TableModel the stores the information from the 'Table' area at the top right section of the GUI.</para>
+      <para>Two items get passed into this method. One is the handle to the
+      <code>JFrame</code> Swing component surrounding the output text
+      frame, at the bottom of the GUI. The second is a list of order items;
+      this comes from the <code>TableModel</code> storing the information
+      from the "Table" area at the top right section of the GUI.</para>
 
-			<para>The <emphasis role="italic">for()</emphasis> loop transforms the list of order items coming from the GUI into the Order JavaBean (also contained in the PetStore.java file). Note that it would be possible to refer to the Swing dataset directly within the rules, but it is better coding practice to do it this way (using Simple Java Objects). It means that we are not tied to Swing if we wanted to transform the sample into a Web application.</para>
+      <para>The for loop transforms the list of order items coming from the
+      GUI into the <code>Order</code> JavaBean, also contained in the
+      file <filename>PetStore.java</filename>. Note that it would be 
+      possible to refer to the Swing dataset directly within the rules,
+      but it is better coding practice to do it this way, using simple
+      Java objects. It means that we are not tied to Swing if we wanted
+      to transform the sample into a Web application.</para>
 
-			<para>It is important to note that <emphasis role="bold">all state in this example is stored in the Swing components, and that the rules are effectively stateless. </emphasis>Each time the 'Checkout' button is pressed, this code copies the contents of the Swing <emphasis>TableModel</emphasis> into the Session / Working Memory.</para>
+      <para>It is important to note that <emphasis>all state in this
+      example is stored in the Swing components, and that the rules are
+      effectively stateless.</emphasis> Each time the "Checkout" button is
+      pressed, this code copies the contents of the Swing
+      <code>TableModel</code> into the Session's Working Memory.</para>
 
-			<para>Within this code, there are nine calls to the working memory. The first of these creates a new workingMemory (StatefulKnowledgeSession) from the Knowledgebase - remember that we passed in this Knowledgebase when we created the CheckoutCallBack class in the <emphasis role="italic">main()</emphasis> method. The next two calls pass in two objects that we will hold as Global variables in the rules - the Swing text area and Swing frame that we will use for writing messages later.</para>
+      <para>Within this code, there are nine calls to the Working Memory.
+      The first of these creates a new Working Memory, as a Stateful
+      Knowledge Session from the Knowledge Base. Remember that we passed
+      in this Knowledge Base when we created the <code>CheckoutCallBack</code>
+      class in the <code>main()</code> method. The next two calls pass in
+      two objects that we will hold as global variables in the rules: the
+      Swing text area and the Swing frame used for writing messages.</para>
 
-			<para>More inserts put information on products into the working memory, as well as the order list. The final call is the standard <emphasis role="italic">fireAllRules()</emphasis>. Next, we look at what this method causes to happen within the Rules file.</para>
-			
-			<example>
-				<title>Package, Imports , Globals and Dialect - extract (1) from PetStore.drl</title>
+      <para>More inserts put information on products into the Working Memory,
+      as well as the order list. The final call is the standard
+      <code>fireAllRules()</code>. Next, we look at what this method causes
+      to happen within the rules file.</para>
+      
+      <example>
+        <title>Package, Imports, Globals and Dialect: extract from PetStore.drl</title>
 
-				<programlisting>package org.drools.examples
+        <programlisting>package org.drools.examples
 
 import org.drools.WorkingMemory
 import org.drools.examples.PetStore.Order
@@ -149,30 +197,38 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame 
         
 global JFrame frame 
-global javax.swing.JTextArea textArea
- 
-</programlisting>
-			</example>
+global javax.swing.JTextArea textArea</programlisting>
+      </example>
     
-			<para>The first part of the <emphasis role="italic">PetStore.drl</emphasis> file contains the standard package and import statement to make various Java classes available to the rules. What is new are the two globals <emphasis>frame and textArea. </emphasis>These hold references to the Swing JFrame and Textarea components that were previous passed by the Java code calling the <emphasis>setGlobal() </emphasis>method. Unlike normal variables in Rules , which expire as soon as the rule has fired, Global variables retain their value for the lifetime of the (Stateful in this case) Session.</para>
+      <para>The first part of file <filename>PetStore.drl</filename>
+      contains the standard package and import statements to make various
+      Java classes available to the rules. New to us are the two globals
+      <code>frame</code> and <code>textArea</code>. They hold references
+      to the Swing components <code>JFrame</code> and <code>JTextArea</code>
+      components that were previously passed on by the Java code calling
+      the <code>setGlobal()</code> method. Unlike  variables in rules,
+      which expire as soon as the rule has fired, global variables retain
+      their value for the lifetime of the Session.</para>
 
-			<para>The next extract (below) is from the <emphasis role="bold">end</emphasis> of the PetStore.drl file. It contains two functions that are referenced by the rules that we will look at shortly.</para>
-			
-			<example>
-				<title>Java Functions in the Rules - extract (2) from PetStore.drl</title>
+      <para>The next extract from the file <filename>PetStore.drl</filename>
+      contains two functions that are referenced by the rules that we will
+      look at shortly.</para>
+      
+      <example>
+        <title>Java Functions in the Rules: extract from PetStore.drl</title>
 
-				<programlisting><![CDATA[function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
+        <programlisting><![CDATA[function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
     Object[] options = {"Yes",
                         "No"};
                             
     int n = JOptionPane.showOptionDialog(frame,
-                                         "Would you like to checkout?",
-                                         "",
-                                         JOptionPane.YES_NO_OPTION,
-                                         JOptionPane.QUESTION_MESSAGE,
-                                         null,
-                                         options,
-                                         options[0]);
+        "Would you like to checkout?",
+        "",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
 
     if (n == 0) {
         workingMemory.setFocus( "checkout" );
@@ -184,13 +240,13 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
                         "No"};
                             
     int n = JOptionPane.showOptionDialog(frame,
-                                         "Would you like to buy a tank for your " + total + " fish?",
-                                         "Purchase Suggestion",
-                                         JOptionPane.YES_NO_OPTION,
-                                         JOptionPane.QUESTION_MESSAGE,
-                                         null,
-                                         options,
-                                         options[0]);
+        "Would you like to buy a tank for your " + total + " fish?",
+        "Purchase Suggestion",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
                                              
     System.out.print( "SUGGESTION: Would you like to buy a tank for your "
                       + total + " fish? - " );
@@ -206,69 +262,97 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
     return true;
 }
 ]]></programlisting>
-			</example>
+      </example>
   
 
-			<para>Having these functions in the rules file makes the PetStore sample more compact - in real life you probably have the functions in a file of their own (within the same rules package), or as a static method on a standard Java class (and import them using the <emphasis role="bold">import function my.package.Foo.hello </emphasis>syntax).</para>
+      <para>Having these functions in the rules file just makes the Pet Store
+      example more compact. In real life you probably have the functions
+      in a file of their own, within the same rules package, or as a
+      static method on a standard Java class, and import them, using
+      <code>import function my.package.Foo.hello</code>.</para>
 
-			<para>The above functions are</para>
+      <para>The purpose of these two functions is:</para>
 
-			<itemizedlist>
-				<listitem>
-					<para><emphasis role="italic">doCheckout()</emphasis> - Displays a dialog asking the user if they wish to checkout. If they do, focus is set to the <emphasis role="italic">checkOut</emphasis> agenda-group, allowing rules in that group to (potentially) fire.</para>
-				</listitem>
+      <itemizedlist>
+        <listitem>
+          <para><code>doCheckout()</code> displays a dialog asking users
+          whether they wish to checkout. If they do, focus is set to the
+          <code>checkOut</code> agenda-group, allowing rules in that group
+          to (potentially) fire.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="italic">requireTank()</emphasis> - Displays a dialog asking the user if they wish to buy a tank. If so, a new FishTank <emphasis role="italic">Product</emphasis> added to the orderlist in working memory.</para>
-				</listitem>
-			</itemizedlist>
-			
-			<para>We'll see later the rules that call these functions.The next set of examples are from the PetStore rules themselves. The first extract is the one that happens to fire first (partly because it has the <emphasis role="italic">auto-focus</emphasis> attibute set to true).</para>
-				
-			<example>
-				<title>Putting each (individual) item into working memory - extract (3) from PetStore.drl</title>
+        <listitem>
+          <para><code>requireTank()</code> displays a dialog asking
+          users whether they wish to buy a tank. If so, a new fish tank
+          <code>Product</code> is added to the order list in Working
+          Memory.</para>
+        </listitem>
+      </itemizedlist>
+      
+      <para>We'll see the rules that call these functions later on. The
+      next set of examples are from the Pet Store rules themselves. The
+      first extract is the one that happens to fire first, partly because
+      it has the <kw>auto-focus</kw> attribute set to true.</para>
+        
+      <example>
+        <title>Putting items into working memory: extract from PetStore.drl</title>
 
-				<programlisting><![CDATA[// insert each item in the shopping cart into the Working Memory 
-// insert each item in the shopping cart into the Working Memory 
+        <programlisting><![CDATA[// Insert each item in the shopping cart into the Working Memory 
+// Insert each item in the shopping cart into the Working Memory
 rule "Explode Cart"
     agenda-group "init"
-	auto-focus true    
+    auto-focus true
     salience 10
-	dialect "java"
-	when
-	    $order : Order( grossTotal == -1 )
-		$item : Purchase() from $order.items
-	then
-		insert( $item );
-		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();		
-		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();		
-end
+    dialect "java"
+when
+    $order : Order( grossTotal == -1 )
+    $item : Purchase() from $order.items
+then
+    insert( $item );
+    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();
+    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();
+end]]></programlisting>
+      </example>
 
-]]></programlisting>
-			</example>
+      <para>This rule matches against all orders that do not yet have their
+      <code>grossTotal</code> calculated . It loops for each purchase item
+      in that order. Some parts of the "Explode Cart" rule should be familiar:
+      the rule name, the salience (suggesting the order for the rules being
+      fired) and the dialect set to <code>"java"</code>. There are three
+      new features:</para>
 
-			<para>This rule matches against all orders that do not yet have an Order.grossTotal calculated . It loops for each purchase item in that order. Some of the <emphasis role="italic">Explode Cart</emphasis> Rule should be familiar ; the rule name, the salience (suggesting of the order that the rules should be fired in) and the dialect set to <emphasis role="italic">java</emphasis>. There are three new items:</para>
+      <itemizedlist>
+        <listitem>
+          <para><kw>agenda-group</kw> <code>"init"</code> defines the name
+           of the agenda group. In this case, there is only one rule in the
+           group. However, neither the Java code nor a rule consequence sets
+           the focus to this group, and therefore it relies on the next
+           attibute for its chance to fire.</para>
+        </listitem>
 
-			<itemizedlist>
-				<listitem>
-					<para role="bold"><emphasis role="bold">agenda-group "init" </emphasis>- the name of the agenda group. In this case, there is only one rule in the group. However, nothing in Java code / nor a rule sets the focus to this group , so it relies on the next attibute for it's chance to fire.</para>
-				</listitem>
+        <listitem>
+          <para><kw>auto-focus</kw> <code>true</code> ensures that this rule,
+          while being the only rule in the agenda group, gets a chance to fire
+          when <code>fireAllRules()</code> is called from the Java code.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="bold">auto-focus true - </emphasis>This is the only rule in the sample, so when <emphasis role="italic">fireAllRules()</emphasis> is called from within the Java code, this rule is the first to get a chance to fire.</para>
-				</listitem>
+        <listitem>
+          <para><code>drools.setFocus()</code> sets the focus to the
+          <code>"show items"</code> and <code>evaluate</code> agenda groups
+          in turn, permitting their rules to fire. In practice, we loop
+          through all items on the order, inserting them into memory, then
+          firing the other rules after each insert.</para>
+        </listitem>
+      </itemizedlist>
 
-				<listitem>
-					<para><emphasis role="bold">drools.setFocus() </emphasis>This sets the focus to the <emphasis role="italic">show items </emphasis>and <emphasis role="italic">evaluate</emphasis> agenda groups in turn , giving their rules a chance to fire. In practice , we loop through all items on the order, inserting them into memory, then firing the other rules after each insert.</para>
-				</listitem>
-			</itemizedlist>
+      <para>The next two listings show the rules within the
+      <code>"show items"</code> and <code>evaluate</code> agenda groups.
+      We look at them in the order that they are called.</para>
+        
+      <example>
+        <title>Show Items in the GUI - extract from PetStore.drl</title>
 
-			<para>The next two listings shows the rules within the <emphasis role="italic">show items </emphasis>and <emphasis role="italic">evaluate</emphasis> agenda groups. We look at them in the order that they are called.</para>
-				
-			<example>
-				<title>Show Items in the GUI extract (4) from PetStore.drl</title>
-
-				<programlisting><![CDATA[rule "Show Items"
+        <programlisting><![CDATA[rule "Show Items"
     agenda-group "show items"
     dialect "mvel"
 when
@@ -278,17 +362,25 @@ then
    textArea.append( $p.product + "\n");
 end
 ]]></programlisting>
-			</example>
+      </example>
 
-			<para>The <emphasis role="italic">show items</emphasis> agenda-group has only one rule, also called <emphasis role="italic">Show Items</emphasis> (note the difference in case). For each purchase on the order currently in the working memory (session) it logs details to the text area (at the bottom of the GUI). The <emphasis role="italic">textArea</emphasis> variable used to do this is one of the Global Variables we looked at earlier.</para>
+      <para>The <code>"show items"</code> agenda-group has only one rule,
+      called "Show Items" (note the difference in case). For each purchase
+      on the order currently in the Working Memory (or Session), it logs
+      details to the text area at the bottom of the GUI. The
+      <code>textArea</code> variable used to do this is one of the global
+      variables we looked at earlier.</para>
 
-			<para>The <emphasis role="italic">evaluate</emphasis> Agenda group also gains focus from the <emphasis role="italic">explode cart </emphasis>rule above. This Agenda group has two rules (below) <emphasis role="italic">Free Fish Food Sample </emphasis> and <emphasis role="italic">Suggest Tank</emphasis>.</para>
+      <para>The <code>evaluate</code> Agenda group also gains focus from
+      the <code>"Explode Cart"</code> rule listed previously. This
+      Agenda group has two rules, <code>"Free Fish Food Sample"</code> and
+      <code>"Suggest Tank"</code>, shown below.</para>
 
-			<example>
-				<title>Evaluate Agenda Group extract (5) from PetStore.drl</title>
+      <example>
+        <title>Evaluate Agenda Group: extract from PetStore.drl</title>
 
-				<programlisting><![CDATA[// Free Fish Food sample when we buy a Gold Fish if we haven't already  bought 
-// Fish Food and dont already have a Fish Food Sample
+        <programlisting><![CDATA[// Free Fish Food sample when we buy a Gold Fish if we haven't already bought 
+// Fish Food and don't already have a Fish Food Sample
 rule "Free Fish Food Sample"
     agenda-group "evaluate"
     dialect "mvel"
@@ -305,7 +397,7 @@ then
     $order.addItem( purchase ); 
 end
 
-// Suggest a tank if we have bought more than 5 gold fish and dont already have one
+// Suggest a tank if we have bought more than 5 gold fish and don't already have one
 rule "Suggest Tank"
     agenda-group "evaluate"
     dialect "java"
@@ -318,68 +410,88 @@ then
     requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total); 
 end
 ]]></programlisting>
-			</example>
+      </example>
       
 
-			<para>The <emphasis role="italic">Free Fish Food Sample</emphasis> rule will only fire if</para>
+      <para>The rule <code>"Free Fish Food Sample"</code> will only fire if</para>
 
-			<itemizedlist>
-				<listitem>
-					<para>We <emphasis role="italic">don't </emphasis>already have any fish food.</para>
-				</listitem>
+      <itemizedlist>
+        <listitem>
+          <para>we <emphasis>don't </emphasis>already have any fish food, <emphasis>and</emphasis></para>
+        </listitem>
 
-				<listitem>
-					<para>We <emphasis role="italic">don't</emphasis> already have a free fish food sample.</para>
-				</listitem>
+        <listitem>
+          <para>we <emphasis>don't</emphasis> already have a free fish food sample,
+          <emphasis>and</emphasis></para>
+        </listitem>
 
-				<listitem>
-					<para>We <emphasis role="italic">do</emphasis> have a Gold Fish in our order.</para>
-				</listitem>
-			</itemizedlist>
+        <listitem>
+          <para>we <emphasis>do</emphasis> have a Gold Fish in our order.</para>
+        </listitem>
+      </itemizedlist>
 
-			<para>If the rule does fire, it creates a new product (Fish Food Sample), and adds it to the Order in working memory.</para>
+      <para>If the rule does fire, it creates a new product (Fish Food Sample), and adds it to the
+      order in Working Memory.</para>
 
-			<para>The <emphasis role="italic">Suggest Tank</emphasis> rule will only fire if</para>
+      <para>The rule <code>"Suggest Tank"</code> will only fire if</para>
 
-			<itemizedlist>
-				<listitem>
-					<para>We <emphasis role="italic">don't </emphasis>already have a Fish Tank in our order</para>
-				</listitem>
+      <itemizedlist>
+        <listitem>
+          <para>we <emphasis>don't </emphasis>already have a Fish Tank in our order,
+          <emphasis>and</emphasis></para>
+        </listitem>
 
-				<listitem>
-					<para>If we <emphasis role="italic">can</emphasis> find more than 5 Gold Fish Products in our order.</para>
-				</listitem>
-			</itemizedlist>
+        <listitem>
+          <para>we <emphasis>do</emphasis> have more than 5 Gold Fish Products
+          in our order.</para>
+        </listitem>
+      </itemizedlist>
 
-			<para>If the rule does fire, it calls the <emphasis role="italic">requireTank</emphasis>() function that we looked at earlier (showing a Dialog to the user, and adding a Tank to the order / working memory if confirmed). When calling the <emphasis role="italic">requireTank</emphasis>() function the rule passes the global <emphasis role="italic">frame</emphasis> variable so that the function has a handle to the Swing GUI.</para>
+      <para>If the rule does fire, it calls the <code>requireTank()</code> function
+      that we looked at earlier (showing a Dialog to the user, and adding a Tank to
+      the order / working memory if confirmed). When calling the
+      <emphasis role="italic">requireTank</emphasis>() function the rule passes
+      the global <emphasis role="italic">frame</emphasis> variable so that the
+      function has a handle to the Swing GUI.</para>
 
-			<para>The next rule we look at is <emphasis role="italic">do checkout.</emphasis></para>
-				
-			<example>
-				<title>Doing the Checkout - extract (6) from PetStore.drl</title>
+      <para>The next rule we look at is <code>"do checkout"</code>.</para>
+        
+      <example>
+        <title>Doing the Checkout - extract (6) from PetStore.drl</title>
 
-				<programlisting>rule "do checkout"
+        <programlisting>rule "do checkout"
     dialect "java"
     when
     then
         doCheckout(frame, drools.getWorkingMemory());
 end</programlisting>
-			</example>
+      </example>
 
-			<para>The <emphasis role="italic">do checkout</emphasis> rule has <emphasis role="bold">no agenda-group set and no auto-focus attribute</emphasis>. As such, is is deemed part of the default (MAIN) agenda-group - the same as the other non PetStore examples where agenda groups are not used. This group gets focus by default when all the rules/agenda-groups that explicity had focus set to them have run their course.</para>
+      <para>The rule <code>"do checkout"</code> has <emphasis role="bold">no
+      agenda group set and no auto-focus attribute</emphasis>. As such, is is
+      deemed part of the default (MAIN) agenda group. This group gets focus by
+      default when all the rules in agenda-groups that explicity had focus set
+      to them have run their course.</para>
 
-			<para>There is no LHS to the rule, so the RHS will always call the <emphasis role="italic">doCheckout</emphasis>() function. When calling the <emphasis role="italic">doCheckout</emphasis>() function the rule passes the global <emphasis role="italic">frame</emphasis> variable so the function has a handle to the Swing GUI. As we saw earlier, the <emphasis role="italic">doCheckout</emphasis>() function shows a confirmation dialog to the user. If confirmed, the function sets the focus to the <emphasis role="italic">checkout</emphasis> agenda-group, allowing the next lot of rules to fire.</para>
+      <para>There is no LHS to the rule, so the RHS will always call the
+      <code>doCheckout()</code> function. When calling the
+      <code>doCheckout()</code> function, the rule passes the global
+      <code>frame</code> variable to give the function a handle to the Swing GUI.
+      As we saw earlier, the <code>doCheckout()</code> function shows a
+      confirmation dialog to the user. If confirmed, the function sets the focus
+      to the <emphasis role="italic">checkout</emphasis> agenda-group, allowing
+      the next lot of rules to fire.</para>
 
-			<example>
-				<title>Checkout Rules- extract (7) from PetStore.drl</title>
+      <example>
+        <title>Checkout Rules: extract from PetStore.drl</title>
 
-				<programlisting><![CDATA[rule "Gross Total"
+        <programlisting><![CDATA[rule "Gross Total"
     agenda-group "checkout"
     dialect "mvel"
 when
    $order : Order( grossTotal == -1)
-   Number( total : doubleValue ) from accumulate( Purchase( $price : product.price ),
-                 sum( $price ) )
+   Number( total : doubleValue )
+       from accumulate( Purchase( $price : product.price ), sum( $price ) )
 then
     modify( $order ) { grossTotal = total };
     textArea.append( "\ngross total=" + total + "\n" );
@@ -398,7 +510,7 @@ end
 
 rule "Apply 10% Discount"
     agenda-group "checkout"
-dialect "mvel"
+    dialect "mvel"
 when
    $order : Order( grossTotal &gt;= 20 )
 then
@@ -406,127 +518,174 @@ then
    textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
 end
 ]]></programlisting>
-			</example>
+      </example>
 
-			<para>There are three rules in the <emphasis role="italic">checkout</emphasis> agenda-group</para>
+      <para>There are three rules in the <emphasis role="italic">checkout</emphasis> agenda-group:</para>
 
-			<itemizedlist>
-				<listitem>
-					<para><emphasis role="bold">Gross Total </emphasis> - if we haven't already calculated the gross total, accumulates the product prices into a total, puts this total into working memory, and displays it via the Swing TextArea (using the <emphasis role="italic">textArea </emphasis>global variable yet again).</para>
-				</listitem>
+      <itemizedlist>
+        <listitem>
+          <para>If we haven't already calculated the gross total,
+          <code>Gross Total</code> accumulates the product prices into a total,
+          puts this total into Working Memory, and displays it via the Swing
+          <code>JTextArea</code>, using the <code>textArea</code> global
+          variable yet again.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="bold">Apply 5% Discount</emphasis> - if our gross total is between 10 and 20, then calculate the discounted total and add it to working memory / display in the text area.</para>
-				</listitem>
+        <listitem>
+          <para>If our gross total is between 10 and 20, 
+          <code>"Apply 5% Discount"</code> calculates the discounted total and
+          adds it to the Working Memory and displays it in the text area.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="bold">Apply 10% Discount</emphasis> - if our gross total is equal to or greater than 20, calculate the discounted total and add it to working memory / display in the text area.</para>
-				</listitem>
-			</itemizedlist>
-			
-			<para>Now we've run through what happens in the code, lets have a look at what happens when we run the code for real. The <emphasis role="italic">PetStore.java </emphasis>example contains a <emphasis role="italic">main()</emphasis> method, so it can be run as a standard Java application (either from the command line or via the IDE). This assumes you have your classpath set correctly (see the start of the examples section for more information).</para>
+        <listitem>
+          <para>If our gross total is not less than 20, 
+          <code>"Apply 10% Discount"</code> calculates the discounted total and
+          adds it to the Working Memory and displays it in the text area.</para>
+        </listitem>
+      </itemizedlist>
+      
+      <para>Now that we've run through what happens in the code, let's have a
+      look at what happens when we actually run the code. The file
+      <filename>PetStore.java</filename> contains a <code>main()</code> method,
+      so that it can be run as a standard Java application, either from the
+      command line or via the IDE. This assumes you have your classpath set
+      correctly. (See the start of the examples section for more information.)</para>
 
-			<para>The first screen that we see is the Pet Store Demo. It has a List of available products (top left) , an empty list of selected products (top right), checkout and reset buttons (middle) and an empty system messages area (bottom).</para>
+      <para>The first screen that we see is the Pet Store Demo. It has a list
+      of available products (top left), an empty list of selected products
+      (top right), checkout and reset buttons (middle) and an empty system
+      messages area (bottom).</para>
 
-			<figure>
-				<title>Figure 1 - PetStore Demo just after Launch</title>
+      <figure>
+        <title>PetStore Demo just after Launch</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/PetstoreExample/1-PetStore-Start-Screen.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-			
-			<para>To get to this point, the following things have happened:</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/PetStoreExample/1-PetStore-Start-Screen.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      
+      <para>To get to this point, the following things have happened:</para>
 
-			<orderedlist>
-				<listitem>
-					<para>The <emphasis role="italic">main()</emphasis> method has run and loaded the RuleBase <emphasis role="bold">but not yet fired the rules</emphasis>. This is the only rules related code to run so far.</para>
-				</listitem>
+      <orderedlist>
+        <listitem>
+          <para>The <code>main()</code> method has run and loaded the Rule Base
+          <emphasis>but not yet fired the rules</emphasis>. So far, this is the
+          only code in connection with rules that has been run.</para>
+        </listitem>
 
-				<listitem>
-					<para>A new <emphasis role="italic">PetStoreUI</emphasis> class is created and given a handle to the RuleBase (for later use).</para>
-				</listitem>
+        <listitem>
+          <para>A new <code>PetStoreUI</code> object has been created and given a
+          handle to the Rule Base, for later use.</para>
+        </listitem>
 
-				<listitem>
-					<para>Various Swing Components do their stuff, and the above screen is shown and <emphasis role="bold">waits for user input</emphasis>.</para>
-				</listitem>
-			</orderedlist>
-			
-			<para>Clicking on various products from the list might give you a screen similar to the one below.</para>
+        <listitem>
+          <para>Various Swing components do their stuff, and the above screen
+          is shown and <emphasis>waits for user input</emphasis>.</para>
+        </listitem>
+      </orderedlist>
+      
+      <para>Clicking on various products from the list might give you a
+      screen similar to the one below.</para>
 
-			<figure>
-				<title>Figure 2 - PetStore Demo with Products Selected</title>
+      <figure>
+        <title>PetStore Demo with Products Selected</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/PetstoreExample/2-stock-added-to-order-list.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-			
-			<para>Note that <emphasis role="bold">no rules code has been fired here</emphasis>. This is only swing code, listening for the mouse click event, and added the clicked product to the <emphasis>TableModel</emphasis> object for display in the top right hand section (as an aside , this is a classic use of the Model View Controller - MVC - design pattern).</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/PetStoreExample/2-stock-added-to-order-list.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      
+      <para>Note that <emphasis>no rules code has been fired here</emphasis>. This
+      is only Swing code, listening for mouse click events, and adding some
+      selected product to the <code>TableModel</code> object for display in the
+      top right hand section. (As an aside, note that this is a classic use of
+      the Model View Controller design pattern).</para>
 
-			<para>It is only when we press the <emphasis role="bold">Checkout</emphasis> that we fire our business rules, in roughly the same order that we walked through the code earlier.</para>
+      <para>It is only when we press the "Checkout" button that we fire our
+      business rules, in roughly the same order that we walked through the
+      code earlier.</para>
 
-			<orderedlist>
-				<listitem>
-					<para>The <emphasis role="italic">CheckOutCallBack.checkout()</emphasis> method is called (eventually) by the Swing class waiting for the click on the checkout button. This inserts the data from the <emphasis>TableModel</emphasis> object (top right hand side of the GUI), and handles from the GUI into the session / working memory. It then fires the rules.</para>
-				</listitem>
+      <orderedlist>
+        <listitem>
+          <para>Method <code>CheckOutCallBack.checkout()</code> is called
+          (eventually) by the Swing class waiting for the click on the
+          "Checkout" button. This inserts the data from the
+          <code>TableModel</code> object (top right hand side of the GUI),
+          and inserts it into the Session's Working Memory. It then fires
+          the rules.</para>
+        </listitem>
 
-				<listitem>
-					<para>The <emphasis role="italic">Explode Cart</emphasis> rule is the first to fire, given that has <emphasis role="italic">auto-focus </emphasis>set to true. It loops through all the products in the cart, makes sure the products are in the working memory, then gives the <emphasis role="italic">Show Items</emphasis> and <emphasis role="italic">Evaluation</emphasis> agenda groups a chance to fire. The rules in these groups, add the contents of the cart to the text area (bottom), decide whether or not to give us free fish food and whether to ask if we want to buy a fish tank (Figure 3 below).</para>
-				</listitem>
-			</orderedlist>
+        <listitem>
+          <para>The <code>"Explode Cart"</code> rule is the first to fire,
+          given that it has <kw>auto-focus</kw> set to true. It loops through
+          all the products in the cart, ensures that the products are in the
+          Working Memory, and then gives the <code>"Show Items"</code> and
+          <code>Evaluation</code> agenda groups a chance to fire. The rules
+          in these groups add the contents of the cart to the text area
+          (at the bottom of the window), decide whether or not to give us free
+          fish food, and to ask us whether we want to buy a fish tank. This
+          is shown in the figure below.</para>
+        </listitem>
+      </orderedlist>
 
-			<figure>
-				<title>Figure 3 - Do we want to buy a fish tank?</title>
+      <figure>
+        <title>Do we want to buy a fish tank?</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/PetstoreExample/3-purchase-suggestion.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/PetStoreExample/3-purchase-suggestion.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-			<orderedlist>
-				<listitem>
-					<para>The <emphasis role="italic">Do Checkout</emphasis> rule is the next to fire as it (a) No other agenda group currently has focus and (b) it is part of the default (MAIN) agenda group. It always calls the<emphasis role="italic"> doCheckout() function </emphasis>which displays a 'Would you like to Checkout?' Dialog Box.</para>
-				</listitem>
+      <orderedlist>
+        <listitem>
+          <para>The <emphasis role="italic">Do Checkout</emphasis> rule is the next to fire as it (a) No other agenda group currently has focus and (b) it is part of the default (MAIN) agenda group. It always calls the<emphasis role="italic"> doCheckout() function </emphasis>which displays a 'Would you like to Checkout?' Dialog Box.</para>
+        </listitem>
 
-				<listitem>
-					<para>The <emphasis role="italic">doCheckout() function</emphasis> sets the focus to the <emphasis role="italic">checkout </emphasis>agenda-group, giving the rules in that group the option to fire.</para>
-				</listitem>
+        <listitem>
+          <para>The <code>doCheckout()</code> function sets the focus to the
+          <code>checkout</code> agenda-group, giving the rules in that group
+          the option to fire.</para>
+        </listitem>
 
-				<listitem>
-					<para>The rules in the the <emphasis role="italic">checkout</emphasis> agenda-group, display the contents of the cart and apply the appropriate discount.</para>
-				</listitem>
+        <listitem>
+          <para>The rules in the the <code>checkout</code> agenda-group display
+          the contents of the cart and apply the appropriate discount.</para>
+        </listitem>
 
-				<listitem>
-					<para><emphasis role="bold">Swing then waits for user input</emphasis> to either checkout more products (and to cause the rules to fire again) or to close the GUI - Figure 4 below.</para>
-				</listitem>
-			</orderedlist>
+        <listitem>
+          <para><emphasis>Swing then waits for user input</emphasis> to either
+          checkout more products (and to cause the rules to fire again), or to
+          close the GUI - see the figure below.</para>
+        </listitem>
+      </orderedlist>
 
-			<figure>
-				<title>Figure 4 - Petstore Demo after all rules have fired.</title>
+      <figure>
+        <title>Petstore Demo after all rules have fired.</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/PetstoreExample/4-Petstore-final-screen.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/PetStoreExample/4-Petstore-final-screen.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-			<para>Should we choose, we could add more System.out calls to demonstrate this flow of events. The current output of the console of the above sample is as per the listing below.</para>
-	
-			<example>
-				<title>Console (System.out) from running the PetStore GUI</title>
+      <para>We could add more System.out calls to demonstrate this flow of
+      events. The output, as it currently appears in the Console window, is
+      given in the listing below.</para>
+  
+      <example>
+        <title>Console (System.out) from running the PetStore GUI</title>
 
-				<programlisting>Adding free Fish Food Sample to cart 
+        <programlisting>Adding free Fish Food Sample to cart 
 SUGGESTION: Would you like to buy a tank for your 6 fish? - Yes</programlisting>
-			</example>
+      </example>
      
 
-			<!---<para>Todo : Add Audit and Agenda Views for this sample.</para>-->
-		</section>
+      <!---<para>Todo : Add Audit and Agenda Views for this sample.</para>-->
+    </section>
