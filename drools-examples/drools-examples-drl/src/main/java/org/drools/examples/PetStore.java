@@ -393,9 +393,8 @@ public class PetStore {
             Order order = new Order();
 
             //Iterate through list and add to cart
-            for ( int i = 0; i < items.size(); i++ ) {
-                order.addItem( new Purchase( order,
-                                             (Product) items.get( i ) ) );
+            for ( Product p: items ) {
+                order.addItem( new Purchase( order, p ) );
             }
 
             //add the JFrame to the ApplicationData to allow for user interaction
