@@ -17,26 +17,30 @@
   <para>The "Hello World" example shows a simple example of rules usage, and
   both the MVEL and Java dialects.</para>
 
-  <para>This example demonstrates how to build knowledgebases and sessions.
+  <para>This example demonstrates how to build Knowledge Bases and Sessions.
   Also, audit logging and debug outputs are shown, which is ommitted
-  from other examples as it's all very similar. KnowledgeBuilder is used to turn
-  a DRL source file into Package objects which the KnowledgeBase can consume.
-  The add method takes a Resource interface and ResourceType as parameters. Resource can be 
-  used to retrieve a source drl file from various locations, in this case the
-  drl file is being retrieved from the classpath using ResourceFactory; but it could come from
-  the disk or a url. In this case we only add a single drl source file, but
-  multiple drl files can be added. Drl files with different namespaces can be added, 
-  KnowledgeBuilder creates a package for each namespace. Multiple
-  packages of different namespaces can be added to the same KnowledgeBase. When
-  all the drl files have been added we should check the builder for errors;
-  while the KnowledgeBase will validate the package it will only have access to the
-  error information as a String, so if you wish to debug the error information
-  you should do it on the builder instance. Once we know the builder is error
-  free get the Package collection, instantiate a KnowledgeBase from the KnowledgeBaseFactory and
-  add the package collection.</para>
+  from other examples as it's all very similar. A <code>KnowledgeBuilder</code>
+  is used to turn a DRL source file into <code>Package</code> objects which
+  the Knowledge Base can consume. The add method takes a <code>Resource</code>
+  interface and a Resource Type as parameters. The <code>Resource</code> can be 
+  used to retrieve a DRL source file from various locations; in this case the
+  DRL file is being retrieved from the classpath using a
+  <code>ResourceFactory</code>, but it could come from a disk file or a URL.
+  Here, we only add a single DRL source file, but multiple DRL files can be 
+  added. Also, DRL files with different namespaces can be added, where
+  the Knowledge Builder creates a package for each namespace. Multiple
+  packages of different namespaces can be added to the same Knowledge Base.
+  When all the DRL files have been added, we should check the builder for 
+  errors. While the Knowledge Base will validate the package, it will only
+  have access to the error information as a String, so if you wish to debug
+  the error information you should do it on the <code>KnowledgeBuilder</code>
+  instance. Once you know the builder is error free, get the
+  <code>Package</code> collection, instantiate a <code>KnowledgeBase</code>
+  from the <code>KnowledgeBaseFactory</code> and add the package
+  collection.</para>
 
   <example>
-    <title>HelloWorld example: Creating the KnowledgeBase and Session</title>
+    <title>HelloWorld: Creating the KnowledgeBase and Session</title>
 
     <programlisting>final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -46,8 +50,8 @@ kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
 
 // Check the builder for errors
 if (kbuilder.hasErrors()) {
-	System.out.println(kbuilder.getErrors().toString());
-	throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
+    System.out.println(kbuilder.getErrors().toString());
+    throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
 }
 
 // get the compiled packages (which are serializable)
@@ -61,32 +65,35 @@ final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</
   </example>
 
   <para>Drools has an event model that exposes much of what's happening
-  internally, two default debug listeners are supplied
-  DebugAgendaEventListener and DebugWorkingMemoryEventListener which print out
-  debug event information to the err console, adding listeners to a session is
-  trivial and shown below. The KnowledgeRuntimeLogger provides execution
-  auditing which can be viewed in a graphical viewer; it's actually a
-  specialised implementation built on the agenda and working memory listeners,
-  when the engine has finished executing logger.close() must be
-  called.</para>
+  internally. Two default debug listeners are supplied,
+  <code>DebugAgendaEventListener</code> and 
+  <code>DebugWorkingMemoryEventListener</code> which print out
+  debug event information to the <code>System.err</code> stream displayed
+  in the Console window. Adding listeners to a
+  Session is trivial, as shown below. The <code>KnowledgeRuntimeLogger</code>
+  provides execution auditing, the result of which can be viewed in a
+  graphical viewer. The logger is actually a specialised implementation
+  built on the Agenda and Working Memory listeners. When the engine has
+  finished executing, <code>logger.close()</code> must be called.</para>
 
   <para>Most of the examples use the Audit logging features of Drools to
   record execution flow for later inspection.</para>
 
   <example>
-    <title>HelloWorld example: Event logging and Auditing</title>
+    <title>HelloWorld: Event logging and Auditing</title>
 
     <programlisting>// setup the debug listeners
 ksession.addEventListener( new DebugAgendaEventListener() );
 ksession.addEventListener( new DebugWorkingMemoryEventListener() );
         
 // setup the audit logging
-KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/helloworld");</programlisting>
+KnowledgeRuntimeLogger logger =
+  KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/helloworld");</programlisting>
   </example>
 
-  <para>The single class used in this example is very simple, it has two
-  fields: the message, which is a String and the status which can be either
-  the int HELLO or the int GOODBYE.</para>
+  <para>The single class used in this example is very simple. It has two
+  fields: the message, which is a String and the status which can be one
+  of the two integers <code>HELLO</code> or <code>GOODBYE</code>.</para>
 
   <example>
     <title>HelloWorld example: Message Class</title>
@@ -101,15 +108,16 @@ KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(kses
 }</programlisting>
   </example>
 
-  <para>A single Message object is created with the message "Hello World" and
-  status HELLO and then inserted into the engine, at which point
-  fireAllRules() is executed. Remember all the network evaluation is done
-  during the insert time, by the time the program execution reaches the
-  fireAllRules() method it already knows which rules are fully matches and
-  able to fire.</para>
+  <para>A single <code>Message</code> object is created with the
+  message text "Hello World" and the status <code>HELLO</code> and then
+  inserted into the engine, at which point <code>fireAllRules()</code>
+  is executed. Remember that all the network evaluation is done
+  during the insert time, so that by the time the program execution reaches the
+  <code>fireAllRules()</code> method call the engine already knows which rules
+  are fully matches and able to fire.</para>
 
   <example>
-    <title>HelloWorld example: Execution</title>
+    <title>HelloWorld: Execution</title>
 
     <programlisting>final Message message = new Message();
 message.setMessage("Hello World");
@@ -123,7 +131,7 @@ logger.close();
 ksession.dispose();    </programlisting>
   </example>
 
-  <para>To execute the example from Java.</para>
+  <para>To execute the example as a Java application:</para>
 
   <orderedlist>
     <listitem>
@@ -132,18 +140,18 @@ ksession.dispose();    </programlisting>
     </listitem>
 
     <listitem>
-      <para>Right-click the class an select "Run as..." -&gt; "Java
+      <para>Right-click the class and select "Run as..." and then "Java
       application"</para>
     </listitem>
   </orderedlist>
 
-  <para>If we put a breakpoint on the fireAllRules() method and select the
-  ksession variable we can see that the "Hello World" view is already activated
-  and on the Agenda, showing that all the pattern matching work was already
-  done during the insert.</para>
+  <para>If we put a breakpoint on the <code>fireAllRules()</code> method
+  and select the <code>ksession</code> variable, we can see that the
+  "Hello World" rule is already activated and on the Agenda, confirming
+  that all the pattern matching work was already done during the insert.</para>
 
   <figure>
-    <title>Hello World : fireAllRules Agenda View</title>
+    <title>Hello World: fireAllRules Agenda View</title>
 
     <mediaobject>
       <imageobject>
@@ -157,49 +165,49 @@ ksession.dispose();    </programlisting>
   listener print outs go to System.err.</para>
 
   <example>
-    <title>HelloWorld example: Console.out</title>
+    <title>HelloWorld: System.out in the Console window</title>
 
     <programlisting>Hello World
 Goodbye cruel world</programlisting>
   </example>
 
   <example>
-    <title>HelloWorld example: Console.err</title>
+    <title>HelloWorld: System.err in the Console window</title>
 
     <programlisting>==&gt;[ActivationCreated(0): rule=Hello World; 
-                          tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
+                   tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
 [ObjectInserted: handle=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]; 
                  object=org.drools.examples.HelloWorldExample$Message@17cec96]
 [BeforeActivationFired: rule=Hello World; 
-                        tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
+                   tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
 ==&gt;[ActivationCreated(4): rule=Good Bye; 
-                          tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
+                   tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
 [ObjectUpdated: handle=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]; 
                 old_object=org.drools.examples.HelloWorldExample$Message@17cec96; 
                 new_object=org.drools.examples.HelloWorldExample$Message@17cec96]
 [AfterActivationFired(0): rule=Hello World]
 [BeforeActivationFired: rule=Good Bye; 
-                        tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
+                   tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
 [AfterActivationFired(4): rule=Good Bye]  </programlisting>
   </example>
 
-  <para>The <emphasis role="bold">LHS (when)</emphasis> section of the rule
-  states that it will be activated for each <emphasis>Message</emphasis>
-  object inserted into the working memory whose <emphasis>status</emphasis> is
-  <emphasis>Message.HELLO</emphasis>. Besides that, two variable binds are
-  created: "<emphasis>message</emphasis>" variable is bound to the
-  <emphasis>message</emphasis> attribute and "<emphasis>m</emphasis>" variable
-  is bound to the <emphasis>object matched pattern</emphasis> itself.</para>
+  <para>The LHS (after <kw>when</kw>) section of the rule states that it will be
+  activated for each <code>Message</code> object inserted into the Working
+  Memory whose status is <code>Message.HELLO</code>. Besides that, two 
+  variable bindings are created: the variable <code>message</code> is bound
+  to the <code>message</code> attribute and the variable <code>m</code>
+  is bound to the matched <code>Message</code> object itself.</para>
 
-  <para>The <emphasis role="bold">RHS (consequence, then)</emphasis> section
-  of the rule is written using the MVEL expression language, as declared by
-  the rule's attribute <emphasis>dialect</emphasis>. After printing the
-  content of the <emphasis>message</emphasis> bound variable to the default
-  console, the rule changes the values of the <emphasis>message</emphasis> and
-  <emphasis>status</emphasis> attributes of the <emphasis>m</emphasis> bound
-  variable; using MVEL's 'modify' keyword which allows you to apply a block of
-  setters in one statement, with the engine being automatically notified of
-  the changes at the end of the block.</para>
+  <para>The RHS (after <kw>then</kw>) or consequence part of the rule is
+  written using the MVEL expression language, as declared by
+  the rule's attribute <code>dialect</code>. After printing the content of
+  the bound variable <code>message</code> to <code>System.out</code>,
+  the rule changes the values of the <code>message</code> and
+  <code>status</code> attributes of the <code>Message</code> object
+  bound to <code>m</code>. This is done MVEL's <kw>modify</kw> statement,
+  which allows you to apply a block of assignments in one statement, with the
+  engine being automatically notified of the changes at the end of the 
+  block.</para>
 
   <example>
     <title>HelloWorld: rule "Hello World"</title>
@@ -215,25 +223,25 @@ Goodbye cruel world</programlisting>
 end</programlisting>
   </example>
 
-  <para>We can add a break point into the DRL for when modify is called during
-  the execution of the "Hello World" consequence and inspect the Agenda view
-  again. Notice this time we "Debug As" a "Drools application" and not a "Java
-  application".</para>
+  <para>We can set a breakpoint into the DRL, on the <kw>modify</kw>
+  call, and inspect the Agenda view again during the execution of the
+  rule's consequence. This time we start the execution via "Debug As"
+  and "Drools application" and not by running a "Java application":</para>
 
   <orderedlist>
     <listitem>
-      <para>Open the class org.drools.examples.FibonacciExample in your
-      Eclipse IDE</para>
+      <para>Open the class <code>org.drools.examples.HelloWorld</code> in your
+      Eclipse IDE.</para>
     </listitem>
 
     <listitem>
-      <para>Right-click the class an select "Debug as..." -&gt; "Drools
-      application"</para>
+      <para>Right-click the class and select "Debug as..." and then "Drools
+      application".</para>
     </listitem>
   </orderedlist>
 
-  <para>Now we can see that the other rule "Good Bye" which uses the java
-  dialect is activated and placed on the agenda.</para>
+  <para>Now we can see that the other rule <code>"Good Bye"</code>, which
+  uses the Java dialect, is activated and placed on the Agenda.</para>
 
   <figure>
     <title>Hello World: rule "Hello World" Agenda View</title>
@@ -245,12 +253,12 @@ end</programlisting>
     </mediaobject>
   </figure>
 
-  <para>The "Good Bye" rule is similar to the "Hello World" rule but matches
-  Message objects whose status is Message.GOODBYE instead, printing its
-  message to the default console, it specifies the "java" dialect.</para>
+  <para>The "Good Bye" rule, which specifies the "java" dialect, is similar
+  to the "Hello World" rule except that it matches <code>Message</code>
+  objects whose  status is <code>Message.GOODBYE</code>.</para>
 
   <example>
-    <title>HelloWorld example: rule "Good Bye"</title>
+    <title>HelloWorld: rule "Good Bye"</title>
 
     <programlisting>rule "Good Bye"
       dialect "java"
@@ -261,17 +269,19 @@ end</programlisting>
 end</programlisting>
   </example>
 
-  <para>If you remember at the start of this example in the java code we used KnowledgeRuntimeLoggerFactory.newFileLogger to create a KnowledgeRuntimeLogger
-  and called logger.close() at the
-  end, this created an audit log file that can be shown in the Audit view. We
-  use the audit view in many of the examples to try and understand the example
-  execution flow. In the view below we can see the object is inserted which
-  creates an activation for the "Hello World" rule, the activation is then
-  executed which updated the Message object causing the "Good Bye" rule to
-  activate, the "Good Bye" rule then also executes. When an event in the Audit
-  view is select it highlights the origin event in green, so below the
-  Activation created event is highlighted in greed as the origin of the
-  Activation executed event.</para>
+  <para>Remember the Java code where we used the
+  <code>KnowledgeRuntimeLoggerFactory</code> method <code>newFileLogger</code>
+  to create a <code>KnowledgeRuntimeLogger</code> and called
+  <code>logger.close()</code> at the end. This created an audit log file that
+  can be shown in the Audit view. We use the Audit view in many of the
+  examples to demostrate the example execution flow. In the view screen shot
+  below we can see that the object is inserted, which creates an activation
+  for the "Hello World" rule; the activation is then executed which updates
+  the <code>Message</code> object causing the "Good Bye" rule to
+  activate; finally the "Good Bye" rule also executes. Selecting an event in
+  the Audit view highlights the origin event in green; therefore the
+  "Activation created" event is highlighted in green as the origin of the
+  "Activation executed" event.</para>
 
   <figure>
     <title>Hello World: Audit View</title>
