@@ -1,52 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+  <section version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
                     xmlns:m="http://www.w3.org/1998/Math/MathML"
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-		<title>Fibonacci Example</title>
+    <title>Fibonacci Example</title>
 
-		<screen><emphasis role="bold">Name:</emphasis> Fibonacci 
+    <screen><emphasis role="bold">Name:</emphasis> Fibonacci 
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.FibonacciExample
-<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> Fibonacci.drl
-<emphasis role="bold">Objective:</emphasis> Demonsrates Recursion, 'not' CEs and Cross Product Matching</screen>
+<emphasis role="bold">Objective:</emphasis> Demonstrates Recursion,
+  the CE <kw>not</kw> and cross product matching</screen>
 
-		<para>The Fibonacci Numbers, <ulink url="http://en.wikipedia.org/wiki/Fibonacci_number">http://en.wikipedia.org/wiki/Fibonacci_number</ulink>, invented by Leonardo of Pisa, <ulink url="http://en.wikipedia.org/wiki/Fibonacci">http://en.wikipedia.org/wiki/Fibonacci</ulink>, are obtained by starting with 0 and 1, and then produce the next Fibonacci number by adding the two previous Fibonacci numbers. The first Fibonacci numbers for n = 0, 1,... are: * 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946... The Fibonacci Example demonstrates recursion and conflict resolution with Salience values.</para>
+    <para>The Fibonacci Numbers (see <ulink url="http://en.wikipedia.org/wiki/Fibonacci_number">http://en.wikipedia.org/wiki/Fibonacci_number</ulink>)
+    discovered by Leonardo of Pisa (see <ulink url="http://en.wikipedia.org/wiki/Fibonacci">http://en.wikipedia.org/wiki/Fibonacci</ulink>) is a sequence 
+    that starts with 0 and 1. The next Fibonacci number is obtained by adding
+    the two preceding Fibonacci numbers. The Fibonacci sequence begins with
+    0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597,
+    2584, 4181, 6765, 10946,... The Fibonacci Example demonstrates recursion
+    and conflict resolution with salience values.</para>
 
-		<para>A single fact Class is used in this example, Fibonacci. It has two fields, sequence and value. The sequence field is used to indicate the position of the object in the Fibonacci number sequence and the value field shows the value of that Fibonacci object for that sequence position.</para>
+    <para>The single fact class <code>Fibonacci</code> is used in this
+    example. It has two fields, sequence and value. The sequence field
+    is used to indicate the position of the object in the Fibonacci
+    number sequence. The value field shows the value of that
+    Fibonacci object for that sequence position, using -1 to indicate
+    a value that still needs to be computed.</para>
 
-		<example>
-			<title>Fibonacci Class</title>
+    <example>
+      <title>Fibonacci Class</title>
 
-			<programlisting>public static class Fibonacci {
+      <programlisting>public static class Fibonacci {
     private int  sequence;
     private long value;
 
+    public Fibonacci( final int sequence ) {
+        this.sequence = sequence;
+        this.value = -1;
+    }
+
     ... setters and getters go here...
 }</programlisting>
-		</example>
+    </example>
 
-		<para>Execute the example:</para>
+    <para>Execute the example:</para>
 
-		<orderedlist>
-			<listitem>
-				<para>Open the class <classname>org.drools.examples.FibonacciExample</classname> in your Eclipse IDE</para>
-			</listitem>
+    <orderedlist>
+      <listitem>
+        <para>Open the class <classname>org.drools.examples.FibonacciExample</classname> in your Eclipse IDE.</para>
+      </listitem>
 
-			<listitem>
-				<para>Right-click the class an select "Run as..." -&gt; "Java application"</para>
-			</listitem>
-		</orderedlist>
-		
-		<para>And Eclipse shows the following output in its console, "...snip..." shows repeated bits removed to save space:</para>
+      <listitem>
+        <para>Right-click the class and select "Run as..." and then
+        "Java application"</para>
+      </listitem>
+    </orderedlist>
+    
+    <para>Eclipse shows the following output in its console window (with
+    "...snip..." indicating lines that were removed to save space):</para>
 
-		<example>
-			<title>Fibonacci Example Console Output</title>
+    <example>
+      <title>Fibonacci Example Console Output</title>
 
-			<programlisting>recurse for 50
+      <programlisting>recurse for 50
 recurse for 49
 recurse for 48
 recurse for 47
@@ -67,23 +86,37 @@ recurse for 2
 49 == 7778742049
 50 == 12586269025
 </programlisting>
-		</example>
+    </example>
 
-		<para>To kick this off from java we only insert a single Fibonacci object, with a sequence of 50, a recurse rule is then used to insert the other 49 Fibonacci objects. This example doesn't use PropertyChangeSupport and uses the MVEL dialect, this means we can use the <emphasis role="bold">modify</emphasis> keyword, which allows a block setter action which also notifies the engine of changes.</para>
+    <para>To kick this off from Java we only insert a single Fibonacci
+    object, with a sequence field of 50. A recursive rule is then used
+    to insert the other 49 Fibonacci objects. This example doesn't use
+    <code>PropertyChangeSupport</code>. It uses the MVEL dialect, which
+    means we can use the <kw>modify</kw> keyword, which allows a block
+    setter action which also notifies the engine of changes.</para>
 
-		<example>
-			<title>Fibonacci Example Execution</title>
+    <example>
+      <title>Fibonacci Example Execution</title>
 
-			<programlisting>ksession.insert( new Fibonacci( 50 ) );
+      <programlisting>ksession.insert( new Fibonacci( 50 ) );
 ksession.fireAllRules();</programlisting>
-		</example>
+    </example>
 
-		<para>The recurse rule is very simple, it matches each asserted Fibonacci object with a value of -1, it then creates and asserts a new Fibonacci object with a sequence of one less than the currently matched object. Each time a Fibonacci object is added, as long as one with a "sequence == 1" does not exist, the rule re-matches again and fires; causing the recursion. The 'not' conditional element is used to stop the rule matching once we have all 50 Fibonacci objects in memory. The rule also has a salience value, this is because we need to have all 50 Fibonacci objects asserted before we execute the Bootstrap rule.</para>
+    <para>The rule Recurse is very simple. It matches each asserted
+    <code>Fibonacci</code> object with a value of -1, creating and 
+    asserting a new <code>Fibonacci</code> object with a sequence of
+    one less than the currently matched object. Each time a Fibonacci
+    object is added while the one with a sequence field equal to 1
+    does not exist, the rule re-matches and fires again. The
+    <kw>not</kw> conditional element is used to stop the rule's matching
+    once we have all 50 Fibonacci objects in memory. The rule also has a
+    salience value, because we need to have all 50 Fibonacci objects
+    asserted before we execute the Bootstrap rule.</para>
 
-		<example>
-			<title>Fibonacci Example : Rule "Recurse"</title>
+    <example>
+      <title>Fibonacci Example : Rule "Recurse"</title>
 
-			<programlisting>rule Recurse
+      <programlisting>rule Recurse
     salience 10
     when
         f : Fibonacci ( value == -1 )
@@ -92,85 +125,135 @@ ksession.fireAllRules();</programlisting>
         insert( new Fibonacci( f.sequence - 1 ) );
         System.out.println( "recurse for " + f.sequence );
 end</programlisting>
-		</example>
+    </example>
 
-		<para>The audit view shows the original assertion of the Fibonacci object with a sequence of 50, this was done from Java land. From there the audit view shows the continual recursion of the rule, each asserted Fibonacci causes the "Recurse" rule to become activate again, which then fires.</para>
+    <para>The Audit view shows the original assertion of the
+    <code>Fibonacci</code> object with a sequence field of 50, done from
+    Java code. From there on, the Audit view shows the continual
+    recursion of the rule, where each asserted <code>Fibonacci</code>
+    object causes the Recurse rule to become activate and fire again.</para>
 
-		<figure>
-			<title>Fibonacci Example "Recurse" Audit View 1</title>
+    <figure>
+      <title>Fibonacci Example "Recurse" Audit View 1</title>
 
-			<mediaobject>
-				<imageobject>
-					<imagedata width="100%"
+      <mediaobject>
+        <imageobject>
+          <imagedata width="100%"
                      fileref="images/Chapter-Examples/FibonacciExample/fibonacci1.png" />
-				</imageobject>
-			</mediaobject>
-		</figure>
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-		<para>When a Fibonacci with a sequence of 2 is asserted the "Bootstrap" rule is matched and activated along with the "Recurse" rule.</para>
+    <para>When a <code>Fibonacci</code> object with a sequence field of 2 is
+    asserted the "Bootstrap" rule is matched and activated along with the
+    "Recurse" rule. Note the multi-restriction on field
+    <code>sequence</code>, testing for equality with 1 or 2.</para>
 
-		<example>
-			<title>Fibonacci Example : Rule "Bootstrap"</title>
+    <example>
+      <title>Fibonacci Example : Rule "Bootstrap"</title>
 
-			<programlisting>rule Bootstrap
+      <programlisting>rule Bootstrap
     when
-        f : Fibonacci( sequence == 1 || == 2, value == -1 ) // this is a multi-restriction || on a single field
+        f : Fibonacci( sequence == 1 || == 2, value == -1 ) // multi-restriction
     then 
         modify ( f ){ value = 1 };
         System.out.println( f.sequence + " == " + f.value );
 end</programlisting>
-		</example>
+    </example>
 
-		<para>At this point the Agenda looks like the figure shown below. However the "Bootstrap" rule does not fire as the "Recurse" rule has a higher salience.</para>
+    <para>At this point the Agenda looks as shown below. However,
+    the Bootstrap rule does not fire because the Recurse rule has a higher
+    salience.</para>
 
-		<figure>
-			<title>Fibonacci Example "Recurse" Agenda View 1</title>
+    <figure>
+      <title>Fibonacci Example "Recurse" Agenda View 1</title>
 
-			<mediaobject>
-				<imageobject>
-					<imagedata fileref="images/Chapter-Examples/FibonacciExample/fibonacci_agenda1.png" />
-				</imageobject>
-			</mediaobject>
-		</figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Examples/FibonacciExample/fibonacci_agenda1.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-		<para>When a Fibonacci with a sequence of 1 is asserted the "Bootstrap" rule is matched again, causing two activations for this rule; note that the "Recurse" rule does not match and activate because the 'not conditional element stops the rule matching when a Fibonacci with a sequence of 1 exists.</para>
+    <para>When a <code>Fibonacci</code> object with a sequence of 1 is
+    asserted the Bootstrap rule is matched again, causing two activations
+    for this rule. Note that the "Recurse" rule does not match and activate
+    because the <kw>not</kw> conditional element stops the rule's matching
+    as soon as a <code>Fibonacci</code> object with a sequence of 1
+    exists.</para>
 
-		<figure>
-			<title>Fibonacci Example "Recurse" Agenda View 2</title>
+    <figure>
+      <title>Fibonacci Example "Recurse" Agenda View 2</title>
 
-			<mediaobject>
-				<imageobject>
-					<imagedata fileref="images/Chapter-Examples/FibonacciExample/fibonacci_agenda2.png" />
-				</imageobject>
-			</mediaobject>
-		</figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Examples/FibonacciExample/fibonacci_agenda2.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-		<para>Once we have two Fibonacci objects both with values not equal to -1 the "calculate" rule is able to match; remember it was the "Bootstrap" rule that set the Fibonacci's with sequences 1 and 2 to values of 1. At this point we have 50 Fibonacci objects in the Working Memory and we some how need to select the correct ones to calculate each of their values in turn. With three Fibonacci patterns in a rule with no field constriants to correctly constrain the available cross products we have 50x50x50 possible permutations, thats 125K possible rule firings. The "Calculate" rule uses the field constraints to correctly constraint the thee Fibonacci patterns and in the correct order; this technique is called "cross product matching". The first pattern finds any Fibonacci with a value != -1 and binds both the pattern and the field. The second Fibonacci does too but it adds an additional field constraint to make sure that its sequence is one greater than the Fibonacci bound to f1. When this rule first fires we know that only sequences 1 and 2 have values of 1 and the two constraints ensure that f1 references sequence 1 and f2 references sequence2. The final pattern finds the Fibonacci of a value == -1 with a sequence one greater than f2. At this point we have three Fibonacci objects correctly selected from the available cross products and we can do the maths calculating the value for Fibonacci sequence = 3.</para>
+    <para>Once we have two <code>Fibonacci</code> objects with values
+    not equal to -1 the "calculate" rule is able to match. It was
+    the "Bootstrap" rule that set the objects with sequence 1 and 2 to
+    values of 1. At this point we have 50 Fibonacci objects in the Working
+    Memory. Now we need to select a suitable triple to calculate each
+    of their values in turn. Using three Fibonacci patterns in a rule without
+    field constraints to confine the possible cross products would result
+    in 50x49x48 possible combinations, leading to about 125,000 possible rule
+    firings, most of them incorrect. The "Calculate" rule uses field
+    constraints to correctly constraint the thee Fibonacci patterns in the
+    correct order; this
+    technique is called <emphasis>cross product matching</emphasis>. The
+    first pattern finds any Fibonacci with a value != -1 and binds both
+    the pattern and the field.  The second Fibonacci does this, too, but
+    it adds an additional field constraint to ensure that its sequence is
+    greater by one than the Fibonacci bound to <code>f1</code>. When this
+    rule fires for the first time, we know that only sequences 1 and 2
+    have values of 1, and the two constraints ensure that <code>f1</code>
+    references sequence 1 and <code>f2</code> references sequence 2. The
+    final pattern finds the Fibonacci with a value equal to -1 and with a
+    sequence one greater than <code>f2</code>. At this point, we have
+    three <code>Fibonacci</code> objects correctly selected from the
+    available cross products, and we can calculate the value for the
+    third <code>Fibonacci</code> object that's bound to <code>f3</code>.</para>
 
-		<example>
-			<title>Fibonacci Example : Rule "Calculate"</title>
+    <example>
+      <title>Fibonacci Example : Rule "Calculate"</title>
 
-			<programlisting>rule Calculate
+      <programlisting>rule Calculate
     when
-        f1 : Fibonacci( s1 : sequence, value != -1 ) // here we bind sequence
-        f2 : Fibonacci( sequence == (s1 + 1 ), value != -1 ) // here we don't, just to demonstrate the different way bindings can be used
-        f3 : Fibonacci( s3 : sequence == (f2.sequence + 1 ), value == -1 )              
-    then    
-        modify ( f3 ) { value = f1.value + f2.value };
-        System.out.println( s3 + " == " + f3.value ); // see how you can access pattern and field  bindings
+        // Bind f1 and s1
+        f1 : Fibonacci( s1 : sequence, value != -1 )
+        // Bind f2 and v2; refer to bound variable s1
+        f2 : Fibonacci( sequence == (s1 + 1), v2 : value != -1 )
+        // Bind f3 and s3; alternative reference of f2.sequence
+        f3 : Fibonacci( s3 : sequence == (f2.sequence + 1 ), value == -1 )      
+    then
+        // Note the various referencing rechniques.
+        modify ( f3 ) { value = f1.value + v2 };
+        System.out.println( s3 + " == " + f3.value );
 end 
 </programlisting>
-		</example>
+    </example>
 
-		<para>The MVEL modify keyword updated the value of the Fibonacci object bound to f3, this means we have a new Fibonacci object with a value != -1, this allows the "Calculate" rule to rematch and calculate the next Fibonacci number. The Audit view below shows the how the firing of the last "Bootstrap" modifies the Fibonacci object enabling the "Calculate" rule to match, which then modifies another Fibonacci object allowing the "Calculate" rule to rematch. This continues till the value is set for all Fibonacci objects.</para>
+    <para>The <kw>modify</kw> statement updated the value of the
+    <code>Fibonacci</code> object bound to <code>f3</code>. This means
+    we now have another new Fibonacci object with a value not equal to -1,
+    which allows the "Calculate" rule to rematch and calculate the next
+    Fibonacci number. The Audit view below shows how the firing of the
+    last "Bootstrap" modifies the <code>Fibonacci</code> object,
+    enabling the "Calculate" rule to match, which then modifies
+    another Fibonacci object allowing the "Calculate" rule to match again.
+    This continues till the value is set for all <code>Fibonacci</code>
+    objects.</para>
 
-		<figure>
-			<title>Fibonacci Example "Bootstrap" Audit View 1</title>
+    <figure>
+      <title>Fibonacci Example "Bootstrap" Audit View 1</title>
 
-			<mediaobject>
-				<imageobject>
-					<imagedata fileref="images/Chapter-Examples/FibonacciExample/fibonacci4.png" />
-				</imageobject>
-			</mediaobject>
-		</figure>
-	</section>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Examples/FibonacciExample/fibonacci4.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
