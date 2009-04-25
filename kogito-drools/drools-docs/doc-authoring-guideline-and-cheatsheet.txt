@@ -13,7 +13,9 @@ Guideline
     <code>packagebuilder.conf</code> file that the 
     <code>ChainedProperties</code> instance will find, or you can do it 
     at runtime as shown below.</para>
-    
+
+* keywords may be enclosed in <kw></kw>, rendered in boldface Courier
+
 * please link svg image files instead of png bitmaps in the text whenever
   possible.
   
@@ -77,7 +79,11 @@ Link image files:
       </imageobject>
     </mediaobject>
   </figure>
-   
+
+  For HTML, width="100%" ensures that imagedata is scaled down to the
+  current width of the browser's window.
+
+
 * suitable for screenshots:
 
   TODO
