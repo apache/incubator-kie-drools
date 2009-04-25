@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+  <section version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
                     xmlns:m="http://www.w3.org/1998/Math/MathML"
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-		<title>Banking Tutorial</title>
+    <title>Banking Tutorial</title>
 
-		<screen><emphasis role="bold">Name:</emphasis> BankingTutorial
-<emphasis role="bold">Main class:</emphasis> org.drools.tutorials.banking.*
-<emphasis role="bold">Type:</emphasis> java application
-<emphasis role="bold">Rules file:</emphasis> org.drools.tutorials.banking.*
-<emphasis role="bold">Objective:</emphasis> tutorial that builds up knowledge of pattern matching, basic sorting and calculation rules.</screen>
+    <screen><emphasis role="bold">Name:</emphasis> BankingTutorial
+<emphasis role="bold">Main class:</emphasis> org.drools.tutorials.banking.Example*.java
+<emphasis role="bold">Type:</emphasis> Java application
+<emphasis role="bold">Rules file:</emphasis> org.drools.tutorials.banking.*.drl
+<emphasis role="bold">Objective:</emphasis> Demonstrate pattern matching, basic sorting and calculation rules.</screen>
 
-		<para>This tutorial will demonstrate the process of developing a complete personal banking application that will handle credits, debits, currencies and that will use a set of design patterns that have been created for the process. In order to make the examples documented here clear and modular, I will try and steer away from re-visiting existing code to add new functionality, and will instead extend and inject where appropriate.</para>
+    <para>This tutorial demonstrates the process of developing a
+    complete personal banking application to handle credits and debits on
+    multiple accounts. It uses a set of design patterns that have
+    been created for the process.</para>
 
-		<para>The RuleRunner class is a simple harness to execute one or more drls against a set of data. It compiles the Packages and creates the KnowledgeBase for each execution, this allows us to easy execute each scenario and see the outputs. In reality this is not a good solution for a production system where the KnowledgeBase should be built just once and cached, but for the purposes of this tutorial it shall suffice.</para>
+    <para>The class <code>RuleRunner</code> is a simple harness to execute
+    one or more DRL files against a set of data. It compiles the Packages 
+    and creates the Knowledge Base for each execution, allowing us to
+    easily execute each scenario and inspect the outputs. In reality this
+    is not a good solution for a production system, where the Knowledge Base
+    should be built just once and cached, but for the purposes of this
+    tutorial it shall suffice.</para>
 
-		<example>
-			<title>Banking Tutorial : RuleRunner</title>
+    <example>
+      <title>Banking Tutorial: RuleRunner</title>
 
-			<programlisting><![CDATA[public class RuleRunner {
+      <programlisting><![CDATA[public class RuleRunner {
 
     public RuleRunner() {
     }
@@ -36,8 +45,8 @@
             String ruleFile = rules[i];
             System.out.println( "Loading file: " + ruleFile );
             kbuilder.add( ResourceFactory.newClassPathResource( ruleFile,
-                                                                        RuleRunner.class ),
-                                  ResourceType.DRL );
+                                                                RuleRunner.class ),
+                          ResourceType.DRL );
         }
 
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
@@ -53,84 +62,100 @@
         ksession.fireAllRules();
     }
 }]]></programlisting>
-		</example>
+    </example>
 
-		<para>This is our first Example1.java class it loads and executes a single drl file "Example.drl" but inserts no data.</para>
+    <para>The first of our sample Java classes loads and executes a single
+    DRL file, <filename>Example.drl</filename>, but without inserting any
+    data.</para>
 
-		<example>
-			<title>Banking Tutorial : Java Example1</title>
+    <example>
+      <title>Banking Tutorial : Java Example1</title>
 
-			<programlisting>public class Example1 {
+      <programlisting>public class Example1 {
     public static void main(String[] args) throws Exception {
         new RuleRunner().runRules( new String[] { "Example1.drl" },
                                    new Object[0] );
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>And this is the first simple rule to execute. It has a single "eval" condition that will alway be true, thus this rul will always match and fire.</para>
+    <para>The first simple rule to execute has a single <kw>eval</kw>
+    condition that will alway be true, so that this rule will match and
+    fire, once, after the start.</para>
 
-		<example>
-			<title>Banking Tutorial : Rule Example1</title>
+    <example>
+      <title>Banking Tutorial: Rule in Example1.drl</title>
 
-			<programlisting>rule "Rule 01"   
+      <programlisting>rule "Rule 01"   
     when
-        eval (1==1)
+        eval( 1==1 )
     then
-        System.out.println("Rule 01 Works");
+        System.out.println( "Rule 01 Works" );
 endh</programlisting>
-		</example>
+    </example>
 
-		<para>The output for the rule is below, the rule matches and executes the single print statement.</para>
+    <para>The output for the rule is below, showing that the rule matches
+    and executes the single print statement.</para>
 
-		<example>
-			<title>Banking Tutorial : Output Example1</title>
+    <example>
+      <title>Banking Tutorial: Output of Example1.java</title>
 
-			<programlisting>Loading file: Example1.drl
+      <programlisting>Loading file: Example1.drl
 Rule 01 Works</programlisting>
-		</example>
+    </example>
 
-		<para>The next step is to assert some simple facts and print them out. </para>
+    <para>The next step is to assert some simple facts and print them
+    out.</para>
 
-		<example>
-			<title>Banking Tutorial : Java Example2</title>
+    <example>
+      <title>Banking Tutorial: Java Example2</title>
 
-			<programlisting>public class Example2 {
+      <programlisting>public class Example2 {
     public static void main(String[] args) throws Exception {
         Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
         new RuleRunner().runRules( new String[] { "Example2.drl" },
                                    numbers );
     }
     
-    private static Integer wrap(int i) {
+    private static Integer wrap( int i ) {
         return new Integer(i);
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>This doesn’t use any specific facts but instead asserts a set of java.lang.Integer’s. This is not considered "best practice" as a number of a collection is not a fact, it is not a thing. A Bank acount has a number, its balance, thus the Account is the fact; but to get started asserting Integers shall suffice for demonstration purposes as the complexity is built up.</para>
+    <para>This doesn’t use any specific facts but instead asserts a set
+    of <code>java.lang.Integer</code> objects. This is not considered
+    "best practice" as a number is not a useful fact, but we use it here
+    to demonstrate basic techniques before more complexity is added.</para>
 
-		<para>Now we will create a simple rule to print out these numbers.</para>
+    <para>Now we will create a simple rule to print out these numbers.</para>
 
-		<example>
-			<title>Banking Tutorial : Rule Example2</title>
+    <example>
+      <title>Banking Tutorial: Rule in Example2.drl</title>
 
-			<programlisting>rule "Rule 02"   
+      <programlisting>rule "Rule 02"   
     when
         Number( $intValue : intValue )
     then
-        System.out.println("Number found with value: " + $intValue); 
+        System.out.println( "Number found with value: " + $intValue ); 
 end</programlisting>
-		</example>
+    </example>
 
-		<para>Once again, this rule does nothing special. It identifies any facts that are Numbers and prints out the values. Notice the user of interfaces here, we inserted Integers but the pattern matching engine is able to match the interfaces and super classes of the asserted objects.</para>
+    <para>Once again, this rule does nothing special. It identifies any
+    facts that are <code>Number</code> objects and prints out the values.
+    Notice the use of the abstract class <code>Number</code>: we inserted
+    <code>Integer</code> objects but we now look for any kind of number.
+    The pattern matching engine is able to match interfaces and
+    superclasses of asserted objects.</para>
 
-		<para>The output shows the drl being loaded, the facts inserted and then the matched and fired rules. We can see that each inserted number is matched and fired and thus printed.</para>
+    <para>The output shows the DRL being loaded, the facts inserted and
+    then the matched and fired rules. We can see that each inserted number
+    is matched and fired and thus printed.</para>
 
-		<example>
-			<title>Banking Tutorial : Output Example2</title>
+    <example>
+      <title>Banking Tutorial: Output of Example2.java</title>
 
-			<programlisting>Loading file: Example2.drl
+      <programlisting>Loading file: Example2.drl
 Inserting fact: 3
 Inserting fact: 1
 Inserting fact: 4
@@ -142,14 +167,17 @@ Number found with value: 4
 Number found with value: 1
 Number found with value: 3
 </programlisting>
-		</example>
+    </example>
 
-		<para>here are probably a hundred and one better ways to sort numbers; but we will need to apply some cashflows in date order when we start looking at banking rules so let’s look at a simple rule based example.</para>
+    <para>There are certainly many better ways to sort numbers than using
+    rules, but since we will need to apply some cashflows in date order
+    when we start looking at banking rules we'll develop simple rule
+    based sorting technique.</para>
 
-		<example>
-			<title>Banking Tutorial : Java Example3</title>
+    <example>
+      <title>Banking Tutorial: Example3.java</title>
 
-			<programlisting>public class Example3 {
+      <programlisting>public class Example3 {
     public static void main(String[] args) throws Exception {
         Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
         new RuleRunner().runRules( new String[] { "Example3.drl" },
@@ -160,14 +188,15 @@ Number found with value: 3
         return new Integer(i);
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>Again we insert our Integers as before, this time the rule is slightly different:</para>
+    <para>Again we insert our <code>Integer</code> objects, but this time the
+    rule is slightly different:</para>
 
-		<example>
-			<title>Banking Tutorial : Rule Example3</title>
+    <example>
+      <title>Banking Tutorial: Rule in Example3.drl</title>
 
-			<programlisting>rule "Rule 03"   
+      <programlisting>rule "Rule 03"
     when
         $number : Number( )
         not Number( intValue &lt; $number.intValue )
@@ -175,16 +204,23 @@ Number found with value: 3
         System.out.println("Number found with value: " + $number.intValue() ); 
         retract( $number );
 end</programlisting>
-		</example>
+    </example>
 
-		<para>The first line of the rules identifies a Number and extracts the value. The second line ensures that there does not exist a smaller number than the one found. By executing this rule, we might expect to find only one number - the smallest in the set. However, the retraction of the number after it has been printed, means that the smallest number has been removed, revealing the next smallest number, and so on. </para>
+    <para>The first line of the rule identifies a <code>Number</code> and
+    extracts the value. The second line ensures that there does not exist
+    a smaller number than the one found by the first pattern. We might
+    expect to match only one number - the smallest in the set. However,
+    the retraction of the number after it has been printed means that the
+    smallest number has been removed, revealing the next smallest number,
+    and so on. </para>
 
-		<para>So, the output we generate is, notice the numbers are now sorted numerically.</para>
+    <para>The resulting output shows that the numbers are now
+    sorted numerically.</para>
 
-		<example>
-			<title>Banking Tutorial : Output Example3</title>
+    <example>
+      <title>Banking Tutorial: Output of Example3.java</title>
 
-			<programlisting>Loading file: Example3.drl
+      <programlisting>Loading file: Example3.drl
 Inserting fact: 3
 Inserting fact: 1
 Inserting fact: 4
@@ -196,22 +232,22 @@ Number found with value: 3
 Number found with value: 4
 Number found with value: 5
 </programlisting>
-		</example>
+    </example>
 
-		<para>Now we want to start moving towards our personal accounting rules. The first step is to create a Cashflow POJO.</para>
+    <para>We are ready to start moving towards our personal accounting
+    rules. The first step is to create a <code>Cashflow</code> object.</para>
 
-		<example>
-			<title>Banking Tutoria : Class Cashflow</title>
+    <example>
+      <title>Banking Tutorial: Class Cashflow</title>
 
-			<programlisting>public class Cashflow {
+      <programlisting>public class Cashflow {
     private Date   date;
     private double amount;
 
     public Cashflow() {
     }
 
-    public Cashflow(Date date,
-                    double amount) {
+    public Cashflow(Date date, double amount) {
         this.date = date;
         this.amount = amount;
     }
@@ -236,14 +272,21 @@ Number found with value: 5
         return "Cashflow[date=" + date + ",amount=" + amount + "]";
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>The Cashflow has two simple attributes, a date and an amount. I have added a toString method to print it and overloaded the constructor to set the values. The Example4 java code inserts 5 Cashflow objecst with varying dates and amounts.</para>
+    <para>Class <code>Cashflow</code> has two simple attributes, a date
+    and an amount. (Note that using the type <code>double</code> for
+    monetary units is generally <emphasis>not</emphasis> a good idea
+    because floating point numbers cannot represent most numbers accurately.)
+    There is also an overloaded constructor to set the values, and a
+    method <code>toString</code> to print a cashflow. The Java code of
+    <filename>Example4.java</filename> inserts five Cashflow objects,
+    with varying dates and amounts.</para>
 
-		<example>
-			<title>Banking Tutorial : Java Example4</title>
+    <example>
+      <title>Banking Tutorial: Example4.java</title>
 
-			<programlisting>public class Example4 {    
+      <programlisting>public class Example4 {    
     public static void main(String[] args) throws Exception {
         Object[] cashflows = {
             new Cashflow(new SimpleDate("01/01/2007"), 300.00),
@@ -257,28 +300,32 @@ Number found with value: 5
                                    cashflows );
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>SimpleDate is a simple class that extends Date and takes a String as input. It allows for pre-formatted Data classes, for convienience. The code is listed below</para>
+    <para>The convenience class <code>SimpleDate</code> extends
+    <code>java.util.Date</code>, providing a constructor taking
+    a String as input and defining a date format. The code is
+    listed below</para>
 
-		<example>
-			<title>Banking Tutorial : Java SimpleDate</title>
+    <example>
+      <title>Banking Tutorial: Class SimpleDate</title>
 
-			<programlisting>public class SimpleDate extends Date {
+      <programlisting>public class SimpleDate extends Date {
     private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
     
     public SimpleDate(String datestr) throws Exception {             
         setTime(format.parse(datestr).getTime());
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>Now, let’s look at rule04.drl to see how we print the sorted Cashflows:</para>
+    <para>Now, let’s look at <filename>Example4.drl</filename> to see how
+    we print the sorted <code>Cashflow</code> objects:</para>
 
-		<example>
-			<title>Banking Tutorial : Rule Example4</title>
+    <example>
+      <title>Banking Tutorial: Rule in Example4.drl</title>
 
-			<programlisting>rule "Rule 04"   
+      <programlisting>rule "Rule 04"   
     when
         $cashflow : Cashflow( $date : date, $amount : amount )
         not Cashflow( date &lt; $date)
@@ -286,14 +333,19 @@ Number found with value: 5
         System.out.println("Cashflow: "+$date+" :: "+$amount);  
         retract($cashflow);
 end</programlisting>
-		</example>
+    </example>
 
-		<para>Here, we identify a Cashflow and extract the date and the amount. In the second line of the rules we ensure that there is not a Cashflow with an earlier date than the one found. In the consequences, we print the Cashflow that satisfies the rules and then retract it, making way for the next earliest Cashflow. So, the output we generate is:</para>
+    <para>Here, we identify a <code>Cashflow</code> and extract the date
+    and the amount. In the second line of the rule we ensure that there
+    is no Cashflow with an earlier date than the one found. In the
+    consequence, we print the <code>Cashflow</code> that satisfies the
+    rule and then retract it, making way for the next earliest
+    <code>Cashflow</code>. So, the output we generate is:</para>
 
-		<example>
-			<title>Banking Tutorial : Output Example4</title>
+    <example>
+      <title>Banking Tutorial: Output of Example4.java</title>
 
-			<programlisting>Loading file: Example4.drl
+      <programlisting>Loading file: Example4.drl
 Inserting fact: Cashflow[date=Mon Jan 01 00:00:00 GMT 2007,amount=300.0]
 Inserting fact: Cashflow[date=Fri Jan 05 00:00:00 GMT 2007,amount=100.0]
 Inserting fact: Cashflow[date=Thu Jan 11 00:00:00 GMT 2007,amount=500.0]
@@ -305,14 +357,17 @@ Cashflow: Fri Jan 05 00:00:00 GMT 2007 :: 100.0
 Cashflow: Sun Jan 07 00:00:00 GMT 2007 :: 800.0
 Cashflow: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
 </programlisting>
-		</example>
+    </example>
 
-		<para>Here we extend our Cashflow to give a TypedCashflow which can be CREDIT or DEBIT. Ideally, we would just add this to the Cashflow type, but so that we can keep all the examples simple, we will go with the extensions.</para>
+    <para>Next, we extend our <code>Cashflow</code>, resulting in a
+    <code>TypedCashflow</code> which can be a credit or a debit operation.
+    (Normally, we would just add this to the <code>Cashflow</code> type, but
+    we use extension to keep the previous version of the class intact.)</para>
 
-		<example>
-			<title>Banking Tutoria : Class TypedCashflow</title>
+    <example>
+      <title>Banking Tutorial: Class TypedCashflow</title>
 
-			<programlisting>public class TypedCashflow extends Cashflow {
+      <programlisting>public class TypedCashflow extends Cashflow {
     public static final int CREDIT = 0;
     public static final int DEBIT  = 1;
 
@@ -321,11 +376,8 @@ Cashflow: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     public TypedCashflow() {
     }
 
-    public TypedCashflow(Date date,
-                         int type,
-                         double amount) {
-        super( date,
-               amount );
+    public TypedCashflow(Date date, int type, double amount) {
+        super( date, amount );
         this.type = type;
     }
 
@@ -338,19 +390,22 @@ Cashflow: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     }
 
     public String toString() {
-        return "TypedCashflow[date=" + getDate() + ",type=" + (type == CREDIT ? "Credit" : "Debit") + ",amount=" + getAmount() + "]";
+        return "TypedCashflow[date=" + getDate() +
+               ",type=" + (type == CREDIT ? "Credit" : "Debit") +
+               ",amount=" + getAmount() + "]";
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>There are lots of ways to improve this code, but for the sake of the example this will do.</para>
+    <para>There are lots of ways to improve this code, but for the sake
+    of the example this will do.</para>
 
-		<para>Nows lets create the Example5 runner.</para>
+    <para>Now let's create Example5, a class for running our code.</para>
 
-		<example>
-			<title>Banking Tutorial : Java Example5</title>
+    <example>
+      <title>Banking Tutorial: Example5.java</title>
 
-			<programlisting>public class Example5 {    
+      <programlisting>public class Example5 {    
     public static void main(String[] args) throws Exception {      
         Object[] cashflows = {
             new TypedCashflow(new SimpleDate("01/01/2007"),    
@@ -369,16 +424,19 @@ Cashflow: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
                                    cashflows );
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>Here, we simply create a set of Cashflows which are either CREDIT or DEBIT Cashflows and supply them and rule05.drl to the RuleEngine. </para>
+    <para>Here, we simply create a set of <code>Cashflow</code> objects
+    which are either credit or debit operations. We supply them and
+    <filename>Example5.drl</filename> to the RuleEngine. </para>
 
-		<para>Now, let’s look at rule0 Example5.drl to see how we print the sorted Cashflows:</para>
+    <para>Now, let’s look at a rule printing the sorted
+    <code>Cashflow</code> objects.</para>
 
-		<example>
-			<title>Banking Tutorial : Rule Example5</title>
+    <example>
+      <title>Banking Tutorial: Rule in Example5.drl</title>
 
-			<programlisting>rule "Rule 05"  
+      <programlisting>rule "Rule 05"  
     when
         $cashflow : TypedCashflow( $date : date,
                                    $amount : amount,
@@ -389,16 +447,22 @@ Cashflow: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
         System.out.println("Credit: "+$date+" :: "+$amount);   
         retract($cashflow);
 end</programlisting>
-		</example>
+    </example>
 
-		<para>Here, we identify a Cashflow with a type of CREDIT and extract the date and the amount. In the second line of the rules we ensure that there is not a Cashflow of type CREDIT with an earlier date than the one found. In the consequences, we print the Cashflow that satisfies the rules and then retract it, making way for the next earliest Cashflow of type CREDIT.</para>
+    <para>Here, we identify a <code>Cashflow</code> fact with a type
+    of <code>CREDIT</code> and extract the date and the amount. In the
+    second line of the rule we ensure that there is no <code>Cashflow</code>
+    of the same type with an earlier date than the one found. In the
+    consequence, we print the cashflow satisfying the patterns and then
+    retract it, making way for the next earliest cashflow of type
+    <code>CREDIT</code>.</para>
 
-		<para>So, the output we generate is</para>
+    <para>So, the output we generate is</para>
 
-		<example>
-			<title>Banking Tutorial : Output Example5</title>
+    <example>
+      <title>Banking Tutorial: Output of Example5.java</title>
 
-			<screen>Loading file: Example5.drl
+      <screen>Loading file: Example5.drl
 Inserting fact: TypedCashflow[date=Mon Jan 01 00:00:00 GMT 2007,type=Credit,amount=300.0]
 Inserting fact: TypedCashflow[date=Fri Jan 05 00:00:00 GMT 2007,type=Credit,amount=100.0]
 Inserting fact: TypedCashflow[date=Thu Jan 11 00:00:00 GMT 2007,type=Credit,amount=500.0]
@@ -408,14 +472,21 @@ Credit: Mon Jan 01 00:00:00 GMT 2007 :: 300.0
 Credit: Fri Jan 05 00:00:00 GMT 2007 :: 100.0
 Credit: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
 </screen>
-		</example>
+    </example>
 
-		<para>Here we are going to process both CREDITs and DEBITs on 2 bank accounts to calculate the account balance. In order to do this, I am going to create two separate Account Objects and inject them into the Cashflows before passing them to the Rule Engine. The reason for this is to provide easy access to the correct Bank Accounts without having to resort to Helper classes. Let’s take a look at the Account class first. This is a simple POJO with an account number and balance:</para>
+    <para>Continuing our banking exercise, we are now going to process both
+    credits and debits on two bank accounts, calculating the account balance.
+    In order to do this, we create two separate <code>Account</code> objects
+    and inject them into the <code>Cashflows</code> objects before passing
+    them to the Rule Engine. The reason for this is to provide easy access
+    to the correct account without having to resort to helper classes. Let’s
+    take a look at the <code>Account</code> class first. This is a simple
+    Java object with an account number and balance:</para>
 
-		<example>
-			<title>Banking Tutoria : Class Account</title>
+    <example>
+      <title>Banking Tutorial: Class Account</title>
 
-			<programlisting>public class Account {
+      <programlisting>public class Account {
     private long   accountNo;
     private double balance = 0;
 
@@ -446,26 +517,23 @@ Credit: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
         return "Account[" + "accountNo=" + accountNo + ",balance=" + balance + "]";
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>Now let’s extend our TypedCashflow to give AllocatedCashflow (allocated to an account).</para>
+    <para>Now let’s extend our <code>TypedCashflow</code>, resulting in
+    <code>AllocatedCashflow</code>, to include an <code>Account</code>
+    reference.</para>
 
-		<example>
-			<title>Banking Tutoria : Class AllocatedCashflow</title>
+    <example>
+      <title>Banking Tutorial: Class AllocatedCashflow</title>
 
-			<programlisting>public class AllocatedCashflow extends TypedCashflow {
+      <programlisting>public class AllocatedCashflow extends TypedCashflow {
     private Account account;
 
     public AllocatedCashflow() {
     }
 
-    public AllocatedCashflow(Account account,
-                             Date date,
-                             int type,
-                             double amount) {
-        super( date,
-               type,
-               amount );
+    public AllocatedCashflow(Account account, Date date, int type, double amount) {
+        super( date, type, amount );
         this.account = account;
     }
 
@@ -478,19 +546,23 @@ Credit: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     }
 
     public String toString() {
-        return "AllocatedCashflow[" + "account=" + account + ",date=" + getDate() + 
-                                  ",type=" + (getType() == CREDIT ? "Credit" : "Debit") + 
-                                  ",amount=" + getAmount() + "]";
+        return "AllocatedCashflow[" +
+               "account=" + account +
+               ",date=" + getDate() + 
+               ",type=" + (getType() == CREDIT ? "Credit" : "Debit") + 
+               ",amount=" + getAmount() + "]";
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>Now, let’s java code for Example5 execution. Here we create two Account objects and inject one into each cashflow as appropriate. For simplicity I have simply included them in the constructor.</para>
+    <para>The Java code of <filename>Example5.java</filename> creates 
+    two <code>Account</code> objects and passes one of them into each
+    cashflow, in the constructor call.</para>
 
-		<example>
-			<title>Banking Tutorial : Java Example5</title>
+    <example>
+      <title>Banking Tutorial: Example5.java</title>
 
-			<programlisting>public class Example6 {    
+      <programlisting>public class Example6 {    
     public static void main(String[] args) throws Exception {      
         Account acc1 = new Account(1);
         Account acc2 = new Account(2);
@@ -522,18 +594,21 @@ Credit: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
                                    cashflows );
     }
 }</programlisting>
-		</example>
+    </example>
 
-		<para>Now, let’s look at rule Example06.drl to see how we apply each cashflow in date order and calculate and print the balance. </para>
+    <para>Now, let’s look at the rule in <filename>Example6.drl</filename>
+    to see how we apply each cashflow in date order and calculate and print
+    the balance. </para>
 
-		<example>
-			<title>Banking Tutorial : Rule Example6</title>
+    <example>
+      <title>Banking Tutorial: Rule in Example6.drl</title>
 
-			<programlisting>rule "Rule 06 - Credit"  
+      <programlisting>rule "Rule 06 - Credit"  
     when
         $cashflow : AllocatedCashflow( $account : account,
-                                       $date : date, $amount : amount,
-                                        type==TypedCashflow.CREDIT )
+                                       $date : date,
+                                       $amount : amount,
+                                       type == TypedCashflow.CREDIT )
         not AllocatedCashflow( account == $account, date &lt; $date)
     then
         System.out.println("Credit: " + $date + " :: " + $amount);     
@@ -546,8 +621,9 @@ end
 rule "Rule 06 - Debit"  
     when
         $cashflow : AllocatedCashflow( $account : account,
-                            $date : date, $amount : amount,
-                            type==TypedCashflow.DEBIT )
+                            $date : date,
+                            $amount : amount,
+                            type == TypedCashflow.DEBIT )
         not AllocatedCashflow( account == $account, date &lt; $date)
     then
         System.out.println("Debit: " + $date + " :: " + $amount);      
@@ -556,14 +632,18 @@ rule "Rule 06 - Debit"
                            " - new balance: " + $account.getBalance());           
         retract($cashflow);
 end</programlisting>
-		</example>
+    </example>
 
-		<para>Here, we have separate rules for CREDITs and DEBITs, however we do not specify a type when checking for earlier cashflows. This is so that all cashflows are applied in date order regardless of which type of cashflow type they are. In the rule section we identify the correct account to work with and in the consequences we update it with the cashflow amount.</para>
+    <para>Although we have separate rules for credits and debits, but we do
+    not specify a type when checking for earlier cashflows. This is so that
+    all cashflows are applied in date order, regardless of the cashflow type.
+    In the conditions we identify the account to work with, and in the
+    consequences we update it with the cashflow amount.</para>
 
-		<example>
-			<title>Banking Tutorial : Output Example6</title>
+    <example>
+      <title>Banking Tutorial: Output of Example6.java</title>
 
-			<programlisting>Loading file: Example6.drl
+      <programlisting>Loading file: Example6.drl
 Inserting fact: AllocatedCashflow[account=Account[accountNo=1,balance=0.0],date=Mon Jan 01 00:00:00 GMT 2007,type=Credit,amount=300.0]
 Inserting fact: AllocatedCashflow[account=Account[accountNo=1,balance=0.0],date=Mon Feb 05 00:00:00 GMT 2007,type=Credit,amount=100.0]
 Inserting fact: AllocatedCashflow[account=Account[accountNo=2,balance=0.0],date=Sun Mar 11 00:00:00 GMT 2007,type=Credit,amount=500.0]
@@ -595,6 +675,6 @@ Account: 1 - new balance: 100.0
 Debit: Mon May 07 00:00:00 BST 2007 :: 900.0
 Account: 1 - new balance: -800.0
 </programlisting>
-		</example>
-		
-	</section>
+    </example>
+    
+  </section>

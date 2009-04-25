@@ -1,58 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+  <section version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
                     xmlns:m="http://www.w3.org/1998/Math/MathML"
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-		<title>State Example</title>
+    <title>State Example</title>
 
-		<para>This example is actually implemented in three different versions to demonstrate different ways of implementing the same basic behavior: rules forward chaining, i.e., the ability the engine has to evaluate, activate and fire rules in sequence, based on changes on the facts in the working memory.</para>
-		
-		<section>
-			<title>Understanding the State Example</title>
+    <para>This example is implemented in three different versions to
+    demonstrate different ways of implementing the same basic behavior:
+    forward chaining, i.e., the ability the engine has to  evaluate,
+    activate and fire rules in sequence, based on changes on the facts
+    in the Working Memory.</para>
+    
+    <section>
+      <title>Understanding the State Example</title>
 
-			<screen><emphasis role="bold">Name:</emphasis> State Example
+      <screen><emphasis role="bold">Name:</emphasis> State Example
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.StateExampleUsingSalience
-<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> StateExampleUsingSalience.drl
-<emphasis role="bold">Objective:</emphasis> Demonstrates basic rule use and Conflict Resolution for rule firing priority.</screen>
+<emphasis role="bold">Objective:</emphasis> Demonstrates basic rule use
+  and Conflict Resolution for rule firing priority.</screen>
 
-			<para>Each State class has fields for its name and its current state (see org.drools.examples.State class). The two possible states for each objects are:</para>
+      <para>Each <code>State</code> class has fields for its name and its
+      current state (see the class <code>org.drools.examples.State</code>).
+      The two possible states for each objects are:</para>
 
-			<itemizedlist>
-				<listitem>
-					<para>NOTRUN</para>
-				</listitem>
+      <itemizedlist>
+        <listitem>
+          <para><code>NOTRUN</code></para>
+        </listitem>
 
-				<listitem>
-					<para>FINISHED</para>
-				</listitem>
-			</itemizedlist>
+        <listitem>
+          <para><code>FINISHED</code></para>
+        </listitem>
+      </itemizedlist>
 
-			<example>
-				<title>State Class</title>
+      <example>
+        <title>State Class</title>
 
-				<programlisting>public class State {
-    public static final int       NOTRUN   = 0;
-    public static final int       FINISHED = 1;
+        <programlisting>public class State {
+    public static final int NOTRUN   = 0;
+    public static final int FINISHED = 1;
 
-    private final PropertyChangeSupport changes  = new PropertyChangeSupport( this );
+    private final PropertyChangeSupport changes =
+        new PropertyChangeSupport( this );
 
-    private String                name;
-    private int                   state;
+    private String name;
+    private int    state;
 
     ... setters and getters go here...
 }</programlisting>
-			</example>
+      </example>
 
-			<para>Ignore the PropertyChangeSupport for now, that will be explained later. In the example we create four State objects with names: A, B, C and D. Initially all are set to state NOTRUN, which is default for the used constructor. Each instance is asserted in turn into the session and then fireAllRules() is called.</para>
+      <para>Ignoring the <code>PropertyChangeSupport</code>, which will
+      be explained later, we see the creation of four <code>State</code>
+      objects named A, B, C and D. Initially their states are set to
+      <code>NOTRUN</code>, which is default for the used constructor.
+      Each instance is asserted in turn into the Session and then
+      <code>fireAllRules()</code> is called.</para>
 
-			<example>
-				<title>Salience State Example Execution</title>
+      <example>
+        <title>Salience State: Execution</title>
 
-				<programlisting>State a = new State( "A" );
+        <programlisting>State a = new State( "A" );
 State b = new State( "B" );
 State c = new State( "C" );
 final State d = new State( "D" );
@@ -61,90 +74,105 @@ final State d = new State( "D" );
 // PropertyChangeListeners so you don't have to call update().
 boolean dynamic = true;
 
-session.insert( a,
-                dynamic );
-session.insert( b,
-                dynamic );
-session.insert( c,
-                dynamic );
-session.insert( d,
-                dynamic );
+session.insert( a, dynamic );
+session.insert( b, dynamic );
+session.insert( c, dynamic );
+session.insert( d, dynamic );
 
 session.fireAllRules();
 session.dispose(); // Stateful rule session must always be disposed when finished</programlisting>
-			</example>
+      </example>
 
-			<para>To execute the application:</para>
+      <para>To execute the application:</para>
 
-			<orderedlist>
-				<listitem>
-					<para>Open the class org.drools.examples.StateExampleUsingSalience in your Eclipse IDE</para>
-				</listitem>
+      <orderedlist>
+        <listitem>
+          <para>Open the class <code>org.drools.examples.StateExampleUsingSalience</code> in your Eclipse IDE.</para>
+        </listitem>
 
-				<listitem>
-					<para>Right-click the class an select "Run as..." -&gt; "Java application"</para>
-				</listitem>
-			</orderedlist>
+        <listitem>
+          <para>Right-click the class and select "Run as..." and then
+          "Java application"</para>
+        </listitem>
+      </orderedlist>
 
-			<para>And you will see the following output in the Eclipse console output:</para>
+      <para>You will see the following output in the Eclipse console
+      window:</para>
 
-			<example>
-				<title>Salience State Example Console Output</title>
+      <example>
+        <title>Salience State: Console Output</title>
 
-				<programlisting>A finished
+        <programlisting>A finished
 B finished
 C finished
 D finished
 </programlisting>
-			</example>
+      </example>
 
-			<para>There are four rules in total, first a Bootstrap rule fires setting A to state FINISHED which then causes B to change to state FINISHED. C and D are both dependent on B - causing a conflict which is resolved by setting salience values. First lets look at how this was executed</para>
+      <para>There are four rules in total. First, the <code>Bootstrap</code>
+      rule fires, setting A to state <code>FINISHED</code>, which then
+      causes B to change its state to <code>FINISHED</code>. C and D are
+      both dependent on B, causing a conflict which is resolved by the
+      salience values. Let's look at the way this was executed.</para>
 
-			<para>The best way to understand what is happening is to use the "Audit Log" feature to graphically see the results of each operation. The Audit log was generated when the example was previously run. To view the Audit log in Eclipse:</para>
+      <para>The best way to understand what is happening is to use the
+      Audit Logging feature to graphically see the results of each
+      operation. To view the Audit log generated by a run of this
+      example:</para>
 
-			<orderedlist>
-				<listitem>
-					<para>If the "Audit View" is not visible, click on: "Window"-&gt;"Show View"-&gt;"Other..."-&gt;"Drools"-&gt;"Audit View"</para>
-				</listitem>
+      <orderedlist>
+        <listitem>
+          <para>If the Audit View is not visible, click on "Window" and
+          then select "Show View", then "Other..." and "Drools" and
+          finally "Audit View".</para>
+        </listitem>
 
-				<listitem>
-					<para>In the "Audit View" click in the "Open Log" button and select the file "&lt;drools-examples-drl-dir&gt;/log/state.log"</para>
-				</listitem>
-			</orderedlist>
+        <listitem>
+          <para>In the "Audit View" click the "Open Log" button and select
+          the file "&lt;drools-examples-drl-dir&gt;/log/state.log".</para>
+        </listitem>
+      </orderedlist>
 
-			<para>After that, the "Audit view" will look like the following screenshot.</para>
+      <para>After that, the "Audit view" will look like the following
+      screenshot:</para>
 
-			<figure>
-				<title>Salience State Example Audit View</title>
+      <figure>
+        <title>Salience State Example Audit View</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata width="100%"
-                            fileref="images/Chapter-Examples/StateExample/state_example_audit1.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata width="100%"
+                       fileref="images/Chapter-Examples/StateExample/state_example_audit1.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-			<para>Reading the log in the "Audit View", top to down, we see every action and the corresponding changes in the working memory. This way we see that the assertion of the State "A" object with the "NOTRUN" state activates the "Bootstrap" rule, while the assertions of the other state objects have no immediate effect.</para>
+      <para>Reading the log in the "Audit View", top to bottom, we see every
+      action and the corresponding changes in the Working Memory. This way
+      we observe that the assertion of the State object A in the state
+      <code>NOTRUN</code> activates the <code>Bootstrap</code> rule, while
+      the assertions of the other <code>State</code> objects have no
+      immediate effect.</para>
 
-			<example>
-				<title>Salience State Example: Rule "Bootstrap"</title>
+      <example>
+        <title>Salience State: Rule "Bootstrap"</title>
 
-				<programlisting>rule Bootstrap
+        <programlisting>rule Bootstrap
     when
         a : State(name == "A", state == State.NOTRUN )
     then
         System.out.println(a.getName() + " finished" );
         a.setState( State.FINISHED );
 end</programlisting>
-			</example>
+      </example>
 
-			<para>The execution of "Bootstrap" rule changes the state of "A" to "FINISHED", that in turn activates the "A to B" rule.</para>
+      <para>The execution of rule Bootstrap changes the state of A to
+      <code>FINISHED</code>, which, in turn, activates rule "A to B".</para>
 
-			<example>
-				<title>Salience State Example: Rule "A to B"</title>
+      <example>
+        <title>Salience State: Rule "A to B"</title>
 
-				<programlisting>rule "A to B"
+        <programlisting>rule "A to B"
     when
         State(name == "A", state == State.FINISHED )
         b : State(name == "B", state == State.NOTRUN )
@@ -153,24 +181,38 @@ end</programlisting>
         b.setState( State.FINISHED );
 end
 </programlisting>
-			</example>
+      </example>
 
-			<para>The execution of "A to B" rule changes the state of "B" to "FINISHED", which activates both rules "B to C" and "B to D", placing both Activations onto the Agenda. In this moment the two rules may fire and are said to be in conflict. The conflict resolution strategy allows the engine's Agenda to decide which rule to fire. As the "B to C" rule has a <emphasis role="bold">higher salience value</emphasis> (10 versus the default salience value of 0), it fires first, modifying the "C" object to state "FINISHED". The Audit view above shows the modification of the State object in the rule "A to B" which results in two highlighted activations being in conflict. The Agenda view can also be used to investigate the state of the Agenda, debug points can be placed in the rules themselves and the Agenda view opened; the screen shot below shows the break point in the rule "A to B" and the state of the Agenda with the two conflicting rules.</para>
+      <para>The execution of rule "A to B" changes the state of B to
+      <code>FINISHED</code>, which activates both, rules "B to C" and
+      "B to D", placing their Activations onto the Agenda. From this moment
+      on, both rules may fire and, therefore, they are said to be
+      "in conflict". The conflict resolution strategy allows the engine's
+      Agenda to decide which rule to fire. As rule "B to C"  has the
+      <emphasis role="bold">higher salience value</emphasis> (10 versus
+      the default salience value of 0), it fires first, modifying object C
+      to state <code>FINISHED</code>. The Audit view shown above reflects
+      the  modification of the <code>State</code> object in the rule "A to B",
+      which results in two activations being in conflict. The Agenda view
+      can also be used to investigate the state of the Agenda, with debug
+      points being placed in the rules themselves and the Agenda view opened.
+      The screen shot below shows the breakpoint in the rule "A to B" and
+      the state of the Agenda with the two conflicting rules.</para>
 
-			<figure>
-				<title>State Example Agenda View</title>
-	
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/StateExample/state_example_agenda1.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-	
-			<example>
-				<title>Salience State Example: Rule "B to C"</title>
-	
-				<programlisting>rule "B to C"
+      <figure>
+        <title>State Example Agenda View</title>
+  
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/StateExample/state_example_agenda1.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+  
+      <example>
+        <title>Salience State: Rule "B to C"</title>
+  
+        <programlisting>rule "B to C"
         salience 10
     when
         State(name == "B", state == State.FINISHED )
@@ -180,14 +222,15 @@ end
         c.setState( State.FINISHED );
 end
 </programlisting>
-			</example>
+      </example>
 
-			<para>The "B to D" rule fires last, modifying the "D" object to state "FINISHED".</para>
-	
-			<example>
-				<title>Salience State Example: Rule "B to D"</title>
-	
-				<programlisting>rule "B to D"
+      <para>Rule "B to D"  fires last, modifying object D to state
+      <code>FINISHED</code>.</para>
+  
+      <example>
+        <title>Salience State: Rule "B to D"</title>
+  
+        <programlisting>rule "B to D"
     when
         State(name == "B", state == State.FINISHED )
         d : State(name == "D", state == State.NOTRUN )
@@ -195,46 +238,79 @@ end
         System.out.println(d.getName() + " finished" );
         d.setState( State.FINISHED );
 end</programlisting>
-			</example>
-	
-			<para>There are no more rules to execute and so the engine stops.</para>
-	
-			<para>Another notable concept in this example is the use of <emphasis role="bold">dynamic facts</emphasis>, which is the PropertyChangeListener part. As mentioned previously in the documentation, in order for the engine to see and react to fact's properties change, the application must tell the engine that changes occurred. This can be done explicitly in the rules, by calling the <emphasis role="bold">update()</emphasis> memory action, or implicitly by letting the engine know that the facts implement PropertyChangeSupport as defined by the <emphasis>Javabeans specification</emphasis>. This example demonstrates how to use PropertyChangeSupport to avoid the need for explicit update() calls in the rules. To make use of this feature, make sure your facts implement the PropertyChangeSupport as the org.drools.example.State class does and use the following code to insert the facts into the working memory:</para>
-	
-			<example>
-				<title>Inserting a Dynamic Fact</title>
-	
-				<programlisting>// By setting dynamic to TRUE, Drools will use JavaBean
+      </example>
+  
+      <para>There are no more rules to execute and so the engine stops.</para>
+  
+      <para>Another notable concept in this example is the use of
+      <emphasis>dynamic facts</emphasis>, based on
+      <code>PropertyChangeListener</code> objects. As described in the
+      documentation, in order for the engine to see and react to changes of
+      fact properties, the application must tell the engine that changes
+      occurred. This can be done explicitly in the rules by using the
+      <kw>update</kw> statement, or implicitly by letting the engine know
+      that the facts implement <code>PropertyChangeSupport</code> as defined
+      by the <emphasis>JavaBeans specification</emphasis>. This example
+      demonstrates how to use <code>PropertyChangeSupport</code> to avoid
+      the need for explicit <kw>update</kw> statements in the rules. To
+      make use of this feature, ensure that your facts implement
+      <code>PropertyChangeSupport</code>, the same way the class
+      <code>org.drools.example.State</code> does, and use the following
+      code to insert the facts into the Working Memory:</para>
+  
+      <example>
+        <title>Inserting a Dynamic Fact</title>
+  
+        <programlisting>// By setting dynamic to TRUE, Drools will use JavaBean
 // PropertyChangeListeners so you don't have to call update().
 final boolean dynamic = true;
 
-session.insert( fact,
-                dynamic );
+session.insert( fact, dynamic );
 </programlisting>
-			</example>
-	
-			<para>When using PropertyChangeListeners each setter must implement a little extra code to do the notification, here is the state setter for thte org.drools.examples.State class:</para>
-	
-			<example>
-				<title>Setter Example with PropertyChangeSupport</title>
-	
-				<programlisting>public void setState(final int newState) {
+      </example>
+  
+      <para>When using <code>PropertyChangeListener</code> objects, each
+      setter must implement a little extra code for the notification. Here
+      is the setter for <code>state</code> in the class
+      <code>org.drools.examples</code>:</para>:
+  
+      <example>
+        <title>Setter Example with PropertyChangeSupport</title>
+  
+        <programlisting>public void setState(final int newState) {
     int oldState = this.state;
     this.state = newState;
     this.changes.firePropertyChange( "state",
                                      oldState,
                                      newState );
 }</programlisting>
-			</example>
+      </example>
 
-			<para>There are two other State examples: StateExampleUsingAgendGroup and StateExampleWithDynamicRules. Both execute from A to B to C to D, as just shown, the StateExampleUsingAgendGroup uses agenda-groups to control the rule conflict and which one fires first and StateExampleWithDynamicRules shows how an additional rule can be added to an already running WorkingMemory with all the existing data applying to it at runtime.</para>
-	
-			<para>Agenda groups are a way to partition the agenda into groups and controlling which groups can execute. All rules by default are in the "MAIN" agenda group, by simply using the "agenda-group" attribute you specify a different agenda group for the rule. A working memory initially only has focus on the "MAIN" agenda group, only when other groups are given the focus can their rules fire; this can be achieved by either using the method setFocus() or the rule attribute "auto-focus". "auto-focus" means that the rule automatically sets the focus to it's agenda group when the rule is matched and activated. It is this "auto-focus" that enables "B to C" to fire before "B to D".</para>
-	
-			<example>
-				<title>Agenda Group State Example: Rule "B to C"</title>
-	
-				<programlisting>rule "B to C"
+      <para>There are two other classes in this example:
+      <code>StateExampleUsingAgendGroup</code> and
+      <code>StateExampleWithDynamicRules</code>. Both execute from A to B
+      to C to D, as just shown. The <code>StateExampleUsingAgendGroup</code>
+      uses agenda-groups to control the rule conflict and which one fires
+      first. <code>StateExampleWithDynamicRules</code> shows how an
+      additional rule can be added to an already running Working Memory
+      with all the existing data applying to it at runtime.</para>
+  
+      <para>Agenda groups are a way to partition the Agenda into groups
+      and to control which groups can execute. By default, all rules are
+      in the agenda group "MAIN". The "agenda-group" attribute lets
+      you specify a different agenda group for the rule. Initially,
+      a Working Memory has its focus on the Agenda group "MAIN". A group's
+      rules will only fire when the group receives the focus. This can be
+      achieved either ny using the method by <code>setFocus()</code> or the
+      rule attribute <kw>auto-focus</kw>. "auto-focus" means that the rule
+      automatically sets the focus to its agenda group when the rule is
+      matched and activated. It is this "auto-focus" that enables rule
+      "B to C" to fire before "B to D".</para>
+  
+      <example>
+        <title>Agenda Group State Example: Rule "B to C"</title>
+  
+        <programlisting>rule "B to C"
       agenda-group "B to C"
       auto-focus true       
   when
@@ -245,14 +321,16 @@ session.insert( fact,
       c.setState( State.FINISHED );
       drools.setFocus( "B to D" );
 end</programlisting>
-			</example>
+      </example>
 
-			<para>The rule "B to C" calls "drools.setFocus( "B to D" );" which gives the agenda group "B to D" focus allowing its active rules to fire; which allows the rule "B to D" to fire.</para>
+      <para>The rule "B to C" calls <code>drools.setFocus( "B to D" )</code>
+      which gives the agenda group "B to D" focus allowing its active rules
+      to fire, which allows the rule "B to D" to fire.</para>
 
-			<example>
-				<title>Agenda Group State Example: Rule "B to D"</title>
+      <example>
+        <title>Agenda Group State Example: Rule "B to D"</title>
 
-				<programlisting>rule "B to D"
+        <programlisting>rule "B to D"
       agenda-group "B to D"
   when
       State(name == "B", state == State.FINISHED )      
@@ -261,14 +339,16 @@ end</programlisting>
       System.out.println(d.getName() + " finished" );
       d.setState( State.FINISHED );
 end</programlisting>
-			</example>
+      </example>
 
-			<para>The example StateExampleWithDynamicRules adds another rule to the RuleBase after fireAllRules(), the rule it adds is just another State transition.</para>
+      <para>The example <code>StateExampleWithDynamicRules</code> adds
+      another rule to the Rule Base after <code>fireAllRules()</code>.
+      The added rule is just another state transition.</para>
 
-			<example>
-				<title>Dynamic State Example: Rule "D to E"</title>
+      <example>
+        <title>Dynamic State Example: Rule "D to E"</title>
 
-				<programlisting>rule "D to E"
+        <programlisting>rule "D to E"
   when
       State(name == "D", state == State.FINISHED )      
       e : State(name == "E", state == State.NOTRUN )
@@ -276,21 +356,21 @@ end</programlisting>
       System.out.println(e.getName() + " finished" );
       e.setState( State.FINISHED );
 end</programlisting>
-			</example>
+      </example>
 
-			<para>It gives the following expected output:</para>
+      <para>This produces the following expected output:</para>
 
-			<example>
-				<title>Dynamic Sate Example Output</title>
-	
-				<programlisting>A finished
+      <example>
+        <title>Dynamic Sate Example Output</title>
+  
+        <programlisting>A finished
 B finished
 C finished
 D finished
 E finished
 </programlisting>
-			</example>
-			
-		</section>
-		
-	</section>
+      </example>
+      
+    </section>
+    
+  </section>
