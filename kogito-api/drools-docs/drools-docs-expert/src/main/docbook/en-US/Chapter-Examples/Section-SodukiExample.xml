@@ -12,7 +12,7 @@
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.sudoku.Main
 <emphasis role="bold">Type:</emphasis> java application
 <emphasis role="bold">Rules file:</emphasis> sudokuSolver.drl, sudokuValidator.drl
-<emphasis role="bold">Objective:</emphasis> Demonstrates the solving of logic problems, and complex pattern matching.e
+<emphasis role="bold">Objective:</emphasis> Demonstrates the solving of logic problems, and complex pattern matching.
 </programlisting>
 
     <para>This example demonstrates how Drools can be used to find a solution
@@ -20,7 +20,7 @@
     use the popular puzzle of Sudoku. This example also shows how Drools can
     be integrated into a graphical interface and how callbacks can be used to
     interact with a running Drools rules engine in order to update the
-    graphical interface based on changes in the working memory at
+    graphical interface based on changes in the Working Memory at
     runtime.</para>
 
     <section>
@@ -28,15 +28,15 @@
 
       <para>Sudoku is a logic-based number placement puzzle. The objective is
       to fill a 9x9 grid so that each column, each row, and each of the nine
-      3x3 zones contains the digits from 1 to 9 once and only once.</para>
+      3x3 zones contains the digits from 1 to 9, once, and only once.</para>
 
       <para>The puzzle setter provides a partially completed grid and the
       puzzle solver's task is to complete the grid with these
       constraints.</para>
 
       <para>The general strategy to solve the problem is to ensure that when
-      you insert a new number it should be unique in that particular
-      region(blocks) and also in that particular row and column.</para>
+      you insert a new number it should be unique in its particular
+      3x3 zone, row and column.</para>
 
       <para>See <programlisting>URL: http://en.wikipedia.org/wiki/Sudoku</programlisting>
       for a more detailed description.</para>
@@ -46,8 +46,8 @@
       <title>Running the Example</title>
 
       <para>Download and install drools-examples as described above and then
-      execute java org.drools.examples.sudoku.Main (this example requires Java
-      5).</para>
+      execute <filename>java org.drools.examples.sudoku.Main</filename>. This
+      example requires Java 5.</para>
 
       <para>A window will be displayed with a relatively simple partially
       filled grid. <screenshot>
@@ -60,10 +60,10 @@
           </mediaobject>
         </screenshot></para>
 
-      <para>Click on the Solve button and the Drools-based engine will fill
-      out the remaining values. The console will display detailed information
-      of the rules which are executing to solve the puzzle in a human readable
-      form.</para>
+      <para>Click on the "Solve" button and the Drools-based engine will fill
+      out the remaining values. The Console window will display detailed
+      information about the rules which are executing to solve the puzzle
+      in a human readable form.</para>
 
       <para><screen>Rule #3 determined the value at (4,1) could not be 4 as this value already exists in the same column at (8,1)
 Rule #3 determined the value at (5,5) could not be 2 as this value already exists in the same row at (5,6)
@@ -79,7 +79,8 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
       <para>Once all of the activated rules for the solving logic have
       executed, the engine executes a second rule base to check that the
       solution is complete and valid. In this case it is, and the "Solve"
-      button is disabled and displays the text "Solved (1052ms)". <screenshot>
+      button is disabled and displays a text like
+      <code>"Solved (1052ms)"</code>.<screenshot>
           <screeninfo>New remote site</screeninfo>
 
           <mediaobject>
@@ -90,8 +91,9 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
         </screenshot></para>
 
       <para>The example comes with a number of grids which can be loaded and
-      solved. Click on File-&gt;Samples-&gt;Medium to load a more challenging
-      grid. Note that the solve button is enabled when the new grid is loaded.
+      solved. Click on "File", then "Samples" and "Medium" to load a more
+      challenging grid. Note that the solve button is enabled when the new
+      grid is loaded.
       <screenshot>
           <screeninfo>New remote site</screeninfo>
 
@@ -114,9 +116,9 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
         </screenshot></para>
 
       <para>Now, let us load a Sudoku grid that is deliberately invalid. Click
-      on File-&gt;Samples-&gt;!DELIBERATELY BROKEN!. Note that this grid
+      on "File", "Samples" and "!DELIBERATELY BROKEN!". Note that this grid
       starts with some issues, for example the value 5 appears twice in the
-      first row. <screenshot>
+      first row.<screenshot>
           <screeninfo>New remote site</screeninfo>
 
           <mediaobject>
@@ -127,7 +129,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
         </screenshot></para>
 
       <para>Nevertheless, click on the "Solve" button to apply the solving
-      rules to this invalid Grid. Note that the "Solve" button is relabelled
+      rules to this invalid grid. Note that the "Solve" button is relabelled
       to indicate that the resulting solution is invalid. <screenshot>
           <screeninfo>New remote site</screeninfo>
 
@@ -155,13 +157,12 @@ There are two cells on the same column with the same value at (3,2) and (1,2)
 There are two cells in the same zone with the same value at (6,3) and (7,3)
 There are two cells in the same zone with the same value at (7,3) and (6,3)
 There are two cells on the same column with the same value at (7,3) and (6,3)
-There are two cells on the same column with the same value at (6,3) and (7,3)   
-      </programlisting></para>
+There are two cells on the same column with the same value at (6,3) and (7,3)</programlisting></para>
 
       <para>We will look at the solving rule set later in this section, but
       for the moment we should note that some theoretically solvable solutions
       can not be solved by the engine as it stands. Click on
-      File-&gt;Samples-&gt;Hard 3 to load a sparsely populated Grid.
+      "File", "Samples" and then "Hard 3" to load a sparsely populated grid.
       <screenshot>
           <screeninfo>New remote site</screeninfo>
 
@@ -174,7 +175,7 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
 
       <para>Now click on the "Solve" button and note that the current rules
       are unable to complete the grid, even though (if you are a Sudoku
-      afficiando) you may be able to see a way forward with the solution.
+      aficionado) you may be able to see a way forward with the solution.
       <screenshot>
           <screeninfo>New remote site</screeninfo>
 
@@ -199,58 +200,70 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
       files defining the rules located in the
       /src/main/rules/org/drools/examples/sudoku directory.</para>
 
-      <para>org.drools.examples.sudoku.swing contains a set of classes which
-      implement a framework for Sudoku puzzles. Note that this package does
-      not have any dependencies on the Drools libraries. SudokuGridModel
+      <para>The package <code>org.drools.examples.sudoku.swing</code>
+      contains a set of classes which implement a framework for Sudoku
+      puzzles. Note that this package does not have any dependencies on
+      the Drools libraries. <code>SudokuGridModel</code>
       defines an interface which can be implemented to store a Sudoku puzzle
-      as a 9x9 grid of Integer values, some of which may be null, indicating
-      that the value for the cell has not yet been resolved. SudokuGridView is
-      a Swing component which can visualise any implementation of
-      SudokuGridModel. SudokuGridEvent and SudokuGridListener are used to
-      communicate state changes between the model and the view, events are
+      as a 9x9 grid of <code>Integer</code> values, some of which may be null,
+      indicating that the value for the cell has not yet been resolved.
+      <code>SudokuGridView</code> is
+      a Swing component which can visualize any implementation of
+      <code>SudokuGridModel</code>. <code>SudokuGridEvent</code> and
+      <code>SudokuGridListener</code> are used to
+      communicate state changes between the model and the view: events are
       fired when a cell's value is resolved or changed. If you are familiar
       with the model-view-controller patterns in other Swing components such
-      as JTable then this pattern should be familiar. SudokuGridSamples
-      provides a number of partially filled Sudoku puzzles for demo
-      purposes.</para>
+      as <code>JTable</code> then this pattern should be familiar.
+      <code>SudokuGridSamples</code> provides a number of partially filled
+      Sudoku puzzles for demonstration purposes.</para>
 
-      <para>org.drools.examples.sudoku.rules contains an implementation of
-      SudokuGridModel which is based on Drools. Two POJOs are used, both of
-      which extend AbstractCellValue and represent a value for a specific cell
+      <para>Package <code>org.drools.examples.sudoku.rules</code> contains an
+      implementation of <code>SudokuGridModel</code> which is based on Drools.
+      Two Java objects are used, both of which extend
+      <code>AbstractCellValue</code> and represent a value for a specific cell
       in the grid, including the row and column location of the cell, an index
-      of the 3x3 zone the cell is contained in and the value of the cell.
-      PossibleCellValue indicates that we do not currently know for sure what
-      the value in a cell is. There can be 2-9 PossibleCellValues for a given
-      cell. ResolvedCellValue indicates that we have determined what the value
-      for a cell must be. There can only be 1 ResolvedCellValue for a given
-      cell. DroolsSudokuGridModel implements SudokuGridModel and is
-      responsible for converting an initial two dimensional array of partially
-      specified cells into a set of CellValue POJOs, creating a working memory
-      based on solverSudoku.drl and inserting the CellValue POJOs into the
-      working memory. When the solve() method is called it calls
-      fireAllRules() on this working memory to try to solve the puzzle.
-      DroolsSudokuGridModel attaches a WorkingMemoryListener to the working
-      memory, which allows it to be called back on insert() and retract()
-      events as the puzzle is solved. When a new ResolvedCellValue is inserted
-      into the working memory, this call back allows the implementation to
-      fire a SudokuGridEvent to its SudokuGridListeners which can then update
-      themselves in realtime. Once all the rules fired by the solver working
-      memory have executed, DroolsSudokuGridModel runs a second set of rules,
-      based on validatorSudoku.drl which works with the same set of POJOs to
-      determine if the resulting grid is a valid and full solution.</para>
+      of the 3x3 zone the cell is contained in, and the value of the cell.
+      <code>PossibleCellValue</code> indicates that we do not currently know
+      for sure what the value in a cell is. There can be from 2 to 9 possible
+      cell values for a given cell. <code>ResolvedCellValue</code> indicates 
+      that we have determined what the value
+      for a cell must be. There can only be one resolved cell value for a
+      given cell. <code>DroolsSudokuGridModel</code> implements
+      <code>SudokuGridModel</code> and is responsible for converting an
+      initial two dimensional array of partially specified cells into a set
+      of <code>CellValue</code> Java object, creating a Working Memory
+      based on <filename>solverSudoku.drl</filename> and inserting the
+      <code>CellValue</code> objects into the Working Memory. When the 
+      <code>solve()</code> method is called it calls in turn
+      <code>fireAllRules()</code> on this Working Memory to try to solve
+      the puzzle. <code>DroolsSudokuGridModel</code> attaches a 
+      <code>WorkingMemoryListener</code> to the Working Memory, which
+      allows it to be called back on insert and retract events as the
+      puzzle is solved. When a new <code>ResolvedCellValue</code> is inserted
+      into the Working Memory, this callback allows the implementation to
+      fire a <code>SudokuGridEvent</code> to its
+      <code>SudokuGridListener</code> clientele, which can then update
+      themselves in realtime. Once all the rules fired by the solver Working
+      Memory have executed, <code>DroolsSudokuGridModel</code> runs a
+      second set of rules, based on <filename>validatorSudoku.drl</filename>
+      which works with the same set of Java objects to determine whether the
+      resulting grid is a valid and a full solution.</para>
 
-      <para>org.drools.examples.sudoku.Main implements a Java application
-      which hooks the components desribed above together.</para>
+      <para>The class <code>org.drools.examples.sudoku.Main</code> implements
+      a Java application combining the components desribed.</para>
 
-      <para>org.drools.examples.sudoku contains two DRL files.
-      solverSudoku.drl defines the rules which attempt to solve a Sudoku
-      puzzle and validator.drl defines the rules which determin whether the
-      current state of the working memory represents a valid solution. Both
-      use PossibleCellValue and ResolvedCellValue POJOs as their facts and
-      both output information to the console as their rules fire. In a
-      real-world situation we would insert() logging information and use the
-      WorkingMemoryListener to display this information to a user rather than
-      use the console in this fashion.</para>
+      <para>The packae <code>org.drools.examples.sudoku</code> contains two
+      DRL files. <filename>solverSudoku.drl</filename> defines the rules
+      which attempt to solve a Sudoku puzzle, and
+      <filename>validator.drl</filename> defines the rules which determin
+      whether the current state of the Working Memory represents a valid
+      solution. Both use <code>PossibleCellValue</code> and
+      <code>ResolvedCellValue</code> objects as their facts and
+      both output information to the Console window as their rules fire. In a
+      real-world situation we would insert logging information and use the
+      <code>WorkingMemoryListener</code> to display this information to a
+      user, rather than use the console in this fashion.</para>
     </section>
 
     <section>
@@ -259,20 +272,23 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
       <para>We start with the validator rules as this rule set is shorter and
       simpler than the solver rule set.</para>
 
-      <para>The first rule simply checks that no PossibleCellValue objects
-      remain in the working memory. Once the puzzle is solved, only
-      ResolvedCellValue objects should be present, one for each cell.</para>
+      <para>The first rule simply checks that no <code>PossibleCellValue</code>
+      objects remain in the Working Memory. Once the puzzle is solved, only
+      <code>ResolvedCellValue</code> objects should be present, one for
+      each cell.</para>
 
-      <para>The other three rules each match all of the ResolvedCellValue
-      objects and store them in thenew_remote_sitetes instance variable
-      $resolved. They then look respectively for ResolvedCellValues that
+      <para>The other three rules each match all of the
+      <code>ResolvedCellValue</code> objects and bind them to the
+      variable <code>$resolved1</code>. They then look for
+      <code>ResolvedCellValues</code> that
       contain the same value and are located, respectively, in the same row,
-      column or 3x3 zone. If these rules are fired they add a message to a
-      global List of Strings describing the reason the solution is invalid.
-      DroolsSudokoGridModel injects this List before it runs the rule set and
-      checks whether it is empty or not having called fireAllRules(). If it is
-      not empty then it prints all the Strings in the list and sets a flag to
-      indicate that the Grid is not solved.</para>
+      column, or 3x3 zone. If these rules are fired they add a message to a
+      global list of strings describing the reason the solution is invalid.
+      <code>DroolsSudokoGridModel</code> injects this list before it runs
+      the rule set and checks whether it is empty or not after having called
+      <code>fireAllRules()</code>. If it is not empty then it prints all the
+      strings in the list and sets a flag to indicate that the grid is not
+      solved.</para>
     </section>
 
     <section>
@@ -281,82 +297,94 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
       <para>Now let us look at the more complex rule set used to solve Sudoku
       puzzles.</para>
 
-      <para>Rule #1 is basically a "book-keeping" rule. Several of the other
-      rules insert() ResolvedCellValues into the working memory at specific
-      rows and columns once they have determined that a given cell must have a
-      certain value. At this point, it is important to clear the working
-      memory of any inserted PossibleCellValues at the same row and column
+      <para>Rule #1 is basically a book-keeping rule. Several of the other
+      rules insert <code>ResolvedCellValues</code> into the working memory
+      at specific rows and columns after they have determined that a given
+      cell must have a
+      certain value. At this point, it is important to clear the Working
+      Memory of any inserted <code>PossibleCellValues</code> at the same
+      row and column
       with invalid values. This rule is therefore given a higher salience than
       the remaining rules to ensure that as soon as the LHS is true,
-      activations for the rule move to the top of the agenda and are fired. In
-      turn this prevents the spurious firing of other rules due to the
-      combination of a ResolvedCellValue and one or more PossibleCellValues
-      being present in the same cell. This rule also calls update() on the
-      ResolvedCellValue, even though its value has not in fact been modified
-      to ensure that Drools fires an event to any WorkingMemoryListeners
-      attached to the working memory so that they can update themselves - in
+      activations for the rule move to the top of the Agenda and are fired. In
+      turn, this prevents the spurious firing of other rules due to the
+      combination of a <code>ResolvedCellValue</code> and one or more
+      <code>PossibleCellValues</code> being present in the same cell.
+      This rule also calls <code>update()</code> on the
+      <code>ResolvedCellValue</code>, even though its value has not in
+      fact been modified to ensure that Drools fires an event to any
+      <code>WorkingMemoryListeners</code>  attached to the Working Memory
+      so that they can update themselves - in
       this case so that the GUI can display the new state of the grid.</para>
 
       <para>Rule #2 identifies cells in the grid which have only one possible
-      value. The first line of the when caluse matches all of the
-      PossibleCellValue objects in the working memory. The second line
-      demonstrates a use of the not keyword. This rule will only fire if no
-      other PossibleCellValue objects exist in the working memory at the same
+      value. The first line of the <kw>when</kw> clause matches all of the
+      <code>PossibleCellValue</code> objects in the Working Memory. The
+      second line demonstrates a use of the <kw>not</kw> keyword. This rule
+      will only fire if no other <code>PossibleCellValue</code> objects
+      exist in the Working Memory at the same
       row and column but with a different value. When the rule fires, the
-      single PossibleCellValue at the row and column is retracted from the
-      working memory and is replaced by a new ResolvedCellValue at the same
+      single <code>PossibleCellValue</code> at the row and column is
+      retracted from the Working Memory and is replaced by a new
+      <code>ResolvedCellValue</code> at the same
       row and column with the same value.</para>
 
-      <para>Rule #3 removes PossibleCellValues with a given value from a row
-      when they have the same value as a ResolvedCellValue. In other words,
-      when a cell is filled out with a resolved value, we need to remove the
+      <para>Rule #3 removes <code>PossibleCellValues</code> with a given
+      value from a row when they have the same value as a
+      <code>ResolvedCellValue</code>. In other words, when a cell is filled
+      with a resolved value, we need to remove the
       possibility of any other cell on the same row having this value. The
-      first line of the when clause matches all ResolvedCellValue objects in
-      the working memory. The second line matches PossibleCellValues which
-      have both the same row and the same value as these ResolvedCellValue
+      first line of the when clause matches all <code>ResolvedCellValue</code>
+      objects in the Working Memory. The second line matches
+      <code>PossibleCellValues</code> which have both the same row and the
+      same value as these <code>ResolvedCellValue</code>
       objects. If any are found, the rule activates and, when fired retracts
-      the PossibleCellValue which can no longer be a solution for that
-      cell.</para>
+      the <code>PossibleCellValue</code> which can no longer be a solution
+      for that cell.</para>
 
       <para>Rules #4 and #5 act in the same way as Rule #3 but check for
-      redundant PossibleCellValues in a given column and a given zone of the
-      grid as a ResolvedCellValue respectively.</para>
+      redundant <code>PossibleCellValues</code> in a given column and a 
+      given zone of the grid as a <code>ResolvedCellValue</code>
+      respectively.</para>
 
       <para>Rule #6 checks for the scenario where a possible cell value only
       appears once in a given row. The first line of the LHS matches against
-      all PossibleCellValues in the working memory, storing the result in a
-      number of local variables. The second line checks that no other
-      PossibleCellValues with the same value exist on this row. The third to
-      fifth lines check that there is not a ResolvedCellValue with the same
-      value in the same zone, row or column so that this rule does not fire
-      prematurely. Interestingly we could remove lines 3-5 and give rules
-      #3,#4 and #5 a higher salience to make sure they always fired before
-      rules #6,#7 and #8. When the rule fires, we know that $possible must
-      represent the value for the cell so, as in Rule #2 we retract $possible
-      and replace it with the equivalent, new ResolvedCellValue.</para>
+      all <code>PossibleCellValue</code> facts in the Working Memory, storing
+      the result in a number of local variables. The second line checks that
+      no other <code>PossibleCellValue</code> objects with the same value
+      exist on this row. The third to fifth lines check that there is not
+      a <code>ResolvedCellValue</code> with the same value in the same zone,
+      row or column so that this rule does not fire prematurely.
+      It is interesting to note that we could remove lines 3 to 5 and give
+      rules #3, #4 and #5 a higher salience to make sure they always fire
+      before rules #6,#7 and #8. When the rule fires, we know that
+      <code>$possible</code> must represent the value for the cell;
+      so, as in Rule #2, we retract <code>$possible</code> and replace it
+      with the equivalent, new <code>ResolvedCellValue</code>.</para>
 
       <para>Rules #7 and #8 act in the same way as Rule #2 but check for
-      single PossibleCellValues in a given column and a given zone of the grid
-      respectively.</para>
+      single <code>PossibleCellValues</code> in a given column and a given
+      zone of the grid, respectively.</para>
 
       <para>Rule #9 represents the most complex currently implemented rule.
       This rule implements the logic that, if we know that a pair of given
       values can only occur in two cells on a specific row, (for example we
       have determined the values of 4 and 6 can only appear in the first row
-      in cells 0,3 and 0,5) and this pair of cells can not hold other values
-      then, although we do not know which of the pair contains a four and
-      which contains a six we know that the 4 and the 6 must be in these two
-      cells and hence can remove the possibility of them occuring anywhere
-      else in the same row (phew!). TODO: more detail here and I think the
-      rule can be cleaned up in the DRL file before fully documenting
-      it.</para>
+      in cells [0,3] and [0,5]) and this pair of cells can not hold other 
+      values, then, although we do not know which of the pair contains a 
+      four and which contains a six, we do know that these two values must be
+      in these two cells, and hence we can remove the possibility of them
+      occuring anywhere else in the same row.</para>
 
-      <para>Rules #10 and #11 act in the same way as Rule #9 but check for the
-      existance of only two possible values in a given column and zone
+<!--  TODO: more detail here and I think the  rule can be cleaned up in
+      the DRL file before fully documenting  it. -->
+
+      <para>Rules #10 and #11 act in the same way as rule #9 but check for the
+      existance of only two possible values in a given column and zone,
       respectively.</para>
 
       <para>To solve harder grids, the rule set would need to be extended
-      further with more complex rules that encapsulated more complex
+      further with more complex rules that encapsulate more complex
       reasoning.</para>
     </section>
 
@@ -369,89 +397,86 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
 
       <itemizedlist>
         <listitem>
-          <para>Agenda-group: agenda groups are a great declarative tool for
-          phased execution. In this example, it is easy to see we have 2
+          <para>Agenda groups are a great declarative tool for
+          phased execution. In this example, it is easy to see we have two
           phases: "resolution" and "validation". Right now, they are executed
-          by creating two separate rule bases, each for one "job". I think it
-          would be better for us to define agenda-groups for all the rules,
-          spliting them in "resolution" rules and "validation" rules, all
-          loaded in a single rule base. The engine executes resolution and
+          by creating two separate rule bases, each for one "job".
+          Presumably it would be better to define agenda groups for all the
+          rules, spliting them in "resolution" rules and "validation" rules,
+          all loaded in a single rule base. The engine executes resolution and
           right after that, executes validation.</para>
         </listitem>
 
         <listitem>
-          <para>Auto-focus: auto focus is a great way of handling exceptions
+          <para>Auto-focus is a great way of handling exceptions
           to the regular rules execution. In our case, if we detect an
           inconsistency, either in the input data or in the resolution rules,
           why should we spend time continuing the execution if it will be
-          invalid anyway? I think it is better to simply (and immediatly)
+          invalid anyway? It is better to simply (and immediately)
           report the inconsistency as soon as it is found. To do that, since
           we now have a single rulebase with all rules, we simply need to
-          define auto-focus attribute for all rules validating puzzle
+          define the auto-focus attribute for all rules validating puzzle
           consistency.</para>
         </listitem>
 
         <listitem>
           <para>Logical insert: an inconsistency only exists while wrong data
-          is in the working memory. As so, we could state that the the
+          is in the working memory. As so, we could state that the
           validation rules logically insert inconsistencies and as soon as the
           offending data is retracted, the inconsistency no longer
           exists.</para>
         </listitem>
 
         <listitem>
-          <para>session.iterateObjects(): although a valid use case having a
-          global list to add the found problems, I think it would be more
-          interesting to ask the stateful session by the desired list of
-          problems, using session.iterateObjects( new ClassObjectFilter(
-          Inconsistency.class ) ); Having the inconsistency class can also
-          allow us to paint in RED the offending cells in the GUI.</para>
+          <para><code>session.iterateObjects()</code>: although a valid
+          use case having a global list to add the found problems, I think
+          it would be more
+          interesting to ask the Stateful Session by the desired list of
+          problems, using <code>session.iterateObjects( new ClassObjectFilter(
+          Inconsistency.class ) ).</code> Having the inconsistency class
+          can also allow us to paint in red the offending cells in the
+          GUI.</para>
         </listitem>
 
         <listitem>
-          <para>drools.halt(): even reporting the error as soon as it is
-          found, we need a way to tell the engine to stop evaluating rules. We
-          can do that creating a rule that in the presence of Inconsistencies,
-          calls drools.halt() to stop evaluation.</para>
+          <para><code>drools.halt()</code>: even reporting the error as
+          soon as it is found, we need a way to tell the engine to stop
+          evaluating rules. We
+          can do that creating a rule that, in the presence of inconsistencies,
+          calls <code>drools.halt()</code> to stop evaluation.</para>
         </listitem>
 
         <listitem>
-          <para>queries: looking at the method getPossibleCellValues(int row,
-          int col) in DroolsSudokuGridModel, we see it iterating over all
-          CellValues and looking for the few it wants. That, IMO, is a great
-          opportunity to teach drools queries. We just define a query to
-          return the objects we want and iterate over it. Clean and nice.
+          <para>Queries: looking at the method
+          <code>getPossibleCellValues(int row, int col)</code> in
+          <code>DroolsSudokuGridModel</code>, we see it iterating over all
+          <code>CellValue</code> objects, looking for the few it wants. That
+          is a great opportunity to demonstrate Drools queries. We just
+          define a query to
+          return the objects we want and iterate over it, cleanly and nicely.
           Other queries may be defined as needed.</para>
         </listitem>
 
         <listitem>
-          <para>session.iterateObjects(): although a valid use case having a
-          global list to add the found problems, I think it would be more
-          interesting to ask the stateful session by the desired list of
-          problems, using session.iterateObjects( new ClassObjectFilter(
-          Inconsistency.class ) ); Having the inconsistency class can also
-          allow us to paint in RED the offending cells in the GUI.</para>
-        </listitem>
-
-        <listitem>
           <para>Globals as services: the main objective of this change is to
-          attend the next change I will propose, but it is nice by its own I
-          guess. :) In order to teach the use of "globals" as services, it
-          would be nice to setup a call back, so that each rule that finds the
-          ResolvedCellValue for a given cell can call, to notify and update
-          the corresponding cell in the GUI, providing immediate feedback for
+          attend the next proposed change , but it is nice by its own.
+          In order to teach the use of globals as services, it
+          would be nice to set up a callback, so that each rule that finds the
+          <code>ResolvedCellValue</code> for a given cell can call, to
+          notify and update the corresponding cell in the GUI, providing
+          immediate feedback for
           the user. Also, the last found cell could have its number painted in
-          a different color to facilitate the identification of the rules
+          a different color to facilitate the identification of the rules'
           conclusions.</para>
         </listitem>
 
         <listitem>
           <para>Step by step execution: now that we have immediate user
-          feedback, we can make use of the restricted run feature in drools.
-          I.e., we could add a button in the GUI, so that the user clicks and
-          causes the execution of a single rule, by calling fireAllRules( 1 ).
-          This way, the user can see, step by step, what the engine is
-          doing.</para>
+          feedback, we can make use of the restricted run feature in Drools,
+          i.e., we could add a button in the GUI, that, when activated,
+          causes the execution of a single rule, by calling
+          <code>fireAllRules( 1 )</code>. This way, the user would see,
+          step by step, what the engine is doing.</para>
         </listitem>
       </itemizedlist>
     </section>
