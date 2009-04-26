@@ -97,6 +97,8 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
@@ -1668,6 +1670,20 @@ public class MiscTest extends TestCase {
         
         session.dispose();
 
+    }
+    
+    public void testDisconnectedFactHandle() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        DefaultFactHandle helloHandle = ( DefaultFactHandle ) ksession.insert( "hello" );
+        DefaultFactHandle goodbyeHandle = ( DefaultFactHandle ) ksession.insert( "goodbye" );
+        
+        FactHandle key = new DisconnectedFactHandle( helloHandle.toExternalForm() );
+        assertEquals( "hello", ksession.getObject( key ) );
+        
+        key = new DisconnectedFactHandle( goodbyeHandle.toExternalForm() );
+        assertEquals( "goodbye", ksession.getObject( key ) );
+        
     }
 
     public void testBigDecimal() throws Exception {

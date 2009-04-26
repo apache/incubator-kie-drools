@@ -44,9 +44,10 @@ public class IdentityAssertMapComparator
     public int hashCodeOf(final Object obj) {
         Object realObject = obj;
         if ( realObject instanceof FactHandle ) {
-            realObject = ((InternalFactHandle) obj).getObject();
+            return rehash( ((InternalFactHandle) obj).getIdentityHashCode() );
+        } else {
+            return rehash( System.identityHashCode( realObject ) );
         }
-        return rehash( System.identityHashCode( realObject ) );
     }
 
     public int rehash(int h) {
@@ -63,8 +64,8 @@ public class IdentityAssertMapComparator
      */
     public boolean equal(final Object o1,
                          final Object o2) {
-        if ( o1 instanceof FactHandle ) {
-            return ((InternalFactHandle) o1).getObject() == ((InternalFactHandle) o2).getObject();
+        if ( o1 instanceof InternalFactHandle ) {
+            return ((InternalFactHandle) o1).getId() == ((InternalFactHandle) o2).getId();
         }
         Object left = o1;
         final InternalFactHandle handle = ((InternalFactHandle) o2);

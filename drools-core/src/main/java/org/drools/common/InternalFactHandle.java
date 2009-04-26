@@ -41,6 +41,8 @@ public interface InternalFactHandle
     public void invalidate();
     
     public boolean isValid();
+    
+    public int getIdentityHashCode();
 
     public int getObjectHashCode();
     
@@ -66,5 +68,7 @@ public interface InternalFactHandle
     public void setEntryPoint( WorkingMemoryEntryPoint ep );
     
     public InternalFactHandle clone();
+    
+    public String toExternalForm();
     
 }
