@@ -14,8 +14,7 @@ import org.drools.RuleBase;
 rule "register north east"
 	ruleflow-group "register neighbor"
 when
-    CellGrid( $numberOfColumns : numberOfColumns )
-	$cell: Cell( $row : row > 0, $col : col < ( $numberOfColumns - 1 ) )			
+	$cell: Cell( $row : row, $col : col )			
 	$northEast : Cell( row  == ($row - 1), col == ( $col + 1 ) )	
 then					
 	insert( new Neighbor( $cell, $northEast ) );
@@ -25,7 +24,7 @@ end
 rule "register north"
 	ruleflow-group "register neighbor"	
 when
-	$cell: Cell( $row : row > 0, $col : col )	
+	$cell: Cell( $row : row, $col : col )	
 	$north : Cell( row  == ($row - 1), col == $col )	
 then		
 	insert( new Neighbor( $cell, $north ) );
@@ -35,7 +34,7 @@ end
 rule "register north west"
 	ruleflow-group "register neighbor"
 when
-	$cell: Cell( $row : row > 0, $col : col > 0 )			
+	$cell: Cell( $row : row, $col : col )			
 	$northWest : Cell( row  == ($row - 1), col == ( $col - 1 ) )						
 then		
 	insert( new Neighbor( $cell, $northWest ) );
@@ -45,7 +44,7 @@ end
 rule "register west"
 	ruleflow-group "register neighbor"
 when
-	$cell: Cell( $row : row >= 0, $col : col > 0 )			
+	$cell: Cell( $row : row, $col : col )			
 	$west : Cell( row  == $row, col == ( $col - 1 ) )						
 then		
 	insert( new Neighbor( $cell, $west ) );
