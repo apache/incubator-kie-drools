@@ -1,102 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
                     xmlns:m="http://www.w3.org/1998/Math/MathML"
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-		<title>Honest Politician Example</title>
+  <title>Honest Politician Example</title>
 
-		<para>The honest politician example demonstrates truth maintenance with logical assertions, the basic premise is that an object can only exist while a statement is true. A rule's consequence can logical insert an object with the insertLogical method, this means the object will only remain in the working memory as long as the rule that logically inserted it remains true, when the rule is no longer true the object is automatically retracted.</para>
+    <programlisting><emphasis role="bold">Name:</emphasis> Honest Politician
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.HonestPoliticianExample 
+<emphasis role="bold">Type:</emphasis> Java application
+<emphasis role="bold">Rules file:</emphasis> HonestPoliticianExample.drl
+<emphasis role="bold">Objective:</emphasis> Illustrate the concept of "truth maintenance" based on the logical insertion of facts
+</programlisting>
 
-    <para>In this example there is Politician class with a name and a boolean
-    value for honest state, four politicians with honest state set to true are
-    inserted.</para>
+  <para>The Honest Politician example demonstrates truth maintenance with
+  logical assertions. The basic premise is that an object can only exist
+  while a statement is true. A rule's consequence can logically insert an 
+  object with the <code>insertLogical()</code> method. This means the object
+  will only remain in the Working Memory as long as the rule that logically
+  inserted  it remains true. When the rule is no longer true the object is
+  automatically retracted.</para>
 
-    <para><example>
-        <title>Politician Class</title>
+  <para>In this example there is the class <code>Politician</code>, with a
+  name and a boolean value for being honest. Four politicians with honest
+  state set to true are inserted.</para>
 
-        <programlisting>public class Politician {
+  <para><example>
+    <title>Class Politician</title>
+
+      <programlisting>public class Politician {
     private String name;
     private boolean honest;
     ...
 }</programlisting>
       </example><example>
-        <title>Honest Politician Example Execution</title>
+    <title>Honest Politician: Execution</title>
 
-        <programlisting>Politician blair  = new Politician("blair", true);
-Politician bush  = new Politician("bush", true);
-Politician chirac  = new Politician("chirac", true);
-Politician schroder   = new Politician("schroder", true);
-        
+    <programlisting>Politician blair = new Politician("blair", true);
+Politician bush = new Politician("bush", true);
+Politician chirac = new Politician("chirac", true);
+Politician schroder = new Politician("schroder", true);
+    
 ksession.insert( blair );
 ksession.insert( bush );
 ksession.insert( chirac );
 ksession.insert( schroder );
 
 ksession.fireAllRules();</programlisting>
-      </example>The console out shows that while there is atleast one honest
-    polician democracy lives, however as each politician is in turn corrupted
-    by an evil corporation, when all politicians are dishonest democracy is
-    dead.<example>
-        <title>Honest Politician Example Console Output</title>
+    </example>The Console window output shows that, while there is at
+    least one honest politician, democracy lives. However, as each
+    politician is in turn corrupted by an evil corporation, so that
+    all politicians become dishonest, democracy is dead.<example>
+    <title>Honest Politician: Console Output</title>
 
-        <programlisting>Hurrah!!! Democracy Lives
+    <programlisting>Hurrah!!! Democracy Lives
 I'm an evil corporation and I have corrupted schroder
 I'm an evil corporation and I have corrupted chirac
 I'm an evil corporation and I have corrupted bush
 I'm an evil corporation and I have corrupted blair
 We are all Doomed!!! Democracy is Dead
 </programlisting>
-      </example>As soon as there is one more more honest politcians in the
-    working memory a new Hope object is logically asserted, this object will
-    only exist while there is at least one or more honest politicians, the
-    moment all politicians are dishonest then the Hope object will be
-    automatically retracted. This rule is given a salience of 10 to make sure
-    it fires before any other rules, as at this stage the "Hope is Dead" rule
-    is actually true.</para>
+    </example>As soon as there is at least one honest politician in the
+    Working Memory a new <code>Hope</code> object is logically asserted.
+    This object will only exist while there is at least one honest
+    politician. As soon as all politicians are dishonest, the
+    <code>Hope</code> object will be automatically retracted. This rule
+    is given a salience of 10 to ensure that it fires before any other
+    rule, as at this stage the "Hope is Dead" rule is actually true.</para>
 
     <example>
-      <title>Honest Politician Example : Rule "We have an honest
-      politician"</title>
+      <title>Honest Politician: Rule "We have an honest politician"</title>
 
-      <programlisting>rule "We have an honest Politician"
+    <programlisting>rule "We have an honest Politician"
     salience 10
     when
         exists( Politician( honest == true ) )
     then
         insertLogical( new Hope() );
 end</programlisting>
-    </example>
+  </example>
 
-    <para>As soon as a Hope object exists the "Hope Lives" rule matches, and
-    fires, it has a salience of 10 so that it takes priority over "Corrupt the
-    Honest".</para>
+  <para>As soon as a <code>Hope</code> object exists the "Hope Lives" rule
+  matches and fires. It has a salience of 10 so that it takes priority
+  over "Corrupt the Honest".</para>
 
-    <example>
-      <title>Honest Politician Example : Rule "Hope Lives"</title>
+  <example>
+    <title>Honest Politician: Rule "Hope Lives"</title>
 
-      <programlisting>rule "Hope Lives"
+    <programlisting>rule "Hope Lives"
     salience 10
-    when
-        exists( Hope() )
-    then
-        System.out.println("Hurrah!!! Democracy Lives");
+        when
+            exists( Hope() )
+        then
+            System.out.println("Hurrah!!! Democracy Lives");
 end</programlisting>
     </example>
 
-    <para>Now that hope exists and we have, at the start, four honest
-    politicians we have 4 activations for this rule all in conflict. This rule
-    iterates over those rules firing each one in turn, corrupting each
-    politician so that they are no longer honest. When all four politicians
-    have been corrupted we have no politicians with the property "honest ==
-    true" thus the rule "We have an honest Politician" is no longer true and
-    the object it logical inserts "new Hope()" is automatically
-    retracted.</para>
+    <para>Now that there is hope and we have, at the start, four honest
+    politicians, we have four activations for this rule, all in conflict.
+    They will fire in turn, corrupting each politician so that they are
+    no longer honest. When all four politicians have been corrupted we
+    have no politicians with the property <code>honest == true</code>.
+    Thus, the rule "We have an honest Politician" is no longer true and
+    the object it logical inserted (due to the last execution of
+    <code>new Hope()</code>) is automatically retracted.</para>
 
     <example>
-      <title>Honest Politician Example : Rule "Corrupt the Honest"</title>
+      <title>Honest Politician: Rule "Corrupt the Honest"</title>
 
       <programlisting>rule "Corrupt the Honest"
     when
@@ -108,12 +120,13 @@ end</programlisting>
 end</programlisting>
     </example>
 
-    <para>With Hope being automatically retracted, via the truth maintenance
-    system, then Hope no longer exists in the system and this rule will match
-    and fire.</para>
+    <para>With the <code>Hope</code> object being automatically retracted,
+    via the truth maintenance system, the conditional element <kw>not</kw>
+    applied to <code>Hope</code> is no longer true so that the following
+    rule will match and fire.</para>
 
     <example>
-      <title>Honest Politician Example : Rule "Hope is Dead"</title>
+      <title>Honest Politician: Rule "Hope is Dead"</title>
 
       <programlisting>rule "Hope is Dead"
     when
@@ -123,7 +136,7 @@ end</programlisting>
 end</programlisting>
     </example>
 
-    <para>lets take a look the audit trail for this application:</para>
+    <para>Let's take a look at the Audit trail for this application:</para>
 
     <figure>
       <title>Honest Politician Example Audit View</title>
@@ -136,23 +149,25 @@ end</programlisting>
       </mediaobject>
     </figure>
 
-    <para>The moment we insert the first politician we have two activations,
-    the "We have an honest Politician" is activated only once for the first
-    inserted politician because it uses an existential 'exists' conditional
-    element which only matches. the rule "Hope is Dead" is also activated at
-    this stage, because as of yet we have not inserted the Hope object. "We
-    have an honest Politician" fires first, as it has a higher salience over
-    "Hope is Dead" which inserts the Hope object, that action is highlighted
-    green above. The insertion of the Hope object activates "Hope Lives" and
-    de-activates "Hope is Dead", it also actives "Corrupt the Honest" for each
-    inserted honested politician. "Rule Hope Lives" executes printing
-    "Hurrah!!! Democracy Lives". Then for each politician the rule "Corrupt
-    the Honest" fires printing "I'm an evil corporation and I have corrupted
-    X", where X is the name of the politician, and modifies the politicians
-    honest value to false. When the last honest polician is corrupted Hope is
-    automatically retracted, by the truth maintenance system, as shown by the
-    blue highlighted area. The green highlighted area shows the origin of the
-    currently selected blue highlighted area. Once Hope is retracted "Hope is
+    <para>The moment we insert the first politician we have two activations.
+    The rule "We have an honest Politician" is activated only once for the first
+    inserted politician because it uses an <kw>exists</kw> conditional
+    element, which matches once for any number. The rule "Hope is Dead" is
+    also activated at this stage, because we have not yet inserted the
+    <code>Hope</code> object. Rule "We have an honest Politician" fires first,
+    as it has a higher salience than "Hope is Dead", which inserts the
+    <code>Hope</code> object. (That action is highlighted green.) The
+    insertion of the <code>Hope</code> object activates "Hope Lives" and
+    de-activates "Hope is Dead"; it also activates "Corrupt the Honest"
+    for each inserted honested politician. Rule "Hope Lives" executes,
+    printing  "Hurrah!!! Democracy Lives". Then, for each politician, rule
+    "Corrupt the Honest" fires, printing "I'm an evil corporation and I
+    have corrupted X", where X is the name of the politician, and modifies
+    the politician's honest value to false. When the last honest politician
+    is corrupted, <code>Hope</code> is automatically retracted, by the truth
+    maintenance system, as shown by the blue highlighted area. The green
+    highlighted area shows the origin of the currently selected blue
+    highlighted area. Once the <code>Hope</code> fact is retracted, "Hope is
     dead" activates and fires printing "We are all Doomed!!! Democracy is
     Dead".</para>
 
