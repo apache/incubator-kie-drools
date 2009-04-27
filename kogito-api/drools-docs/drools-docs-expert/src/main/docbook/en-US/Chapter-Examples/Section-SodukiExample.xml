@@ -10,7 +10,7 @@
 
     <programlisting><emphasis role="bold">Name:</emphasis> Sudoku
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.sudoku.Main
-<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> sudokuSolver.drl, sudokuValidator.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates the solving of logic problems, and complex pattern matching.
 </programlisting>
