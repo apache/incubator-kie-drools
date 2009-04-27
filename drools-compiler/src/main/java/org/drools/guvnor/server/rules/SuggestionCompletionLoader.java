@@ -20,6 +20,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.ParserError;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.server.util.ClassMethodInspector;
 import org.drools.guvnor.server.util.DataEnumLoader;
 import org.drools.guvnor.server.util.SuggestionCompletionEngineBuilder;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -36,7 +37,6 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.asm.ClassFieldInspector;
-import org.drools.util.asm.ClassMethodInspector;
 
 /**
  * This utility class loads suggestion completion stuff for the package
@@ -413,7 +413,7 @@ public class SuggestionCompletionLoader {
         fields = removeIrrelevantFields(fields);
 
         this.builder.addFieldsForType(shortTypeName, fields);
-        //FIX Nheron
+        
         Method[] methods = clazz.getMethods();
         List<String> modifierStrings = new ArrayList<String>();
         for (Method method : methods) {
@@ -433,12 +433,10 @@ public class SuggestionCompletionLoader {
             final String fieldType = getFieldType(type);
             this.builder.addFieldType(shortTypeName + "." + field, fieldType);
         }
-        ClassMethodInspector methodInspector = new ClassMethodInspector(clazz,inspector);
-        for (String methodName : methodInspector.getMethodNames()){
-        	for (String paramType : methodInspector.getMethodFields(methodName)){
-        		this.builder.getInstance().addMethodFields(shortTypeName,methodName, paramType);
-        	}	
-        }
+        
+        ClassMethodInspector methodInspector = new ClassMethodInspector(clazz);
+        
+        this.builder.getInstance().addMethodInfo( shortTypeName, methodInspector.getMethodInfos() );
     }
 
     String getShortNameOfClass(final String clazz) {

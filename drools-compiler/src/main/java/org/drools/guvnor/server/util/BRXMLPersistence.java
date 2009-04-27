@@ -12,7 +12,9 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  *
  * @author Michael Neale
  */
-public class BRXMLPersistence implements BRLPersistence {
+public class BRXMLPersistence
+    implements
+    BRLPersistence {
 
     private XStream                     xt;
     private static final BRLPersistence INSTANCE = new BRXMLPersistence();
@@ -21,41 +23,43 @@ public class BRXMLPersistence implements BRLPersistence {
         this.xt = new XStream( new DomDriver() );
 
         this.xt.alias( "rule",
-                  RuleModel.class );
+                       RuleModel.class );
         this.xt.alias( "fact",
-                  FactPattern.class );
+                       FactPattern.class );
         this.xt.alias( "retract",
-                  ActionRetractFact.class );
+                       ActionRetractFact.class );
         this.xt.alias( "assert",
-                  ActionInsertFact.class );
+                       ActionInsertFact.class );
         this.xt.alias( "modify",
-                  ActionUpdateField.class );
+                       ActionUpdateField.class );
         this.xt.alias( "setField",
-                  ActionSetField.class );
+                       ActionSetField.class );
         this.xt.alias( "dslSentence",
-                  DSLSentence.class );
+                       DSLSentence.class );
         this.xt.alias( "compositePattern",
-                  CompositeFactPattern.class );
+                       CompositeFactPattern.class );
         this.xt.alias( "metadata",
-                RuleMetadata.class );
+                       RuleMetadata.class );
         this.xt.alias( "attribute",
-                  RuleAttribute.class );
+                       RuleAttribute.class );
 
         this.xt.alias( "fieldValue",
-                  ActionFieldValue.class );
+                       ActionFieldValue.class );
         this.xt.alias( "connectiveConstraint",
-                  ConnectiveConstraint.class );
+                       ConnectiveConstraint.class );
         this.xt.alias( "fieldConstraint",
-                  SingleFieldConstraint.class );
+                       SingleFieldConstraint.class );
 
         this.xt.alias( "compositeConstraint",
                        CompositeFieldConstraint.class );
 
         this.xt.alias( "assertLogical",
-                  ActionInsertLogicalFact.class );
-        this.xt.alias("freeForm", FreeFormLine.class);
+                       ActionInsertLogicalFact.class );
+        this.xt.alias( "freeForm",
+                       FreeFormLine.class );
 
-        this.xt.alias("addToGlobal", ActionGlobalCollectionAdd.class);
+        this.xt.alias( "addToGlobal",
+                       ActionGlobalCollectionAdd.class );
 
     }
 
@@ -82,10 +86,40 @@ public class BRXMLPersistence implements BRLPersistence {
         }
         RuleModel rm = (RuleModel) this.xt.fromXML( xml );
         //Fixme , hack for a upgrade to add Metadata
-        if(rm.metadataList == null){
-        	rm.metadataList = new RuleMetadata[0];
+        if ( rm.metadataList == null ) {
+            rm.metadataList = new RuleMetadata[0];
         }
+        
+        updateMethodCall( rm );
+        
         return rm;
+    }
+
+    /**
+     * 
+     * The way method calls are done changed after 5.0.0.CR1 so every rule done before that needs to be updated.
+     * 
+     * @param model
+     * @return Updated model
+     */
+    private RuleModel updateMethodCall(RuleModel model) {
+
+        for ( int i = 0; i < model.rhs.length; i++ ) {
+            if ( model.rhs[i] instanceof ActionCallMethod ) {
+                ActionCallMethod action = (ActionCallMethod) model.rhs[i];
+                // Check if method name is filled, if not this was made with an older Guvnor version
+                if ( action.methodName == null || "".equals( action.methodName ) ) {
+                    if ( action.fieldValues != null && action.fieldValues.length >= 1 ) {
+                        action.methodName = action.fieldValues[0].field;
+                        
+                        action.fieldValues = new ActionFieldValue[0];
+                        action.state = ActionCallMethod.TYPE_DEFINED;
+                    }
+                }
+            }
+        }
+
+        return model;
     }
 
 }
