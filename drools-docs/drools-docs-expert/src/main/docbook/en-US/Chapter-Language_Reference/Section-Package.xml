@@ -28,8 +28,8 @@
   using standard Java conventions for package names; i.e., no spaces, unlike
   rule names which allow spaces. In terms of the order of elements, they can
   appear in any order in the rule file, with the exception of the <kw>package</kw>
-  and <kw>expander</kw> statements being at the top of the file, before any rules
-  appear. In all cases, the semicolons are optional.</para>
+  statement, which must be at the top of the file. In all cases, the semicolons are
+  optional.</para>
 
   <figure>
     <title>package</title>
@@ -41,6 +41,11 @@
       </imageobject>
     </mediaobject>
   </figure>
+
+  <para>Notice that any rule atttribute (as described the section Rule Attributes)
+  may also be written at package level, superseding the attribute's default value.
+  The modified default may still be replaced by an attribute setting within
+  a rule.</para>
 
   <section>
     <title>import</title>
@@ -61,30 +66,6 @@
     to use in the rules. Drools automatically imports classes from the
     Java package of the same name, and also from the package
     <code>java.lang</code>.</para>
-  </section>
-
-  <section>
-    <title>expander</title>
-
-    <figure>
-      <title>expander</title>
-
-      <mediaobject>
-
-        <imageobject>
-		<imagedata fileref="images/Chapter-Rule_Language/expander.png" format="PNG" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>The optional expander statement is used to specify domain specific
-    language (DSL) configurations, which are normally stored in a separate
-    file. This provides clues to the parser how to understand such
-    specific text in your rules. Since Drools 4.0, the expander declaration
-    is mandatory for the tools to provide context sensitive assistance and to
-    avoid error reporting. The API, however, allows the program to apply
-    DSL templates even if the expanders are not declared in the source
-    file.</para>
   </section>
 
   <section>
