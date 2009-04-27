@@ -112,14 +112,16 @@ kbuilder.add( ResourceFactory.newClassPathResource( "licenseApplication.drl", ge
               ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
-}  </programlisting>
+}
+kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );</programlisting>
 
       <para>The above code snippet looks on the classpath for the 
       <filename>licenseApplication.drl</filename>
       file, using the method <code>newClassPathResource()</code>. The resource type
       is DRL, short for "Drools Rule Language". Once the DRL file has been added
       we can check the Knowledge Builder object for any errors. If there are no
-      errors, we are now ready to build our session and execute against some
+      errors, we can add the resulting packages to our Knowledge Base.
+      Now we are ready to build our session and execute against some
       data:</para>
 
       <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
@@ -405,7 +407,8 @@ kbuilder.add( ResourceFactory.newClassPathResource( "fireAlarm.drl", getClass() 
               ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
-}  
+}
+kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</programlisting>
 
       <para>With the session created it is now possible to iteratvely work
