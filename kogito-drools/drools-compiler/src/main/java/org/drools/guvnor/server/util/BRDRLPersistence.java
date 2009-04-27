@@ -465,12 +465,14 @@ public class BRDRLPersistence implements BRLPersistence {
 		}
 
 		public void visitActionSetField(final ActionSetField action) {
-			if (action instanceof ActionCallMethod){
-				this.generateSetMethodCallsMethod((ActionCallMethod)action, action.fieldValues);
-			}else{
-				this.generateSetMethodCalls(action.variable, action.fieldValues);
-			}
-		}
+            if ( action instanceof ActionCallMethod ) {
+                this.generateSetMethodCallsMethod( (ActionCallMethod) action,
+                                                   action.fieldValues );
+            } else {
+                this.generateSetMethodCalls( action.variable,
+                                             action.fieldValues );
+            }
+        }
 
 		private void generateSetMethodCalls(final String variableName,
 				final ActionFieldValue[] fieldValues) {
@@ -509,29 +511,31 @@ public class BRDRLPersistence implements BRLPersistence {
 
 
 		private void generateSetMethodCallsMethod(final ActionCallMethod action,
-				final ActionFieldValue[] fieldValues) {
-			buf.append("\t\t");
-			if (isDSLEnhanced) {
-				buf.append(">");
-			}
-			buf.append(action.variable);
-			buf.append(".");
-			buf.append(action.methodName);
-			buf.append("(");
-			boolean isFirst = true;
-			for (int i = 0; i < fieldValues.length; i++) {
-				ActionFieldFunction valueFunction = (ActionFieldFunction) fieldValues[i];
-				if (isFirst == true) {
-					isFirst = false;
-				} else {
-					buf.append(",");
-				}
+                                                  final ActionFieldValue[] fieldValues) {
+            buf.append( "\t\t" );
+            if ( isDSLEnhanced ) {
+                buf.append( ">" );
+            }
+            buf.append( action.variable );
+            buf.append( "." );
 
-				buf.append(valueFunction.value);
-			}
-			buf.append(" );\n");
+            buf.append( action.methodName );
 
-		}
+            buf.append( "(" );
+            boolean isFirst = true;
+            for ( int i = 0; i < fieldValues.length; i++ ) {
+                ActionFieldFunction valueFunction = (ActionFieldFunction) fieldValues[i];
+                if ( isFirst == true ) {
+                    isFirst = false;
+                } else {
+                    buf.append( "," );
+                }
+
+                buf.append( valueFunction.value );
+            }
+            buf.append( " );\n" );
+
+        }
 	}
 
 }
