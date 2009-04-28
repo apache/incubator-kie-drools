@@ -1678,7 +1678,7 @@ public class MiscTest extends TestCase {
         DefaultFactHandle helloHandle = ( DefaultFactHandle ) ksession.insert( "hello" );
         DefaultFactHandle goodbyeHandle = ( DefaultFactHandle ) ksession.insert( "goodbye" );
         
-        FactHandle key = new DisconnectedFactHandle( helloHandle.toExternalForm() );
+        org.drools.runtime.rule.FactHandle key = new DisconnectedFactHandle( helloHandle.toExternalForm() );
         assertEquals( "hello", ksession.getObject( key ) );
         
         key = new DisconnectedFactHandle( goodbyeHandle.toExternalForm() );

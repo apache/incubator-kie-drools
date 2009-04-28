@@ -3,28 +3,31 @@ package org.drools.common;
 import java.util.Iterator;
 
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 
 public interface ObjectStore {
 
-    public abstract int size();
+    int size();
 
-    public abstract boolean isEmpty();
+    boolean isEmpty();
     
-    public void clear();    
+    void clear();    
 
-    public abstract Object getObjectForHandle(InternalFactHandle handle);
-
-    public abstract InternalFactHandle getHandleForObject(Object object);
+    Object getObjectForHandle(FactHandle handle);
     
-    public abstract InternalFactHandle getHandleForObjectIdentity(Object object);
+    InternalFactHandle reconnect(FactHandle factHandle);
 
-    public abstract void updateHandle(InternalFactHandle handle,
+    InternalFactHandle getHandleForObject(Object object);
+    
+    InternalFactHandle getHandleForObjectIdentity(Object object);
+
+    void updateHandle(InternalFactHandle handle,
                                       Object object);
 
     public abstract void addHandle(InternalFactHandle handle,
                                    Object object);
 
-    public abstract void removeHandle(final InternalFactHandle handle);
+    public abstract void removeHandle(final FactHandle handle);
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results

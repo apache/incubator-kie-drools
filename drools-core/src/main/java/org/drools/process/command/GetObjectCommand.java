@@ -8,13 +8,30 @@ public class GetObjectCommand
     Command<Object> {
 
     private FactHandle factHandle;
+    private String     outIdentifier;
 
     public GetObjectCommand(FactHandle factHandle) {
         this.factHandle = factHandle;
     }
 
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
     public Object execute(ReteooWorkingMemory session) {
-        return session.getObject( factHandle );
+        Object object = session.getObject( factHandle );
+        session.getExecutionResult().getResults().put( this.outIdentifier,
+                                                       object );
+
+        return object;
+    }
+    
+    public FactHandle getFactHandle() {
+        return this.factHandle;
     }
 
     public String toString() {
