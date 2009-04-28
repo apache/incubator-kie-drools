@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.drools.ProviderInitializationException;
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 
 /**
  * <p>
@@ -57,9 +58,25 @@ public class CommandFactory {
         return getCommandFactoryProvider().newInsertElements( objects );
     }
     
+    public static Command newRetract(FactHandle factHandle) {
+        return getCommandFactoryProvider().newRetract( factHandle );
+    }
+    
+    public static Setter newSetter(String accessor, String value) {
+        return getCommandFactoryProvider().newSetter(accessor, value);
+    }
+    
+    public static Command newModify(FactHandle factHandle, List<Setter> setters) {
+        return getCommandFactoryProvider().newModify(factHandle, setters);
+    }
+    
+    public static Command newGetObject(FactHandle factHandle) {
+        return getCommandFactoryProvider().newGetObject( factHandle );
+    }
+    
     public static Command newGetObjects() {
     	return getCommandFactoryProvider().newGetObjects( );
-    }
+    }    
     
     public static Command newGetObjects(ObjectFilter filter) {
     	return getCommandFactoryProvider().newGetObjects( filter );

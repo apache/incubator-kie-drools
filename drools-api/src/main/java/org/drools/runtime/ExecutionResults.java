@@ -15,5 +15,7 @@ public interface ExecutionResults {
     Collection<String> getIdentifiers();
 
     Object getValue(String identifier);
+    
+    Object getFactHandle(String identifier); 
 
 }

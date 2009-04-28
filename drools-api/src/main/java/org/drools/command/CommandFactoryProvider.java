@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 
 public interface CommandFactoryProvider {
     Command newInsertObject(Object object);
@@ -12,15 +13,25 @@ public interface CommandFactoryProvider {
                             String outIdentifier);
 
     Command newInsertElements(Iterable iterable);
-    
+
+    Command newRetract(FactHandle factHandle);
+
+    Setter newSetter(String accessor,
+                     String value);
+
+    Command newModify(FactHandle factHandle,
+                      List<Setter> setters);
+
     Command newFireAllRules();
 
-    Command newFireAllRules(int max);    
-    
-	Command newGetObjects();
+    Command newFireAllRules(int max);
 
-    public Command newGetObjects(ObjectFilter filter);
-    
+    Command newGetObject(FactHandle factHandle);
+
+    Command newGetObjects();
+
+    Command newGetObjects(ObjectFilter filter);
+
     Command newSetGlobal(String identifie,
                          Object object);
 
@@ -48,7 +59,7 @@ public interface CommandFactoryProvider {
     Command newQuery(String identifier,
                      String name,
                      Object[] arguments);
-    
-    Command newBatchExecution(List<? extends Command> commands);
-		
+
+    Command newBatchExecution(List< ? extends Command> commands);
+
 }
