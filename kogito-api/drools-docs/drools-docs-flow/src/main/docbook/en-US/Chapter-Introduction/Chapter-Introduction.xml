@@ -22,8 +22,8 @@
       </imageobject>
     </mediaobject>
 
-  <para>The following chapters will learn you everything you need
-  to know about Drools Flow.  It's distinguishing characteristics
+  <para>The following chapters will teach you everything you need
+  to know about Drools Flow.  Its distinguishing characteristics
   are:
     <orderedlist>
       <listitem><emphasis role="strong">Advanced integration of processes
@@ -38,21 +38,21 @@
       rules:</emphasis> We consider rules, processes and event processing
       all as different types of knowledge.  Not only do we allow the advanced
       integration of these three types, we also offer a unified API and
-      unified tooling so that users should not learn three different products
+      unified tooling so that users should not have to learn three different products
       but can easily combine these three types using our knowledge-based API.
       The tooling also allows seamless integration of these different kinds of
       knowledge, including things like a unified knowledge repository, audit
       logs, debugging, etc.</listitem>
       <listitem><emphasis role="strong">Declarative modelling:</emphasis>
-      Drools Flow tries to keep processes as declarative as possible, i.e.
+      Drools Flow tries to keep processes as declarative as possible, i.e.,
       focussing on what should happen instead of how.  As a result, we try
       to avoid having to hardcode details into your process but offer ways
-      to describe your work in an abstract way (e.g. using pluggable work
-      items, a business scripting language, etc.). We also allows users
-      to easily create domain-specific extension, making it much easier to
+      to describe your work in an abstract way (e.g., by using pluggable work
+      items, a business scripting language, etc.). We also allow users
+      to easily create domain-specific extensions, making it much simpler to
       read, update or create these processes as they are using
-      domain-specific concepts that are closely related to the problem you
-      are trying to solve and can be understood by domain experts.</listitem>
+      domain-specific concepts that are closely related to the problem at
+      hand and can be understood by domain experts.</listitem>
       <listitem><emphasis role="strong">Generic process engine supporting
       multiple process languages:</emphasis> We do not believe that there
       is one process language that fits all purposes.  Therefore, the Drools
