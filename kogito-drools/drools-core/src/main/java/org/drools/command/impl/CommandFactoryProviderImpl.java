@@ -5,16 +5,22 @@ import java.util.Map;
 
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryProvider;
+import org.drools.command.Setter;
 import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetGlobalCommand;
+import org.drools.process.command.GetObjectCommand;
 import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.InsertElementsCommand;
 import org.drools.process.command.InsertObjectCommand;
+import org.drools.process.command.ModifyCommand;
 import org.drools.process.command.QueryCommand;
+import org.drools.process.command.RetractCommand;
 import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.StartProcessCommand;
+import org.drools.process.command.ModifyCommand.SetterImpl;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.impl.BatchExecutionImpl;
+import org.drools.runtime.rule.FactHandle;
 
 public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 
@@ -41,6 +47,24 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		cmd.setOutIdentifier(outIdentifier);
 		return cmd;
 	}
+	
+    public Command newRetract(FactHandle factHandle) {
+        return new RetractCommand( factHandle );
+    }
+    
+    public Setter newSetter(String accessor,
+                             String value) {
+        return new SetterImpl(accessor, value);
+    }    
+    
+    public Command newModify(FactHandle factHandle,
+                             List<Setter> setters) {
+        return new ModifyCommand(factHandle, setters);
+    }    
+	
+    public Command newGetObject(FactHandle factHandle) {
+        return new GetObjectCommand(factHandle);
+    }	
 
 	public Command newGetObjects() {
 		return newGetObjects(null);
@@ -102,4 +126,7 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return new BatchExecutionImpl(
 				(List<org.drools.process.command.Command>) commands);
 	}
+
+
+
 }

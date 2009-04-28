@@ -17,6 +17,10 @@ public class RetractCommand
         session.retract( handle );
         return null;
     }
+    
+    public FactHandle getFactHandle() {
+        return this.handle;
+    }
 
     public String toString() {
         return "session.retract( " + handle + " );";

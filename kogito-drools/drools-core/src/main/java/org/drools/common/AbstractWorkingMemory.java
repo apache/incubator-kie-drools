@@ -1147,11 +1147,17 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
 
-            final InternalFactHandle handle = (InternalFactHandle) factHandle;
+            InternalFactHandle handle = (InternalFactHandle) factHandle;
             if ( handle.getId() == -1 ) {
                 // can't retract an already retracted handle
                 return;
             }
+            
+            // the handle might have been disconnected, so reconnect if it has
+            if ( factHandle instanceof DisconnectedFactHandle ) {
+                handle = this.objectStore.reconnect( handle );
+            }
+            
             removePropertyChangeListener( handle );
 
             if ( activation != null ) {
@@ -1224,8 +1230,13 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
 
-            final InternalFactHandle handle = (InternalFactHandle) factHandle;
-
+            InternalFactHandle handle = (InternalFactHandle) factHandle;
+            
+            // the handle might have been disconnected, so reconnect if it has
+            if ( factHandle instanceof DisconnectedFactHandle ) {
+                handle = this.objectStore.reconnect( handle );
+            }
+            
             if ( handle.getId() == -1 ) {
                 // the handle is invalid, most likely already retracted, so
                 // return
@@ -1290,7 +1301,13 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
 
-            final InternalFactHandle handle = (InternalFactHandle) factHandle;
+            InternalFactHandle handle = (InternalFactHandle) factHandle;
+            
+            // the handle might have been disconnected, so reconnect if it has
+            if ( factHandle instanceof DisconnectedFactHandle ) {
+                handle = this.objectStore.reconnect( handle );
+            }
+            
             final Object originalObject = handle.getObject();
 
             if ( this.maintainTms ) {
@@ -1363,13 +1380,18 @@ public abstract class AbstractWorkingMemory
      * 
      * @see WorkingMemory
      */
-    public void update(final org.drools.FactHandle factHandle,
+    public void update(org.drools.FactHandle factHandle,
                        final Object object,
                        final Rule rule,
                        final Activation activation) throws FactException {
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
+            
+            // the handle might have been disconnected, so reconnect if it has
+            if ( factHandle instanceof DisconnectedFactHandle ) {
+                factHandle = this.objectStore.reconnect( factHandle );
+            }
 
             // only needed if we maintain tms, but either way we must get it
             // before we do the retract

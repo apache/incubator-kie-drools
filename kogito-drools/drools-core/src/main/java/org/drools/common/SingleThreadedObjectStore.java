@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.util.JavaIteratorAdapter;
@@ -80,7 +81,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /* (non-Javadoc)
      * @see org.drools.common.ObjectStore#getObjectForHandle(org.drools.common.InternalFactHandle)
      */
-    public Object getObjectForHandle(InternalFactHandle handle) {
+    public Object getObjectForHandle(FactHandle handle) {
         try {
             this.lock.lock();
 
@@ -103,6 +104,10 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
      */
     public InternalFactHandle getHandleForObject(Object object){
         return (InternalFactHandle) this.assertMap.get( object );
+    }
+    
+    public InternalFactHandle reconnect(FactHandle factHandle) {
+        return (InternalFactHandle) this.assertMap.get( factHandle );
     }
 
     /* (non-Javadoc)
@@ -141,7 +146,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /* (non-Javadoc)
      * @see org.drools.common.ObjectStore#removeHandle(org.drools.common.InternalFactHandle)
      */
-    public void removeHandle(final InternalFactHandle handle) {
+    public void removeHandle(final FactHandle handle) {
         this.assertMap.remove( handle );
         if ( AssertBehaviour.EQUALITY.equals(this.behaviour) ) {
             this.identityMap.remove( handle );

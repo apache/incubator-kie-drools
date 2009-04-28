@@ -112,7 +112,7 @@ public class DisconnectedFactHandle
     }
 
     public String toExternalForm() {
-        return "0" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency;
+        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency;
     }
 
 }

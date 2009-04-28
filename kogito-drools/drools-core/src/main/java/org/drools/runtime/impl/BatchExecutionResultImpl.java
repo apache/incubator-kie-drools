@@ -7,7 +7,8 @@ import java.util.Map;
 import org.drools.runtime.ExecutionResults;
 
 public class BatchExecutionResultImpl implements ExecutionResults {
-    Map<String, Object> results = new HashMap<String, Object>();
+    Map<String, Object> results = new HashMap<String, Object>();    
+    Map<String, Object> facts = new HashMap<String, Object>();
     
     /* (non-Javadoc)
      * @see org.drools.batchexecution.BatchExecutionResult#getIdentifiers()
@@ -19,6 +20,10 @@ public class BatchExecutionResultImpl implements ExecutionResults {
     public Object getValue(String identifier) {
         return this.results.get( identifier );
     }
+    
+    public Object getFactHandle(String identifier) {
+        return this.facts.get( identifier );
+    }
 
     /* (non-Javadoc)
      * @see org.drools.batchexecution.BatchExecutionResult#getResults()
@@ -29,5 +34,13 @@ public class BatchExecutionResultImpl implements ExecutionResults {
 
     public void setResults(Map<String, Object> results) {
         this.results = results;
+    }
+    
+    public Map<String, Object> getFacts() {
+        return this.facts;
+    }    
+    
+    public void setFacts(Map<String, Object> facts) {
+        this.facts = facts;
     }
 }

@@ -9,19 +9,29 @@ import java.util.Map.Entry;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.command.Command;
+import org.drools.command.CommandFactory;
+import org.drools.command.Setter;
+import org.drools.common.DisconnectedFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetGlobalCommand;
+import org.drools.process.command.GetObjectCommand;
 import org.drools.process.command.GetObjectsCommand;
 import org.drools.process.command.InsertElementsCommand;
 import org.drools.process.command.InsertObjectCommand;
+import org.drools.process.command.ModifyCommand;
 import org.drools.process.command.QueryCommand;
+import org.drools.process.command.RetractCommand;
 import org.drools.process.command.SetGlobalCommand;
 import org.drools.process.command.StartProcessCommand;
+import org.drools.process.command.ModifyCommand.SetterImpl;
 import org.drools.rule.Declaration;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.help.BatchExecutionHelperProvider;
 import org.drools.runtime.impl.BatchExecutionImpl;
 import org.drools.runtime.impl.BatchExecutionResultImpl;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.impl.FlatQueryResults;
@@ -56,6 +66,10 @@ public class BatchExecutionHelperProviderImpl
                        BatchExecutionImpl.class );
         xstream.alias( "insert",
                        InsertObjectCommand.class );
+        xstream.alias( "modify",
+                       ModifyCommand.class );
+        xstream.alias( "retract",
+                       RetractCommand.class );
         xstream.alias( "insert-elements",
                        InsertElementsCommand.class );
         xstream.alias( "startProcess",
@@ -64,6 +78,8 @@ public class BatchExecutionHelperProviderImpl
                        SetGlobalCommand.class );
         xstream.alias( "get-global",
                        GetGlobalCommand.class );
+        xstream.alias( "get-object",
+                       GetObjectCommand.class );
         xstream.alias( "get-objects",
                        GetObjectsCommand.class );
         xstream.alias( "execution-results",
@@ -78,6 +94,9 @@ public class BatchExecutionHelperProviderImpl
                        NativeQueryResults.class );
 
         xstream.registerConverter( new InsertConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new RetractConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new ModifyConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new GetObjectConverter( xstream.getMapper() ) );
         xstream.registerConverter( new InsertElementsConverter( xstream.getMapper() ) );
         xstream.registerConverter( new FireAllRulesConverter( xstream.getMapper() ) );
         xstream.registerConverter( new StartProcessConvert( xstream.getMapper() ) );
@@ -154,6 +173,9 @@ public class BatchExecutionHelperProviderImpl
             if ( cmd.getOutIdentifier() != null ) {
                 writer.addAttribute( "out-identifier",
                                      cmd.getOutIdentifier() );
+                
+                writer.addAttribute( "return-object", Boolean.toString( cmd.isReturnObject() ) );
+                
             }
             writeItem( cmd.getObject(),
                        context,
@@ -163,6 +185,7 @@ public class BatchExecutionHelperProviderImpl
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             String identifierOut = reader.getAttribute( "out-identifier" );
+            String returnObject = reader.getAttribute( "return-object" );
 
             reader.moveDown();
             Object object = readItem( reader,
@@ -171,7 +194,10 @@ public class BatchExecutionHelperProviderImpl
             reader.moveUp();
             InsertObjectCommand cmd = new InsertObjectCommand( object );
             if ( identifierOut != null ) {
-                cmd.setOutIdentifier( identifierOut );
+                cmd.setOutIdentifier( identifierOut );                
+                if ( returnObject != null ) {
+                    cmd.setReturnObject( Boolean.parseBoolean( returnObject ) );
+                }
             }
             return cmd;
         }
@@ -180,6 +206,87 @@ public class BatchExecutionHelperProviderImpl
             return clazz.equals( InsertObjectCommand.class );
         }
 
+    }
+
+    public static class ModifyConverter extends AbstractCollectionConverter
+        implements
+        Converter {
+
+        public ModifyConverter(Mapper mapper) {
+            super( mapper );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            ModifyCommand cmd = (ModifyCommand) object;
+
+            writer.addAttribute( "factHandle",
+                                 cmd.getFactHandle().toExternalForm() );
+
+            for ( Setter setter : cmd.getSetters() ) {
+                writer.startNode( "set" );
+                writer.addAttribute( "accessor",
+                                     setter.getAccessor() );
+                writer.addAttribute( "value",
+                                     setter.getValue() );
+                writer.endNode();
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            FactHandle factHandle = new DisconnectedFactHandle( reader.getAttribute( "factHandle" ) );
+
+            List<Setter> setters = new ArrayList();
+            while ( reader.hasMoreChildren() ) {
+                reader.moveDown();
+                Setter setter = CommandFactory.newSetter( reader.getAttribute( "accessor" ),
+                                                          reader.getAttribute( "value" ) );
+                setters.add( setter );
+                reader.moveUp();
+            }
+
+            Command cmd = CommandFactory.newModify( factHandle,
+                                                    setters );
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( ModifyCommand.class );
+        }
+
+    }
+
+    public static class RetractConverter extends AbstractCollectionConverter
+        implements
+        Converter {
+
+        public RetractConverter(Mapper mapper) {
+            super( mapper );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            RetractCommand cmd = (RetractCommand) object;
+
+            writer.addAttribute( "factHandle",
+                                 cmd.getFactHandle().toExternalForm() );
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            FactHandle factHandle = new DisconnectedFactHandle( reader.getAttribute( "factHandle" ) );
+
+            Command cmd = CommandFactory.newRetract( factHandle );
+
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( RetractCommand.class );
+        }
     }
 
     public static class InsertElementsConverter extends AbstractCollectionConverter
@@ -275,6 +382,45 @@ public class BatchExecutionHelperProviderImpl
 
         public boolean canConvert(Class clazz) {
             return clazz.equals( SetGlobalCommand.class );
+        }
+    }
+
+    public static class GetObjectConverter extends AbstractCollectionConverter
+        implements
+        Converter {
+
+        public GetObjectConverter(Mapper mapper) {
+            super( mapper );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            GetObjectCommand cmd = (GetObjectCommand) object;
+
+            writer.addAttribute( "factHandle",
+                                 cmd.getFactHandle().toExternalForm() );
+
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.addAttribute( "out-identifier",
+                                     cmd.getOutIdentifier() );
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            FactHandle factHandle = new DisconnectedFactHandle( reader.getAttribute( "factHandle" ) );
+            String identifierOut = reader.getAttribute( "out-identifier" );
+
+            GetObjectCommand cmd = new GetObjectCommand( factHandle );
+            if ( identifierOut != null ) {
+                cmd.setOutIdentifier( identifierOut );
+            }
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( GetObjectCommand.class );
         }
     }
 
@@ -374,13 +520,13 @@ public class BatchExecutionHelperProviderImpl
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             String max = reader.getAttribute( "max" );
-            
+
             FireAllRulesCommand cmd = null;
-            
+
             if ( max != null ) {
                 cmd = new FireAllRulesCommand( Integer.parseInt( max ) );
             } else {
-                cmd = new FireAllRulesCommand( );
+                cmd = new FireAllRulesCommand();
             }
             return cmd;
         }
@@ -520,27 +666,43 @@ public class BatchExecutionHelperProviderImpl
                            writer );
                 writer.endNode();
             }
+
+            for ( String identifier : ((BatchExecutionResultImpl) result).getFacts().keySet() ) {
+                writer.startNode( "fact-handle" );
+                writer.addAttribute( "identifier",
+                                     identifier );
+                writer.addAttribute( "externalForm",
+                                     ((InternalFactHandle) result.getFactHandle( identifier )).toExternalForm() );
+                writer.endNode();
+            }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            Map map = new HashMap();
+            BatchExecutionResultImpl result = new BatchExecutionResultImpl();
+            Map results = result.getResults();
+            Map facts = result.getFacts();
 
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                String identifier = reader.getAttribute( "identifier" );
-                reader.moveDown();
-                Object value = readItem( reader,
-                                         context,
-                                         null );
-                map.put( identifier,
-                         value );
-                reader.moveUp();
-                reader.moveUp();
+                if ( reader.getNodeName().equals( "result" ) ) {
+                    String identifier = reader.getAttribute( "identifier" );
+                    reader.moveDown();
+                    Object value = readItem( reader,
+                                             context,
+                                             null );
+                    results.put( identifier,
+                                 value );
+                    reader.moveUp();
+                    reader.moveUp();
+                } else if ( reader.getNodeName().equals( "fact-handle" ) ) {
+                    String identifier = reader.getAttribute( "identifier" );
+                    facts.put( identifier,
+                               new DisconnectedFactHandle( reader.getAttribute( "externalForm" ) ) );
+                } else {
+                    throw new IllegalArgumentException( "Element '" + reader.getNodeName() + "' is not supported here" );
+                }
             }
-
-            BatchExecutionResultImpl result = new BatchExecutionResultImpl();
-            result.setResults( map );
 
             return result;
         }
