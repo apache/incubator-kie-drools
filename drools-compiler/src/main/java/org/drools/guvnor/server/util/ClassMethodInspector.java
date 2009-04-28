@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -59,28 +58,27 @@ public class ClassMethodInspector {
             return false;
         }
 
-        List interfaces = Arrays.asList( clazz.getInterfaces() );
 
-        if ( clazz.equals( Collection.class ) || interfaces.contains( Collection.class ) ) {
+        if ( Collection.class.isAssignableFrom( clazz ) ) {
             if ( checkCollectionMethods( methodName ) ) {
                 return false;
             }
         }
 
-        if ( clazz.equals( Set.class ) || interfaces.contains( Set.class ) ) {
+        if ( Set.class.isAssignableFrom( clazz ) ) {
             if ( checkCollectionMethods( methodName ) ) {
                 return false;
             }
         }
 
-        if ( clazz.equals( List.class ) || interfaces.contains( List.class ) ) {
+        if ( List.class.isAssignableFrom( clazz ) ) {
 
             if ( checkCollectionMethods( methodName ) || "listIterator".equals( methodName ) || "lastIndexOf".equals( methodName ) || "indexOf".equals( methodName ) || "subList".equals( methodName ) ) {
                 return false;
             }
         }
 
-        if ( clazz.equals( Map.class ) || interfaces.contains( Map.class ) ) {
+        if ( Map.class.isAssignableFrom( clazz ) ) {
             if ( "get".equals( methodName ) || "isEmpty".equals( methodName ) || "containsKey".equals( methodName ) || "values".equals( methodName ) || "entrySet".equals( methodName ) || "containsValue".equals( methodName )
                  || "keySet".equals( methodName ) || "size".equals( methodName ) ) {
                 return false;
