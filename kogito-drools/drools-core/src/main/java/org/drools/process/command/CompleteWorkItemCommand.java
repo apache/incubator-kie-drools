@@ -10,7 +10,18 @@ public class CompleteWorkItemCommand implements Command<Object> {
 	private long workItemId;
 	private Map<String, Object> results = new HashMap<String, Object>();
 	
-	public long getWorkItemId() {
+	
+	public CompleteWorkItemCommand() {
+	    
+	}
+	
+	public CompleteWorkItemCommand(long workItemId,
+                                   Map<String, Object> results) {
+        this.workItemId = workItemId;
+        this.results = results;
+    }
+
+    public long getWorkItemId() {
 		return workItemId;
 	}
 
