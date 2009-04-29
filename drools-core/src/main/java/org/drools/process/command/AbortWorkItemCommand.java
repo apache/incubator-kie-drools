@@ -7,6 +7,14 @@ public class AbortWorkItemCommand
     Command<Object> {
 
     private long workItemId;
+    
+    public AbortWorkItemCommand() {
+        
+    }
+
+    public AbortWorkItemCommand(long workItemId) {
+        this.workItemId = workItemId;
+    }
 
     public long getWorkItemId() {
         return workItemId;
