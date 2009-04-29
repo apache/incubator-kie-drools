@@ -17,4 +17,8 @@ public interface ProcessInstance
     String getProcessName();
 
     int getState();
+    
+
+    void signalEvent(String type, 
+                     Object event);
 }

@@ -190,6 +190,20 @@ public class CommandFactory {
         return getCommandFactoryProvider().newStartProcess( processId );
     }
     
+    public static Command signalEvent(String type,
+                                      Object event) {
+        return getCommandFactoryProvider().signalEvent( type,
+                                                        event );
+    }
+    
+    public static Command signalEvent(long processInstanceId,
+                                      String type,
+                                      Object event) {
+        return getCommandFactoryProvider().signalEvent( processInstanceId,
+                                                        type,
+                                                        event );
+    }    
+    
     /**
      * Executes a query. The query results will be added to the ExecutionResults using the 
      * given identifier.
