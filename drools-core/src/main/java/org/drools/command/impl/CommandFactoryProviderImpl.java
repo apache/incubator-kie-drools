@@ -16,6 +16,7 @@ import org.drools.process.command.ModifyCommand;
 import org.drools.process.command.QueryCommand;
 import org.drools.process.command.RetractCommand;
 import org.drools.process.command.SetGlobalCommand;
+import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.process.command.ModifyCommand.SetterImpl;
 import org.drools.runtime.ObjectFilter;
@@ -113,6 +114,17 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return startProcess;
 	}
 
+    public Command signalEvent(String type,
+                               Object event) {
+        return new SignalEventCommand( type, event );
+    }
+    
+    public Command signalEvent(long processInstanceId,
+                               String type,
+                               Object event) {
+        return new SignalEventCommand( processInstanceId, type, event );
+    }    
+	
 	public Command newQuery(String identifier, String name) {
 		return new QueryCommand(identifier, name, null);
 
@@ -126,7 +138,5 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return new BatchExecutionImpl(
 				(List<org.drools.process.command.Command>) commands);
 	}
-
-
 
 }

@@ -138,9 +138,7 @@ public class CommandBasedStatefulKnowledgeSession
 
     public void signalEvent(String type,
                             Object event) {
-        SignalEventCommand command = new SignalEventCommand();
-        command.setEventType( type );
-        command.setEvent( event );
+        SignalEventCommand command = new SignalEventCommand(type, event);
         commandService.execute( command );
     }
 

@@ -46,7 +46,4 @@ public interface ProcessInstance extends org.drools.runtime.process.ProcessInsta
     Agenda getAgenda();
     
     void start();
-
-    void signalEvent(String type, Object event);
-
 }

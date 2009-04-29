@@ -7,9 +7,23 @@ public class SignalEventCommand implements Command<Object> {
 	
 	private long processInstanceId;
 	private String eventType;
-	private Object event;
+	private Object event;	
 	
-	public long getProcessInstanceId() {
+	public SignalEventCommand(String eventType,
+                              Object event) {
+        this.eventType = eventType;
+        this.event = event;
+    }	
+	
+    public SignalEventCommand(long processInstanceId,
+                              String eventType,
+                              Object event) {
+        this.processInstanceId = processInstanceId;
+        this.eventType = eventType;
+        this.event = event;
+    }
+
+    public long getProcessInstanceId() {
 		return processInstanceId;
 	}
 
