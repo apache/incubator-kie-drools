@@ -24,6 +24,7 @@ import org.drools.process.command.ModifyCommand;
 import org.drools.process.command.QueryCommand;
 import org.drools.process.command.RetractCommand;
 import org.drools.process.command.SetGlobalCommand;
+import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.process.command.ModifyCommand.SetterImpl;
 import org.drools.rule.Declaration;
@@ -72,8 +73,10 @@ public class BatchExecutionHelperProviderImpl
                        RetractCommand.class );
         xstream.alias( "insert-elements",
                        InsertElementsCommand.class );
-        xstream.alias( "startProcess",
+        xstream.alias( "start-process",
                        StartProcessCommand.class );
+        xstream.alias( "signal-event",
+                       SignalEventCommand.class );        
         xstream.alias( "set-global",
                        SetGlobalCommand.class );
         xstream.alias( "get-global",
@@ -100,6 +103,7 @@ public class BatchExecutionHelperProviderImpl
         xstream.registerConverter( new InsertElementsConverter( xstream.getMapper() ) );
         xstream.registerConverter( new FireAllRulesConverter( xstream.getMapper() ) );
         xstream.registerConverter( new StartProcessConvert( xstream.getMapper() ) );
+        xstream.registerConverter( new SignalEventConverter( xstream.getMapper() ) );
         xstream.registerConverter( new QueryConverter( xstream.getMapper() ) );
         xstream.registerConverter( new SetGlobalConverter( xstream.getMapper() ) );
         xstream.registerConverter( new GetGlobalConverter( xstream.getMapper() ) );
@@ -301,6 +305,15 @@ public class BatchExecutionHelperProviderImpl
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
             InsertElementsCommand cmd = (InsertElementsCommand) object;
+            
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.addAttribute( "out-identifier",
+                                     cmd.getOutIdentifier() );
+                
+                writer.addAttribute( "return-object", Boolean.toString( cmd.isReturnObject() ) );
+                
+            }
+            
             for ( Object element : cmd.getObjects() ) {
                 writeItem( element,
                            context,
@@ -310,6 +323,9 @@ public class BatchExecutionHelperProviderImpl
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
+            String identifierOut = reader.getAttribute( "out-identifier" );
+            String returnObject = reader.getAttribute( "return-object" );
+            
             List objects = new ArrayList();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
@@ -319,8 +335,14 @@ public class BatchExecutionHelperProviderImpl
                 reader.moveUp();
                 objects.add( object );
             }
+            
             InsertElementsCommand cmd = new InsertElementsCommand( objects );
-
+            if ( identifierOut != null ) {
+                cmd.setOutIdentifier( identifierOut );                
+                if ( returnObject != null ) {
+                    cmd.setReturnObject( Boolean.parseBoolean( returnObject ) );
+                }
+            }
             return cmd;
         }
 
@@ -643,6 +665,59 @@ public class BatchExecutionHelperProviderImpl
             return clazz.equals( StartProcessCommand.class );
         }
     }
+    
+    public static class SignalEventConverter extends AbstractCollectionConverter
+    implements
+    Converter {
+
+    public SignalEventConverter(Mapper mapper) {
+        super( mapper );
+    }
+
+    public void marshal(Object object,
+                        HierarchicalStreamWriter writer,
+                        MarshallingContext context) {
+        SignalEventCommand cmd = (SignalEventCommand) object;
+        long processInstanceId = cmd.getProcessInstanceId();
+        String eventType = cmd.getEventType();
+        Object event = cmd.getEvent();
+        
+        if ( processInstanceId != -1 ) {
+            writer.addAttribute( "process-instance-id", Long.toString( processInstanceId ) );
+        }
+        
+        writer.addAttribute( "event-type", eventType );
+        
+        writeItem( event, context, writer );
+    }
+
+    public Object unmarshal(HierarchicalStreamReader reader,
+                            UnmarshallingContext context) {
+        String processInstanceId = reader.getAttribute( "process-instance-id" );
+        String eventType = reader.getAttribute( "event-type" );
+
+        reader.moveDown();
+        Object event = readItem( reader,
+                                  context,
+                                  null );
+        reader.moveUp();
+        
+        
+        Command cmd;
+        if ( processInstanceId != null ) {
+            cmd = new SignalEventCommand(Long.parseLong( processInstanceId ), eventType, event );
+        } else {
+            cmd = new SignalEventCommand( eventType, event );
+        }
+
+        return cmd;
+    }
+
+    public boolean canConvert(Class clazz) {
+        return clazz.equals( SignalEventCommand.class );
+    }
+
+}    
 
     public static class BatchExecutionResultConverter extends AbstractCollectionConverter
         implements
