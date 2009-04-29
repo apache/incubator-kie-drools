@@ -213,6 +213,10 @@ public class CommandFactory {
         return getCommandFactoryProvider().newCompleteWorkItem( workItemId,
                                                                 results );
     }
+    
+    public static Command newAbortWorkItem(long workItemId) {
+        return getCommandFactoryProvider().newAbortWorkItem( workItemId );
+    }    
 
     /**
      * Executes a query. The query results will be added to the ExecutionResults using the 

@@ -72,4 +72,6 @@ public interface CommandFactoryProvider {
 
     Command newBatchExecution(List< ? extends Command> commands);
 
+    Command newAbortWorkItem(long workItemId);
+
 }
