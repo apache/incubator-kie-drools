@@ -30,7 +30,7 @@ public class SuggestionCompletionEngine
     public static final String            TYPE_STRING            = "String";
     public static final String            TYPE_NUMERIC           = "Numeric";
     public static final String            TYPE_BOOLEAN           = "Boolean";
-    // public static final String TYPE_DATE = "Date";
+    public static final String            TYPE_DATE              = "Date";
     public static final String            TYPE_OBJECT            = "Object";                                                                                                   // for all other unknown
     // types
 
@@ -184,7 +184,7 @@ public class SuggestionCompletionEngine
             return STANDARD_CONNECTIVES;
         } else if ( type.equals( TYPE_STRING ) ) {
             return STRING_CONNECTIVES;
-        } else if ( type.equals( TYPE_COMPARABLE ) || type.equals( TYPE_NUMERIC ) ) {
+        } else if ( type.equals( TYPE_COMPARABLE ) || type.equals( TYPE_DATE ) || type.equals( TYPE_NUMERIC ) ) {
             return COMPARABLE_CONNECTIVES;
         } else if ( type.equals( TYPE_COLLECTION ) ) {
             return COLLECTION_CONNECTIVES;
@@ -210,7 +210,7 @@ public class SuggestionCompletionEngine
             return STANDARD_OPERATORS;
         } else if ( type.equals( TYPE_STRING ) ) {
             return STRING_OPERATORS;
-        } else if ( type.equals( TYPE_COMPARABLE ) || type.equals( TYPE_NUMERIC ) ) {
+        } else if ( type.equals( TYPE_COMPARABLE ) || type.equals( TYPE_DATE ) || type.equals( TYPE_NUMERIC ) ) {
             return COMPARABLE_OPERATORS;
         } else if ( type.equals( TYPE_COLLECTION ) ) {
             return COLLECTION_OPERATORS;
