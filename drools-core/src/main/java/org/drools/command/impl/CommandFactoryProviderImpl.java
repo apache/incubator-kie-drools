@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryProvider;
 import org.drools.command.Setter;
+import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetGlobalCommand;
 import org.drools.process.command.GetObjectCommand;
@@ -114,20 +115,24 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return startProcess;
 	}
 
-    public Command signalEvent(String type,
+    public Command newSignalEvent(String type,
                                Object event) {
         return new SignalEventCommand( type, event );
     }
     
-    public Command signalEvent(long processInstanceId,
+    public Command newSignalEvent(long processInstanceId,
                                String type,
                                Object event) {
         return new SignalEventCommand( processInstanceId, type, event );
     }    
+    
+    public Command newCompleteWorkItem(long workItemId,
+                                       Map<String, Object> results) {
+        return new CompleteWorkItemCommand(workItemId, results);
+    }    
 	
 	public Command newQuery(String identifier, String name) {
 		return new QueryCommand(identifier, name, null);
-
 	}
 
 	public Command newQuery(String identifier, String name, Object[] arguments) {
