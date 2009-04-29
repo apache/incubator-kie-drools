@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryProvider;
 import org.drools.command.Setter;
+import org.drools.process.command.AbortWorkItemCommand;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetGlobalCommand;
@@ -130,6 +131,10 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
                                        Map<String, Object> results) {
         return new CompleteWorkItemCommand(workItemId, results);
     }    
+    
+    public Command newAbortWorkItem(long workItemId) {
+        return new AbortWorkItemCommand( workItemId);
+    }    
 	
 	public Command newQuery(String identifier, String name) {
 		return new QueryCommand(identifier, name, null);
@@ -143,5 +148,4 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return new BatchExecutionImpl(
 				(List<org.drools.process.command.Command>) commands);
 	}
-
 }

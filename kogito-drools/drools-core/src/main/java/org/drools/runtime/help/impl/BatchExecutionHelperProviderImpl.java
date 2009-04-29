@@ -14,6 +14,7 @@ import org.drools.command.CommandFactory;
 import org.drools.command.Setter;
 import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.process.command.AbortWorkItemCommand;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.FireAllRulesCommand;
 import org.drools.process.command.GetGlobalCommand;
@@ -80,6 +81,8 @@ public class BatchExecutionHelperProviderImpl
                        SignalEventCommand.class );
         xstream.alias( "complete-work-item",
                        CompleteWorkItemCommand.class );
+        xstream.alias( "abort-work-item",
+                       AbortWorkItemCommand.class );        
         xstream.alias( "set-global",
                        SetGlobalCommand.class );
         xstream.alias( "get-global",
@@ -108,6 +111,7 @@ public class BatchExecutionHelperProviderImpl
         xstream.registerConverter( new StartProcessConvert( xstream.getMapper() ) );
         xstream.registerConverter( new SignalEventConverter( xstream.getMapper() ) );
         xstream.registerConverter( new CompleteWorkItemConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new AbortWorkItemConverter( xstream.getMapper() ) );
         xstream.registerConverter( new QueryConverter( xstream.getMapper() ) );
         xstream.registerConverter( new SetGlobalConverter( xstream.getMapper() ) );
         xstream.registerConverter( new GetGlobalConverter( xstream.getMapper() ) );
@@ -784,6 +788,35 @@ public class BatchExecutionHelperProviderImpl
             return clazz.equals( CompleteWorkItemCommand.class );
         }
     }
+    
+    public static class AbortWorkItemConverter extends AbstractCollectionConverter
+    implements
+    Converter {
+
+    public AbortWorkItemConverter(Mapper mapper) {
+        super( mapper );
+    }
+
+    public void marshal(Object object,
+                        HierarchicalStreamWriter writer,
+                        MarshallingContext context) {
+        AbortWorkItemCommand cmd = (AbortWorkItemCommand) object;
+        writer.addAttribute( "id",
+                             Long.toString( cmd.getWorkItemId() ) );
+    }
+
+    public Object unmarshal(HierarchicalStreamReader reader,
+                            UnmarshallingContext context) {
+        String id = reader.getAttribute( "id" );
+        Command cmd = CommandFactory.newAbortWorkItem(Long.parseLong( id ) );
+
+        return cmd;
+    }
+
+    public boolean canConvert(Class clazz) {
+        return clazz.equals( AbortWorkItemCommand.class );
+    }
+}    
 
     public static class BatchExecutionResultConverter extends AbstractCollectionConverter
         implements
