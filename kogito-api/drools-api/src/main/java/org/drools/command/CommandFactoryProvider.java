@@ -53,6 +53,13 @@ public interface CommandFactoryProvider {
     Command newStartProcess(String processId,
                             Map<String, Object> parameters);
 
+    Command signalEvent(String type,
+                        Object event);
+
+    Command signalEvent(long processInstanceId,
+                        String type,
+                        Object event);
+    
     Command newQuery(String identifier,
                      String name);
 
