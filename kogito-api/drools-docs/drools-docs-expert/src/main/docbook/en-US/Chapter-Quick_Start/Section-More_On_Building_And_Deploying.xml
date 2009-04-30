@@ -11,20 +11,21 @@
 
 
     <section>
-      <title>KnowledgeBase by Configuration using Changesets</title>
+      <title>Knowledge Base by Configuration Using Changesets</title>
 
       <para>So far, the programmatic API has been used to build a
-      KnowledgeBase. Quite often it's more desirable to do this via
-      configuration. To facilitate this, Drools supports the "changeset"
-      feature. The file changeset.xml contains a list of resources, and it
-      may also point recursively to another changeset.xml. Currently the 
+      Knowledge Base. Quite often it's more desirable to do this via
+      configuration. To facilitate this, Drools supports the "Changeset"
+      feature. The file <filename>changeset.xml</filename> contains a
+      list of resources, and it
+      may also point recursively to another changeset XML file. Currently the 
       changeset has only a single "add" element, but support for remove 
       and modify will be added in the future, for more powerful incremental
       changes over time. Currently there is no XML schema for the changeset
       XML, but we hope to add one soon. A few examples will be
       shown to give you the gist of things. A resource approach is employed
       that uses a prefix to indicate the protocol. All the protocols provided
-      by java.net.URL, such as "file" and "http", are supported, as well as an
+      by <code>java.net.URL</code>, such as "file" and "http", are supported, as well as an
       additional "classpath". Currently the type attribute must always be
       specified for a resource, as it is not inferred from the file name extension.
       Here is a simple example that points to a http location for some rules.</para>
@@ -38,7 +39,7 @@
  &lt;/change-set&gt;
 </programlisting>
 
-      <para>To use the above XML the code is almost identical as before,
+      <para>To use the above XML, the code is almost identical as before,
       except we change the resource type to <code>CHANGE_SET</code>.</para>
 
       <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -46,7 +47,7 @@ kbuilder.add( ResourceFactory.newClasspathResource( "myChangeSet.xml", getClass(
               ResourceType.CHANGE_SET );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
-}  </programlisting>
+}</programlisting>
 
       <para>Changesets can include any number of resources, and they even support
       additional configuration information, which currently is only needed for
@@ -87,20 +88,21 @@ if ( kbuilder.hasErrors() ) {
       re-loading of resources and is configured from a properties files. The
       Knowledge Agent can update or rebuild this Knowlege Base as the resources
       it uses are changed. The strategy for this is determined by the
-      configuration given to the factory, but it is typically pull based using
-      regular polling. We hope to add push based updates and rebuilds in
+      configuration given to the factory, but it is typically pull-based using
+      regular polling. We hope to add push-based updates and rebuilds in
       future versions.</para>
 
       <programlisting>KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
 kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
 KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
 
-      <para>A <code>KnowledgeAgent</code> object will continously scan all the added resources,
-      using a default polling interval of 60s, and if their last modified date is
-      updated it will rebuild the cached Knowledge Base using the new
-      resources. Note that the previous <code>KnowledgeBase</code> reference will still exist
-      and you'll have to call getKnowledgeBase() to access the newly built
-      KnowledgeB ase. If a directory is specified as part of the change set,
+      <para>A <code>KnowledgeAgent</code> object will continuously scan all the
+      added resources, using a default polling interval of 60 seconds and, when
+      some last modification date is updated, it will rebuild the cached
+      Knowledge Base using the new  resources. Note that the previous
+      <code>KnowledgeBase</code> reference will still exist
+      and you'll have to call <code>getKnowledgeBase()</code> to access the newly built
+      <code>KnowledgeBase</code>. If a directory is specified as part of the change set,
       the entire contents of that directory will be scanned for
       changes.</para>
     </section>         
