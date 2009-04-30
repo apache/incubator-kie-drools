@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+  <section version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
@@ -10,20 +10,20 @@
 
     <programlisting><emphasis role="bold">Name:</emphasis> Miss Manners
 <emphasis role="bold">Main class:</emphasis> org.drools.benchmark.manners.MannersBenchmark
-<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> manners.drl
 <emphasis role="bold">Objective:</emphasis> Advanced walkthrough on the Manners benchmark, covers Depth conflict resolution in depth.</programlisting>
 
     <section>
       <title>Introduction</title>
 
-      <para>Miss Manners is throwing a party and being the good host she wants
-      to arrange good seating. Her initial design arranges everyone in male
-      female pairs, but then she worries about people have things to talk
-      about; what is a good host to do? So she decides to note the hobby of
-      each guest so she can then arrange guests in not only male and female
-      pairs but also ensure that a guest has someone to talk about a common
-      hobby, from either their left or right side.</para>
+      <para>Miss Manners is throwing a party and, being a good host, she wants
+      to arrange good seating. Her initial design arranges everyone in 
+      male-female pairs, but then she worries about people have things to talk
+      about. What is a good host to do? She decides to note the hobby of
+      each guest so she can then arrange guests not only pairing them according
+      to alternating sex but also ensuring that a guest has someone with a
+      common hobby, at least on one side.</para>
 
       <figure>
         <title>Miss Manners' Guests</title>
@@ -41,95 +41,70 @@
       <section>
         <title>BenchMarking</title>
 
-        <para>5 benchmarks were established in the 1991 paper "Effects of
-        Database Size on Rule System Performance: Five Case Studies" by Brant,
-        Timothy Grose, Bernie Lofaso, &amp; Daniel P. Miranker.</para>
+        <para>Five benchmarks were established in the 1991 paper "Effects of
+        Database Size on Rule System Performance: Five Case Studies" by 
+        David Brant, Timothy Grose, Bernie Lofaso and Daniel P. Miranker:</para>
+
 
         <itemizedlist>
           <listitem>
-            <para>Manners</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>Uses a depth-first search approach to determine the
-                seating arrangements of boy/girl and one common hobby for
-                dinner guests</para>
-              </listitem>
-            </itemizedlist>
+            <para><emphasis role="bold">Manners</emphasis> uses a 
+            depth-first search approach to determine the
+            seating arrangements alternating women and men and ensuring
+            one common hobby for neighbors.</para>
           </listitem>
 
           <listitem>
-            <para>Waltz</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>line labeling for simple scenes by constraint
-                propagation</para>
-              </listitem>
-            </itemizedlist>
+            <para><emphasis role="bold">Waltz</emphasis> establishes
+            a three-dimensional interpretation of a line drawing by
+            line labeling by constraint propagation.</para>
           </listitem>
 
           <listitem>
-            <para>WaltzDB</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>More general version of Walts to be able to adapt to a
-                database of facts</para>
-              </listitem>
-            </itemizedlist>
+            <para><emphasis role="bold">WaltzDB</emphasis> is a more
+            general version of Waltz, supporting junctions of more
+            than three lines and using a database.</para>
           </listitem>
 
           <listitem>
-            <para>ARP</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>Route planner for a robotic air vehicle using the A*
-                search algorithm</para>
-              </listitem>
-            </itemizedlist>
+            <para><emphasis role="bold">ARP</emphasis> is a 
+            route planner for a robotic air vehicle using the A*
+            search algorithm to achieve minimal cost.</para>
           </listitem>
 
           <listitem>
-            <para>Weavera</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>VLSI router for channels and boxes using a black-board
-                technique</para>
-              </listitem>
-            </itemizedlist>
+            <para><emphasis role="bold">Weaver</emphasis> 
+            VLSI router for channels and boxes using a black-board
+            technique.</para>
           </listitem>
         </itemizedlist>
 
-        <para>Manners has become the de facto rule engine benchmark; however
-        it's behavior is now well known and many engines optimize for this
-        thus negating its usefulness as a benchmark which is why Waltz is
-        becoming more favorable. These 5 benchmarks are also published at the
-        University of Texas <ulink
+        <para>Manners has become the de facto rule engine benchmark.
+        Its behavior, however, is now well known and many engines
+        optimize for this, thus negating its usefulness as a benchmark 
+        which is why Waltz is becoming more favorable. These five
+        benchmarks are also published at the University of Texas <ulink
         url="http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/">http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/</ulink>.</para>
       </section>
 
       <section>
         <title>Miss Manners Execution Flow</title>
 
-        <para>After the first Seating arrangement has been assigned a
-        depth-first recursion occurs which repeatedly assigns correct Seating
-        arrangements until the last seat is assigned. Manners uses a Context
-        instance to control execution flow; the activity diagram is
-        partitioned to show the relation of the rule execution to the current
-        Context state.</para>
+        <para>After the first seating arrangement has been assigned, a
+        depth-first recursion occurs which repeatedly assigns correct
+        seating arrangements until the last seat is assigned. Manners
+        uses a <code>Context</code> instance to control execution flow.
+        The activity diagram is partitioned to show the relation of the
+        rule execution to the current <code>Context</code> state.</para>
 
         <figure>
           <title>Manners Activity Diagram</title>
 
           <mediaobject>
-
             <imageobject>
-		    <imagedata width="100%"
-                     align="center" fileref="images/Chapter-Examples/MannersExample/manners_activity_diagram.png"
-                         format="PNG" />
+               <imagedata width="100%"
+                   align="center" fileref="images/Chapter-Examples/MannersExample/manners_activity_diagram.png"
+                   format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>
@@ -138,21 +113,16 @@
       <section>
         <title>The Data and Results</title>
 
-        <para>Before going deeper into the rules lets first take a look at the
-        asserted data and the resulting Seating arrangement. The data is a
-        simple set of 5 guests who should be arranged in male/female pairs
-        with common hobbies.</para>
+        <para>Before going deeper into the rules, let's first take a look
+        at the asserted data and the resulting seating arrangement. The
+        data is a simple set of five guests who should be arranged so
+        that sexes alternate and neighbors have a common hobby.</para>
 
         <para><emphasis role="bold">The Data</emphasis></para>
 
-        <para>Each line of the results list is printed per execution of the
-        "Assign Seat" rule. They key bit to notice is that each line has pid
-        one greater than the last, the significance of this will be explained
-        in t he "Assign Seating" rule description. The 'l' and the 'r' refer
-        to the left and right, 's' is sean and 'n' is the guest name. In my
-        actual implementation I used longer notation, 'leftGuestName', but
-        this is not practice in a printed article. I found the notation of
-        left and right preferable to the original OPS5 '1' and '2</para>
+        <para>The data is given in OPS5 syntax, with a parenthesized
+        list of name and value pairs for each attribute. Each
+        person has only one hobby.</para>
 
         <literallayout>(guest (name n1) (sex m) (hobby  h1)  )
 (guest (name n2) (sex f) (hobby  h1)  )
@@ -167,6 +137,16 @@
 
         <para><emphasis role="bold">The Results</emphasis></para>
 
+        <para>Each line of the results list is printed per execution of the
+        "Assign Seat" rule. They key bit to notice is that each line has
+        a "pid" value one greater than the last. (The significance of this
+        will be explained in the discussion of the rule "Assign Seating".)
+        The "ls", "rs", "ln" and "rn" refer to the left and right
+        seat and neighbor's name, respectively. The actual implementation
+        uses longer attribute names (e.g., <code>leftGuestName</code>,
+        but here we'll stick to the notation from the original
+        implementation.</para>
+
         <literallayout>[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5] 
 [Seating id=2, pid=1, done=false, ls=1, ln=n5, rs=2, rn=n4] 
 [Seating id=3, pid=2, done=false, ls=2, ln=n4, rs=3, rn=n3] 
@@ -176,51 +156,51 @@
     </section>
 
     <section>
-      <title>Indepth look</title>
+      <title>Indepth Discussion</title>
 
       <section>
         <title>Cheating</title>
 
-        <para>Manners has been around a long time and is a contrived benchmark
-        meant to exercise the cross product joins and agenda, many people not
-        understanding this tweak the example to achieve better performance,
-        making their use of the Manners benchmark pointless. Known cheats to
-        Miss Manners are:</para>
+        <para>Manners has been designed to exercise cross product
+        joins and Agenda activities. Many people not understanding this
+        tweak the example to achieve better performance, making their
+        port of the Manners benchmark pointless. Known cheats or
+        porting errors for Miss Manners are:</para>
 
         <itemizedlist>
           <listitem>
             <para>Using arrays for a guests hobbies, instead of asserting each
-            one as a single fact. This massively reduces the cross
-            products.</para>
+            one as a single fact massively reduces the cross products.</para>
           </listitem>
 
           <listitem>
-            <para>The altering of the sequence of data can also reducing the
-            amount of matching increase execution speed</para>
+            <para>Altering the sequence of data can also reduce the
+            amount of matching, increasing execution speed.</para>
           </listitem>
 
           <listitem>
-            <para>Changing NOT CE (conditional element) such that the test
-            algorithm only uses the "first-best-match". Basically, changing
-            the test algorithm to backward chaining. the results are only
+            <para>It's possible to change the <kw>not</kw> Conditional
+            Element so that the test algorithm only uses the
+            "first-best-match", which is, basically, transforming
+            the test algorithm to backward chaining. The results are only
             comparable to other backward chaining rule engines or ports of
             Manners.</para>
           </listitem>
 
           <listitem>
             <para>Removing the context so the rule engine matches the guests
-            and seats pre-maturely. A proper port will prevent facts from
+            and seats prematurely. A proper port will prevent facts from
             matching using the context start.</para>
           </listitem>
 
           <listitem>
-            <para>Any change which prevents the rule engine from performing
-            combinatorial pattern matching</para>
+            <para>It's possible to prevent the rule engine from performing
+            combinatorial pattern matching.</para>
           </listitem>
 
           <listitem>
             <para>If no facts are retracted in the reasoning cycle, as a
-            result of NOT CE, the port is incorrect.</para>
+            result of the <kw>not</kw> CE, the port is incorrect.</para>
           </listitem>
         </itemizedlist>
       </section>
@@ -228,20 +208,20 @@
       <section>
         <title>Conflict Resolution</title>
 
-        <para>Manners benchmark was written for OPS5 which has two conflict
-        resolution strategies, LEX and MEA; LEX is a chain of several
-        strategies including Salience, Recency, Complexity. The Recency part
-        of the strategy drives the depth first (LIFO) firing order. The Clips
-        manual documents the recency strategy as:</para>
+        <para>The Manners benchmark was written for OPS5 which has two conflict
+        resolution strategies, LEX and MEA. LEX is a chain of several
+        strategies including salience, recency and complexity. The recency
+        part of the strategy drives the depth first (LIFO) firing order.
+        The CLIPS  manual documents the Recency strategy as follows:</para>
 
         <blockquote>
-          <attribution>Clips Reference Manual</attribution>
+          <attribution>CLIPS Reference Manual</attribution>
 
           <para>Every fact and instance is marked internally with a "time tag"
           to indicate its relative recency with respect to every other fact
           and instance in the system. The pattern entities associated with
           each rule activation are sorted in descending order for determining
-          placement. An activation with a more recent pattern entities is
+          placement. An activation with a more recent pattern entity is
           placed before activations with less recent pattern entities. To
           determine the placement order of two activations, compare the sorted
           time tags of the two activations one by one starting with the
@@ -254,12 +234,12 @@
           is placed before the other activation on the agenda.</para>
         </blockquote>
 
-        <para>However Jess and Clips both use the Depth strategy, which is
-        simpler and lighter, which Drools also adopted. The Clips manual
+        <para>However Jess and CLIPS both use the Depth strategy, which is
+        simpler and lighter, which Drools also adopted. The CLIPS manual
         documents the Depth strategy as:</para>
 
         <blockquote>
-          <attribution>Clips Reference Manual</attribution>
+          <attribution>CLIPS Reference Manual</attribution>
 
           <para>Newly activated rules are placed above all rules of the same
           salience. For example, given that fact-a activates rule-1 and rule-2
@@ -270,22 +250,22 @@
         </blockquote>
 
         <para>The initial Drools implementation for the Depth strategy would
-        not work for manners without the use of salience on the "make_path"
-        rule, the Clips support team had this to say:</para>
+        not work for Manners without the use of salience on the "make_path"
+        rule. The CLIPS support team had this to say:</para>
 
         <blockquote>
           <attribution>Clips Support Forum</attribution>
 
-          <para>The default conflict resolution strategy for CLIPS, depth, is
+          <para>The default conflict resolution strategy for CLIPS, Depth, is
           different than the default conflict resolution strategy used by
           OPS5. Therefore if you directly translate an OPS5 program to CLIPS,
           but use the default depth conflict resolution strategy, you're only
-          likely to get the correct behavior by coincidence. The lex and mea
+          likely to get the correct behavior by coincidence. The LEX and MEA
           conflict resolution strategies are provided in CLIPS to allow you to
-          quickly convert and correctly run an OPS5 program in CLIPS</para>
+          quickly convert and correctly run an OPS5 program in CLIPS.</para>
         </blockquote>
 
-        <para>Investigation into the Clips code reveals there is undocumented
+        <para>Investigation into the CLIPS code reveals there is undocumented
         functionality in the Depth strategy. There is an accumulated time tag
         used in this strategy; it's not an extensively fact by fact comparison
         as in the recency strategy, it simply adds the total of all the time
@@ -293,18 +273,20 @@
       </section>
 
       <section>
-        <title>Assign First Seat</title>
+        <title>Rule "assignFirstSeat"</title>
 
-        <para>Once the context is changed to START_UP Activations are created
-        for all asserted Guests; because all Activations are created as the
-        result of a single Working Memory action, they all have the same
-        Activation time tag. The last asserted Guest would have a higher fact
-        time tag and its Activation would fire, becuase it has the highest
+        <para>Once the context is changed to <code>START_UP</code>,
+        activations are created for all asserted guest. Because all
+        activations are created as the result of a single Working Memory
+        action, they all have the same Activation time tag. The last
+        asserted <code>Guest</code> object would have a higher fact
+        time tag, and its Activation would fire because it has the highest
         accumulated fact time tag. The execution order in this rule has little
         importance, but has a big impact in the rule "Assign Seat". The
-        Activation fires and asserts the first Seating arrangement, a Path and
-        then sets the Context's state to create Activation for "Assign
-        Seat".</para>
+        activation fires and asserts the first <code>Seating</code>
+        arrangement and a <code>Path</code>, and then sets the
+        <code>Context</code> attribute <code>state</code> to create 
+        an activation for rule <code>findSeating</code>.</para>
 
         <programlisting>rule assignFirstSeat
     when
@@ -314,7 +296,8 @@
     then
         String guestName = guest.getName();
         
-        Seating seating =  new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName);
+        Seating seating =
+          new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName);
         insert( seating );
         
         Path path = new Path( count.getValue(), 1, guestName );
@@ -322,7 +305,7 @@
         
         modify( count ) { setValue ( count.getValue() + 1 )  }
 
-		System.out.println( "assign first seat :  " + seating + " : " + path );
+    System.out.println( "assign first seat :  " + seating + " : " + path );
 
         modify( context ) {
             setState( Context.ASSIGN_SEATS )
@@ -331,12 +314,13 @@ end</programlisting>
       </section>
 
       <section>
-        <title>Assign Seat</title>
+        <title>Rule "findSeating"</title>
 
-        <para>This rule determines each of the Seating arrangements. The Rule
-        creates cross product solutions for ALL asserted Seating arrangements
-        against ALL the asserted guests; accept against itself or any already
-        assigned Chosen solutions.</para>
+        <para>This rule determines each of the <code>Seating</code>
+        arrangements. The rule creates cross product solutions for
+        <emphasis>all</emphasis> asserted <code>Seating</code> arrangements
+        against <emphasis>all</emphasis> the asserted guests except 
+        against itself or any already assigned chosen solutions.</para>
 
         <programlisting>rule findSeating
    when 
@@ -354,8 +338,10 @@ end</programlisting>
        int seatId = $s.getId();
        int countValue = count.getValue();
        
-       Seating seating = new Seating( countValue, seatId, false, rightSeat, $s.getRightGuestName(), rightSeat + 1, $g2.getName() );
-       insert( seating );     
+       Seating seating =
+         new Seating( countValue, seatId, false, rightSeat,
+                      $s.getRightGuestName(), rightSeat + 1, $g2.getName() );
+       insert( seating );
                             
        Path path = new Path( countValue, rightSeat + 1, $g2.getName()  );
        insert( path );
@@ -363,20 +349,23 @@ end</programlisting>
        Chosen chosen = new Chosen( seatId, $g2.getName(), $g1.getHobby() );
        insert( chosen  );
 
-	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
+       System.err.println( "find seating : " + seating + " : " + path +
+                           " : " + chosen);
 
-       modify( count ) {setValue(  countValue + 1 )}        
-       modify( context ) {setState( Context.MAKE_PATH )} 
+       modify( count ) {setValue(  countValue + 1 )}
+       modify( context ) {setState( Context.MAKE_PATH )}
 end</programlisting>
 
         <para>However, as can be seen from the printed results shown earlier,
-        it is essential that only the Seating with the highest pid cross
-        product be chosen – yet how can this be possible if we have
-        Activations, of the same time tag, for nearly all existing Seating and
-        Guests. For example on the third iteration of "Assing Seat" these are
-        the produced Activations, remember this is from a very small data set
-        and with larger data sets there would be many more possible Activated
-        Seating solutions, with multiple solutions per pid:</para>
+        it is essential that only the <code>Seating</code> with the highest
+        <code>pid</code> cross product be chosen. How can this be possible
+        if we have activations, of the same time tag, for nearly all
+        existing <code>Seating</code> and <code>Guest</code> objects? For
+        example, on the third iteration of <code>findDeating</code> the
+        produced activations will be as shown below. Remember, this is from
+        a very small data set, and with larger data sets there would be many
+        more possible activated <code>Seating</code> solutions, with multiple
+        solutions per <code>pid</code>:</para>
 
         <literallayout>=&gt;[ActivationCreated(35): rule=findSeating 
 [fid:19:33]:[Seating id=3, pid=2, done=true, ls=2, ln=n4, rs=3, rn=n3] 
@@ -393,25 +382,29 @@ end</programlisting>
 [fid:9:9]:[Guest name=n5, sex=f, hobbies=h1] 
 [fid:1:1]:[Guest name=n1, sex=m, hobbies=h1]</literallayout>
 
-        <para>The creation of all these redundant Activations might seem
+        <para>The creation of all these redundant activations might seem
         pointless, but it must be remembered that Manners is not about good
         rule design; it's purposefully designed as a bad ruleset to fully
-        stress test the cross product matching process and the agenda, which
-        this clearly does. Notice that each Activation has the same time tag
-        of 35, as they were all activated by the change in Context to
-        ASSIGN_SEATS. With OPS5 and LEX it would correctly fire the Activation
-        with the last asserted Seating. With Depth the accumulated fact time
-        tag ensures the Activation with the last asserted Seating
-        fires.</para>
+        stress-test the cross product matching process and the Agenda, which
+        this clearly does. Notice that each activation has the same time tag
+        of 35, as they were all activated by the change in the
+        <code>Context</code> object to <code>ASSIGN_SEATS</code>. With OPS5
+        and LEX it would correctly fire the activation with the
+        <code>Seating</code> asserted last. With Depth, the accumulated fact
+        time tag ensures that the activation with the last asserted
+        <code>Seating</code> fires.</para>
       </section>
 
       <section>
-        <title>Make Path and Path Done</title>
+        <title>Rules "makePath" and "pathDone"</title>
 
-        <para>"Make Path" must always fires before "Path Done". A Path is
-        asserted for each Seating arrangement up to the last asserted Seating.
-        Notice that "Path Done" is a subset of "Make Path", so how do we
-        ensure that "Make Path" fires first?</para>
+        <para>Rule <code>makePath</code> must always fire before
+        <code>pathDone</code>. A <code>Path</code> object is asserted for
+        each <code>Seating</code> arrangement, up to the last asserted 
+        <code>Seating</code>. Notice that the conditions in
+        <code>pathDone</code> are a subset of those in
+        <code>makePath</code> - so how do we ensure that <code>makePath</code>
+        fires first?</para>
 
         <programlisting>rule makePath
     when 
@@ -430,7 +423,7 @@ end</programlisting>
     then
         modify( seating ) {setPathDone( true )} 
         
-		modify( context ) {setState( Context.CHECK_DONE)}
+    modify( context ) {setState( Context.CHECK_DONE)}
 end</programlisting>
 
         <figure>
@@ -439,24 +432,25 @@ end</programlisting>
           <mediaobject>
 
             <imageobject>
-		    <imagedata align="center" fileref="images/Chapter-Examples/MannersExample/make_path.png" format="PNG"
+        <imagedata align="center" fileref="images/Chapter-Examples/MannersExample/make_path.png" format="PNG"
                          scalefit="1" />
             </imageobject>
           </mediaobject>
         </figure>
 
         <para>Both rules end up on the Agenda in conflict and with identical
-        activation time tags, however the accumulate fact time tag is greater
+        activation time tags. However, the accumulate fact time tag is greater
         for "Make Path" so it gets priority.</para>
       </section>
 
       <section>
-        <title>Continue and Are We Done</title>
+        <title>Rules "continue" and "areWeDone"</title>
 
-        <para>"Are We Done" only activates when the last seat is assigned, at
-        which point both rules will be activated. For the same reason that
-        "Make Path" always wins over "Path Done" "Are We Done" will take
-        priority over "Continue".</para>
+        <para>Rule <code>areWeDone</code> only activates when the last seat
+        is assigned, at which point both rules will be activated. For the
+        same reason that <code>makePath</code> always wins over
+        <code>path Done</code>, <code>areWeDone</code> will take
+        priority over rule <code>continue</code>.</para>
 
         <programlisting>rule areWeDone
     when
