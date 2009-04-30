@@ -69,11 +69,12 @@ including callbacks from within the rules
       </itemizedlist>
 
       <para>Much of the Java code is either plain JavaBeans or Swing-based.
-      We will touch on some Swing-related points in the this tutorial, but
-      a good place to get more information on Swing components is
+      Only a few Swing-related points will be discussed in this section,
+      but a good tutorial about Swing components can be found at Sun's
+      Swing website, in
       <ulink url="???">
       <uri>http://java.sun.com/docs/books/tutorial/uiswing/</uri>
-      </ulink> at Sun's Swing website.</para>
+      </ulink>.</para>
 
       <para>The pieces of Java code in <filename>Petstore.java</filename>
       that relate to rules and facts are shown below.</para>

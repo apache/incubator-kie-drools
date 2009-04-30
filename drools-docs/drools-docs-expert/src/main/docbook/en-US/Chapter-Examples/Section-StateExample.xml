@@ -71,7 +71,7 @@ State c = new State( "C" );
 final State d = new State( "D" );
 
 // By setting dynamic to TRUE, Drools will use JavaBean
-// PropertyChangeListeners so you don't have to call update().
+// PropertyChangeListeners so you don't have to call modify or update().
 boolean dynamic = true;
 
 session.insert( a, dynamic );
@@ -248,11 +248,11 @@ end</programlisting>
       documentation, in order for the engine to see and react to changes of
       fact properties, the application must tell the engine that changes
       occurred. This can be done explicitly in the rules by using the
-      <kw>update</kw> statement, or implicitly by letting the engine know
+      <kw>modify</kw> statement, or implicitly by letting the engine know
       that the facts implement <code>PropertyChangeSupport</code> as defined
       by the <emphasis>JavaBeans specification</emphasis>. This example
       demonstrates how to use <code>PropertyChangeSupport</code> to avoid
-      the need for explicit <kw>update</kw> statements in the rules. To
+      the need for explicit <kw>modify</kw> statements in the rules. To
       make use of this feature, ensure that your facts implement
       <code>PropertyChangeSupport</code>, the same way the class
       <code>org.drools.example.State</code> does, and use the following
@@ -262,7 +262,7 @@ end</programlisting>
         <title>Inserting a Dynamic Fact</title>
   
         <programlisting>// By setting dynamic to TRUE, Drools will use JavaBean
-// PropertyChangeListeners so you don't have to call update().
+// PropertyChangeListeners so you don't have to call modify or update().
 final boolean dynamic = true;
 
 session.insert( fact, dynamic );
