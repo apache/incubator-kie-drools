@@ -359,19 +359,19 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         return this;
     }
 
-    public Collection< ? extends FactHandle> getFactHandles() {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles() {
         throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
     }
 
-    public Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter) {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles(ObjectFilter filter) {
         throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
     }
 
-    public Collection< ? extends Object> getObjects() {
+    public Collection< Object > getObjects() {
         throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
     }
 
-    public Collection< ? extends Object> getObjects(ObjectFilter filter) {
+    public Collection< Object > getObjects(ObjectFilter filter) {
         throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
     }
 

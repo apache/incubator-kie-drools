@@ -447,12 +447,12 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
-                public Collection< ? extends Object> getObjects() {
+                public Collection< Object> getObjects() {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Collection< ? extends Object> getObjects(ObjectFilter filter) {
+                public Collection< Object> getObjects(ObjectFilter filter) {
                     // TODO Auto-generated method stub
                     return null;
                 }
