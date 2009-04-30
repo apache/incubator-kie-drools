@@ -7,10 +7,10 @@ import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 
 public interface CommandFactoryProvider {
-    Command newInsertObject(Object object);
+    Command newInsert(Object object);
 
-    Command newInsertObject(Object object,
-                            String outIdentifier);
+    Command newInsert(Object object,
+                      String outIdentifier);
 
     Command newInsertElements(Iterable iterable);
 
@@ -59,9 +59,9 @@ public interface CommandFactoryProvider {
     Command newSignalEvent(long processInstanceId,
                            String type,
                            Object event);
-    
+
     Command newCompleteWorkItem(long workItemId,
-                                Map<String, Object> results);    
+                                Map<String, Object> results);
 
     Command newQuery(String identifier,
                      String name);

@@ -31,8 +31,8 @@ public class CommandFactory {
      * @param object
      * @return
      */
-    public static Command newInsertObject(Object object) {
-        return getCommandFactoryProvider().newInsertObject( object );
+    public static Command newInsert(Object object) {
+        return getCommandFactoryProvider().newInsert( object );
     }
 
     /**
@@ -42,10 +42,10 @@ public class CommandFactory {
      * @param outIdentifier
      * @return
      */
-    public static Command newInsertObject(Object object,
+    public static Command newInsert(Object object,
                                           String outIdentifier) {
-        return getCommandFactoryProvider().newInsertObject( object,
-                                                            outIdentifier );
+        return getCommandFactoryProvider().newInsert( object,
+                                                      outIdentifier );
     }
 
     /**
