@@ -88,7 +88,7 @@ public class StatefulSessionTest extends TestCase {
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        Command insertCmd = CommandFactory.newInsertObject( stilton, "outStilton" );
+        Command insertCmd = CommandFactory.newInsert( stilton, "outStilton" );
         Command fireCmd = CommandFactory.newFireAllRules();
         
         Command cmds = CommandFactory.newBatchExecution( Arrays.asList( new Command[] { insertCmd,fireCmd} ) );

@@ -112,7 +112,7 @@ public class StatelessSessionTest extends TestCase {
         Cheese stilton = new Cheese( "stilton", 5 );
         
         StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
-        Command cmd = CommandFactory.newInsertObject( stilton, "outStilton" );
+        Command cmd = CommandFactory.newInsert( stilton, "outStilton" );
         ExecutionResults result = ksession.execute( cmd );
         stilton = ( Cheese ) result.getValue( "outStilton" );
         assertEquals( 30,
@@ -146,7 +146,7 @@ public class StatelessSessionTest extends TestCase {
         Command setGlobal1 = CommandFactory.newSetGlobal( "list1", list1 );
         Command setGlobal2 = CommandFactory.newSetGlobal( "list2", list2, true );
         Command setGlobal3 = CommandFactory.newSetGlobal( "list3", list3, "outList3" );
-        Command insert = CommandFactory.newInsertObject( stilton  );
+        Command insert = CommandFactory.newInsert( stilton  );
         
         List cmds = new ArrayList();
         cmds.add( setGlobal1 );
@@ -218,12 +218,12 @@ public class StatelessSessionTest extends TestCase {
         set.add( list );
         
         List<Command> cmds = new ArrayList<Command>();        
-        cmds.add( CommandFactory.newInsertObject( stilton1 ) );
-        cmds.add( CommandFactory.newInsertObject( stilton2 ) );
-        cmds.add( CommandFactory.newInsertObject( stilton3 ) );
-        cmds.add( CommandFactory.newInsertObject( cheddar1 ) );
-        cmds.add( CommandFactory.newInsertObject( cheddar2 ) );
-        cmds.add( CommandFactory.newInsertObject( cheddar3 ) );
+        cmds.add( CommandFactory.newInsert( stilton1 ) );
+        cmds.add( CommandFactory.newInsert( stilton2 ) );
+        cmds.add( CommandFactory.newInsert( stilton3 ) );
+        cmds.add( CommandFactory.newInsert( cheddar1 ) );
+        cmds.add( CommandFactory.newInsert( cheddar2 ) );
+        cmds.add( CommandFactory.newInsert( cheddar3 ) );
         
         cmds.add(  CommandFactory.newQuery( "cheeses", "cheeses" ) );
         
