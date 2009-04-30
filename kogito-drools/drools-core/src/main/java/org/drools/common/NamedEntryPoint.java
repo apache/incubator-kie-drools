@@ -507,25 +507,25 @@ public class NamedEntryPoint
         return this.objectStore.getObjectForHandle( (InternalFactHandle) factHandle );
     }    
     
-    public Collection< ? extends FactHandle> getFactHandles() {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public Collection< ? extends FactHandle> getFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public Collection< ? > getObjects() {
+    public Collection< Object > getObjects() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection< ? > getObjects(org.drools.runtime.ObjectFilter filter) {
+    public Collection< Object > getObjects(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.OBJECT );

@@ -254,20 +254,20 @@ public class CommandBasedStatefulKnowledgeSession
         return this.commandService.execute( new GetFactHandleCommand( object ) );
     }
 
-    public Collection< ? extends FactHandle> getFactHandles() {
-        return this.commandService.execute( new GetFactHandlesCommand() );
+    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles() {
+        return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand() );
 
     }
 
-    public Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter) {
-        return this.commandService.execute( new GetFactHandlesCommand( filter ) );
+    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles(ObjectFilter filter) {
+        return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand( filter ) );
     }
 
-    public Collection< ? extends Object> getObjects() {
+    public Collection< Object > getObjects() {
         return getObjects( null );
     }
 
-    public Collection< ? extends Object > getObjects(ObjectFilter filter) {
+    public Collection< Object > getObjects(ObjectFilter filter) {
         Collection result = commandService.execute( new GetObjectsCommand( filter ) );
         return result;
     }

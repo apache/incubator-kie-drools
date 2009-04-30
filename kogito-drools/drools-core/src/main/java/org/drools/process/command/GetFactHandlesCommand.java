@@ -10,7 +10,7 @@ import org.drools.runtime.rule.FactHandle;
 
 public class GetFactHandlesCommand
     implements
-    Command<Collection< ? extends FactHandle>> {
+    Command<Collection< FactHandle >> {
 
     private ObjectFilter filter = null;
 
@@ -21,7 +21,7 @@ public class GetFactHandlesCommand
         this.filter = filter;
     }
 
-    public Collection< ? extends FactHandle> execute(ReteooWorkingMemory session) {
+    public Collection< FactHandle > execute(ReteooWorkingMemory session) {
         ReteooStatefulSession reteooStatefulSession = (ReteooStatefulSession) session;
 
         if ( filter != null ) {
