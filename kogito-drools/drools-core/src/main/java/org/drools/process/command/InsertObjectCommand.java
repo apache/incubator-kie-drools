@@ -26,7 +26,7 @@ public class InsertObjectCommand
                 session.getExecutionResult().getResults().put( this.outIdentifier,
                                                                object );
             }
-            session.getExecutionResult().getFacts().put( this.outIdentifier,
+            session.getExecutionResult().getFactHandles().put( this.outIdentifier,
                                                          factHandle );
         }
 

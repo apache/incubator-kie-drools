@@ -13,10 +13,10 @@ public class InsertElementsCommand
     implements
     Command<Collection<FactHandle>> {
     public Iterable objects;
-    
+
     private String  outIdentifier;
 
-    private boolean returnObject = true;    
+    private boolean returnObject = true;
 
     public InsertElementsCommand() {
         this.objects = new ArrayList();
@@ -25,7 +25,7 @@ public class InsertElementsCommand
     public InsertElementsCommand(Iterable objects) {
         this.objects = objects;
     }
-    
+
     public Iterable getObjects() {
         return this.objects;
     }
@@ -35,22 +35,22 @@ public class InsertElementsCommand
     }
 
     public Collection<FactHandle> execute(ReteooWorkingMemory session) {
-        List<FactHandle> handles = new ArrayList<FactHandle>( );
+        List<FactHandle> handles = new ArrayList<FactHandle>();
         for ( Object object : objects ) {
             handles.add( session.insert( object ) );
         }
-        
+
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {
                 session.getExecutionResult().getResults().put( this.outIdentifier,
                                                                objects );
             }
-            session.getExecutionResult().getFacts().put( this.outIdentifier,
-                                                         handles );
-        }        
+            session.getExecutionResult().getFactHandles().put( this.outIdentifier,
+                                                               handles );
+        }
         return handles;
     }
-    
+
     public String getOutIdentifier() {
         return this.outIdentifier;
     }
@@ -65,10 +65,10 @@ public class InsertElementsCommand
 
     public void setReturnObject(boolean returnObject) {
         this.returnObject = returnObject;
-    }    
+    }
 
     public String toString() {
-        List<Object> list = new ArrayList<Object>( );
+        List<Object> list = new ArrayList<Object>();
         for ( Object object : objects ) {
             list.add( object );
         }
