@@ -80,6 +80,14 @@ public class QueryResult {
     public Object get(final Declaration declaration) {
         return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( this.tuple.get( declaration ) ) );
     }
+    
+    public FactHandle getFactHandle(String identifier) {
+        return this.tuple.get( ( Declaration ) this.queryResults.getDeclarations().get( identifier ) );
+    }
+    
+    public FactHandle getFactHandle(Declaration declr) {
+        return this.tuple.get( declr );
+    }    
 
     /**
      * Return the FactHandles for the Tuple.

@@ -22,8 +22,6 @@ public class ModifyCommand
 
     public Object execute(ReteooWorkingMemory session) {
         Object object = session.getObject( this.handle );
-        System.out.println( object );
-        System.out.println( getMvelExpr() );
         MVEL.eval( getMvelExpr(),
                    object );
 

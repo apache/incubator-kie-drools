@@ -960,9 +960,14 @@ public class BatchExecutionHelperProviderImpl
                 writer.startNode( "row" );
                 for ( int i = 0; i < identifiers.length; i++ ) {
                     Object value = result.get( identifiers[i] );
+                    FactHandle factHandle = result.getFactHandle( identifiers[i] );
                     writeItem( value,
                                context,
                                writer );
+                    writer.startNode( "fact-handle" );
+                    writer.addAttribute( "externalForm",
+                                         ((FactHandle) factHandle).toExternalForm() );
+                    writer.endNode();                   
                 }
                 writer.endNode();
             }
@@ -985,24 +990,34 @@ public class BatchExecutionHelperProviderImpl
                                  i );
             }
 
-            List results = new ArrayList();
+            List results = new ArrayList();      
+            List<List<FactHandle>> resultHandles = new ArrayList();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 List objects = new ArrayList();
+                List<FactHandle> handles = new ArrayList();
                 while ( reader.hasMoreChildren() ) {
                     reader.moveDown();
                     Object object = readItem( reader,
                                               context,
                                               null );
-                    objects.add( object );
                     reader.moveUp();
+                    
+                    reader.moveDown();
+                    FactHandle handle = new DisconnectedFactHandle( reader.getAttribute( "externalForm" ) );
+                    reader.moveUp();                    
+                  
+                    objects.add( object );
+                    handles.add(  handle  );
                 }
                 results.add( objects );
+                resultHandles.add( handles );
                 reader.moveUp();
             }
-
+        
             return new FlatQueryResults( identifiers,
-                                         results );
+                                         results,
+                                         resultHandles );
         }
 
         public boolean canConvert(Class clazz) {
