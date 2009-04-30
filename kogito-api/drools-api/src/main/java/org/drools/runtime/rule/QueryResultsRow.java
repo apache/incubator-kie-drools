@@ -12,4 +12,6 @@ public interface QueryResultsRow {
      * @return
      */
     public Object get(String identifier);
+    
+    public FactHandle getFactHandle(String identifier);
 }
