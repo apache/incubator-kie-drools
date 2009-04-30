@@ -63,7 +63,7 @@
     "...snip..." indicating lines that were removed to save space):</para>
 
     <example>
-      <title>Fibonacci Example Console Output</title>
+      <title>Fibonacci Example: Console Output</title>
 
       <programlisting>recurse for 50
 recurse for 49
@@ -90,13 +90,14 @@ recurse for 2
 
     <para>To kick this off from Java we only insert a single Fibonacci
     object, with a sequence field of 50. A recursive rule is then used
-    to insert the other 49 Fibonacci objects. This example doesn't use
+    to insert the other 49 <code>Fibonacci</code> objects. This example
+    doesn't use
     <code>PropertyChangeSupport</code>. It uses the MVEL dialect, which
     means we can use the <kw>modify</kw> keyword, which allows a block
     setter action which also notifies the engine of changes.</para>
 
     <example>
-      <title>Fibonacci Example Execution</title>
+      <title>Fibonacci Example: Execution</title>
 
       <programlisting>ksession.insert( new Fibonacci( 50 ) );
 ksession.fireAllRules();</programlisting>
@@ -110,11 +111,11 @@ ksession.fireAllRules();</programlisting>
     does not exist, the rule re-matches and fires again. The
     <kw>not</kw> conditional element is used to stop the rule's matching
     once we have all 50 Fibonacci objects in memory. The rule also has a
-    salience value, because we need to have all 50 Fibonacci objects
-    asserted before we execute the Bootstrap rule.</para>
+    salience value, because we need to have all 50 <code>Fibonacci</code>
+    objects asserted before we execute the Bootstrap rule.</para>
 
     <example>
-      <title>Fibonacci Example : Rule "Recurse"</title>
+      <title>Fibonacci Example: Rule "Recurse"</title>
 
       <programlisting>rule Recurse
     salience 10
@@ -131,10 +132,10 @@ end</programlisting>
     <code>Fibonacci</code> object with a sequence field of 50, done from
     Java code. From there on, the Audit view shows the continual
     recursion of the rule, where each asserted <code>Fibonacci</code>
-    object causes the Recurse rule to become activate and fire again.</para>
+    object causes the Recurse rule to become activated and to fire again.</para>
 
     <figure>
-      <title>Fibonacci Example "Recurse" Audit View 1</title>
+      <title>Fibonacci Example: "Recurse" Audit View 1</title>
 
       <mediaobject>
         <imageobject>
@@ -150,7 +151,7 @@ end</programlisting>
     <code>sequence</code>, testing for equality with 1 or 2.</para>
 
     <example>
-      <title>Fibonacci Example : Rule "Bootstrap"</title>
+      <title>Fibonacci Example: Rule "Bootstrap"</title>
 
       <programlisting>rule Bootstrap
     when
@@ -162,11 +163,11 @@ end</programlisting>
     </example>
 
     <para>At this point the Agenda looks as shown below. However,
-    the Bootstrap rule does not fire because the Recurse rule has a higher
+    the "Bootstrap" rule does not fire because the "Recurse" rule has a higher
     salience.</para>
 
     <figure>
-      <title>Fibonacci Example "Recurse" Agenda View 1</title>
+      <title>Fibonacci Example: "Recurse" Agenda View 1</title>
 
       <mediaobject>
         <imageobject>
@@ -183,7 +184,7 @@ end</programlisting>
     exists.</para>
 
     <figure>
-      <title>Fibonacci Example "Recurse" Agenda View 2</title>
+      <title>Fibonacci Example: "Recurse" Agenda View 2</title>
 
       <mediaobject>
         <imageobject>
@@ -193,7 +194,7 @@ end</programlisting>
     </figure>
 
     <para>Once we have two <code>Fibonacci</code> objects with values
-    not equal to -1 the "calculate" rule is able to match. It was
+    not equal to -1 the "Calculate" rule is able to match. It was
     the "Bootstrap" rule that set the objects with sequence 1 and 2 to
     values of 1. At this point we have 50 Fibonacci objects in the Working
     Memory. Now we need to select a suitable triple to calculate each
@@ -218,7 +219,7 @@ end</programlisting>
     third <code>Fibonacci</code> object that's bound to <code>f3</code>.</para>
 
     <example>
-      <title>Fibonacci Example : Rule "Calculate"</title>
+      <title>Fibonacci Example: Rule "Calculate"</title>
 
       <programlisting>rule Calculate
     when
@@ -248,7 +249,7 @@ end
     objects.</para>
 
     <figure>
-      <title>Fibonacci Example "Bootstrap" Audit View 1</title>
+      <title>Fibonacci Example: "Bootstrap" Audit View</title>
 
       <mediaobject>
         <imageobject>
