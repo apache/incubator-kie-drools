@@ -88,7 +88,7 @@ public interface WorkingMemoryEntryPoint {
      * 
      * @return
      */
-    Collection< ? extends Object > getObjects();
+    Collection< Object > getObjects();
 
     /**
      * Returns all facts from the current session that are accepted by the given <code>ObjectFilter</code>.
@@ -97,14 +97,14 @@ public interface WorkingMemoryEntryPoint {
      *  
      * @return
      */
-    Collection< ? extends Object > getObjects(ObjectFilter filter);
+    Collection< Object > getObjects(ObjectFilter filter);
 
     /**
      * Returns all <code>FactHandle</code>s from the current session.
      * 
      * @return
      */
-    Collection< ? extends FactHandle> getFactHandles();
+    <T extends FactHandle> Collection< T > getFactHandles();
 
     /**
      * Returns all <code>FactHandle</code>s from the current session for which the facts are accepted by 
@@ -114,5 +114,5 @@ public interface WorkingMemoryEntryPoint {
      * 
      * @return
      */
-    Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter);    
+    <T extends FactHandle> Collection< T > getFactHandles(ObjectFilter filter);    
 }
