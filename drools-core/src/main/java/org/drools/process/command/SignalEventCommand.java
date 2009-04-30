@@ -9,6 +9,9 @@ public class SignalEventCommand implements Command<Object> {
 	private String eventType;
 	private Object event;	
 	
+    public SignalEventCommand() {
+    }   	
+	
 	public SignalEventCommand(String eventType,
                               Object event) {
         this.eventType = eventType;
