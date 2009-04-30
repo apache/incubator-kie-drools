@@ -77,7 +77,7 @@ public class Broker implements EventReceiver, BrokerServices {
     private StatefulKnowledgeSession createSession() {
         KnowledgeBase kbase = loadRuleBase();
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newConsoleLogger( session );
+        //KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newConsoleLogger( session );
         session.setGlobal( "services", this );
         for( Company company : this.companies.getCompanies() ) {
             session.insert( company );

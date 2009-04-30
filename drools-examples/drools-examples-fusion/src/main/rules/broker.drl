@@ -19,7 +19,7 @@ dialect "mvel"
 # policy will be 2 minutes 
 declare StockTick
     @role( event )
-    @expires( 10s )
+    @expires( 2m )
 end 
 
 # One can even declare helper facts to make rules easier and
