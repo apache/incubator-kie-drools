@@ -2,6 +2,7 @@ package org.drools.runtime.help.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,7 @@ public class BatchExecutionHelperProviderImpl
         xstream.alias( "complete-work-item",
                        CompleteWorkItemCommand.class );
         xstream.alias( "abort-work-item",
-                       AbortWorkItemCommand.class );        
+                       AbortWorkItemCommand.class );
         xstream.alias( "set-global",
                        SetGlobalCommand.class );
         xstream.alias( "get-global",
@@ -319,7 +320,7 @@ public class BatchExecutionHelperProviderImpl
                 writer.addAttribute( "out-identifier",
                                      cmd.getOutIdentifier() );
 
-                writer.addAttribute( "return-object",
+                writer.addAttribute( "return-objects",
                                      Boolean.toString( cmd.isReturnObject() ) );
 
             }
@@ -334,7 +335,7 @@ public class BatchExecutionHelperProviderImpl
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             String identifierOut = reader.getAttribute( "out-identifier" );
-            String returnObject = reader.getAttribute( "return-object" );
+            String returnObject = reader.getAttribute( "return-objects" );
 
             List objects = new ArrayList();
             while ( reader.hasMoreChildren() ) {
@@ -779,7 +780,8 @@ public class BatchExecutionHelperProviderImpl
                 reader.moveUp();
             }
 
-            Command cmd = CommandFactory.newCompleteWorkItem(Long.parseLong( id ), results);
+            Command cmd = CommandFactory.newCompleteWorkItem( Long.parseLong( id ),
+                                                              results );
 
             return cmd;
         }
@@ -788,35 +790,35 @@ public class BatchExecutionHelperProviderImpl
             return clazz.equals( CompleteWorkItemCommand.class );
         }
     }
-    
+
     public static class AbortWorkItemConverter extends AbstractCollectionConverter
-    implements
-    Converter {
+        implements
+        Converter {
 
-    public AbortWorkItemConverter(Mapper mapper) {
-        super( mapper );
+        public AbortWorkItemConverter(Mapper mapper) {
+            super( mapper );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            AbortWorkItemCommand cmd = (AbortWorkItemCommand) object;
+            writer.addAttribute( "id",
+                                 Long.toString( cmd.getWorkItemId() ) );
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            String id = reader.getAttribute( "id" );
+            Command cmd = CommandFactory.newAbortWorkItem( Long.parseLong( id ) );
+
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( AbortWorkItemCommand.class );
+        }
     }
-
-    public void marshal(Object object,
-                        HierarchicalStreamWriter writer,
-                        MarshallingContext context) {
-        AbortWorkItemCommand cmd = (AbortWorkItemCommand) object;
-        writer.addAttribute( "id",
-                             Long.toString( cmd.getWorkItemId() ) );
-    }
-
-    public Object unmarshal(HierarchicalStreamReader reader,
-                            UnmarshallingContext context) {
-        String id = reader.getAttribute( "id" );
-        Command cmd = CommandFactory.newAbortWorkItem(Long.parseLong( id ) );
-
-        return cmd;
-    }
-
-    public boolean canConvert(Class clazz) {
-        return clazz.equals( AbortWorkItemCommand.class );
-    }
-}    
 
     public static class BatchExecutionResultConverter extends AbstractCollectionConverter
         implements
@@ -841,13 +843,31 @@ public class BatchExecutionHelperProviderImpl
                 writer.endNode();
             }
 
-            for ( String identifier : ((BatchExecutionResultImpl) result).getFacts().keySet() ) {
-                writer.startNode( "fact-handle" );
-                writer.addAttribute( "identifier",
-                                     identifier );
-                writer.addAttribute( "externalForm",
-                                     ((InternalFactHandle) result.getFactHandle( identifier )).toExternalForm() );
-                writer.endNode();
+            for ( String identifier : ((BatchExecutionResultImpl) result).getFactHandles().keySet() ) {
+
+                Object handle = result.getFactHandle( identifier );
+                if ( handle instanceof FactHandle ) {
+                    writer.startNode( "fact-handle" );
+                    writer.addAttribute( "identifier",
+                                         identifier );
+                    writer.addAttribute( "externalForm",
+                                         ((FactHandle) handle).toExternalForm() );
+
+                    writer.endNode();
+                } else if ( handle instanceof Collection ) {
+                    writer.startNode( "fact-handles" );
+                    writer.addAttribute( "identifier",
+                                         identifier );
+                    for ( FactHandle factHandle : (Collection<FactHandle>) handle ) {
+                        writer.startNode( "fact-handle" );
+                        writer.addAttribute( "externalForm",
+                                             ((FactHandle) factHandle).toExternalForm() );
+                        writer.endNode();
+                    }
+
+                    writer.endNode();
+                }
+
             }
         }
 
@@ -855,7 +875,7 @@ public class BatchExecutionHelperProviderImpl
                                 UnmarshallingContext context) {
             BatchExecutionResultImpl result = new BatchExecutionResultImpl();
             Map results = result.getResults();
-            Map facts = result.getFacts();
+            Map facts = result.getFactHandles();
 
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
@@ -873,6 +893,16 @@ public class BatchExecutionHelperProviderImpl
                     String identifier = reader.getAttribute( "identifier" );
                     facts.put( identifier,
                                new DisconnectedFactHandle( reader.getAttribute( "externalForm" ) ) );
+                } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
+                    String identifier = reader.getAttribute( "identifier" );
+                    List<FactHandle> list = new ArrayList();
+                    while ( reader.hasMoreChildren() ) {
+                        reader.moveDown();
+                        list.add( new DisconnectedFactHandle( reader.getAttribute( "externalForm" ) ) );
+                        reader.moveUp();
+                    }
+                    facts.put( identifier,
+                               list );
                 } else {
                     throw new IllegalArgumentException( "Element '" + reader.getNodeName() + "' is not supported here" );
                 }

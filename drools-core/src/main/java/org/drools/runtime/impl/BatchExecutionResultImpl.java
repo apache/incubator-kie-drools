@@ -36,11 +36,11 @@ public class BatchExecutionResultImpl implements ExecutionResults {
         this.results = results;
     }
     
-    public Map<String, Object> getFacts() {
+    public Map<String, Object> getFactHandles() {
         return this.facts;
     }    
     
-    public void setFacts(Map<String, Object> facts) {
+    public void setFactHandles(Map<String, Object> facts) {
         this.facts = facts;
     }
 }
