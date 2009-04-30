@@ -1,5 +1,6 @@
 package org.drools.runtime.rule.impl;
 
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResultsRow;
 
 public class NativeQueryResultRow
@@ -13,6 +14,10 @@ public class NativeQueryResultRow
 
     public Object get(String identifier) {
         return this.result.get( identifier );
+    }
+    
+    public FactHandle getFactHandle(String identifier) {
+        return this.result.getFactHandle( identifier );
     }
 
 }
