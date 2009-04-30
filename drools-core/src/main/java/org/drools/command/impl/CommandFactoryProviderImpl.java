@@ -41,11 +41,11 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return new InsertElementsCommand(objects);
 	}
 
-	public Command newInsertObject(Object object) {
+	public Command newInsert(Object object) {
 		return new InsertObjectCommand(object);
 	}
 
-	public Command newInsertObject(Object object, String outIdentifier) {
+	public Command newInsert(Object object, String outIdentifier) {
 		InsertObjectCommand cmd = new InsertObjectCommand(object);
 		cmd.setOutIdentifier(outIdentifier);
 		return cmd;
