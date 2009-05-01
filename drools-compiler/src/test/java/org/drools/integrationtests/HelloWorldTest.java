@@ -1,5 +1,8 @@
 package org.drools.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
@@ -15,6 +18,9 @@ import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.mvel2.MVELRuntime;
+import org.mvel2.debug.Debugger;
+import org.mvel2.debug.Frame;
 
 /**
  * This is a sample class to launch a rule.
@@ -36,7 +42,21 @@ public class HelloWorldTest extends TestCase {
 	}
 
 	public void testHelloWorldDebug() throws Exception {
+		final List<String> knownVariables = new ArrayList<String>();
+		MVELRuntime.resetDebugger();
 		MVELDebugHandler.setDebugMode(true);
+		MVELRuntime.setThreadDebugger(new Debugger() {
+            public int onBreak(Frame frame) {
+                System.out.println("onBreak");
+                for (String var: frame.getFactory().getKnownVariables()) {
+                	System.out.println("  " + var);
+                    knownVariables.add(var);
+                }
+                return 0;
+            }
+        });
+        String source = "org.drools.integrationtests.Rule_Hello_World_0";
+		MVELRuntime.registerBreakpoint(source, 1);
 		// load up the knowledge base
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -48,6 +68,8 @@ public class HelloWorldTest extends TestCase {
 		ksession.insert(message);
 		ksession.fireAllRules();
 		logger.close();
+		assertTrue(knownVariables.contains("m"));
+		assertTrue(knownVariables.contains("myMessage"));
 	}
 
 	private KnowledgeBase readKnowledgeBase() throws Exception {
