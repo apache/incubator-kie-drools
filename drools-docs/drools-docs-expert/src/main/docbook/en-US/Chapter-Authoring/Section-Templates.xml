@@ -90,20 +90,21 @@
       expanded. The template text is scanned for occurrences of
       <emphasis>parameter expansions</emphasis> written according to:
       <programlisting>
-...<emphasis role="bold">@{<emphasis>parameter-name</emphasis>}</emphasis>...</programlisting>
+<emphasis role="bold">@{<emphasis>parameter-name</emphasis>}</emphasis></programlisting>
       The name between '@{' and '}' should be one of the parameter names
-      defined in the template header.</para>
+      defined in the template header. The substitution is effected anywhere,
+      even within string literal.</para>
 
       <para>An important parameter is available without having to be
       included in the data source providing the actual values. The
       parameter substitution
       <programlisting>
-...<emphasis role="bold">@{row.rowNumber}</emphasis>...</programlisting>
+<emphasis role="bold">@{row.rowNumber}</emphasis></programlisting>
       expands to the integers 0, 1, 2, etc., providing a unique distinction
-      for the instantiation. You would use this as part of each rule
-      name, because, without this precaution, there would be duplicate
-      rule names. (You are, of course, free to use your own identification
-      included as an extra parameter.)</para>
+      for the instantiation derived from a parameter set. You would use this
+      as part of each rule name, because, without this precaution, there
+      would be duplicate rule names. (You are, of course, free to use your
+      own identification included as an extra parameter.)</para>
 
     </section>
 
@@ -197,4 +198,142 @@ InputStream templateStream =
 String drl = converter.compile( objs, templateStream );</programlisting>
        </section>
      </section>
+
+     <section>
+       <title>Example</title>
+
+       <para>The following example illustrates template expansion. It is based on simple
+       objects of class <code>Item</code> containing a couple of integer fields and an
+       <code>enum</code> field of type <code>ItemCode</code>.</para>
+
+       <programlisting>
+public class Item {
+    // ...
+    public Item( String n, int p, int w, ItemCode c ){...}
+
+    public String   getName() {...}
+    public int      getWeight() {...}
+    public int      getPrice() {...}
+    public ItemCode getCode() {...}
+}
+
+public enum ItemCode {
+    LOCK,
+    STOCK,
+    BARREL;
+}</programlisting>
+
+         <para>The rule template contains a single rule. Notice that the field
+         name for the range test is a parameter, which enables us to instantiate
+         the template for different fields.</para>
+         <programlisting>
+template header
+field
+lower
+upper
+codes
+
+package range;
+template "inRange"
+rule "is in range @{row.rowNumber}"
+when
+    Item( $name : name, $v : @{field} &gt;= @{lower} &amp;&amp; &lt;= @{upper}, $code : code @{codes} )
+then
+    System.out.println( "Item " + $name + " @{field} in range: " + $v + " code: " + $code );
+end
+end template</programlisting>
+
+         <para>The next code snippet is from the application, where several
+         parameter sets have to be set up. First, there is class
+         <code>ParamSet</code>, for storing a set of actual parameters.</para>
+
+         <programlisting>
+public class ParamSet {
+    //...
+    private EnumSet&lt;ItemCode&gt; codeSet;
+	
+    public ParamSet( String f, int l, int u, EnumSet&lt;ItemCode&gt; cs ){...}
+
+    public String getField() { return field; }
+    public int getLower() { return lower; }
+    public int getUpper() { return upper; }
+
+    public String getCodes(){
+        StringBuilder sb = new StringBuilder();
+        String conn = "";
+        for( ItemCode ic: codeSet ){
+             sb.append( conn ).append( " == ItemCode." ).append( ic );
+             conn = " ||";
+        }
+        return sb.toString();
+    }	
+}</programlisting>
+
+        <para>Note that the method <code>getCodes()</code> does returns the
+        <code>EnumSet&lt;ItemCode&gt;</code> field value as a <code>String</code>
+        value representing a multiple restriction, i.e., a test for one out
+        of a list of values.</para>
+
+        <para>The task of expanding a template, passing the resulting DRL text
+        to a Knowledge Builder and adding the resulting Knowledge Packages
+        to a Knowledge Base is generic. The utility class <code>Expander</code>
+        takes care of this, using a Knowledge Base, the <code>InputStream</code>
+        with the rule template and the collection of parameter sets.</para>     
+
+        <programlisting>
+public class Expander {
+	
+    public void expand( KnowledgeBase kBase, InputStream is, Collection&lt;?&gt; act )
+        throws Exception {
+        ObjectDataCompiler converter = new ObjectDataCompiler();		
+        String drl = converter.compile( act, is );
+        
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        Reader rdr = new StringReader( drl );
+        kBuilder.add( ResourceFactory.newReaderResource( rdr ), ResourceType.DRL );
+        if( kBuilder.hasErrors() ){
+            for( KnowledgeBuilderError err: kBuilder.getErrors() ){
+                System.err.println( err.toString() );
+            }
+            throw new IllegalStateException( "DRL errors" );
+        }
+        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+    }
+}</programlisting>
+
+        <para>We are now all set to prepare the Knowledge Base with some
+        generated rules. First, we define several parameter sets,
+        constructed as <code>ParamSet</code> objects, and add them to a
+        <code>List</code>, which is passed to the <code>expand</code>
+        method shown above. Then we launch a stateful session, insert a
+        few <code>Item</code>, and watch what happens.</para>
+
+        <programlisting>
+Collection&lt;ParamSet&gt; cfl = new ArrayList&lt;ParamSet&gt;();
+cfl.add( new ParamSet( "weight",  10,  99, EnumSet.of( ItemCode.LOCK, ItemCode.STOCK ) ) );
+cfl.add( new ParamSet( "price",   10,  50, EnumSet.of( ItemCode.BARREL ) ) );
+
+KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+Expander ex = new Expander();
+InputStream dis = new FileInputStream( new File( "rangeTemp.drl" ) );
+ex.expand( kBase, dis, cfl );
+        
+StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+session.insert( new Item( "A", 130,  42, ItemCode.LOCK ) );
+session.insert( new Item( "B",  44, 100, ItemCode.STOCK ) );
+session.insert( new Item( "C", 123, 180, ItemCode.BARREL ) );
+session.insert( new Item( "D",  85,   9, ItemCode.LOCK ) );
+        
+session.fireAllRules();</programlisting>
+
+         <para>Notice that the two resulting rules deal with
+         <emphasis>different</emphasis> fields, one with an item's weight,
+         the other one with its price. - Below is the output.</para>
+
+        <programlisting>
+Item E price in range: 25 code: BARREL
+Item A weight in range: 42 code: LOCK</programlisting>
+
+     </section>
+
   </section>
