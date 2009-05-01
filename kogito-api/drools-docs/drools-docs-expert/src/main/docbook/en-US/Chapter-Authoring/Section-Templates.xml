@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+
+    <title>Templates</title>
+
+    <para>If you discover that you have a group of rules following
+    the same arrangement of patterns, constraints and actions on
+    the RHS, differing only in constants or names for objects or
+    fields, you might think of employing Drool's rule template feature
+    for generating the actual rules. You would write a 
+    <emphasis>rule template</emphasis> file, containing the
+    textual skeleton of your rule and use the Drools template
+    compiler in combination with a collection of objects providing
+    the actual values for the "flesh" of the rules for their
+    instantiation.</para>
+
+    <para>The mechanism is very similar to what a macro processor
+    does. The major advantage proffered by template expansion is
+    that it's nicely integrated in the overall handling of
+    Knowledge Resources.</para>
+
+    <section>
+      <title>The Rule Template File</title>
+
+      <para>A rule template file begins with a header defining the
+      placeholders, or <emphasis>formal template parameters</emphasis> 
+      for the strings that are to be inserted during instantiation. 
+      After the first line, which invariably contains <kw>template header</kw>,
+      you should write a number of lines, each of which contains a single
+      parameter name.</para>
+
+      <example>
+        <title>Rule template file: template header</title>
+
+        <programlisting>
+<emphasis role="bold">template header</emphasis>
+<emphasis>parameter-name-1</emphasis>
+...
+<emphasis>parameter-name-n</emphasis>
+...</programlisting>
+      </example>
+
+      <para>The template header is followed by the text that is to
+      be replicated and interpolated with the actual parameters. It
+      may begin with a <kw>package</kw> statement, followed by some
+      additional lines. These 
+      may be sectioned into one or more templates, each of them
+      between a pair of matching <kw>template</kw> and
+      <kw>end template</kw> statements. The <kw>template</kw> takes
+      an argument, which puts a name to the template. The name
+      can be a simple unquoted name or an arbitrary string enclosed
+      in double quotes. The template text between these lines may
+      contain one or more rules, constituting the "raw material"
+      for the expansion.</para>
+      
+      <example>
+        <title>Rule template file: templates</title>
+
+        <programlisting>
+<emphasis role="bold">template header</emphasis>
+<emphasis role="bold"><emphasis>parameter-name-1</emphasis></emphasis>
+...
+<emphasis>parameter-name-n</emphasis>
+<emphasis role="bold">package ...</emphasis>     # optional
+<emphasis>header text</emphasis>    # optional
+<emphasis role="bold">template</emphasis> <emphasis>template-name</emphasis>
+...
+// template text
+...
+<emphasis role="bold">end template</emphasis>
+...</programlisting>
+      </example>
+
+      <para>The resulting text will begin with the package line and the
+      header text following it, if present. Then, each template text
+      will be expanded individually, yielding one set of rules for each
+      of the actual parameter sets. Therefore, the structure of the
+      template sections affect the order of the generated rules, since
+      the generator iterates over the sections and then over the
+      set of actual parameters.</para>
+
+      <para>Any interpolation takes place between a pair of <kw>template</kw>
+      and <kw>end template</kw> statements, when this template is
+      expanded. The template text is scanned for occurrences of
+      <emphasis>parameter expansions</emphasis> written according to:
+      <programlisting>
+...<emphasis role="bold">@{<emphasis>parameter-name</emphasis>}</emphasis>...</programlisting>
+      The name between '@{' and '}' should be one of the parameter names
+      defined in the template header.</para>
+
+      <para>An important parameter is available without having to be
+      included in the data source providing the actual values. The
+      parameter substitution
+      <programlisting>
+...<emphasis role="bold">@{row.rowNumber}</emphasis>...</programlisting>
+      expands to the integers 0, 1, 2, etc., providing a unique distinction
+      for the instantiation. You would use this as part of each rule
+      name, because, without this precaution, there would be duplicate
+      rule names. (You are, of course, free to use your own identification
+      included as an extra parameter.)</para>
+
+    </section>
+
+    <section>
+      <title>Expanding a Template</title>
+
+      <para>To expand a template, you must prepare a data source. This can
+      be a spreadsheet, as explained in the previous section. Here, we'll
+      concentrate on expansion driven by Java objects. There are two
+      straightforward ways of supplying values for a fixed set of names:
+      Java objects, in the JavaBeans style, and Maps. Both of them can
+      be arranged in a <code>Collection</code>, whose elements will be
+      processed during the expansion, resulting in an instantiation
+      for each element.</para>
+
+      <section>
+        <title>Instantiation from Java Objects</title>
+      
+        <para>You may use a Java object that provides getter methods
+        corresponding to all of the parameter names of your template
+        file. If, for instance, you have defined a header
+        <programlisting>
+template header
+type
+limit
+word</programlisting>
+        the following Java class could be used:
+        <programlisting>
+public class ParamSet {
+    //...
+    public ParamSet( String t, int l, boolean w ) {
+        //...
+    }
+    public String  getType(){...}
+    public int     getLimit(){...}
+    public boolean isWord(){...}
+}</programlisting>
+        Although interpolation is pure text manipulation, the actual values
+        supplied may be of any type, just as long as this type provides a
+        reasonable <code>toString()</code> method. (For simple types, the
+        eponymous static method of the related class from <code>java.lang</code>
+        is used.)</para>
+
+        <para>Assuming that we have created a <code>Collection&lt;ParamSet&gt;</code>
+        for a template file <code>template.drl</code>, we can now proceed to
+        request its expansion.</para>
+
+        <programlisting>
+Collection&lt;ParamSet&gt; paramSets = new ArrayList&lt;ParamSet&gt;();
+// populate paramSets
+paramSets.add( new ParamSet( "Foo", 42, true ) );
+paramSets.add( new ParamSet( "Bar", 13, false ) );
+ObjectDataCompiler converter = new ObjectDataCompiler();
+InputStream templateStream =
+    this.getClass().getResourceAsStream( "template.drl" );
+String drl = converter.compile( objs, templateStream );</programlisting>
+
+        The resulting string contains the expanded rules text. You could
+        write it to a file and proceed as usual, but it's also possible to
+        feed this to a <code>KnowledgeBuilder</code> and continue with the
+        resulting Knowledge Packages.
+
+        <programlisting>
+KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+Reader rdr = new StringReader( drl );
+kBuilder.add( ResourceFactory.newReaderResource( rdr ), ResourceType.DRL );
+if( kBuilder.hasErrors() ){
+    // ...
+    throw new IllegalStateException( "DRL errors" );
+}
+kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );</programlisting>
+      </section>
+
+      <section>
+        <title>Instantiation from Maps</title>
+
+        <para>A <code>Map</code> that provides the values for substituting
+        template parameters should have a (string) key set matching all of
+        the parameter names. Again, values could be from any class, as long
+        as they provide a good <code>toString()</code> method. The expansion
+        would use the same approach, just differing in the way the
+        map collection is composed.</para>
+
+        <programlisting>
+Collection&lt;Map&lt;String,Object&gt;&gt; paramMaps = new ArrayList&lt;Map&lt;String,Object&gt;&gt;();
+// populate paramMaps
+ObjectDataCompiler converter = new ObjectDataCompiler();
+InputStream templateStream =
+    this.getClass().getResourceAsStream( "template.drl" );
+String drl = converter.compile( objs, templateStream );</programlisting>
+       </section>
+     </section>
+  </section>
