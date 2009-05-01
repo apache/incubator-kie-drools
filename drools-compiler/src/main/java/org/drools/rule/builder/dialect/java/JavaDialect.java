@@ -156,10 +156,11 @@ public class JavaDialect
 
         // initialie the dialect runtime data if it doesn't already exist
         if ( pkg.getDialectRuntimeRegistry().getDialectData( ID ) == null ) {
-            data = new JavaDialectRuntimeData( );
+            data = new JavaDialectRuntimeData();
             this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
                                                                  data );
-            data.onAdd(  this.pkg.getDialectRuntimeRegistry(), this.packageBuilder.getRootClassLoader() );
+            data.onAdd( this.pkg.getDialectRuntimeRegistry(),
+                        this.packageBuilder.getRootClassLoader() );
         }
 
         this.packageStoreWrapper = new PackageStore( data,
@@ -243,7 +244,7 @@ public class JavaDialect
     public AnalysisResult analyzeExpression(final PackageBuildContext context,
                                             final BaseDescr descr,
                                             final Object content,
-                                            final Map<String,Class<?>>[] availableIdentifiers) {
+                                            final Map<String, Class< ? >>[] availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( (String) content,
@@ -260,7 +261,7 @@ public class JavaDialect
     public AnalysisResult analyzeBlock(final PackageBuildContext context,
                                        final BaseDescr descr,
                                        final String text,
-                                       final Map<String,Class<?>>[] availableIdentifiers) {
+                                       final Map<String, Class< ? >>[] availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
             result = this.analyzer.analyzeBlock( text,
@@ -590,7 +591,7 @@ public class JavaDialect
 
         Function function = new Function( functionDescr.getName(),
                                           this.ID );
-        if ( resource != null && ((InternalResource)resource).hasURL() ) {
+        if ( resource != null && ((InternalResource) resource).hasURL() ) {
             function.setResource( resource );
         }
         this.pkg.addFunction( function );
@@ -717,7 +718,7 @@ public class JavaDialect
                                             final String prefix,
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        String newName = prefix + "_" + name.replaceAll( "[[^\\w]$]",
+        String newName = prefix + "_" + name.replaceAll( "[ -/:-@\\[-`\\{-\\xff]",
                                                          "_" );
 
         // make sure the class name does not exist, if it does increase the counter
