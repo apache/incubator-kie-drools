@@ -34,58 +34,81 @@ public class ClassMethodInspectorTest extends TestCase {
     public void testSimpleMethods() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( SimpleMethods.class );
 
-        assertEquals( 3,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
     }
 
     public void testMoreThanOneMethodWithTheSameName() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( MoreThanOneMethodWithTheSameName.class );
 
-        assertEquals( 5,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
 
     }
 
     public void testCollection() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( Collection.class );
 
-        assertEquals( 6,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
     }
 
     public void testArrayList() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( ArrayList.class );
 
-        assertEquals( 12,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
     }
 
     public void testList() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( List.class );
 
-        assertEquals( 11,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
     }
 
     public void testSet() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( Set.class );
 
-        assertEquals( 6,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
     }
 
     public void testMap() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( Map.class );
 
-        assertEquals( 4,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
     }
 
     public void testMyMap() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class );
 
-        assertEquals( 5,
-                      ext.getMethodNames().size() );
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
+    }
+
+    private boolean allowedMethod(String methodName) {
+        return ("hashCode".equals( methodName ) || "equals".equals( methodName ) || "listIterator".equals( methodName ) || "lastIndexOf".equals( methodName ) || "indexOf".equals( methodName ) || "subList".equals( methodName )
+                || "get".equals( methodName ) || "isEmpty".equals( methodName ) || "containsKey".equals( methodName ) || "values".equals( methodName ) || "entrySet".equals( methodName ) || "containsValue".equals( methodName )
+                || "keySet".equals( methodName ) || "size".equals( methodName ) || "toArray".equals( methodName ) || "iterator".equals( methodName ) || "contains".equals( methodName ) || "isEmpty".equals( methodName )
+                || "containsAll".equals( methodName ) || "size".equals( methodName ));
     }
 
     public static class SimpleMethods {

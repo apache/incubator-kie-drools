@@ -27,15 +27,17 @@ public class SuggestionCompletionEngine2Test extends TestCase {
 
         assertNotNull( methodNames );
         assertFalse( methodNames.isEmpty() );
-        assertEquals( 12,
-                      methodNames.size() );
+        for ( String s : methodNames ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         allowedMethod( s ) );
+        }
 
     }
 
-    /*
-     *
-     * TODO: Check something.set(int index, Object o)!
-     *
-     */
-
+    private boolean allowedMethod(String methodName) {
+        return ("hashCode".equals( methodName ) || "equals".equals( methodName ) || "listIterator".equals( methodName ) || "lastIndexOf".equals( methodName ) || "indexOf".equals( methodName ) || "subList".equals( methodName )
+                || "get".equals( methodName ) || "isEmpty".equals( methodName ) || "containsKey".equals( methodName ) || "values".equals( methodName ) || "entrySet".equals( methodName ) || "containsValue".equals( methodName )
+                || "keySet".equals( methodName ) || "size".equals( methodName ) || "toArray".equals( methodName ) || "iterator".equals( methodName ) || "contains".equals( methodName ) || "isEmpty".equals( methodName )
+                || "containsAll".equals( methodName ) || "size".equals( methodName ));
+    }
 }
