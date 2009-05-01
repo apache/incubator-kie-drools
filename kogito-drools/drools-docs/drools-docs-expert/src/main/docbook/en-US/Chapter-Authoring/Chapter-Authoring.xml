@@ -9,5 +9,6 @@
   <title>Authoring</title>
 
       <xi:include href="Section-Decision_Tables.xml" />
+      <xi:include href="Section-Templates.xml" />
 
 </chapter>

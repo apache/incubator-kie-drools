@@ -1,8 +1,16 @@
 package org.drools.template;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import org.drools.template.parser.Column;
+import org.drools.template.parser.DefaultTemplateContainer;
+import org.drools.template.parser.TemplateContainer;
 
 import junit.framework.TestCase;
 
@@ -35,10 +43,7 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
         EXPECTED_RULES.append( rule0_a ).append( rule0_b ).append( rule0_then );
     }
     
-    private class TestDataProvider
-        implements
-        DataProvider {
-
+    private class TestDataProvider implements DataProvider {
         private Iterator<String[]> iterator;
 
         TestDataProvider(List<String[]> rows) {
@@ -52,94 +57,154 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
         public String[] next() {
             return iterator.next();
         }
-
     }
 
+    private ArrayList<String[]> rows = new ArrayList<String[]>();
+    
+    public void setUp(){
+    	 rows.add( new String[]{ "1",
+                 "STANDARD",
+                 "FLAT",
+                 null,
+                 "SBLC",
+                 "ISS",
+                 "Commission",
+                 "Party 1",
+                 "USD",
+                 null,
+                 "750",
+                 "dummy"} );
+         rows.add( new String[]{ "15",
+                 "STANDARD",
+                 "FLAT",
+                 "Entity Branch 1",
+                 "SBLC",
+                 "ISS",
+                 "Commission",
+                 null,
+                 "YEN",
+                 null,
+                 "1600",
+                 "dummy" } );
+         rows.add( new String[]{ "12",
+                 "STANDARD",
+                 "FLAT",
+                 null,
+                 "SBLC",
+                 "ISS",
+                 "Postage",
+                 null,
+                 "YEN",
+                 null,
+                 "40",
+                 "dummy" } );
+         rows.add( new String[]{ "62",
+                 "STANDARD",
+                 "FLAT",
+                 null,
+                 "SBLC",
+                 "ISS",
+                 "Telex",
+                 null,
+                 "YEN",
+                 "< 30000",
+                 "45",
+                 "dummy" } );
+    }
+    
     public void testCompiler() throws Exception {
-        ArrayList<String[]> rows = new ArrayList<String[]>();
-        rows.add( createRow( "1",
-                             "STANDARD",
-                             "FLAT",
-                             null,
-                             "SBLC",
-                             "ISS",
-                             "Commission",
-                             "Party 1",
-                             "USD",
-                             null,
-                             "750",
-                             "dummy") );
-        rows.add( createRow( "15",
-                             "STANDARD",
-                             "FLAT",
-                             "Entity Branch 1",
-                             "SBLC",
-                             "ISS",
-                             "Commission",
-                             null,
-                             "YEN",
-                             null,
-                             "1600",
-                             "dummy" ) );
-        rows.add( createRow( "12",
-                             "STANDARD",
-                             "FLAT",
-                             null,
-                             "SBLC",
-                             "ISS",
-                             "Postage",
-                             null,
-                             "YEN",
-                             null,
-                             "40",
-                             "dummy" ) );
-        rows.add( createRow( "62",
-                             "STANDARD",
-                             "FLAT",
-                             null,
-                             "SBLC",
-                             "ISS",
-                             "Telex",
-                             null,
-                             "YEN",
-                             "< 30000",
-                             "45",
-                             "dummy" ) );
         TestDataProvider tdp = new TestDataProvider( rows );
         final DataProviderCompiler converter = new DataProviderCompiler();
         final String drl = converter.compile( tdp,
                                               "/templates/rule_template_1.drl" );
         System.out.println( drl );
         assertEquals( EXPECTED_RULES.toString(), drl );
-
     }
 
-    private String[] createRow(String cell1,
-                               String cell2,
-                               String cell3,
-                               String cell4,
-                               String cell5,
-                               String cell6,
-                               String cell7,
-                               String cell8,
-                               String cell9,
-                               String cell10,
-                               String cell11,
-                               String cell12) {
-        String[] row = new String[12];
-        row[0] = cell1;
-        row[1] = cell2;
-        row[2] = cell3;
-        row[3] = cell4;
-        row[4] = cell5;
-        row[5] = cell6;
-        row[6] = cell7;
-        row[7] = cell8;
-        row[8] = cell9;
-        row[9] = cell10;
-        row[10] = cell11;
-        row[11] = cell12;
-        return row;
+    public void testCompilerMaps() throws Exception {
+    	Collection<Map<String,Object>> maps = new ArrayList<Map<String,Object>>();
+        final ObjectDataCompiler converter = new ObjectDataCompiler();
+        InputStream templateStream =
+            this.getClass().getResourceAsStream( "/templates/rule_template_1.drl" );
+        TemplateContainer tc = new DefaultTemplateContainer( templateStream );
+        Column[] columns = tc.getColumns();
+        
+        for( String[] row: rows ){
+        	Map<String,Object> map = new HashMap<String,Object>();
+        	for( int icol = 0; icol < columns.length; icol++ ){
+        		Object value = row[icol];
+        		if( value != null ){
+        			map.put( columns[icol].getName(), value );
+        		}
+        	}
+        	maps.add( map );
+        }
+        templateStream =
+            this.getClass().getResourceAsStream( "/templates/rule_template_1.drl" );
+        final String drl = converter.compile( maps, templateStream );
+        System.out.println( drl );
+        assertEquals( EXPECTED_RULES.toString(), drl );
     }
+
+    public static class OBJ {
+    	private final String FEE_SCHEDULE_ID;
+    	private final String FEE_SCHEDULE_TYPE;
+    	private final String FEE_MODE_TYPE;
+    	private final String ENTITY_BRANCH;
+    	private final String PRODUCT_TYPE;
+    	private final String ACTIVITY_TYPE;
+    	public final String FEE_TYPE;
+    	public final String OWNING_PARTY;
+    	public final String CCY;
+    	public final String LC_AMOUNT;
+    	public final String AMOUNT;
+    	OBJ( String[] vals ){
+    		FEE_SCHEDULE_ID   = vals[0];
+    		FEE_SCHEDULE_TYPE = vals[1];
+    		FEE_MODE_TYPE     = vals[2];
+    		ENTITY_BRANCH     = vals[3];
+    		PRODUCT_TYPE      = vals[4];
+    		ACTIVITY_TYPE     = vals[5];
+    		FEE_TYPE          = vals[6];
+    		OWNING_PARTY      = vals[7];
+    		CCY               = vals[8];
+    		LC_AMOUNT         = vals[9];
+    		AMOUNT            = vals[10];
+    	}
+    	public String getFEE_SCHEDULE_ID() {
+    		return FEE_SCHEDULE_ID;
+    	}
+    	public String getFEE_SCHEDULE_TYPE() {
+    		return FEE_SCHEDULE_TYPE;
+    	}
+    	public String getFEE_MODE_TYPE() {
+    		return FEE_MODE_TYPE;
+    	}
+    	public String ENTITY_BRANCH() {
+    		return ENTITY_BRANCH;
+    	}
+    	public String PRODUCT_TYPE() {
+    		return PRODUCT_TYPE;
+    	}
+    	public String ACTIVITY_TYPE() {
+    		return ACTIVITY_TYPE;
+    	}
+    }
+
+    public void testCompilerObjs() throws Exception {
+    	Collection<Object> objs = new ArrayList<Object>();
+        final ObjectDataCompiler converter = new ObjectDataCompiler();
+        final InputStream templateStream =
+            this.getClass().getResourceAsStream( "/templates/rule_template_1.drl" );
+        
+        for( String[] row: rows ){
+        	OBJ obj = new OBJ( row );
+        	objs.add( obj );
+        }
+        final String drl = converter.compile( objs, templateStream );
+        System.out.println( drl );
+        assertEquals( EXPECTED_RULES.toString(), drl );
+    }
+
 
 }
