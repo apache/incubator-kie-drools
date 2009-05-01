@@ -149,7 +149,6 @@ public class SchedulerTest extends DroolsTestCase {
 
         };
 
-        rule.setDuration( duration );
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
@@ -194,6 +193,7 @@ public class SchedulerTest extends DroolsTestCase {
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
+        rule.setDuration( duration );
 
         node.assertLeftTuple( tuple1,
                           context1,
