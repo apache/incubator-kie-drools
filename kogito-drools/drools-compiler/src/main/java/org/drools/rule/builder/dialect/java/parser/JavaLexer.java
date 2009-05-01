@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/semantics/java/parser/Java.g 2009-04-09 16:58:59
+// $ANTLR 3.1.1 src/main/resources/org/drools/semantics/java/parser/Java.g 2009-05-01 12:52:54
 
 	package org.drools.rule.builder.dialect.java.parser;
 
@@ -3157,7 +3157,7 @@ public class JavaLexer extends Lexer {
                 int alt26=2;
                 int LA26_0 = input.LA(1);
 
-                if ( (LA26_0=='$'||(LA26_0>='0' && LA26_0<='9')||(LA26_0>='A' && LA26_0<='Z')||LA26_0=='_'||(LA26_0>='a' && LA26_0<='z')||(LA26_0>='\u00C0' && LA26_0<='\u00D6')||(LA26_0>='\u00D8' && LA26_0<='\u00F6')||(LA26_0>='\u00F8' && LA26_0<='\u1FFF')||(LA26_0>='\u3040' && LA26_0<='\u318F')||(LA26_0>='\u3300' && LA26_0<='\u337F')||(LA26_0>='\u3400' && LA26_0<='\u3D2D')||(LA26_0>='\u4E00' && LA26_0<='\u9FFF')||(LA26_0>='\uF900' && LA26_0<='\uFAFF')) ) {
+                if ( (LA26_0=='$'||(LA26_0>='0' && LA26_0<='9')||(LA26_0>='A' && LA26_0<='Z')||LA26_0=='_'||(LA26_0>='a' && LA26_0<='z')||(LA26_0>='\u00C0' && LA26_0<='\u00D6')||(LA26_0>='\u00D8' && LA26_0<='\u00F6')||(LA26_0>='\u00F8' && LA26_0<='\u1FFF')||(LA26_0>='\u3040' && LA26_0<='\u318F')||(LA26_0>='\u3300' && LA26_0<='\u337F')||(LA26_0>='\u3400' && LA26_0<='\u3D2D')||(LA26_0>='\u4E00' && LA26_0<='\u9FFF')||(LA26_0>='\uF900' && LA26_0<='\uFAFF')||(LA26_0>='\uFF10' && LA26_0<='\uFF19')) ) {
                     alt26=1;
                 }
 
@@ -3166,7 +3166,7 @@ public class JavaLexer extends Lexer {
             	case 1 :
             	    // src/main/resources/org/drools/semantics/java/parser/Java.g:
             	    {
-            	    if ( input.LA(1)=='$'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF') ) {
+            	    if ( input.LA(1)=='$'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19') ) {
             	        input.consume();
 
             	    }
@@ -3222,10 +3222,10 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "JavaIDDigit"
     public final void mJavaIDDigit() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1066:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1066:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' | '\\uff10' .. '\\uff19' )
             // src/main/resources/org/drools/semantics/java/parser/Java.g:
             {
-            if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='\u0660' && input.LA(1)<='\u0669')||(input.LA(1)>='\u06F0' && input.LA(1)<='\u06F9')||(input.LA(1)>='\u0966' && input.LA(1)<='\u096F')||(input.LA(1)>='\u09E6' && input.LA(1)<='\u09EF')||(input.LA(1)>='\u0A66' && input.LA(1)<='\u0A6F')||(input.LA(1)>='\u0AE6' && input.LA(1)<='\u0AEF')||(input.LA(1)>='\u0B66' && input.LA(1)<='\u0B6F')||(input.LA(1)>='\u0BE7' && input.LA(1)<='\u0BEF')||(input.LA(1)>='\u0C66' && input.LA(1)<='\u0C6F')||(input.LA(1)>='\u0CE6' && input.LA(1)<='\u0CEF')||(input.LA(1)>='\u0D66' && input.LA(1)<='\u0D6F')||(input.LA(1)>='\u0E50' && input.LA(1)<='\u0E59')||(input.LA(1)>='\u0ED0' && input.LA(1)<='\u0ED9')||(input.LA(1)>='\u1040' && input.LA(1)<='\u1049') ) {
+            if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='\u0660' && input.LA(1)<='\u0669')||(input.LA(1)>='\u06F0' && input.LA(1)<='\u06F9')||(input.LA(1)>='\u0966' && input.LA(1)<='\u096F')||(input.LA(1)>='\u09E6' && input.LA(1)<='\u09EF')||(input.LA(1)>='\u0A66' && input.LA(1)<='\u0A6F')||(input.LA(1)>='\u0AE6' && input.LA(1)<='\u0AEF')||(input.LA(1)>='\u0B66' && input.LA(1)<='\u0B6F')||(input.LA(1)>='\u0BE7' && input.LA(1)<='\u0BEF')||(input.LA(1)>='\u0C66' && input.LA(1)<='\u0C6F')||(input.LA(1)>='\u0CE6' && input.LA(1)<='\u0CEF')||(input.LA(1)>='\u0D66' && input.LA(1)<='\u0D6F')||(input.LA(1)>='\u0E50' && input.LA(1)<='\u0E59')||(input.LA(1)>='\u0ED0' && input.LA(1)<='\u0ED9')||(input.LA(1)>='\u1040' && input.LA(1)<='\u1049')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19') ) {
                 input.consume();
 
             }
@@ -3248,8 +3248,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1083:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1083:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1084:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1084:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -3277,12 +3277,12 @@ public class JavaLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1087:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1087:9: '/*' ( options {greedy=false; } : . )* '*/'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1088:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1088:9: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1087:14: ( options {greedy=false; } : . )*
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1088:14: ( options {greedy=false; } : . )*
             loop27:
             do {
                 int alt27=2;
@@ -3307,7 +3307,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt27) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1087:42: .
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1088:42: .
             	    {
             	    matchAny(); 
 
@@ -3338,12 +3338,12 @@ public class JavaLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1091:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1091:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1092:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1092:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1091:12: (~ ( '\\n' | '\\r' ) )*
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1092:12: (~ ( '\\n' | '\\r' ) )*
             loop28:
             do {
                 int alt28=2;
@@ -3356,7 +3356,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt28) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1091:12: ~ ( '\\n' | '\\r' )
+            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1092:12: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -3376,7 +3376,7 @@ public class JavaLexer extends Lexer {
                 }
             } while (true);
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1091:26: ( '\\r' )?
+            // src/main/resources/org/drools/semantics/java/parser/Java.g:1092:26: ( '\\r' )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -3385,7 +3385,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt29) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1091:26: '\\r'
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1092:26: '\\r'
                     {
                     match('\r'); 
 
@@ -4266,35 +4266,35 @@ public class JavaLexer extends Lexer {
         "\1\ufaff\1\165\1\uffff\1\156\1\171\1\71\1\75\1\157\1\170\3\uffff"+
         "\1\75\2\uffff\1\157\2\uffff\1\162\1\75\1\163\1\157\1\165\1\171\2"+
         "\157\5\uffff\1\150\1\145\1\157\3\75\1\174\3\75\1\uffff\1\170\1\146"+
-        "\4\uffff\1\143\1\142\1\157\1\160\1\164\1\ufaff\1\162\1\156\1\157"+
+        "\4\uffff\1\143\1\142\1\157\1\160\1\164\1\uff19\1\162\1\156\1\157"+
         "\1\160\1\151\5\uffff\2\141\1\156\2\164\1\163\1\165\3\uffff\1\154"+
         "\1\162\1\171\2\uffff\2\163\1\156\1\157\1\154\1\162\1\164\1\154\1"+
-        "\167\1\157\1\164\1\145\1\156\1\ufaff\1\146\1\151\1\164\1\144\24"+
-        "\uffff\1\146\1\uffff\1\146\1\153\1\154\1\164\1\166\1\157\1\ufaff"+
+        "\167\1\157\1\164\1\145\1\156\1\uff19\1\146\1\151\1\164\1\144\24"+
+        "\uffff\1\146\1\uffff\1\146\1\153\1\154\1\164\1\166\1\157\1\uff19"+
         "\1\164\1\uffff\1\164\1\151\1\143\1\162\1\145\1\164\1\163\1\162\1"+
         "\164\1\143\2\145\1\164\1\145\1\162\1\155\1\144\1\141\1\157\1\163"+
-        "\1\156\1\145\1\ufaff\1\164\1\145\2\141\1\163\1\ufaff\1\151\1\154"+
-        "\1\ufaff\1\154\1\145\1\141\1\147\1\142\1\uffff\1\141\1\154\1\165"+
+        "\1\156\1\145\1\uff19\1\164\1\145\2\141\1\163\1\uff19\1\151\1\154"+
+        "\1\uff19\1\154\1\145\1\141\1\147\1\142\1\uffff\1\141\1\154\1\165"+
         "\1\151\1\uffff\1\141\1\151\1\145\1\141\1\162\1\145\1\162\1\uffff"+
-        "\1\141\1\151\1\143\1\150\1\164\1\162\1\143\1\163\1\ufaff\1\151\1"+
-        "\150\1\ufaff\1\156\1\120\1\ufaff\1\171\2\ufaff\1\164\1\167\1\ufaff"+
-        "\1\163\1\ufaff\1\uffff\2\162\1\154\1\164\1\145\1\uffff\1\166\1\ufaff"+
-        "\1\uffff\1\145\1\ufaff\1\153\1\ufaff\1\154\1\165\1\145\1\162\1\146"+
-        "\1\147\2\143\2\164\1\155\1\146\1\156\1\143\1\164\1\162\2\ufaff\1"+
-        "\150\1\ufaff\1\uffff\1\156\1\ufaff\1\uffff\1\144\1\157\1\uffff\1"+
-        "\120\2\uffff\1\151\1\ufaff\1\uffff\1\151\1\uffff\1\141\1\164\3\ufaff"+
-        "\1\145\1\uffff\1\141\1\uffff\1\ufaff\1\uffff\1\145\1\154\1\ufaff"+
-        "\1\156\1\171\1\145\1\ufaff\1\164\1\145\1\ufaff\1\145\1\141\1\143"+
-        "\1\ufaff\1\146\1\157\2\uffff\1\ufaff\1\uffff\1\165\1\uffff\1\163"+
-        "\1\151\1\157\1\154\1\ufaff\1\uffff\1\145\1\143\1\ufaff\1\171\3\uffff"+
-        "\1\ufaff\1\156\1\uffff\1\ufaff\1\164\1\uffff\3\ufaff\1\uffff\1\145"+
-        "\1\ufaff\1\uffff\1\156\1\143\1\145\1\uffff\1\160\1\156\1\uffff\1"+
-        "\145\1\ufaff\1\156\1\151\1\145\1\uffff\1\156\1\164\1\uffff\1\ufaff"+
-        "\1\uffff\1\ufaff\1\uffff\1\ufaff\3\uffff\1\144\1\uffff\1\164\1\145"+
-        "\1\157\1\ufaff\1\151\1\ufaff\1\uffff\1\164\1\156\1\ufaff\1\164\1"+
-        "\ufaff\3\uffff\1\ufaff\1\163\1\ufaff\1\146\1\uffff\1\172\1\uffff"+
-        "\1\163\1\164\1\uffff\1\ufaff\2\uffff\1\ufaff\1\uffff\1\ufaff\1\145"+
-        "\1\ufaff\1\163\3\uffff\1\144\1\uffff\2\ufaff\2\uffff";
+        "\1\141\1\151\1\143\1\150\1\164\1\162\1\143\1\163\1\uff19\1\151\1"+
+        "\150\1\uff19\1\156\1\120\1\uff19\1\171\2\uff19\1\164\1\167\1\uff19"+
+        "\1\163\1\uff19\1\uffff\2\162\1\154\1\164\1\145\1\uffff\1\166\1\uff19"+
+        "\1\uffff\1\145\1\uff19\1\153\1\uff19\1\154\1\165\1\145\1\162\1\146"+
+        "\1\147\2\143\2\164\1\155\1\146\1\156\1\143\1\164\1\162\2\uff19\1"+
+        "\150\1\uff19\1\uffff\1\156\1\uff19\1\uffff\1\144\1\157\1\uffff\1"+
+        "\120\2\uffff\1\151\1\uff19\1\uffff\1\151\1\uffff\1\141\1\164\3\uff19"+
+        "\1\145\1\uffff\1\141\1\uffff\1\uff19\1\uffff\1\145\1\154\1\uff19"+
+        "\1\156\1\171\1\145\1\uff19\1\164\1\145\1\uff19\1\145\1\141\1\143"+
+        "\1\uff19\1\146\1\157\2\uffff\1\uff19\1\uffff\1\165\1\uffff\1\163"+
+        "\1\151\1\157\1\154\1\uff19\1\uffff\1\145\1\143\1\uff19\1\171\3\uffff"+
+        "\1\uff19\1\156\1\uffff\1\uff19\1\164\1\uffff\3\uff19\1\uffff\1\145"+
+        "\1\uff19\1\uffff\1\156\1\143\1\145\1\uffff\1\160\1\156\1\uffff\1"+
+        "\145\1\uff19\1\156\1\151\1\145\1\uffff\1\156\1\164\1\uffff\1\uff19"+
+        "\1\uffff\1\uff19\1\uffff\1\uff19\3\uffff\1\144\1\uffff\1\164\1\145"+
+        "\1\157\1\uff19\1\151\1\uff19\1\uffff\1\164\1\156\1\uff19\1\164\1"+
+        "\uff19\3\uffff\1\uff19\1\163\1\uff19\1\146\1\uffff\1\172\1\uffff"+
+        "\1\163\1\164\1\uffff\1\uff19\2\uffff\1\uff19\1\uffff\1\uff19\1\145"+
+        "\1\uff19\1\163\3\uffff\1\144\1\uffff\2\uff19\2\uffff";
     static final String DFA30_acceptS =
         "\2\uffff\1\2\6\uffff\1\12\1\13\1\14\1\uffff\1\16\1\17\1\uffff\1"+
         "\22\1\23\10\uffff\1\50\1\52\1\53\1\60\1\63\12\uffff\1\132\2\uffff"+
@@ -4379,7 +4379,7 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0080\20\uffff\1\u0081",
             "\1\u0082",
             "\1\u0083",
@@ -4421,7 +4421,8 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\24"+
             "\56\1\u00a4\5\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08"+
             "\56\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
-            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12"+
+            "\56",
             "\1\u00a6",
             "\1\u00a7",
             "\1\u00a8",
@@ -4457,7 +4458,8 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\4"+
             "\56\1\u00b1\25\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08"+
             "\56\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
-            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12"+
+            "\56",
             "\1\u00b3",
             "",
             "\1\u00b4",
@@ -4485,7 +4487,7 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00cb",
             "\1\u00cc",
             "\1\u00cd",
@@ -4494,13 +4496,13 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00d1",
             "\1\u00d2",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00d4",
             "\1\u00d5",
             "\1\u00d6",
@@ -4531,39 +4533,39 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00ed",
             "\1\u00ee",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00f0",
             "\1\u00f1",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00f3",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00f6",
             "\1\u00f7",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u00f9",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u00fb",
             "\1\u00fc",
@@ -4575,18 +4577,18 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u0102",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0104",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0106",
             "\1\u0107",
             "\1\u0108",
@@ -4606,22 +4608,22 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0118",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u011a",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u011c",
             "\1\u011d",
@@ -4633,7 +4635,8 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\22"+
             "\56\1\u0120\7\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08"+
             "\56\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
-            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12"+
+            "\56",
             "",
             "\1\u0122",
             "",
@@ -4642,15 +4645,16 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\13"+
             "\56\1\u0125\16\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08"+
             "\56\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
-            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12"+
+            "\56",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0129",
             "",
             "\1\u012a",
@@ -4658,34 +4662,34 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u012c",
             "\1\u012d",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u012f",
             "\1\u0130",
             "\1\u0131",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0133",
             "\1\u0134",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0136",
             "\1\u0137",
             "\1\u0138",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u013a",
             "\1\u013b",
             "",
@@ -4693,7 +4697,7 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u013d",
             "",
@@ -4704,14 +4708,14 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u0143",
             "\1\u0144",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0146",
             "",
             "",
@@ -4719,33 +4723,33 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0148",
             "",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u014a",
             "",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u014e",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u0150",
             "\1\u0151",
@@ -4758,7 +4762,7 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0157",
             "\1\u0158",
             "\1\u0159",
@@ -4769,17 +4773,17 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "",
             "",
@@ -4791,36 +4795,36 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0164",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\u0166",
             "\1\u0167",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0169",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "",
             "",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u016c",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u016e",
             "",
             "\1\u016f",
@@ -4831,23 +4835,23 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0175",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\u0177",
             "",
             "",
@@ -4857,11 +4861,11 @@ public class JavaLexer extends Lexer {
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32"+
             "\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
             "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
-            "\u5200\56\u5900\uffff\u0200\56",
+            "\u5200\56\u5900\uffff\u0200\56\u0410\uffff\12\56",
             "",
             ""
     };
