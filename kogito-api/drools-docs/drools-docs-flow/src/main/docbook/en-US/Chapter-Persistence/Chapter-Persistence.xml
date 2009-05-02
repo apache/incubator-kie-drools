@@ -9,12 +9,12 @@
 
   <title>Persistence</title>
 
-  <para>Drools Flow allows the persistent storage of the different kinds of
-  information, i.e. the process runtime state, the process definitions and the
+  <para>Drools Flow allows the persistent storage of certain information,
+  i.e., the process runtime state, the process definitions and the
   history information.</para>
 
   <section>
-    <title>Runtime state</title>
+    <title>Runtime State</title>
 
     <para>Whenever a process is started, a process instance is created, which
     represents the execution of the process in that specific context.  For example,
@@ -23,60 +23,68 @@
     the current execution state in that specific context, and contains all the
     information related to that process instance.  Note that it only contains
     the minimal runtime state that is needed to continue the execution of that
-    process instance at some later time (and for example does not include information
+    process instance at some later time, but it does not include information
     about the history of that process instance if that information is no longer
-    needed in the process instance at some later stage, see the history log).</para>
+    needed in the process instance.</para>
 
-    <para>The runtime state of an executing process can be persisted, for example
-    in a database.  This allows for example to restore the state of execution of all
-    running processes in case of unexpected failure, or to temporarily remove running
-    instances from memory when they are no longer needed and restore them at some later
-    time.  Drools Flow allows you to plug in different persistence strategies.  By default
-    (if you do not configure the process engine otherwise), process instances are not
-    persisted.</para>
+    <para>The runtime state of an executing process can be made persistent,
+    for example, in a database.  This allows to restore the state of
+    execution of all running processes in case of unexpected failure,
+    or to temporarily remove running instances from memory and restore
+    them at some later time.  Drools Flow allows you to plug in different
+    persistence strategies.  By default, if you do not configure the
+    process engine otherwise, process instances are not made persistent.</para>
 
     <section>
-      <title>Binary persistence</title>
+      <title>Binary Persistence</title>
 
-    <para>But Drools Flow provides a binary persistence mechanism that allows you
-    to persist the state of a process instance as a binary blob.  This way, the
-    state of all running process instances can always be stored in a persistent location.
-    Note that these binary blobs usually are relatively small, as they only contain the
-    minimal execution state of the process instance.  For a simple process instance, this
-    usually contains one or a few node instances (i.e. a node that is currently executing)
-    and possibly some variable values.</para>
+    <para>Drools Flow provides a binary persistence mechanism that allows
+    you to save the state of a process instance as a binary dataset.  This
+    way, the state of all running process instances can always be stored in
+    a persistent location. Note that these binary datasets usually are
+    relatively small, as they only contain the minimal execution state of
+    the process instance.  For a simple process instance, this usually
+    contains one or a few node instances, i.e., any node that is currently
+    executing, and, possibly, some variable values.</para>
     </section>
 
     <section>
-      <title>Safe points</title>
+      <title>Safe Points</title>
 
-    <para>The state of a process instance is stored at so-called "safe points" during the
-    execution of the process engine.  Whenever a process instance is executed (for example by
-    starting it, or by continuing after receiving a trigger it was waiting for), the engine
-    continues execution of the process instance until no more actions can be performed.  At
-    that point, the engine has reached the next safe state and the state of the process
-    instance (and all other process instances that might have been affected) is stored
+    <para>The state of a process instance is stored at so-called "safe points"
+    during the execution of the process engine.  Whenever a process instance
+    is executing, after its start or continuation from a wait state, the engine
+    proceeds until no more actions can be performed. At that point, the engine
+    has reached the next safe state, and the state of the process instance
+    and all other process instances that might have been affected is stored
     persistently.</para>
     </section>
 
     <section>
-      <title>Configuring persistence</title>
+      <title>Configuring Persistence</title>
 
-    <para>By default, the engine does automatically persist the runtime data.  It is however
-    pretty straightforward to configure the engine to do this, by adding a config file and
-    the necessary dependencies.  The persistence itself is based on the Java Persistence API
-    (JPA) and can thus work with several persistence mechanisms.  We are using Hibernate by
-    default (but feel free to check out other alternatives).  We're using the H2 database
-    underneath to store the data (but again you're free to choose your own alternative).</para>
+    <para>By default, the engine does not save runtime data persistently.
+    It is, however, pretty straightforward to configure the engine to do
+    this, by adding a configuration file and the necessary dependencies.
+    Persistence itself is based on the Java Persistence API (JPA) and can
+    thus work with several persistence mechanisms.  We are using Hibernate by
+    default, but feel free to employ alternatives.  A H2 database is used
+    underneath to store the data, but you mighto choose your own alternative
+    for this, too.</para>
 
-    <para>First of all, you need to add the necessary dependencies to your classpath.  If you're
-    using the Eclipse IDE, you can do that by adding the jars to your Drools runtime directory
-    (see the chapter on the Eclipse IDE), or by manually adding these dependencies to your project.
-    First of all you need the drools-persistence-jpa jar, as that contains the necessary code
-    to persist the runtime state whenever necessary.  Next, you also need various other dependencies,
-    but these are different depending on the persistence solution and database you are using.  In
-    our case (using Hibernate as the JPA persistence provider, the H2 database and bitronix for
-    JTA-based transaction management), the following list of dependencies is needed:
+    <para>First of all, you need to add the necessary dependencies to your
+    classpath.  If you're using the Eclipse IDE, you can do that by adding
+    the jar files to your Drools runtime directory (cf. chapter
+    <quote><link linkend='ch.Drools_Eclipse_IDE_Features'
+                 endterm="ch.Drools_Eclipse_IDE_Features,title"/></quote>),
+    or by manually adding these dependencies to your project. First of all,
+    you need the jar file <filename>drools-persistence-jpa.jar</filename>,
+    as that contains code for saving the runtime state whenever necessary.
+    Next, you also need various other dependencies, depending on the
+    persistence solution and database you are using.  For the default
+    combination with Hibernate as the JPA persistence provider, the H2
+    database and Bitronix for JTA-based transaction management, the
+    following list of dependencies is needed:
       <orderedlist>
         <listitem>drools-persistence-jpa (org.drools)</listitem>
         <listitem>persistence-api-1.0.jar (javax.persistence)</listitem>
@@ -95,10 +103,12 @@
       </orderedlist>
     </para>
 
-    <para>Next, you need to configure the Drools engine to persist the state of the engine whenever
-    necessary.  The easiest way to do this is to use the JPAKnowledgeService to create your knowledge
-    session, based on a knowledge base, a knowledge session configuration (if necessary) and an
-    environment.  The environment needs to contain a reference to your entity manager factory.</para>
+    <para>Next, you need to configure the Drools engine to save the state of the
+    engine whenever necessary.  The easiest way to do this is to use
+    <code>JPAKnowledgeService</code> to create your knowledge session, based on a
+    Knowledge Base, a Knowledge Session Configuration (if necessary) and an
+    environment.  The environment needs to contain a reference to your
+    Entity Manager Factory.</para>
 
     <programlisting>
 // create the entity manager factory and register it in the environment
@@ -116,7 +126,8 @@ int sessionId = ksession.getId();
 ksession.startProcess( "MyProcess" );
 ksession.dispose();</programlisting>
 
-    <para>You can also yse the JPAKnowledgeService to recreate a session based on a specific session id:</para>
+    <para>You can also yse the <code>JPAKnowledgeService</code> to recreate
+    a session based on a specific session id:</para>
 
     <programlisting>
 // recreate the session from database using the sessionId
@@ -139,17 +150,20 @@ drools.processInstanceManagerFactory = org.drools.persistence.processinstance.JP
 drools.workItemManagerFactory = org.drools.persistence.processinstance.JPAWorkItemManagerFactory
 drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPASignalManagerFactory</programlisting-->
 
-    <para>Note that we only persist the minimal state that is needed to continue execution of the process
-    instance at some later point.  This for example means that it does not contain information about already
-    executed nodes if that information is no longer relevant, or that process instances that have been
-    completed or aborted are removed from the database.  If you however want to search for history-related
+    <para>Note that we only save the minimal state that is needed to continue
+    execution of the process instance at some later point.  This means, for example, that
+    it does not contain information about already executed nodes if that information
+    is no longer relevant, or that process instances that have been completed or
+    aborted are removed from the database.  If you want to search for history-related
     information, you should use the history log, as explained later.</para>
 
-    <para>By default, the drools-persistence-jpa jar contains a configuration file that configures
-    JPA to use hibernate and the H2 database, called persistence.xml in the META-INF directory, as shown below.
-    You will need to override these defaults if you want to change them, by adding your own persistence.xml in
-    your classpath (before the default one in the drools-persistence-jpa jar).  We refer to the JPA and Hibernate
-    documentation for more information on how to do this.</para>
+    <para>By default, <filename>drools-persistence-jpa.jar</filename> contains a configuration
+    file that configures JPA to use Hibernate and the H2 database, called
+    <filename>persistence.xml</filename> in the META-INF directory, as shown below.
+    You will need to override these defaults if you want to change them, by adding
+    your own <filename>persistence.xml</filename> in your classpath, preceding the
+    default one in <filename>drools-persistence-jpa.jar</filename>.  Refer to
+    the JPA and Hibernate documentation for more information on how to do this.</para>
 
     <programlisting>
 &lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
@@ -158,7 +172,7 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
   xsi:schemaLocation=
     "http://java.sun.com/xml/ns/persistence
      http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
-     http://java.sun.com/xml/ns/persistence/orm 
+     http://java.sun.com/xml/ns/persistence/orm
      http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
   xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -173,19 +187,19 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
     &lt;class&gt;org.drools.persistence.processinstance.WorkItemInfo&lt;/class&gt;
 
     &lt;properties&gt;
-      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;	        
+      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
       &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
       &lt;property name="hibernate.hbm2ddl.auto" value="update"/&gt;
-      &lt;property name="hibernate.show_sql" value="true"/&gt;	
-      &lt;property name="hibernate.transaction.manager_lookup_class" 
+      &lt;property name="hibernate.show_sql" value="true"/&gt;
+      &lt;property name="hibernate.transaction.manager_lookup_class"
                 value="org.hibernate.transaction.BTMTransactionManagerLookup"/&gt;
-    &lt;/properties&gt;        
+    &lt;/properties&gt;
   &lt;/persistence-unit&gt;
 &lt;/persistence&gt;</programlisting>
 
-    <para>This config file refers to a data source called "jdbc/processInstanceDS".
-    The following Java fragment could be used to set up this data source, in this
-    case we are using the file-based H2 database.</para>
+    <para>This configuration file refers to a data source called "jdbc/processInstanceDS".
+    The following Java fragment could be used to set up this data source, where
+    we are using the file-based H2 database.</para>
 
     <programlisting>
 PoolingDataSource ds = new PoolingDataSource();
@@ -217,14 +231,16 @@ ds.init();</programlisting>
     <section>
       <title>Transactions</title>
 
-    Whenever you do not provide transaction boundaries inside your application, the engine
-    will automatically execute each method invocation on the engine in a separate transaction.
-    If this is acceptable behaviour, you don't need to do anything else.  You can however
-    also specify the transaction boundaries yourself.  This allows you for example to combine
-    multiple commands into one transaction.  You need to register a transaction manager at
-    the environment before using user-defined transactions.  For example, the following sample
-    uses the Bitronix transaction manager.  Next, we use the Java Transaction API (JTA)
-    to specify transaction boundaries, as shown below:
+    <para>Whenever you do not provide transaction boundaries inside your application,
+    the engine  will automatically execute each method invocation on the engine
+    in a separate transaction.  If this behavior is acceptable, you don't need to do
+    anything else.  You can, however, also specify the transaction boundaries yourself.
+    This allows you, for example, to combine multiple commands into one transaction.</para>
+
+    <para>You need to register a transaction manager at the environment before
+    using user-defined transactions.  The following sample code uses the Bitronix
+    transaction manager.  Next, we use the Java Transaction API (JTA)
+    to specify transaction boundaries, as shown below:</para>
 
     <programlisting>
 // create the entity manager factory and register it in the environment
@@ -240,7 +256,8 @@ StatefulKnowledgeSession ksession =
     JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 
 // start the transaction
-UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+UserTransaction ut =
+  (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 ut.begin();
 
 // perform multiple commands inside one transaction
@@ -248,7 +265,7 @@ ksession.insert( new Person( "John Doe" ) );
 ksession.startProcess( "MyProcess" );
 ksession.fireAllRules();
 
-// now commit the transaction
+// commit the transaction
 ut.commit();</programlisting>
 
     </section>
@@ -257,96 +274,117 @@ ut.commit();</programlisting>
   </section>
 
   <section>
-    <title>Process definitions</title>
+    <title>Process Definitions</title>
 
-    <para>Process definitions are usually stored in an XML format.  These files can easily be
-    stored on a file system during development.  However, whenever you want to make your knowledge
-    accessible to one or more engines in production, we recommend using a knowledge repository
-    that (logically) centralizes your knowledge (in one or more knowledge repositories).</para>
+    <para>Process definition files are usually written in an XML format.  These
+    files can easily be stored on a file system during development.  However,
+    whenever you want to make your knowledge accessible to one or more engines
+    in production, we recommend using a knowledge repository that (logically)
+    centralizes your knowledge in one or more knowledge repositories.</para>
 
-    <para>Guvnor is a sub-project that provides exactly that: it consists of a repository
-    for storing different kinds of knowledge (not only process definitions but also rules, object
-    models, etc.), allows easy retrieval of this knowledge (for example using WebDAV or by using
-    a knowledge agent that automatically downloads the information from Guvnor when creating a knowledge
-    base), and provides a web application that allows business users to view and possibly update
-    the information in the knowledge repository.  Check out the Drools Guvnor documentation for
-    more information on how to do this.</para>
+    <para>Guvnor is a sub-project that provides exactly that. It consists of a
+    repository for storing different kinds of Knowledge, not only process
+    definitions but also rules, object models, etc. It allows easy retrieval of
+    this knowledge using WebDAV or by employing a Knowledge Agent that
+    automatically downloads the information from Guvnor when creating a
+    Knowledge Base, and provides a web application that allows business users
+    to view and possibly update the information in the Knowledge Repository.
+    Check out the Drools Guvnor documentation for more information on how to
+    do this.</para>
   </section>
 
   <section>
-    <title>History log</title>
+    <title>History Log</title>
 
-    <para>In many cases it is useful (if not necessary) to store information about the execution
-    on process instances, so that this information can be used afterwards for example to verify
-    what actions have been executed for a particular process instance, or to monitor and/or analyze
-    the efficiency of a particular process, etc.  Storing history information in the runtime
-    database is usually not a good idea (as this would result in ever-growing runtime data,
-    and monitoring and analysis queries might influence the performance of your runtime engine).
-    That is why history information about the execution of process instances is stored separately.</para>
+    <para>In many cases it is useful (if not necessary) to store information
+    about the execution of process instances, so that this information can
+    be used afterwards, for example, to verify what actions have been executed
+    for a particular process instance, or to monitor and analyze the efficiency
+    of a particular process.  Storing history information in the runtime
+    database is usually not a good idea, as this would result in ever-growing
+    runtime data, and monitoring and analysis queries might influence the
+    performance of your runtime engine.  That is why history information about
+    the execution of process instances is stored separately.</para>
 
-    <para>This history log of execution information is created based on the events generated by the
-    process engine during execution.  The Drools runtime engine provides a generic mechanism to listen
-    to different kinds of events.  The necessary information can easily be extracted from these events
-    and persisted, for example in a database.  Filters can be used to only store the information you
-    find relevant.</para>
+    <para>This history log of execution information is created based on the
+    events generated by the process engine during execution.  The Drools
+    runtime engine provides a generic mechanism to listen to different kinds
+    of events.  The necessary information can easily be extracted from these
+    events and made persistent, for example in a database.  Filters can be
+    used to only store the information you find relevant.</para>
 
     <section>
-      <title>Persisting process events in a database</title>
+      <title>Storing Process Events in a Database</title>
 
-      <para>The drools-bam module contains an event listener that stores process-related information
-      in a database (using hibernate).  The database contains two tables, one for process instance
-      information and one for node instance information (see figure below):
+      <para>The drools-bam module contains an event listener that stores
+      process-related information in a database using Hibernate.  The database
+      contains two tables, one for process instance information and one for
+      node instance information (see the figure below):
       <orderedlist>
-        <listitem><emphasis>ProcessInstanceLog:</emphasis> This lists the process instance id, the
-        process (definition) id, the start date and (if applicable) the end date of all process
-        instances.</listitem>
-        <listitem><emphasis>NodeInstanceLog:</emphasis> This table contains more detailed information
-        about which nodes were actually executed inside each process instance.  Whenever a node instance
-        is entered (from one of its incomming connections) or is exited (through one of its outgoing
-        connections), that information is stored in this table.  It therefore stores the process instance
-        id and the process id (of the process instance it is being executed in), and the node instance id
-        and corresponding node id (in the process definition) of the node instance in question.  Finally,
-        the type of event (0 = enter, 1 = exit) and the date of the event is stored as well.
+        <listitem><emphasis>ProcessInstanceLog:</emphasis> This lists the
+        process instance id, the process (definition) id, the start date and
+        (if applicable) the end date of all process instances.
+        </listitem>
+        <listitem><emphasis>NodeInstanceLog:</emphasis> This table contains
+        more detailed information about which nodes were actually executed
+        inside each process instance.  Whenever a node instance is entered
+        from one of its incomming connections or is exited through one of
+        its outgoing connections, that information is stored in this table.
+        For this, it stores the process instance id and the process id of
+        the process instance it is being executed in, and the node
+        instance id and the corresponding node id (in the process definition)
+        of the node instance in question.  Finally, the type of event
+        (0 = enter, 1 = exit) and the date of the event is stored as well. 
         </listitem>
       </orderedlist>
       </para>
 
       <mediaobject>
         <imageobject>
-	  <imagedata align="center" fileref="images/Chapter-Persistence/audit_db.png" format="PNG" role="" />
-        </imageobject>      </mediaobject>
+	  <imagedata align="center" width="100%"
+                     fileref="images/Chapter-Persistence/audit_db.png" format="PNG" role="" />
+        </imageobject>      </mediaobject>
 
-      <para>To log process history information in a database like this, you need to register the logger
-      on your session (or working memory) like this:</para>
+      <para>To log process history information in a database like this, you
+      need to register the logger on your session (or working memory) like
+      this:</para>
       <programlisting>
-StatefulKnowledgeSession ksession = ...
+StatefulKnowledgeSession ksession = ...;
 WorkingMemoryDbLogger logger = new WorkingMemoryDbLogger(ksession);
 
 // invoke methods one your session here
 
 logger.dispose();</programlisting>
 
-      <para>Note that this logger is just a logger like any other audit logger.  This means you can add one
-      or more filters using the We refer to the JPA and Hibernate
-    documentation for more information on how to do this.addFilter method to make sure that only relevant information is stored in the
-      database.  If you use more than one filter, only information that is accepted by all your filters will
-      be persisted in the database.  You should dispose the logger when it is no longer needed.</para>
+      <para>Note that this logger is like any other audit logger, which means
+      that you can add one or more filters by calling the method
+      <code>addFilter</code>d to ensure that only relevant information is
+      stored in the database.  Only information accepted by all your filters will
+      appear in the database.  You should dispose the logger when it is no
+      longer needed.</para>
 
-      <para>To specify the database where the information should be stored, modify the hibernate.cfg.xml file.
-      By default, it uses an in memory database (H2).  Check out the hibernate documentation if you do not
-      know how to do this.</para>
+      <para>To specify the database where the information should be stored,
+      modify the file <filename>hibernate.cfg.xml</filename> file. By default,
+      it uses a memory-resident database (H2).  Consult the Hibernate
+      documentation if you do not know how to do this.</para>
 
-      <para>All this information can easily be queried and can be used in a lot of different use cases, ranging
-      from creating a history log for one specific process instance to analyzing the performance of all instances
-      of a specific process.  The org.drools.process.auditProcessInstanceDbLog class shows some examples on how
-      to retrieve all process instances, one specific process instance (by id), all process instances for one
-      specific process, all node instances of a specific process instance, etc.  You can of course easily create
-      your own hibernate queries or access the information in the database directly.</para>
+      <para>All this information can easily be queried and used in a lot of
+      different use cases, ranging from creating a history log for one
+      specific process instance to analyzing the performance of all instances
+      of a specific process. Class <code>ProcessInstanceDbLog</code> (in
+      package <code>org.drools.process.audit</code>) shows some
+      examples on how to retrieve all process instances, one specific process
+      instance (by id), all process instances for one specific process, all
+      node instances of a specific process instance, etc.  You can of course
+      easily create your own Hibernate queries, or access the information in
+      the database directly.</para>
 
-      <para>By default, the audit logger uses the H2 in-memory database that is recreated on startup.  You can
-      however change this default by including your own hibernate.cfg.xml configuration file.  This allows you
-      for example to change the underlying database, etc.  We refer to the Hibernate documentation for more
-      information on how to do this.</para>
+      <para>By default, the audit logger uses the H2 memory-resident database
+      that is recreated on startup.  You can change this default by including
+      your own configuration file <filename>hibernate.cfg.xml</filename>.  This
+      allows you, for example, to change the underlying database, etc.
+      Refer to the Hibernate documentation for more information on how to do
+      this.</para>
     </section>
 
   </section>
