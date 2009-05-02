@@ -53,6 +53,8 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     private WorkingMemory workingMemory;
  
     private Map localVariables;
+    
+    private String[] inputIdentifiers;
  
     public DroolsMVELFactory() {
         previousDeclarationsObjectCache = new HashMap<String, Object>();
@@ -74,6 +76,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         this.previousDeclarations = (Map<String, Declaration>) previousDeclarations;
         this.localDeclarations = localDeclarations;
         this.globals = globals;
+        this.inputIdentifiers = inputIdentifiers;
  
         if (inputIdentifiers != null && MVELDebugHandler.isDebugMode()) {
             for (int i = 0; i < inputIdentifiers.length; i++) {
@@ -346,7 +349,8 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     public Object clone() {
         return new DroolsMVELFactory(this.previousDeclarations,
                 this.localDeclarations,
-                this.globals);
+                this.globals,
+                this.inputIdentifiers );
     }
  
     /**
