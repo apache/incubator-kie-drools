@@ -68,6 +68,7 @@ public class HelloWorldTest extends TestCase {
 		ksession.insert(message);
 		ksession.fireAllRules();
 		logger.close();
+		assertEquals( 2, knownVariables.size() );
 		assertTrue(knownVariables.contains("m"));
 		assertTrue(knownVariables.contains("myMessage"));
 	}
