@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter id="ch.Human_Tasks"
+         version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
@@ -7,13 +8,18 @@
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="./">
 
-  <title>Human Tasks</title>
+  <title id="ch.Human_Tasks.title">Human Tasks</title>
 
-  <para>An important aspect of work flow and BPM (business process management)is human task management.
-  While some of the work performed in a process can be executed automatically, some tasks need to be executed
-  with the interaction of human actors.  Drools Flow supports the use of human tasks inside processes using a
-  special human task node that will represent this interaction.  This node allows process designers to define
-  the type of task, the actor(s), the data associated with the task, etc.  We also have implemented a task service
+  <para>An important aspect of work flow and BPM (business process
+  management)is human task management.
+  While some of the work performed in a process can be executed
+  automatically, some tasks need to be executed
+  with the interaction of human actors.  Drools Flow supports the use
+  of human tasks inside processes using a
+  special human task node that will represent this interaction.  This
+  node allows process designers to define
+  the type of task, the actor(s), the data associated with the task, etc.
+  We also have implemented a task service
   that can be used to manage these human tasks.  Users are however open to integrate any
   other solution if they want to, as this is fully pluggable.</para>
 
@@ -28,7 +34,8 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_process.png" format="PNG" role="" />
+        <imagedata align="center"
+                   fileref="images/Chapter-HumanTasks/human_task_process.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
 
@@ -40,21 +47,41 @@
     thing that is special about the human task node is that we have added support for swimlanes, making it
     easier to assign tasks to users (see below). A human task node contains the following properties:
     <itemizedlist>
-      <listitem><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</listitem>
+      <listitem><emphasis>Id</emphasis>: The id of the node (which is unique within one node
+      container).</listitem>
       <listitem><emphasis>Name</emphasis>: The display name of the node.</listitem>
       <listitem><emphasis>TaskName</emphasis>: The name of the human task.</listitem>
       <listitem><emphasis>Priority</emphasis>: An integer indicating the priority of the human task.</listitem>
       <listitem><emphasis>Comment</emphasis>: A comment associated with the human task.</listitem>
-      <listitem><emphasis>ActorId</emphasis>: The actor id that is responsible for executing the human task.  A list of actor id's can be specified using a comma (',') as separator.</listitem>
-      <listitem><emphasis>Skippable</emphasis>: Specifies whether the human task can be skipped (i.e. the actor decides not to execute the human task).</listitem>
+      <listitem><emphasis>ActorId</emphasis>: The actor id that is responsible for executing
+      the human task.  A list of actor id's can be specified using a comma (',') as separator.</listitem>
+      <listitem><emphasis>Skippable</emphasis>: Specifies whether the human task can
+      be skipped (i.e. the actor decides not to execute the human task).</listitem>
       <listitem><emphasis>Content</emphasis>: The data associated with this task.</listitem>
-      <listitem><emphasis>Swimlane</emphasis>: The swimlane this human task node is part of.  Swimlanes make it easy to assign multiple human tasks to the same actor.  See below for more detail on how to use swimlanes.</listitem>
-      <listitem><emphasis>Wait for completion</emphasis>: If this property is true, the human task node will only continue if the human task has been terminated (i.e. completed or any other terminal state); otherwise it will continue immediately after creating the human task.</listitem>
-      <listitem><emphasis>On entry/exit actions</emphasis>: Actions that are executed upon entry / exit of this node.</listitem>
-      <listitem><emphasis>Parameter mapping</emphasis>: Allows copying the value of process variables to parameters of the human task.  Upon creation of the human tasks, the values will be copied.</listitem>
-      <listitem><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the human task to a process variable.  Upon completion of the human task, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.  A human task has a result variable "Result" that contains the data returned by the human actor.  The variable "ActorId" contains the id of the actor that actually executed the task.</listitem>
-      <listitem><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</listitem>
-      <listitem><emphasis>ParentId</emphasis>: Allows to specify the parent task id, in the case that this task is a sub task of another. (see the 'sub task' section for more details)</listitem>
+      <listitem><emphasis>Swimlane</emphasis>: The swimlane this human task node is part of.
+      Swimlanes make it easy to assign multiple human tasks to the same actor.  See below for
+      more detail on how to use swimlanes.
+      </listitem>
+      <listitem><emphasis>Wait for completion</emphasis>: If this property is true,
+      the human task node will only continue if the human task has been terminated
+      (i.e. completed or any other terminal state); otherwise it will continue 
+      immediately after creating the human task.</listitem>
+      <listitem><emphasis>On-entry and on-exit actions</emphasis>: Actions that are executed
+      upon entry and exit of this node.</listitem>
+      <listitem><emphasis>Parameter mapping</emphasis>: Allows copying the value of process
+      variables to parameters of the human task.  Upon creation of the human tasks, the
+      values will be copied.</listitem>
+      <listitem><emphasis>Result mapping</emphasis>: Allows copying the value of result
+      parameters of the human task to a process variable.  Upon completion of the human
+      task, the values will be copied.  Note that can only use result mappings when
+      "Wait for completion" is set to true.  A human task has a result variable "Result"
+      that contains the data returned by the human actor.  The variable "ActorId" contains
+      the id of the actor that actually executed the task.</listitem>
+      <listitem><emphasis>Timers</emphasis>: Timers that are linked to this node (see
+      the 'timers' section for more details).</listitem>
+      <listitem><emphasis>ParentId</emphasis>: Allows to specify the parent task id, in
+      the case that this task is a sub task of another. (see the 'sub task' section for
+      more details)</listitem>
     </itemizedlist>
     </para>
 
@@ -74,14 +101,22 @@
       </imageobject>
     </mediaobject>
 
-    <para>Note that you could either specify the values of the different parameters (actorId, priority, content, etc.)
-    directly (in which case they will be the same for each execution of this process), or make them context-specific,
-    based on the data inside the process instance.  For example, parameters of type String can use #{expression} to
-    embed a value in the String.  The value will be retrieved when creating the work item and the #{...} will be
-    replaced by the toString() value of the variable.  The expression could simply be the name of a variable (in which
-    case it will be resolved to the value of the variable), but more advanced MVEL expressions are possible as well,
-    like #{person.name.firstname}.  For example, when sending an email, the body of the email could contain something
-    like "Dear #{customer.name}, ...".  For other types of variables, it is possible to map the value of a variable
+    <para>Note that you could either specify the values of the different
+    parameters (actorId, priority, content, etc.)
+    directly (in which case they will be the same for each execution of this
+    process), or make them context-specific,
+    based on the data inside the process instance.  For example, parameters 
+    of type String can use #{expression} to
+    embed a value in the String.  The value will be retrieved when creating
+    the work item and the #{...} will be
+    replaced by the toString() value of the variable.  The expression could
+    simply be the name of a variable (in which
+    case it will be resolved to the value of the variable), but more advanced
+    MVEL expressions are possible as well,
+    like #{person.name.firstname}.  For example, when sending an email, the
+    body of the email could contain something
+    like "Dear #{customer.name}, ...".  For other types of variables, it is
+    possible to map the value of a variable
     to a parameter using the parameter mapping.</para>
 
     <section>
@@ -124,49 +159,69 @@
     like internationalization, calendar integration, different types of assignments, delegation, deadlines,
     etc.</para>
 
-    <para>Because we did not want to implement a custom solution when a standard is available, we chose to
-    implement our service based on the WS-HumanTask (WS-HT) specification.  This specification defines in detail
-    the model of the tasks, the life cycle, and a lot of other features as the ones mentioned above. It is pretty
-    comprehensive and can be found
+    <para>Because we did not want to implement a custom solution when a standard
+    is available, we chose to
+    implement our service based on the WS-HumanTask (WS-HT) specification.  This
+    specification defines in detail
+    the model of the tasks, the life cycle, and a lot of other features as the
+    ones mentioned above. It is pretty comprehensive and can be found
     <ulink url="http://download.boulder.ibm.com/ibmdl/pub/software/dw/specs/ws-bpel4people/WS-HumanTask_v1.pdf">
     here</ulink>.</para>
 
     <section>
       <title>Task life cycle</title>
     
-      <para>Looking from the perspective of the process, whenever a human task node is triggered during the
-      execution of a process instance, a human task is created.  The process will only continue from that point
-      when that human task has been completed or aborted (unless of course you specify that the process does not
-      need to wait for the human task to complete, by setting the "Wait for completion" property to true).  However,
-      the human task usually has a separate life cycle itself. We will now shortly introduce this life cycle, as shown
+      <para>Looking from the perspective of the process, whenever a human task node
+      is triggered during the
+      execution of a process instance, a human task is created.  The process will
+      only continue from that point
+      when that human task has been completed or aborted (unless of course you specify
+      that the process does not
+      need to wait for the human task to complete, by setting the "Wait for completion"
+      property to true).  However,
+      the human task usually has a separate life cycle itself. We will now shortly 
+      introduce this life cycle, as shown
       in the figure below. For more details, check out the WS-HumanTask specification.</para>
 
       <mediaobject>
         <imageobject>
-              <imagedata scalefit="1" align="center" fileref="images/Chapter-HumanTasks/WSHT-lifecycle.png" format="PNG" role="" />
+          <imagedata scalefit="1" align="center" width="100%"
+                     fileref="images/Chapter-HumanTasks/WSHT-lifecycle.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
 
-      <para>Whenever a task is created, it starts in the "Created" stage.  It usually automatically transfers to the
-      "Ready" state, at which point the task will show up on the task list of all the actors that are allowed to execute
-      the task.  There, it is waiting for one of these actors to claim the task, indicating that he or she will be
-      executing the task.  Once a user has claimed a task, the status is changed to "Reserved".  Note that a task that
-      only has one potential actor will automatically be assigned to that actor upon creation of that task.  After claiming
-      the task, that user can then at some point decide to start executing the task, in which case the task status is
-      changed to "InProgress".  Finally, once the task has been performed, the user must complete the task (and can specify
-      the result data related to the task), in which case the status is changed to "Completed".  If the task could not be
-      completed, the user can also indicate this using a fault response (possibly with fault data associated), in which
+      <para>Whenever a task is created, it starts in the "Created" stage.  It 
+      usually automatically transfers to the
+      "Ready" state, at which point the task will show up on the task list of
+      all the actors that are allowed to execute
+      the task.  There, it is waiting for one of these actors to claim the
+      task, indicating that he or she will be
+      executing the task.  Once a user has claimed a task, the status is changed
+      to "Reserved".  Note that a task that
+      only has one potential actor will automatically be assigned to that actor
+      upon creation of that task.  After claiming
+      the task, that user can then at some point decide to start executing the
+      task, in which case the task status is
+      changed to "InProgress".  Finally, once the task has been performed, the
+      user must complete the task (and can specify
+      the result data related to the task), in which case the status is changed
+      to "Completed".  If the task could not be
+      completed, the user can also indicate this using a fault response (possibly
+      with fault data associated), in which
       case the status is changed to "Failed".</para>
 
-      <para>The life cycle explained above is the normal life cycle.  The service also allows a lot of other life cycle
-      methods, like:
+      <para>The life cycle explained above is the normal life cycle.  The service
+      also allows a lot of other life cycle  methods, like:
       <itemizedlist>
-        <listitem>Delegating or forwarding a task, in which case it is assigned to another actor</listitem>
-        <listitem>Revoking a task, so it is no longer claimed by one specific actor but reappears on the task list of
+        <listitem>Delegating or forwarding a task, in which case it is assigned
+        to another actor</listitem>
+        <listitem>Revoking a task, so it is no longer claimed by one specific 
+        actor but reappears on the task list of
         all potential actors</listitem>
         <listitem>Temporarly suspending and resuming a task</listitem>
         <listitem>Stopping a task in progress</listitem>
-        <listitem>Skipping a task (if the task has been marked as skippable), in which case the task will not be executed</listitem>
+        <listitem>Skipping a task (if the task has been marked as skippable),
+        in which case the task will not be executed</listitem>
       </itemizedlist>
       </para>
 
@@ -175,37 +230,46 @@
     <section>
       <title>Linking the task component to the Drools Flow engine</title>
 
-      <para>The task management component needs to be integrated with the Drools Flow engine just like any other external
-      service, by registering a work item handler that is responsible for translating the abstract work item (in this case
-      a human task) to a specific invocation.  We have implemented such a work item handler
-      (org.drools.process.workitem.wsht.WSHumanTaskHandler in the drools-process-task module) so you can easily link this
+      <para>The task management component needs to be integrated with the
+      Drools Flow engine just like any other external
+      service, by registering a work item handler that is responsible for
+      translating the abstract work item (in this case
+      a human task) to a specific invocation.  We have implemented such a
+      work item handler
+      (org.drools.process.workitem.wsht.WSHumanTaskHandler in the 
+      drools-process-task module) so you can easily link this
       work item handler like this:</para>
       <programlisting>
   StatefulKnowledgeSession session = ...;
   session.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());</programlisting>
-      <para>By default, this handler will connect to the human task management component on the local machine on port 9123,
-      but you can easily change that by invoking the setConnection(ipAddress, port) method on the WSHumanTaskHandler.</para>
+      <para>By default, this handler will connect to the human task management component
+      on the local machine on port 9123,
+      but you can easily change that by invoking the setConnection(ipAddress, port)
+      method on the WSHumanTaskHandler.</para>
 
       <para>At this moment WSHumanTaskHandler is using Mina
-      <ulink url="http://mina.apache.org/">(http://mina.apache.org/)</ulink> for testing the behavior in a client/server
+      <ulink url="http://mina.apache.org/">(http://mina.apache.org/)</ulink> for
+      testing the behavior in a client/server
       architecture. Mina uses messages between client and server to enable the
       client comunicate with the server. That's why WSHumanTaskHandler have a
       MinaTaskClient that create different messages to give the user different
       actions that are executed for the server.</para>
 
-      <para>In the client (MinaTaskClient in this implementation) should see
-      the implementation of the following methods to interact with Human
+      <para>In the client (MinaTaskClient in this implementation) we should see
+      the implementation of the following methods for interacting with Human
       Tasks:</para>
 
       <para><programlisting>
-public void start(long taskId, String userId, TaskOperationResponseHandler responseHandler)
-public void stop(long taskId, String userId, TaskOperationResponseHandler responseHandler)
-public void release(long taskId, String userId, TaskOperationResponseHandler responseHandler)
-public void suspend(long taskId, String userId, TaskOperationResponseHandler responseHandler)
-public void resume(long taskId, String userId, TaskOperationResponseHandler responseHandler)
-public void skip(long taskId, String userId, TaskOperationResponseHandler responseHandler)
-public void delegate(long taskId, String userId, String targetUserId, TaskOperationResponseHandler responseHandler)
-public void complete(long taskId, String userId, ContentData outputData, TaskOperationResponseHandler responseHandler)
+public void start( long taskId, String userId, TaskOperationResponseHandler responseHandler )
+public void stop( long taskId, String userId, TaskOperationResponseHandler responseHandler )
+public void release( long taskId, String userId, TaskOperationResponseHandler responseHandler )
+public void suspend( long taskId, String userId, TaskOperationResponseHandler responseHandler )
+public void resume( long taskId, String userId, TaskOperationResponseHandler responseHandler )
+public void skip( long taskId, String userId, TaskOperationResponseHandler responseHandler )
+public void delegate( long taskId, String userId, String targetUserId,
+                      TaskOperationResponseHandler responseHandler )
+public void complete( long taskId, String userId, ContentData outputData,
+                      TaskOperationResponseHandler responseHandler )
 ...</programlisting></para>
 
       <para>Using this methods we will implement any kind of GUI that the end
@@ -215,10 +279,10 @@ public void complete(long taskId, String userId, ContentData outputData, TaskOpe
 
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">taskId<emphasis>:</emphasis>
-          <emphasis>the id of the task with we are working. Probably you will
+          <para><emphasis role="bold">taskId</emphasis>:
+          the id of the task with we are working. Probably you will
           pick this Id from the user task list in the UI (User
-          Interface).</emphasis></emphasis></para>
+          Interface).</para>
         </listitem>
 
         <listitem>
@@ -277,7 +341,7 @@ public void complete(long taskId,
     </section>
 
     <section>
-      <title>Starting the task management component</title>
+      <title>Starting the Task Management Component</title>
 
       <para>The task management component is a completely independent service
       that the process engine communicates with.  We therefore recommend to
@@ -367,71 +431,77 @@ thread.start();</programlisting>
     </section>
 
     <section>
-      <title>Interacting with the task management component</title>
+      <title>Interacting With the Task Management Component</title>
 
-      <para>The task management component exposes various methods to manage the life cycle of the tasks through a Java API.
-      This allows clients to integrate (at a low level) with the task management component.  Note that end users should probably
-      not interact with this low-level API directly but rather use one of the task list clients.  These clients interact with
+      <para>The task management component exposes various methods to manage the
+      life cycle of the tasks through a Java API.
+      This allows clients to integrate (at a low level) with the task management
+      component.  Note that end users should probably
+      not interact with this low-level API directly but rather use one of the
+      task list clients.  These clients interact with
       the task management component using this API.</para>
 
       <para>This interaction will be described with the following image:</para>
-       <mediaobject>
+      <mediaobject>
         <imageobject>
-          <imagedata scalefit="1" align="center" fileref="images/Chapter-HumanTasks/component-distribution.png" format="PNG" role="" />
+          <imagedata scalefit="1" align="center"
+                     fileref="images/Chapter-HumanTasks/component-distribution.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
-      <para>
-          As we can see in the image we have MinaTaskClient and MinaTaskServer. They communicate to each other sending
-          messages to query and manipulate human tasks. Step by step the interaction will be something like this:
-          <itemizedlist>
-            <listitem>
-              <para>
-                  Some client need to complete some task. So he/she needs to create an instace of MinaTaskClient
-                  and connect it to the MinaTaskServer to have a session to talk to each other. This is the step one in the image.
-              </para>
-            </listitem>
-            <listitem>
-                <para>
-                    Then the client can call the method complete() in MinaTaskClient with the corresponding
-                    arguments. This will generate a new Message (or Command) that will be inserted in the session
-                    that the client open when it connects to the server. This message must specify a type that the
-                    server recognize and know what to do when the message is recieved. This is the step two in the image.
-                </para>            </listitem>
-            <listitem>
-                <para>
-                    At this moment TaskServerHandler noticed that there is a new message in the session so an analysis
-                    about what kind of message is will take place. In this case is the type of Operation.Complete, because
-                    the client is finishing succesfully some task. So we need to complete the task that the user want to finish.
-                    This is achieved using the TaskServiceSession that will fire an specific type of event that will be procesed by
-                    an specific subclass of TaskEventListener. This are step three and four in the image.
-
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                   When the event is recived by TaskEventListener it will know how to modify the status of the task. This is achieved
-                   using the EntityManager to retrieve and modify the status of an specific task from the database. In this case, because
-                   we are finishing a task, the status will be updated to Completed. This is step five in the image.
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    Now, when the changes are made we need to notify the client about that the task was succesfully ended and
-                    this is achieved creating a response message that TaskClientHandler will receive and inform MinaTaskClient.
-                    This are steps six, seven and eight in the image.
-                </para>
-            </listitem>
-
-          </itemizedlist>
-
-      </para>
-
+      <para>As we can see in the image we have MinaTaskClient and MinaTaskServer.
+      They communicate to each other sending
+      messages to query and manipulate human tasks. Step by step the interactio
+      n will be something like this:</para>
+        <itemizedlist>
+          <listitem>
+            <para>Some client need to complete some task. So he/she needs to
+            create an instace of MinaTaskClient
+            and connect it to the MinaTaskServer to have a session to talk to
+            each other. This is the step one in the image. </para>
+          </listitem>
+          <listitem>
+            <para>Then the client can call the method complete() in MinaTaskClient
+            with the corresponding
+            arguments. This will generate a new Message (or Command) that will
+            be inserted in the session
+            that the client open when it connects to the server. This message 
+            must specify a type that the server recognize and know what to do
+            when the message is recieved. This is the step two in the image.</para>
+          </listitem>
+          <listitem>
+            <para>At this moment TaskServerHandler noticed that there is a new
+            message in the session so an analysis
+            about what kind of message is will take place. In this case is the
+            type of Operation.Complete, because
+            the client is finishing succesfully some task. So we need to complete
+            the task that the user want to finish.
+            This is achieved using the TaskServiceSession that will fire an
+            specific type of event that will be procesed by
+            an specific subclass of TaskEventListener. This are step three
+            and four in the image.</para>
+          </listitem>
+          <listitem>
+            <para>When the event is recived by TaskEventListener it will
+            know how to modify the status of the task. This is achieved
+            using the EntityManager to retrieve and modify the status of
+            an specific task from the database. In this case, because
+            we are finishing a task, the status will be updated to Completed.
+            This is step five in the image.</para>
+          </listitem>
+          <listitem>
+            <para>Now, when the changes are made we need to notify the 
+            client about that the task was succesfully ended and
+            this is achieved creating a response message that TaskClientHandler
+            will receive and inform MinaTaskClient.
+            This are steps six, seven and eight in the image.</para>
+          </listitem>
+        </itemizedlist>
     </section>
 
   </section>
 
   <section>
-    <title>Human task management interface</title>
+    <title>Human Task Management Interface</title>
 
     <para></para>
 
@@ -450,13 +520,14 @@ thread.start();</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_view.png" format="PNG" role="" />
+          <imagedata align="center" width="100%"
+                     fileref="images/Chapter-HumanTasks/human_task_view.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </section>
 
     <section>
-      <title>Web-based task view</title>
+      <title>Web-based Task View</title>
 
       <para>We are targeting to add a web-based view that end users can use for managing their tasks
       for Drools 5.1.</para>

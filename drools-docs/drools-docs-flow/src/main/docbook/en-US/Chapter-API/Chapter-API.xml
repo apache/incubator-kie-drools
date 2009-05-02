@@ -12,12 +12,12 @@
   <section>
     <title>Knowledge Base</title>
 
-    <para>Our knowledge-based API allows you to first create a knowledge base
-    that contains all the necessary knowledge.  This includes of course all the
-    relevant process definitions, but also other knowledge types like rules.  The
-    following code snippet shows how to create a knowledge base consisting of only
-    one process definition: use a knowledge builder to add a resource, check for
-    errors and create the knowledge base.</para>
+    <para>Our knowledge-based API allows you to first create a Knowledge Base
+    that contains all the necessary knowledge.  This includes all the
+    relevant process definitions and other knowledge types like rules.  The
+    following code snippet shows how to create a Knowledge Base consisting of only
+    one process definition, using a Knowledge Builder to add a resource, checking
+    for errors and, finally, creating the Knowledge Base.</para>
 
 <programlisting>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -34,10 +34,10 @@ kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 </programlisting>
 
     <para>Note that the knowledge-based API allows users to add different types of
-    resources (e.g. rules and processes) in almost identical ways into the same
-    knowledge base.  This allows user that know how to user Drools Flow to start using
-    Expert of Fusion (and even integrate these different types of knowledge) almost
-    instantaniously.</para>
+    resources, such as rules and processes, in almost identical ways into the same
+    Knowledge Base.  This enables a user who knows how to use Drools Flow to start
+    using Drools Fusion almost instantaneously, and even to integrate these
+    different types of Knowledge.</para>
 
   </section>
 
@@ -45,9 +45,9 @@ kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
     <title>Session</title>
 
     <para>Next, you should create a session to interact with the engine.  Again, the
-    API is knowledge-based, supporting different types of knowledge, with a specific
-    extension for each knowledge type.  The following code snippet shows how easy it
-    is to create a session based on the earlier created knowledge base and start a
+    API is knowledge-based, supporting different types of Knowledge, with a specific
+    extension for each Knowledge Type.  The following code snippet shows how easy it
+    is to create a session based on the earlier created Knowledge Base, and to start a
     process.</para>
 
 <programlisting>
@@ -55,9 +55,9 @@ StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 ProcessInstance processInstance = ksession.startProcess("com.sample.ruleflow");
 </programlisting>
 
-    <para>The ProcessRuntime interface defines all the methods on the session for
-    interacting with processes, as shown below.  Check out the JavaDocs to get a detailed
-    explanation for each of the methods.</para>
+    <para>The <code>ProcessRuntime</code> interface defines all the session methods
+    for interacting with processes, as shown below.  Consult the Javadocs to get
+    a detailed explanation for each of the methods.</para>
 
 <programlisting>
 ProcessInstance startProcess(String processId);
@@ -73,64 +73,66 @@ WorkItemManager getWorkItemManager();
   <section>
     <title>Events</title>
 
-    <para>Both the stateful and stateless knowledge session provide methods for
-    registering (and removing) listeners.  ProcessEventListeners can be used to
-    listen to process-related events, like starting or completing a processes and
-    triggering and leaving a node.  Below the different methods of a
-    ProcessEventListener are shown.  The event object provides access to related
-    information like the process instance and/or node instance linked to the event.
-    </para>
+    <para>Both the Stateful and Stateless Knowledge Session provide methods for
+    registering and removing listeners. <code>ProcessEventListener</code> objects
+    can be used to listen to process-related events, like starting or completing
+    a process, and entering and leaving a node.  Below, the different methods of a
+    <code>ProcessEventListener</code> are shown.  An event object provides access
+    to related information, like the process instance and node instance linked to
+    the event.</para>
 
 <programlisting>
 public interface ProcessEventListener {
 
-  void beforeProcessStarted(ProcessStartedEvent event);
-  void afterProcessStarted(ProcessStartedEvent event);
-  void beforeProcessCompleted(ProcessCompletedEvent event);
-  void afterProcessCompleted(ProcessCompletedEvent event);
-  void beforeNodeTriggered(ProcessNodeTriggeredEvent event);
-  void afterNodeTriggered(ProcessNodeTriggeredEvent event);
-  void beforeNodeLeft(ProcessNodeLeftEvent event);
-  void afterNodeLeft(ProcessNodeLeftEvent event);
+  void beforeProcessStarted( ProcessStartedEvent event );
+  void afterProcessStarted( ProcessStartedEvent event );
+  void beforeProcessCompleted( ProcessCompletedEvent event );
+  void afterProcessCompleted( ProcessCompletedEvent event );
+  void beforeNodeTriggered( ProcessNodeTriggeredEvent event );
+  void afterNodeTriggered( ProcessNodeTriggeredEvent event );
+  void beforeNodeLeft( ProcessNodeLeftEvent event );
+  void afterNodeLeft( ProcessNodeLeftEvent event );
 
-}
-</programlisting>
+}</programlisting>
 
     <para>An audit log can be created based on the information provided by these process
     listeners.  We provide various default logger implementations:
     <orderedlist>
       <listitem>Console logger: This logger writes out all the events to the console.</listitem>
+
       <listitem>File logger: This logger writes out all the events to a file using an
-      XML representation.  This log file can then for example be used in the IDE to generate
-      a tree-based visualization of the events that occured during execution.</listitem>
-      <listitem>Threaded file logger: Because a file logger only writes the events to disk
-      when closing the logger (or when the number of events in the logger reaches a predefined
-      level), it cannot be used when debugging processes at runtime.  A threaded file logger
-      writes out the events to file at a specified time interval, making it possible to use
-      the logger for example to visualize the progress when debugging processes in realtime.
+      XML representation.  This log file might then be used in the IDE to generate
+      a tree-based visualization of the events that occurred during execution.</listitem>
+
+      <listitem>Threaded file logger: Because a file logger writes the events to disk only
+      when closing the logger or when the number of events in the logger reaches a predefined
+      level, it cannot be used when debugging processes at runtime.  A threaded file logger
+      writes the events to a file after a specified time interval, making it possible to use
+      the logger to visualize the progress in realtime, while debugging processes.
       </listitem>
     </orderedlist>
     </para>
 
-    <para>The KnowledgeRuntimeLoggerFactory can be used to easily add a logger to your session,
-    as shown below.  When creating a console logger, the knowledge session for which the logger
-    needs to be created needs to be passes as an argument.  The file logger also requires the
-    name of the log file to be created, and the threaded file logger requires the interval (in
-    milliseconds) after which the events should be saved.</para>
+    <para>The <code>KnowledgeRuntimeLoggerFactory</code> let you add a logger to
+    your session, as shown below.  When creating a console logger, the Knowledge Session
+    for which the logger needs to be created must be passed as an argument. The file
+    logger also requires the name of the log file to be created, and the threaded file
+    logger requires the interval (in milliseconds) after which the events should be saved.</para>
 
 <programlisting>
-KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
-// add invocations to the process engine here, e.g. ksession.startProcess(processId);
+KnowledgeRuntimeLogger logger =
+    KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "test" );
+// add invocations to the process engine here,
+// e.g. ksession.startProcess(processId);
 ...
-logger.close();
-</programlisting>
+logger.close();</programlisting>
 
-    <para>The log file can be opened in the Eclipse when using the Audit View in the Drools
-    Eclipse plugin, where the events are visualized in a tree-based manner (events that occur
-    between the before and after event are shown as children of that event).  The following
-    screenshot shows a simple example, where a process is started, resulting in the triggering
-    of the start node, an action node and an end node, after which the process was completed.
-    </para>
+    <para>The log file can be opened in Eclipse, using the Audit View in the Drools
+    Eclipse plugin, where the events are visualized as a tree. Events that occur
+    between the before and after event are shown as children of that event.  The
+    following screenshot shows a simple example, where a process is started,
+    resulting in the activation of the Start node, an Action node and an End node,
+    after which the process was completed. </para>
 
     <mediaobject>
       <imageobject>
@@ -140,6 +142,5 @@ logger.close();
     </mediaobject>
 
   </section>
-
 
 </chapter>

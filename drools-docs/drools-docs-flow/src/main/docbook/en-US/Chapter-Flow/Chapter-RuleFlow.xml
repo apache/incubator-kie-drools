@@ -13,7 +13,7 @@
 
     <mediaobject>
       <imageobject>
-	      <imagedata align="center" fileref="images/Chapter-Flow/RuleFlow.png" format="PNG" role="" />
+	<imagedata align="center" fileref="images/Chapter-Flow/RuleFlow.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -26,27 +26,27 @@
   to define such processes and use them in your application.</para>
 
   <section>
-    <title>Creating a RuleFlow process</title>
+    <title>Creating a RuleFlow Process</title>
 
     <para>Processes can be created by using one of the following three methods:
     <orderedlist>
        <listitem>Using the graphical RuleFlow editor in the Drools plug-in for Eclipse</listitem>
        <listitem>As an XML file, according to the XML process format as defined in the
-       'drools-processes' XML Schema Definition.</listitem>
+       XML Schema definition for Drools processes.</listitem>
        <listitem>By directly creating a process using the Process API.</listitem>
     </orderedlist>
     </para>
 
     <section>
-      <title>Using the graphical RuleFlow editor</title>
+      <title>Using the Graphical RuleFlow Editor</title>
 
       <para>The graphical RuleFlow editor is a editor that allows you to create a process
       by dragging and dropping different nodes on a canvas and editing the properties of these
       nodes.  The graphical RuleFlow editor is part of the Drools plug-in for Eclipse.  Once
       you have set up a Drools project (check the IDE chapter if you do not know how to do this),
-      you can start adding processes.  When in a project, launch the 'New' wizard (use "Ctrl+N"
-      or by right-clicking the directory you would like to put your ruleflow in and selecting
-      "New ... -> Other ...".  Choose the section on "Drools" and then pick "RuleFlow file".
+      you can start adding processes.  When in a project, launch the "New" wizard: use Ctrl+N
+      or  right-click the directory you would like to put your ruleflow in and select
+      "New", then "Other...".  Choose the section on "Drools" and then pick "RuleFlow file".
       This will create a new .rf file.</para>
 
       <figure>
@@ -59,46 +59,49 @@
         </mediaobject>
       </figure>
 
-      <para>Next you will see the graphical ruleflow editor. Now would be a good time to
-      switch to the "Drools Perspective" (if you haven't done so already) - this will tweak the UI so
-      it is optimal for rules. Then ensure that you can see the "Properties" view down the bottom of
-      the Eclipse window, as it will be necessary to fill in the different properties of the elements
-      in your process.  If you cannot see the properties view, open it using the menu Window ->
-      Show View -> Other ..., and under the General folder select the properties view.</para>
+      <para>Next you will see the graphical RuleFlow editor. Now would be a good time to
+      switch to the Drools Perspective (if you haven't done so already). This will tweak
+      the user interface so that it is optimal for rules. Then, ensure that you can see
+      the Properties View down the bottom of the Eclipse window, as it will be necessary
+      to fill in the different properties of the elements  in your process.  If you cannot
+      see the properties view, open it using the menu "Window", then "Show View" and
+      "Other...", and under the "General" folder select the Properties View.</para>
 
       <figure>
         <title>New RuleFlow process</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Flow/NewRF.png" format="PNG" role="" />
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-Flow/NewRF.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
 
-      <para>The RuleFlow editor consists of a palette, a canvas and an outline view.  To add
-      new elements to the canvas, select the element you would like to create in the palette
-      and then add them to the canvas by clicking on the preferred location.  For example, 
-      click on the RuleFlowGroup icon in the Component Pallette of the GUI
-      - you can then draw a few rule flow groups. Clicking on an element in your ruleflow 
-      allows you to set the properties of that element.You can link the nodes together (as
-      long as it is allowed by the different types of nodes) by using "Connection Creation"
-      from the component palette.</para>
+      <para>The RuleFlow editor consists of a palette, a canvas and an Outline View.
+      To add  new elements to the canvas, select the element you would like to create
+      in the palette and then add them to the canvas by clicking on the preferred
+      location.  For example,  click on the "RuleFlowGroup" icon in the "Components"
+      palette of the GUI: you can then draw a few rule flow groups. Clicking on an 
+      element in your rule flow allows you to set the properties of that element. You
+      can connect the nodes (as long as it is permitted by the different types
+      of nodes) by using "Connection Creation" from the "Components" palette.</para>
 
-      <para>You can keep adding nodes and connections to your process until it represents the
-      business logic that you want to specify.  You'll probably need to check the process for
-      any missing information (by pressing the green "check" icon in the IDE menu bar) before
-      trying to use it in your application.</para>
+      <para>You can keep adding nodes and connections to your process until it
+      represents the business logic that you want to specify.  You'll probably need
+      to check the process for any missing information (by pressing the green "Check"
+      icon in the IDE menu bar) before trying to use it in your application.</para>
 
     </section>
 
     <section>
-      <title>Defining processes using XML</title>
+      <title>Defining Processes Using XML</title>
 
-      <para>It is also possible to specify processes using the underlying XML directly.  The
-      syntax of these XML processes is defined using an XML Schema Definition. For example,
-      the following XML fragment shows a simple process that contains a sequence of
-      a start node, an action node that prints "Hello World" to the console, and an end node.</para>
+      <para>It is also possible to specify processes using the underlying XML directly.
+      The syntax of these XML processes is defined using an XML Schema definition.
+      For example, the following XML fragment shows a simple process that contains a
+      sequence of a Start node, an Action node that prints "Hello World" to the console,
+      and an End node.</para>
 
 <programlisting>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -126,25 +129,28 @@
 &lt;/process&gt;
 </programlisting>
 
-      <para>The process XML file should consist of exactly one &lt;process&gt; element. This element
-      contains parameters related to the process (the type, name, id and package name of the process),
-      and consists of three main subsections: a &lt;header&gt; (where process-level information like variables,
-      globals, imports and swimlanes can be defined), a &lt;nodes&gt; section that defines each of the nodes in
-      the process (there is a specific element for each of the different node types that defines the
-      various parameters and possibly sub-elements for that node type), and a &lt;connections&gt; section that
-      contains the connections between all the nodes in the process.</para>
+      <para>The process XML file should consist of exactly one &lt;process&gt; element.
+      This element contains parameters related to the process (its type, name, id and
+      package name),  and consists of three subsections: a &lt;header&gt; (where
+      process-level information like variables, globals, imports and swimlanes can be
+      defined), a &lt;nodes&gt; section that defines each of the nodes in the process,
+      and a &lt;connections&gt; section that contains the connections between all the nodes
+      in the process. In the nodes section, there is a specific element for each node,
+      defining the various parameters and, possibly, sub-elements for that node type.</para>
 
     </section>
 
     <section>
-      <title>Defining processes using the Process API</title>
+      <title>Defining Processes Using the Process API</title>
 
-      <para>While it is recommended to define processes using the graphical editor or the underlying XML (to
-      shield yourself from internal APIs), it is also possible to define a process using the Process API directly.
-      The most important process elements are defined in the org.drools.workflow.core and the
-      org.drools.workflow.core.node packages.  A "fluent API" is provided that allows you to easily construct
-      processes in a readable manner using factories.  At the end, you can validate the process that you were
-      constructing manually. Some examples about how to build processes using this fluent API are added below.</para>
+      <para>While it is recommended to define processes using the graphical editor or
+      the underlying XML (to shield yourself from internal APIs), it is also possible
+      to define a process using the Process API directly. The most important process
+      elements are defined in the packages <code>org.drools.workflow.core</code> and
+      <code>org.drools.workflow.core.node</code>.  A "fluent API" is provided that
+      allows you to easily construct processes in a readable manner using factories.
+      At the end, you can validate the process that you were  constructing manually.
+      Some examples about how to build processes using this fluent API are added below.</para>
 
 
       <section>
@@ -152,53 +158,53 @@
 
       <para>This is a simple example of a basic process with a ruleset node only:
         <programlisting>
-      RuleFlowProcessFactory factory =
-          RuleFlowProcessFactory.createProcess("org.drools.HelloWorldRuleSet");
-      factory
-          // Header
-          .name("HelloWorldRuleSet")
-          .version("1.0")
-          .packageName("org.drools")
-          // Nodes
-          .startNode(1).name("Start").done()
-          .ruleSetNode(2)
-              .name("RuleSet")
-              .ruleFlowGroup("someGroup").done()
-          .endNode(3).name("End").done()
-          // Connections
-          .connection(1, 2)
-          .connection(2, 3);
-      RuleFlowProcess process = factory.validate().getProcess();
-        </programlisting>
+RuleFlowProcessFactory factory =
+    RuleFlowProcessFactory.createProcess("org.drools.HelloWorldRuleSet");
+factory
+    // Header
+    .name("HelloWorldRuleSet")
+    .version("1.0")
+    .packageName("org.drools")
+    // Nodes
+    .startNode(1).name("Start").done()
+    .ruleSetNode(2)
+        .name("RuleSet")
+        .ruleFlowGroup("someGroup").done()
+    .endNode(3).name("End").done()
+    // Connections
+    .connection(1, 2)
+    .connection(2, 3);
+RuleFlowProcess process = factory.validate().getProcess();</programlisting>
       </para>
         
-      <para>You can see that we start by calling the static createProcess() method
-      from the RuleFlowProcessFactory class.  This method creates a new process
-      with the given id and returns the RuleFlowProcessFactory that can be used to
-      create the process.  A typical process consists of three parts: a header part
-      that contains global elements like the name of the process, imports, variables,
-      etc.  The nodes section contains all the different nodes that are part of the
-      process and finally the connections section links these nodes to each other
+      <para>You can see that we start by calling the static <code>createProcess()</code>
+      method from the <code>RuleFlowProcessFactory</code> class.  This method creates
+      a new process with the given id and returns the <code>RuleFlowProcessFactory</code>
+      that can be used to create the process.  A typical process consists of three parts.
+      The header part comprises global elements like the name of the process, imports,
+      variables,  etc.  The nodes section contains all the different nodes that are part of the
+      process. The connections section finally links these nodes to each other
       to create a flow chart.</para>
 
-      <para>So in this example, the header contains the name and the version of the
-      process and the package name. After that you can start adding nodes to the
-      current process. If you have auto-completion you can see that you different
-      methods to create each of the supported node types at your disposal.</para>
+      <para>In this example, the header contains the name and the version of the
+      process and the package name. After that, you can start adding nodes to the
+      current process. If you have auto-completion you can see that you have
+      different methods to create each of the supported node types at your disposal.</para>
 
       <para>When you start adding nodes to the process, in this example by calling
-      the startNode(), ruleSetNode() and endNode() methods, you can see that these
-      methods return a specific NodeFactory, that allows you to set the properties
-      of that node.  Once you have finished configuring that specific node, the
-      done() method returns you to the current RuleFlowProcessFactory so you can add
-      more nodes if necessary.</para>
+      the <code>startNode()</code>, <code>ruleSetNode()</code> and <code>endNode()</code>
+      methods, you can see that these methods return a specific <code>NodeFactory</code>,
+      that allows you to set the properties of that node.  Once you have finished
+      configuring that specific node, the <code>done()</code> method returns you to the
+      current <code>RuleFlowProcessFactory</code> so you can add more nodes, if necessary.</para>
 
-      <para>When you finised adding nodes you must connect them by creating connections
-      between them.  This can be done by calling the connection method, which will link
-      the earlier created nodes.</para>
+      <para>When you are finished adding nodes, you must connect them by creating
+      connections between them.  This can be done by calling the  method
+      <code>connection</code>, which will link previously created nodes.</para>
 
-      <para>Finally, you can validate the generated process by calling the validate()
-      method and retrieve the create RuleFlowProcess object.</para>
+      <para>Finally, you can validate the generated process by calling the
+      <code>validate()</code> method and retrieve the created
+      <code>RuleFlowProcess</code> object.</para>
 
       </section>
 
@@ -207,34 +213,37 @@
 
       <para>This example is using Split and Join nodes:
         <programlisting>
-      RuleFlowProcessFactory factory =
-          RuleFlowProcessFactory.createProcess("org.drools.HelloWorldJoinSplit");
-      factory
-          // Header
-          .name("HelloWorldJoinSplit")
-          .version("1.0")
-          .packageName("org.drools")
-          // Nodes
-          .startNode(1).name("Start").done()
-          .splitNode(2).name("Split").type(Split.TYPE_AND).done()
-          .actionNode(3).name("Action 1").action("mvel", "System.out.println(\"Inside Action 1\")").done()
-          .actionNode(4).name("Action 2").action("mvel", "System.out.println(\"Inside Action 2\")").done()
-          .joinNode(5).type(Join.TYPE_AND).done()
-          .endNode(6).name("End").done()
-          // Connections
-          .connection(1, 2)
-          .connection(2, 3)
-          .connection(2, 4)
-          .connection(3, 5)
-          .connection(4, 5)
-          .connection(5, 6);
-      RuleFlowProcess process = factory.validate().getProcess();
-        </programlisting>
+RuleFlowProcessFactory factory =
+    RuleFlowProcessFactory.createProcess("org.drools.HelloWorldJoinSplit");
+factory
+    // Header
+    .name("HelloWorldJoinSplit")
+    .version("1.0")
+    .packageName("org.drools")
+    // Nodes
+    .startNode(1).name("Start").done()
+    .splitNode(2).name("Split").type(Split.TYPE_AND).done()
+    .actionNode(3).name("Action 1")
+        .action("mvel", "System.out.println(\"Inside Action 1\")").done()
+    .actionNode(4).name("Action 2")
+        .action("mvel", "System.out.println(\"Inside Action 2\")").done()
+    .joinNode(5).type(Join.TYPE_AND).done()
+    .endNode(6).name("End").done()
+    // Connections
+    .connection(1, 2)
+    .connection(2, 3)
+    .connection(2, 4)
+    .connection(3, 5)
+    .connection(4, 5)
+    .connection(5, 6);
+RuleFlowProcess process = factory.validate().getProcess();</programlisting>
       </para>
 
-      <para>This shows a simple split / join example.  As you can see, split nodes can have multiple outgoing
-      connections and joins multipe incomming connections.  To understand the behaviour of the different types
-      of split and join nodes, take a look at the documentation for each of these nodes.</para>
+      <para>This shows a simple example using Split and Join nodes.  As you can see,
+      a Split node can have multiple outgoing connections, and a Join node multiple
+      incoming connections.  To understand the behavior of the different types
+      of Split and Join nodes, take a look at the documentation for each of these
+      nodes.</para>
 
       </section>
 
@@ -243,42 +252,42 @@
 
       <para>Now we show a more complex example with a ForEach node, where we have nested nodes:
         <programlisting>
-      RuleFlowProcessFactory factory =
-          RuleFlowProcessFactory.createProcess("org.drools.HelloWorldForeach");
-      factory
-          // Header
-          .name("HelloWorldForeach")
-          .version("1.0")
-          .packageName("org.drools")
-          // Nodes
-          .startNode(1).name("Start").done()
-          .forEachNode(2)
-              // Properties
-              .linkIncomingConnections(3)
-              .linkOutgoingConnections(4)
-              .collectionExpression("persons")
-              .variable("child", new ObjectDataType("org.drools.Person"))
-              // Nodes
-              .actionNode(3)
-                  .action("mvel", "System.out.println(\"inside action1\")").done()
-              .actionNode(4)
-                  .action("mvel", "System.out.println(\"inside action2\")").done()
-              // Connections
-              .connection(3, 4)
-              .done()
-          .endNode(5).name("End").done()
-          // Connections
-          .connection(1, 2)
-          .connection(2, 5);
-      RuleFlowProcess process = factory.validate().getProcess();
-        </programlisting>
+RuleFlowProcessFactory factory =
+    RuleFlowProcessFactory.createProcess("org.drools.HelloWorldForeach");
+factory
+    // Header
+    .name("HelloWorldForeach")
+    .version("1.0")
+    .packageName("org.drools")
+    // Nodes
+    .startNode(1).name("Start").done()
+    .forEachNode(2)
+        // Properties
+        .linkIncomingConnections(3)
+        .linkOutgoingConnections(4)
+        .collectionExpression("persons")
+        .variable("child", new ObjectDataType("org.drools.Person"))
+        // Nodes
+        .actionNode(3)
+            .action("mvel", "System.out.println(\"inside action1\")").done()
+        .actionNode(4)
+            .action("mvel", "System.out.println(\"inside action2\")").done()
+        // Connections
+        .connection(3, 4)
+        .done()
+    .endNode(5).name("End").done()
+    // Connections
+    .connection(1, 2)
+    .connection(2, 5);
+RuleFlowProcess process = factory.validate().getProcess();</programlisting>
       </para>
 
       <para>Here you can see how we can include a ForEach node with nested action nodes.
-      Note the linkIncommingConnections() and linkOutgoingConnections() methods that are
-      called to link the foreach node with the internal action node. These methods are
-      used to specify what the first and last nodes are inside the ForEach composite node.
-      </para>
+      Note the <code>linkIncomingConnections()</code> and
+      <code>linkOutgoingConnections()</code> methods that are
+      called to link the ForEach node with the internal action node.
+      These methods are used to specify the first and last nodes inside the ForEach
+      composite node.</para>
 
       </section> 
 
@@ -287,25 +296,27 @@
   </section>
 
   <section>
-    <title>Using a process in your application</title>
+    <title>Using a Process in Your Application</title>
 
     <para>There are two things you need to do to be able to execute processes from
-    within your application: (1) you need to create a knowledge base that contain
-    the definition of the process; and (2) you need to start the process by creating
+    within your application: (1) you need to create a Knowledge Base that contains
+    the definition of the process, and (2) you need to start the process by creating
     a session to communicate with the process engine and start the process.</para>
 
     <orderedlist>
 
-      <listitem><para><emphasis>Creating a knowledge base</emphasis>: Once you
-      have a valid process, you can add the process to the knowledge base (note
-      that this is almost identical to adding rules to the knowledge base, except
-      for the type of knowledge added):</para>
+      <listitem><para><emphasis>Creating a Knowledge Base</emphasis>: Once you
+      have a valid process, you can add the process to the Knowledge Base. Note
+      that this is almost identical to adding rules to the Knowledge Base, except
+      for the type of knowledge added:</para>
       <programlisting>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.add(ResourceFactory.newClassPathResource("MyProcess.rf"), ResourceType.DRF);</programlisting>
-      <para>After adding all your knowledge to the builder (you can add more than one
-      process or even rules), you should probably check whether the process (and/or rules)
-      have been parsed correctly and write out any errors like this:</para>
+kbuilder.add( ResourceFactory.newClassPathResource("MyProcess.rf"),
+              ResourceType.DRF );</programlisting>
+      <para>After adding all your knowledge to the builder (you can add more
+      than one process, and even rules), you should probably check whether the
+      process (and rules) have been parsed correctly and write out any errors
+      like this:</para>
       <programlisting>
 KnowledgeBuilderErrors errors = kbuilder.getErrors();
 if (errors.size() > 0) {
@@ -314,35 +325,41 @@ if (errors.size() > 0) {
     }
     throw new IllegalArgumentException("Could not parse knowledge.");
 }</programlisting>
-      <para>Next you need to create the knowledge base that contains all the necessary
+      <para>Next, you need to create the Knowledge Base that contains all the necessary
       processes (and rules) like this:</para>
       <programlisting>
 KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());</programlisting>
       </listitem>
 
-      <listitem><para><emphasis>Starting a process</emphasis>: Processes are only executed
-      if you explicitly state that they should be executed.  This is because you could
-      potentially define a lot of processes in your knowledge base and the engine has no way
-      to know when you would like to start each of these.  To activate a particular process,
-      you will need to start the process by calling the startProcess method on your session.
+      <listitem><para><emphasis>Starting a process</emphasis>: Processes are
+      only executed if you explicitly state that they should be executed.  This
+      is because you could potentially define a lot of processes in your
+      Knowledge Base and the engine has no way to know when you would like
+      to start each of these.  To activate a particular process, you will need
+      to start it by calling the <code>startProcess</code> method on your session.
       For example:
       <programlisting>
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 ksession.startProcess("com.sample.MyProcess");</programlisting>
-      The parameter of the startProcess method represents the id of the process that needs to
-      be started (the process id needs to be specified as a property of the process, which are
-      shown in the properties view when you click the background canvas of your process). 
-      If your process also requires the execution of rules during the execution of the process,
-      you also need to call the ksession.fireAllRules() method to make sure the rules are
-      executed as well. That's it!</para>
-      <para>You can also specify additional parameters that are used to pass on input data
-      to the process, using the startProcess(String processId, Map parameters)
-      method, that takes an additional set of parameters as name-value pairs.  These parameters
-      are then copied to the newly created process instance as top-level variables of the process.
-      </para>
+      The parameter of the <code>startProcess</code> method represents the id
+      of the process that needs to be started. This process id needs to be
+      specified as a property of the process, shown in the Properties View
+      when you click the background canvas of your process. If your process
+      also requires the execution of rules during the execution of the process,
+      you also need to call the <code>ksession.fireAllRules()</code> method to
+      make sure the rules are  executed as well. That's it!</para>
+
+      <para>You may specify additional parameters that are used to pass
+      on input data to the process, using the
+      <code>startProcess(String processId, Map parameters)</code> method, which
+      takes an additional set of parameters as name-value pairs. These parameters
+      are then copied to the newly created process instance as top-level variables
+      of the process.</para>
+
       <para>You can also start a process from within a rule consequence, using
-      <programlisting>kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlisting>
+      <programlisting>
+kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlisting>
       </para></listitem>
 
     </orderedlist>
@@ -350,29 +367,69 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
   </section>
 
   <section>
-    <title>Detailed explanation of the different node types</title>
+    <title>Detailed Explanation of the Different Node Types</title>
 
-    <para>A ruleflow process is a flow chart where different types of nodes are linked using connections.  The process itself exposes the following properties:
+    <para>A ruleflow process is a flow chart where different types of nodes are
+    linked using connections.  The process itself exposes the following properties:
       <itemizedlist>
-        <listitem><para><emphasis>Id</emphasis>: The unique id of the process.</para></listitem>
-        <listitem><para><emphasis>Name</emphasis>: The display name of the process.</para></listitem>
-        <listitem><para><emphasis>Version</emphasis>: The version number of the process.</para></listitem>
-        <listitem><para><emphasis>Package</emphasis>: The package (namespace) the process is defined in.</para></listitem>
-        <listitem><para><emphasis>Variables</emphasis>: Variables can be defined to store data during the execution of your process (see the 'data' section for more details).</para></listitem>
-        <listitem><para><emphasis>Swimlanes</emphasis>: Specify the actor that is responsible for the execution of human tasks (see the 'human tasks' section for more details).</para></listitem>
-        <listitem><para><emphasis>Exception Handlers</emphasis>: Specify the behaviour when a fault occurs in the process (see the 'exceptions' section for more details).</para></listitem>
-        <listitem><para><emphasis>Connection Layout</emphasis>: Specify how the connections are visualized on the canvas using the connection layout property: 
+        <listitem>
+          <para><emphasis>Id</emphasis>: The unique id of the process.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Name</emphasis>: The display name of the process.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Version</emphasis>: The version number of the process.</para>
+        </listitem>
+
+        <listitem>
+           <para><emphasis>Package</emphasis>: The package (namespace) the process is
+           defined in.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Variables</emphasis>: Variables can be defined to store data
+          during the execution of your process. See section
+          <quote><link linkend='sec.data' endterm="sec.data.title"/></quote>
+          for details.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Swimlanes</emphasis>: Specify the actor responsible for the
+          execution of human tasks. See chapter
+          <quote><link linkend='ch.Human_Tasks' endterm="ch.Human_Tasks.title"/></quote>
+          for details.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Exception Handlers</emphasis>: Specify the behaviour when a fault
+          occurs in the process. See section
+          <quote><link linkend='sec.exceptions' endterm="sec.exceptions.title"/></quote>
+          for details.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Connection Layout</emphasis>: Specify how the connections are
+          visualized on the canvas using the connection layout property: 
           <itemizedlist>
             <listitem>
-              <para>'Manual' always draws your connections as lines going straight from their start to end point (with the possibility to use intermediate break points).</para>
+              <para>'Manual' always draws your connections as lines going straight from
+              their start to end point (with the possibility to use intermediate break
+              points).</para>
             </listitem>
             <listitem>
-              <para>'Shortest path' is similar, but it tries to go around any obstacles is might encounter between the start and end point (to avoid lines crossing nodes).</para>
+              <para>'Shortest path' is similar, but it tries to go around any obstacles
+              it might encounter between the start and end point, to avoid lines crossing
+              nodes.</para>
             </listitem>
             <listitem>
-              <para>'Manhatten' draws connections by only using horizontal and vertical lines.</para>
+              <para>'Manhattan' draws connections by only using horizontal and vertical
+              lines.</para>
             </listitem>
-          </itemizedlist></para></listitem>
+          </itemizedlist></para>
+        </listitem>
       </itemizedlist>
     </para>
    
@@ -382,7 +439,7 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
           <title>The different types of ruleflow nodes</title>
            <mediaobject>
              <imageobject>
-		     <imagedata align="center" fileref="images/Chapter-Flow/ruleflow_nodes.png" format="PNG" role="" />
+	       <imagedata align="center" fileref="images/Chapter-Flow/ruleflow_nodes.png" format="PNG" role="" />
              </imageobject>
            </mediaobject>
         </figure>
@@ -391,231 +448,668 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
 
       <!-- START -->
       <listitem>
-        <para><emphasis role="strong">Start</emphasis>: The start of the ruleflow.  A ruleflow should have exactly one start node.  The start node cannot have incoming connections and should have one outgoing connection.  Whenever ruleflow process is started, the ruleflow will start executing here, and will then automatically continue to the first node linked to this start node, etc.  It contains the following properties:
-        </para>
+        <para><emphasis role="strong">Start</emphasis>: The start of the ruleflow.
+        A ruleflow should have exactly one start node, which cannot have
+        incoming connections and should have one outgoing connection.  Whenever a
+        RuleFlow process is started, execution will start at this node and 
+        automatically continue to the first node linked to this start node, and
+        so on. It contains the following properties:</para>
+
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>Triggers</emphasis>: A start node can also specify additional triggers that can be used to automatically start the process.  Examples are a 'constraint' trigger that automatically starts the process if a given rule / contraint is satisfied, or an 'event' trigger that automatically starts the process if a specific event is signalled.</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Triggers</emphasis>: A Start node can also specify additional
+            triggers that can be used to automatically start the process.  Examples are a
+            "constraint" trigger that automatically starts the process if a given rule or
+            constraint is satisfied, or an "event" trigger that automatically starts the
+            process if a specific event is signalled.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- END -->
       <listitem>
-        <para><emphasis role="strong">End</emphasis>: The end of the ruleflow.  A ruleflow should have one or more end nodes.  The end node should have one incoming connection and cannot have outgoing connections.  It contains the following properties:</para>
+        <para><emphasis role="strong">End</emphasis>: The end of the ruleflow.  A ruleflow
+        should have one or more End nodes.  The End node should have one incoming
+        connection and cannot have outgoing connections.  It contains the following
+        properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>Terminate</emphasis>: An end node can be terminating (default) or not.  When a terminating end node is reached in the ruleflow, the ruleflow is terminated.  If a ruleflow is terminated, all nodes that are still active in this ruleflow are cancelled first (which is possible if parallel paths are used).  Non-terminating end nodes are simply end nodes in the process where the flow ends but other parallel paths still continue.</para></listitem>
+          <listitem> 
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Terminate</emphasis>: An End node can be terminating for
+            the entire process (default) or just for the path. If the process is
+            terminated, all nodes that are still active (on parallel paths) in this
+            ruleflow are cancelled. Non-terminating End nodes are simply ends for
+            some path, while other parallel paths still continue.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- RULESET -->
       <listitem>
-        <para><emphasis role="strong">RuleFlowGroup</emphasis>: Represents a set of rules that need to be evaluated.  The rules are evaluated when the node is reached.  A RuleFlowGroup node should have one incoming connection and one outgoing connection.  Rules can become part of a specific ruleflow group using the "ruleflow-group" attribute in the header. When a RuleSet node is reached in the ruleflow, the engine will start executing rules that are part of the corresponding ruleflow-group (if any).  Execution will automatically continue to the next node if there are no more active rules in this ruleflow-group.  This means that, during the execution of a ruleflow-group, it is possible that new activations belonging to the currently active ruleflow-group are added to the agenda due to changes made to the facts by the other rules. Note that the ruleflow will immediately continue with the next node if it encounters a ruleflow-group where there are no active rules at that point.  If the ruleflow-group was already active, the ruleflow-group will remain active and exeution will only continue if all active rules of the ruleflow-group has been completed.  It contains the following properties:</para>
+        <para><emphasis role="strong">RuleFlowGroup</emphasis>: Represents a set
+        of rules that need to be evaluated.  The rules are evaluated when the node
+        is reached.  A RuleFlowGroup node should have one incoming connection and
+        one outgoing connection.  Rules can become part of a specific ruleflow group
+        using the <kw>ruleflow-group</kw> attribute in the header. When a RuleFlowGroup node
+        is reached in the ruleflow, the engine will start executing rules that are
+        part of the corresponding ruleflow-group (if any).  Execution will
+        automatically continue to the next node if there are no more active rules in
+        this ruleflow group.  This means that, during the execution of a ruleflow group,
+        it is possible that new activations belonging to the currently active
+        ruleflow group are added to the Agenda due to changes made to the facts by
+        the other rules. Note that the ruleflow will immediately continue with the
+        next node if it encounters a ruleflow group where there are no active rules
+        at that time.  If the ruleflow group was already active, the ruleflow group
+        will remain active and exeution will only continue if all active rules of the
+        ruleflow group has been completed.  It contains the following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>RuleFlowGroup</emphasis>: The name of the ruleflow-group that represents the set of rules of this RuleFlowGroup node.</para></listitem>
-          <listitem><para><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>RuleFlowGroup</emphasis>: The name of the ruleflow group
+            that represents the set of rules of this RuleFlowGroup node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timers</emphasis>: Timers that are linked to this node.
+            See section
+            <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
+            for details.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- SPLIT -->
       <listitem>
-        <para><emphasis role="strong">Split</emphasis>: Allows you to create branches in your ruleflow.  A split node should have one incoming connection and two or more outgoing connections.  There are three types of splits currently supported:
+        <para><emphasis role="strong">Split</emphasis>: Allows you to create branches
+        in your ruleflow.  A Split node should have one incoming connection and two or
+        more outgoing connections.  There are three types of Split nodes currently
+        supported:
           <itemizedlist>
            <listitem>
-            <para>AND means that the control flow will continue in all outgoing connections simultaneously (paralellism).
-            </para>
+            <para>AND means that the control flow will continue in all outgoing
+            connections simultaneously.</para>
            </listitem>
            <listitem>
-             <para>XOR means that exactly one of the outgoing connections will be chosen (decision).  Which connection is decided by evaluating the constraints that are linked to each of the outgoing connections.  Constraints are specified using the same syntax as the left-hand side of a rule. The constraint with the lowest priority number that evaluates to true is selected.  Note that you should always make sure that at least one of the outgoing connections will evaluate to true at runtime (the ruleflow will throw an exception at runtime if it cannot find at least one outgoing connection).  For example, you could use a connection which is always true (default) with a high priority number to specify what should happen if none of the other connections can be taken.
-             </para>
+             <para>XOR means that exactly one of the outgoing connections will
+             be chosen.  The decision is made by evaluating the constraints
+             that are linked to each of the outgoing connections.  Constraints are
+             specified using the same syntax as the left-hand side of a rule. The
+             constraint with the <emphasis>lowest</emphasis> priority number that
+             evaluates to true is selected.  Note that you should always make sure
+             that at least one  of the outgoing connections will evaluate to true
+             at runtime (the ruleflow will throw an exception at runtime if it
+             cannot find at  least one outgoing connection).  For example, you could use a
+             connection which is always true (default) with a <emphasis>high</emphasis>
+             priority number to specify what should happen if none of the other
+             connections can be taken.</para>
            </listitem>
            <listitem>
-             <para>OR means that all outgoing connections whose condition evaluates to true are selected.  Conditions are similar to the XOR split, except that the priorities are not taken into account.  Note that you should make sure that at least one of the outgoing connections will evaluate to true at runtime (the ruleflow will throw an exception at runtime if it cannot find an outgoing connection).
+             <para>OR means that all outgoing connections whose condition evaluates
+             to true are selected.  Conditions are similar to the XOR split, except
+             that no priorities are taken into account.  Note that you should
+             make sure that at least one of the outgoing connections will evaluate
+             to true at runtime because the ruleflow will throw an exception at
+             runtime if it cannot determine an outgoing connection.
              </para>
            </listitem>
           </itemizedlist>
         It contains the following properties:
         </para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>Type</emphasis>: The type of the split node, t.e. AND, XOR or OR (see above).</para></listitem>
-          <listitem><para><emphasis>Constraints</emphasis>: The constraints linked to each of the outgoing connections (in case of an (X)OR split).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Type</emphasis>: The type of the split node, i.e., AND,
+            XOR or OR (see above).</para>
+          </listitem>
+          <listitem><para><emphasis>Constraints</emphasis>: The constraints linked
+            to each of the outgoing connections (in case of an (X)OR split).</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- JOIN -->
       <listitem>
-        <para><emphasis role="strong">Join</emphasis>: Allows you to synchronize multiple branches.  A join node should have two or more incoming connections and one outgoing connection.  There are three types of splits currently supported:
+        <para><emphasis role="strong">Join</emphasis>: Allows you to synchronize
+          multiple branches.  A join node should have two or more incoming connections
+          and one outgoing connection.  There are four types of splits currently supported:
           <itemizedlist>
            <listitem>
-            <para>AND means that is will wait until all incoming branches are completed before continuing.
+            <para>AND means that is will wait until <emphasis>all</emphasis> incoming
+            branches are completed before continuing.
             </para>
            </listitem>
            <listitem>
-             <para>XOR means that it continues if one of its incoming branches has been completed.  If it is triggered from more than one incoming connection, it will trigger the next node for each of those triggers.
-             </para>
+             <para>XOR means that it continues as soon as <emphasis>one</emphasis> of its
+             incoming branches has been completed.  If it is triggered from more than one
+             incoming connection, it will trigger the next node for each of those triggers.</para>
            </listitem>
            <listitem>
-             <para>Discriminator means that it continues if one of its incoming branches has been completed.  At that point, it will wait until all other connections have been triggered as well.  At that point, it will reset, so that it can trigger again when one of its incoming branches has been completed.
-             </para>
+             <para>Discriminator means that it continues if one of its incoming
+             branches has been completed. Completions of other incoming branches
+             are registered until all connections have completed.  At that point, the
+             node will be reset, so that it can trigger again when one of its
+             incoming branches has been completed once more.</para>
            </listitem>
            <listitem>
-             <para>n-of-m means that it continues if n of its m incoming branches have been completed.  The n variable could either be hardcoded to a fixed value, or could also refer to a process variable that will contain the number of incoming branches to wait for.
-             </para>
+             <para>n-of-m means that it continues if <emphasis>n</emphasis> of its
+             <emphasis>m</emphasis> incoming branches
+             have been completed.  The variable <emphasis>n</emphasis> could either
+             be hardcoded to a fixed value, or refer to a process variable that will
+             contain the number of incoming branches to wait for.</para>
            </listitem>
           </itemizedlist>
         It contains the following properties:
         </para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>Type</emphasis>: The type of the join node, t.e. AND, XOR or Discriminator (see above).</para></listitem>
-          <listitem><para><emphasis>n</emphasis>: The number of incoming connections to wait for (in case of a n-of-m join).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Type</emphasis>: The type of the Join node, i.e. AND,
+            XOR or Discriminator (see above).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>n</emphasis>: The number of incoming connections to
+            wait for (in case of a n-of-m join).</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- EVENT WAIT -->
       <listitem>
-        <para><emphasis role="strong">Event wait (or milestone)</emphasis>: Represents a wait state.  An event wait should have one incoming connection and one outgoing connection.  It specifies a constraint which defines how long the process should wait in this state before continuing.  For example, a constraint in an order entry application might specify that the process should wait until no more errors are found in the given order.  Constraints are specified using the same syntax as the left-hand side of a rule.   When a wait node is reached in the ruleflow, the engine will check the associated constraint.  If the constraint evaluates to true directly, the flow will continue imediately.  Otherwise, the flow will continue if the constraint is satisfied later on, for example when a fact is inserted in, updated or removed from the working memory.  It contains the following properties:</para>
+        <para><emphasis role="strong">EventWait</emphasis>
+        (or <emphasis role="strong">Milestone</emphasis>):
+        Represents a wait state.  An EventWait should have one incoming connection
+        and one outgoing connection.  It specifies a constraint which defines how
+        long the process should wait in this state before continuing.  For example,
+        a constraint in an order entry application might specify that the process
+        should wait until no more errors are found in the given order.  Constraints
+        are specified using the same syntax as the left-hand side of a rule.   When
+        a Wait node is reached in the ruleflow, the engine will check the associated
+        constraint.  If the constraint evaluates to true directly, the flow will
+        continue imediately.  Otherwise, the flow will continue if the constraint
+        is satisfied later on, for example when a fact is inserted, updated or
+        removed from the working memory.  It contains the following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>Constraint</emphasis>: Defines when the process can leave this state and continue.</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Constraint</emphasis>: Defines when the process can 
+            leave this state and continue.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- SUBPROCESS -->
       <listitem>
-        <para><emphasis role="strong">SubFlow</emphasis>: represents the invocation of another process from withing this process.  A sub-process node should have one incoming connection and one outgoing connection.  When a SubProcess node is reached in the ruleflow, the engine will start the process with the given id.  It contains the following properties:</para>
+        <para><emphasis role="strong">SubFlow</emphasis>: represents the invocation
+        of another process from within this process.  A sub-process node should
+        have one incoming connection and one outgoing connection.  When a SubFlow
+        node is reached in the ruleflow, the engine will start the process with the
+        given id.  It contains the following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>ProcessId</emphasis>: The id of the process that should be executed.</para></listitem>
-          <listitem><para><emphasis>Wait for completion</emphasis>: If this property is true, the subflow node will only continue if that subflow process has terminated its execution (completed or aborted); otherwise it will continue immediately after starting the sub-process.</para></listitem>
-          <listitem><para><emphasis>Independent</emphasis>: If this property is true, the sub-process is started as an independent process, which means that the subflow process will not be terminated if this process reaches an end node; otherwise the active sub-process will be cancelled on termination (or abortion) of the process.</para></listitem>
-          <listitem><para><emphasis>On entry/exit actions</emphasis>: Actions that are executed upon entry / exit of this node.</para></listitem>
-          <listitem><para><emphasis>Parameter in/out mapping</emphasis>: A SubFlow node can also define in- and out-mappings for variables.  The value of variables in this process with given variable name in the in-mappings will be used as parameters (with the associated parameter name) when starting the process.  The value of the variables in the sub-process with the given variable name in the out-mappings will be copied to the variables of this process when the sub-process has been completed.  Note that can only use out-mappings when "Wait for completion" is set to true.</para></listitem>
-          <listitem><para><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para></listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>ProcessId</emphasis>: The id of the process that should
+            be executed.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Wait for completion</emphasis>: If this property is true,
+            the SubFlow node will only continue if that SubFlow process has
+            terminated its execution (completed or aborted); otherwise it will continue
+            immediately after starting the subprocess.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Independent</emphasis>: If this property is true, the
+            subprocess is started as an independent process, which means that the
+            SubFlow process will not be terminated if this process reaches an end node;
+            otherwise the active sub-process will be cancelled on termination (or abortion)
+            of the process.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are 
+            executed upon entry or exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter in/out mapping</emphasis>: A SubFlow node can
+            also define in- and out-mappings for variables.  The value of variables
+            in this process with variable names given in the "in" mapping will be used
+            as parameters (with the associated parameter name) when starting the process.
+            The value of the variables in the subprocess with the given variable name
+            in the "out" mappings will be copied to the variables of this process when the
+            subprocess has been completed.  Note that you can use "out" mappings only when
+            "Wait for completion" is set to true.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timers</emphasis>: Timers that are linked to this node.
+            See section
+            <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
+            for details.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- ACTION -->
       <listitem>
-        <para><emphasis role="strong">Action</emphasis>: represents an action that should be executed in this ruleflow.  An action node should have one incoming connection and one outgoing connection.  The associated action specifies what should be executed.  An action should specify which dialect is used to specify the action (e.g. Java or MVEL), and the actual action code.  The action code can refer to any globals, the special 'drools' variable which implements KnowledgeHelper (can for example be used to access the working memory (drools.getWorkingMemory())) and the special 'context' variable which implements the ProcessContext (can for example be used to access the current ProcessInstance or NodeInstance and get/set variables). When an action node is reached in the ruleflow, it will execute the action and continue with the next node.  It contains the following properties:</para>
+        <para><emphasis role="strong">Action</emphasis>: represents an action that
+        should be executed in this ruleflow.  An Action node should have one incoming
+        connection and one outgoing connection.  The associated action specifies what
+        should be executed, the dialect used for coding the action (i.e., Java or MVEL),
+        and the actual action code.  This code can access any globals, the predefined
+        variable <code>drools</code> referring to a <code>KnowledgeHelper</code> object
+        (which can, for example,
+        be used to retrieve the Working Memory by calling 
+        <code>drools.getWorkingMemory()</code>), and the variable <code>context</code>
+        that references the <code>ProcessContext</code> object (which can,
+        for example, be used to access the current <code>ProcessInstance</code> or
+        <code>NodeInstance</code>, and to get and set variables). When an Action node
+        is reached in the ruleflow, it will execute the action and then continue with the
+        next node.  It contains the following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>Action</emphasis>: The action associated with this action node.</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Action</emphasis>: The action associated with this 
+            action node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- TIMER -->
       <listitem>
-        <para><emphasis role="strong">Timer</emphasis>: represents a timer that can trigger one or multiple times after a given period of time.  A Timer node should have one incoming connection and one outgoing connection.  The timer delay specifies how long (in milliseconds) the timer should wait before triggering the first time.  The timerperiod specifies the time between two subsequenct triggers.  A period of 0 means that the timer should only be triggered once.  When a timer node is reached in the ruleflow, it will execute the associated timer.  The timer is cancelled if the timer node is cancelled (e.g. by completing or aborting the process).  Check out the section on timers to find out more information. The timer node contains the following properties:</para>
+        <para><emphasis role="strong">Timer</emphasis>: represents a timer that can
+        trigger one or multiple times after a given period of time.  A Timer node
+        should have one incoming connection and one outgoing connection.  The timer
+        delay specifies how long (in milliseconds) the timer should wait before
+        triggering the first time.  The timer period specifies the time between two
+        subsequent triggers.  A period of 0 means that the timer should only be
+        triggered once.  When a Timer node is reached in the ruleflow, it will
+        start the associated timer.  The timer is cancelled if the timer node is
+        cancelled (e.g., by completing or aborting the process). Consult the
+        section <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
+        for more information. - The Timer node contains the
+        following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: T    <programlisting>
-  rule 'YourRule'
-     ruleflow-group 'group1'
-     when
-      ...
-     then
-      ...
-    end  
-  </programlisting>
-he display name of the node.</para></listitem>
-          <listitem><para><emphasis>Timer delay</emphasis>: The delay (in milliseconds) that the node should wait before triggering the first time.</para></listitem>
-          <listitem><para><emphasis>Timer period</emphasis>: The period (in milliseconds) between two subsequent triggers.  If the period is 0, the timer should only be triggered once.</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timer delay</emphasis>: The delay (in milliseconds)
+            that the node should wait before triggering the first time.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timer period</emphasis>: The period (in milliseconds)
+            between two subsequent triggers.  If the period is 0, the timer should
+            only be triggered once.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- FAULT -->
       <listitem>
-        <para><emphasis role="strong">Fault</emphasis>: A fault node can be used to signal an exceptional condition in the process.  A fault node should have one incoming connection and no outgoing connections.  When a fault node is reached in the ruleflow, it will throw a fault with the given name.  The process will search for an appropriate exception handler that is capable of handling this kind of fault.  If no fault handler is found, the process instance will be aborted.  It contains the following properties:</para>
+        <para><emphasis role="strong">Fault</emphasis>: A Fault node can be used
+        to signal an exceptional condition in the process.  It should
+        have one incoming connection and no outgoing connections.  When a Fault
+        node is reached in the ruleflow, it will throw a fault with the given name.
+        The process will search for an appropriate exception   handler that is
+        capable of handling this kind of fault.  If no fault handler is found,
+        the process instance will be aborted.  A Fault node contains the following
+        properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>FaultName</emphasis>: The name of the fault.  This name is used to search for appriopriate exception handlers that is capable of handling this kind of fault.</para></listitem>
-          <listitem><para><emphasis>FaultVariable</emphasis>: The name of the variable that contains the data associated with this fault.  This data is also passed on to the exception handler (if one is found).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>FaultName</emphasis>: The name of the fault.  This
+            name is used to search for appriopriate exception handlers that is
+            capable of handling this kind of fault.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>FaultVariable</emphasis>: The name of the variable
+            that contains the data associated with this fault.  This data is also
+            passed on to the exception handler (if one is found).</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- EVENT -->
       <listitem>
-        <para><emphasis role="strong">Event</emphasis>: An event node can be used to respond to (internal/external) events during the execution of the process.  An event node should have no incoming connections and one outgoing connection.  An event node specifies the type of event that is expected.  Whenever that type of event is detected, the node connected to this event node will be triggered.  It contains the following properties:</para>
+        <para><emphasis role="strong">Event</emphasis>: An Event node can be used
+        to respond to internal or external events during the execution of the process.
+        An Event node should have no incoming connections and one outgoing
+        connection.  It specifies the type of event that is expected.  Whenever
+        that type of event is detected, the node connected to this Event node will
+        be triggered.  It contains the following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>EventType</emphasis>: The type of event that is expected.</para></listitem>
-          <listitem><para><emphasis>VariableName</emphasis>: The name of the variable that will contain the data associated with this event (if any) when this event occurs.</para></listitem>
-          <listitem><para><emphasis>Scope</emphasis>: An event could be used to listen to internal events only, i.e. events that are signalled to this process instance directly, using processInstance.signalEvent(String type, Object data).  When an event node is defined as external, it will also be listening to (external) events that are signalled to the process engine directly, using workingMemory.signalEvent(String type, Object event).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>EventType</emphasis>: The type of event that is 
+            expected.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>VariableName</emphasis>: The name of the variable that
+            will contain the data associated with this event (if any) when this
+            event occurs.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Scope</emphasis>: An event could be used to listen
+            to internal events only, i.e., events that are signalled to this
+            process instance directly, using
+            <code>processInstance.signalEvent(String type, Object data)</code>.
+            When an Event node is defined as external, it will also be listening
+            to external events that are signalled to the process engine directly,
+            using <code>workingMemory.signalEvent(String type, Object event)</code>.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- HUMAN TASK -->
       <listitem>
-        <para><emphasis role="strong">Human Task</emphasis>: Processes can also involve tasks that need to executed by human actors.  A task node represents an atomic task that needs to be executed by a human actor.  A human task node should have one incoming connection and one outgoing connection.  Human task nodes can be used in combination with swimlanes to assign multiple human tasks to similar actors. For more detail, check the 'human tasks' chapter.  A human task node is actually nothing more than a specific type of work item node (of type "Human Task").  A human task node contains the following properties:</para>
+        <para><emphasis role="strong">Human Task</emphasis>: Processes can also
+        involve tasks that need to be executed by human actors.  A Human Task node
+        represents an atomic task to be executed by a human actor.  It
+        should have one incoming connection and one outgoing connection.
+        Human Task nodes can be used in combination with Swimlanes to assign multiple
+        human tasks to similar actors. Refer to chapter
+        <quote><link linkend='ch.Human_Tasks' endterm="ch.Human_Tasks.title"/></quote>
+        for more details.  A Human Task node is actually nothing more than a specific
+        type of work item node (of type "Human Task").  A Human Task node contains
+        the following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>TaskName</emphasis>: The name of the human task.</para></listitem>
-          <listitem><para><emphasis>Priority</emphasis>: An integer indicating the priority of the human task.</para></listitem>
-          <listitem><para><emphasis>Comment</emphasis>: A comment associated with the human task.</para></listitem>
-          <listitem><para><emphasis>ActorId</emphasis>: The actor id that is responsible for executing the human task.  A list of actor id's can be specified using a comma (',') as separator.</para></listitem>
-          <listitem><para><emphasis>Skippable</emphasis>: Specifies whether the human task can be skipped (i.e. the actor decides not to execute the human task).</para></listitem>
-          <listitem><para><emphasis>Content</emphasis>: The data associated with this task.</para></listitem>
-          <listitem><para><emphasis>Swimlane</emphasis>: The swimlane this human task node is part of.  Swimlanes make it easy to assign multiple human tasks to the same actor.  See the human tasks chapter for more detail on how to use swimlanes.</para></listitem>
-          <listitem><para><emphasis>Wait for completion</emphasis>: If this property is true, the human task node will only continue if the human task has been terminated (i.e. completed or any other terminal state); otherwise it will continue immediately after creating the human task.</para></listitem>
-          <listitem><para><emphasis>On entry/exit actions</emphasis>: Actions that are executed upon entry / exit of this node.</para></listitem>
-          <listitem><para><emphasis>Parameter mapping</emphasis>: Allows copying the value of process variables to parameters of the human task.  Upon creation of the human tasks, the values will be copied.</para></listitem>
-          <listitem><para><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the human task to a process variable.  Upon completion of the human task, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.  A human task has a result variable "Result" that contains the data returned by the human actor.  The variable "ActorId" contains the id of the actor that actually executed the task.</para></listitem>
-          <listitem><para><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>TaskName</emphasis>: The name of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Priority</emphasis>: An integer indicating the priority
+            of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Comment</emphasis>: A comment associated with the human
+            task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>ActorId</emphasis>: The actor id that is responsible for
+             executing the human task.  A list of actor id's can be specified using
+             a comma (',') as separator.</para>
+          </listitem>
+          <listitem>
+             <para><emphasis>Skippable</emphasis>: Specifies whether the human task
+             can be skipped, i.e., whether the actor may decide not to execute the
+             task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Content</emphasis>: The data associated with this task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Swimlane</emphasis>: The swimlane this human task node
+            is part of.  Swimlanes make it easy to assign multiple human tasks to
+            the same actor.  See the human tasks chapter for more detail on how to
+            use swimlanes.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Wait for completion</emphasis>: If this property is true,
+            the human task node will only continue if the human task has been
+            terminated (i.e., by completing or reaching any other terminal state);
+            otherwise it will continue immediately after creating the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On.entry and on-exit actions</emphasis>: Actions that are
+            executed upon entry and exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter mapping</emphasis>: Allows copying the value
+            of process variables to parameters of the human task.  Upon creation of
+            the human tasks, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Result mapping</emphasis>: Allows copying the value 
+            of result parameters of the human task to a process variable.  Upon
+            completion of the human task, the values will be copied.  Note that
+            you can use result mappings only when "Wait for completion" is set to
+            true.  A human task has a result variable "Result" that contains
+            the data returned by the human actor.  The variable "ActorId" contains
+            the id of the actor that actually executed the task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timers</emphasis>: Timers that are linked to this
+            node.  Consult the section
+            <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
+            for details.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- COMPOSITE -->
       <listitem>
-        <para><emphasis role="strong">Composite</emphasis>: A composite node is a node that can contain other nodes (i.e. acts as a node container).  It thus allows creating a part of the flow embedded inside a composite node.  It also allows you to define additional variables and exception handlers that are accessible for all nodes inside this container. A composite node should have one incoming connection and one outgoing connection. It contains the following properties:</para>
+        <para><emphasis role="strong">Composite</emphasis>: A Composite node is 
+        a node that can contain other nodes so that it acts as a node container.
+        This allows not only the embedding of a part of the flow within such
+        a Composite node, but also the definition of additional variables and
+        exception handlers that are accessible for all nodes inside this
+        container. A Composite node should have one incoming connection and one
+        outgoing connection. It contains the following properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>StartNodeId</emphasis>: The id of the node (inside this node container) that should be triggered when this node is triggered.</para></listitem>
-          <listitem><para><emphasis>EndNodeId</emphasis>: The id of the node (inside this node container) that represents the end of the flow contained in this node.  When this node is completed, the composite node will also be completed and trigger its outgoing connection.  All other executing nodes within this composite node will be cancelled.</para></listitem>
-          <listitem><para><emphasis>Variables</emphasis>: Additional variables can be defined to store data during the execution of this node (see the 'data' section for more details).</para></listitem>
-          <listitem><para><emphasis>Exception Handlers</emphasis>: Specify the behaviour when a fault occurs in this node container (see the 'exceptions' section for more details).</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>StartNodeId</emphasis>: The id of the node (within
+            this node container) that should be triggered when this node is
+            triggered.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>EndNodeId</emphasis>: The id of the node (within
+            this node container) that represents the end of the flow contained
+            in this node.  When this node is completed, the composite node will
+            also be completed and trigger its outgoing connection.  All other
+            executing nodes within this composite node will be cancelled.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Variables</emphasis>: Additional variables can be
+            defined to store data during the execution of this node. See section
+            <quote><link linkend='sec.data' endterm="sec.data.title"/></quote>
+            for details.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Exception Handlers</emphasis>: Specify the behavior
+            when a fault occurs in this node container.  See section
+            <quote><link linkend='sec.exceptions' endterm="sec.exceptions.title"/></quote>
+            for details.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- FOR EACH -->
       <listitem>
-        <para><emphasis role="strong">For Each</emphasis>: A for each node is a special kind of composite node that allows you to execute the contained flow multiple times, once for each element in a collection.  A for each node should have one incoming connection and one outgoing connection. A for each node waits for completion of the embedded flow for each of its elements before continuing.  It contains the following properties:</para>
+        <para><emphasis role="strong">ForEach</emphasis>: A ForEach node is a
+        special kind of composite node that allows you to execute the contained
+        flow multiple times, once for each element in a collection.  A ForEach
+        node should have one incoming connection and one outgoing connection. A
+        ForEach node awaits the completion of the embedded flow for each of the
+        collection''s elements before continuing.  It contains the following
+        properties:</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>StartNodeId</emphasis>: The id of the node (inside this node container) that should be triggered for each of the elements in a collection.</para></listitem>
-          <listitem><para><emphasis>EndNodeId</emphasis>: The id of the node (inside this node container) that represents the end of the flow contained in this node.  When this node is completed, the execution of the for each node will also be completed for that element.  and trigger its outgoing connection.  All other executing nodes within this composite node will be cancelled.</para></listitem>
-          <listitem><para><emphasis>CollectionExpression</emphasis>: The name of a variable that represents the collection of elements that should be iterated over.  The collection variable should be of type java.util.Collection.</para></listitem>
-          <listitem><para><emphasis>VariableName</emphasis>: The name of the variable that will contain the selected element from the collection.  This can be used to gives nodes inside this composite node access to the selected element.</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which
+            is unique within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>StartNodeId</emphasis>: The id of the node (within
+            this node container) that should be triggered for each of the
+            elements in a collection.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>EndNodeId</emphasis>: The id of the node (within
+            this node container) that represents the end of the flow contained
+            in this node.  When this node is completed, the execution of the
+            ForEach node will also be completed for the current collection element.
+            The outgoing connection is triggered if the collection is exhausted.
+            All other executing nodes within this composite node will be cancelled.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>CollectionExpression</emphasis>: The name of a
+            variable that represents the collection of elements that should
+            be iterated over.  The collection variable should be of type
+            <code>java.util.Collection</code>.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>VariableName</emphasis>: The name of the variable
+            to contain the current element from the collection.  This
+            gives nodes within the composite node access to the selected
+            element.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- WORK ITEMS -->
       <listitem>
-        <para><emphasis role="strong">Work Item</emphasis>: Represents an (abstract) unit of work that should be executed in this process.  All work that is executed outside the process engine should be represented (in a declarative way) using a work item.  Different types of work items are predefined, like for example sending an email, logging a message, etc.  However, the user can define domain-specific work items (using a unique name and by defining the paramaters (input) and results (output) that are associated with this type of work).  See the chapter about domain-specific processes for a detailed explanation and illustrative examples of how to define and use work items in your processes.  When a work item node is reached in the process, the associated work item is executed.  A work item node should have one incoming connection and one outgoing connection.</para>
+        <para><emphasis role="strong">WorkItem</emphasis>: Represents an (abstract)
+        unit of work that should be executed in this process.  All work that is
+        executed outside the process engine should be represented (in a declarative
+        way) using a WorkItem node.  Different types of work items are predefined, e.g.,
+        sending an email, logging a message, etc.  Users can define domain-specific
+        work items, using a unique name and by defining
+        the parameters (input) and results (output) that are associated with this
+        type of work.  Refer to the chapter
+        <quote><link linkend='ch.Domain_Specific_Processes'
+                     endterm="ch.Domain_Specific_Processes.title"/></quote> for a
+        detailed explanation and illustrative examples of how to define and use
+        work items in your processes.  When a WorkItem node is reached in the
+        process, the associated work item is executed.  A WorkItem node should
+        have one incoming connection and one outgoing connection.</para>
         <itemizedlist>
-          <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
-          <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
-          <listitem><para><emphasis>Wait for completion</emphasis>: If the property "Wait for completion" is true, the WorkItem node will only continue if the created work item has terminated its execution (completed or aborted); otherwise it will continue immediately after starting the work item.</para></listitem>
-          <listitem><para><emphasis>Parameter mapping</emphasis>: Allows copying the value of process variables to parameters of the work item.  Upon creation of the work item, the values will be copied.</para></listitem>
-          <listitem><para><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the work item to a process variable.  Each type of work can define result parameters that will (potentially) be returned after the work item has been completed.  A result mapping can be used to copy the value of the given result parameter to the given variable in this process.  For example, the "FileFinder" work item returns a list of files that match the given search criteria as a result parameter 'Files'.  This list of files can then be bound to a process variable for use within the process. Upon completion of the work item, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.</para></listitem>
-          <listitem><para><emphasis>On entry/exit actions</emphasis>: Actions that are executed upon entry / exit of this node.</para></listitem>
-          <listitem><para><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</para></listitem>
-          <listitem><para><emphasis>Additional parameters</emphasis>: Each type of work item can define additional parameters that are relevant for that type of work.  For example, the "Email" work item defines additional parameters like 'From', 'To', 'Subject' and 'Body'.  The user can either fill in values for these parameters directly, or define a parameter mapping that will copy the value of the given variable in this process to the given parameter (if both are specified, the mapping will have precedence).  Parameters of type String can use #{expression} to embed a value in the String.  The value will be retrieved when creating the work item and the #{...} will be replaced by the toString() value of the variable.  The expression could simply be the name of a variable (in which case it will be resolved to the value of the variable), but more advanced MVEL expressions are possible as well, like #{person.name.firstname}.</para></listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Wait for completion</emphasis>: If the property
+            "Wait for completion" is true, the WorkItem node will only continue
+            if the created work item has terminated (completed or aborted)
+            its execution; otherwise it will continue immediately after
+            starting the work item.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter mapping</emphasis>: Allows copying the
+            value of process variables to parameters of the work item.  Upon
+            creation of the work item, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Result mapping</emphasis>: Allows copying the value
+            of result parameters of the work item to a process variable.  Each
+            type of work can define result parameters that will (potentially)
+            be returned after the work item has been completed.  A result
+            mapping can be used to copy the value of the given result parameter
+            to the given variable in this process.  For example, the "FileFinder"
+            work item returns a list of files that match the given search
+            criteria within the result parameter <code>Files</code>.  This list
+            of files can then be bound to a process variable for use within the
+            process.  Upon completion of the work item, the values will be copied.
+            Note that you can use result mappings only when "Wait for completion"
+            is set to true.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are
+            executed upon entry or exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timers</emphasis>: Timers that are linked to this
+            node. See the section
+            <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
+            for details.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Additional parameters</emphasis>: Each type of work
+            item can define additional parameters that are relevant for that
+            type of work.  For example, the "Email" work item defines additional
+            parameters such as <code>From</code>, <code>To</code>, <code>Subject</code>
+            and <code>Body</code>.  The user can either provide values for these
+            parameters directly, or define a
+            parameter mapping that will copy the value of the given variable
+            in this process to the given parameter; if both are specified, the
+            mapping will have precedence.  Parameters of type <code>String</code> can use
+            <code>#{<emphasis>expression</emphasis>}</code> to embed a value in the
+            string.  The value will be retrieved when creating the work item, and the
+            substitution expression will be replaced by the result of calling
+            <code>toString()</code> on the variable.  The expression could
+            simply be the name of a variable (in which case it resolves
+            to the value of the variable), but more advanced MVEL expressions
+            are possible as well, e.g., <code>#{person.name.firstname}</code>.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
@@ -623,71 +1117,119 @@ he display name of the node.</para></listitem>
     </para>
   </section>
 
-  <section>
-    <title>Data</title>
+  <section id='sec.data'>
+    <title id='sec.data.title'>Data</title>
 
-    <para>While the flow graph focusses on specifying the control flow of the process, it is usually also
-    necessary to look at the process from a data perspective.  During the execution of a process, data
-    can retrieved, stored, passed on and (re)used throughout the entire process.
-    </para>
+    <para>While the flow graph focusses on specifying the control flow of the
+    process, it is usually also necessary to look at the process from a data
+    perspective.  Throughout the execution of a process, data can retrieved,
+    stored, passed on and used.</para>
 
-    <para>Runtime data can be stored during the execution of the process using variables.  A variable is defined
-    by a name and a data type.  This could be a basic data types (e.g. boolean, integer, String) or any kind of
-    Object.  Variables can be defined inside a variable scope.  The top-level scope is the variable scope of the
-    process itself.  Sub-scopes can be defined using a composite node.  Variables that are defined in a sub-scope
+    <para>For storing runtime data, during the execution of the process,
+    you use variables.  A variable is defined by a name and a data type.  This
+    could be a basic data type, such as boolean, int, or String, or any kind of
+    Object subclass.  Variables can be defined inside a variable
+    <emphasis>scope</emphasis>.  The top-level
+    scope is the variable scope of the process itself.  Subscopes can be
+    defined using a Composite node.  Variables that are defined in a subscope
     are only accessible for nodes within that scope.</para>
 
-    <para>Whenever a variable is accessed, the process will search for the appropriate variable scope that defines
-    the variable.  Nesting of variable scopes is allowed: a node will always search for a variable in its
-    parent container.  If the variable cannot be found, it will look in that one's parent container, etc. until the
-    process instance itself is reached.  If the variable cannot be found, either null will be returned (in case of
-    a read) or an error message will be shown that the variable could not be found (in case of a write), after which
-    the process will continue without setting the paramater.</para>
+    <para>Whenever a variable is accessed, the process will search for the
+    appropriate variable scope that defines the variable.  Nesting of variable
+    scopes is allowed. A node will always search for a variable in its parent
+    container.  If the variable cannot be found, it will look in that one's
+    parent container, and so on, until the process instance itself is reached.
+    If the variable cannot be found, a read access yields null, and a write
+    access produces an error message, with the process continuing its
+    execution.</para>
 
     <para>Variables can be used in various ways:
       <itemizedlist>
-        <listitem>Process-level variables can be set when starting a process by providing a map of parameters when
-        invoking the startProcess method.  These parameters will be set as variables on the process scope.</listitem>
-        <listitem>Actions can access variables directly (by simply using the name of the variable as a parameter name).
-          <programlisting>person.setAge(10); // with "person" a variable in the process</programlisting>
-          Changing the value of a variable can be done through the knowledge context:
-          <programlisting>kcontext.setVariable(variableName, value);</programlisting>
+        <listitem>Process-level variables can be set when starting a process
+        by providing a map of parameters to the invocation of the
+        <code>startProcess</code> method.  These parameters will be set as
+        variables on the process scope.
         </listitem>
-        <listitem>Work items and sub-flows can pass the value of parameters to the outside world by mapping the variable to one
-        of the work item parameters (either using a parameter mapping or by using #{expression} directly inside
-        a String parameter.  The results of a work item can also be copied to a variable using a result mapping.</listitem>
-        <listitem>Various other nodes can also access data.  For example, event nodes can store the data associated
-        to the event in a variable, exception handlers can read error data from a specific variable, etc.  Check the
-        properties of the different node types for more information.</listitem>
+        <listitem>Actions can access variables directly, simply by using the
+        name of the variable as a parameter name.
+          <programlisting>
+// call method on the process variable "person"
+person.setAge(10);</programlisting>
+        Changing the value of a variable can be done through the Knowledge Context:
+          <programlisting>
+kcontext.setVariable(variableName, value);</programlisting>
+        </listitem>
+        <listitem>WorkItem and SubFlow nodes can pass the value of parameters
+        to the outside world by mapping the variable to one of the work item
+        parameters, either by using a parameter mapping or by interpolating
+        it into a String parameter, using
+        <code>#{<emphasis>expression</emphasis>}</code>. The results of a WorkItem
+        can also be copied to a variable using a result mapping.
+        </listitem>
+        <listitem>Various other nodes can also access data. Event nodes, for
+        example, can store the data associated to the event in a variable,
+        exception handlers can read error data from a specific variable, etc. 
+        Check the properties of the different node types for more information.
+        </listitem>
       </itemizedlist>
     </para>
 
-    <para>Finally, processes and rules all have access to globals (globally defined variables that are considered immutable
-    with regard to rule evaluation) and data in the knowledge session.  The knowledge session can be accessed in actions
-    using the knowledge context:</para>
-    <programlisting>kcontext.getKnowledgeRuntime().insert( new Person("..") );</programlisting>
+    <para>Finally, processes and rules all have access to globals, i.e.,
+    globally defined variables that are considered immutable with regard
+    to rule evaluation, and data in the Knowledge Session.  The Knowledge Session
+    can be accessed in actions using the Knowledge Context:</para>
+    <programlisting>
+kcontext.getKnowledgeRuntime().insert( new Person(...) );</programlisting>
 
   </section>
 
   <section>
     <title>Constraints</title>
 
-    <para>Constraints can be used in various locations in your processes, like for example decision points (i.e. an (X)OR split), wait constraints, etc.  Drools Flow supports two types of constraints:
+    <para>Constraints can be used in various locations in your processes,
+    for example in a Split node using OR or XOR decisions, or as a
+    constraint for an EventWait. Drools Flow supports two types of constraints:
       <itemizedlist>
-        <listitem>code: Code constraints are expressions that return a boolean value.  They are evaluated directly whenever they are reached.  We currently support two dialects for expressing these code constraints: java and MVEL.  Both java and MVEL code constraints have direct access to the globals and variables defined in the process.  An example of a valid java code constraint would for example be (with person a variable in the process):
-          <programlisting>return person.getAge() > 20;</programlisting>
-An similar example of a valid MVEL code constraint would be:
-          <programlisting>return person.age > 20;</programlisting>
+        <listitem><emphasis>Code constraints</emphasis> are boolean expressions,
+        evaluated directly whenever they are reached. We currently support two
+        dialects for expressing these code constraints: Java and MVEL.
+        Both Java and MVEL code constraints have direct access
+        to the globals and variables defined in the process.  Here is an example
+        of a valid Java code constraint, <code>person</code> being a variable
+        in the process:
+          <programlisting>
+return person.getAge() > 20;</programlisting>
+A similar example of a valid MVEL code constraint is:
+          <programlisting>
+return person.age > 20;</programlisting>
         </listitem>
-        <listitem>rule: Rule constraints are equals to normal Drools rule conditions.  They use the Drools Rule Language syntax to express possibly complex constraints.  These rules can (like any other rule) refer to data in the working memory.  They can also refer to globals directly.  An example of a valid rule constraint would for example be:
-          <programlisting>Person( age > 20 )</programlisting>
-which will search for a person older than 20 in the working memory.</listitem>
+        <listitem><emphasis>Rule constraints</emphasis> are equals to normal
+        Drools rule conditions.  They use the Drools Rule Language syntax to
+        express possibly complex constraints.  These rules can, like any other
+        rule, refer to data in the Working Memory.  They can also refer to
+        globals directly.  Here is an example of a valid rule constraint:
+          <programlisting
+>Person( age > 20 )</programlisting>
+        This tests for a person older than 20 being in the Working
+        Memory.</listitem>
       </itemizedlist>
     </para>
 
-    <para>Rule constraints do not have direct access to variables defined inside the process.  It is however possible to refer to the current process instance inside a rule constraint, by adding the process instance to the working memory and matching to the process instance inside your rule constraint.  We have added special logic to make sure that a variable "processInstance" of type WorkflowProcessInstance will only match to the current process instance and not to other process instances in the working memory.  Note that you are however responsible yourself to insert (and possibly update) the process instance into the session (for example using Java code or an (on-entry or on-exit or explicit) action in your process). The following exampleof a rule constraint will search for a person with the same name as the value stored in the variable "name" of the process:</para>
+    <para>Rule constraints do not have direct access to variables defined
+    inside the process.  It is however possible to refer to the current process
+    instance inside a rule constraint, by adding the process instance to the
+    Working Memory and matching for the process instance in your rule
+    constraint.  We have added special logic to make sure that a variable
+    <code>processInstance</code> of type <code>WorkflowProcessInstance</code>
+    will only match to the current process instance and not to other process
+    instances in the Working Memory.  Note that you are however responsible
+    yourself to insert the process instance into the session and, possibly,
+    to update it, for example, using Java code or an on-entry or on-exit or
+    explicit action in your process. The following example of a rule
+    constraint will search for a person with the same name as the value
+    stored in the variable "name" of the process:</para>
 
-    <programlisting>processInstance: WorkflowProcessInstance()
+    <programlisting>processInstance : WorkflowProcessInstance()
 Person( name == ( processInstance.getVariable("name") ) )
 # add more constraints here ...</programlisting>	
   </section>
@@ -698,27 +1240,54 @@ Person( name == ( processInstance.getVariable("name") ) )
 
     <para>Actions can be used in different ways:
       <itemizedlist>
-        <listitem>Action node</listitem>
-        <listitem>On entry/exit actions</listitem>
-        <listitem>Actions that specify the behaviour of exception handlers</listitem>
+        <listitem>Within an Action node,</listitem>
+        <listitem>As entry or exit actions, with a number of nodes,</listitem>
+        <listitem>Actions specifying the behavior of exception handlers.</listitem>
       </itemizedlist>
     </para>
 
-    <para>Actions have access to globals and the variables that are defined for the process and the 'kcontext' variable.  This variable is of type org.drools.runtime.process.ProcessContext and can be used for
+    <para>Actions have access to globals and the variables that are defined
+    for the process and the predefined variable <code>context</code>.  This
+    variable is of type
+    <code>org.drools.runtime.process.ProcessContext</code> and can be used for
+    several tasks:
       <itemizedlist>
-        <listitem>Getting the current node instance (if applicable).  The node instance could be queried for data (name, type).  You can also cancel the current node instance.</listitem>
-        <listitem>Getting the current process instance.  This process instance could be queried for data (name, id, processId, etc.), abort process instance, signal events (internal).</listitem>
-        <listitem>Data: getting or setting the value of variables</listitem>
-        <listitem>Accessing the KnowledgeRuntime: this allows you do things like starting a process, signalling events (external), inserting data, etc.</listitem>
+        <listitem>Getting the current node instance (if applicable).  The node
+        instance could be queried for data, such as its name and type.  You can
+        also cancel the current node instance.
+        <programlisting>
+NodeInstance node = context.getNodeInstance();
+String name = node.getNodeName();</programlisting>
+        </listitem>
+        <listitem>Getting the current process instance.  A process instance
+        can be queried for data (name, id, processId, etc.), aborted or
+        signalled an internal event.
+        <programlisting>
+WorkflowProcessInstance proc = context.getProcessInstance();
+proc.signalEvent( type, eventObject );</programlisting>
+        </listitem>
+        <listitem>Getting or setting the value of variables.</listitem>
+        <listitem>Accessing the Knowledge Runtime allows you do things
+        like starting a process, signalling external events, inserting data,
+        etc.</listitem>
       </itemizedlist>
     </para>
 
-    <para>Drools currently supports two dialects: the java and the MVEL dialect.  Java actions should be valid Java code.  MVEL actions can use the business scripting language MVEL to express the action.  MVEL accepts any valid Java code but also provides aditional support for nested accesses of parameters (e.g. person.name instead of person.getName()), and many other scripting improvements.  Therefore, MVEL usually allows more business user friendly action expressions.  For example, an action that prints out the name of the person in the "requester" variable of the process would look like this:</para>
+    <para>Drools currently supports two dialects, Java and MVEL.
+    Java actions should be valid Java code.  MVEL actions can use the business
+    scripting language MVEL to express the action.  MVEL accepts any valid Java
+    code but additionally provides support for nested accesses of parameters
+    (e.g., <code>person.name</code> instead of <code>person.getName()</code>),
+    and many other scripting improvements.  Thus, MVEL expressions are more
+    convenient for the business user. For example, an action that prints out
+    the name of the person in the "requester" variable of the process would
+    look like this:</para>
 
-    <programlisting>// using the Java dialect
+    <programlisting>
+// Java dialect
 System.out.println( person.getName() );
 
-// Similarly, using the MVEL dialect
+//  MVEL dialect
 System.out.println( person.name );
     </programlisting>
   </section>
@@ -729,7 +1298,8 @@ System.out.println( person.name );
         <figure>
           <title>A sample process using events</title>
           <mediaobject>
-            <imageobject>              <imagedata align="center" fileref="images/Chapter-Flow/EventProcess.png" format="PNG" role="" />
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-Flow/EventProcess.png" format="PNG" role="" />
             </imageobject>
           </mediaobject>
         </figure>
@@ -738,46 +1308,51 @@ System.out.println( person.name );
     tasks are executed according to the process plan, by requesting the execution of work items
     and waiting for the results.  However, it is also possible that the process should respond to
     events that were not directly requested by the process engine.  Explicitly representing these
-    events in a process allows the process author to specify how the process should react whenever
-    such events occur.</para>
+    events in a process allows the process author to specify how the process should react
+    to such events.</para>
 
-    <para>Events have a type and possibly data associated with the event.  Users are free to define
-    their own types of events and the data that is associated with this event.
-    </para>
+    <para>Events have a type and possibly data associated with them.  Users are free to define
+    their own event types and their associated data.</para>
 
-    <para>A process can specify how to respond to events by using event nodes.  An event node needs
-    to specify the type of event the node is interested in.  It can also define a variable name, which
-    defines the variable that the data that is associated with the event will be copied to.  This allows
-    subsequent nodes in the process to access the event data and take appropriate action based on this
-    data.</para>
+    <para>A process can specify how to respond to events by using Event nodes.  An Event
+    node needs to specify the type of event the node is interested in.  It can also define
+    the name of a variable, which will receive the data that is associated with the event.
+    This allows subsequent nodes in the process to access the event data and take appropriate
+    action based on this data.</para>
 
     <para>An event can be signalled to a running instance of a process in a number of ways:
       <itemizedlist>
-        <listitem>Internal event: Any action inside a process (e.g. the action of an action node,
-        or on-entry or on-exit actions of nodes) can signal the occurence of an internal event to
-        the surrounding process instance using
-        <programlisting>context.getProcessInstance().signalEvent(type, eventData);</programlisting></listitem>
-        <listitem>External event: A process instance can be notified of an event from outside using
-        <programlisting>processInstance.signalEvent(type, eventData);</programlisting></listitem>
-        <listitem>External event using event correlation: Instead of notifying a process instance directly,
-        it is also possible to have the engine automatically determine which process instances might be interested
-        in an event using event correlation (based on the event type).  All process instances that have specified
-        they are interested in receiving external events of that type (e.g. by having an event node that is
-        listening to external events of that type) will be notified. You can signal such
-        an event to the process engine using
-        <programlisting>workingMemory.signalEvent(type, eventData);</programlisting></listitem>
+        <listitem>Internal event: Any action inside a process (e.g., the action of an
+        action node, or an on-entry or on-exit action of some node) can signal the
+        occurence of an internal event to the surrounding process instance, using code
+        like the following:
+        <programlisting>
+context.getProcessInstance().signalEvent(type, eventData);</programlisting></listitem>
+        <listitem>External event: A process instance can be notified of an event
+        from outside using code such as:
+        <programlisting>
+processInstance.signalEvent(type, eventData);</programlisting></listitem>
+        <listitem>External event using event correlation: Instead of notifying a
+        process instance directly, it is also possible to have the engine
+        automatically determine which process instances might be interested
+        in an event using <emphasis>event correlation</emphasis>, which is based
+        on the event type.  A process instance that contains an event node
+        listening to external events of some type is notified whenever such
+        an event occurs. To signal such an event to the process engine, write
+        code such as:
+        <programlisting>
+workingMemory.signalEvent(type, eventData);</programlisting></listitem>
       </itemizedlist>
     </para>
 
-    <para>Events could also be used to start a process.  Whenever a start node defines an event trigger of a
-    specific type, a new process instance will be started every time that type of event is signalled to the
-    process engine.
-    </para>
+    <para>Events could also be used to start a process.  Whenever a Start node
+    defines an event trigger of a specific type, a new process instance will be
+    started every time that type of event is signalled to the process engine.</para>
 
   </section>
   
-  <section>
-    <title>Exceptions</title>
+  <section id="sec.exceptions">
+    <title id="sec.exceptions.title">Exceptions</title>
 
         <figure>
           <title>A sample process using exception handlers</title>
@@ -788,82 +1363,102 @@ System.out.println( person.name );
           </mediaobject>
         </figure>
 
-    <para>Whenever an exceptional condition occurs during the execution of a process, a fault could be raised
-    to signal the occurrence of this exception.  The process will then search for an appropriate exception handler
+    <para>Whenever an exceptional condition occurs during the execution of
+    a process, a fault could be raised to signal the occurrence of this exception.
+    The process will then search for an appropriate exception handler
     that is capable of handling such a fault.</para>
 
-    <para>Similar to events, faults also have a type and possibly data associated with the fault.  Users are free to define
-    their own types of faults and the data that is associated with this fault.</para>
+    <para>Similar to events, faults also have a type and possibly data
+    associated with the fault.  Users are free to define their own types of
+    faults, together with their data.</para>
 
-    <para>Faults can be created using a fault node: A fault node generates a fault of the given type (i.e. the fault name).
-    If the fault node specifies a fault variable, the value of the given variable will be associated with the fault.</para>
+    <para>Faults are effected by a Fault node, generating a fault of the
+    given type, indicated by the fault name.  If the Fault node
+    specifies a fault variable, the value of the given variable will be
+    associated with the fault.</para>
 
-    <para>Whenever a fault is created, the process will search for an appropriate exception handler that is capable
-    of handling the given type of fault.  Processes and composite nodes both can define exception handlers for handling
-    faults.  Nesting of exception handlers is allowed: a node will always search for an appropriate exception handler in its
-    parent container.  If none is found, it will look in that one's parent container, etc. until the process instance
-    itself is reached.  If no exception handler can be found, the process instance will be aborted, resulting in the cancellation
-    of all nodes inside the process.</para>
+    <para>Whenever a fault is created, the process will search for an
+    appropriate exception handler that is capable of handling the given type
+    of fault.  Processes and Composite nodes both can define exception handlers
+    for handling faults.  Nesting of exception handlers is allowed; a node
+    will always search for an appropriate exception handler in its parent
+    container.  If none is found, it will look in that one's parent container,
+    and so on, until the process instance itself is reached.  If no exception
+    handler can be found, the process instance will be aborted, resulting
+    in the cancellation of all nodes inside the process.</para>
 
-    <para>Exception handlers can also specify a fault variable.  The data associated with the fault (if any) will be copied
-    to this variable if the exception handler is selected to handle the fault.  This allows subsequent actions / nodes in the
-    process to access the fault data and take appropriate action based on this data.</para>
+    <para>Exception handlers can also specify a fault variable.  The data
+    associated with the fault (if any) will be copied to this variable
+    whenever an exception handler is selected to handle a fault.  This
+    allows subsequent Action nodes in the process to access the fault data
+    and take appropriate action based on this data.</para>
 
-    <para>Exception handlers need to define an action that specifies how to respond to the given fault.  In most cases, the
-    behaviour that is needed to react to the given fault cannot be handled in one action.  It is therefore recommended
-    to have the exception handler signal an event of a specific type (in this case "Fault") using
-    <programlisting>context.getProcessInstance().signalEvent("FaultType", context.getVariable("FaultVariable");</programlisting>
+    <para>Exception handlers need to define an action that specifies how
+    to respond to the given fault.  In most cases, the behavior that is
+    needed to react to the given fault cannot be expressed in one action.
+    It is therefore recommended to have the exception handler signal an
+    event of a specific type (in this case "Fault") using <programlisting>
+context.getProcessInstance().signalEvent("FaultType", context.getVariable("FaultVariable");</programlisting>
     </para>
 
   </section>
   
-  <section>
-    <title>Timers</title>
+  <section id="sec.timers">
+    <title id="sec.timers.title">Timers</title>
 
-    <para>Timers can be used to wait for a predefined amount of time, before
-    triggering.  They could be used to specify timeout behaviour, to trigger
-    certain logic after a certain period or repeat it at regular intervals.</para>
+    <para>Timers wait for a predefined amount of time, before triggering, once
+    or repeatedly.  They cou be used to specify time supervision, or to trigger
+    certain logic after a certain period, or to repeat some action at regular
+    intervals.</para>
 
-    <para>A timer needs to specify a delay and a period.  The delay specifies the
-    amount of time (in milliseconds) to wait after activation before triggering the
-    timer the first time.  The period defines the time between subsequent activations.
-    If the period is 0, the timer will only be triggered once.</para>
+    <para>A Timer node is set up with a delay and a period.  The delay specifies
+    the amount of time (in milliseconds) to wait after node activation before
+    triggering the timer the first time.  The period defines the time between
+    subsequent trigger activations. A period of 0 results in a one-shot timer.</para>
 
-    <para>The timer service is responsible for making sure that timers get triggered
-    at the appropriate times.  Timers can also be cancelled, meaning that the timer
-    will no longer be triggered.</para>
+    <para>The timer service is responsible for making sure that timers get
+    triggered at the appropriate times.  Timers can also be cancelled, meaning
+    that the timer will no longer be triggered.</para>
 
     <para>Timers can be used in two ways inside a process:
       <itemizedlist>
-        <listitem>TimerNode: A timer node is a node that can be added to the process flow.
-        When the timer node is triggered, the associated timer is activated.  The timer node
-        will trigger the next node whenever the timer is triggered.  This means that the
-        outgoing connection of a timer node can be triggered multiple times if a period is used.
-        Cancelling a timer node also cancels the associated timer.</listitem>
-        <listitem>Timers associated to nodes: it is also possible to add timers to event-based
-        nodes like work items, sub-flows, etc.  The timers associated with these nodes are activated
-        once the node is triggered.  The associated action is executed if the timer is triggered.
-        This could for example be used to send out notifications at regular time intervals when
-        the execution of a task takes too long, or signal an event or a fault in case of a time-out.
-        When the node these timers are defined for is completed, the timers are automatically
-        cancelled.</listitem>
+        <listitem>A Timer node may be added to the process flow. Its activation
+        starts the timer, and its triggers, once or repeatedly, activate the
+        Timer node's successor.  This means that the outgoing connection of a
+        timer with a positive perios is triggered multiple times. Cancelling a
+        Timer node also cancels the associated timer, whereafter no more triggerings
+        will occur.</listitem>
+        <listitem>Timers may be associated with event-based nodes like WorkItem,
+        SubFlow, etc.  A timer associated with a node is activated whenever
+        the node becomes active.  The associated action is executed whenever
+        the timer triggers.  You may use this, for instance, to send out
+        notifications, at regular intervals, when the execution of a task takes
+        too long, or to signal an event or a fault in case a time supervision
+        expires.  When the node owning the timer completes, the timer is
+        automatically cancelled.</listitem>
       </itemizedlist>
     </para>
 
-    <para>By default, the Drools engine is a passive component, meaning that it will only
-    start processing if you tell it to (for example, you first insert the necessary data and then
-    tell the engine to start processing).  In passive mode, a timer that has been triggered will
-    be put on the action queue.  This means that it will be executed the next time the engine is
-    told to start executing by the user (using fireAllRules() or if the engine is already / still
-    running), in which case the timer will be executed automatically.</para>
+    <para>By default, the Drools engine is a passive component, meaning that
+    it will start processing only if you tell it to. Typically, you first
+    insert the necessary data and then tell the engine to start processing.
+    In passive mode, a timer that has been triggered will be put on the
+    action queue.  This means that it will either be executed automatically
+    if the engine is still running, or it will become delayed until the engine
+    is told to start executing by the user (by calling
+    <code>fireAllRules()</code>).</para>
 
-    <para>When using timers, it does usually make sense to make the Drools engine an active component,
-    meaning that it will execute actions whenever they become available (and not wait until the user
-    tells it to start executing again).  This would mean a timer would be executed once it is triggered.
-    To make the engine fire all actions continuously, you must call the fireUntilHalt() method.  That
-    means the engine will continue firing until the engine is halted.  The following fragment shows
-    how to do this (note that you should call fireUntilHalt() in a separate thread as it will only return
-    if the engine has been halted (by either the user or some logic calling halt() on the session):</para>
+    <para>When using timers, it does usually make sense to let the Drools
+    engine operate as an active component, so that it will execute actions
+    whenever they become available, without the need to wait until the user
+    tells it to resume execution.  Thus, a timer would become effective as
+    soon as it triggers. To make the engine fire all actions continuously,
+    you must call the method <code>fireUntilHalt()</code>, whereupon the
+    engine operates until <code>halt()</code> is called. Note that you should call
+    <code>fireUntilHalt()</code> in a separate thread as it will only
+    return if the engine has been halted, either by the user or some some
+    logic calling <code>halt()</code> on the session.  The following
+    code snippet shows how to do this.</para>
 
     <programlisting>
 new Thread(new Runnable() {
@@ -874,47 +1469,46 @@ new Thread(new Runnable() {
 
 // starting a new process instance
 ksession.startProcess("...");
-// any timer that will trigger will now be executed automatically</programlisting>
+// any timer that triggers will now be executed automatically</programlisting>
   </section>
   
   <section>
-    <title>Assigning rules to a ruleflow group</title>
+    <title>Assigning Rules to a Ruleflow Group</title>
 
   <para>Drools already provides some functionality to define the order in
   which rules should be executed, like salience, activation groups, etc. When
-  dealing with (possibly a lot of) large rule-sets, managing the order in
+  dealing with potentially many large rule-sets, managing the order in
   which rules are evaluated might become complex. Ruleflow allows you to
   specify the order in which rule sets should be evaluated by using a flow
   chart. This allows you to define which rule sets should be evaluated in
   sequence or in parallel, to specify conditions under which rule sets should
-  be evaluated, etc. This chapter contains a few ruleflow examples.</para>
+  be evaluated. This chapter contains a few ruleflow examples.</para>
 
-  <para>A rule flow is a graphical description of a sequence of steps that the
+  <para>A ruleflow is a graphical description of a sequence of steps that the
   rule engine needs to take, where the order is important. The ruleflow can
-  also deal with conditional branching, parallelism, synchonization, etc.</para>
+  also deal with conditional branching, parallelism, and synchonization.</para>
 
   <para>To use a ruleflow to describe the order in which rules should be
-  evaluatied, you should first group rules into rulefow-groups using the ruleflow-group
-  rule attribute ("options" in the GUI).  Then you should create a ruleflow 
-  graph (which is a flow chart) that graphically describe the order in which the rules
-  should be considered (by specifying the order in which the ruleflow-groups should
-  be evaluated).</para>
+  evaluated, you should first group rules into ruleflow groups using the 
+  <kw>ruleflow-group</kw> rule attribute ("options" in the GUI).  Then you
+  should create a ruleflow  graph (which is a flow chart) that graphically
+  describe the order in which the rules should be considered, by specifying
+  the order in which the ruleflow-groups should be evaluated.</para>
 
     <programlisting>
-  rule 'YourRule'
-     ruleflow-group 'group1'
-     when
-      ...
-     then
-      ...
-    end  
-  </programlisting>
+rule 'YourRule'
+    ruleflow-group 'group1'
+when
+    ...
+then
+    ...
+end</programlisting>
 
-    <para>This rule will then be placed in the ruleflow-group called "group1".</para>
+    <para>This rule belongs to the ruleflow-group called "group1".</para>
   </section>
 
   <section>
-    <title>A simple ruleflow</title>
+    <title>A Simple Ruleflow</title>
 
     <figure>
       <title>Ruleflow</title>
@@ -928,47 +1522,45 @@ ksession.startProcess("...");
     </figure>
 
     <para>The above rule flow specifies that the rules in the group "Check Order" must be
-    executed before the rules in the group "Process Order". This means that only
+    executed before the rules in the group "Process Order". This means that first only
     rules which are marked as having a ruleflow-group of "Check Order" will be
-    considered first, and then "Process Order". That's about it. You could
-    achieve similar results with either using salience (setting priorities, but this
-    is harder to maintain, and makes the time-relationship implicit in the
-    rules), or agenda groups. However, using a ruleflow makes the order of
-    processing explicit, almost like a meta-rule, and makes managing more complex
-    situations a lot easier.</para>
+    considered, and then, only if there aren't any more of those, the rules of
+    "Process Order". That's about it. You could achieve similar results with either
+    using salience, but this is harder to maintain and makes the time-relationship
+    implicit in the rules, or Agenda groups. However, using a ruleflow makes the
+    order of processing explicit, in a layer on top of the rule structure, so that
+    managing more complex situations becomes much easier.</para>
 
     <para>In practice, if you are using ruleflow, you will most likely be
-    doing more then setting a simple sequence of groups to progress though.
-    You are more likely modeling branches of processing. In this case you use
-    "Split" and "Join" items from the component pallette. You use connections
-    to connect from the start to ruleflow groups, or to Splits, and from
-    splits to groups, joins etc. (i.e. basically like a simple flow chart that
-    models your processing). You can work entirely graphically until you get
-    the graph approximately right.</para>
+    doing more than setting a simple sequence of groups to progress though.
+    You'll use Split and Join nodes for modeling branches of processing, and
+    define the flows of control by connections, from the Start to ruleflow
+    groups, to Splits and then on to more groups, Joins, and so on. All this
+    is done in a grphic editor.</para>
 
     <figure>
       <title>Complex ruleflow</title>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Flow/RFComplex.png" format="PNG"
+          <imagedata align="center" width="100%"
+                     fileref="images/Chapter-Flow/RFComplex.png" format="PNG"
                      role="" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>The above flow is a more complex example. This example is an
-    insurance claim processing rule flow. A description: Initially the claim
-    data validation rules are processed (these check for data integrity and
-    consistency, that all the information is there). Next there is a decision
-    "split" - based on a condition which the rule flow checks (the value of
-    the claim), it will either move on to an "auto-settlement" group, or to
-    another "split", which checks if there was a fatality in the claim. If
-    there was a fatality then it determines if the "regular" of fatality
-    specific rules will take effect. And so on. What you can see from this is
-    based on a few conditions in the rule flow the steps that the processing
-    takes can be very different. Note that all the rules can be in one package
-    - making maintenance easy. You can separate out the flow control from the
+    <para>The above flow is a more complex example, representing the rule
+    flow for processing an insurance claim. Initially the claim
+    data validation rules are processed, checking for data integrity,
+    consistency and completeness. Next, in a Split node, there is a decision 
+    based on a condition based on the value ofthe claim. Processing will
+    either move on to an "auto-settlement" group, or to another Split node,
+    which checks whether there was a fatality in the incident. If so, it
+    determines whether the "regular" of fatality specific rules should take
+    effect, with more processing to follow. Based on a few conditions, many
+    different control flows are possible. Note that all the rules can be in
+    one package, with the control flow definition being separated from the
     actual rules.</para>
 
     <figure>
@@ -976,37 +1568,36 @@ ksession.startProcess("...");
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Flow/RFSplitType.png" format="PNG"
+          <imagedata align="center" width="100%"
+                     fileref="images/Chapter-Flow/RFSplitType.png" format="PNG"
                      role="" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>Split types (referring to the above): When you click on a split, you
-    will see the above properties panel. You then have to choose the type:
-    AND, OR, and XOR. The interesting ones are OR and XOR: if you choose OR,
-    then any of the "outputs" of the split can happen (i.e. processing can
-    proceed in parallel down more then one path). If you chose XOR, then it
-    will be only one path.</para>
+    <para>To edit Split nodes you click on the node, which will show you
+    a properties panel as shown above. You then have to choose the type:
+    AND, OR, and XOR. If you choose OR, then any of the "outputs" of the
+    split can happen, so that processing can proceed, in parallel, along
+    two or more paths. If you chose XOR, then only one path is chosen.</para>
 
-    <para>If you choose OR or XOR, then in the row that has constraints, you
-    will see a button on the right hand side that has "..." - click on this,
-    and you will see the constraint editor. From this constraint editor, you
-    set the conditions which the split will use to decide which "output path"
-    will be chosen.</para>
+    <para>If you choose OR or XOR, the "Constraints" row will have a
+    square button on the right hand side. Clickin on this button opens 
+    the Constraint editor, where you set the conditions deciding which
+    outgoing path to follow.</para>
 
     <figure>
       <title>Edit constraints</title>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Flow/RFEditConstraints.png"
+          <imagedata align="center" fileref="images/Chapter-Flow/RFEditConstraints.png"
                      format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>Choose the output path you want to set the constraints for (eg
+    <para>Choose the output path you want to set the constraints for (e.g.
     Autosettlement), and then you should see the following constraint
     editor:</para>
 
@@ -1015,46 +1606,46 @@ ksession.startProcess("...");
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Flow/RFConstraintEditor.png"
+	  <imagedata align="center" fileref="images/Chapter-Flow/RFConstraintEditor.png"
                      format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>This is a text editor where the constraints (which are like the
-    condition part of a rule) are entered. These constraints operate on facts
-    in the working memory (eg. in the above example, it is checking for claims
-    with a value of less than 250). Should this condition be true, then the
-    path specified by it will be followed.</para>
+    <para>This is a text editor where the constraints - which are like the
+    condition part of a rule - are entered. These constraints operate on facts
+    in the working memory. In the above example, there is a check for claims
+    with a value of less than 250. Should this condition be true, then the
+    associated path will be followed.</para>
   </section>
 
   <section>
-    <title>Using old Drools 4.x RuleFlow processes</title>
+    <title>Using Drools 4.x RuleFlow Processes</title>
 
     <para>The XML format that was used in Drools4 to store RuleFlow processes
-    was an automatically generated XML file generated by XStream.  As a result,
-    it was hard to read by human actors and hard to maintain and extend.  The
+    was generated automatically, using XStream.  As a result, it was hard to
+    read by human readers and difficult to maintain and extend.  The
     new Drools Flow XML format has been created to simplify this.  This however
     means that, by default, old RuleFlow processes cannot simply be executed on
     the Drools5 engine.</para>
 
-    <para>We do however provide a RuleFlowMigrator that allows you to transform
+    <para>We do however provide a Rule Flow Migrator that allows you to transform
     your old .rf file to the new format.  It uses an XSLT transformation to 
     generate the new XML based on the old content.  You can use this class to
     manually transform your old processes to the new format once when upgrading
     from Drools4.x to Drools5.x.  You can however also let the KnowledgeBuilder
-    to automatically upgrade your processes when to the new format when they are
-    loaded into the knowledge base.  While this requires a conversion every time
-    the process is loaded into the knowledge base, it does however support a more
-    seamless upgrade.  To support this automatic upgrade, you need to set the 
+    automatically upgrade your processes to the new format when they are
+    loaded into the Knowledge Base.  While this requires a conversion every time
+    the process is loaded into the Knowledge Base, it does support a more
+    seamless upgrade.  To enact this automatic upgrade you need to set the 
     "drools.ruleflow.port" system property to "true", for example by adding
-    -Ddrools.ruleflow.port=true when starting your application or by calling
-    System.setProperty("drools.ruleflow.port", "true");</para>
+    <code>-Ddrools.ruleflow.port=true</code> when starting your application,
+    or by calling <code>System.setProperty("drools.ruleflow.port", "true")</code>.</para>
 
     <para>The Drools Eclipse plugin also automatically detects if an old RuleFlow
     file is opened.  At that point, it will automatically perform the conversion
-    and show the result in the graphical editor.  You then need to save this result
-    (either in a new file or by overriding the old one) to persist the old process
+    and show the result in the graphical editor.  You then need to save this result,
+    either in a new file or overwriting the old one, to retain the old process
     in the new format.  Note that the plugin does not support editing and saving
     processes in the old Drools4.x format.</para>
   </section>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter id="ch.Drools_Eclipse_IDE_Features"
+         version="5.0" xmlns="http://docbook.org/ns/docbook"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:xi="http://www.w3.org/2001/XInclude"
                     xmlns:svg="http://www.w3.org/2000/svg"
@@ -7,7 +8,7 @@
                     xmlns:html="http://www.w3.org/1999/xhtml"
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="./">
 
-  <title>Drools Eclipse IDE features</title>
+  <title id="ch.Drools_Eclipse_IDE_Features,title">Drools Eclipse IDE Features</title>
 
   <para>The Drools plugin for the Eclipse IDE provides a few additional features that
   might be interesting for developers.</para>
@@ -15,7 +16,7 @@
   <section>
     <title>Drools Runtimes</title>
  
-    <para>A Drools runtime is a collection of jars on your file system that represent
+    <para>A Drools runtime is a collection of jar files that represent
     one specific release of the Drools project jars. To create a runtime, you must 
     point the IDE to the release of your choice.  If you want to create a new runtime
     based on the latest Drools project jars included in the plugin itself, you can also
@@ -24,25 +25,26 @@
     the appropriate runtime for that project specifically.</para>
 
     <section>
-      <title>Defining a Drools runtime</title>
+      <title>Defining a Drools Runtime</title>
 
-      <para>You are required to define one or more Drools runtimes using the Eclipse preferences
-      view.  To open up your preferences, in the menu Window select the Preferences
-      menu item.  A new preferences dialog should show all your preferences.  On the
+      <para>To define one or more Drools runtimes using the Eclipse preferences
+      view you open up your Preferences, by selecting the "Preferences" menu item
+      in the menu "Window".  A "Preferences" dialog should show all your settings. On the
       left side of this dialog, under the Drools category, select "Installed Drools
       runtimes".  The panel on the right should then show the currently defined Drools
-      runtimes.  If you have not yet defined any runtimes, it should like something like
+      runtimes.  If you have not yet defined any runtimes, it should look like
       the figure below.</para>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes.png" format="PNG" role="" />
+          <imagedata align="center" width="100%"
+                     fileref="images/Chapter-Eclipse/drools-runtimes.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
 
-      <para>To define a new Drools runtime, click on the add button.  A dialog as shown
-      below should pop up, requiring the name for your runtime and the location on your
-      file system where it can be found.</para>
+      <para>To define a new Drools runtime, click on the add button.  A dialog such
+      as the one shown below should pop up, asking for the name of your runtime and
+      the location on your file system where it can be found.</para>
 
       <mediaobject>
         <imageobject>
@@ -52,11 +54,12 @@
 
       <para>In general, you have two options:</para>
       <orderedlist>
-        <listitem><para>If you simply want to use the default jars as included in the Drools
-        Eclipse plugin, you can create a new Drools runtime automatically by clicking the
-        "Create a new Drools 5 runtime ..." button.  A file browser will show up, asking
-        you to select the folder on your file system where you want this runtime to be
-        created.  The plugin will then automatically copy all required dependencies to
+        <listitem><para>If you simply want to use the default jar files as included
+        in the Drools Eclipse plugin, you can create a new Drools runtime automatically
+        by clicking the "Create a new Drools 5 runtime ..." button.  A file browser
+        will show up, asking you to select the folder on your file system where you
+        want this runtime to be created.  The plugin will then automatically copy
+        all required dependencies to
         the specified folder.  After selecting this folder, the dialog should look like
         the figure shown below.</para></listitem>
 
@@ -81,7 +84,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes2.png" format="PNG" role="" />
+          <imagedata align="center" width="100%"
+                     fileref="images/Chapter-Eclipse/drools-runtimes2.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
 
@@ -92,7 +96,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes3.png" format="PNG" role="" />
+          <imagedata align="center" width="100%"
+                     fileref="images/Chapter-Eclipse/drools-runtimes3.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
 
@@ -106,10 +111,10 @@
       <title>Selecting a runtime for your Drools project</title>
 
       <para>Whenever you create a Drools project (using the New Drools Project wizard or by
-      converting an existing Java project to a Drools project using the "Convert to Drools
-      Project" action that is shown when you are in the Drools perspective and you right-click
-      an existing Java project), the plugin will automatically add all the required jars to
-      the classpath of your project.</para>
+      converting an existing Java project to a Drools project using the action 
+      "Convert to Drools Project" that is shown when you are in the Drools perspective
+      and you right-click an existing Java project), the plugin will automatically add all
+      the required jars to the classpath of your project.</para>
 
       <para>When creating a new Drools project, the plugin will automatically use the default
       Drools runtime for that project, unless you specify a project-specific one.  You can do
@@ -121,13 +126,14 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes-newproject.png" format="PNG" role="" />
+          <imagedata align="center"
+                     fileref="images/Chapter-Eclipse/drools-runtimes-newproject.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
 
       <para>You can change the runtime of a Drools project at any time by opening the project
-      properties (right-click the project and select Properties) and selecting the Drools
-      category, as shown below.  Check the "Enable project specific settings" checkbox and select
+      properties and selecting the Drools category, as shown below.  Mark the
+      "Enable project specific settings" checkbox and select
       the appropriate runtime from the drop-down box.  If you click the "Configure workspace
       settings ..." link, the workspace preferences showing the currently installed Drools
       runtimes will be opened, so you can add new runtimes there.  If you deselect the "Enable
@@ -136,7 +142,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes-project.png" format="PNG" role="" />
+          <imagedata align="center"
+                     fileref="images/Chapter-Eclipse/drools-runtimes-project.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
 
@@ -145,12 +152,12 @@
   </section>
 
   <section>
-    <title>Process skins</title>
+    <title>Process Skins</title>
 
-    <para>We have introduced the concept of a (process) skin, which controls how the
-    different nodes inside a process are visualized. This allows you to change the 
-    visualization of the different node types the way you like them (by implementing
-    your own SkinProvider).</para>
+    <para>The concept of <emphasis>process skins</emphasis> provides a way of
+    control the visualization of the different nodes of a processd. You may
+    change the visualization of the various node types to the way you prefer
+    by implementing your own <code>SkinProvider</code>.</para>
 
     <para>BPMN is a popular language used by business users for modeling business
     processes. BPMN defines terminology, different types of nodes, how these should
@@ -159,28 +166,32 @@
     a similar visualization. We have therefore created a BPMN skin that maps the Drools
     Flow concepts to the equivalent BPMN visualization.</para>
 
-    <para>For example, the following figure shows a process using some of the different
-    types of nodes in the RuleFlow language using the default skin ...</para>
+    <para>As an example, the following figure shows a process using some of
+    the different types of nodes in the RuleFlow language using the default
+    skin.</para>
 
     <mediaobject>
       <imageobject>
-	      <imagedata align="center" fileref="images/Chapter-Eclipse/RuleFlow.png" format="PNG" role="" />
+        <imagedata align="center" width="100%"
+                   fileref="images/Chapter-Eclipse/RuleFlow.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
 
-    <para>Simply by switching the preferred process skin in the Drools preferences ...</para>
+    <para>You may now change the preferred process skin in the Drools Preferences dialog:</para>
 
     <mediaobject>
       <imageobject>
-	      <imagedata align="center" fileref="images/Chapter-Eclipse/preferences.png" format="PNG" role="" />
+        <imagedata align="center" width="100%"
+                   fileref="images/Chapter-Eclipse/preferences.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
 
-    <para>and then reopening the editor shows the same process using the BPMN skin ...</para>
+    <para>After reopening the editor, the same process is displayed using the BPMN skin.</para>
 
     <mediaobject>
       <imageobject>
-	      <imagedata align="center" fileref="images/Chapter-Eclipse/BPMN.png" format="PNG" role="" />
+	<imagedata align="center" width="100%"
+                   fileref="images/Chapter-Eclipse/BPMN.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
 
