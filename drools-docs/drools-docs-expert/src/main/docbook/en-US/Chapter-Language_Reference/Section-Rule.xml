@@ -2186,12 +2186,73 @@ public class AverageAccumulateFunction implements AccumulateFunction {
       removes an object from Working Memory.</para>
  
       <para>These convenience methods are basically macros that provide short
-      cuts to the KnowledgeHelper instance (refer to the KnowledgeHelper
-      interface for more advanced operations). The KnowledgeHelper interface is
-      made available to the RHS code block as the variable <code>drools</code>.
-      If you  provide Property Change Listeners to your Java beans that you are
-      inserting into the engine, you can avoid the need to call <code>update()</code> when
-      the object changes.</para>
+      cuts to the KnowledgeHelper instance that lets you access your
+      Working Memory from rules files. (Refer to the <code>KnowledgeHelper</code>
+      interface documentation for more advanced operations).</para>
+
+      <para>Note that if you  provide Property Change Listeners to your Java beans
+      that you are inserting into the engine, you can avoid the need to call
+      <code>update()</code> when the object changes.</para>
+
+      <para>The full Knowlege Runtime API is exposed through the predefined
+      variable <code>kcontext</code> of type <code>KnowledgeContext</code>. Its
+      method <code>getKnowledgeRuntime()</code> delivers an object of type
+      <code>KnowledgeRuntime</code>, which, in turn, provides access to a wealth
+      of methods, many of which are quite useful for coding RHS logic.
+
+      <itemizedlist>
+        <listitem>
+          <para>The call <code>kcontext.getKnowledgeRuntime().halt()</code>
+          terminates rule execution immediately. This is required for returning
+          control to the point whence the current session was put to work with
+          <code>fireUntilHalt()</code></para>.
+        </listitem>
+                
+        <listitem>
+          <para>The accessor <code>getAgenda()</code> returns a reference
+          to this session's <code>Agenda</code>, which in turn provides access
+          to the various rule groups: activation groups, agenda groups, and
+          rule flow groups. A fairly common paradigm is the activation of some
+          agenda group, which is done according to
+          <programlisting>
+// give focus to the agenda group CleanUp
+kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();</programlisting>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>To run a query, you call <code>getQueryResults(String query)</code>,
+          whereupon you may process the results, as explained in section
+          <quote><link linkend='sec.query' endterm="sec.query.title"/></quote>.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>A set of methods dealing with event management lets you, among
+          other things, add and remove event listeners for the Working Memory
+          and the Agenda.</para>
+        </listitem>
+
+        <listitem>
+          <para>Method<code>getKnowledgeBase()</code> returns the
+          <code>KnowledgeBase</code> object, the backbone of all the
+          Knowledge in your system, and the originator of the current
+          session.</para>
+        </listitem>
+
+        <listitem>
+          <para>You can manage globals with <code>setGlobal(...)</code>,
+          <code>getGlobal(...)</code> and <code>getGlobals()</code>.</para>
+        </listitem>
+    
+        <listitem>
+          <para>Method <code>getEnvironment()</code> returns the runtime's
+          <code>Environment</code> which works much like what you know as
+          your operating system's environment.</para>
+        </listitem>
+      </itemizedlist>
+      </para>
+
     </section>
 
     <section>
