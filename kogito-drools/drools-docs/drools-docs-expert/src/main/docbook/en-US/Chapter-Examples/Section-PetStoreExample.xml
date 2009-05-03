@@ -310,8 +310,8 @@ when
     $item : Purchase() from $order.items
 then
     insert( $item );
-    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();
-    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();
+    kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();
+    kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();
 end]]></programlisting>
       </example>
 
@@ -338,8 +338,8 @@ end]]></programlisting>
         </listitem>
 
         <listitem>
-          <para><code>drools.setFocus()</code> sets the focus to the
-          <code>"show items"</code> and <code>evaluate</code> agenda groups
+          <para><code>kcontext....setFocus()</code> sets the focus to the
+          <code>"show items"</code> and <code>"evaluate"</code> agenda groups
           in turn, permitting their rules to fire. In practice, we loop
           through all items on the order, inserting them into memory, then
           firing the other rules after each insert.</para>
