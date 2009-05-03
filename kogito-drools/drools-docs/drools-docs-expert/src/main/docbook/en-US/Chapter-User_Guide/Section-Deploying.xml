@@ -147,7 +147,9 @@ out.close();
       <programlisting>ObjectInputStream in = new ObjectInputStream( new FileInputStream( fileName ) );
 // The input stream might contain an individual
 // package or a collection.
-Collection&lt;KnowledgePackages&gt; kpkgs = in.readObject( );
+@SuppressWarnings( "unchecked" )
+Collection&lt;KnowledgePackage&gt; kpkgs =
+    ()in.readObject( Collection&lt;KnowledgePackage&gt; );
 in.close();
 
 KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
