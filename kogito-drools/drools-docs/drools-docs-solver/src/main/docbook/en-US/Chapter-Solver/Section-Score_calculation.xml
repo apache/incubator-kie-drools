@@ -188,6 +188,25 @@ end</programlisting>
       </listitem>
 
       <listitem>
+        <para>Be watchfull for score traps. A score trap is a state in which several moves need to be done to resolve or
+        lower the weight of a single constraint occurrence. Some examples of score traps:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>If you need 2 doctors at each table, but you're only moving 1 doctor at a time, then the solver has no
+            insentive to move a doctor to a table with no doctors. Punish a table with no doctors more then a table with
+            only 1 doctor in your score function.</para>
+          </listitem>
+
+          <listitem>
+            <para>If you only add the table as a cause of the ConstraintOccurrence and forget the jobType (which is
+            doctor or politician), then the solver has no insentive to move a docter to table which is short of a doctor
+            and a politician.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
         <para>If you use tabu search, combine it with a <literal>relativeSelection</literal> selector. Take some time to
         tweak the value of <literal>relativeSelection</literal>.</para>
       </listitem>
