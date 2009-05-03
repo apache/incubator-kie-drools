@@ -439,11 +439,11 @@ There are two cells on the same column with the same value at (6,3) and (7,3)</p
         </listitem>
 
         <listitem>
-          <para><code>drools.halt()</code>: even reporting the error as
-          soon as it is found, we need a way to tell the engine to stop
-          evaluating rules. We
+          <para><code>kcontext.getKnowledgeRuntime().halt()</code>: even
+          reporting the error as soon as it is found, we need a way to tell
+          the engine to stop   evaluating rules. We
           can do that creating a rule that, in the presence of inconsistencies,
-          calls <code>drools.halt()</code> to stop evaluation.</para>
+          calls <code>halt()</code> to stop evaluation.</para>
         </listitem>
 
         <listitem>
