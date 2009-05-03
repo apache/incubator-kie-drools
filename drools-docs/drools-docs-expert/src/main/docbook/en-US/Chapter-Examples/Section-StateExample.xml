@@ -319,12 +319,12 @@ session.insert( fact, dynamic );
   then
       System.out.println(c.getName() + " finished" );
       c.setState( State.FINISHED );
-      drools.setFocus( "B to D" );
+      kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
 end</programlisting>
       </example>
 
-      <para>The rule "B to C" calls <code>drools.setFocus( "B to D" )</code>
-      which gives the agenda group "B to D" focus allowing its active rules
+      <para>The rule "B to C" calls <code>setFocus()</code> on the
+      agenda group "B to D", allowing its active rules
       to fire, which allows the rule "B to D" to fire.</para>
 
       <example>
