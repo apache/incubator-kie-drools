@@ -58,7 +58,6 @@ public class ClassMethodInspector {
             return false;
         }
 
-
         if ( Collection.class.isAssignableFrom( clazz ) ) {
             if ( checkCollectionMethods( methodName ) ) {
                 return false;
@@ -73,7 +72,7 @@ public class ClassMethodInspector {
 
         if ( List.class.isAssignableFrom( clazz ) ) {
 
-            if ( checkCollectionMethods( methodName ) || "listIterator".equals( methodName ) || "lastIndexOf".equals( methodName ) || "indexOf".equals( methodName ) || "subList".equals( methodName ) ) {
+            if ( checkCollectionMethods( methodName ) || "get".equals( methodName ) || "listIterator".equals( methodName ) || "lastIndexOf".equals( methodName ) || "indexOf".equals( methodName ) || "subList".equals( methodName ) ) {
                 return false;
             }
         }
