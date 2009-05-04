@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
   <title>Administration guide</title>
 
   <para>This chapter covers installation and administration issues of the
@@ -18,18 +18,19 @@
   <section>
     <title>Installation</title>
 
-    <para>Installation for most people is very simple. The Guvnor application is
-    deployed as a .war file, which can be deployed in application servers or
-    servlet containers with little or no configuration if you are happy with
-    the defaults.</para>
+    <para>Installation for most people is very simple. The Guvnor application
+    is deployed as a .war file, which can be deployed in application servers
+    or servlet containers with little or no configuration if you are happy
+    with the defaults.</para>
 
     <para>When you have downloaded the Guvnor distribution (which you can get
-    from http://www.jboss.org/drools), you will find the
-    drools-jbrms.war file in the zip file. Copy the WAR file into the
-    deployment directory of you app server, and then start your app server. If
-    you need to customize some settings, you can first "explode" (unzip) the
-    war file, and change any configuration settings, and then either zip it
-    up, or deploy it "exploded". (Note in the JBoss Application Server you will need to make sure the exploded folder name ends in ".war")</para>
+    from http://www.jboss.org/drools), you will find the drools-jbrms.war file
+    in the zip file. Copy the WAR file into the deployment directory of you
+    app server, and then start your app server. If you need to customize some
+    settings, you can first "explode" (unzip) the war file, and change any
+    configuration settings, and then either zip it up, or deploy it
+    "exploded". (Note in the JBoss Application Server you will need to make
+    sure the exploded folder name ends in ".war")</para>
 
     <para>Once the drools-guvnor.war has been placed in the deployment
     directory, and the application server started, you should navigate to
@@ -46,14 +47,15 @@
       supports Java SE5 (JEE 5 is not required) - this includes servlet
       containers like tomcat.</para>
 
-      <para>It is actively teste/developed on JBoss app server platforms, and these are
-      recommended if you are able to use them, or don't have any existing
-      infrastructure. However, it is possible to use any container/app server,
-      in some cases with minor configuration tweaks (consult the wiki for
-      specific tips - many in the community have been able to make it run on various platforms).</para>
+      <para>It is actively teste/developed on JBoss app server platforms, and
+      these are recommended if you are able to use them, or don't have any
+      existing infrastructure. However, it is possible to use any
+      container/app server, in some cases with minor configuration tweaks
+      (consult the wiki for specific tips - many in the community have been
+      able to make it run on various platforms).</para>
 
-      <para>You can of course download these app servers from www.jboss.com for every
-      operating system.</para>
+      <para>You can of course download these app servers from www.jboss.com
+      for every operating system.</para>
 
       <para>Deployment into JBoss platforms: If you are installing a new JBoss
       platform, the WAR can be copied to [app server
@@ -66,8 +68,8 @@
   <section>
     <title>Database configuration</title>
 
-    <para>Guvnor uses the JCR standard for storing assets (such as rules).
-    The default implementation is Apache Jackrabbit
+    <para>Guvnor uses the JCR standard for storing assets (such as rules). The
+    default implementation is Apache Jackrabbit
     (http://jackrabbit.apache.org/). This includes an out of the box storage
     engine/database, which you can use as is, or configure to use an existing
     RDBMS if needed.</para>
@@ -127,9 +129,8 @@
       <para>In some cases it may be a requirement that you use an external
       RDBMS, such as Oracle, MySQL, or Microsoft SQL Server as the data store
       - this is permitted. In this case, the easiest thing to do is to start
-      up Guvnor with defaults (or with a suitable home directory as
-      specified above) to let it generate the default repository.xml
-      scaffolding.</para>
+      up Guvnor with defaults (or with a suitable home directory as specified
+      above) to let it generate the default repository.xml scaffolding.</para>
 
       <para>Locate the repository.xml file that was generated, and open it -
       it will be annotated with comments describing many of the different
@@ -165,8 +166,8 @@
 
       <para>Lucene is used to provide indexing across the semi structured
       data, and across versions. This indexing is generally best stored on a
-      filesystem, local to Guvnor (as per the default in the repository.xml)
-      - in most cases the default is fine.</para>
+      filesystem, local to Guvnor (as per the default in the repository.xml) -
+      in most cases the default is fine.</para>
     </section>
   </section>
 
@@ -292,8 +293,9 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Guvnor/AdminPermissions.png"
-                     format="PNG" scalefit="1" />
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/AdminPermissions.png"
+                     format="PNG" scalefit="1"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -317,8 +319,9 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Guvnor/AdminPermissionsList.png"
-                     format="PNG" scalefit="1" />
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/AdminPermissionsList.png"
+                     format="PNG" scalefit="1"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -340,8 +343,9 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Guvnor/AdminPermissionEdit.png"
-                     format="PNG" scalefit="1" />
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/AdminPermissionEdit.png"
+                     format="PNG" scalefit="1"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -367,8 +371,9 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Guvnor/AdminAnalyst.png" format="PNG"
-                     scalefit="1" />
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/AdminAnalyst.png"
+                     format="PNG" scalefit="1"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -418,8 +423,8 @@
     <section>
       <title>Asset list customization</title>
 
-      <para>In a few places in Guvnor there is an asset list: this list can
-      be customized by looking for the AssetListTable.properties file. You can
+      <para>In a few places in Guvnor there is an asset list: this list can be
+      customized by looking for the AssetListTable.properties file. You can
       then set the header names and the "getter" methods that are used to
       populate the columns. eg you could add in getCreator, or
       getExternalSource as extra fields if you were using them.</para>
@@ -435,10 +440,10 @@
       server.</para>
 
       <para>To configure a selector, you will need to "explode" the war file
-      for Guvnor, and locate the selectors.properties file (note you can
-      also put your own selectors.properties file in the system classpath if
-      you like). In this file, you will find details on how you can configure
-      a custom selector. The options are to use a drl file, or the name of a
+      for Guvnor, and locate the selectors.properties file (note you can also
+      put your own selectors.properties file in the system classpath if you
+      like). In this file, you will find details on how you can configure a
+      custom selector. The options are to use a drl file, or the name of a
       class that you have written (and which is available on the classpath).
       Classes must implement the AssetSelector interface. DRL files can also
       be used (there is an example one in the selectors.properties file). Each
@@ -449,43 +454,39 @@
     <section>
       <title>Adding your own logos or styles to Guvnor web GUI</title>
 
-      <para>Everyone loves having their own logo on screen - this is to ensure
-      that the people using the application don't forget who they work for or
-      what product they are using for more then a nanosecond (the consequences
-      of them forgetting are too terrible con contemplate).</para>
-
       <para>To achieve, this, you can "explode" the deployment war file, and
-      locate the JBRMS.html file.</para>
+      locate the Guvnor.html file, which will look something like the
+      following: .</para>
 
-      <programlisting>
+      <programlisting>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
 &lt;html&gt;
-&lt;head&gt;
-  &lt;meta name='gwt:module' content='org.drools.guvnor.Guvnor'&gt;
-  &lt;link rel='stylesheet' href='JBRMS.css'&gt;
-  &lt;title&gt;JBoss Business Rules Management System&lt;/title&gt;
-     &lt;link rel="shortcut icon" href="images/drools.gif" type="image/gif"&gt;
-     &lt;link rel="icon" href="images/drools.gif" type="image/gif"&gt;
- &lt;/head&gt;
- &lt;body&gt;
-     &lt;div class="headerBarblue"&gt;&lt;img src="images/jbossrules_hdrlogo.png" width="279" height="70" /&gt;&lt;/d
- &lt;!-- This script is the bootstrap stuff that simply must be there; it is sent down uncompressed --&gt; 
-  &lt;script language='javascript' src='gwt.js'&gt;&lt;/script&gt;
-  &lt;iframe id='__gwt_historyFrame' style='width:0;height:0;border:0'&gt;&lt;/iframe&gt;
-&lt;/body&gt;
+   &lt;head&gt;
+      &lt;!-- Note you can append #asset=UUID to the end of the URL to preload a given asset.
+         Also, if you appent #asset=UUID&amp;nochrome it will only show the asset without all the GUI "chrome"
+
+         To select a locale, specify &amp;locale=en_US at the end of the URL to pick the appropriate bundle.
+         --&gt;
+      &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+      &lt;meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /&gt;
+      &lt;title&gt;JBoss Guvnor&lt;/title&gt;
+
+      ..........
+
+   &lt;/body&gt;
 &lt;/html&gt;</programlisting>
 
-      <para>The above is the contents of the Guvnor.html file - it is fairly
-      empty (as most of the work is done by the GWT - the GUI is built
-      dynamically in the browser). The parts you can customise are the style
-      sheet - you can either edit the Guvnor.css (or better yet, take a copy,
-      and change the style to be what you need), the "shortcut icon" (its what
-      shows in the address bar in the browser etc - also change the "icon"
-      link to be the same so it works in IE), and the header logo. The rest
-      should be left as is, to allow the GWT components to be loaded and
-      attached to the page. This html page is loaded only once by the browser
-      when the user accesses Guvnor web GUI.</para>
+      <para>Note that the above Guvnor.html file is fairly small (as most of
+      the work is done by the GWT - the GUI is built dynamically in the
+      browser). The parts you can customise are the style sheet - you can
+      either edit the Guvnor.css (or better yet, take a copy, and change the
+      style to be what you need), the "shortcut icon" (its what shows in the
+      address bar in the browser etc - also change the "icon" link to be the
+      same so it works in IE), and the header logo. The rest should be left as
+      is, to allow the GWT components to be loaded and attached to the page.
+      This html page is loaded only once by the browser when the user accesses
+      Guvnor web GUI.</para>
 
-      <para>The best way to customize is to take a copy of the JBRMS.html -
+      <para>The best way to customize is to take a copy of the Guvnor.html -
       and then edit. You can also change the URL by editing the web.xml via
       the normal means.</para>
     </section>
@@ -502,7 +503,7 @@
       <para>In the case of import, it will clear any existing content in the
       database.</para>
 
-      <para>This is not a substitute for backup but can be useful when
+      <para>This is NOT a substitute for backup but can be useful when
       migrating. It is important to note that version history is not exported
       this way, only the current state. Hence it is still recommended that a
       formal backup regime be used at all times on the repository database
