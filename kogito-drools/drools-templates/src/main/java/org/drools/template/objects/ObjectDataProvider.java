@@ -34,7 +34,7 @@ public class ObjectDataProvider implements DataProvider {
         iter = objs.iterator();
 	}
 
-	@Override
+
 	public boolean hasNext() {
 		return iter.hasNext();
 	}
@@ -106,7 +106,6 @@ public class ObjectDataProvider implements DataProvider {
 		return values;
 	}
 	
-	@Override
 	public String[] next() {
 		Object obj = iter.next();
 		if( obj instanceof Map ){
