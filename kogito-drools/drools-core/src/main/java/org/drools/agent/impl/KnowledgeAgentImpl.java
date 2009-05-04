@@ -66,6 +66,7 @@ public class KnowledgeAgentImpl
     public KnowledgeAgentImpl(String name,
                               KnowledgeBase kbase,
                               KnowledgeAgentConfiguration configuration) {
+        this.name = name;
         this.kbase = kbase;
         this.resources = new HashMap<Resource, ResourceMapping>();
         this.resourceDirectories = new HashSet<Resource>();
