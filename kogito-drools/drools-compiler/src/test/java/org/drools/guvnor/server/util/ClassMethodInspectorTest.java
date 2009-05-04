@@ -64,7 +64,7 @@ public class ClassMethodInspectorTest extends TestCase {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedListMethod( s ) );
+                         allowedMethod( s ) );
         }
     }
 
@@ -73,7 +73,7 @@ public class ClassMethodInspectorTest extends TestCase {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedListMethod( s ) );
+                         allowedMethod( s ) );
         }
     }
 
@@ -110,14 +110,6 @@ public class ClassMethodInspectorTest extends TestCase {
                 || "keySet".equals( methodName ) || "size".equals( methodName ) || "toArray".equals( methodName ) || "iterator".equals( methodName ) || "contains".equals( methodName ) || "isEmpty".equals( methodName )
                 || "containsAll".equals( methodName ) || "size".equals( methodName ));
     }
-
-    private boolean allowedListMethod(String methodName) {
-        return ("hashCode".equals( methodName ) || "equals".equals( methodName ) || "listIterator".equals( methodName ) || "lastIndexOf".equals( methodName ) || "indexOf".equals( methodName ) || "subList".equals( methodName )
-                || "isEmpty".equals( methodName ) || "containsKey".equals( methodName ) || "values".equals( methodName ) || "entrySet".equals( methodName ) || "containsValue".equals( methodName )
-                || "size".equals( methodName ) || "toArray".equals( methodName ) || "iterator".equals( methodName ) || "contains".equals( methodName ) || "isEmpty".equals( methodName )
-                || "containsAll".equals( methodName ) || "size".equals( methodName ));
-    }
-
 
     public static class SimpleMethods {
         public void cleanOrSimilar() {
