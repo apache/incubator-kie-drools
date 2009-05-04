@@ -129,6 +129,8 @@ public class KnowledgeAgentTest extends TestCase {
                                                                          kbase,
                                                                          aconf );
 
+        assertEquals("test agent", kagent.getName());
+
         kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
