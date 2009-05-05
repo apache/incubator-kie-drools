@@ -508,6 +508,10 @@
       this way, only the current state. Hence it is still recommended that a
       formal backup regime be used at all times on the repository database
       itself.</para>
+
+      <para>
+	Note that when importing repositories with many thousands of items, extra memory will be required (just for the import). 
+      </para>
     </section>
   </section>
 </section>
