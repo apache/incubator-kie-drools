@@ -1,0 +1,8 @@
+package org.drools;
+
+rule "test declaration of non existing field"
+when
+    Person( $likes : likes, $nef : nonExistingField )
+    Cheese( type == $likes ) 
+then
+end

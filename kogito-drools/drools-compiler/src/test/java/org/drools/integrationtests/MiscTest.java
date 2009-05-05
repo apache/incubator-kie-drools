@@ -3624,6 +3624,24 @@ public class MiscTest extends TestCase {
         }
     }
 
+    public void testDeclarationNonExistingField() throws Exception {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclarationOfNonExistingField.drl" ) ) );
+            final Package pkg = builder.getPackage();
+
+            RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+
+            fail( "Should have trown an exception" );
+        } catch ( final InvalidRulePackage e ) {
+            // success ... correct exception thrown
+        } catch ( final Exception e ) {
+            e.printStackTrace();
+            fail( "Wrong exception raised: " + e.getMessage() );
+        }
+    }
+
     public void testUnbalancedTrees() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_UnbalancedTrees.drl" ) ) );
@@ -6272,7 +6290,7 @@ public class MiscTest extends TestCase {
         assertEquals( Integer.valueOf( 10 ), results.get( 0 ) );
     }
 
-    public void FIXME_testDRLWithoutPackageDeclaration() throws Exception {
+    public void testDRLWithoutPackageDeclaration() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_NoPackageDeclaration.drl" ) ), 
                       ResourceType.DRL );
