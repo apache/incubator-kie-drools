@@ -147,17 +147,11 @@ public class DefaultKnowledgeHelper
     }
 
     public void update(final Object object) throws FactException {
-        FactHandle handle = identityMap.get(object);
-        if ( handle == null ) {
+        FactHandle handle = getFactHandle( object );
+        if( handle == null ) {
             throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
-        // only update if this fact exists in the wm
-       ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
-                            .update( handle,
-                                   object,
-                                   this.rule,
-                                   this.activation );
-       this.getIdentityMap().put(object, handle);
+        update( handle, object );
     }
 
     public void retract(final FactHandle handle) throws FactException {
@@ -171,26 +165,19 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final Object object) throws FactException {
-        FactHandle handle =  getIdentityMap().get( object );
+        FactHandle handle = getFactHandle( object );
         if ( handle == null ) {
             throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
-        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
-                           .retract( handle,
-                                    true,
-                                    true,
-                                    this.rule,
-                                    this.activation );
-        this.getIdentityMap().remove(object);
-
+        retract( handle );
     }
 
     public void modifyRetract(final Object object) {
-        FactHandle handle =  getIdentityMap().get( object );
-        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
-                            .modifyRetract( handle,
-                                          rule,
-                                          activation );
+        FactHandle handle = getFactHandle( object );
+        if ( handle == null ) {
+            throw new FactException( "Modify error: handle not found for object: " + object + ". Is it in the working memory?" );
+        }
+        modifyRetract( handle );
     }
 
     public void modifyRetract(final FactHandle factHandle) {
@@ -201,14 +188,12 @@ public class DefaultKnowledgeHelper
     }
 
     public void modifyInsert(final Object object) {
-        FactHandle handle =  getIdentityMap().get( object );
-
-       ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
-                            .modifyInsert( handle,
-                                         object,
-                                         rule,
-                                         activation );
-        this.getIdentityMap().put(object, handle);
+        FactHandle handle = getFactHandle( object );
+        if ( handle == null ) {
+            throw new FactException( "Modify error: handle not found for object: " + object + ". Is it in the working memory?" );
+        }
+        modifyInsert( handle,
+                      object );
     }
 
     public void modifyInsert(final FactHandle factHandle,
@@ -224,22 +209,6 @@ public class DefaultKnowledgeHelper
     public Rule getRule() {
         return this.rule;
     }
-
-    //    public List getObjects() {
-    //        return null; //this.workingMemory.getObjects();
-    //    }
-    //
-    //    public List getObjects(final Class objectClass) {
-    //        return null; //this.workingMemory.getObjects( objectClass );
-    //    }
-    //
-    //    public void clearAgenda() {
-    //        this.workingMemory.clearAgenda();
-    //    }
-    //
-    //    public void clearAgendaGroup(final String group) {
-    //        this.workingMemory.clearAgendaGroup( group );
-    //    }
 
     public Tuple getTuple() {
         return this.tuple;
@@ -257,22 +226,9 @@ public class DefaultKnowledgeHelper
         return this.activation;
     }
 
-    //    public QueryResults getQueryResults(final String query) {
-    //        return this.workingMemory.getQueryResults( query );
-    //    }
-    //
-    //    public AgendaGroup getFocus() {
-    //        return this.workingMemory.getFocus();
-    //    }
-    //
     public void setFocus(final String focus) {
         this.workingMemory.setFocus( focus );
     }
-
-    //
-    //    public void setFocus(final AgendaGroup focus) {
-    //        this.workingMemory.setFocus( focus );
-    //    }
 
     public Object get(final Declaration declaration) {
          InternalWorkingMemoryEntryPoint wmTmp = ((InternalWorkingMemoryEntryPoint)(this.tuple.get(declaration)).getEntryPoint());
@@ -285,8 +241,6 @@ public class DefaultKnowledgeHelper
                 return object;
         }
         return null;
-      //  return declaration.getValue( workingMemory,
-      //                               this.tuple.get( declaration ).getObject() );
     }
 
     public Declaration getDeclaration(final String identifier) {
@@ -326,4 +280,21 @@ public class DefaultKnowledgeHelper
     public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap) {
         this.identityMap = identityMap;
     }
+
+    private FactHandle getFactHandle(final Object object) {
+        FactHandle handle = identityMap.get(object);
+        // entry point null means it is a generated fact, not a regular inserted fact
+        // NOTE: it would probably be a good idea to create a specific attribute for that
+        if ( handle == null || ((InternalFactHandle)handle).getEntryPoint() == null ) {
+            for( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
+                handle = (FactHandle) ep.getFactHandle( object );
+                if( handle != null ) {
+                    identityMap.put( object, handle );
+                    break;
+                }
+            }
+        }
+        return handle;
+    }
+
 }
