@@ -12,6 +12,8 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 
+import org.drools.spi.InternalReadAccessor;
+
 /**
  * A class capable of resolving a declaration in the current build context
  * 
@@ -200,7 +202,9 @@ public class DeclarationScopeResolver {
         final Map<String, Declaration> declarations = getDeclarations( rule );
         final Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
         for ( Map.Entry<String, Declaration> decl : declarations.entrySet() ) {
-            classes.put( decl.getKey(), decl.getValue().getExtractor().getExtractToClass() );
+            InternalReadAccessor ira = decl.getValue().getExtractor();
+            if( ira != null )
+                classes.put( decl.getKey(), ira.getExtractToClass() );
         }
         return classes;
     }
