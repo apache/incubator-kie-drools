@@ -261,6 +261,15 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         String originalBlock = originalCode.substring( d.getStart() - 1,
                                                        d.getEnd() );
         int end = originalBlock.indexOf( "{" );
+        if( end == -1 ){
+            // no block
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          context.getRuleDescr(),
+                                                          null,
+                                                          "Block missing after modify" + d.getModifyExpression() + " ?\n" ) );
+            return;
+        }        
+
         addLineBreaks( consequence,
                        originalBlock.substring( 0,
                                                 end ) );
