@@ -6017,6 +6017,37 @@ public class MiscTest extends TestCase {
                       bob.getStatus() );
     }
 
+    public void testModifyBlockWithFrom() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlockWithFrom.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        Person bob = new Person( "Bob" );
+        Address addr = new Address("abc");
+        bob.addAddress( addr );
+
+        workingMemory.insert( bob );
+        workingMemory.insert( addr );
+
+        workingMemory.fireAllRules();
+
+        // modify worked
+        assertEquals( "12345",
+                      addr.getZipCode() );
+        // chaining worked
+        assertEquals( 1, 
+                      results.size() );
+        assertEquals( addr, 
+                      results.get( 0 ) );
+    }
+
     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
     public void testJavaModifyBlock() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
