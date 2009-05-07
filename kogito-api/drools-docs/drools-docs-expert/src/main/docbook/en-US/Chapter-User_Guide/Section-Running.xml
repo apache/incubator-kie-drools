@@ -13,14 +13,14 @@
   <section>
     <title>KnowledgeBase</title>
 
-    <para>The <code>KnowlegeBase</code> is a repository of all the application's knowledge
-    definitions. It will contain rules, processes, functions, and type models.
-    The Knowledge Base itself does not contain data; instead, sessions are created
-    from the <code>KnowledgeBase</code> into which data can be inserted and from which
-    process instances may be started. Creating the <code>KnowlegeBase</code> can be heavy,
-    whereas session creation
-    is very light, so it is recommended that Knowle Bases be cached where
-    possible to allow for repeated session creation.</para>
+    <para>The <code>KnowlegeBase</code> is a repository of all the
+    application's knowledge definitions. It will contain rules, processes,
+    functions, and type models. The Knowledge Base itself does not contain
+    data; instead, sessions are created from the <code>KnowledgeBase</code>
+    into which data can be inserted and from which process instances may be
+    started. Creating the <code>KnowlegeBase</code> can be heavy, whereas
+    session creation is very light, so it is recommended that Knowle Bases be
+    cached where possible to allow for repeated session creation.</para>
 
     <example>
       <title>Creating a new KnowledgeBase</title>
@@ -32,17 +32,16 @@
   <section>
     <title>StatefulKnowledgeSession</title>
 
-    <para>The <code>StatefulKnowledgeSession</code> stores and executes on the runtime data.
-    It is created from the <code>KnowledgeBase</code>.</para>
+    <para>The <code>StatefulKnowledgeSession</code> stores and executes on the
+    runtime data. It is created from the <code>KnowledgeBase</code>.</para>
 
     <figure>
       <title>StatefulKnowledgeSession</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/StatefulKnowledgeSession.png"
-                     format=""></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/StatefulKnowledgeSession.png"
+                     format="" width="100%"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -61,25 +60,25 @@
     <section>
       <title>WorkingMemoryEntryPoint</title>
 
-      <para>The <code>WorkingMemoryEntryPoint</code> provides the methods around inserting,
-      updating and retrieving facts. The term "entry point" is related to the
-      fact
-      that we have multiple partitions in a Working Memory and you can choose
-      which one you are inserting into, although this use case is aimed at
-      event processing and covered in more detail in the Fusion manual. Most
-      rule based applications will work with the default entry point
-      alone.</para>
+      <para>The <code>WorkingMemoryEntryPoint</code> provides the methods
+      around inserting, updating and retrieving facts. The term "entry point"
+      is related to the fact that we have multiple partitions in a Working
+      Memory and you can choose which one you are inserting into, although
+      this use case is aimed at event processing and covered in more detail in
+      the Fusion manual. Most rule based applications will work with the
+      default entry point alone.</para>
 
-      <para>The <code>KnowledgeRuntime</code> interface provides the main interaction with
-      the engine. It is available in rule consequences and process actions. In
-      this manual the focus is on the methods and interfaces related to rules,
-      and the methods pertaining to processes will be ignored for now. But
-      you'll notice that the  <code>KnowledgeRuntime</code> inherits methods
-      from both the <code>WorkingMemory</code> and the <code>ProcessRuntime</code>,
-      thereby providing a unified API to work with processes and
-      rules. When working with rules, three interfaces form the
-      <code>KnowledgeRuntime</code>: <code>WorkingMemoryEntryPoint</code>,
-      <code>WorkingMemory</code> and the <code>KnowledgeRuntime</code> itself.</para>
+      <para>The <code>KnowledgeRuntime</code> interface provides the main
+      interaction with the engine. It is available in rule consequences and
+      process actions. In this manual the focus is on the methods and
+      interfaces related to rules, and the methods pertaining to processes
+      will be ignored for now. But you'll notice that the
+      <code>KnowledgeRuntime</code> inherits methods from both the
+      <code>WorkingMemory</code> and the <code>ProcessRuntime</code>, thereby
+      providing a unified API to work with processes and rules. When working
+      with rules, three interfaces form the <code>KnowledgeRuntime</code>:
+      <code>WorkingMemoryEntryPoint</code>, <code>WorkingMemory</code> and the
+      <code>KnowledgeRuntime</code> itself.</para>
 
       <figure>
         <title>WorkingMemoryEntryPoint</title>
@@ -101,13 +100,13 @@
         <emphasis>all</emphasis> of the work for deciding about firing or not
         firing a rule is done during insertion; no rule, however, is executed
         until you call <code>fireAllRules()</code>, which you call after you
-        have finished inserting your  facts. It is a common misunderstanding
-        for people to think the  condition evaluation happens when you call
+        have finished inserting your facts. It is a common misunderstanding
+        for people to think the condition evaluation happens when you call
         <code>fireAllRules()</code>. Expert systems typically use the term
-        <emphasis>assert</emphasis> or <emphasis>assertion</emphasis> to
-        refer to facts made available to the system. However, due to
-        "assert" being a keyword in most languages, we have decided
-        to use the <kw>insert</kw> keyword; so expect to hear the two used
+        <emphasis>assert</emphasis> or <emphasis>assertion</emphasis> to refer
+        to facts made available to the system. However, due to "assert" being
+        a keyword in most languages, we have decided to use the
+        <kw>insert</kw> keyword; so expect to hear the two used
         interchangeably.</para>
 
         <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
@@ -144,10 +143,9 @@ FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
       <section>
         <title>Retraction</title>
 
-        <para>Retraction is the removal of a fact from Working Memory,
-        which means that it will no longer track and match that fact,
-        and any rules that are activated and dependent on that fact 
-        will be cancelled. Note
+        <para>Retraction is the removal of a fact from Working Memory, which
+        means that it will no longer track and match that fact, and any rules
+        that are activated and dependent on that fact will be cancelled. Note
         that it is possible to have rules that depend on the nonexistence of a
         fact, in which case retracting a fact may cause a rule to activate.
         (See the <code>not</code> and <code>exist</code> keywords.) Retraction
@@ -164,19 +162,19 @@ ksession.retract( stiltonHandle );            </programlisting>
         <title>Update</title>
 
         <para>The Rule Engine must be notified of modified facts, so that they
-        can be reprocessed. Internally, modification is actually a retract 
+        can be reprocessed. Internally, modification is actually a retract
         followed by an insert; the Rule Engine removes the fact from the
         <code>WorkingMemory</code> and inserts it again. You must use the
-        <code>update()</code> method to notify the <code>WorkingMemory</code> of
-        changed objects for those objects that are not able to notify the
-        <code>WorkingMemory</code> themselves. Notice that <code>update()</code>
-        always takes the modified object as a second parameter, which allows
-        you to specify new instances for immutable objects. The
-        <code>update()</code> method can only be used with objects that have
-        shadow proxies turned on. The update method is only available within
-        Java code. On the right hand side of a rule, also the <kw>modify</kw>
-        statement is supported, providing simplified calls to the
-        object's setters.</para>
+        <code>update()</code> method to notify the <code>WorkingMemory</code>
+        of changed objects for those objects that are not able to notify the
+        <code>WorkingMemory</code> themselves. Notice that
+        <code>update()</code> always takes the modified object as a second
+        parameter, which allows you to specify new instances for immutable
+        objects. The <code>update()</code> method can only be used with
+        objects that have shadow proxies turned on. The update method is only
+        available within Java code. On the right hand side of a rule, also the
+        <kw>modify</kw> statement is supported, providing simplified calls to
+        the object's setters.</para>
 
         <programlisting>Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );
@@ -189,17 +187,16 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
     <section>
       <title>WorkingMemory</title>
 
-      <para>The WorkingMemory provides access to the Agenda, permits
-      query executions, and lets you access named Enty Points.</para>
+      <para>The WorkingMemory provides access to the Agenda, permits query
+      executions, and lets you access named Enty Points.</para>
 
       <figure>
         <title>WorkingMemory</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata width="100%"
-                       fileref="images/Chapter-User_Guide/WorkingMemory.png"
-                       format=""></imagedata>
+            <imagedata fileref="images/Chapter-User_Guide/WorkingMemory.png"
+                       format="" width="100%"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -207,13 +204,14 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
       <section>
         <title>Query</title>
 
-        <para>Queries are used to retrieve fact sets based on patterns,
-        as they are used in rules. Patterns may make use of optional
-        parameters. Queries can be defined in the Knowlege Base, from
-        where they are called up to return the matching results. While
-        iterating over the result collection, any bound
-        identifier in the query can be accessed using the get(String
-        identifier) method.</para>
+        <para>Queries are used to retrieve fact sets based on patterns, as
+        they are used in rules. Patterns may make use of optional parameters.
+        Queries can be defined in the Knowlege Base, from where they are
+        called up to return the matching results. While iterating over the
+        result collection, any bound identifier in the query can be accessed
+        using the get(String identifier) method and any FactHandle for that
+        identifier can be retrieved using getFactHandle(String
+        identifier).</para>
 
         <figure>
           <title>QueryResults</title>
@@ -253,8 +251,8 @@ for ( QueryResultsRow row : results ) {
       <title>KnowledgeRuntime</title>
 
       <para>The <code>KnowledgeRuntime</code> provides further methods that
-      are applicable  to both rules and processes, such as setting globals 
-      and registering <code>ExitPoints</code>.</para>
+      are applicable to both rules and processes, such as setting globals and
+      registering <code>ExitPoints</code>.</para>
 
       <figure>
         <title>KnowledgeRuntime</title>
@@ -270,13 +268,13 @@ for ( QueryResultsRow row : results ) {
       <section>
         <title>Globals</title>
 
-        <para>Globals are named objects that can be passed to the rule
-        engine, without needing to insert them. Most often these are used for
-        static information, or for services that are used in the RHS of a
-        rule, or perhaps as a means to return objects from the rule engine. If
-        you use a global on the LHS of a rule, make sure it is immutable. A
-        global must first be declared in a rules file before it can be set on
-        the session.</para>
+        <para>Globals are named objects that can be passed to the rule engine,
+        without needing to insert them. Most often these are used for static
+        information, or for services that are used in the RHS of a rule, or
+        perhaps as a means to return objects from the rule engine. If you use
+        a global on the LHS of a rule, make sure it is immutable. A global
+        must first be declared in a rules file before it can be set on the
+        session.</para>
 
         <programlisting>global java.util.List list</programlisting>
 
@@ -284,7 +282,8 @@ for ( QueryResultsRow row : results ) {
         its type, it is now possible to call <code>ksession.setGlobal()</code>
         for any session. Failure to declare the global type and identifier
         first will result in an exception being thrown. To set the global on
-        the session use <code>ksession.setGlobal(identifier, value)</code>:</para>
+        the session use <code>ksession.setGlobal(identifier,
+        value)</code>:</para>
 
         <programlisting>List list = new ArrayList();
 ksession.setGlobal("list", list);           </programlisting>
@@ -298,7 +297,7 @@ ksession.setGlobal("list", list);           </programlisting>
       <title>StatefulRuleSession</title>
 
       <para>The <code>StatefulRuleSession</code> is inherited by the
-      <code>StatefulKnowledgeSession</code> and provides the rule related 
+      <code>StatefulKnowledgeSession</code> and provides the rule related
       methods that are relevant from outside of the engine.</para>
 
       <figure>
@@ -327,17 +326,18 @@ ksession.setGlobal("list", list);           </programlisting>
           </mediaobject>
         </figure>
 
-        <para><code>AgendaFilter</code> objects are optional implementations of the filter
-        interface which are used to allow or deny the firing of an activation.
-        What you filter on is entirely up to the implementation. Drools 4.0
-        used to supply some out of the box filters, which have not be exposed
-        in drools 5.0 drools-api, but they are simple to implement and the
-        Drools 4.0 code base can be referred to.</para>
+        <para><code>AgendaFilter</code> objects are optional implementations
+        of the filter interface which are used to allow or deny the firing of
+        an activation. What you filter on is entirely up to the
+        implementation. Drools 4.0 used to supply some out of the box filters,
+        which have not be exposed in drools 5.0 drools-api, but they are
+        simple to implement and the Drools 4.0 code base can be referred
+        to.</para>
 
         <para>To use a filter specify it while calling
         <code>fireAllRules()</code>. The following example permits only rules
-        ending in the string <code>"Test"</code>. All others will be
-        filtered out. <programlisting>ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
+        ending in the string <code>"Test"</code>. All others will be filtered
+        out. <programlisting>ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
       </section>
     </section>
   </section>
@@ -345,25 +345,23 @@ ksession.setGlobal("list", list);           </programlisting>
   <section>
     <title>Agenda</title>
 
-    <para>The Agenda is a <emphasis>Rete</emphasis> feature. During actions
-    on the <code>WorkingMemory</code>, rules may become fully matched and
-    eligible
-    for execution; a single Working Memory Action can result in multiple
-    eligible rules. When a rule is fully matched an Activation is created,
-    referencing the rule and the matched facts, and placed onto the Agenda.
-    The Agenda controls the execution order of these Activations using a
-    Conflict Resolution strategy.</para>
+    <para>The Agenda is a <emphasis>Rete</emphasis> feature. During actions on
+    the <code>WorkingMemory</code>, rules may become fully matched and
+    eligible for execution; a single Working Memory Action can result in
+    multiple eligible rules. When a rule is fully matched an Activation is
+    created, referencing the rule and the matched facts, and placed onto the
+    Agenda. The Agenda controls the execution order of these Activations using
+    a Conflict Resolution strategy.</para>
 
     <para>The engine cycles repeatedly through two phases:</para>
 
     <orderedlist>
       <listitem>
         <para>Working Memory Actions. This is where most of the work takes
-        place, either in the Consequence (the RHS itself) or the
-        main Java application process. Once the Consequence has
-        finished or the main Java application process calls
-        <code>fireAllRules()</code> the engine switches to the Agenda
-        Evaluation phase.</para>
+        place, either in the Consequence (the RHS itself) or the main Java
+        application process. Once the Consequence has finished or the main
+        Java application process calls <code>fireAllRules()</code> the engine
+        switches to the Agenda Evaluation phase.</para>
       </listitem>
 
       <listitem>
@@ -378,9 +376,9 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%" align="center"
+          <imagedata align="center"
                      fileref="images/Chapter-Rule_Engine/Two_Phase.png"
-                     format="PNG"></imagedata>
+                     format="PNG" width="100%"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -411,18 +409,18 @@ ksession.setGlobal("list", list);           </programlisting>
       <para>The default conflict resolution strategies employed by Drools are:
       Salience and LIFO (last in, first out).</para>
 
-      <para>The most visible one is <emphasis>salience</emphasis> (or priority),
-      in which case a
-      user can specify that a certain rule has a higher priority (by giving it
-      a higher number) than other rules. In that case, the rule with higher
-      salience will be preferred. LIFO priorities are based on the assigned
-      Working Memory Action counter value, with all rules created during the
-      same action receiving the same value. The execution order of a set of
-      firings with the same priority value is arbitrary.</para>
+      <para>The most visible one is <emphasis>salience</emphasis> (or
+      priority), in which case a user can specify that a certain rule has a
+      higher priority (by giving it a higher number) than other rules. In that
+      case, the rule with higher salience will be preferred. LIFO priorities
+      are based on the assigned Working Memory Action counter value, with all
+      rules created during the same action receiving the same value. The
+      execution order of a set of firings with the same priority value is
+      arbitrary.</para>
 
-      <para>As a general rule, it is a good idea not to count on rules
-      firing in any particular order, and to author the rules without worrying
-      about a "flow".</para>
+      <para>As a general rule, it is a good idea not to count on rules firing
+      in any particular order, and to author the rules without worrying about
+      a "flow".</para>
 
       <para>Drools 4.0 supported custom conflict resolution strategies; while
       this capability still exists in Drools it has not yet been exposed to
@@ -483,10 +481,9 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <para>An activation group is a set of rules bound together by the same
       "activation-group" rule attribute. In this group only one rule can fire,
-      and after that rule has fired all the other rules are cancelled from
-      the agenda. The <code>clear()</code>
-      method can be called at any time, which cancels all of the activations
-      before one has had a chance to fire.
+      and after that rule has fired all the other rules are cancelled from the
+      agenda. The <code>clear()</code> method can be called at any time, which
+      cancels all of the activations before one has had a chance to fire.
       <programlisting>ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting></para>
     </section>
 
@@ -508,8 +505,8 @@ ksession.setGlobal("list", list);           </programlisting>
       "ruleflow-group" rule attribute. These rules can only fire when the
       group is activate. The group itself can only become active when the
       elaboration of the ruleflow diagram reaches the node representing the
-      group. Here too, the <code>clear()</code> method can be called at any time to
-      cancels all activations still remaining on the Agenda.
+      group. Here too, the <code>clear()</code> method can be called at any
+      time to cancels all activations still remaining on the Agenda.
       <programlisting>ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting></para>
     </section>
   </section>
@@ -523,9 +520,9 @@ ksession.setGlobal("list", list);           </programlisting>
     main part of your application (and the rules).</para>
 
     <para>The <code>KnowlegeRuntimeEventManager</code> interface is
-    implemented by the <code>KnowledgeRuntime</code> which provides two 
+    implemented by the <code>KnowledgeRuntime</code> which provides two
     interfaces, <code>WorkingMemoryEventManager</code> and
-    <code>ProcessEventManager</code>. We will only cover the 
+    <code>ProcessEventManager</code>. We will only cover the
     <code>WorkingMemoryEventManager</code> here.</para>
 
     <figure>
@@ -539,25 +536,24 @@ ksession.setGlobal("list", list);           </programlisting>
       </mediaobject>
     </figure>
 
-    <para>The <code>WorkingMemoryEventManager</code> allows for listeners to be added and
-    removed, so that events for the working memory and the agenda can be
-    listened to.</para>
+    <para>The <code>WorkingMemoryEventManager</code> allows for listeners to
+    be added and removed, so that events for the working memory and the agenda
+    can be listened to.</para>
 
     <figure>
       <title>WorkingMemoryEventManager</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/WorkingMemoryEventManager.png"
-                     format=""></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEventManager.png"
+                     format="" width="100%"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
     <para>The following code snippet shows how a simple agenda listener is
-    declared and attached to a session. It will print activations after
-    they have fired.</para>
+    declared and attached to a session. It will print activations after they
+    have fired.</para>
 
     <example>
       <title>Adding an AgendaEventListener</title>
@@ -570,9 +566,9 @@ ksession.setGlobal("list", list);           </programlisting>
 });     </programlisting>
     </example>
 
-    <para>Drools also provides <code>DebugWorkingMemoryEventListener</code> and
-    <code>DebugAgendaEventListener</code> which implement each method with a
-    debug print statement. To print all Working Memory events, you add a
+    <para>Drools also provides <code>DebugWorkingMemoryEventListener</code>
+    and <code>DebugAgendaEventListener</code> which implement each method with
+    a debug print statement. To print all Working Memory events, you add a
     listener like this:</para>
 
     <example>
@@ -581,9 +577,9 @@ ksession.setGlobal("list", list);           </programlisting>
       <programlisting>ksession.addEventListener( new DebugWorkingMemoryEventListener() );     </programlisting>
     </example>
 
-    <para>All emitted events implement the <code>KnowlegeRuntimeEvent</code> interface
-    which can be used to retrieve the actual <code>KnowlegeRuntime</code> the event
-    originated from.</para>
+    <para>All emitted events implement the <code>KnowlegeRuntimeEvent</code>
+    interface which can be used to retrieve the actual
+    <code>KnowlegeRuntime</code> the event originated from.</para>
 
     <figure>
       <title>KnowlegeRuntimeEvent</title>
@@ -657,18 +653,17 @@ ksession.setGlobal("list", list);           </programlisting>
     <title>KnowledgeRuntimeLogger</title>
 
     <para>The KnowledgeRuntimeLogger uses the comprehensive event system in
-    Drools to create an audit log that can be used to log the execution of
-    an application for later inspection, using tools such as the Eclipse
-    audit viewer.</para>
+    Drools to create an audit log that can be used to log the execution of an
+    application for later inspection, using tools such as the Eclipse audit
+    viewer.</para>
 
     <figure>
       <title>KnowledgeRuntimeLoggerFactory</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/KnowledgeRuntimeLoggerFactory.png"
-                     format=""></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeLoggerFactory.png"
+                     format="" width="100%"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -689,35 +684,33 @@ logger.close();</programlisting>
     <para>The <code>StatelessKnowledgeSession</code> wraps the
     <code>StatefulKnowledgeSession</code>, instead of extending it. Its main
     focus is on decision service type scenarios. It avoids the need to call
-    <code>dispose()</code>. Stateless sessions do not support iterative insertions and
-    the method call <code>fireAllRules()</code> from Java code; the act of
-    calling <code>execute()</code> is a single-shot method that will
-    internally instantiate a <code>StatefulKnowledgeSession</code>,
-    add all the user data and execute user commands, call
-    <code>fireAllRules()</code>, and then call <code>dispose()</code>. While 
+    <code>dispose()</code>. Stateless sessions do not support iterative
+    insertions and the method call <code>fireAllRules()</code> from Java code;
+    the act of calling <code>execute()</code> is a single-shot method that
+    will internally instantiate a <code>StatefulKnowledgeSession</code>, add
+    all the user data and execute user commands, call
+    <code>fireAllRules()</code>, and then call <code>dispose()</code>. While
     the main way to work with this class is via the
-    <code>BatchExecution</code> (a subinterface of <code>Command</code>)
-    as supported by the <code>CommandExecutor</code> interface, two
-    convenience methods are provided for when simple object insertion is all
-    that's required. The <code>CommandExecutor</code> and
-    <code>BatchExecution</code> are talked about
-    in detail in their own section.</para>
+    <code>BatchExecution</code> (a subinterface of <code>Command</code>) as
+    supported by the <code>CommandExecutor</code> interface, two convenience
+    methods are provided for when simple object insertion is all that's
+    required. The <code>CommandExecutor</code> and <code>BatchExecution</code>
+    are talked about in detail in their own section.</para>
 
     <figure>
       <title>StatelessKnowledgeSession</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/StatelessKnowledgeSession.png"
-                     format=""></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/StatelessKnowledgeSession.png"
+                     format="" width="100%"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
     <para>Our simple example shows a stateless session executing a given
-    collection of Java objects using the convenience API. It will iterate
-    the collection, inserting each element in turn.</para>
+    collection of Java objects using the convenience API. It will iterate the
+    collection, inserting each element in turn.</para>
 
     <example>
       <title>Simple StatelessKnowledgeSession execution with a
@@ -744,62 +737,61 @@ if (kbuilder.hasErrors() ) {
       <programlisting>ksession.execute( CommandFactory.newInsertElements( collection ) );  </programlisting>
     </example>
 
-    <para>If you wanted to insert the collection itself, and the
-    collection's individual elements, then
+    <para>If you wanted to insert the collection itself, and the collection's
+    individual elements, then
     <code>CommandFactory.newInsert(collection)</code> would do the job.</para>
 
-    <para>Methods of the <code>CommandFactory</code> create the supported 
+    <para>Methods of the <code>CommandFactory</code> create the supported
     commands, all of which can be marshalled using XStream and the
-    <code>BatchExecutionHelper</code>. 
-    <code>BatchExecutionHelper</code> provides details on the XML format as well as how to
-    use Drools Pipeline to automate the marshalling of 
-    <code>BatchExecution</code> and <code>ExecutionResults</code>.</para>
+    <code>BatchExecutionHelper</code>. <code>BatchExecutionHelper</code>
+    provides details on the XML format as well as how to use Drools Pipeline
+    to automate the marshalling of <code>BatchExecution</code> and
+    <code>ExecutionResults</code>.</para>
 
-    <para><code>StatelessKnowledgeSession</code> supports globals, scoped in
-    a number of ways.
- I'll cover the non-command way first, as commands are scoped to a
-    specific execution call. Globals can be resolved in three ways.</para>
+    <para><code>StatelessKnowledgeSession</code> supports globals, scoped in a
+    number of ways. I'll cover the non-command way first, as commands are
+    scoped to a specific execution call. Globals can be resolved in three
+    ways.</para>
 
     <itemizedlist>
       <listitem>
-    <para>The Stateless Knowledge Session method <code>getGlobals()</code> returns a Globals
-    instance which provides access to the session's globals. These are
-    shared for <emphasis>all</emphasis> execution calls. Exercise
-    caution regarding mutable globals because execution 
-    calls can be executing simultaneously in different threads.
-    </para>
+        <para>The Stateless Knowledge Session method <code>getGlobals()</code>
+        returns a Globals instance which provides access to the session's
+        globals. These are shared for <emphasis>all</emphasis> execution
+        calls. Exercise caution regarding mutable globals because execution
+        calls can be executing simultaneously in different threads.</para>
 
-    <example>
-      <title>Session scoped global</title>
+        <example>
+          <title>Session scoped global</title>
 
-      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+          <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 // Set a global hbnSession, that can be used for DB interactions in the rules.
 ksession.setGlobal( "hbnSession", hibernateSession );
 // Execute while being able to resolve the "hbnSession" identifier.  
 ksession.execute( collection ); </programlisting>
-    </example>
+        </example>
       </listitem>
 
       <listitem>
-    <para>Using a delegate is another way of global resolution.
-    Assigning a value to a global (with <code>setGlobal(String, Object)</code>)
-    results in the value being stored in an internal collection
-    mapping identifiers to values. Identifiers in this internal collection 
-    will have priority over any supplied delegate. Only if an identifier 
-    cannot be found in this internal collection, the delegate global (if any)
-    will be used.</para>
+        <para>Using a delegate is another way of global resolution. Assigning
+        a value to a global (with <code>setGlobal(String, Object)</code>)
+        results in the value being stored in an internal collection mapping
+        identifiers to values. Identifiers in this internal collection will
+        have priority over any supplied delegate. Only if an identifier cannot
+        be found in this internal collection, the delegate global (if any)
+        will be used.</para>
       </listitem>
 
       <listitem>
-    <para>The third way of resolving globals is to have execution scoped globals.
-    Here, a <code>Command</code> to set a global is passed to the
-    <code>CommandExecutor</code>.</para>
+        <para>The third way of resolving globals is to have execution scoped
+        globals. Here, a <code>Command</code> to set a global is passed to the
+        <code>CommandExecutor</code>.</para>
       </listitem>
     </itemizedlist>
 
-    <para>The <code>CommandExecutor</code> interface also offers the ability to export
-    data via "out" parameters. Inserted facts, globals and query results can
-    all be returned.</para>
+    <para>The <code>CommandExecutor</code> interface also offers the ability
+    to export data via "out" parameters. Inserted facts, globals and query
+    results can all be returned.</para>
 
     <example>
       <title>Out identifiers</title>
@@ -850,8 +842,8 @@ results.getValue( "Get People" );</programlisting>
         </listitem>
 
         <listitem>
-          <para>Disconnect the Left Input Adapter Node propagation, and let the
-          Object plus the Node be referenced in a Command object, which is
+          <para>Disconnect the Left Input Adapter Node propagation, and let
+          the Object plus the Node be referenced in a Command object, which is
           added to a list on the Working Memory for later execution.</para>
         </listitem>
 
@@ -879,76 +871,76 @@ results.getValue( "Get People" );</programlisting>
         </listitem>
       </orderedlist>
 
-      <para>The <code>LeftInputAdapterNode</code> no longer creates a Tuple, adding the
-      Object, and then propagate the Tuple – instead a Command object is
-      created and added to a list in the Working Memory. This Command object
-      holds a reference to the <code>LeftInputAdapterNode</code> and the propagated object.
-      This stops any left-input propagations at insertion time, so that we
-      know that a right-input propagation will never need to attempt a join
-      with the left-inputs (removing the need for left-input memory). All
-      nodes have their memory turned off, including the left-input Tuple
-      memory but excluding the right-input object memory, which means that the
-      only node remembering an insertion propagation is the right-input object
-      memory. Once all the assertions are finished and all right-input
-      memories populated, we can then iterate the list of <code>LeftInputAdatperNode</code>
-      Command objects calling each in turn. They will propagate down the
-      network attempting to join with the right-input objects, but they won't be
-      remembered in the left input as we know there will be no further object
-      assertions and thus propagations into the right-input memory.</para>
+      <para>The <code>LeftInputAdapterNode</code> no longer creates a Tuple,
+      adding the Object, and then propagate the Tuple – instead a Command
+      object is created and added to a list in the Working Memory. This
+      Command object holds a reference to the
+      <code>LeftInputAdapterNode</code> and the propagated object. This stops
+      any left-input propagations at insertion time, so that we know that a
+      right-input propagation will never need to attempt a join with the
+      left-inputs (removing the need for left-input memory). All nodes have
+      their memory turned off, including the left-input Tuple memory but
+      excluding the right-input object memory, which means that the only node
+      remembering an insertion propagation is the right-input object memory.
+      Once all the assertions are finished and all right-input memories
+      populated, we can then iterate the list of
+      <code>LeftInputAdatperNode</code> Command objects calling each in turn.
+      They will propagate down the network attempting to join with the
+      right-input objects, but they won't be remembered in the left input as
+      we know there will be no further object assertions and thus propagations
+      into the right-input memory.</para>
 
       <para>There is no longer an Agenda, with a priority queue to schedule
       the Tuples; instead, there is simply an array for the number of rules.
-      The sequence number of the <code>RuleTerminalNode</code> indicates the element within
-      the array where to place the Activation. Once all Command objects have
-      finished we can iterate our array, checking each element in turn, and
-      firing the Activations if they exist. To improve performance, we remember
-      the first and the last populated cell in the array. The network is
-      constructed, with each <code>RuleTerminalNode</code> being given a sequence number
-      based on a salience number and its order of being added to the
-      network.</para>
+      The sequence number of the <code>RuleTerminalNode</code> indicates the
+      element within the array where to place the Activation. Once all Command
+      objects have finished we can iterate our array, checking each element in
+      turn, and firing the Activations if they exist. To improve performance,
+      we remember the first and the last populated cell in the array. The
+      network is constructed, with each <code>RuleTerminalNode</code> being
+      given a sequence number based on a salience number and its order of
+      being added to the network.</para>
 
       <para>Typically the right-input node memories are Hash Maps, for fast
       object retraction; here, as we know there will be no object retractions,
       we can use a list when the values of the object are not indexed. For
       larger numbers of objects indexed Hash Maps provide a performance
-      increase; if we know an object type has only a few instances,
-      indexing is probably not advantageous, and a list can be used.</para>
+      increase; if we know an object type has only a few instances, indexing
+      is probably not advantageous, and a list can be used.</para>
 
       <para>Sequential mode can only be used with a Stateless Session and is
       off by default. To turn it on, either call
       <code>RuleBaseConfiguration.setSequential(true)</code>, or set the
       rulebase configuration property <code>drools.sequential</code> to true.
       Sequential mode can fall back to a dynamic agenda by calling
-      <code>setSequentialAgenda</code> with <code>SequentialAgenda.DYNAMIC</code>.
-      You may also set the "drools.sequential.agenda" property to "sequential"
-      or "dynamic".</para>
+      <code>setSequentialAgenda</code> with
+      <code>SequentialAgenda.DYNAMIC</code>. You may also set the
+      "drools.sequential.agenda" property to "sequential" or "dynamic".</para>
     </section>
   </section>
 
   <section>
     <title>Pipeline</title>
 
-    <para>The <code>PipelineFactory</code> and associated classes are there to help with
-    the automation of getting information into and out of Drools, especially
-    when using services such as Java Message Service (JMS), and other data
-    sources that aren't Java objects. Transformers
-    for Smooks, JAXB, XStream and jXLS are povided. Smooks is an ETL
-    (extract, transform, load) tool
-    and can work with a variety of data sources. JAXB is a Java standard
-    for XML binding capable of working with XML schemas. XStream is a simple
-    and fast XML serialisation framework. jXLS finally allows for loading of
-    Java objects from an Excel spreadsheet. Minimal information on these
-    technologies will be provided here; beyond this, you should consult the
-    relevant user guide for each of these tools.</para>
+    <para>The <code>PipelineFactory</code> and associated classes are there to
+    help with the automation of getting information into and out of Drools,
+    especially when using services such as Java Message Service (JMS), and
+    other data sources that aren't Java objects. Transformers for Smooks,
+    JAXB, XStream and jXLS are povided. Smooks is an ETL (extract, transform,
+    load) tool and can work with a variety of data sources. JAXB is a Java
+    standard for XML binding capable of working with XML schemas. XStream is a
+    simple and fast XML serialisation framework. jXLS finally allows for
+    loading of Java objects from an Excel spreadsheet. Minimal information on
+    these technologies will be provided here; beyond this, you should consult
+    the relevant user guide for each of these tools.</para>
 
     <figure>
       <title>PipelineFactory</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/PipelineFactory.png"
-                     format=""></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/PipelineFactory.png"
+                     format="" width="100%"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -958,18 +950,18 @@ results.getValue( "Get People" );</programlisting>
     Drools use cases.</para>
 
     <para>In Drools, a pipeline is a series of stages that operate on and
-    propagate a given payload. Typically this starts with a <code>Pipeline</code>
-    instance which is responsible for taking the payload, creating a
-    <code>PipelineContext</code> for it and propagating that to the first
-    receiver stage. Two subtypes of <code>Pipeline</code> are provided,
-    both requiring a different <code>PipelineContext</code>:
-    <code>StatefulKnowledgeSessionPipeline</code> and 
+    propagate a given payload. Typically this starts with a
+    <code>Pipeline</code> instance which is responsible for taking the
+    payload, creating a <code>PipelineContext</code> for it and propagating
+    that to the first receiver stage. Two subtypes of <code>Pipeline</code>
+    are provided, both requiring a different <code>PipelineContext</code>:
+    <code>StatefulKnowledgeSessionPipeline</code> and
     <code>StatelessKnowledgeSessionPipeline</code>.
     <code>PipelineFactory</code> provides methods to create both of the two
-    <code>Pipeline</code> subtypes.
-    Notice that both factory methods take the relevant session as an
-    argument. The construction of a <code>StatefulKnowledgeSessionPipeline</code>
-    is shown below, where also its receiver is set.</para>
+    <code>Pipeline</code> subtypes. Notice that both factory methods take the
+    relevant session as an argument. The construction of a
+    <code>StatefulKnowledgeSessionPipeline</code> is shown below, where also
+    its receiver is set.</para>
 
     <example>
       <title>StatefulKnowledgeSessionPipeline</title>
@@ -978,14 +970,15 @@ results.getValue( "Get People" );</programlisting>
 pipeline.setReceiver( receiver );</programlisting>
     </example>
 
-    <para>A pipeline is then made up of a chain of <code>Stage</code>s that implement
-    both the <code>Emitter</code> and the <code>Receiver</code> interfaces. The
-    <code>Emitter</code> interface enables the <code>Stage</code> to propagate 
-    a payload, and the <code>Receiver</code> interface lets it
-    receive a payload. This is why the <code>Pipeline</code> interface only implements
-    <code>Emitter</code> and <code>Stage</code> and not <code>Receiver</code>, as it
-    is the first instance in the chain. The <code>Stage</code> interface allows a 
-    custom exception handler to be set on the <code>Stage</code> object.</para>
+    <para>A pipeline is then made up of a chain of <code>Stage</code>s that
+    implement both the <code>Emitter</code> and the <code>Receiver</code>
+    interfaces. The <code>Emitter</code> interface enables the
+    <code>Stage</code> to propagate a payload, and the <code>Receiver</code>
+    interface lets it receive a payload. This is why the <code>Pipeline</code>
+    interface only implements <code>Emitter</code> and <code>Stage</code> and
+    not <code>Receiver</code>, as it is the first instance in the chain. The
+    <code>Stage</code> interface allows a custom exception handler to be set
+    on the <code>Stage</code> object.</para>
 
     <example>
       <title>StageExceptionHandler</title>
@@ -997,16 +990,16 @@ transformer.setStageExceptionHandler( new StageExceptionHandler() { .... } );
 
     <para>The <code>Transformer</code> interface extends <code>Stage</code>,
     <code>Emitter</code> and <code>Receiver</code>, providing those interface
-    methods as a single type.
-    Its other purpose is that of a marker interface indicating this particulare
-    role of the implementing class. (We have several other marker interfaces
-    such as <code>Expression</code> and <code>Action</code>, both of which also
-    extend <code>Stage</code>, <code>Emitter</code> and <code>Receiver</code>.)
-    One of the stages should be responsible for setting a result
-    value on the <code>PipelineContext</code>. It's the responsibility of the
+    methods as a single type. Its other purpose is that of a marker interface
+    indicating this particulare role of the implementing class. (We have
+    several other marker interfaces such as <code>Expression</code> and
+    <code>Action</code>, both of which also extend <code>Stage</code>,
+    <code>Emitter</code> and <code>Receiver</code>.) One of the stages should
+    be responsible for setting a result value on the
+    <code>PipelineContext</code>. It's the responsibility of the
     <code>ResultHandler</code> interface, to be implemented by the user, to
-    process on these results. It may do so by inserting them into some suitable
-    object, whence the user's code may retrieve them.</para>
+    process on these results. It may do so by inserting them into some
+    suitable object, whence the user's code may retrieve them.</para>
 
     <example>
       <title>StageExceptionHandler</title>
@@ -1033,8 +1026,8 @@ public class ResultHandlerImpl implements ResultHandler {
     the result to a field that the user can access, it could do more complex
     work like sending the object as a message.</para>
 
-    <para>Pipeline provides an adapter to insert the payload and to create
-    the correct Pipeline Context internally.</para>
+    <para>Pipeline provides an adapter to insert the payload and to create the
+    correct Pipeline Context internally.</para>
 
     <para>In general it is easier to construct the pipelines in reverse. In
     the following example XML data is loaded from disk, transformed with
@@ -1071,9 +1064,10 @@ pipeline.insert( ResourceFactory.newClassPathResource( "path/facts.xml", getClas
 
     <para>While the above example is for loading a resource from disk, it is
     also possible to work from a running messaging service. Drools currently
-    provides a single service for JMS, called <code>JmsMessenger</code>. Support for other
-    services will be added later. The code below shows part of a unit test which
-    illustrates part of the <code>JmsMessenger</code> in action:</para>
+    provides a single service for JMS, called <code>JmsMessenger</code>.
+    Support for other services will be added later. The code below shows part
+    of a unit test which illustrates part of the <code>JmsMessenger</code> in
+    action:</para>
 
     <example>
       <title>Using JMS with Pipeline</title>
@@ -1116,25 +1110,19 @@ messenger.start();
     <section>
       <title>Xstream Transformer</title>
 
-      <para>
+      <para><example>
+          <title>XStream FromXML transformer stage</title>
 
-      <example>
-        <title>XStream FromXML transformer stage</title>
-
-        <programlisting>XStream xstream = new XStream();
+          <programlisting>XStream xstream = new XStream();
 Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
 transformer.setReceiver( nextStage );</programlisting>
-      </example>
+        </example> <example>
+          <title>XStream ToXML transformer stage</title>
 
-      <example>
-        <title>XStream ToXML transformer stage</title>
-
-        <programlisting>XStream xstream = new XStream();
+          <programlisting>XStream xstream = new XStream();
 Transformer transformer = PipelineFactory.newXStreamToXmlTransformer( xstream );
 transformer.setReceiver( receiver );</programlisting>
-      </example>
-
-      </para>
+        </example></para>
     </section>
 
     <section>
@@ -1142,29 +1130,27 @@ transformer.setReceiver( receiver );</programlisting>
 
       <para>The Transformer objects are <code>JaxbFromXmlTransformer</code>
       and <code>JaxbToXmlTransformer</code>. The former uses an
-      <code>javax.xml.bind.Unmarshaller</code> for converting an XML
-      document into a content tree; the latter serializes a content
-      tree to XML by passing it to a <code>javax.xml.bind.Marshaller</code>.
-      Both of these objects can be obtained from a <code>JAXBContext</code>
-      object.</para>
+      <code>javax.xml.bind.Unmarshaller</code> for converting an XML document
+      into a content tree; the latter serializes a content tree to XML by
+      passing it to a <code>javax.xml.bind.Marshaller</code>. Both of these
+      objects can be obtained from a <code>JAXBContext</code> object.</para>
 
-      <para>A JAXBContext maintains the set of Java classes that are
-      bound to XML elements. Such classes may be generated from an
-      XML schema, by compiling it with JAXB's schema compiler <command>xjc</command>.
-      Alternatively, handwritten classes can be augmented with
-      annotations from <code>jaxb.xml.bind.annotation</code>.</para>
+      <para>A JAXBContext maintains the set of Java classes that are bound to
+      XML elements. Such classes may be generated from an XML schema, by
+      compiling it with JAXB's schema compiler <command>xjc</command>.
+      Alternatively, handwritten classes can be augmented with annotations
+      from <code>jaxb.xml.bind.annotation</code>.</para>
 
-      <para>Unmarshalling an XML document results in an object tree.
-      Inserting objects from this tree as facts into a session can be
-      done by walking the tree and inserting nodes as appropriate. This
-      could be done in the context of a pipeline by a custom
-      Transformer that emits the nodes one by one to its receiver.</para>
-      
-      <para>
-       <example>
-         <title>JAXB XSD Generation into the KnowlegeBuilder</title>
- 
-         <programlisting>Options xjcOpts = new Options();
+      <para>Unmarshalling an XML document results in an object tree. Inserting
+      objects from this tree as facts into a session can be done by walking
+      the tree and inserting nodes as appropriate. This could be done in the
+      context of a pipeline by a custom Transformer that emits the nodes one
+      by one to its receiver.</para>
+
+      <para><example>
+          <title>JAXB XSD Generation into the KnowlegeBuilder</title>
+
+          <programlisting>Options xjcOpts = new Options();
 xjcOpts.setSchemaLanguage( Language.XMLSCHEMA );
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  
@@ -1174,64 +1160,53 @@ String[] classNames =
     kbuilder,
     xjcOpts,
     "xsd" );</programlisting>
-       </example>
- 
-       <example>
-         <title>JAXB From XML transformer stage</title>
- 
-         <programlisting>JAXBContext jaxbCtx =
+        </example> <example>
+          <title>JAXB From XML transformer stage</title>
+
+          <programlisting>JAXBContext jaxbCtx =
   KnowledgeBuilderHelper.newJAXBContext( classNames, kbase );
 Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
 Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
 transformer.setReceiver( receiver );
  </programlisting>
-       </example>
- 
-       <example>
-         <title>JAXB to XML transformer stage</title>
- 
-         <programlisting>Marshaller marshaller = jaxbCtx.createMarshaller();
+        </example> <example>
+          <title>JAXB to XML transformer stage</title>
+
+          <programlisting>Marshaller marshaller = jaxbCtx.createMarshaller();
 Transformer transformer = PipelineFactory.newJaxbToXmlTransformer( marshaller );
 transformer.setReceiver( receiver );</programlisting>
-       </example>
-     </para>
-
-
+        </example></para>
     </section>
 
     <section>
       <title>Smooks Transformer</title>
 
-      <para>
-       <example>
-        <title>Smooks FromSource transformer stage</title>
+      <para><example>
+          <title>Smooks FromSource transformer stage</title>
 
-        <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+          <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
 Transformer transformer =
   PipelineFactory.newSmooksFromSourceTransformer( smooks, "orderItem" );
 transformer.setReceiver( receiver );</programlisting>
-      </example>
+        </example> <example>
+          <title>Smooks ToSource transformer stage</title>
 
-      <example>
-        <title>Smooks ToSource transformer stage</title>
-
-        <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+          <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
 Transformer transformer = PipelineFactory.newSmooksToSourceTransformer( smooks );
 transformer.setReceiver( receiver );</programlisting>
-      </example>
-     </para>
+        </example></para>
     </section>
 
     <section>
-      <title> jXLS (Excel/Calc/CSV) Transformer</title>
- 
+      <title>jXLS (Excel/Calc/CSV) Transformer</title>
+
       <para>This transformer transforms from an Excel spreadsheet to a map of
-      Java objects, using jXLS, and the resulting map is set as the propagating
-      object. You may need to use splitters and MVEL expressions to split up 
-      the transformation to insert individual Java objects. Note that you must
-      provde an XLSReader, which references the mapping file and also an MVEL
-      string which will instantiate the map. The MVEL expression is pre-compiled
-      but executed on each usage of the transformation. </para>
+      Java objects, using jXLS, and the resulting map is set as the
+      propagating object. You may need to use splitters and MVEL expressions
+      to split up the transformation to insert individual Java objects. Note
+      that you must provde an XLSReader, which references the mapping file and
+      also an MVEL string which will instantiate the map. The MVEL expression
+      is pre-compiled but executed on each usage of the transformation.</para>
 
       <example>
         <title>JXLS transformer stage</title>
@@ -1242,15 +1217,15 @@ String expr = "[ 'departments' : new java.util.ArrayList()," +
               "  'company' : new org.drools.runtime.pipeline.impl.Company() ]";
 Transformer transformer = PipelineFactory.newJxlsTransformer(mainReader, expr );</programlisting>
       </example>
- 
     </section>
 
     <section>
       <title>JMS Messenger</title>
 
-      <para>This transformer creates a new <code>JmsMessenger</code> which runs as a service
-      in its own thread. It expects an existing JNDI entry for "ConnectionFactory",
-      used to create the MessageConsumer which will feed into the specified pipeline.</para>
+      <para>This transformer creates a new <code>JmsMessenger</code> which
+      runs as a service in its own thread. It expects an existing JNDI entry
+      for "ConnectionFactory", used to create the MessageConsumer which will
+      feed into the specified pipeline.</para>
 
       <example>
         <title>JMS Messenger stage</title>
@@ -1288,7 +1263,6 @@ Service messenger = PipelineFactory.newJmsMessenger( pipeline,
                                                      factory );
 </programlisting>
       </example>
-
     </section>
   </section>
 
@@ -1298,25 +1272,24 @@ Service messenger = PipelineFactory.newJmsMessenger( pipeline,
     <para>Drools has the concept of stateful or stateless sessions. We've
     already covered stateful sessions, which use the standard working memory
     that can be worked with iteratively over time. Stateless is a one-off
-    execution of a working memory with a provided data set. It may 
-    return some results, with the session being disposed at the end,
-    prohibiting further iterative interactions. You can think of stateless
-    as treating a rule engine like a function call with optional return
-    results.</para>
+    execution of a working memory with a provided data set. It may return some
+    results, with the session being disposed at the end, prohibiting further
+    iterative interactions. You can think of stateless as treating a rule
+    engine like a function call with optional return results.</para>
 
     <para>In Drools 4 we supported these two paradigms but the way the user
     interacted with them was different. StatelessSession used an execute(...)
     method which would insert a collection of objects as facts.
     StatefulSession didn't have this method, and insert used the more
     traditional <code>insert(...)</code> method. The other issue was that the
-    StatelessSession did not return any results, so that users themselves
-    had to map globals to get results, and it wasn't possible to do anything
+    StatelessSession did not return any results, so that users themselves had
+    to map globals to get results, and it wasn't possible to do anything
     besides inserting objects; users could not start processes or execute
     queries.</para>
 
     <para>Drools 5.0 addresses all of these issues and more. The foundation
-    for this is the <code>CommandExecutor</code> interface, which both the stateful and
-    stateless interfaces extend, creating consistency and
+    for this is the <code>CommandExecutor</code> interface, which both the
+    stateful and stateless interfaces extend, creating consistency and
     <code>ExecutionResults</code>:</para>
 
     <figure>
@@ -1341,10 +1314,10 @@ Service messenger = PipelineFactory.newJmsMessenger( pipeline,
       </mediaobject>
     </figure>
 
-    <para>The <code>CommandFactory</code> allows for commands to be executed on those
-    sessions, the only difference being that the Stateless Knowledge Session
-    executes <code>fireAllRules()</code> at the end before disposing the session. The
-    currently supported commands are:</para>
+    <para>The <code>CommandFactory</code> allows for commands to be executed
+    on those sessions, the only difference being that the Stateless Knowledge
+    Session executes <code>fireAllRules()</code> at the end before disposing
+    the session. The currently supported commands are:</para>
 
     <itemizedlist>
       <listitem>
@@ -1380,11 +1353,12 @@ Service messenger = PipelineFactory.newJmsMessenger( pipeline,
       </listitem>
     </itemizedlist>
 
-    <para><code>InsertObject</code> will insert a single object, with an optional "out"
-    identifier. <code>InsertElements</code> will iterate an Iterable, inserting each of the
-    elements. What this means is that a Stateless Knowledge Session is no longer
-    limited to just inserting objects, it can now start processes or execute
-    queries, and do this in any order.</para>
+    <para><code>InsertObject</code> will insert a single object, with an
+    optional "out" identifier. <code>InsertElements</code> will iterate an
+    Iterable, inserting each of the elements. What this means is that a
+    Stateless Knowledge Session is no longer limited to just inserting
+    objects, it can now start processes or execute queries, and do this in any
+    order.</para>
 
     <example>
       <title>Insert Command</title>
@@ -1396,9 +1370,9 @@ Stilton stilton = bresults.getValue( "stilton_id" );
 </programlisting>
     </example>
 
-    <para>The execute method always returns an <code>ExecutionResults</code> instance,
-    which allows access to any command results if they specify an out
-    identifier such as the "stilton_id" above.</para>
+    <para>The execute method always returns an <code>ExecutionResults</code>
+    instance, which allows access to any command results if they specify an
+    out identifier such as the "stilton_id" above.</para>
 
     <example>
       <title>InsertElements Command</title>
@@ -1413,25 +1387,24 @@ ExecutionResults bresults = ksession.execute( cmd );
 </programlisting>
     </example>
 
-    <para>The execute method only allows for a single command. That's
-    where <code>BatchExecution</code> comes in, which represents a composite command,
-    created from a list of commands. Now, execute will iterate over the
-    list and execute each command in turn. This
-    means you can insert some objects, start a process, call fireAllRules and
-    execute a query, all in a single <code>execute(...)</code> call, which is quite
-    powerful.</para>
+    <para>The execute method only allows for a single command. That's where
+    <code>BatchExecution</code> comes in, which represents a composite
+    command, created from a list of commands. Now, execute will iterate over
+    the list and execute each command in turn. This means you can insert some
+    objects, start a process, call fireAllRules and execute a query, all in a
+    single <code>execute(...)</code> call, which is quite powerful.</para>
 
     <para>As mentioned previosly, the Stateless Knowledge Session will execute
-    <code>fireAllRules()</code> automatically at the end. However the keen-eyed reader
-    probably has already noticed the <code>FireAllRules</code> command and wondered how
-    that works with a StatelessKnowledgeSession. The <code>FireAllRules</code> command is
+    <code>fireAllRules()</code> automatically at the end. However the
+    keen-eyed reader probably has already noticed the
+    <code>FireAllRules</code> command and wondered how that works with a
+    StatelessKnowledgeSession. The <code>FireAllRules</code> command is
     allowed, and using it will disable the automatic execution at the end;
     think of using it as a sort of manual override function.</para>
 
-    <para>Commands support out identifiers. Any command that has an
-    out identifier set on it will add its results to the returned
-    ExecutionResults instance. Let's look at a simple example to see how this
-    works.</para>
+    <para>Commands support out identifiers. Any command that has an out
+    identifier set on it will add its results to the returned ExecutionResults
+    instance. Let's look at a simple example to see how this works.</para>
 
     <example>
       <title>BatchExecution Command</title>
@@ -1448,14 +1421,14 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
 </programlisting>
     </example>
 
-    <para>In the above example multiple commands are executed, two of which populate 
-    the <code>ExecutionResults</code>. The query command defaults to
+    <para>In the above example multiple commands are executed, two of which
+    populate the <code>ExecutionResults</code>. The query command defaults to
     use the same identifier as the query name, but it can also be mapped to a
     different identifier.</para>
 
-    <para>A custom XStream marshaller can be used with the Drools Pipeline
-    to achieve XML scripting, which is perfect for services. Here are two
-    simple XML samples, one for the BatchExecution and one for the
+    <para>A custom XStream marshaller can be used with the Drools Pipeline to
+    achieve XML scripting, which is perfect for services. Here are two simple
+    XML samples, one for the BatchExecution and one for the
     <code>ExecutionResults</code>.</para>
 
     <example>
@@ -1488,11 +1461,11 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
 </programlisting>
     </example>
 
-    <para>The previously mentioned pipeline allows for a series of
-    Stage objects, combined to help with getting data into and out of
-    sessions. There is a Stage implementing the <code>CommandExecutor</code> interface
-    that allows the pipeline to script either a stateful or stateless
-    session. The pipeline setup is trivial:</para>
+    <para>The previously mentioned pipeline allows for a series of Stage
+    objects, combined to help with getting data into and out of sessions.
+    There is a Stage implementing the <code>CommandExecutor</code> interface
+    that allows the pipeline to script either a stateful or stateless session.
+    The pipeline setup is trivial:</para>
 
     <example>
       <title>Pipeline for CommandExecutor</title>
@@ -1518,13 +1491,14 @@ pipeline.setReceiver( inTransformer );
 </programlisting>
     </example>
 
-    <para>The key thing here to note is the use of the <code>BatchExecutionHelper</code>
-    to provide a specially configured XStream with custom converters for our
-    Command objects and the new <code>BatchExecutor</code> stage.</para>
+    <para>The key thing here to note is the use of the
+    <code>BatchExecutionHelper</code> to provide a specially configured
+    XStream with custom converters for our Command objects and the new
+    <code>BatchExecutor</code> stage.</para>
 
     <para>Using the pipeline is very simple. You must provide your own
-    implementation of the <code>ResultHandler</code> which is called when the pipeline
-    executes the <code>ExecuteResultHandler</code> stage.</para>
+    implementation of the <code>ResultHandler</code> which is called when the
+    pipeline executes the <code>ExecuteResultHandler</code> stage.</para>
 
     <figure>
       <title>Pipeline ResultHandler</title>
@@ -1564,10 +1538,10 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>Earlier a <code>BatchExecution</code> was created with Java to insert some
-    objects and execute a query. The XML representation to be used with the
-    pipeline for that example is shown below, with parameters added to
-    the query.</para>
+    <para>Earlier a <code>BatchExecution</code> was created with Java to
+    insert some objects and execute a query. The XML representation to be used
+    with the pipeline for that example is shown below, with parameters added
+    to the query.</para>
 
     <example>
       <title>BatchExecution Marshalled to XML</title>
@@ -1588,9 +1562,10 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>The <code>CommandExecutor</code> returns an <code>ExecutionResults</code>,
-    and this is handled by the pipeline code snippet as well. A similar output for the
-    &lt;batch-execution&gt; XML sample above would be:</para>
+    <para>The <code>CommandExecutor</code> returns an
+    <code>ExecutionResults</code>, and this is handled by the pipeline code
+    snippet as well. A similar output for the &lt;batch-execution&gt; XML
+    sample above would be:</para>
 
     <example>
       <title>ExecutionResults Marshalled to XML</title>
@@ -1627,19 +1602,20 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>The <code>BatchExecutionHelper</code> provides a configured XStream instance to
-    support the marshalling of Batch Executions, where the resulting XML can be
-    used as a message format, as shown above. Configured converters only exist
-    for the commands supported via the Command Factory. The user may add other
-    converters for their user objects. This is very useful for scripting
-    stateless or stateful knowledge sessions, especially when services are
-    involved.</para>
+    <para>The <code>BatchExecutionHelper</code> provides a configured XStream
+    instance to support the marshalling of Batch Executions, where the
+    resulting XML can be used as a message format, as shown above. Configured
+    converters only exist for the commands supported via the Command Factory.
+    The user may add other converters for their user objects. This is very
+    useful for scripting stateless or stateful knowledge sessions, especially
+    when services are involved.</para>
 
-    <para>There is currently no XML schema to support schema validation.
-    The basic format is outlined here, and the drools-transformer-xstream module
-    has an illustrative unit test in the <code>XStreamBatchExecutionTest</code>
-    unit test.  The root element is &lt;batch-execution&gt; and it can contain zero or
-    more commands elements.</para>
+    <para>There is currently no XML schema to support schema validation. The
+    basic format is outlined here, and the drools-transformer-xstream module
+    has an illustrative unit test in the
+    <code>XStreamBatchExecutionTest</code> unit test. The root element is
+    &lt;batch-execution&gt; and it can contain zero or more commands
+    elements.</para>
 
     <example>
       <title>Root XML element</title>
@@ -1651,10 +1627,10 @@ pipeline.insert( inXml, resultHandler );
     </example>
 
     <para>This contains a list of elements that represent commands, the
-    supported commands is limited to those Commands provided by the
-    Command Factory. The most basic of these is the &lt;insert&gt; element,
-    which inserts objects. The contents of the insert element is the user
-    object, as dictated by XStream.</para>
+    supported commands is limited to those Commands provided by the Command
+    Factory. The most basic of these is the &lt;insert&gt; element, which
+    inserts objects. The contents of the insert element is the user object, as
+    dictated by XStream.</para>
 
     <example>
       <title>Insert</title>
@@ -1667,9 +1643,9 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>The insert element features an "out-identifier" attribute,
-    demanding that the inserted object will also be returned as part
-    of the result payload.</para>
+    <para>The insert element features an "out-identifier" attribute, demanding
+    that the inserted object will also be returned as part of the result
+    payload.</para>
 
     <example>
       <title>Insert with Out Identifier Command</title>
@@ -1684,8 +1660,8 @@ pipeline.insert( inXml, resultHandler );
 
     <para>It's also possible to insert a collection of objects using the
     &lt;insert-elements&gt; element. This command does not support an
-    out-identifier. The <code>org.domain.UserClass</code> is just an illustrative user
-    object that XStream would serialize.</para>
+    out-identifier. The <code>org.domain.UserClass</code> is just an
+    illustrative user object that XStream would serialize.</para>
 
     <example>
       <title>Insert Elements command</title>
@@ -1706,8 +1682,8 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>Next, there is the <code>&lt;set-global&gt;</code> element, which sets a global
-    for the session.</para>
+    <para>Next, there is the <code>&lt;set-global&gt;</code> element, which
+    sets a global for the session.</para>
 
     <example>
       <title>Insert Elements command</title>
@@ -1722,12 +1698,13 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para><code>&lt;set-global&gt;</code> also supports two other optional attributes,
-    <kw>out</kw> and <kw>out-identifier</kw>. A true value for the boolean <kw>out</kw>
-    will add the global to the <code>&lt;batch-execution-results&gt;</code> payload, 
-    using the name from the <kw>identifier</kw> attribute. <kw>out-identifier</kw>
-    works like <kw>out</kw> but additionally allows you to override the identifier
-    used in the <code>&lt;batch-execution-results&gt;</code> payload.</para>
+    <para><code>&lt;set-global&gt;</code> also supports two other optional
+    attributes, <kw>out</kw> and <kw>out-identifier</kw>. A true value for the
+    boolean <kw>out</kw> will add the global to the
+    <code>&lt;batch-execution-results&gt;</code> payload, using the name from
+    the <kw>identifier</kw> attribute. <kw>out-identifier</kw> works like
+    <kw>out</kw> but additionally allows you to override the identifier used
+    in the <code>&lt;batch-execution-results&gt;</code> payload.</para>
 
     <example>
       <title>Set Global Command</title>
@@ -1747,10 +1724,10 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>There is also a <code>&lt;get-global&gt;</code> element, without contents,
-    with just an <kw>out-identifier</kw> attribute. (There is no need for an
-    <kw>out</kw> attribute because retrieving the value is the sole purpose of
-    a <code>&lt;get-global&gt;</code> element.</para>
+    <para>There is also a <code>&lt;get-global&gt;</code> element, without
+    contents, with just an <kw>out-identifier</kw> attribute. (There is no
+    need for an <kw>out</kw> attribute because retrieving the value is the
+    sole purpose of a <code>&lt;get-global&gt;</code> element.</para>
 
     <example>
       <title>Get Global Command</title>
@@ -1762,12 +1739,12 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>While the <kw>out</kw> attribute is useful in returning specific instances
-    as a result payload, we often wish to run actual queries. Both parameter
-    and parameterless queries are supported. The <kw>name</kw> attribute is the name
-    of the query to be called, and the <kw>out-identifier</kw> is the identifier to
-    be used for the query results in the <code>&lt;execution-results&gt;</code>
-    payload.</para>
+    <para>While the <kw>out</kw> attribute is useful in returning specific
+    instances as a result payload, we often wish to run actual queries. Both
+    parameter and parameterless queries are supported. The <kw>name</kw>
+    attribute is the name of the query to be called, and the
+    <kw>out-identifier</kw> is the identifier to be used for the query results
+    in the <code>&lt;execution-results&gt;</code> payload.</para>
 
     <example>
       <title>Query Command</title>
@@ -1783,7 +1760,7 @@ pipeline.insert( inXml, resultHandler );
     </example>
 
     <para>The <code>&lt;start-process&gt;</code> command accepts optional
-    parameters. Other process related methods will be added later, like 
+    parameters. Other process related methods will be added later, like
     interacting with work items.</para>
 
     <example>
@@ -1794,10 +1771,37 @@ pipeline.insert( inXml, resultHandler );
       &lt;parameter identifier='person'&gt;
          &lt;org.drools.TestVariable&gt;
             &lt;name&gt;John Doe&lt;/name&gt;
-          &lt;/org.drools.TestVariable&gt;
-       &lt;/parameter&gt;
+         &lt;/org.drools.TestVariable&gt;
+      &lt;/parameter&gt;
    &lt;/startProcess&gt;
 &lt;/batch-execution
+</programlisting>
+    </example>
+
+    <example>
+      <title>Signal Event Command</title>
+
+      <programlisting>&lt;signal-event process-instance-id='1' event-type='MyEvent'&gt;
+   &lt;string&gt;MyValue&lt;/string&gt;
+&lt;/signal-event&gt;
+</programlisting>
+    </example>
+
+    <example>
+      <title>Complete Work Item Command</title>
+
+      <programlisting>&lt;complete-work-item id='" + workItem.getId() + "' &gt;
+   &lt;result identifier='Result'&gt;
+      &lt;string&gt;SomeOtherString&lt;/string&gt;
+   &lt;/result&gt;
+&lt;/complete-work-item&gt;
+</programlisting>
+    </example>
+
+    <example>
+      <title>Abort Work Item Command</title>
+
+      <programlisting>&lt;abort-work-item id='21' /&gt;
 </programlisting>
     </example>
 
@@ -1815,14 +1819,14 @@ pipeline.insert( inXml, resultHandler );
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/MarshallerFactory.png"
-                     format=""></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/MarshallerFactory.png"
+                     format="" width="100%"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>At the simplest the <code>MarshallerFactory</code> can be used as follows:</para>
+    <para>At the simplest the <code>MarshallerFactory</code> can be used as
+    follows:</para>
 
     <example>
       <title>Simple Marshaller Example</title>
@@ -1836,21 +1840,23 @@ baos.close();
 </programlisting>
     </example>
 
-    <para>However, with marshalling you need more flexibility when dealing with
-    referenced user data. To achieve this we have the
-    <code>ObjectMarshallingStrategy</code> interface. Two implementations are provided, but
-    users can implement their own. The two supplied strategies are
-    <code>IdentityMarshallingStrategy</code> and <code>SerializeMarshallingStrategy</code>.
-    <code>SerializeMarshallingStrategy</code> is the default, as used in the example above,
-    and it just calls the <code>Serializable</code> or <code>Externalizable</code> methods
-    on a user instance. <code>IdentityMarshallingStrategy</code> instead creates an integer
-    id for each
-    user object and stores them in a Map, while the id is written to the stream.
-    When unmarshalling it accesses the <code>IdentityMarshallingStrategy</code> map to
-    retrieve the instance. This means that if you use the
-    <code>IdentityMarshallingStrategy</code>, it is stateful for the life of the Marshaller
-    instance and will create ids and keep references to all objects that it
-    attempts to marshal. Below is he code to use an Identity Marshalling Strategy.</para>
+    <para>However, with marshalling you need more flexibility when dealing
+    with referenced user data. To achieve this we have the
+    <code>ObjectMarshallingStrategy</code> interface. Two implementations are
+    provided, but users can implement their own. The two supplied strategies
+    are <code>IdentityMarshallingStrategy</code> and
+    <code>SerializeMarshallingStrategy</code>.
+    <code>SerializeMarshallingStrategy</code> is the default, as used in the
+    example above, and it just calls the <code>Serializable</code> or
+    <code>Externalizable</code> methods on a user instance.
+    <code>IdentityMarshallingStrategy</code> instead creates an integer id for
+    each user object and stores them in a Map, while the id is written to the
+    stream. When unmarshalling it accesses the
+    <code>IdentityMarshallingStrategy</code> map to retrieve the instance.
+    This means that if you use the <code>IdentityMarshallingStrategy</code>,
+    it is stateful for the life of the Marshaller instance and will create ids
+    and keep references to all objects that it attempts to marshal. Below is
+    he code to use an Identity Marshalling Strategy.</para>
 
     <example>
       <title>IdentityMarshallingStrategy</title>
@@ -1865,17 +1871,20 @@ baos.close();
     </example>
 
     <para>For added flexability we can't assume that a single strategy is
-    suitable. Therefore we have added the <code>ObjectMarshallingStrategyAcceptor</code>
-    interface that each Object Marshalling Strategy contains. The Marshaller has a
-    chain of strategies, and when it attempts to read or write a user object it
-    iterates the strategies asking if they accept responsability for
-    marshalling the user object. One of the provided implementations is 
-    <code>ClassFilterAcceptor</code>. This allows strings and wild cards to be used to
-    match class names. The default is "*.*", so in the above example the
-    Identity Marshalling Strategy is used which has a default "*.*" acceptor.</para>
+    suitable. Therefore we have added the
+    <code>ObjectMarshallingStrategyAcceptor</code> interface that each Object
+    Marshalling Strategy contains. The Marshaller has a chain of strategies,
+    and when it attempts to read or write a user object it iterates the
+    strategies asking if they accept responsability for marshalling the user
+    object. One of the provided implementations is
+    <code>ClassFilterAcceptor</code>. This allows strings and wild cards to be
+    used to match class names. The default is "*.*", so in the above example
+    the Identity Marshalling Strategy is used which has a default "*.*"
+    acceptor.</para>
 
     <para>Assuming that we want to serialize all classes except for one given
-    package, where we will use identity lookup, we could do the following:</para>
+    package, where we will use identity lookup, we could do the
+    following:</para>
 
     <example>
       <title>IdentityMarshallingStrategy with Acceptor</title>
@@ -1901,11 +1910,11 @@ baos.close();
   <section>
     <title>Persistence and Transactions</title>
 
-    <para>Longterm out of the box persistence with Java Persistence API (JPA) is
-    possible with Drools. You will need to have some implementation of the
+    <para>Longterm out of the box persistence with Java Persistence API (JPA)
+    is possible with Drools. You will need to have some implementation of the
     Java Transaction API (JTA) installed. For development purposes we
-    recommend the Bitronix Transaction Manager, as it's simple to set up
-    and works embedded, but for production use JBoss Transactions is
+    recommend the Bitronix Transaction Manager, as it's simple to set up and
+    works embedded, but for production use JBoss Transactions is
     recommended.</para>
 
     <example>
@@ -1934,10 +1943,9 @@ ut.commit();
 
     <para>To use a JPA, the Environment must be set with both the
     <code>EntityManagerFactory</code> and the <code>TransactionManager</code>.
-    If rollback occurs the
-    ksession state is also rolled back, so you can continue to use it after a
-    rollback. To load a previously persisted Stateful Knowledge Session you'll
-    need the id, as shown below:</para>
+    If rollback occurs the ksession state is also rolled back, so you can
+    continue to use it after a rollback. To load a previously persisted
+    Stateful Knowledge Session you'll need the id, as shown below:</para>
 
     <example>
       <title>Loading a StatefulKnowledgeSession</title>
