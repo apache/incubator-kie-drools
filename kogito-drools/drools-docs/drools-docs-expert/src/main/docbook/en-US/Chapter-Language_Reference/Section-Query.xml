@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <section id="sec.query" version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section id="sec.query" version="5.0" xml:base="../../"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
   <title id="sec.query.title">Query</title>
 
   <figure>
@@ -13,7 +14,9 @@
 
     <mediaobject>
       <imageobject>
-	      <imagedata align="center" fileref="images/Chapter-Rule_Language/query.png" format="PNG" role="" />
+        <imagedata align="center"
+                   fileref="images/Chapter-Rule_Language/query.png"
+                   format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -21,19 +24,20 @@
   <para>A query is a simple way to search the working memory for facts that
   match the stated conditions. Therefore, it contains only the structure of
   the LHS of a rule, so that you specify neither "when" nor "then". A query
-  has an optional set of parameters, each of which can be optionally typed.
-  If the type is not given, the type Object is assumed. The engine will
-  attempt to coerce the values as needed. Query names are global to the
-  RuleBase; so do not add queries of the same name to different packages
-  for the same RuleBase.</para>
+  has an optional set of parameters, each of which can be optionally typed. If
+  the type is not given, the type Object is assumed. The engine will attempt
+  to coerce the values as needed. Query names are global to the KnowledgeBase;
+  so do not add queries of the same name to different packages for the same
+  RuleBase.</para>
 
-  <para>To return the results use <code>WorkingMemory.getQueryResults("name")</code>,
-  where "name" is the query's name.  This returns a list of query results,
-  which allow you to retrieve the objects that matched the query.</para>
+  <para>To return the results use
+  <code>ksession.getQueryResults("name")</code>, where "name" is the query's
+  name. This returns a list of query results, which allow you to retrieve the
+  objects that matched the query.</para>
 
-  <para>The first example presents a simple query for all the people over
-  the age of 30. The second one, using parameters, combines the age limit
-  with a location.</para>
+  <para>The first example presents a simple query for all the people over the
+  age of 30. The second one, using parameters, combines the age limit with a
+  location.</para>
 
   <example>
     <title>Query People over the age of 30</title>
@@ -52,21 +56,20 @@ end</programlisting>
   </example>
 
   <para>We iterate over the returned QueryResults using a standard "for" loop.
-  Each element is a QueryResult which we can use to access each of the
-  columns in the tuple. These columns can be accessed by bound declaration name
-  or index position.</para>
+  Each element is a QueryResultsRow which we can use to access each of the
+  columns in the tuple. These columns can be accessed by bound declaration
+  name or index position.</para>
 
   <example>
     <title>Query People over the age of 30</title>
 
-    <programlisting>QueryResults results = workingMemory.getQueryResults( "people over the age of 30" );
+    <programlisting>QueryResults results = ksession.getQueryResults( "people over the age of 30" );
 System.out.println( "we have " + results.size() + " people over the age  of 30" );
 
 System.out.println( "These people are are over 30:" );
 
-for ( Iterator it = results.iterator; it.hasNext(); ) {
-    QueryResult result = ( QueryResult ) it.next();
-    Person person = ( Person ) result.get( "person" );
+for ( QueryResultsRow row : results ) {
+    Person person = ( Person ) row.get( "person" );
     System.out.println( person.getName() + "\n" );
 }</programlisting>
   </example>
