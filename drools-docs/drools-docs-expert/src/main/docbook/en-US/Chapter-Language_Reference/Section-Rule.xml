@@ -2173,7 +2173,10 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     
       <para><kw>update(</kw><emphasis>object</emphasis><kw>);</kw>  can
       also be used; here the Knowledge Helper will look up the facthandle for you,
-      via an identity check, for the passed object.</para>      
+      via an identity check, for the passed object. (Note that if you  provide
+      Property Change Listeners to your Java beans that you are inserting into
+      the engine, you can avoid the need to call  <code>update()</code> when the
+      object changes.)</para>
 
       <para><kw>insert(new</kw> <emphasis>Something</emphasis><kw>());</kw>
       will place a new object of your creation into the Working Memory.</para>
@@ -2186,16 +2189,53 @@ public class AverageAccumulateFunction implements AccumulateFunction {
       removes an object from Working Memory.</para>
  
       <para>These convenience methods are basically macros that provide short
-      cuts to the KnowledgeHelper instance that lets you access your
-      Working Memory from rules files. (Refer to the <code>KnowledgeHelper</code>
-      interface documentation for more advanced operations).</para>
+      cuts to the <code>KnowledgeHelper</code> instance that lets you access your
+      Working Memory from rules files. The predefined variable <code>drools</code>
+      of type  <code>KnowledgeHelper</code> lets you call several other useful
+      methods. (Refer to the <code>KnowledgeHelper</code> interface documentation for
+      more advanced operations).</para>
+     
+      <itemizedlist>
+        <listitem>
+          <para>The call <code>drools.halt()</code> terminates rule execution
+          immediately. This is required for returning control to the point
+          whence the current session was put to work with
+          <code>fireUntilHalt()</code></para>.
+        </listitem>
 
-      <para>Note that if you  provide Property Change Listeners to your Java beans
-      that you are inserting into the engine, you can avoid the need to call
-      <code>update()</code> when the object changes.</para>
+        <listitem>
+          <para>Methods <code>insert(Object o)</code>,
+          <code>update(Object o)</code> and <code>retract(Object o)</code>
+          can be called on <code>drools</code> as well, but due to their
+          frequent use they can be called without the object reference.</para>
+        </listitem>
 
-      <para>The full Knowlege Runtime API is exposed through the predefined
-      variable <code>kcontext</code> of type <code>KnowledgeContext</code>. Its
+        <listitem>
+          <para><code>drools.getWorkingMemory()</code> returns the
+          <code>WorkingMemory</code> object.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>drools.setFocus( String s)</code> sets the focus
+          to the specified agenda group.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>drools.getRule().getName()</code>, called from a 
+          rule's RHS, returns the name of the rule.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>drools.getTuple()</code> returns the Tuple that
+          matches the currently executing rule, and
+          <code>drools.getActivation()</code> delivers the corresponding
+          Activation. (These calls are useful for logging and debugging
+          purposes.)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The full Knowlege Runtime API is exposed through another predefined
+      variable, <code>kcontext</code>, of type <code>KnowledgeContext</code>. Its
       method <code>getKnowledgeRuntime()</code> delivers an object of type
       <code>KnowledgeRuntime</code>, which, in turn, provides access to a wealth
       of methods, many of which are quite useful for coding RHS logic.
@@ -2203,9 +2243,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
       <itemizedlist>
         <listitem>
           <para>The call <code>kcontext.getKnowledgeRuntime().halt()</code>
-          terminates rule execution immediately. This is required for returning
-          control to the point whence the current session was put to work with
-          <code>fireUntilHalt()</code></para>.
+          terminates rule execution immediately.</para>.
         </listitem>
                 
         <listitem>
@@ -2213,10 +2251,11 @@ public class AverageAccumulateFunction implements AccumulateFunction {
           to this session's <code>Agenda</code>, which in turn provides access
           to the various rule groups: activation groups, agenda groups, and
           rule flow groups. A fairly common paradigm is the activation of some
-          agenda group, which is done according to
+          agenda group, which could be done with the lengthy call:
           <programlisting>
 // give focus to the agenda group CleanUp
 kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();</programlisting>
+          (You can achieve the same using <code>drools.setFocus( "CleanUp" )</code>.)
           </para>
         </listitem>
 
