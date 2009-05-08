@@ -25,6 +25,9 @@
     that it's nicely integrated in the overall handling of
     Knowledge Resources.</para>
 
+    <caution><para>This is an experimental feature. In particular,
+    the API is subject to change.<para><caution>
+
     <section>
       <title>The Rule Template File</title>
 
@@ -93,7 +96,7 @@
 <emphasis role="bold">@{<emphasis>parameter-name</emphasis>}</emphasis></programlisting>
       The name between '@{' and '}' should be one of the parameter names
       defined in the template header. The substitution is effected anywhere,
-      even within string literal.</para>
+      even within string literals.</para>
 
       <para>An important parameter is available without having to be
       included in the data source providing the actual values. The
