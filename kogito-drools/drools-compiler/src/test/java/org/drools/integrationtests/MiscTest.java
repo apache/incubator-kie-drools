@@ -5325,6 +5325,8 @@ public class MiscTest extends TestCase {
         // Make sure that this rule is fired as the Package is updated, it also tests that InitialFactImpl is still in the network
         // even though the first rule didn't use it.
         ruleBase.addPackage( pkg );
+        
+        session.fireAllRules();
 
         assertEquals( "x",
                       list.get( 1 ) );

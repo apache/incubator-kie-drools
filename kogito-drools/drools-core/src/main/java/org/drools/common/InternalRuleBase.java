@@ -147,5 +147,16 @@ public interface InternalRuleBase
      * @return
      */
     List<RuleBasePartitionId> getPartitionIds();
+    
+    /**
+     * Acquires a read lock on the rulebase
+     */
+    public void readLock();
+    
+    /**
+     * Releases a read lock on the rulebase
+     */
+    public void readUnlock();
+    
 
 }
