@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -46,7 +47,6 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.process.core.Process;
-import org.drools.reteoo.ReteooBuilder;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Function;
@@ -65,59 +65,59 @@ import org.drools.util.ObjectHashSet;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @version $Id: RuleBaseImpl.java,v 1.5 2005/08/14 22:44:12 mproctor Exp $
  */
-abstract public class AbstractRuleBase implements InternalRuleBase, Externalizable {
+abstract public class AbstractRuleBase
+    implements
+    InternalRuleBase,
+    Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    private String id;
+    private String                                     id;
 
-    private int workingMemoryCounter;
+    private int                                        workingMemoryCounter;
 
-    private RuleBaseConfiguration config;
+    private RuleBaseConfiguration                      config;
 
-    protected Map<String, Package> pkgs;
+    protected Map<String, Package>                     pkgs;
 
-    private Map processes;
+    private Map                                        processes;
 
-    private Map agendaGroupRuleTotals;
+    private Map                                        agendaGroupRuleTotals;
 
-    private transient CompositeClassLoader rootClassLoader;
+    private transient CompositeClassLoader             rootClassLoader;
 
     /**
      * The fact handle factory.
      */
-    private FactHandleFactory factHandleFactory;
+    private FactHandleFactory                          factHandleFactory;
 
-    private transient Map<String, Class<?>> globals;
+    private transient Map<String, Class< ? >>          globals;
 
-    private ReloadPackageCompilationData reloadPackageCompilationData = null;
+    private ReloadPackageCompilationData               reloadPackageCompilationData = null;
 
-    private RuleBaseEventSupport eventSupport = new RuleBaseEventSupport(this);
+    private RuleBaseEventSupport                       eventSupport                 = new RuleBaseEventSupport( this );
 
-    private transient ObjectHashSet statefulSessions;
-
-    // wms used for lock list during dynamic updates
-    private InternalWorkingMemory[] wms;
+    private transient ObjectHashSet                    statefulSessions;
 
     // indexed used to track invariant lock
-    private int lastAquiredLock;
+    private int                                        lastAquiredLock;
 
     // lock for entire rulebase, used for dynamic updates
-    private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantReadWriteLock               lock                         = new ReentrantReadWriteLock();
 
     /**
      * This lock is used when adding to, or reading the <field>statefulSessions</field>
      */
-    private final ReentrantLock statefuleSessionLock = new ReentrantLock();
+    private final ReentrantLock                        statefuleSessionLock         = new ReentrantLock();
 
-    private int additionsSinceLock;
-    private int removalsSinceLock;
+    private int                                        additionsSinceLock;
+    private int                                        removalsSinceLock;
 
-    private transient Map<Class<?>, TypeDeclaration> classTypeDeclaration;
+    private transient Map<Class< ? >, TypeDeclaration> classTypeDeclaration;
 
-    private List<RuleBasePartitionId> partitionIDs;
+    private List<RuleBasePartitionId>                  partitionIDs;
 
-    private ClassFieldAccessorCache classFieldAccessorCache;
+    private ClassFieldAccessorCache                    classFieldAccessorCache;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
@@ -139,7 +139,7 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
     public AbstractRuleBase(final String id,
                             final RuleBaseConfiguration config,
                             final FactHandleFactory factHandleFactory) {
-        if (id != null) {
+        if ( id != null ) {
             this.id = id;
         } else {
             this.id = "default";
@@ -148,20 +148,20 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
         this.config.makeImmutable();
         this.factHandleFactory = factHandleFactory;
 
-        if (this.config.isSequential()) {
+        if ( this.config.isSequential() ) {
             this.agendaGroupRuleTotals = new HashMap();
         }
 
-        this.rootClassLoader = new CompositeClassLoader(this.config.getClassLoader());
+        this.rootClassLoader = new CompositeClassLoader( this.config.getClassLoader() );
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
-        this.globals = new HashMap<String, Class<?>>();
+        this.globals = new HashMap<String, Class< ? >>();
         this.statefulSessions = new ObjectHashSet();
 
-        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
+        this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
         this.partitionIDs = new ArrayList<RuleBasePartitionId>();
 
-        this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
+        this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
     }
 
     // ------------------------------------------------------------
@@ -177,39 +177,40 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
         boolean isDrools = out instanceof DroolsObjectOutputStream;
         ByteArrayOutputStream bytes;
 
-        if (isDrools) {
+        if ( isDrools ) {
             droolsStream = out;
             bytes = null;
         } else {
             bytes = new ByteArrayOutputStream();
-            droolsStream = new DroolsObjectOutputStream(bytes);
+            droolsStream = new DroolsObjectOutputStream( bytes );
         }
 
-        droolsStream.writeObject(this.config);
-        droolsStream.writeObject(this.pkgs);
+        droolsStream.writeObject( this.config );
+        droolsStream.writeObject( this.pkgs );
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
-        droolsStream.writeObject(this.id);
-        droolsStream.writeInt(this.workingMemoryCounter);
-        droolsStream.writeObject(this.processes);
-        droolsStream.writeObject(this.agendaGroupRuleTotals);
-        droolsStream.writeUTF(this.factHandleFactory.getClass().getName());
-        droolsStream.writeObject(buildGlobalMapForSerialization());
-        droolsStream.writeObject(this.partitionIDs);
+        droolsStream.writeObject( this.id );
+        droolsStream.writeInt( this.workingMemoryCounter );
+        droolsStream.writeObject( this.processes );
+        droolsStream.writeObject( this.agendaGroupRuleTotals );
+        droolsStream.writeUTF( this.factHandleFactory.getClass().getName() );
+        droolsStream.writeObject( buildGlobalMapForSerialization() );
+        droolsStream.writeObject( this.partitionIDs );
 
-        this.eventSupport.removeEventListener(RuleBaseEventListener.class);
-        droolsStream.writeObject(this.eventSupport);
-        if (!isDrools) {
+        this.eventSupport.removeEventListener( RuleBaseEventListener.class );
+        droolsStream.writeObject( this.eventSupport );
+        if ( !isDrools ) {
             bytes.close();
-            out.writeObject(bytes.toByteArray());
+            out.writeObject( bytes.toByteArray() );
         }
     }
 
     private Map<String, String> buildGlobalMapForSerialization() {
         Map<String, String> gl = new HashMap<String, String>();
-        for (Map.Entry<String, Class<?>> entry : this.globals.entrySet()) {
-            gl.put(entry.getKey(), entry.getValue().getName());
+        for ( Map.Entry<String, Class< ? >> entry : this.globals.entrySet() ) {
+            gl.put( entry.getKey(),
+                    entry.getValue().getName() );
         }
         return gl;
     }
@@ -220,32 +221,31 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
      * A custom ObjectInputStream, able to resolve classes against the bytecode in the PackageCompilationData, is used to restore the Rules.
      */
     public void readExternal(final ObjectInput in) throws IOException,
-            ClassNotFoundException {
+                                                  ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         DroolsObjectInput droolsStream;
         boolean isDrools = in instanceof DroolsObjectInput;
 
-        if (isDrools) {
+        if ( isDrools ) {
             droolsStream = (DroolsObjectInput) in;
         } else {
-            droolsStream = new DroolsObjectInputStream((ObjectInputStream) in);
+            droolsStream = new DroolsObjectInputStream( (ObjectInputStream) in );
 
         }
 
-        this.rootClassLoader = new CompositeClassLoader(droolsStream.getParentClassLoader());
-        droolsStream.setClassLoader(this.rootClassLoader);
-        droolsStream.setRuleBase(this);
+        this.rootClassLoader = new CompositeClassLoader( droolsStream.getParentClassLoader() );
+        droolsStream.setClassLoader( this.rootClassLoader );
+        droolsStream.setRuleBase( this );
 
-        this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
+        this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
 
         this.config = (RuleBaseConfiguration) droolsStream.readObject();
-        this.config.setClassLoader(droolsStream.getParentClassLoader());
+        this.config.setClassLoader( droolsStream.getParentClassLoader() );
 
         this.pkgs = (Map<String, Package>) droolsStream.readObject();
 
-
-        for (final Object object : this.pkgs.values()) {
-            ((Package) object).getDialectRuntimeRegistry().onAdd(this.rootClassLoader);
+        for ( final Object object : this.pkgs.values() ) {
+            ((Package) object).getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
         }
 
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
@@ -256,19 +256,19 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
         this.agendaGroupRuleTotals = (Map) droolsStream.readObject();
         Class cls = null;
         try {
-            cls = droolsStream.getParentClassLoader().loadClass(droolsStream.readUTF());
+            cls = droolsStream.getParentClassLoader().loadClass( droolsStream.readUTF() );
             this.factHandleFactory = (FactHandleFactory) cls.newInstance();
-        } catch (InstantiationException e) {
-            DroolsObjectInputStream.newInvalidClassException(cls,
-                    e);
-        } catch (IllegalAccessException e) {
-            DroolsObjectInputStream.newInvalidClassException(cls,
-                    e);
+        } catch ( InstantiationException e ) {
+            DroolsObjectInputStream.newInvalidClassException( cls,
+                                                              e );
+        } catch ( IllegalAccessException e ) {
+            DroolsObjectInputStream.newInvalidClassException( cls,
+                                                              e );
         }
 
-        for (final Object object : this.pkgs.values()) {
+        for ( final Object object : this.pkgs.values() ) {
             ((Package) object).getDialectRuntimeRegistry().onBeforeExecute();
-            ((Package) object).getClassFieldAccessorStore().setClassFieldAccessorCache(this.classFieldAccessorCache);
+            ((Package) object).getClassFieldAccessorStore().setClassFieldAccessorCache( this.classFieldAccessorCache );
             ((Package) object).getClassFieldAccessorStore().wire();
         }
 
@@ -276,15 +276,15 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
 
         // read globals
         Map<String, String> globs = (Map<String, String>) droolsStream.readObject();
-        populateGlobalsMap(globs);
+        populateGlobalsMap( globs );
 
         this.partitionIDs = (List<RuleBasePartitionId>) droolsStream.readObject();
 
         this.eventSupport = (RuleBaseEventSupport) droolsStream.readObject();
-        this.eventSupport.setRuleBase(this);
+        this.eventSupport.setRuleBase( this );
         this.statefulSessions = new ObjectHashSet();
 
-        if (!isDrools) {
+        if ( !isDrools ) {
             droolsStream.close();
         }
     }
@@ -296,9 +296,10 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
      * @throws ClassNotFoundException
      */
     private void populateGlobalsMap(Map<String, String> globs) throws ClassNotFoundException {
-        this.globals = new HashMap<String, Class<?>>();
-        for (Map.Entry<String, String> entry : globs.entrySet()) {
-            this.globals.put(entry.getKey(), this.rootClassLoader.loadClass(entry.getValue()));
+        this.globals = new HashMap<String, Class< ? >>();
+        for ( Map.Entry<String, String> entry : globs.entrySet() ) {
+            this.globals.put( entry.getKey(),
+                              this.rootClassLoader.loadClass( entry.getValue() ) );
         }
     }
 
@@ -308,12 +309,12 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
      * @throws ClassNotFoundException
      */
     private void populateTypeDeclarationMaps() throws ClassNotFoundException {
-        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
-        for (Package pkg : this.pkgs.values()) {
-            for (TypeDeclaration type : pkg.getTypeDeclarations().values()) {
-                type.setTypeClass(this.rootClassLoader.loadClass(type.getTypeClassName()));
-                this.classTypeDeclaration.put(type.getTypeClass(),
-                        type);
+        this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
+        for ( Package pkg : this.pkgs.values() ) {
+            for ( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
+                type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
+                this.classTypeDeclaration.put( type.getTypeClass(),
+                                               type );
             }
         }
     }
@@ -333,22 +334,22 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
      * @see RuleBase
      */
     public StatefulSession newStatefulSession() {
-        return newStatefulSession(new SessionConfiguration(), EnvironmentFactory.newEnvironment());
+        return newStatefulSession( new SessionConfiguration(),
+                                   EnvironmentFactory.newEnvironment() );
     }
 
     public void disposeStatefulSession(final StatefulSession statefulSession) {
         try {
             statefuleSessionLock.lock();
 
-            this.statefulSessions.remove(statefulSession);
-            for (Object listener : statefulSession.getRuleBaseUpdateListeners()) {
-                this.removeEventListener((RuleBaseEventListener) listener);
+            this.statefulSessions.remove( statefulSession );
+            for ( Object listener : statefulSession.getRuleBaseUpdateListeners() ) {
+                this.removeEventListener( (RuleBaseEventListener) listener );
             }
         } finally {
             statefuleSessionLock.unlock();
         }
     }
-
 
     /**
      * @see RuleBase
@@ -363,16 +364,16 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
 
     public FactHandleFactory newFactHandleFactory(int id,
                                                   long counter) {
-        return this.factHandleFactory.newInstance(id,
-                counter);
+        return this.factHandleFactory.newInstance( id,
+                                                   counter );
     }
 
     public Process[] getProcesses() {
-        return (Process[]) this.processes.values().toArray(new Process[this.processes.size()]);
+        return (Process[]) this.processes.values().toArray( new Process[this.processes.size()] );
     }
 
     public Package[] getPackages() {
-        return this.pkgs.values().toArray(new Package[this.pkgs.size()]);
+        return this.pkgs.values().toArray( new Package[this.pkgs.size()] );
     }
 
     public Map<String, Package> getPackagesMap() {
@@ -398,40 +399,23 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
     public void lock() {
         this.additionsSinceLock = 0;
         this.removalsSinceLock = 0;
-
         this.eventSupport.fireBeforeRuleBaseLocked();
-        this.lock.lock();
-
-        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1
-        // in the working memory array
-        this.lastAquiredLock = 0;
-
-        this.wms = getWorkingMemories();
-
-        // Iterate each workingMemory and lock it
-        // This is so we don't update the Rete network during propagation
-        for (this.lastAquiredLock = 0; this.lastAquiredLock < this.wms.length; this.lastAquiredLock++) {            
-            this.wms[this.lastAquiredLock].getLock().lock();
-        }
-
+        this.lock.writeLock().lock();
         this.eventSupport.fireAfterRuleBaseLocked();
     }
 
     public void unlock() {
         this.eventSupport.fireBeforeRuleBaseUnlocked();
-
-        // Iterate each workingMemory and attempt to fire any rules, that were activated as a result
-
-        // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0.
-        for (this.lastAquiredLock--; this.lastAquiredLock > -1; this.lastAquiredLock--) {
-            this.wms[this.lastAquiredLock].getLock().unlock();
-        }
-
-        this.lock.unlock();
-
+        this.lock.writeLock().unlock();
         this.eventSupport.fireAfterRuleBaseUnlocked();
-
-        this.wms = null;
+    }
+    
+    public void readLock() {
+        this.lock.readLock().lock();
+    }
+    
+    public void readUnlock() {
+        this.lock.readLock().unlock();
     }
 
     /**
@@ -443,105 +427,95 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
      * @param newPkg The package to add.
      */
     public void addPackages(final Collection<Package> newPkgs) {
-        synchronized (this.pkgs) {
-            boolean doUnlock = false;
-            // only acquire the lock if it hasn't been done explicitely
-            if (!this.lock.isHeldByCurrentThread() && (this.wms == null || this.wms.length == 0)) {
-                lock();
-                doUnlock = true;
+        try {
+            lock();
+            // we need to merge all byte[] first, so that the root classloader can resolve classes
+            for ( Package newPkg : newPkgs ) {
+                newPkg.checkValidity();
+                this.additionsSinceLock++;
+                this.eventSupport.fireBeforePackageAdded( newPkg );
+
+                Package pkg = this.pkgs.get( newPkg.getName() );
+                if ( pkg == null ) {
+                    pkg = new Package( newPkg.getName() );
+
+                    // @TODO we really should have a single root cache
+                    pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );
+                    pkgs.put( pkg.getName(),
+                              pkg );
+                }
+
+                // first merge anything related to classloader re-wiring
+                pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
+                                                       this.rootClassLoader );
             }
-            try {
-                // we need to merge all byte[] first, so that the root classloader can resolve classes
-                for (Package newPkg : newPkgs) {
-                    newPkg.checkValidity();
-                    this.additionsSinceLock++;
-                    this.eventSupport.fireBeforePackageAdded(newPkg);
 
-                    Package pkg = this.pkgs.get(newPkg.getName());
-                    if (pkg == null) {
-                        pkg = new Package(newPkg.getName());
+            // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
+            for ( Package newPkg : newPkgs ) {
+                Package pkg = this.pkgs.get( newPkg.getName() );
 
-                        // @TODO we really should have a single root cache
-                        pkg.setClassFieldAccessorCache(this.classFieldAccessorCache);
-                        pkgs.put(pkg.getName(),
-                                pkg);
+                // this needs to go here, as functions will set a java dialect to dirty
+                if ( newPkg.getFunctions() != null ) {
+                    for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                        pkg.addFunction( entry.getValue() );
                     }
-
-                    // first merge anything related to classloader re-wiring
-                    pkg.getDialectRuntimeRegistry().merge(newPkg.getDialectRuntimeRegistry(), this.rootClassLoader);
                 }
 
-                // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
-                for (Package newPkg : newPkgs) {
-                    Package pkg = this.pkgs.get(newPkg.getName());
-                    
-                    // this needs to go here, as functions will set a java dialect to dirty
-                    if (newPkg.getFunctions() != null) {
-                        for (Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet()) {
-                            pkg.addFunction(entry.getValue());
-                        }
-                    }
-                    
-                    pkg.getDialectRuntimeRegistry().onBeforeExecute();
-                    // with the classloader recreated for all byte[] classes, we should now merge and wire any new accessors
-                    pkg.getClassFieldAccessorStore().merge(newPkg.getClassFieldAccessorStore());
-                }
+                pkg.getDialectRuntimeRegistry().onBeforeExecute();
+                // with the classloader recreated for all byte[] classes, we should now merge and wire any new accessors
+                pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
+            }
 
-                for (Package newPkg : newPkgs) {
-                    Package pkg = this.pkgs.get(newPkg.getName());
+            for ( Package newPkg : newPkgs ) {
+                Package pkg = this.pkgs.get( newPkg.getName() );
 
-                    // we have to do this before the merging, as it does some classloader resolving
-                    TypeDeclaration lastType = null;
-                    try {
-                        // Add the type declarations to the RuleBase
-                        if (newPkg.getTypeDeclarations() != null) {
-                            // add type declarations
-                            for (TypeDeclaration type : newPkg.getTypeDeclarations().values()) {
-                                lastType = type;
-                                type.setTypeClass(this.rootClassLoader.loadClass(type.getTypeClassName()));
-                                // @TODO should we allow overrides? only if the class is not in use.
-                                if (!this.classTypeDeclaration.containsKey(type.getTypeClass())) {
-                                    // add to rulebase list of type declarations                        
-                                    this.classTypeDeclaration.put(type.getTypeClass(),
-                                            type);
-                                }
+                // we have to do this before the merging, as it does some classloader resolving
+                TypeDeclaration lastType = null;
+                try {
+                    // Add the type declarations to the RuleBase
+                    if ( newPkg.getTypeDeclarations() != null ) {
+                        // add type declarations
+                        for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                            lastType = type;
+                            type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
+                            // @TODO should we allow overrides? only if the class is not in use.
+                            if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                                // add to rulebase list of type declarations                        
+                                this.classTypeDeclaration.put( type.getTypeClass(),
+                                                               type );
                             }
                         }
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeDroolsException("unable to resolve Type Declaration class '" + lastType.getTypeName() + "'");
                     }
-
-                    // now merge the new package into the existing one
-                    mergePackage(pkg,
-                            newPkg);
-
-                    // add the rules to the RuleBase
-                    final Rule[] rules = newPkg.getRules();
-                    for (int i = 0; i < rules.length; ++i) {
-                        addRule(newPkg,
-                                rules[i]);
-                    }
-
-                    // add the flows to the RuleBase
-                    if (newPkg.getRuleFlows() != null) {
-                        final Map flows = newPkg.getRuleFlows();
-                        for (final Object object : flows.entrySet()) {
-                            final Entry flow = (Entry) object;
-                            this.processes.put(flow.getKey(),
-                                    flow.getValue());
-                        }
-                    }
-
-                    this.eventSupport.fireAfterPackageAdded(newPkg);
+                } catch ( ClassNotFoundException e ) {
+                    throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName() + "'" );
                 }
-            } finally {
-                // only unlock if it had been acquired implicitely
-                if (doUnlock) {
-                    unlock();
+
+                // now merge the new package into the existing one
+                mergePackage( pkg,
+                              newPkg );
+
+                // add the rules to the RuleBase
+                final Rule[] rules = newPkg.getRules();
+                for ( int i = 0; i < rules.length; ++i ) {
+                    addRule( newPkg,
+                             rules[i] );
                 }
+
+                // add the flows to the RuleBase
+                if ( newPkg.getRuleFlows() != null ) {
+                    final Map flows = newPkg.getRuleFlows();
+                    for ( final Object object : flows.entrySet() ) {
+                        final Entry flow = (Entry) object;
+                        this.processes.put( flow.getKey(),
+                                            flow.getValue() );
+                    }
+                }
+
+                this.eventSupport.fireAfterPackageAdded( newPkg );
             }
+        } finally {
+            unlock();
         }
-
     }
 
     /**
@@ -554,41 +528,41 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
                               final Package newPkg) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
-        imports.putAll(newPkg.getImports());
+        imports.putAll( newPkg.getImports() );
 
         String lastType = null;
         try {
             // merge globals
-            if (newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP) {
+            if ( newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP ) {
                 Map<String, String> globals = pkg.getGlobals();
                 // Add globals
-                for (final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet()) {
+                for ( final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet() ) {
                     final String identifier = entry.getKey();
                     final String type = entry.getValue();
                     lastType = type;
-                    if (globals.containsKey(identifier) && !globals.get(identifier).equals(type)) {
-                        throw new PackageIntegrationException(pkg);
+                    if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
+                        throw new PackageIntegrationException( pkg );
                     } else {
-                        pkg.addGlobal(identifier,
-                                this.rootClassLoader.loadClass(type));
+                        pkg.addGlobal( identifier,
+                                       this.rootClassLoader.loadClass( type ) );
                         // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
-                        this.globals.put(identifier,
-                                this.rootClassLoader.loadClass(type));
+                        this.globals.put( identifier,
+                                          this.rootClassLoader.loadClass( type ) );
                     }
                 }
             }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeDroolsException("Unable to resolve class '" + lastType + "'");
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException( "Unable to resolve class '" + lastType + "'" );
         }
 
         // merge the type declarations
-        if (newPkg.getTypeDeclarations() != null) {
+        if ( newPkg.getTypeDeclarations() != null ) {
             // add type declarations
-            for (TypeDeclaration type : newPkg.getTypeDeclarations().values()) {
+            for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
                 // @TODO should we allow overrides? only if the class is not in use.
-                if (!pkg.getTypeDeclarations().containsKey(type.getTypeName())) {
+                if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
                     // add to package list of type declarations
-                    pkg.addTypeDeclaration(type);
+                    pkg.addTypeDeclaration( type );
                 }
             }
         }
@@ -596,37 +570,37 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
         final Rule[] newRules = newPkg.getRules();
-        for (int i = 0; i < newRules.length; i++) {
+        for ( int i = 0; i < newRules.length; i++ ) {
             final Rule newRule = newRules[i];
 
             // remove the rule if it already exists
-            if (pkg.getRule(newRule.getName()) != null) {
-                removeRule(pkg,
-                        pkg.getRule(newRule.getName()));
+            if ( pkg.getRule( newRule.getName() ) != null ) {
+                removeRule( pkg,
+                            pkg.getRule( newRule.getName() ) );
             }
 
-            pkg.addRule(newRule);
+            pkg.addRule( newRule );
         }
 
         //Merge The Rule Flows
-        if (newPkg.getRuleFlows() != null) {
+        if ( newPkg.getRuleFlows() != null ) {
             final Map flows = newPkg.getRuleFlows();
-            for (final Iterator iter = flows.values().iterator(); iter.hasNext();) {
+            for ( final Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
                 final Process flow = (Process) iter.next();
-                pkg.addProcess(flow);
+                pkg.addProcess( flow );
             }
         }
 
-//        // this handles re-wiring any dirty Packages, it's done lazily to allow incremental 
-//        // additions without incurring the repeated cost.
-//        if ( this.reloadPackageCompilationData == null ) {
-//            this.reloadPackageCompilationData = new ReloadPackageCompilationData();
-//        }
-//        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
+        //        // this handles re-wiring any dirty Packages, it's done lazily to allow incremental 
+        //        // additions without incurring the repeated cost.
+        //        if ( this.reloadPackageCompilationData == null ) {
+        //            this.reloadPackageCompilationData = new ReloadPackageCompilationData();
+        //        }
+        //        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
-    public TypeDeclaration getTypeDeclaration(Class<?> clazz) {
-        return this.classTypeDeclaration.get(clazz);
+    public TypeDeclaration getTypeDeclaration(Class< ? > clazz) {
+        return this.classTypeDeclaration.get( clazz );
     }
 
     public Collection<TypeDeclaration> getTypeDeclarations() {
@@ -635,129 +609,111 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
 
     public void addRule(final Package pkg,
                         final Rule rule) throws InvalidPatternException {
-        synchronized (this.pkgs) {
-            this.eventSupport.fireBeforeRuleAdded(pkg,
-                    rule);
+        synchronized ( this.pkgs ) {
+            this.eventSupport.fireBeforeRuleAdded( pkg,
+                                                   rule );
             //        if ( !rule.isValid() ) {
             //            throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
             //        }
-            addRule(rule);
-            this.eventSupport.fireAfterRuleAdded(pkg,
-                    rule);
+            addRule( rule );
+            this.eventSupport.fireAfterRuleAdded( pkg,
+                                                  rule );
         }
     }
 
     protected abstract void addRule(final Rule rule) throws InvalidPatternException;
 
     public void removePackage(final String packageName) {
-        synchronized (this.pkgs) {
-            final Package pkg = this.pkgs.get(packageName);
-            if (pkg == null) {
-                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
+        try {
+            lock();
+            final Package pkg = this.pkgs.get( packageName );
+            if ( pkg == null ) {
+                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
+            }
+            this.removalsSinceLock++;
+
+            this.eventSupport.fireBeforePackageRemoved( pkg );
+
+            final Rule[] rules = pkg.getRules();
+
+            for ( int i = 0; i < rules.length; ++i ) {
+                removeRule( pkg,
+                            rules[i] );
             }
 
-            // only acquire the lock if it hasn't been done explicitely
-            boolean doUnlock = false;
-            if (!this.lock.isHeldByCurrentThread() && (this.wms == null || this.wms.length == 0)) {
-                lock();
-                doUnlock = true;
-            }
-            try {
-                this.removalsSinceLock++;
-
-                this.eventSupport.fireBeforePackageRemoved(pkg);
-
-                final Rule[] rules = pkg.getRules();
-
-                for (int i = 0; i < rules.length; ++i) {
-                    removeRule(pkg,
-                            rules[i]);
-                }
-
-                // getting the list of referenced globals
-                final Set referencedGlobals = new HashSet();
-                for (final Iterator it = this.pkgs.values().iterator(); it.hasNext();) {
-                    final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
-                    if (pkgref != pkg) {
-                        referencedGlobals.addAll(pkgref.getGlobals().keySet());
-                    }
-                }
-                // removing globals declared inside the package that are not shared
-                for (final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext();) {
-                    final String globalName = (String) it.next();
-                    if (!referencedGlobals.contains(globalName)) {
-                        this.globals.remove(globalName);
-                    }
-                }
-                //and now the rule flows
-                final Map flows = pkg.getRuleFlows();
-                for (final Iterator iter = flows.keySet().iterator(); iter.hasNext();) {
-                    removeProcess((String) iter.next());
-                }
-                // removing the package itself from the list
-                this.pkgs.remove(pkg.getName());
-
-                pkg.getDialectRuntimeRegistry().onRemove();
-
-                //clear all members of the pkg
-                pkg.clear();
-
-                this.eventSupport.fireAfterPackageRemoved(pkg);
-
-                // only unlock if it had been acquired implicitely
-            } finally {
-                if (doUnlock) {
-                    unlock();
+            // getting the list of referenced globals
+            final Set referencedGlobals = new HashSet();
+            for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
+                final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
+                if ( pkgref != pkg ) {
+                    referencedGlobals.addAll( pkgref.getGlobals().keySet() );
                 }
             }
+            // removing globals declared inside the package that are not shared
+            for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
+                final String globalName = (String) it.next();
+                if ( !referencedGlobals.contains( globalName ) ) {
+                    this.globals.remove( globalName );
+                }
+            }
+            //and now the rule flows
+            final Map flows = pkg.getRuleFlows();
+            for ( final Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
+                removeProcess( (String) iter.next() );
+            }
+            // removing the package itself from the list
+            this.pkgs.remove( pkg.getName() );
+
+            pkg.getDialectRuntimeRegistry().onRemove();
+
+            //clear all members of the pkg
+            pkg.clear();
+
+            this.eventSupport.fireAfterPackageRemoved( pkg );
+        } finally {
+            unlock();
         }
     }
 
     public void removeRule(final String packageName,
                            final String ruleName) {
-        synchronized (this.pkgs) {
-            final Package pkg = this.pkgs.get(packageName);
-            if (pkg == null) {
-                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
+        try {
+            lock();
+            final Package pkg = this.pkgs.get( packageName );
+            if ( pkg == null ) {
+                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
             }
 
-            final Rule rule = pkg.getRule(ruleName);
-            if (rule == null) {
-                throw new IllegalArgumentException("Rule name '" + ruleName + "' does not exist in the Package '" + packageName + "'.");
+            final Rule rule = pkg.getRule( ruleName );
+            if ( rule == null ) {
+                throw new IllegalArgumentException( "Rule name '" + ruleName + "' does not exist in the Package '" + packageName + "'." );
             }
 
-            // only acquire the lock if it hasn't been done explicitely
-            boolean doUnlock = false;
-            if (!this.lock.isHeldByCurrentThread() && (this.wms == null || this.wms.length == 0)) {
-                lock();
-                doUnlock = true;
-            }
             this.removalsSinceLock++;
 
-            removeRule(pkg,
-                    rule);
-            pkg.removeRule(rule);
-            if (this.reloadPackageCompilationData == null) {
+            removeRule( pkg,
+                        rule );
+            pkg.removeRule( rule );
+            if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addDialectDatas(pkg.getDialectRuntimeRegistry());
-
-            // only unlock if it had been acquired implicitely
-            if (doUnlock) {
-                unlock();
-            }
+            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
+        } finally {
+            unlock();
         }
     }
 
     public void removeRule(final Package pkg,
                            final Rule rule) {
-        synchronized (this.pkgs) {
-            this.eventSupport.fireBeforeRuleRemoved(pkg,
-                    rule);
-
-            removeRule(rule);
-            this.eventSupport.fireAfterRuleRemoved(pkg,
-                    rule);
+        try {
+            lock();
+            this.eventSupport.fireBeforeRuleRemoved( pkg,
+                                                     rule );
+            removeRule( rule );
+            this.eventSupport.fireAfterRuleRemoved( pkg,
+                                                    rule );
+        } finally {
+            unlock();
         }
     }
 
@@ -765,49 +721,49 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
 
     public void removeFunction(final String packageName,
                                final String functionName) {
-        synchronized (this.pkgs) {
-            final Package pkg = this.pkgs.get(packageName);
-            if (pkg == null) {
-                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
+        synchronized ( this.pkgs ) {
+            final Package pkg = this.pkgs.get( packageName );
+            if ( pkg == null ) {
+                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
             }
 
-            this.eventSupport.fireBeforeFunctionRemoved(pkg,
-                    functionName);
+            this.eventSupport.fireBeforeFunctionRemoved( pkg,
+                                                         functionName );
 
-            if (!pkg.getFunctions().containsKey(functionName)) {
-                throw new IllegalArgumentException("function name '" + packageName + "' does not exist in the Package '" + packageName + "'.");
+            if ( !pkg.getFunctions().containsKey( functionName ) ) {
+                throw new IllegalArgumentException( "function name '" + packageName + "' does not exist in the Package '" + packageName + "'." );
             }
 
-            pkg.removeFunction(functionName);
+            pkg.removeFunction( functionName );
 
-            if (this.reloadPackageCompilationData == null) {
+            if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addDialectDatas(pkg.getDialectRuntimeRegistry());
+            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
 
-            this.eventSupport.fireAfterFunctionRemoved(pkg,
-                    functionName);
+            this.eventSupport.fireAfterFunctionRemoved( pkg,
+                                                        functionName );
         }
     }
 
     public void addProcess(final Process process) {
-        synchronized (this.pkgs) {
-            this.processes.put(process.getId(),
-                    process);
+        synchronized ( this.pkgs ) {
+            this.processes.put( process.getId(),
+                                process );
         }
 
     }
 
     public void removeProcess(final String id) {
-        synchronized (this.pkgs) {
-            this.processes.remove(id);
+        synchronized ( this.pkgs ) {
+            this.processes.remove( id );
         }
     }
 
     public Process getProcess(final String id) {
         Process process;
-        synchronized (this.pkgs) {
-            process = (Process) this.processes.get(id);
+        synchronized ( this.pkgs ) {
+            process = (Process) this.processes.get( id );
         }
         return process;
     }
@@ -816,7 +772,7 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
         try {
             statefuleSessionLock.lock();
 
-            this.statefulSessions.add(statefulSession);
+            this.statefulSessions.add( statefulSession );
         } finally {
             statefuleSessionLock.unlock();
         }
@@ -824,7 +780,7 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
     }
 
     public Package getPackage(final String name) {
-        return this.pkgs.get(name);
+        return this.pkgs.get( name );
     }
 
     public StatefulSession[] getStatefulSessions() {
@@ -833,7 +789,7 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
             statefuleSessionLock.lock();
             copyOfSessions = new StatefulSession[this.statefulSessions.size()];
 
-            this.statefulSessions.toArray(copyOfSessions);
+            this.statefulSessions.toArray( copyOfSessions );
         } finally {
             statefuleSessionLock.unlock();
         }
@@ -847,7 +803,7 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
             statefuleSessionLock.lock();
             copyOfMemories = new InternalWorkingMemory[this.statefulSessions.size()];
 
-            this.statefulSessions.toArray(copyOfMemories);
+            this.statefulSessions.toArray( copyOfMemories );
         } finally {
             statefuleSessionLock.unlock();
         }
@@ -864,9 +820,9 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
     }
 
     public void executeQueuedActions() {
-        synchronized (this.pkgs) {
-            if (this.reloadPackageCompilationData != null) {
-                this.reloadPackageCompilationData.execute(this);
+        synchronized ( this.pkgs ) {
+            if ( this.reloadPackageCompilationData != null ) {
+                this.reloadPackageCompilationData.execute( this );
                 this.reloadPackageCompilationData = null;
             }
         }
@@ -874,9 +830,9 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
 
     public RuleBasePartitionId createNewPartitionId() {
         RuleBasePartitionId p;
-        synchronized (this.partitionIDs) {
-            p = new RuleBasePartitionId("P-" + this.partitionIDs.size());
-            this.partitionIDs.add(p);
+        synchronized ( this.partitionIDs ) {
+            p = new RuleBasePartitionId( "P-" + this.partitionIDs.size() );
+            this.partitionIDs.add( p );
         }
         return p;
     }
@@ -887,12 +843,12 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
 
     public void addEventListener(final RuleBaseEventListener listener) {
         // no need for synchonization or locking because eventSupport is thread-safe
-        this.eventSupport.addEventListener(listener);
+        this.eventSupport.addEventListener( listener );
     }
 
     public void removeEventListener(final RuleBaseEventListener listener) {
         // no need for synchonization or locking because eventSupport is thread-safe
-        this.eventSupport.removeEventListener(listener);
+        this.eventSupport.removeEventListener( listener );
     }
 
     public List<RuleBaseEventListener> getRuleBaseEventListeners() {
@@ -901,8 +857,8 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
     }
 
     public boolean isEvent(Class clazz) {
-        for (Package pkg : this.pkgs.values()) {
-            if (pkg.isEvent(clazz)) {
+        for ( Package pkg : this.pkgs.values() ) {
+            if ( pkg.isEvent( clazz ) ) {
                 return true;
             }
         }
@@ -910,9 +866,9 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
     }
 
     public FactType getFactType(final String name) {
-        for (Package pkg : this.pkgs.values()) {
-            FactType type = pkg.getFactType(name);
-            if (type != null) {
+        for ( Package pkg : this.pkgs.values() ) {
+            FactType type = pkg.getFactType( name );
+            if ( type != null ) {
                 return type;
             }
         }
@@ -920,37 +876,37 @@ abstract public class AbstractRuleBase implements InternalRuleBase, Externalizab
     }
 
     public static class ReloadPackageCompilationData
-            implements
-            RuleBaseAction {
-        private static final long serialVersionUID = 1L;
+        implements
+        RuleBaseAction {
+        private static final long           serialVersionUID = 1L;
         private Set<DialectRuntimeRegistry> set;
 
         public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
+                                                ClassNotFoundException {
             set = (Set<DialectRuntimeRegistry>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(set);
+            out.writeObject( set );
         }
 
         public void addDialectDatas(final DialectRuntimeRegistry registry) {
-            if (this.set == null) {
+            if ( this.set == null ) {
                 this.set = new HashSet<DialectRuntimeRegistry>();
             }
-            if (!this.set.contains(registry)) this.set.add(registry);
+            if ( !this.set.contains( registry ) ) this.set.add( registry );
         }
 
         public void execute(final InternalRuleBase ruleBase) {
-            for (final DialectRuntimeRegistry registry : this.set) {
+            for ( final DialectRuntimeRegistry registry : this.set ) {
                 registry.onBeforeExecute();
             }
         }
     }
 
     public static interface RuleBaseAction
-            extends
-            Externalizable {
+        extends
+        Externalizable {
         public void execute(InternalRuleBase ruleBase);
     }
 
