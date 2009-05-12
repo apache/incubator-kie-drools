@@ -245,7 +245,12 @@ public class StatefulKnowledgeSessionImpl
     }
     
     public void abortProcessInstance(long id) {
-    	this.session.getProcessInstance( id ).setState( ProcessInstance.STATE_ABORTED );
+    	org.drools.process.instance.ProcessInstance processInstance =
+    		this.session.getProcessInstance( id );
+    	if (processInstance == null) {
+    		throw new IllegalArgumentException("Could not find process instance for id " + id);
+    	}
+    	processInstance.setState( ProcessInstance.STATE_ABORTED );
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
