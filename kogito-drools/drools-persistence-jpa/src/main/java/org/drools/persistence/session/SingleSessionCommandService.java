@@ -163,6 +163,10 @@ public class SingleSessionCommandService
                                             t2 );
             }
         }
+        
+        if (sessionInfo == null) {
+        	throw new RuntimeException("Could not find session data for id " + sessionId);
+        }
 
         this.marshallingHelper = new JPASessionMarshallingHelper( this.sessionInfo,
                                                                   kbase,
