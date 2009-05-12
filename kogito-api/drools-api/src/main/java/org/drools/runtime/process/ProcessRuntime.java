@@ -16,6 +16,8 @@ public interface ProcessRuntime {
     Collection<ProcessInstance> getProcessInstances();
 
     ProcessInstance getProcessInstance(long id);
+    
+    void abortProcessInstance(long id);
 
     WorkItemManager getWorkItemManager();
 
