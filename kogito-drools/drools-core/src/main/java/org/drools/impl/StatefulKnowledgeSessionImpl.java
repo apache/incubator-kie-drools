@@ -243,6 +243,10 @@ public class StatefulKnowledgeSessionImpl
     public ProcessInstance getProcessInstance(long id) {
         return this.session.getProcessInstance( id );
     }
+    
+    public void abortProcessInstance(long id) {
+    	this.session.getProcessInstance( id ).setState( ProcessInstance.STATE_ABORTED );
+    }
 
     public Collection<ProcessInstance> getProcessInstances() {
         List<ProcessInstance> result = new ArrayList<ProcessInstance>();

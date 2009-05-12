@@ -49,6 +49,7 @@ import org.drools.process.command.RegisterWorkItemHandlerCommand;
 import org.drools.process.command.RemoveEventListenerCommand;
 import org.drools.process.command.RetractCommand;
 import org.drools.process.command.SetGlobalCommand;
+import org.drools.process.command.SetProcessInstanceStateCommand;
 import org.drools.process.command.SignalEventCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.process.command.UnregisterExitPointCommand;
@@ -97,6 +98,13 @@ public class CommandBasedStatefulKnowledgeSession
         GetProcessInstanceCommand command = new GetProcessInstanceCommand();
         command.setProcessInstanceId( id );
         return commandService.execute( command );
+    }
+    
+    public void abortProcessInstance(long id) {
+    	SetProcessInstanceStateCommand command = new SetProcessInstanceStateCommand();
+    	command.setProcessInstanceId( id );
+    	command.setState( ProcessInstance.STATE_ABORTED );
+        commandService.execute( command );
     }
 
     public CommandService getCommandService() {
