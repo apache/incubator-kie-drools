@@ -1,0 +1,10 @@
+#created on: May 11, 2009
+package org.drools
+
+query getWorker(String _id)
+    queryResult : Worker(id == _id)
+end
+
+query getWorkers()
+    queryResult : Worker()
+end
