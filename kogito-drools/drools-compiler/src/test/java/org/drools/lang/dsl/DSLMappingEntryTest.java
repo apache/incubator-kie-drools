@@ -282,6 +282,26 @@ public class DSLMappingEntryTest extends TestCase {
                       result );
     }
 
+    public void testExpandWithLineBreaks() throws IOException {
+        final String inputKey = "This is a sentence with line breaks";
+        final String inputValue = "Cheese\\n(price == 10)";
+
+        DSLMappingEntry entry = createEntry( inputKey,
+                                  inputValue );
+
+        assertEquals( "(\\W|^)This\\s+is\\s+a\\s+sentence\\s+with\\s+line\\s+breaks(\\W|$)",
+                      entry.getKeyPattern().toString() );
+        assertEquals( "$1Cheese\n(price == 10)$2",
+                      entry.getValuePattern());
+        
+        
+        String result = entry.getKeyPattern().matcher( "This is a sentence with line breaks" ).replaceAll( entry.getValuePattern() );
+
+        assertEquals( result,
+                      "Cheese\n(price == 10)",
+                      result );
+    }
+    
     public void testExpandWithPound() throws IOException {
         final String inputKey = "Bedingung-\\#19-MKM4";
         final String inputValue = "eval ( $p.getTempVal(\"\\#UML-ATZ-1\") < $p.getZvUmlStfr() )";

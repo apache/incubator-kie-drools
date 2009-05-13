@@ -189,9 +189,10 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
                 int tailIndex = getVariables().get( TAIL_TAG ).intValue();
                 valuePatternBuffer.append( "$" + tailIndex );
             }
-            // unescaping the special character #
+            // unescaping the special character # and creating the line breaks
             String pat = valuePatternBuffer.toString().replaceAll( "\\\\#",
-                                                                   "#" );
+                                                                   "#" ).replaceAll( "\\\\n", 
+                                                                                     "\n" );
             for ( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
                 pat = pat.replaceAll( "\\{" + entry.getKey() + "(:(.*?))?\\}",
                                       "\\$" + entry.getValue() );
