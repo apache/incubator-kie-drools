@@ -42,7 +42,7 @@ public class JavaAccumulateBuilderTest extends TestCase {
         cheeseDescr.addConstraint( price );
         accumDescr.setInputPattern( cheeseDescr );
         
-        accumDescr.setInitCode( "int x = 0;" );
+        accumDescr.setInitCode( "int x = 0; int y = 0;" );
         accumDescr.setActionCode( "x += $price;" );
         accumDescr.setResultCode( "new Integer( x )" );
         
@@ -59,10 +59,12 @@ public class JavaAccumulateBuilderTest extends TestCase {
         RuleBuildContext context = new RuleBuildContext( pkgBuilder, ruleDescr, dialectRegistry, pkg, dialect);
         
         Accumulate accumulate = (Accumulate) builder.build( context, accumDescr );
+        String generatedCode = (String) context.getMethods().get( 0 );
         
-        dialect.compileAll();
+        assertTrue( generatedCode.contains( "private int x;" ) );
+        assertTrue( generatedCode.contains( "private int y;" ) );
+        assertTrue( generatedCode.contains( "x = 0;y = 0;" ) );
         
-        assertTrue( context.getErrors().toString(), context.getErrors().isEmpty() );
 //        System.out.println( context.getInvokers() );
 //        System.out.println( context.getMethods() );
     }
