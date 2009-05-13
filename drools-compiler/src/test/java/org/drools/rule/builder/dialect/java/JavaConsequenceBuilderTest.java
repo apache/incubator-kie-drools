@@ -153,6 +153,54 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
     }
 
+    public void testFixInsertCalls() {
+        String consequence = " System.out.println(\"this is a test\");\n " + 
+                             " insert( $cheese );\n " + 
+                             " if( true ) { \n " +
+                             "     insert($another); \n" +
+                             " } else { \n"+
+                             "     retract($oneMore); \n" +
+                             " } \n" +
+                             " // just in case, one more call: \n" +
+                             " insert( $abc );\n"
+                             ;
+        setupTest( consequence );
+        try {
+            JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
+            JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
+                                                                                      new Map[]{} );
+
+            String fixed = builder.fixBlockDescr( context,
+                                                  analysis,
+                                                  (String) ruleDescr.getConsequence() );
+            fixed = new KnowledgeHelperFixer().fix( fixed );
+
+            String expected = " System.out.println(\"this is a test\");\n " + 
+                              " drools.insert( $cheese );\n " + 
+                              " if( true ) { \n " +
+                              "     drools.insert($another); \n" +
+                              " } else { \n"+
+                              "     drools.retract($oneMore); \n" +
+                              " } \n" +
+                              " // just in case, one more call: \n" +
+                              " drools.insert( $abc );\n"
+            ;
+
+//                        System.out.println( "=============================" );
+//                        System.out.println( ruleDescr.getConsequence() );
+//                        System.out.println( "=============================" );
+//                        System.out.println( fixed );
+            assertNotNull( context.getErrors().toString(),
+                           fixed );
+            assertEqualsIgnoreSpaces( expected,
+                                      fixed );
+
+        } catch ( RecognitionException e ) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void assertEqualsIgnoreSpaces(String expected,
                                           String fixed) {
         assertEquals( expected.replaceAll( "\\s+",
