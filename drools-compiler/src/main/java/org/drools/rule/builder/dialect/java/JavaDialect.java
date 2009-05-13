@@ -406,14 +406,7 @@ public class JavaDialect
             for ( final Iterator iter = errors.iterator(); iter.hasNext(); ) {
                 final ErrorHandler handler = (ErrorHandler) iter.next();
                 if ( handler.isInError() ) {
-                    if ( !(handler instanceof RuleInvokerErrorHandler) ) {
-                        this.results.add( handler.getError() );
-                    } else {
-                        //we don't really want to report invoker errors.
-                        //mostly as they can happen when there is a syntax error in the RHS
-                        //and otherwise, it is a programmatic error in drools itself.
-                        //throw new RuntimeException( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere." + handler.getError() );
-                    }
+                    this.results.add( handler.getError() );
                 }
             }
         }
