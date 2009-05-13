@@ -20,6 +20,10 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentConfiguration;
+import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.agent.KnowledgeAgentTest.ResultHandlerImpl;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -31,6 +35,11 @@ import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.runtime.pipeline.Action;
+import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
+import org.drools.runtime.pipeline.Pipeline;
+import org.drools.runtime.pipeline.PipelineFactory;
+import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.util.DroolsStreamUtils;
 import org.drools.util.FileManager;
 import org.mortbay.jetty.Server;
@@ -812,6 +821,89 @@ public class KnowledgeAgentTest extends TestCase {
         kagent.monitorResourceChangeEvents( false );
     }
 
+    public void testStatelessWithPipeline() throws Exception {
+    	String rule1 = "";
+        rule1 += "package org.drools.test\n";
+        rule1 += "global java.util.List list\n";
+        rule1 += "rule rule1\n";
+        rule1 += "when\n";
+        rule1 += "then\n";
+        rule1 += "list.add( drools.getRule().getName() );\n";
+        rule1 += "end\n";
+        File f1 = fileManager.newFile( "rule1.drl" );
+
+        Writer output = new BufferedWriter( new FileWriter( f1 ) );
+        output.write( rule1 );
+        output.close();
+
+        String rule2 = "";
+        rule2 += "package org.drools.test\n";
+        rule2 += "global java.util.List list\n";
+        rule2 += "rule rule2\n";
+        rule2 += "when\n";
+        rule2 += "then\n";
+        rule2 += "list.add( drools.getRule().getName() );\n";
+        rule2 += "end\n";
+        File f2 = fileManager.newFile( "rule2.drl" );
+        output = new BufferedWriter( new FileWriter( f2 ) );
+        output.write( rule2 );
+        output.close();
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='" + f1.getParentFile().toURI().toURL() + "' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File newDir = fileManager.newFile( "changeset" );
+        newDir.mkdir();
+        File fxml = fileManager.newFile( newDir,
+                                         "changeset.xml" );
+        output = new BufferedWriter( new FileWriter( fxml ) );
+        output.write( xml );
+        output.close();
+        
+        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+        aconf.setProperty( "drools.agent.scanDirectories",
+                           "true" );
+        aconf.setProperty( "drools.agent.newInstance",
+                           "true" );
+
+        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent",
+                                                                         aconf );
+        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+
+        Thread.sleep( 3000 ); // give it 2 seconds to detect and build the changes
+        StatelessKnowledgeSession ksession = kagent.newStatelessKnowledgeSession();
+        
+         List list = new ArrayList();
+         ksession.setGlobal( "list",
+                             list );
+
+         Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
+
+         Action assignResult = PipelineFactory.newAssignObjectAsResult();
+         assignResult.setReceiver( executeResultHandler );
+
+         KnowledgeRuntimeCommand batchExecution = PipelineFactory.newCommandExecutor();
+         batchExecution.setReceiver( assignResult );
+
+         KnowledgeRuntimeCommand insertStage = PipelineFactory.newInsertObjectCommand();
+         insertStage.setReceiver( batchExecution );
+
+         Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline( ksession );
+         pipeline.setReceiver( insertStage );
+
+         ResultHandlerImpl resultHandler = new ResultHandlerImpl();
+         pipeline.insert( "hello", resultHandler );
+
+         assertEquals( 2, list.size() );
+         assertTrue( list.contains( "rule1" ) );
+         assertTrue( list.contains( "rule2" ) );
+    }
+    
     private static void writePackage(Object pkg,
                                      File p1file) throws IOException,
                                                  FileNotFoundException {
@@ -823,4 +915,16 @@ public class KnowledgeAgentTest extends TestCase {
              out.close();
          }
      } 
+    
+    public static class ResultHandlerImpl implements ResultHandler {
+	    Object object;
+	
+	    public void handleResult(Object object) {
+	        this.object = object;
+	    }
+	
+	    public Object getObject() {
+	        return this.object;
+	    }
+    }
 }

@@ -82,6 +82,10 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public InternalRuleBase getRuleBase() {
+        if ( this.kagent != null ) {
+            // if we have an agent always get the rulebase from there
+            this.ruleBase = ( InternalRuleBase ) ((KnowledgeBaseImpl)this.kagent.getKnowledgeBase()).ruleBase;
+        }       
         return this.ruleBase;
     }
 
