@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ValueType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
@@ -422,11 +423,14 @@ public class ObjectTypeNode extends ObjectSource
 
     public void setExpirationOffset(long expirationOffset) {
         this.expirationOffset = expirationOffset;
-        if ( this.expirationOffset > 0 || this.expirationOffset == -1 ) {
-            // override memory enabled settings
-            this.setObjectMemoryEnabled( true );
-        } else {
-            this.setObjectMemoryEnabled( false );
+        if( ! this.objectType.getValueType().equals( ValueType.QUERY_TYPE ) ) {
+            if ( this.expirationOffset > 0 ) {
+                // override memory enabled settings
+                this.setObjectMemoryEnabled( true );
+            } else if( this.expirationOffset == 0 ) {
+                // disable memory
+                this.setObjectMemoryEnabled( false );
+            }
         }
     }
 

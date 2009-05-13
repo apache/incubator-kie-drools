@@ -96,6 +96,9 @@ public class ValueType
     public static final ValueType  EVENT_TYPE        = new ValueType( "Event",
                                                                       EventFactHandle.class,
                                                                       SimpleValueType.OBJECT );
+    public static final ValueType  QUERY_TYPE        = new ValueType( "Query",
+                                                                      DroolsQuery.class,
+                                                                      SimpleValueType.OBJECT );
 
     private String           name;
     private Class<?>         classType;
@@ -156,6 +159,8 @@ public class ValueType
         }
         if ( clazz == FactTemplate.class ) {
             return ValueType.FACTTEMPLATE_TYPE;
+        } else if ( clazz == DroolsQuery.class ) {
+            return ValueType.QUERY_TYPE;
         } else if ( clazz == Character.TYPE ) {
             return ValueType.PCHAR_TYPE;
         } else if ( clazz == Byte.TYPE ) {
@@ -202,7 +207,7 @@ public class ValueType
             return ValueType.STRING_TYPE;
         } else if ( clazz == EventFactHandle.class ) {
             return ValueType.EVENT_TYPE;
-        } else if ( clazz instanceof Object ) {
+        } else if ( Object.class.isAssignableFrom( clazz ) ) {
             return ValueType.OBJECT_TYPE;
         }
         throw new RuntimeDroolsException( "unable to determine ValueType for Class [" + clazz + "]" );

@@ -57,7 +57,6 @@ import org.drools.Guess;
 import org.drools.IndexedNumber;
 import org.drools.InsertedObject;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.MockPersistentSet;
@@ -86,10 +85,13 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TestParam;
 import org.drools.Win;
+import org.drools.Worker;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
+import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -100,6 +102,7 @@ import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -108,7 +111,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
-import org.drools.conf.SequentialOption;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
 import org.drools.event.ActivationCancelledEvent;
@@ -132,19 +134,22 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.marshalling.MarshallerFactory;
+import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
+import org.drools.spi.ObjectType;
+import org.drools.util.Entry;
+import org.drools.util.ObjectHashSet;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 import org.drools.xml.XmlDumper;
-
-import com.thoughtworks.xstream.MarshallingStrategy;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -6376,33 +6381,33 @@ public class MiscTest extends TestCase {
     }
 
     public void testListOfMaps(){
-    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("test_TestMapVariableRef.drl", getClass()), ResourceType.DRL);
-		KnowledgeBuilderErrors errors = kbuilder.getErrors();
-		if (errors.size() > 0) {
-			for (KnowledgeBuilderError error: errors) {
-				System.err.println(error);
-			}
-			throw new IllegalArgumentException("Could not parse knowledge.");
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-		
-		Map mapOne = new HashMap<String,Object>();
-		Map mapTwo = new HashMap<String,Object>();
-		
-		mapOne.put("MSG", "testMessage");
-		mapTwo.put("MSGTWO", "testMessage");
-		
-		list.add(mapOne);
-		list.add(mapTwo);
-		ksession.insert(list);
-		ksession.fireAllRules();
-		
-		assertEquals(3, list.size());
-		
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource("test_TestMapVariableRef.drl", getClass()), ResourceType.DRL);
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() > 0) {
+            for (KnowledgeBuilderError error: errors) {
+                System.err.println(error);
+            }
+            throw new IllegalArgumentException("Could not parse knowledge.");
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+        
+        Map mapOne = new HashMap<String,Object>();
+        Map mapTwo = new HashMap<String,Object>();
+        
+        mapOne.put("MSG", "testMessage");
+        mapTwo.put("MSGTWO", "testMessage");
+        
+        list.add(mapOne);
+        list.add(mapTwo);
+        ksession.insert(list);
+        ksession.fireAllRules();
+        
+        assertEquals(3, list.size());
+        
     }
 
     public void testKnowledgeContextMVEL() {
@@ -6507,6 +6512,74 @@ public class MiscTest extends TestCase {
         assertTrue( results.contains( win2 ) );
         assertTrue( results.contains( win3 ) );
         
+    }
+    
+    public void testDroolsQueryCleanup() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryMemoryLeak.drl",
+                                                             getClass() ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        String workerId = "B1234";
+        Worker worker = new Worker();
+        worker.setId(workerId);
+        
+        org.drools.runtime.rule.FactHandle handle = ksession.insert(worker);
+        ksession.fireAllRules();
+        
+        assertNotNull(handle);
+        
+        Object retractedWorker = null;
+        for(int i = 0; i < 100; i++) {
+            retractedWorker = (Object)ksession.getQueryResults("getWorker", new Object[] {workerId});
+        }
+        
+        assertNotNull(retractedWorker);
+        
+        StatefulKnowledgeSessionImpl sessionImpl = (StatefulKnowledgeSessionImpl)ksession;
+        
+        ReteooWorkingMemory reteWorkingMemory = sessionImpl.session;
+        AbstractWorkingMemory abstractWorkingMemory = (AbstractWorkingMemory)reteWorkingMemory;
+        
+        InternalRuleBase ruleBase = (InternalRuleBase)abstractWorkingMemory.getRuleBase();
+        Collection<EntryPointNode> entryPointNodes = ruleBase.getRete().getEntryPointNodes().values();
+        
+        EntryPointNode defaultEntryPointNode = null; 
+        for(EntryPointNode epNode : entryPointNodes) {
+            if(epNode.getEntryPoint().getEntryPointId() == "DEFAULT") {
+                defaultEntryPointNode = epNode;
+                break;
+            }
+        }
+        assertNotNull(defaultEntryPointNode);
+        
+        Map<ObjectType, ObjectTypeNode> obnodes =  defaultEntryPointNode.getObjectTypeNodes();
+
+        ObjectType key = new ClassObjectType(DroolsQuery.class);
+        ObjectTypeNode droolsQueryNode = obnodes.get(key);
+        ObjectHashSet droolsQueryMemory = (ObjectHashSet)abstractWorkingMemory.getNodeMemory(droolsQueryNode);
+        assertEquals(0, droolsQueryMemory.size());
+        
+        Entry[] entries = droolsQueryMemory.getTable();
+        int entryCounter = 0;
+        for(Entry entry : entries) {
+            if (entry != null) {
+                entryCounter++;
+                ObjectEntry oEntry = (ObjectEntry)entry;
+                DefaultFactHandle factHandle = (DefaultFactHandle)oEntry.getValue();
+                assertNull(factHandle.getObject());
+            }
+        }
     }
     
 }
