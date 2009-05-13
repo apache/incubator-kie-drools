@@ -12,7 +12,7 @@ import com.thoughtworks.xstream.XStream;
  * </p>
  * 
  * <p>
- * This is very useful for scripting stateless of stateful knowledge sessions, especially when services are involed.
+ * This is very useful for scripting stateless of stateful knowledge sessions, especially when services are involved.
  * </p>
  * 
  * <p>
@@ -38,7 +38,10 @@ import com.thoughtworks.xstream.XStream;
  * &lt;/batch-execution&gt;
  * </pre>
  * <p>
- * The insert element supports an 'out-identifier' attribute, this means the insert object will also be returned as part of the <batch-execution-results> payload.
+ * The insert element supports an 'out-identifier' attribute, this means the inserted object's FactHandle will be returned 
+ * and optionally the object itself as part of the <batch-execution-results> payload. To return the object use the attribute 'return-object' which takes a boolean
+ * 'true'|'false' value, by default this is true.
+ * The 
  * </p>
  * <pre>
  * &lt;batch-execution &gt;
@@ -49,7 +52,9 @@ import com.thoughtworks.xstream.XStream;
  * </pre>
  * 
  * <p>
- * It's also possible to insert a collection of objects using the &lt;insert-elements&gt; element, however this command does not support an out-identifier.
+ * It's also possible to insert a collection of objects using the &lt;insert-elements&gt; element, here each element is inserted in turn. This command also support's an
+ * 'out-identifier' attribute which returns the FactHandle's in a Collection, of the same order that the objects where inserted. 'return-object' is also supported to optionally
+ * return the inserted objects, again they will be in a collection of the same order they where inserted.
  * The org.domain.UserClass is just an illustrative user object that xstream would serialise. 
  * </p>
  * <pre>
@@ -110,6 +115,13 @@ import com.thoughtworks.xstream.XStream;
  * &lt;/batch-execution&gt;
  * </pre>
  * 
+ * <p>Specific objects can be retrieved using the FactHandle:</p>
+ * <pre>
+ * &lt;batch-execution&gt;
+ *     &lt;get-object out-identifier='outStilton' factHandle='" + factHandle.toExternalForm() + "' /&gt;
+ * &lt;/batch-execution&gt;
+ * </pre>
+ * 
  * <p>
  * While the 'out' attribute is useful in returning specific instances as a result payload, we often wish to run actual querries. Both parameter
  * and parameterless querries are supported. The 'name' attribute is the name of the query to be called, and the 'out-identifier' is the identifier
@@ -138,6 +150,27 @@ import com.thoughtworks.xstream.XStream;
  *    &lt;/parameter&gt;
  *  &lt;/startProcess&gt;
  * &lt;/batch-execution&gt;
+ * </pre>
+ * 
+ * <p>SignelEvent</p>
+ * <pre>
+ * &lt;signal-event process-instance-id='1' event-type='MyEvent'&gt;
+ *     &lt;string&gt;MyValue&lt;/string&gt;
+ * &lt;/signal-event&gt;
+ * </pre>
+ * 
+ * <p>CompleteWorkItem</p>
+ * <pre>
+ * &lt;complete-work-item id='" + workItem.getId() + "' &gt;
+ *    &lt;result identifier='Result'&gt;
+ *         &lt;string&gt;SomeOtherString&lt;/string&gt;
+ *     &lt;/result&gt;
+ * &lt;/complete-work-item>
+ * </pre>
+ * 
+ * <p>AbortWorkItem</p>
+ * <pre>
+ * &lt;abort-work-item id='21' /&gt;
  * </pre>
  * 
  * <p>
