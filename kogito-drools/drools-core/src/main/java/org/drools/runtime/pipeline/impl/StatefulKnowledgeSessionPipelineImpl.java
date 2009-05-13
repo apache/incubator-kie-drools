@@ -1,6 +1,7 @@
 package org.drools.runtime.pipeline.impl;
 
 import org.drools.common.InternalRuleBase;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.pipeline.Pipeline;
@@ -26,7 +27,11 @@ public class StatefulKnowledgeSessionPipelineImpl extends BaseEmitter
 
     public synchronized void insert(Object object,
                                     ResultHandler resultHandler) {
-        ClassLoader cl = ((InternalRuleBase) ((StatefulKnowledgeSessionImpl) this.ksession).getRuleBase()).getRootClassLoader();
+        ClassLoader cl = ((InternalRuleBase) (  
+                                                (
+                                                    (KnowledgeBaseImpl)
+                                                        ((StatefulKnowledgeSession) this.ksession).getKnowledgeBase()
+                                                ).getRuleBase())).getRootClassLoader();
 
         StatefulKnowledgeSessionPipelineContextImpl context = new StatefulKnowledgeSessionPipelineContextImpl( this.ksession,
                                                                                                                this.entryPoint,
