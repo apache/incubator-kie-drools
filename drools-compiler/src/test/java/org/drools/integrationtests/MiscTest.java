@@ -1944,17 +1944,23 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        
+        //ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
         session.insert( stilton );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        final QueryResults results = session.getQueryResults( "simple query" );
-        assertEquals( 1,
-                      results.size() );
+//        session = SerializationHelper.getSerialisedStatefulSession( session,
+//                                                                    ruleBase );
+        for ( int i = 0; i < 10000; i++) {
+	        final QueryResults results = session.getQueryResults( "simple query" );
+	        assertEquals( 1,
+	                      results.size() );
+	        System.gc();
+	        Thread.sleep( 200 );
+        }
+        
     }
 
     public void testEval() throws Exception {
