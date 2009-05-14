@@ -2158,6 +2158,41 @@ public class MarshallingTest extends TestCase {
                       session.getAgenda().getActivations().length );
     }
 
+    public void testAccumulateSessionSerialization() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_AccumulateSerialization.drl" ) ),
+                      ResourceType.DRL );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final List<Number> results = new ArrayList<Number>();
+
+        ksession.setGlobal( "results",
+                            results );
+
+        ksession.insert( new Cheese( "stilton",
+                                     10 ) );
+        ksession.insert( new Cheese( "brie",
+                                     5 ) );
+        ksession.insert( new Cheese( "provolone",
+                                     150 ) );
+        ksession.insert( new Cheese( "brie",
+                                     20 ) );
+        ksession.insert( new Person( "Bob",
+                                     "brie" ) );
+        
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 25,
+                      results.get( 0 ).intValue() );
+    }
+
     /**
      * test that creates a new knowledge base, new stateful session, inserts new
      * fact, serializes the knowledge base and session and fact using one output
