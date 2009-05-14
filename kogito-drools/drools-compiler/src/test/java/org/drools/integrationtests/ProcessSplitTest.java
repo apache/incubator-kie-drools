@@ -206,6 +206,272 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(2, list.size());
     }
 
+    public void testSplitWithMVELContextConstraint() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"" +
+            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.process-split\" package-name=\"org.drools\" >" +
+            "" +
+            "  <header>" +
+            "    <imports>" +
+            "      <import name=\"org.drools.Person\" />" +
+            "      <import name=\"org.drools.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
+            "    </imports>" +
+            "    <globals>" +
+            "      <global identifier=\"list\" type=\"java.util.List\" />" +
+            "    </globals>" +
+            "    <variables>\n" +
+            "      <variable name=\"person\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.drools.Person\" />\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
+            "  </header>" +
+            "" +
+            "  <nodes>" +
+            "    <actionNode id=\"2\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >insert(context.getProcessInstance());</action>" +
+            "    </actionNode>" +
+            "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
+            "      <constraints>" +
+            "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"mvel\" >return true;</constraint>" +
+            // TODO:  &amp;&amp; ((Person) context.getVariable(\"person\")).name != null
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return context.getVariable(\"person\") != null;</constraint>" +
+            "      </constraints>" +
+            "    </split>" +
+            "    <end id=\"8\" name=\"End\" />" +
+            "    <actionNode id=\"6\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "    </actionNode>" +
+            "    <start id=\"1\" name=\"Start\" />" +
+            "    <end id=\"3\" name=\"End\" />" +
+            "  </nodes>" +
+            "  <connections>" +
+            "    <connection from=\"1\" to=\"2\" />" +
+            "    <connection from=\"2\" to=\"4\" />" +
+            "    <connection from=\"4\" to=\"8\" />" +
+            "    <connection from=\"4\" to=\"6\" />" +
+            "    <connection from=\"6\" to=\"3\" />" +
+            "  </connections>" +
+            "" +
+            "</process>");
+        builder.addRuleFlow(source);
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<Long> list = new ArrayList<Long>();
+        workingMemory.setGlobal("list", list);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person("John Doe"));
+        ProcessInstance processInstance = ( ProcessInstance )
+            workingMemory.startProcess("org.drools.process-split", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(1, list.size());
+    }
+    
+    public void testSplitWithJavaContextConstraint() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"" +
+            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.process-split\" package-name=\"org.drools\" >" +
+            "" +
+            "  <header>" +
+            "    <imports>" +
+            "      <import name=\"org.drools.Person\" />" +
+            "      <import name=\"org.drools.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
+            "    </imports>" +
+            "    <globals>" +
+            "      <global identifier=\"list\" type=\"java.util.List\" />" +
+            "    </globals>" +
+            "    <variables>\n" +
+            "      <variable name=\"name\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
+            "  </header>" +
+            "" +
+            "  <nodes>" +
+            "    <actionNode id=\"2\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >insert(context.getProcessInstance());</action>" +
+            "    </actionNode>" +
+            "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
+            "      <constraints>" +
+            "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"java\" >return true;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"java\" >return context.getVariable(\"name\") != null &amp;&amp; ((String) context.getVariable(\"name\")).length() > 0;</constraint>" +
+            "      </constraints>" +
+            "    </split>" +
+            "    <end id=\"8\" name=\"End\" />" +
+            "    <actionNode id=\"6\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "    </actionNode>" +
+            "    <start id=\"1\" name=\"Start\" />" +
+            "    <end id=\"3\" name=\"End\" />" +
+            "  </nodes>" +
+            "  <connections>" +
+            "    <connection from=\"1\" to=\"2\" />" +
+            "    <connection from=\"2\" to=\"4\" />" +
+            "    <connection from=\"4\" to=\"8\" />" +
+            "    <connection from=\"4\" to=\"6\" />" +
+            "    <connection from=\"6\" to=\"3\" />" +
+            "  </connections>" +
+            "" +
+            "</process>");
+        builder.addRuleFlow(source);
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<Long> list = new ArrayList<Long>();
+        workingMemory.setGlobal("list", list);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "John Doe");
+        ProcessInstance processInstance = ( ProcessInstance )
+            workingMemory.startProcess("org.drools.process-split", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(1, list.size());
+    }
+    
+    public void testSplitWithMVELkContextConstraint() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"" +
+            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.process-split\" package-name=\"org.drools\" >" +
+            "" +
+            "  <header>" +
+            "    <imports>" +
+            "      <import name=\"org.drools.Person\" />" +
+            "      <import name=\"org.drools.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
+            "    </imports>" +
+            "    <globals>" +
+            "      <global identifier=\"list\" type=\"java.util.List\" />" +
+            "    </globals>" +
+            "    <variables>\n" +
+            "      <variable name=\"person\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.drools.Person\" />\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
+            "  </header>" +
+            "" +
+            "  <nodes>" +
+            "    <actionNode id=\"2\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >insert(kcontext.getProcessInstance());</action>" +
+            "    </actionNode>" +
+            "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
+            "      <constraints>" +
+            "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"mvel\" >return true;</constraint>" +
+            // TODO:  &amp;&amp; ((org.drools.Person) context.getVariable(\"person\")).name != null
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return context.getVariable(\"person\") != null;</constraint>" +
+            "      </constraints>" +
+            "    </split>" +
+            "    <end id=\"8\" name=\"End\" />" +
+            "    <actionNode id=\"6\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
+            "    </actionNode>" +
+            "    <start id=\"1\" name=\"Start\" />" +
+            "    <end id=\"3\" name=\"End\" />" +
+            "  </nodes>" +
+            "  <connections>" +
+            "    <connection from=\"1\" to=\"2\" />" +
+            "    <connection from=\"2\" to=\"4\" />" +
+            "    <connection from=\"4\" to=\"8\" />" +
+            "    <connection from=\"4\" to=\"6\" />" +
+            "    <connection from=\"6\" to=\"3\" />" +
+            "  </connections>" +
+            "" +
+            "</process>");
+        builder.addRuleFlow(source);
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<Long> list = new ArrayList<Long>();
+        workingMemory.setGlobal("list", list);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person("John Doe"));
+        ProcessInstance processInstance = ( ProcessInstance )
+            workingMemory.startProcess("org.drools.process-split", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(1, list.size());
+    }
+    
+    public void testSplitWithJavakContextConstraint() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"" +
+            "         type=\"RuleFlow\" name=\"ruleflow\" id=\"org.drools.process-split\" package-name=\"org.drools\" >" +
+            "" +
+            "  <header>" +
+            "    <imports>" +
+            "      <import name=\"org.drools.Person\" />" +
+            "      <import name=\"org.drools.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
+            "    </imports>" +
+            "    <globals>" +
+            "      <global identifier=\"list\" type=\"java.util.List\" />" +
+            "    </globals>" +
+            "    <variables>\n" +
+            "      <variable name=\"name\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
+            "  </header>" +
+            "" +
+            "  <nodes>" +
+            "    <actionNode id=\"2\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >insert(kcontext.getProcessInstance());</action>" +
+            "    </actionNode>" +
+            "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
+            "      <constraints>" +
+            "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"java\" >return true;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"java\" >return kcontext.getVariable(\"name\") != null &amp;&amp; ((String) kcontext.getVariable(\"name\")).length() > 0;</constraint>" +
+            "      </constraints>" +
+            "    </split>" +
+            "    <end id=\"8\" name=\"End\" />" +
+            "    <actionNode id=\"6\" name=\"Action\" >" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
+            "    </actionNode>" +
+            "    <start id=\"1\" name=\"Start\" />" +
+            "    <end id=\"3\" name=\"End\" />" +
+            "  </nodes>" +
+            "  <connections>" +
+            "    <connection from=\"1\" to=\"2\" />" +
+            "    <connection from=\"2\" to=\"4\" />" +
+            "    <connection from=\"4\" to=\"8\" />" +
+            "    <connection from=\"4\" to=\"6\" />" +
+            "    <connection from=\"6\" to=\"3\" />" +
+            "  </connections>" +
+            "" +
+            "</process>");
+        builder.addRuleFlow(source);
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<Long> list = new ArrayList<Long>();
+        workingMemory.setGlobal("list", list);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "John Doe");
+        ProcessInstance processInstance = ( ProcessInstance )
+            workingMemory.startProcess("org.drools.process-split", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(1, list.size());
+    }
+    
     public void testSplitWithMVELVariableConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
