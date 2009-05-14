@@ -78,5 +78,9 @@ public class MVELEnabledExpression
                                                   null,
                                                   factory )).booleanValue();
     }
+    
+    public String toString() {
+        return this.unit.getExpression();
+    }    
 
 }

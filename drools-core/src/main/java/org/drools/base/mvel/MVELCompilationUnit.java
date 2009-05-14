@@ -123,6 +123,10 @@ public class MVELCompilationUnit
 
         this.languageLevel = languageLevel;
         this.strictMode = strictMode;
+    }       
+
+    public String getExpression() {
+        return expression;
     }
 
     public void setShadowIdentifiers(String[] shadowIdentifiers) {

@@ -85,5 +85,9 @@ public class MVELEvalExpression
                                                                  factory );
         return result.booleanValue();
     }
+    
+    public String toString() {
+        return this.unit.getExpression();
+    }
 
 }

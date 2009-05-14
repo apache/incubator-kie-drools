@@ -98,9 +98,6 @@ public class MVELReturnValueEvaluator
 
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
-        //Receive breakpoints from debugger
-        MVELDebugHandler.prepare();
-
         Object value;
         if ( MVELDebugHandler.isDebugMode() ) {
             if ( MVELDebugHandler.verbose ) {
@@ -125,5 +122,9 @@ public class MVELReturnValueEvaluator
     public Serializable getCompExpr() {
         return expr;
     }
+    
+    public String toString() {
+        return this.unit.getExpression();
+    }    
 
 }

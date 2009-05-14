@@ -71,5 +71,9 @@ public class MVELSalienceExpression
         return ((Number) MVEL.executeExpression( this.expr,
                                                  factory )).intValue();
     }
+    
+    public String toString() {
+        return this.unit.getExpression();
+    }
 
 }

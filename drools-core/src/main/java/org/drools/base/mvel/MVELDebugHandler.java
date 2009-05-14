@@ -92,13 +92,6 @@ public final class MVELDebugHandler {
     }
 
     /**
-     * Do nothing for now. ensures that class is loaded prior debug handler
-     */
-    public static void prepare() {
-    	//do nothing
-    }
-
-    /**
      * Returns current debug mode.<br/>
      * Holds lazy initialized internal reference to improve performance.<br/>
      * Therefore you can't change System property "mvel.debugger" after isDebugMode is called at least once.<br/>
