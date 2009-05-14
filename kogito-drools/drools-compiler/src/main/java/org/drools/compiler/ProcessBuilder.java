@@ -265,7 +265,7 @@ public class ProcessBuilder {
 
 
     private String generateRules(final Process process) {
-        StringBuilder builder = new StringBuilder();
+        StringBuffer builder = new StringBuffer();
 
         if ( process instanceof WorkflowProcessImpl ) {
             WorkflowProcessImpl ruleFlow = (WorkflowProcessImpl) process;
@@ -290,38 +290,44 @@ public class ProcessBuilder {
             }
 
             Node[] nodes = ruleFlow.getNodes();
-            for ( int i = 0; i < nodes.length; i++ ) {
-                if ( nodes[i] instanceof Split ) {
-                    Split split = (Split) nodes[i];
-                    if ( split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
-                        for ( Connection connection : split.getDefaultOutgoingConnections() ) {
-                            Constraint constraint = split.getConstraint( connection );
-                            if ( "rule".equals( constraint.getType() ) ) {
-                                builder.append( createSplitRule( process,
-                                                                 connection,
-                                                                 split.getConstraint( connection ).getConstraint() ) );
-                            }
-                        }
-                    }
-                } else if ( nodes[i] instanceof MilestoneNode ) {
-                    MilestoneNode milestone = (MilestoneNode) nodes[i];
-                    builder.append( createMilestoneRule( process,
-                                                         milestone ) );
-                } else if ( nodes[i] instanceof StartNode ) {
-                    StartNode startNode = (StartNode) nodes[i];
-                    List<Trigger> triggers = startNode.getTriggers();
-                    if ( triggers != null ) {
-                        for ( Trigger trigger : triggers ) {
-                            if ( trigger instanceof ConstraintTrigger ) {
-                                builder.append( createStartConstraintRule( process,
-                                                                           (ConstraintTrigger) trigger ) );
-                            }
+            generateRules(nodes, process, builder);
+        }
+        return builder.toString();
+    }
+ 
+    private void generateRules(Node[] nodes, Process process, StringBuffer builder) {
+        for ( int i = 0; i < nodes.length; i++ ) {
+            if ( nodes[i] instanceof Split ) {
+                Split split = (Split) nodes[i];
+                if ( split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
+                    for ( Connection connection : split.getDefaultOutgoingConnections() ) {
+                        Constraint constraint = split.getConstraint( connection );
+                        if ( "rule".equals( constraint.getType() ) ) {
+                            builder.append( createSplitRule( process,
+                                                             connection,
+                                                             split.getConstraint( connection ).getConstraint() ) );
                         }
                     }
                 }
+            } else if ( nodes[i] instanceof MilestoneNode ) {
+                MilestoneNode milestone = (MilestoneNode) nodes[i];
+                builder.append( createMilestoneRule( process,
+                                                     milestone ) );
+            } else if ( nodes[i] instanceof StartNode ) {
+                StartNode startNode = (StartNode) nodes[i];
+                List<Trigger> triggers = startNode.getTriggers();
+                if ( triggers != null ) {
+                    for ( Trigger trigger : triggers ) {
+                        if ( trigger instanceof ConstraintTrigger ) {
+                            builder.append( createStartConstraintRule( process,
+                                                                       (ConstraintTrigger) trigger ) );
+                        }
+                    }
+                }
+            } else if ( nodes[i] instanceof NodeContainer ) {
+                generateRules( ((NodeContainer) nodes[i]).getNodes(), process, builder);
             }
         }
-        return builder.toString();
     }
 
     private String createSplitRule(Process process,
