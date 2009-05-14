@@ -43,7 +43,7 @@ public class JavaProcessClassBuilder
         
         final String lineSeparator = System.getProperty( "line.separator" );
 
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append( "package " + context.getPkg().getName() + ";" + lineSeparator );
 
         for ( ImportDeclaration decl : context.getPkg().getImports().values() ) {

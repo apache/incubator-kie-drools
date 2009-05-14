@@ -29,7 +29,7 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		MilestoneNode milestoneNode = (MilestoneNode) node;
 		writeNode("milestone", milestoneNode, xmlDump, includeMeta);
         String constraint = milestoneNode.getConstraint();

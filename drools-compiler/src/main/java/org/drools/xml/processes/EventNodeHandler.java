@@ -34,7 +34,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		EventNode eventNode = (EventNode) node;
 		writeNode("eventNode", eventNode, xmlDump, includeMeta);
 		String variableName = eventNode.getVariableName();

@@ -203,7 +203,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
     
     public String toString() {
-        final StringBuffer b = new StringBuffer( "ProcessInstance " );
+        final StringBuilder b = new StringBuilder( "ProcessInstance " );
         b.append( getId() );
         b.append( " [processId=" );
         b.append( this.process.getId() );

@@ -48,7 +48,7 @@ public class FirstClass {
 	}
 	
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("FirstClass[");
 		buf.append("item1=" + item1 + ", ");
 		buf.append("item2=" + item2 + ", ");

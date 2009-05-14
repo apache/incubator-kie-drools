@@ -145,7 +145,7 @@ public class StringUtils {
     // String.charAt(n) is best bet overall
     //
     // Append:
-    // String.concat about twice as fast as StringBuffer.append
+    // String.concat about twice as fast as StringBuilder.append
     // (not sure who tested this)
 
     /**
@@ -273,7 +273,7 @@ public class StringUtils {
                 }
                 return new String( output2 );
             default :
-                final StringBuffer buf = new StringBuffer( outputLength );
+                final StringBuilder buf = new StringBuilder( outputLength );
                 for ( int i = 0; i < repeat; i++ ) {
                     buf.append( str );
                 }
@@ -772,7 +772,7 @@ public class StringUtils {
      */
     public static String readFileAsString(Reader reader) {
         try {
-            StringBuffer fileData = new StringBuffer( 1000 );
+            StringBuilder fileData = new StringBuilder( 1000 );
             char[] buf = new char[1024];
             int numRead = 0;
             while ( (numRead = reader.read( buf )) != -1 ) {
@@ -835,7 +835,7 @@ public class StringUtils {
             return;
         }
         int sz = str.length();
-        StringBuffer unicode = new StringBuffer(4);
+        StringBuilder unicode = new StringBuilder(4);
         boolean hadSlash = false;
         boolean inUnicode = false;
         for (int i = 0; i < sz; i++) {
@@ -1024,7 +1024,7 @@ public class StringUtils {
         if (coll == null || coll.isEmpty()) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Iterator it = coll.iterator();
         while (it.hasNext()) {
             sb.append(prefix).append(it.next()).append(suffix);
@@ -1063,8 +1063,8 @@ public class StringUtils {
         if (isEmpty(inString) || isEmpty(oldPattern) || newPattern == null) {
             return inString;
         }
-        StringBuffer sbuf = new StringBuffer();
-        // output StringBuffer we'll build up
+        StringBuilder sbuf = new StringBuilder();
+        // output StringBuilder we'll build up
         int pos = 0; // our position in the old string
         int index = inString.indexOf(oldPattern);
         // the index of an occurrence we've found, or -1
@@ -1175,7 +1175,7 @@ public class StringUtils {
         if (isEmpty(inString) || isEmpty(charsToDelete)) {
             return inString;
         }
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         for (int i = 0; i < inString.length(); i++) {
             char c = inString.charAt(i);
             if (charsToDelete.indexOf(c) == -1) {

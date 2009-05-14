@@ -365,7 +365,7 @@ public class LeftTuple
     }
 
     public String toString() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
 
         LeftTuple entry = this;
         while ( entry != null ) {

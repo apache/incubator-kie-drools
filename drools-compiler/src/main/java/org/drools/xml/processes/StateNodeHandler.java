@@ -27,7 +27,7 @@ public class StateNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		StateNode milestoneNode = (StateNode) node;
 		writeNode("state", milestoneNode, xmlDump, includeMeta);
         endNode(xmlDump);

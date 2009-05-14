@@ -29,7 +29,7 @@ public class HumanTaskNodeHandler extends WorkItemNodeHandler {
         return HumanTaskNode.class;
     }
 
-    public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
         WorkItemNode workItemNode = (WorkItemNode) node;
         writeNode("humanTask", workItemNode, xmlDump, includeMeta);
         visitParameters(workItemNode, xmlDump);
@@ -45,7 +45,7 @@ public class HumanTaskNodeHandler extends WorkItemNodeHandler {
         endNode("humanTask", xmlDump);
     }
     
-	protected void visitParameters(WorkItemNode workItemNode, StringBuffer xmlDump) {
+	protected void visitParameters(WorkItemNode workItemNode, StringBuilder xmlDump) {
 	    super.visitParameters(workItemNode, xmlDump);
 	    HumanTaskNode humanTaskNode = (HumanTaskNode) workItemNode;
 	    String swimlane = humanTaskNode.getSwimlane();

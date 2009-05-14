@@ -26,7 +26,7 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
     	return "forEach";
     }
     
-    protected void writeAttributes(CompositeNode compositeNode, StringBuffer xmlDump, boolean includeMeta) {
+    protected void writeAttributes(CompositeNode compositeNode, StringBuilder xmlDump, boolean includeMeta) {
     	ForEachNode forEachNode = (ForEachNode) compositeNode;
     	String variableName = forEachNode.getVariableName();
     	if (variableName != null) {

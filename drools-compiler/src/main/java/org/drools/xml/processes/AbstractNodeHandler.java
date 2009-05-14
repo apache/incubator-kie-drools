@@ -149,9 +149,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     }
     
-    public abstract void writeNode(final Node node, final StringBuffer xmlDump, final boolean includeMeta);
+    public abstract void writeNode(final Node node, final StringBuilder xmlDump, final boolean includeMeta);
     
-    protected void writeNode(final String name, final Node node, final StringBuffer xmlDump, final boolean includeMeta) {
+    protected void writeNode(final String name, final Node node, final StringBuilder xmlDump, final boolean includeMeta) {
     	xmlDump.append("    <" + name + " id=\"" + node.getId() + "\" "); 
         if (node.getName() != null) {
             xmlDump.append("name=\"" + node.getName() + "\" ");
@@ -180,7 +180,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         }
     }
     
-    protected void writeActions(final String type, List<DroolsAction> actions, final StringBuffer xmlDump) {
+    protected void writeActions(final String type, List<DroolsAction> actions, final StringBuilder xmlDump) {
     	if (actions != null && actions.size() > 0) {
     		xmlDump.append("      <" + type + ">" + EOL);
 	    	for (DroolsAction action: actions) {
@@ -190,7 +190,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     }
     
-    public static void writeAction(final DroolsAction action, final StringBuffer xmlDump) {
+    public static void writeAction(final DroolsAction action, final StringBuilder xmlDump) {
     	if (action instanceof DroolsConsequenceAction) {
     		DroolsConsequenceAction consequenceAction = (DroolsConsequenceAction) action;
     		xmlDump.append("        <action type=\"expression\" ");
@@ -214,7 +214,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     }
     
-    public void writeTimers(final Map<Timer, DroolsAction> timers, final StringBuffer xmlDump) {
+    public void writeTimers(final Map<Timer, DroolsAction> timers, final StringBuilder xmlDump) {
     	if (timers != null && !timers.isEmpty()) {
     		xmlDump.append("      <timers>" + EOL);
     		List<Timer> timerList = new ArrayList<Timer>(timers.keySet());
@@ -236,11 +236,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     }
     
-    protected void endNode(final StringBuffer xmlDump) {
+    protected void endNode(final StringBuilder xmlDump) {
         xmlDump.append("/>" + EOL);
     }
 
-    protected void endNode(final String name, final StringBuffer xmlDump) {
+    protected void endNode(final String name, final StringBuilder xmlDump) {
         xmlDump.append("    </" + name + ">" + EOL);
     }
     

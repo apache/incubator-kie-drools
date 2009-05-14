@@ -209,10 +209,10 @@ public class DSLMapWalker extends TreeParser {
     protected static class entry_scope {
         Map<String,Integer> variables;
         AntlrDSLMappingEntry retval;
-        StringBuffer keybuffer;
-        StringBuffer valuebuffer;
-        StringBuffer sentenceKeyBuffer;
-        StringBuffer sentenceValueBuffer;
+        StringBuilder keybuffer;
+        StringBuilder valuebuffer;
+        StringBuilder sentenceKeyBuffer;
+        StringBuilder sentenceValueBuffer;
     }
     protected Stack entry_stack = new Stack();
 
@@ -226,10 +226,10 @@ public class DSLMapWalker extends TreeParser {
 
         	((entry_scope)entry_stack.peek()).retval = new AntlrDSLMappingEntry() ;
         	((entry_scope)entry_stack.peek()).variables = new HashMap<String,Integer>();
-        	((entry_scope)entry_stack.peek()).keybuffer = new StringBuffer();
-        	((entry_scope)entry_stack.peek()).valuebuffer = new StringBuffer();
-        	((entry_scope)entry_stack.peek()).sentenceKeyBuffer = new StringBuffer();
-        	((entry_scope)entry_stack.peek()).sentenceValueBuffer = new StringBuffer();
+        	((entry_scope)entry_stack.peek()).keybuffer = new StringBuilder();
+        	((entry_scope)entry_stack.peek()).valuebuffer = new StringBuilder();
+        	((entry_scope)entry_stack.peek()).sentenceKeyBuffer = new StringBuilder();
+        	((entry_scope)entry_stack.peek()).sentenceValueBuffer = new StringBuilder();
 
         try {
             // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:52:2: ( ^( VT_ENTRY scope_section ( meta_section )? key_section value_section ) )

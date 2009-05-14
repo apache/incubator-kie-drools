@@ -89,7 +89,7 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
                 threads[i].interrupt();
             }
         }
-        StringBuffer exceptionBuf = new StringBuffer();
+        StringBuilder exceptionBuf = new StringBuilder();
         if (!exceptions.isEmpty()) {
         	System.err.println("------->EXCEPTION(s) DURING THREAD TEST : <-------------------");
             for (Iterator<Exception> iterator = exceptions.iterator(); iterator.hasNext();) {
@@ -98,7 +98,7 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
 			}
         }
 
-        StringBuffer errorBuf = new StringBuffer();
+        StringBuilder errorBuf = new StringBuilder();
         if (!errors.isEmpty()) {
         	System.err.println("------->ERROR(s) DURING THREAD TEST : <-------------------");
             for (Iterator<PackageBuilderErrors> iterator = errors.iterator(); iterator.hasNext();) {

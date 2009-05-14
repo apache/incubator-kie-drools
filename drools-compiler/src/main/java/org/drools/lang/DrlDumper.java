@@ -60,13 +60,13 @@ public class DrlDumper extends ReflectiveVisitor
     implements
     PackageDescrDumper {
 
-    private StringBuffer        drlDump;
+    private StringBuilder        drlDump;
     private static final String eol          = System.getProperty( "line.separator" );
     private String              template;
     private boolean             needsBracket = false;
 
     public synchronized String dump(final PackageDescr packageDescr) {
-        this.drlDump = new StringBuffer();
+        this.drlDump = new StringBuilder();
         visitPackageDescr( packageDescr );
         return this.drlDump.toString();
     }
@@ -122,7 +122,7 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     public void visitPatternDescr(final PatternDescr descr) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "\t\t" );
         if ( descr.getIdentifier() != null ) {
             buf.append(  descr.getIdentifier() );

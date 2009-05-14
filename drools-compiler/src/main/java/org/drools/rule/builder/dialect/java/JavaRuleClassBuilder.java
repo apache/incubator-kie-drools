@@ -42,7 +42,7 @@ public class JavaRuleClassBuilder
         
         final String lineSeparator = System.getProperty( "line.separator" );
 
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append( "package " + context.getPkg().getName() + ";" + lineSeparator );
 
         for ( final Iterator it = context.getPkg().getImports().keySet().iterator(); it.hasNext(); ) {

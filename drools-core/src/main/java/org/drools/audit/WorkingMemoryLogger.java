@@ -299,7 +299,7 @@ public abstract class WorkingMemoryLogger
      * @return A String represetation of the declarations of the activation.
      */
     private String extractDeclarations(final Activation activation,  final WorkingMemory workingMemory) {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         final Tuple tuple = activation.getTuple();
         final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
@@ -343,7 +343,7 @@ public abstract class WorkingMemoryLogger
      * @return A unique id for the activation
      */
     private static String getActivationId(final Activation activation) {
-        final StringBuffer result = new StringBuffer( activation.getRule().getName() );
+        final StringBuilder result = new StringBuilder( activation.getRule().getName() );
         result.append( " [" );
         final Tuple tuple = activation.getTuple();
         final FactHandle[] handles = tuple.getFactHandles();

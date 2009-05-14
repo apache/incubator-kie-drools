@@ -176,7 +176,7 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
      */
     public void setValuePattern(String value) {
         if ( value != null ) {
-            StringBuffer valuePatternBuffer = new StringBuffer();
+            StringBuilder valuePatternBuffer = new StringBuilder();
 
             if ( headMatchGroupAdded ) {
                 valuePatternBuffer.append( "$1" );

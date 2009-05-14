@@ -40,7 +40,7 @@ public class TimerNodeHandler extends AbstractNodeHandler {
         return TimerNode.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		TimerNode timerNode = (TimerNode) node;
 		writeNode("timerNode", timerNode, xmlDump, includeMeta);
         Timer timer = timerNode.getTimer();

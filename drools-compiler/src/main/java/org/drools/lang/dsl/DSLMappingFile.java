@@ -106,7 +106,7 @@ public abstract class DSLMappingFile {
      * @return
      */
     public String dumpFile() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for ( final Iterator it = this.mapping.getEntries().iterator(); it.hasNext(); ) {
             buf.append( it.next() );
             buf.append( "\n" );

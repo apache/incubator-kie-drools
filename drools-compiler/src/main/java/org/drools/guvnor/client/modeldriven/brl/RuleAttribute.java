@@ -32,7 +32,7 @@ public class RuleAttribute
 
 
     public String toString() {
-        StringBuffer ret = new StringBuffer();
+        StringBuilder ret = new StringBuilder();
         ret.append( this.attributeName );
         if ( NOLOOP.equals( attributeName ) )
         {

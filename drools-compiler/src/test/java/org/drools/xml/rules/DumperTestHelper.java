@@ -64,7 +64,7 @@ public class DumperTestHelper extends Assert {
 
     private static String readFile(final String file) throws IOException {
         final InputStreamReader reader = new InputStreamReader( DumperTestHelper.class.getResourceAsStream( file ) );
-        final StringBuffer text = new StringBuffer();
+        final StringBuilder text = new StringBuilder();
         final char[] buf = new char[1024];
         int len = 0;
 

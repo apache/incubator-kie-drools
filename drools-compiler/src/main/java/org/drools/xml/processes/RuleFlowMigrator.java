@@ -159,7 +159,7 @@ public class RuleFlowMigrator
      * @throws IOException
      ************************************************************************/
     public static String convertReaderToString(Reader reader) throws IOException {
-        final StringBuffer text = new StringBuffer();
+        final StringBuilder text = new StringBuilder();
 
         final char[] buf = new char[1024];
         int len = 0;

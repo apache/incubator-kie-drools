@@ -39,7 +39,7 @@ public class SecondClass {
 	}
 	
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("SecondClass[");
 		buf.append("item1=" + item1 + ", ");
 		buf.append("item2=" + item2 + ", ");

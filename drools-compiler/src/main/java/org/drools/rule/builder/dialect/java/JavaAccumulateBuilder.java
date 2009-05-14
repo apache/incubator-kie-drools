@@ -251,7 +251,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             locals.add( it.next() );
         }
 
-        StringBuffer initCode = new StringBuffer();
+        StringBuilder initCode = new StringBuilder();
         int lastAdded = 0;
         for ( Iterator it = locals.iterator(); it.hasNext(); ) {
             JavaLocalDeclarationDescr d = (JavaLocalDeclarationDescr) it.next();
