@@ -2200,7 +2200,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
           <para>The call <code>drools.halt()</code> terminates rule execution
           immediately. This is required for returning control to the point
           whence the current session was put to work with
-          <code>fireUntilHalt()</code></para>.
+          <code>fireUntilHalt()</code>.</para>
         </listitem>
 
         <listitem>
@@ -2243,7 +2243,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
       <itemizedlist>
         <listitem>
           <para>The call <code>kcontext.getKnowledgeRuntime().halt()</code>
-          terminates rule execution immediately.</para>.
+          terminates rule execution immediately.</para>
         </listitem>
                 
         <listitem>
