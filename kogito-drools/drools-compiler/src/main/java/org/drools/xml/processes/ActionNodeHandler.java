@@ -32,7 +32,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
         return ActionNode.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		ActionNode actionNode = (ActionNode) node;
 		writeNode("actionNode", actionNode, xmlDump, includeMeta);
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();

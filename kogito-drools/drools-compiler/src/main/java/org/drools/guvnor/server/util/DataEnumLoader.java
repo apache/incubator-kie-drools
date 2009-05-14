@@ -82,7 +82,7 @@ public class DataEnumLoader {
 
 	public static String addCommasForNewLines(String mvelSource) {
         StringTokenizer st = new StringTokenizer(mvelSource, "\r\n");
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         while(st.hasMoreTokens()) {
             String line = st.nextToken().trim();
             if (st.hasMoreTokens() && line.endsWith( "," )) {

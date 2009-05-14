@@ -46,7 +46,7 @@ public class AccessorDescr extends DeclarativeInvokerDescr {
     }
 
     public String toString() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         buf.append( (this.variableName != null) ? this.variableName : "" );
         for ( final Iterator it = this.invokers.iterator(); it.hasNext(); ) {
             if ( buf.length() > 0 ) {

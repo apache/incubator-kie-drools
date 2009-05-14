@@ -20,7 +20,7 @@ public class RuleMetadata implements PortableObject {
 
 	@Override
 	public String toString() {
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		ret.append("@");
 		ret.append(this.attributeName);
 		if (this.value != null) {

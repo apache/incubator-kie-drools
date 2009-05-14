@@ -739,12 +739,12 @@ public class ClassBuilder {
                 mv.visitLabel( l0 );
             }
 
-            // StringBuffer buf = new StringBuffer();
+            // StringBuilder buf = new StringBuilder();
             mv.visitTypeInsn( Opcodes.NEW,
-                              Type.getInternalName( StringBuffer.class ) );
+                              Type.getInternalName( StringBuilder.class ) );
             mv.visitInsn( Opcodes.DUP );
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                Type.getInternalName( StringBuffer.class ),
+                                Type.getInternalName( StringBuilder.class ),
                                 "<init>",
                                 "()V" );
             mv.visitVarInsn( Opcodes.ASTORE,
@@ -764,16 +764,16 @@ public class ClassBuilder {
                                 "getSimpleName",
                                 "()Ljava/lang/String;" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuffer.class ),
+                                Type.getInternalName( StringBuilder.class ),
                                 "append",
-                                "(Ljava/lang/String;)Ljava/lang/StringBuffer;" );
+                                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
             // buf.append("( ");
             mv.visitLdcInsn( "( " );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuffer.class ),
+                                Type.getInternalName( StringBuilder.class ),
                                 "append",
-                                "(Ljava/lang/String;)Ljava/lang/StringBuffer;" );
+                                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
             boolean previous = false;
             for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
@@ -781,23 +781,23 @@ public class ClassBuilder {
                     // buf.append(", ");
                     mv.visitLdcInsn( ", " );
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( StringBuffer.class ),
+                                        Type.getInternalName( StringBuilder.class ),
                                         "append",
-                                        "(Ljava/lang/String;)Ljava/lang/StringBuffer;" );
+                                        "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
                 }
                 // buf.append(attrName)
                 mv.visitLdcInsn( field.getName() );
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    Type.getInternalName( StringBuffer.class ),
+                                    Type.getInternalName( StringBuilder.class ),
                                     "append",
-                                    "(Ljava/lang/String;)Ljava/lang/StringBuffer;" );
+                                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
                 // buf.append("=");
                 mv.visitLdcInsn( "=" );
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    Type.getInternalName( StringBuffer.class ),
+                                    Type.getInternalName( StringBuilder.class ),
                                     "append",
-                                    "(Ljava/lang/String;)Ljava/lang/StringBuffer;" );
+                                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
                 // buf.append(attrValue)
                 mv.visitVarInsn( Opcodes.ALOAD,
@@ -809,15 +809,15 @@ public class ClassBuilder {
 
                 if ( isPrimitive( field.getTypeName() ) ) {
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( StringBuffer.class ),
+                                        Type.getInternalName( StringBuilder.class ),
                                         "append",
-                                        Type.getMethodDescriptor( Type.getType( StringBuffer.class ),
+                                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
                                                                   new Type[]{Type.getType( getTypeDescriptor( field.getTypeName() ) )} ) );
                 } else {
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( StringBuffer.class ),
+                                        Type.getInternalName( StringBuilder.class ),
                                         "append",
-                                        Type.getMethodDescriptor( Type.getType( StringBuffer.class ),
+                                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
                                                                   new Type[]{Type.getType( Object.class )} ) );
                 }
                 previous = true;
@@ -825,11 +825,11 @@ public class ClassBuilder {
 
             mv.visitLdcInsn( " )" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuffer.class ),
+                                Type.getInternalName( StringBuilder.class ),
                                 "append",
-                                "(Ljava/lang/String;)Ljava/lang/StringBuffer;" );
+                                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuffer.class ),
+                                Type.getInternalName( StringBuilder.class ),
                                 "toString",
                                 "()Ljava/lang/String;" );
             mv.visitInsn( Opcodes.ARETURN );
@@ -845,7 +845,7 @@ public class ClassBuilder {
                                        lastLabel,
                                        0 );
                 mv.visitLocalVariable( "buf",
-                                       Type.getDescriptor( StringBuffer.class ),
+                                       Type.getDescriptor( StringBuilder.class ),
                                        null,
                                        l0,
                                        lastLabel,

@@ -61,13 +61,13 @@ public class XmlDumper extends ReflectiveVisitor
     implements
     PackageDescrDumper {
 
-    private StringBuffer        xmlDump;
+    private StringBuilder        xmlDump;
     private boolean             patternContext;
     private final static String eol = System.getProperty( "line.separator" );
     private String              template;
 
     public synchronized String dump(final PackageDescr packageDescr) {
-        this.xmlDump = new StringBuffer();
+        this.xmlDump = new StringBuilder();
         visitPackageDescr( packageDescr );
         return this.xmlDump.toString();
     }
@@ -93,7 +93,7 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitPatternDescr(final PatternDescr descr) {
         this.patternContext = true;
         this.template = new String();
-        StringBuffer localString = new StringBuffer();
+        StringBuilder localString = new StringBuilder();
 
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
@@ -127,7 +127,7 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitCollectDescr(final CollectDescr descr) {
-        StringBuffer tmpstr = new StringBuffer();
+        StringBuilder tmpstr = new StringBuilder();
         tmpstr.append( "<from> <collect>" );
         visit( descr.getInputPattern() );
         tmpstr.append( this.template );
@@ -391,7 +391,7 @@ public class XmlDumper extends ReflectiveVisitor
      * @author <a href="mailto:prietor@gmail.com">Author Javier Prieto</a>
      */
     public static String replaceIllegalChars(final String code) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         if ( code != null ) {
             final int n = code.length();
             for ( int i = 0; i < n; i++ ) {

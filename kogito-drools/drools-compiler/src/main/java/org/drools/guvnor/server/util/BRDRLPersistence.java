@@ -30,7 +30,7 @@ public class BRDRLPersistence implements BRLPersistence {
 	public String marshal(RuleModel model) {
 		boolean isDSLEnhanced = model.hasDSLSentences();
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("rule \"" + model.name + "\"");
 		if (null != model.parentName && model.parentName.length() > 0) {
 			buf.append(" extends \"" + model.parentName + "\"\n");
@@ -65,7 +65,7 @@ public class BRDRLPersistence implements BRLPersistence {
 	 * @param buf
 	 * @param model
 	 */
-	private void marshalAttributes(StringBuffer buf, RuleModel model) {
+	private void marshalAttributes(StringBuilder buf, RuleModel model) {
 		boolean hasDialect = false;
 		for (int i = 0; i < model.attributes.length; i++) {
 			RuleAttribute attr = model.attributes[i];
@@ -93,7 +93,7 @@ public class BRDRLPersistence implements BRLPersistence {
 	 * @param buf
 	 * @param model
 	 */
-	private void marshalMetadata(StringBuffer buf, RuleModel model) {
+	private void marshalMetadata(StringBuilder buf, RuleModel model) {
 		if (model.metadataList != null) {
 			for (int i = 0; i < model.metadataList.length; i++) {
 				buf.append("\t").append(model.metadataList[i]).append("\n");
@@ -107,7 +107,7 @@ public class BRDRLPersistence implements BRLPersistence {
 	 * @param buf
 	 * @param model
 	 */
-	private void marshalLHS(StringBuffer buf, RuleModel model,
+	private void marshalLHS(StringBuilder buf, RuleModel model,
 			boolean isDSLEnhanced) {
 		IPattern[] lhs = model.lhs;
 		LHSPatternVisitor visitor = new LHSPatternVisitor(isDSLEnhanced, buf);
@@ -117,7 +117,7 @@ public class BRDRLPersistence implements BRLPersistence {
 		}
 	}
 
-	private void marshalRHS(StringBuffer buf, RuleModel model,
+	private void marshalRHS(StringBuilder buf, RuleModel model,
 			boolean isDSLEnhanced) {
 		IAction[] rhs = model.rhs;
 		RHSActionVisitor visitor = new RHSActionVisitor(isDSLEnhanced, buf);
@@ -128,10 +128,10 @@ public class BRDRLPersistence implements BRLPersistence {
 	}
 
 	public static class LHSPatternVisitor extends ReflectiveVisitor {
-		private StringBuffer buf;
+		private StringBuilder buf;
 		private boolean isDSLEnhanced;
 
-		public LHSPatternVisitor(boolean isDSLEnhanced, StringBuffer b) {
+		public LHSPatternVisitor(boolean isDSLEnhanced, StringBuilder b) {
 			this.isDSLEnhanced = isDSLEnhanced;
 			buf = b;
 		}
@@ -234,7 +234,7 @@ public class BRDRLPersistence implements BRLPersistence {
 		private void generateConstraints(FactPattern pattern) {
 			int printedCount = 0;
 			for (int i = 0; i < pattern.getFieldConstraints().length; i++) {
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				generateConstraint(pattern.constraintList.constraints[i],
 						false, buffer);
 				if (buffer.length() > 0) {
@@ -252,7 +252,7 @@ public class BRDRLPersistence implements BRLPersistence {
 		 * readable DRL in the most common cases.
 		 */
 		private void generateConstraint(FieldConstraint con, boolean nested,
-				StringBuffer buf) {
+				StringBuilder buf) {
 			if (con instanceof CompositeFieldConstraint) {
 				CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
 				if (nested)
@@ -276,7 +276,7 @@ public class BRDRLPersistence implements BRLPersistence {
 		}
 
 		private void generateSingleFieldConstraint(
-				final SingleFieldConstraint constr, StringBuffer buf) {
+				final SingleFieldConstraint constr, StringBuilder buf) {
 			if (constr.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
 				buf.append("eval( ");
 				buf.append(constr.value);
@@ -289,7 +289,7 @@ public class BRDRLPersistence implements BRLPersistence {
 				if ((constr.operator != null && constr.value != null)
 						|| constr.fieldBinding != null) {
 					SingleFieldConstraint parent = (SingleFieldConstraint) constr.parent;
-					StringBuffer parentBuf = new StringBuffer();
+					StringBuilder parentBuf = new StringBuilder();
 					while (parent != null) {
 						parentBuf.insert(0, parent.fieldName + ".");
 						parent = (SingleFieldConstraint) parent.parent;
@@ -312,7 +312,7 @@ public class BRDRLPersistence implements BRLPersistence {
 			}
 		}
 
-		private void addFieldRestriction(final StringBuffer buf,
+		private void addFieldRestriction(final StringBuilder buf,
 				final int type, final String operator, final String value) {
 			if (operator == null) {
 				return;
@@ -341,11 +341,11 @@ public class BRDRLPersistence implements BRLPersistence {
 	}
 
 	public static class RHSActionVisitor extends ReflectiveVisitor {
-		private StringBuffer buf;
+		private StringBuilder buf;
 		private boolean isDSLEnhanced;
 		private int idx = 0;
 
-		public RHSActionVisitor(boolean isDSLEnhanced, StringBuffer b) {
+		public RHSActionVisitor(boolean isDSLEnhanced, StringBuilder b) {
 			this.isDSLEnhanced = isDSLEnhanced;
 			buf = b;
 		}

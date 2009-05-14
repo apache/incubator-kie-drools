@@ -31,7 +31,7 @@ public class FaultNodeHandler extends AbstractNodeHandler {
         return FaultNode.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		FaultNode faultNode = (FaultNode) node;
 		writeNode("fault", faultNode, xmlDump, includeMeta);
 		String faultName = faultNode.getFaultName();

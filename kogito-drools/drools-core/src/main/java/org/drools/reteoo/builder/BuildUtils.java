@@ -253,7 +253,7 @@ public class BuildUtils {
 
         // Make sure the required declarations
         if ( list.size() != 0 ) {
-            final StringBuffer buffer = new StringBuffer();
+            final StringBuilder buffer = new StringBuilder();
             buffer.append( list.get( 0 ) );
             for ( int i = 1, size = list.size(); i < size; i++ ) {
                 buffer.append( ", " + list.get( i ) );

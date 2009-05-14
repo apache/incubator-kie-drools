@@ -32,7 +32,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
     	return "composite";
     }
 
-    public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
     	super.writeNode(getNodeName(), node, xmlDump, includeMeta);
         CompositeNode compositeNode = (CompositeNode) node;
         writeAttributes(compositeNode, xmlDump, includeMeta);
@@ -78,7 +78,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         endNode(getNodeName(), xmlDump);
     }
     
-    protected void writeAttributes(CompositeNode compositeNode, StringBuffer xmlDump, boolean includeMeta) {
+    protected void writeAttributes(CompositeNode compositeNode, StringBuilder xmlDump, boolean includeMeta) {
     }
     
     protected List<Node> getSubNodes(CompositeNode compositeNode) {

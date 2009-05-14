@@ -216,7 +216,7 @@ public class BRLPersitenceTest extends TestCase {
 
         final Reader reader = new InputStreamReader( in );
 
-        final StringBuffer text = new StringBuffer();
+        final StringBuilder text = new StringBuilder();
 
         final char[] buf = new char[1024];
         int len = 0;

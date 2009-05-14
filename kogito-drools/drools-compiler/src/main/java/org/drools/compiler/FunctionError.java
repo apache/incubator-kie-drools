@@ -55,7 +55,7 @@ public class FunctionError extends DroolsError {
     }
     
     private String createMessage( String message ) {
-        StringBuffer detail = new StringBuffer();
+        StringBuilder detail = new StringBuilder();
         if( object instanceof CompilationProblem[] ) {
             CompilationProblem[] cp = (CompilationProblem[]) object;
             this.errorLines = new int[cp.length];

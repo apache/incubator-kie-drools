@@ -278,7 +278,7 @@ public class JavaParser extends Parser {
          	/** This will take a RecognitionException, and create a sensible error message out of it */
          	public String createErrorMessage(RecognitionException e)
             {
-    		StringBuffer message = new StringBuffer();		
+    		StringBuilder message = new StringBuilder();		
                     message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                     if ( e instanceof MismatchedTokenException ) {
                             MismatchedTokenException mte = (MismatchedTokenException)e;

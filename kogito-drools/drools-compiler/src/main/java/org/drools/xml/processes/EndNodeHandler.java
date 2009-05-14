@@ -27,7 +27,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
         return EndNode.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		EndNode endNode = (EndNode) node;
 		writeNode("end", endNode, xmlDump, includeMeta);
 		boolean terminate = endNode.isTerminate();

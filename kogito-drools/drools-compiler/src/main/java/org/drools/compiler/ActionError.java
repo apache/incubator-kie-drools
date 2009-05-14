@@ -71,7 +71,7 @@ public class ActionError extends DroolsError {
     }
 
     public String toString() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         buf.append( this.message );
         buf.append( " : " );
         buf.append( "\n" );
@@ -89,7 +89,7 @@ public class ActionError extends DroolsError {
     }
 
 //    private String createMessage( String message ) {
-//        StringBuffer detail = new StringBuffer();
+//        StringBuilder detail = new StringBuilder();
 //        detail.append( this.message );
 //        detail.append( " : " );
 //        detail.append( this.rule );

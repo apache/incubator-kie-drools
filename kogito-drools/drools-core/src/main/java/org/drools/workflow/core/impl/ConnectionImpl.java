@@ -125,7 +125,7 @@ public class ConnectionImpl implements Connection, Serializable {
     }
     
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Connection ");
+        final StringBuilder sb = new StringBuilder("Connection ");
         sb.append(getFrom());
         sb.append(" [type=");
         sb.append(getFromType());

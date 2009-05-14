@@ -28,7 +28,7 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         return RuleSetNode.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		RuleSetNode ruleSetNode = (RuleSetNode) node;
 		writeNode("ruleSet", ruleSetNode, xmlDump, includeMeta);
         String ruleFlowGroup = ruleSetNode.getRuleFlowGroup();

@@ -149,7 +149,7 @@ public class FactTemplateImpl
      * for the slot type
      */
     public String toString() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         buf.append( "(" + this.name + " " );
         //        for (int idx=0; idx < this.slots.length; idx++){
         //            buf.append("(" + this.slots[idx].getName() +

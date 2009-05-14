@@ -54,7 +54,7 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
     }
 
     public String toString() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         buf.append( "( " );
         for ( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
             buf.append( it.next().toString() );

@@ -409,7 +409,7 @@ public class PackageBuilder {
 	}
 
     private String loadBrlFile(final Reader drl) throws IOException {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         final BufferedReader input = new BufferedReader( drl );
         String line = null;
         while ( (line = input.readLine()) != null ) {
@@ -1478,7 +1478,7 @@ public class PackageBuilder {
         }
 
         public String toString() {
-            final StringBuffer buf = new StringBuffer();
+            final StringBuilder buf = new StringBuilder();
             buf.append( this.message );
             buf.append( " : " );
             buf.append( "\n" );

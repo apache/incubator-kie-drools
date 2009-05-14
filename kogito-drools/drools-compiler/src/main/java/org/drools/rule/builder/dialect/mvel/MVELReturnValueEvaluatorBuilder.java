@@ -97,7 +97,7 @@ public class MVELReturnValueEvaluatorBuilder
      */
     public static String delimitExpressions(String s) {
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         char[] cs = s.toCharArray();
         int brace = 0;
         int sqre = 0;

@@ -26,7 +26,7 @@ public class PackageBuilderErrors extends ArrayList<KnowledgeBuilderError> imple
     }
     
     public String toString() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for ( int i = 0, length = this.errors.length; i < length; i++) {
             buf.append( errors[i] );
         }

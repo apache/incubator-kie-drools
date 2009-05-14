@@ -68,7 +68,7 @@ public final class ClassUtils {
     }
 
     public static String canonicalName(Class clazz) {
-        StringBuffer name = new StringBuffer();
+        StringBuilder name = new StringBuilder();
 
         if ( clazz.isArray() ) {
             name.append( canonicalName( clazz.getComponentType() ) );

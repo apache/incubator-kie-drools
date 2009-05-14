@@ -273,7 +273,7 @@ public class Scenario
     public String printFailureReport() {
         int total = 0;
         int failures = 0;
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "------- Unmet expectations: -------\n" );
         for ( Iterator iterator = fixtures.iterator(); iterator.hasNext(); ) {
             Fixture f = (Fixture) iterator.next();

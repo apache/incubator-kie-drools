@@ -100,7 +100,7 @@ public class DrlParser {
                               final Reader drl,
                               final Reader dsl) throws DroolsParserException,
                                                IOException {
-        final StringBuffer text = getDRLText( drl );
+        final StringBuilder text = getDRLText( drl );
         return parse( text.toString(),
                       dsl );
     }
@@ -195,14 +195,14 @@ public class DrlParser {
         return expanded;
     }
 
-    private StringBuffer getDRLText(final InputStream is) throws IOException {
+    private StringBuilder getDRLText(final InputStream is) throws IOException {
         
         
         return null;
     }
     
-    private StringBuffer getDRLText(final Reader reader) throws IOException {
-        final StringBuffer text = new StringBuffer();
+    private StringBuilder getDRLText(final Reader reader) throws IOException {
+        final StringBuilder text = new StringBuilder();
 
         final char[] buf = new char[1024];
         int len = 0;

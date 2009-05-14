@@ -67,7 +67,7 @@ public class Variable implements TypeObject, ValueObject, Serializable {
         if ( this.type.verifyDataType( value ) ) {
             this.value = value;
         } else {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append( "Value <" );
             sb.append( value );
             sb.append( "> is not valid for datatype: " );

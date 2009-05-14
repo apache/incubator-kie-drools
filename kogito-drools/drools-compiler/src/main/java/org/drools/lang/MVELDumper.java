@@ -36,7 +36,7 @@ import org.drools.util.ReflectiveVisitor;
  */
 public class MVELDumper extends ReflectiveVisitor {
 
-    private StringBuffer        mvelDump;
+    private StringBuilder        mvelDump;
     private boolean             isDateField;
     private static final String eol = System.getProperty( "line.separator" );
     private String              template;
@@ -47,7 +47,7 @@ public class MVELDumper extends ReflectiveVisitor {
     }
 
     public String dump(FieldConstraintDescr fieldConstr, boolean isDateField ) {
-        mvelDump = new StringBuffer();
+        mvelDump = new StringBuilder();
         this.isDateField = isDateField;
         this.visit( fieldConstr );
         return mvelDump.toString();

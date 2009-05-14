@@ -78,7 +78,7 @@ public class DescrBuildError extends DroolsError {
     }
 
     public String toString() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         buf.append( this.message );
         buf.append( " : " );
         buf.append( this.parentDescr );
@@ -97,7 +97,7 @@ public class DescrBuildError extends DroolsError {
     }
 
 //    private String createMessage( String message ) {
-//        StringBuffer detail = new StringBuffer();
+//        StringBuilder detail = new StringBuilder();
 //        detail.append( this.message );
 //        detail.append( " : " );
 //        detail.append( this.rule );

@@ -191,7 +191,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         final INameEnvironment nameEnvironment = new INameEnvironment() {
 
             public NameEnvironmentAnswer findType( final char[][] pCompoundTypeName ) {
-                final StringBuffer result = new StringBuffer();
+                final StringBuilder result = new StringBuilder();
                 for (int i = 0; i < pCompoundTypeName.length; i++) {
                     if (i != 0) {
                         result.append('.');
@@ -205,7 +205,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             public NameEnvironmentAnswer findType( final char[] pTypeName, final char[][] pPackageName ) {
-                final StringBuffer result = new StringBuffer();
+                final StringBuilder result = new StringBuilder();
                 for (int i = 0; i < pPackageName.length; i++) {
                     result.append(pPackageName[i]);
                     result.append('.');
@@ -292,7 +292,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             public boolean isPackage( char[][] parentPackageName, char[] pPackageName ) {
-                final StringBuffer result = new StringBuffer();
+                final StringBuilder result = new StringBuilder();
                 if (parentPackageName != null) {
                     for (int i = 0; i < parentPackageName.length; i++) {
                         if (i != 0) {
@@ -333,7 +333,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     for (int i = 0; i < clazzFiles.length; i++) {
                         final ClassFile clazzFile = clazzFiles[i];
                         final char[][] compoundName = clazzFile.getCompoundName();
-                        final StringBuffer clazzName = new StringBuffer();
+                        final StringBuilder clazzName = new StringBuilder();
                         for (int j = 0; j < compoundName.length; j++) {
                             if (j != 0) {
                                 clazzName.append('.');

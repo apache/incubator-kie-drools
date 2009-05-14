@@ -272,7 +272,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     }
 
     private String indent() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         for ( int i = 0; i < this.indent; i++ ) {
             buffer.append( "  " );
         }

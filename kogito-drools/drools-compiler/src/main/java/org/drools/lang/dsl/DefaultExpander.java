@@ -131,7 +131,7 @@ public class DefaultExpander
         
         final StringBuffer buf = new StringBuffer();
         while ( m.find() ) {
-            final StringBuffer expanded = new StringBuffer();
+            final StringBuilder expanded = new StringBuilder();
             final String constr = m.group( 1 ).trim();
             if ( constr.startsWith( "rule" ) ) {
                 // match rule
@@ -211,7 +211,7 @@ public class DefaultExpander
      * @return
      */
     private String expandLHS(final String lhs, int lineOffset) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         final String[] lines = lhs.split( "\n" ); // since we assembled the string, we know line breaks are \n
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
         int lastExpanded = -1;
@@ -288,7 +288,7 @@ public class DefaultExpander
      * @return
      */
     private String expandRHS(final String lhs, int lineOffset) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         final String[] lines = lhs.split( "\n" ); // since we assembled the string, we know line breaks are \n
         for ( int i = 0; i < lines.length; i++ ) {
             final String trimmed = lines[i].trim();
@@ -322,7 +322,7 @@ public class DefaultExpander
 
     // Reads the stream into a String
     private String loadDrlFile(final Reader drl) throws IOException {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         final BufferedReader input = new BufferedReader( drl );
         String line = null;
         while ( (line = input.readLine()) != null ) {

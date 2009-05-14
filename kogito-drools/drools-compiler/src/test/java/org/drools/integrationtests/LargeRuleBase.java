@@ -40,7 +40,7 @@ public class LargeRuleBase {
 
 	private static void bigBlobCompile() throws DroolsParserException,
 			IOException, Exception {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append(getHeader());
 
 		for (int i = 0; i < RULE_COUNT; i++) {

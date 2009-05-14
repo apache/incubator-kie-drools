@@ -114,10 +114,10 @@ public class DataEnumLoaderTest extends TestCase {
 
     }
 
-	private StringBuffer readLines() throws IOException {
+	private StringBuilder readLines() throws IOException {
 		BufferedReader r = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("Some.enumeration")));
 		String line = "";
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		while ((line = r.readLine()) != null) {
 			buf.append(line); buf.append('\n');
 		}

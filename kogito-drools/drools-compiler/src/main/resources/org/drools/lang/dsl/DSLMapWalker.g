@@ -36,18 +36,18 @@ entry returns [DSLMappingEntry mappingEntry]
 scope {
 	Map<String,Integer> variables;
 	AntlrDSLMappingEntry retval;
-	StringBuffer keybuffer;
-	StringBuffer valuebuffer;
-	StringBuffer sentenceKeyBuffer;
-	StringBuffer sentenceValueBuffer;
+	StringBuilder keybuffer;
+	StringBuilder valuebuffer;
+	StringBuilder sentenceKeyBuffer;
+	StringBuilder sentenceValueBuffer;
 }
 @init {
 	$entry::retval = new AntlrDSLMappingEntry() ;
 	$entry::variables = new HashMap<String,Integer>();
-	$entry::keybuffer = new StringBuffer();
-	$entry::valuebuffer = new StringBuffer();
-	$entry::sentenceKeyBuffer = new StringBuffer();
-	$entry::sentenceValueBuffer = new StringBuffer();
+	$entry::keybuffer = new StringBuilder();
+	$entry::valuebuffer = new StringBuilder();
+	$entry::sentenceKeyBuffer = new StringBuilder();
+	$entry::sentenceValueBuffer = new StringBuilder();
 }
 	: ^(VT_ENTRY scope_section meta_section? key_section 
 	        {    $entry::retval.setVariables( $entry::variables ); 

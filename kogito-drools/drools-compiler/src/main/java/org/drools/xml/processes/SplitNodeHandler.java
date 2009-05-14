@@ -32,7 +32,7 @@ public class SplitNodeHandler extends AbstractNodeHandler {
         return Split.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		Split splitNode = (Split) node;
 		writeNode("split", splitNode, xmlDump, includeMeta);
         int type = splitNode.getType();

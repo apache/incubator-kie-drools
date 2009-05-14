@@ -38,7 +38,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         return WorkItemNode.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		WorkItemNode workItemNode = (WorkItemNode) node;
 		writeNode("workItem", workItemNode, xmlDump, includeMeta);
         visitParameters(workItemNode, xmlDump);
@@ -54,13 +54,13 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         endNode("workItem", xmlDump);
 	}
 	
-	protected void visitParameters(WorkItemNode workItemNode, StringBuffer xmlDump) {
+	protected void visitParameters(WorkItemNode workItemNode, StringBuilder xmlDump) {
 	    if (!workItemNode.isWaitForCompletion()) {
             xmlDump.append("waitForCompletion=\"false\" ");
         }
 	}
 	
-	protected void visitInMappings(Map<String, String> inMappings, StringBuffer xmlDump) {
+	protected void visitInMappings(Map<String, String> inMappings, StringBuilder xmlDump) {
         for (Map.Entry<String, String> inMapping: inMappings.entrySet()) {
             xmlDump.append(
                 "      <mapping type=\"in\" "
@@ -69,7 +69,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         }
 	}
 	
-	protected void visitOutMappings(Map<String, String> outMappings, StringBuffer xmlDump) {
+	protected void visitOutMappings(Map<String, String> outMappings, StringBuilder xmlDump) {
         for (Map.Entry<String, String> outMapping: outMappings.entrySet()) {
             xmlDump.append(
                 "      <mapping type=\"out\" "
@@ -78,7 +78,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    protected void visitWork(Work work, StringBuffer xmlDump, boolean includeMeta) {
+    protected void visitWork(Work work, StringBuilder xmlDump, boolean includeMeta) {
         if (work != null) {
             xmlDump.append("      <work name=\"" + work.getName() + "\" >" + EOL);
             List<ParameterDefinition> parameterDefinitions =

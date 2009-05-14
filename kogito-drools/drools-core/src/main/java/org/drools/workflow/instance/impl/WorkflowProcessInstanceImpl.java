@@ -214,7 +214,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public String toString() {
-		final StringBuffer sb = new StringBuffer("WorkflowProcessInstance");
+		final StringBuilder sb = new StringBuilder("WorkflowProcessInstance");
 		sb.append(getId());
 		sb.append(" [processId=");
 		sb.append(getProcess().getId());
