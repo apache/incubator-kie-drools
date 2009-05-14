@@ -15,6 +15,8 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
+import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.ProcessContext;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class MVELReturnValueEvaluatorBuilder
@@ -35,14 +37,17 @@ public class MVELReturnValueEvaluatorBuilder
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
+            Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
+            variables.put("context", ProcessContext.class);
+            variables.put("kcontext", org.drools.runtime.process.ProcessContext.class);
+            variables.put("drools", KnowledgeHelper.class);
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     descr,
                                                                     dialect.getInterceptors(),
                                                                     text,
-                                                                    new Map[]{Collections.EMPTY_MAP, context.getPackageBuilder().getGlobals()},
+                                                                    new Map[]{variables, context.getPackageBuilder().getGlobals()},
                                                                     null );         
 
-            Map<String, Class<?>> variableClasses = new HashMap<String, Class<?>>();
             List<String> variableNames = analysis.getNotBoundedIdentifiers();
             if (contextResolver != null) {
 	            for (String variableName: variableNames) {
@@ -55,7 +60,7 @@ public class MVELReturnValueEvaluatorBuilder
 	                            null,
 	                            "Could not find variable '" + variableName + "' for constraint '" + descr.getText() + "'" ) );            		
 	            	} else {
-	            		variableClasses.put(variableName,
+	            		variables.put(variableName,
             				context.getDialect().getTypeResolver().resolveType(
         						variableScope.findVariable(variableName).getType().getStringType()));
 	            	}
@@ -66,7 +71,7 @@ public class MVELReturnValueEvaluatorBuilder
                                                                        analysis,
                                                                        null,
                                                                        null,
-                                                                       variableClasses,
+                                                                       variables,
                                                                        context );  
 
             MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator( unit,
