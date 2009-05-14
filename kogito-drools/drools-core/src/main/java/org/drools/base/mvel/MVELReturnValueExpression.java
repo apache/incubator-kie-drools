@@ -86,5 +86,9 @@ public class MVELReturnValueExpression
     public Object createContext() {
         return this.prototype.clone();
     }
+    
+    public String toString() {
+        return this.unit.getExpression();
+    }    
 
 }

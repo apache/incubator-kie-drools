@@ -97,9 +97,6 @@ public class MVELAction
         
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
-        //Receive breakpoints from debugger
-        MVELDebugHandler.prepare();
-
         if ( MVELDebugHandler.isDebugMode() ) {
             if ( MVELDebugHandler.verbose ) {
                 System.out.println( DebugTools.decompile( compexpr ) );

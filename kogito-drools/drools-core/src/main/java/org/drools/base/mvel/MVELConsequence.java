@@ -67,9 +67,6 @@ public class MVELConsequence implements Consequence, MVELCompileable,
 
 		CompiledExpression compexpr = (CompiledExpression) this.expr;
 
-		// Receive breakpoints from debugger
-		MVELDebugHandler.prepare();
-
 		pkg = knowledgeHelper.getWorkingMemory().getRuleBase().getPackage(
 				knowledgeHelper.getRule().getPackage());
 
