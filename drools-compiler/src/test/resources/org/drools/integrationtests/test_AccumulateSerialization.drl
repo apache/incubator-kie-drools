@@ -1,0 +1,14 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "Test sum" salience 80
+    dialect "java"
+    when
+     $sum : Number( doubleValue >= 10 )
+     from accumulate( Person( $likes : likes ) and Cheese( type == $likes, $price : price ),
+                                                sum( $price ) );
+    then
+        results.add( $sum );
+end 
+

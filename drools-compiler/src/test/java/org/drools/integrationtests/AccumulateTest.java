@@ -14,6 +14,8 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.OuterClass;
@@ -24,12 +26,17 @@ import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class AccumulateTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -935,8 +942,8 @@ public class AccumulateTest extends TestCase {
     }
 
     private void updateReferences(final StatefulSession session,
-                                  final DataSet data ) {
-        data.results = (List<?>) session.getGlobal( "results" );
+                                  final DataSet data) {
+        data.results = (List< ? >) session.getGlobal( "results" );
         for ( Iterator< ? > it = session.iterateObjects(); it.hasNext(); ) {
             Object next = (Object) it.next();
             if ( next instanceof Cheese ) {
@@ -944,7 +951,7 @@ public class AccumulateTest extends TestCase {
                 data.cheese[c.getOldPrice()] = c;
                 data.cheeseHandles[c.getOldPrice()] = session.getFactHandle( c );
                 assertNotNull( data.cheeseHandles[c.getOldPrice()] );
-            } else if( next instanceof Person ) {
+            } else if ( next instanceof Person ) {
                 Person p = (Person) next;
                 data.bob = p;
                 data.bobHandle = session.getFactHandle( data.bob );
@@ -1335,7 +1342,6 @@ public class AccumulateTest extends TestCase {
         Assert.assertEquals( 3,
                              ((Set) results.get( results.size() - 1 )).size() );
 
-
         // ---------------- 4rd scenario
         wm.retract( cheeseHandles[4] );
         wm.fireAllRules();
@@ -1456,12 +1462,21 @@ public class AccumulateTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        Order order = new Order(1, "Bob");
-        OrderItem item1 = new OrderItem( order, 1, "maquilage", 1, 10 );
-        OrderItem item2 = new OrderItem( order, 2, "perfume", 1, 5 );
+        Order order = new Order( 1,
+                                 "Bob" );
+        OrderItem item1 = new OrderItem( order,
+                                         1,
+                                         "maquilage",
+                                         1,
+                                         10 );
+        OrderItem item2 = new OrderItem( order,
+                                         2,
+                                         "perfume",
+                                         1,
+                                         5 );
         order.addItem( item1 );
         order.addItem( item2 );
-        
+
         wm.insert( order );
         wm.insert( item1 );
         wm.insert( item2 );
@@ -1471,7 +1486,7 @@ public class AccumulateTest extends TestCase {
                       results.size() );
         assertEquals( 15,
                       results.get( 0 ).intValue() );
-        assertEquals( 15.0, 
+        assertEquals( 15.0,
                       order.getTotal() );
     }
 
@@ -1481,7 +1496,7 @@ public class AccumulateTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateGlobals.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final StatefulSession wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
