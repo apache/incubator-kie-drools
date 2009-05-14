@@ -106,11 +106,11 @@ public abstract class AbstractDSLMappingEntry
     }
 
     public String toPatternString() {
-        return this.section + "[" + this.metadata + "]" + this.keyPattern.pattern() + "=" + this.valuePattern;
+        return this.section.getSymbol() + "[" + this.metadata + "]" + this.keyPattern.pattern() + "=" + this.valuePattern;
     }
 
     public String toString() {
-        return this.section + "[" + this.metadata + "]" + this.key + "=" + this.value;
+        return this.section.getSymbol() + "[" + this.metadata + "]" + this.key + "=" + this.value;
     }
 
     public int hashCode() {
