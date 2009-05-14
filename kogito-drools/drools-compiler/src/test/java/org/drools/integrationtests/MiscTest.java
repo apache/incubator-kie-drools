@@ -1134,6 +1134,46 @@ public class MiscTest extends TestCase {
                       result.get( 1 ) );
 
     }
+    
+    public void testDeclaredFactAndFunction() throws Exception {
+        String rule = "package com.jboss.qa;\n";
+        rule += "global java.util.List list\n";
+        rule += "declare Address\n";
+        rule += "    street: String\n";
+        rule += "end\n";
+        rule += "function void myFunction() {\n";
+        rule += "}\n";
+        rule += "rule \"r1\"\n";
+        rule += "    dialect \"mvel\"\n";
+        rule += "when\n";
+        rule += "    Address()\n";
+        rule += "then\n";
+        rule += "    list.add(\"r1\");\n";
+        rule += "end\n";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+
+        FactType addressFact = ruleBase.getFactType("com.jboss.qa.Address" );
+        Object address = addressFact.newInstance();
+        session.insert( address );
+        session.fireAllRules();
+
+        list = (List) session.getGlobal( "list" );
+        assertEquals( 1, list.size() );
+
+        assertEquals( "r1",
+                      list.get( 0 ) );
+    }
+    
 
     public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
