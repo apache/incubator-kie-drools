@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.ClassUtils;
+import org.drools.util.MathUtils;
 
 public class ArrayElementReader implements AcceptsReadAccessor, InternalReadAccessor, Externalizable  {
     private InternalReadAccessor arrayReadAccessor;
@@ -91,6 +94,17 @@ public class ArrayElementReader implements AcceptsReadAccessor, InternalReadAcce
     public Object getValue(InternalWorkingMemory workingMemory, Object object) {
         Object[] array = ( Object[] ) this.arrayReadAccessor.getValue( workingMemory, object );
         return array[ this.index ];
+    }
+    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+                                         Object object) {
+        Object[] array = ( Object[] ) this.arrayReadAccessor.getValue( workingMemory, object );
+        return MathUtils.getBigDecimal( array[ this.index ] );
+    }
+
+    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+                                         Object object) {
+        Object[] array = ( Object[] ) this.arrayReadAccessor.getValue( workingMemory, object );
+        return MathUtils.getBigInteger( array[ this.index ] );
     }
     public ValueType getValueType() {
         return ValueType.OBJECT_TYPE;
@@ -190,5 +204,13 @@ public class ArrayElementReader implements AcceptsReadAccessor, InternalReadAcce
     public boolean isNullValue(Object object) {
         return isNullValue( null,
                             object );
+    }
+
+    public BigDecimal getBigDecimalValue(Object object) {
+        return null;
+    }
+
+    public BigInteger getBigIntegerValue(Object object) {
+        return null;
     }
 }

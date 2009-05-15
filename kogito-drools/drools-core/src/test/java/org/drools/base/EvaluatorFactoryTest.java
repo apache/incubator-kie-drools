@@ -44,6 +44,7 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.util.MathUtils;
 
 /**
  * Some test coverage goodness for the evaluators.
@@ -134,15 +135,49 @@ public class EvaluatorFactoryTest extends TestCase {
                     ValueType.BIG_DECIMAL_TYPE );
 
         Collection col = new ArrayList();
-        col.add( new BigDecimal( 42 ) );
-        col.add( new BigDecimal( 45 ) );
+        col.add( new BigDecimal( 42.0 ) );
+        col.add( new BigDecimal( 45.0 ) );
 
-        final Object[][] data = {{new BigDecimal( 42 ), "==", new BigDecimal( 42 ), Boolean.TRUE}, {new BigDecimal( 42 ), "<", new BigDecimal( 43 ), Boolean.TRUE}, {new BigDecimal( 42 ), ">=", new BigDecimal( 41 ), Boolean.TRUE},
-                {new BigDecimal( 42 ), "!=", new BigDecimal( 41 ), Boolean.TRUE}, {new BigDecimal( 42 ), ">", new BigDecimal( 41 ), Boolean.TRUE}, {new BigDecimal( 42 ), "<=", new BigDecimal( 42 ), Boolean.TRUE},
-                {new BigDecimal( 42 ), ">", new BigDecimal( 100 ), Boolean.FALSE}, {new BigDecimal( 42 ), "==", null, Boolean.FALSE}, {new BigDecimal( 42 ), "!=", null, Boolean.TRUE}, {null, "==", new BigDecimal( 42 ), Boolean.FALSE},
-                {null, "!=", new BigDecimal( 42 ), Boolean.TRUE}, {null, "<", new BigDecimal( 43 ), Boolean.FALSE}, {null, ">=", new BigDecimal( -10 ), Boolean.FALSE}, {null, ">", new BigDecimal( -10 ), Boolean.FALSE},
-                {null, "<=", new BigDecimal( 42 ), Boolean.FALSE}, {new BigDecimal( 42 ), "memberOf", col, Boolean.TRUE}, {new BigDecimal( 43 ), "memberOf", col, Boolean.FALSE}, {null, "memberOf", col, Boolean.FALSE},
-                {new BigDecimal( 42 ), "memberOf", null, Boolean.FALSE}, {new BigDecimal( 42 ), "not memberOf", col, Boolean.FALSE}, {new BigDecimal( 43 ), "not memberOf", col, Boolean.TRUE}, {null, "not memberOf", col, Boolean.TRUE},
+        final Object[][] data = {
+                {new BigDecimal( 42 ), "==", new BigDecimal( 42 ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), "==", new BigDecimal( "42.0" ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), "!=", new BigDecimal( "42.0" ), Boolean.FALSE}, 
+                {new BigDecimal( 45 ), "==", new Double( 45.0 ), Boolean.TRUE}, 
+                {new BigDecimal( 45 ), "!=", new Double( 45.0 ), Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "==", new BigInteger( "42" ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), "!=", new BigInteger( "42" ), Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "<", new BigDecimal( 43 ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), ">=", new BigDecimal( 41 ), Boolean.TRUE},
+                {new BigDecimal( 42 ), ">=", new BigDecimal( "41.0" ), Boolean.TRUE},
+                {new BigDecimal( 42 ), "!=", new BigDecimal( 41 ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), ">", new BigDecimal( 41 ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), "<=", new BigDecimal( 42 ), Boolean.TRUE},
+                {new BigDecimal( 42 ), ">", new BigDecimal( 100 ), Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "<", new Double( 43 ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), ">=", new Double( 41 ), Boolean.TRUE},
+                {new BigDecimal( 42 ), ">", new Double( 41 ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), "<=", new Double( 42 ), Boolean.TRUE},
+                {new BigDecimal( 42 ), ">", new Double( 100 ), Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "<", new BigInteger( "43" ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), ">=", new BigInteger( "41" ), Boolean.TRUE},
+                {new BigDecimal( 42 ), ">", new BigInteger( "41" ), Boolean.TRUE}, 
+                {new BigDecimal( 42 ), "<=", new BigInteger( "42" ), Boolean.TRUE},
+                {new BigDecimal( 42 ), ">", new BigInteger( "100" ), Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "==", null, Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "!=", null, Boolean.TRUE}, 
+                {null, "==", new BigDecimal( 42 ), Boolean.FALSE},
+                {null, "!=", new BigDecimal( 42 ), Boolean.TRUE}, 
+                {null, "<", new BigDecimal( 43 ), Boolean.FALSE}, 
+                {null, ">=", new BigDecimal( -10 ), Boolean.FALSE}, 
+                {null, ">", new BigDecimal( -10 ), Boolean.FALSE},
+                {null, "<=", new BigDecimal( 42 ), Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "memberOf", col, Boolean.TRUE}, 
+                {new BigDecimal( 43 ), "memberOf", col, Boolean.FALSE}, 
+                {null, "memberOf", col, Boolean.FALSE},
+                {new BigDecimal( 42 ), "memberOf", null, Boolean.FALSE}, 
+                {new BigDecimal( 42 ), "not memberOf", col, Boolean.FALSE}, 
+                {new BigDecimal( 43 ), "not memberOf", col, Boolean.TRUE}, 
+                {null, "not memberOf", col, Boolean.TRUE},
                 {new BigDecimal( 42 ), "not memberOf", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
@@ -160,12 +195,39 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new BigInteger( "42" ) );
         col.add( new BigInteger( "45" ) );
 
-        final Object[][] data = {{new BigInteger( "42" ), "==", new BigInteger( "42" ), Boolean.TRUE}, {new BigInteger( "42" ), "<", new BigInteger( "43" ), Boolean.TRUE}, {new BigInteger( "42" ), ">=", new BigInteger( "41" ), Boolean.TRUE},
-                {new BigInteger( "42" ), "!=", new BigInteger( "41" ), Boolean.TRUE}, {new BigInteger( "42" ), ">", new BigInteger( "41" ), Boolean.TRUE}, {new BigInteger( "42" ), "<=", new BigInteger( "42" ), Boolean.TRUE},
-                {new BigInteger( "42" ), ">", new BigInteger( "100" ), Boolean.FALSE}, {new BigInteger( "42" ), "==", null, Boolean.FALSE}, {new BigInteger( "42" ), "!=", null, Boolean.TRUE}, {null, "==", new BigInteger( "42" ), Boolean.FALSE},
-                {null, "!=", new BigInteger( "42" ), Boolean.TRUE}, {null, "<", new BigInteger( "43" ), Boolean.FALSE}, {null, ">=", new BigInteger( "-10" ), Boolean.FALSE}, {null, ">", new BigInteger( "-10" ), Boolean.FALSE},
-                {null, "<=", new BigInteger( "42" ), Boolean.FALSE}, {new BigInteger( "42" ), "memberOf", col, Boolean.TRUE}, {new BigInteger( "43" ), "memberOf", col, Boolean.FALSE}, {null, "memberOf", col, Boolean.FALSE},
-                {new BigInteger( "42" ), "memberOf", null, Boolean.FALSE}, {new BigInteger( "42" ), "not memberOf", col, Boolean.FALSE}, {new BigInteger( "43" ), "not memberOf", col, Boolean.TRUE}, {null, "not memberOf", col, Boolean.TRUE},
+        final Object[][] data = {
+                {new BigInteger( "42" ), "==", new BigInteger( "42" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), "==", new BigDecimal( "42.0" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), "==", new Double( 42 ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), "!=", new BigDecimal( "43.0" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), "!=", new Double( 43 ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), "<", new BigInteger( "43" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), ">=", new BigInteger( "41" ), Boolean.TRUE},
+                {new BigInteger( "42" ), "!=", new BigInteger( "41" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), ">", new BigInteger( "41" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), "<=", new BigInteger( "42" ), Boolean.TRUE},
+                {new BigInteger( "42" ), ">", new BigInteger( "100" ), Boolean.FALSE},
+                {new BigInteger( "42" ), "<", new Long( "43" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), ">=", new Long( "41" ), Boolean.TRUE},
+                {new BigInteger( "42" ), "!=", new Long( "41" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), ">", new Long( "41" ), Boolean.TRUE}, 
+                {new BigInteger( "42" ), "<=", new Long( "42" ), Boolean.TRUE},
+                {new BigInteger( "42" ), ">", new Long( "100" ), Boolean.FALSE}, 
+                {new BigInteger( "42" ), "==", null, Boolean.FALSE}, 
+                {new BigInteger( "42" ), "!=", null, Boolean.TRUE}, 
+                {null, "==", new BigInteger( "42" ), Boolean.FALSE},
+                {null, "!=", new BigInteger( "42" ), Boolean.TRUE}, 
+                {null, "<", new BigInteger( "43" ), Boolean.FALSE}, 
+                {null, ">=", new BigInteger( "-10" ), Boolean.FALSE}, 
+                {null, ">", new BigInteger( "-10" ), Boolean.FALSE},
+                {null, "<=", new BigInteger( "42" ), Boolean.FALSE}, 
+                {new BigInteger( "42" ), "memberOf", col, Boolean.TRUE}, 
+                {new BigInteger( "43" ), "memberOf", col, Boolean.FALSE}, 
+                {null, "memberOf", col, Boolean.FALSE},
+                {new BigInteger( "42" ), "memberOf", null, Boolean.FALSE}, 
+                {new BigInteger( "42" ), "not memberOf", col, Boolean.FALSE}, 
+                {new BigInteger( "43" ), "not memberOf", col, Boolean.TRUE}, 
+                {null, "not memberOf", col, Boolean.TRUE},
                 {new BigInteger( "42" ), "not memberOf", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
@@ -705,6 +767,24 @@ public class EvaluatorFactoryTest extends TestCase {
         public boolean isNullValue(Object object) {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+                                             Object object) {
+            return MathUtils.getBigDecimal( object );
+        }
+
+        public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+                                             Object object) {
+            return MathUtils.getBigInteger( object );
+        }
+
+        public BigDecimal getBigDecimalValue(Object object) {
+            return MathUtils.getBigDecimal( object );
+        }
+
+        public BigInteger getBigIntegerValue(Object object) {
+            return MathUtils.getBigInteger( object );
         }
 
     }

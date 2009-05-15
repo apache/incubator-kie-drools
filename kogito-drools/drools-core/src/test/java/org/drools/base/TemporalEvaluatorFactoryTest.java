@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import junit.framework.TestCase;
 
@@ -1214,6 +1216,28 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
         public boolean isNullValue(Object object) {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+                                             Object object) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+                                             Object object) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public BigDecimal getBigDecimalValue(Object object) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public BigInteger getBigIntegerValue(Object object) {
+            // TODO Auto-generated method stub
+            return null;
         }
 
     }

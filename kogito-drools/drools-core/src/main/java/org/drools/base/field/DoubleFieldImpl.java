@@ -122,7 +122,7 @@ public class DoubleFieldImpl
 	}
 
 	public BigInteger getBigIntegerValue() {
-		throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type double" );
+		return new BigDecimal(this.value).toBigInteger();
 	}
 
 }

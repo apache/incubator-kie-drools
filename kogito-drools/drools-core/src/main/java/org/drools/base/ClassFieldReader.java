@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.InternalReadAccessor;
@@ -46,17 +48,16 @@ public class ClassFieldReader
     private String                         className;
     private String                         fieldName;
     private transient InternalReadAccessor reader;
-    
-    
+
     public ClassFieldReader() {
-        
+
     }
-    
+
     public ClassFieldReader(final String className,
                             final String fieldName) {
         this.className = className;
         this.fieldName = fieldName;
-    }    
+    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( className );
@@ -76,7 +77,7 @@ public class ClassFieldReader
     public int getIndex() {
         return this.reader.getIndex();
     }
-    
+
     public String getClassName() {
         return this.className;
     }
@@ -113,7 +114,7 @@ public class ClassFieldReader
         result = prime * result + ((className == null) ? 0 : className.hashCode());
         result = prime * result + ((fieldName == null) ? 0 : fieldName.hashCode());
         return result;
-    }       
+    }
 
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
@@ -196,7 +197,7 @@ public class ClassFieldReader
     public boolean isGlobal() {
         return false;
     }
-    
+
     public boolean isSelfReference() {
         return "this".equals( this.fieldName );
     }
@@ -298,6 +299,26 @@ public class ClassFieldReader
      */
     public boolean isNullValue(Object object) {
         return reader.isNullValue( object );
+    }
+
+    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+                                         Object object) {
+        return reader.getBigDecimalValue( workingMemory,
+                                          object );
+    }
+
+    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+                                         Object object) {
+        return reader.getBigIntegerValue( workingMemory,
+                                          object );
+    }
+
+    public BigDecimal getBigDecimalValue(Object object) {
+        return reader.getBigDecimalValue( object );
+    }
+
+    public BigInteger getBigIntegerValue(Object object) {
+        return reader.getBigIntegerValue( object );
     }
 
 }
