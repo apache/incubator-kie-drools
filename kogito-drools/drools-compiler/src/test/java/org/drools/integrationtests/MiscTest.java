@@ -319,7 +319,7 @@ public class MiscTest extends TestCase {
                            result );
 
         final Primitives p1 = new Primitives();
-        p1.setPrimitiveArrayAttribute( new int[]{1, 2, 3} );
+        p1.setPrimitiveIntArray( new int[]{1, 2, 3} );
         p1.setArrayAttribute( new String[]{"a", "b"} );
 
         session.insert( p1 );
@@ -4202,6 +4202,8 @@ public class MiscTest extends TestCase {
         assertEquals( "ok2",
                       list.get( 1 ) );
     }
+    
+
 
     public void testNodeSharingNotExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
