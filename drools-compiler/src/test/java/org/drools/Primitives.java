@@ -19,29 +19,38 @@ import java.util.Arrays;
  * limitations under the License.
  */
 
-public class Primitives implements Serializable {
+public class Primitives
+    implements
+    Serializable {
 
     private static final long serialVersionUID = -3006488134941876318L;
 
-    private boolean  booleanPrimitive;
+    private boolean           booleanPrimitive;
 
-    private char     charPrimitive;
+    private char              charPrimitive;
 
-    private byte     bytePrimitive;
-    private short    shortPrimitive;
-    private int      intPrimitive;
-    private long     longPrimitive;
+    private byte              bytePrimitive;
+    private short             shortPrimitive;
+    private int               intPrimitive;
+    private long              longPrimitive;
 
-    private float    floatPrimitive;
-    private float    doublePrimitive;
-    private String   stringAttribute;
-    private Object[] arrayAttribute;
-    private int[]    primitiveArrayAttribute;
-    private String[] stringArray;
+    private float             floatPrimitive;
+    private double            doublePrimitive;
+    private String            stringAttribute;
+    private Object[]          arrayAttribute;
+    private boolean[]         primitiveBooleanArray;
+    private byte[]            primitiveByteArray;
+    private short[]           primitiveShortArray;
+    private char[]            primitiveCharArray;
+    private int[]             primitiveIntArray;
+    private long[]            primitiveLongArray;
+    private float[]           primitiveFloatArray;
+    private double[]          primitiveDoubleArray;
+    private String[]          stringArray;
 
-    private Boolean  booleanWrapper;
+    private Boolean           booleanWrapper;
 
-    private Object   object;
+    private Object            object;
 
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
@@ -67,11 +76,11 @@ public class Primitives implements Serializable {
         this.charPrimitive = charPrimitive;
     }
 
-    public float getDoublePrimitive() {
+    public double getDoublePrimitive() {
         return this.doublePrimitive;
     }
 
-    public void setDoublePrimitive(final float doublePrimitive) {
+    public void setDoublePrimitive(final double doublePrimitive) {
         this.doublePrimitive = doublePrimitive;
     }
 
@@ -113,20 +122,76 @@ public class Primitives implements Serializable {
 
     public void setArrayAttribute(final Object[] arrayAttribute) {
         this.arrayAttribute = arrayAttribute;
+    }          
+    
+    public boolean[] getPrimitiveBooleanArray() {
+        return primitiveBooleanArray;
+    }
+
+    public void setPrimitiveBooleanArray(boolean[] primitiveBooleanArray) {
+        this.primitiveBooleanArray = primitiveBooleanArray;
+    }
+
+    public byte[] getPrimitiveByteArray() {
+        return primitiveByteArray;
+    }
+
+    public void setPrimitiveByteArray(byte[] primitiveByteArray) {
+        this.primitiveByteArray = primitiveByteArray;
+    }
+
+    public short[] getPrimitiveShortArray() {
+        return primitiveShortArray;
+    }
+
+    public void setPrimitiveShortArray(short[] primitiveShortArray) {
+        this.primitiveShortArray = primitiveShortArray;
+    }
+
+    public char[] getPrimitiveCharArray() {
+        return primitiveCharArray;
+    }
+
+    public void setPrimitiveCharArray(char[] primitiveCharArray) {
+        this.primitiveCharArray = primitiveCharArray;
     }
 
     /**
      * @return the primitiveArrayAttribute
      */
-    public int[] getPrimitiveArrayAttribute() {
-        return this.primitiveArrayAttribute;
+    public int[] getPrimitiveIntArray() {
+        return this.primitiveIntArray;
     }
 
     /**
      * @param primitiveArrayAttribute the primitiveArrayAttribute to set
      */
-    public void setPrimitiveArrayAttribute(final int[] primitiveArrayAttribute) {
-        this.primitiveArrayAttribute = primitiveArrayAttribute;
+    public void setPrimitiveIntArray(final int[] primitiveArrayAttribute) {
+        this.primitiveIntArray = primitiveArrayAttribute;
+    }
+
+    public long[] getPrimitiveLongArray() {
+        return primitiveLongArray;
+    }
+
+    public void setPrimitiveLongArray(long[] primitiveLongArray) {
+        this.primitiveLongArray = primitiveLongArray;
+    }
+
+    public float[] getPrimitiveFloatArray() {
+        return primitiveFloatArray;
+    }
+
+    public void setPrimitiveFloatArray(float[] floatDoubleArray) {
+        this.primitiveFloatArray = floatDoubleArray;
+    }
+
+    public double[] getPrimitiveDoubleArray() {
+        return primitiveDoubleArray;
+    }
+
+    public void setPrimitiveDoubleArray(double[] primitiveDoubleArrayAttribute) {
+        this.primitiveDoubleArray = primitiveDoubleArrayAttribute;
     }
 
     public String[] getStringArray() {
@@ -168,12 +233,14 @@ public class Primitives implements Serializable {
         result = prime * result + (booleanPrimitive ? 1231 : 1237);
         result = prime * result + ((booleanWrapper == null) ? 0 : booleanWrapper.hashCode());
         result = prime * result + charPrimitive;
-        result = prime * result + Float.floatToIntBits( doublePrimitive );
+        long doubeAsLongBits = Double.doubleToLongBits( doublePrimitive );
+        result = prime * result + (int) (doubeAsLongBits ^ (doubeAsLongBits >>> 32));
         result = prime * result + Float.floatToIntBits( floatPrimitive );
         result = prime * result + intPrimitive;
         result = prime * result + (int) (longPrimitive ^ (longPrimitive >>> 32));
         result = prime * result + ((object == null) ? 0 : object.hashCode());
-        result = prime * result + Arrays.hashCode( primitiveArrayAttribute );
+        result = prime * result + Arrays.hashCode( primitiveIntArray );
+        result = prime * result + Arrays.hashCode( primitiveDoubleArray );
         result = prime * result + shortPrimitive;
         result = prime * result + Arrays.hashCode( stringArray );
         result = prime * result + ((stringAttribute == null) ? 0 : stringAttribute.hashCode());
@@ -193,15 +260,17 @@ public class Primitives implements Serializable {
         } else if ( !booleanWrapper.equals( other.booleanWrapper ) ) return false;
         if ( bytePrimitive != other.bytePrimitive ) return false;
         if ( charPrimitive != other.charPrimitive ) return false;
-        if ( Float.floatToIntBits( doublePrimitive ) != Float.floatToIntBits( other.doublePrimitive ) ) return false;
+        if ( Double.doubleToLongBits( doublePrimitive ) != Double.doubleToLongBits( other.doublePrimitive ) ) return false;
         if ( Float.floatToIntBits( floatPrimitive ) != Float.floatToIntBits( other.floatPrimitive ) ) return false;
         if ( intPrimitive != other.intPrimitive ) return false;
         if ( longPrimitive != other.longPrimitive ) return false;
         if ( object == null ) {
             if ( other.object != null ) return false;
         } else if ( !object.equals( other.object ) ) return false;
-        if ( !Arrays.equals( primitiveArrayAttribute,
-                             other.primitiveArrayAttribute ) ) return false;
+        if ( !Arrays.equals( primitiveIntArray,
+                             other.primitiveIntArray ) ) return false;
+        if ( !Arrays.equals( primitiveDoubleArray,
+                             other.primitiveDoubleArray ) ) return false;
         if ( shortPrimitive != other.shortPrimitive ) return false;
         if ( !Arrays.equals( stringArray,
                              other.stringArray ) ) return false;
@@ -210,7 +279,5 @@ public class Primitives implements Serializable {
         } else if ( !stringAttribute.equals( other.stringAttribute ) ) return false;
         return true;
     }
-
-
 
 }

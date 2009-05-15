@@ -343,6 +343,66 @@ public class VariableRestriction
             this.object = null;
         }
     }
+    
+    public static class PrimitiveArrayVariableContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = 400L;
+        public Object             left;
+        public Object             right;
+
+        public PrimitiveArrayVariableContextEntry() {
+        }
+
+        public PrimitiveArrayVariableContextEntry(final InternalReadAccessor extractor,
+                                          final Declaration declaration,
+                                          final Evaluator evaluator) {
+            super( extractor,
+                   declaration,
+                   evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            left    = in.readObject();
+            right   = in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeObject(left);
+            out.writeObject(right);
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final LeftTuple tuple) {
+            this.reteTuple = tuple;
+            this.workingMemory = workingMemory;
+            this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
+                                                                         evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+            this.left = this.declaration.getExtractor().getValue( workingMemory,
+                                                                  evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = evaluator.prepareLeftObject( handle );
+            this.workingMemory = workingMemory;
+            this.rightNull = this.extractor.isNullValue( workingMemory,
+                                                         evaluator.prepareRightObject( handle ) );
+            this.right = this.extractor.getValue( workingMemory,
+                                                  evaluator.prepareRightObject( handle ) );
+        }
+
+        public void resetTuple() {
+            this.left = null;
+            this.reteTuple = null;
+        }
+
+        public void resetFactHandle() {
+            this.right = null;
+            this.object = null;
+        }
+    }    
 
     public static class LongVariableContextEntry extends VariableContextEntry {
 

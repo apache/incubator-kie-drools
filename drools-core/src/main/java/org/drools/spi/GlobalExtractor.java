@@ -43,18 +43,15 @@ public class GlobalExtractor
 
     private static final long serialVersionUID = 400L;
     private String            identifier;
-    private ValueType         valueType;
     private ObjectType        objectType;
 
     public GlobalExtractor() {
-
     }
     
     public GlobalExtractor(final String identifier,
                            final ObjectType objectType) {
         this.identifier = identifier;
         this.objectType = objectType;
-        this.valueType = objectType.getValueType();
     }    
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
@@ -71,7 +68,6 @@ public class GlobalExtractor
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         identifier = in.readUTF();
         objectType = ( ObjectType) in.readObject();
-        valueType = objectType.getValueType();
     }
     
     public void setClassObjectType(ClassObjectType objectType) {
@@ -83,7 +79,7 @@ public class GlobalExtractor
         if ( objectType instanceof ClassObjectType ) {
             return ((ClassObjectType)objectType).getClassType();
         } else {
-            return valueType.getClassType();
+            return objectType.getValueType().getClassType();
         }
     }
 
@@ -91,65 +87,65 @@ public class GlobalExtractor
         if ( objectType instanceof ClassObjectType ) {
             return ((ClassObjectType)objectType).getClassName();
         } else {
-            return valueType.getClassType().getName();
+            return objectType.getValueType().getClassType().getName();
         }                
     }
 
     public ValueType getValueType() {
-        return valueType;
+        return objectType.getValueType();
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isBoolean() ) {
+        if( this.objectType.getValueType().isBoolean() ) {
             return ((Boolean) workingMemory.getGlobal( identifier )).booleanValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into a boolean.");
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isNumber() ) {
+        if( this.objectType.getValueType().isNumber() ) {
             return ((Number) workingMemory.getGlobal( identifier )).byteValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into a byte.");
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isChar() ) {
+        if( this.objectType.getValueType().isChar() ) {
             return ((Character) workingMemory.getGlobal( identifier )).charValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into a char.");
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isNumber() ) {
+        if( this.objectType.getValueType().isNumber() ) {
             return ((Number) workingMemory.getGlobal( identifier )).doubleValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into a double.");
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isNumber() ) {
+        if( this.objectType.getValueType().isNumber() ) {
             return ((Number) workingMemory.getGlobal( identifier )).floatValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into a float.");
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isNumber() ) {
+        if( this.objectType.getValueType().isNumber() ) {
             return ((Number) workingMemory.getGlobal( identifier )).intValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into an int.");
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isNumber() ) {
+        if( this.objectType.getValueType().isNumber() ) {
             return ((Number) workingMemory.getGlobal( identifier )).longValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into a long.");
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        if( this.valueType.isNumber() ) {
+        if( this.objectType.getValueType().isNumber() ) {
             return ((Number) workingMemory.getGlobal( identifier )).shortValue();
         }
         throw new ClassCastException("Not possible to convert global '"+identifier+"' into a short.");
