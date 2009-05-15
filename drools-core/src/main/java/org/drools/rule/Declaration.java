@@ -321,6 +321,7 @@ public class Declaration
     }
 
     public boolean isGlobal() {
+        if( this.readAccessor == null ) return false;
         return this.readAccessor.isGlobal();
     }
 
