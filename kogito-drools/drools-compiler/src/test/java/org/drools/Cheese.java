@@ -33,6 +33,7 @@ public class Cheese
     private int               price;
     private int               oldPrice;
     private Date              usedBy;
+    private double            doublePrice;
 
     public Cheese() {
 
@@ -114,6 +115,14 @@ public class Cheese
 
     public void setUsedBy(Date usedBy) {
         this.usedBy = usedBy;
+    }
+
+    public synchronized double getDoublePrice() {
+        return doublePrice;
+    }
+
+    public synchronized void setDoublePrice(double doublePrice) {
+        this.doublePrice = doublePrice;
     }
 
 
