@@ -2,6 +2,7 @@ package org.drools.lang.descr;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Locale;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -83,7 +84,8 @@ public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
         switch ( this.type ) {
             case TYPE_NUMBER :
                 try {
-                    return DecimalFormat.getInstance().parse( this.getText() );
+                    // in the DRL, we always use US number formatting 
+                    return DecimalFormat.getInstance(Locale.US).parse( this.getText() );
                 } catch ( ParseException e ) {
                     // return String anyway
                     return this.getText();

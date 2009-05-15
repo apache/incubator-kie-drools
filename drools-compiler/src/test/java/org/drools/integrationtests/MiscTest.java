@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -1430,6 +1431,52 @@ public class MiscTest extends TestCase {
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
         assertTrue( ((List) session.getGlobal( "list" )).size() == 0 );
+
+    }
+
+    public void testLatinLocale() throws Exception {
+        Locale defaultLoc = Locale.getDefault();
+        
+        try {
+            // setting a locale that uses COMMA as decimal separator
+            Locale.setDefault( new Locale("pt","BR") );
+            
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_LatinLocale.drl" ) ), 
+                          ResourceType.DRL );
+
+            assertFalse( kbuilder.getErrors().toString(), 
+                         kbuilder.hasErrors() );
+
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+            
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            
+            final List<String> results = new ArrayList<String>();
+            ksession.setGlobal( "results",
+                               results );
+            
+            final Cheese mycheese = new Cheese( "cheddar",
+                                                4 );
+            org.drools.runtime.rule.FactHandle handle = ksession.insert( mycheese );
+            ksession.fireAllRules();
+            
+            assertEquals( 1, results.size() );
+            assertEquals( "1",
+                          results.get( 0 ) );
+
+            mycheese.setPrice( 8 );
+            mycheese.setDoublePrice( 8.50 );
+            
+            ksession.update( handle, mycheese );
+            ksession.fireAllRules();
+            assertEquals( 2, results.size() );
+            assertEquals( "3",
+                          results.get( 1 ) );
+        } finally {
+            Locale.setDefault( defaultLoc );
+        }
 
     }
 

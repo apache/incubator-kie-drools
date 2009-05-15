@@ -1,0 +1,24 @@
+package org.drools
+
+global java.util.List results
+
+rule "rule 1" 
+    when
+        Cheese( $pr : price <= 6.00)
+    then
+		results.add( "1" );       
+end 
+
+rule "rule 2"
+    when
+        Cheese( $pr : price > 8.49 ) 
+    then
+		results.add( "2" );         
+end 
+
+rule "rule 3"
+    when
+        Cheese( $pr : doublePrice > 8.49 ) 
+    then
+		results.add( "3" );         
+end 
