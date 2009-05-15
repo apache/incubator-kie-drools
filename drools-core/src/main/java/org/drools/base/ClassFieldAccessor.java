@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.AcceptsWriteAccessor;
@@ -103,29 +105,27 @@ public class ClassFieldAccessor
         return this.reader.toString();
     }
 
-    
-    
-//    public int hashCode() {
-//        return this.reader.hashCode();
-//    }
-//
-//    public boolean equals(final Object object) {
-//        if ( this == object ) {
-//            return true;
-//        }
-//
-//        if ( object == null || !(object instanceof ClassFieldAccessor) ) {
-//            return false;
-//        }
-//
-//        final ClassFieldAccessor other = (ClassFieldAccessor) object;
-//
-//        return this.reader.equals( other.reader );
-//    }
+    //    public int hashCode() {
+    //        return this.reader.hashCode();
+    //    }
+    //
+    //    public boolean equals(final Object object) {
+    //        if ( this == object ) {
+    //            return true;
+    //        }
+    //
+    //        if ( object == null || !(object instanceof ClassFieldAccessor) ) {
+    //            return false;
+    //        }
+    //
+    //        final ClassFieldAccessor other = (ClassFieldAccessor) object;
+    //
+    //        return this.reader.equals( other.reader );
+    //    }
 
     @Override
     public int hashCode() {
-        return  reader.getClassName().hashCode() ^ reader.getFieldName().hashCode();
+        return reader.getClassName().hashCode() ^ reader.getFieldName().hashCode();
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ClassFieldAccessor
         } else if ( !reader.getClassName().equals( other.reader.getClassName() ) || !reader.getFieldName().equals( other.reader.getFieldName() ) ) return false;
         if ( writer == null ) {
             if ( other.writer != null ) return false;
-        } else if ( !writer.getClassName().equals( other.writer.getClassName() ) || !writer.getFieldName().equals( other.writer.getFieldName() )  ) return false;
+        } else if ( !writer.getClassName().equals( other.writer.getClassName() ) || !writer.getFieldName().equals( other.writer.getFieldName() ) ) return false;
         return true;
     }
 
@@ -318,6 +318,26 @@ public class ClassFieldAccessor
                          Object value) {
         writer.setValue( bean,
                          value );
+    }
+
+    public BigDecimal getBigDecimalValue(Object object) {
+        return reader.getBigDecimalValue( object );
+    }
+
+    public BigInteger getBigIntegerValue(Object object) {
+        return reader.getBigIntegerValue( object );
+    }
+
+    public void setBigDecimalValue(Object bean,
+                                   BigDecimal value) {
+        writer.setBigDecimalValue( bean,
+                                   value );
+    }
+
+    public void setBigIntegerValue(Object bean,
+                                   BigInteger value) {
+        writer.setBigIntegerValue( bean,
+                                   value );
     }
 
 }

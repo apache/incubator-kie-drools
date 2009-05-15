@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.spi.WriteAccessor;
 
@@ -42,12 +44,12 @@ public class ClassFieldWriter
     public ClassFieldWriter() {
 
     }
-    
+
     public ClassFieldWriter(final String className,
                             final String fieldName) {
         this.className = className;
         this.fieldName = fieldName;
-    }    
+    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( className );
@@ -59,18 +61,18 @@ public class ClassFieldWriter
         className = (String) is.readObject();
         fieldName = (String) is.readObject();
     }
-    
+
     public void setWriteAccessor(WriteAccessor writer) {
         this.writer = writer;
-    }    
+    }
 
     public int getIndex() {
         return this.writer.getIndex();
     }
-    
+
     public String getClassName() {
         return this.className;
-    }    
+    }
 
     public String getFieldName() {
         return this.fieldName;
@@ -112,48 +114,69 @@ public class ClassFieldWriter
 
     public void setBooleanValue(Object bean,
                                 boolean value) {
-        writer.setBooleanValue( bean, value );
+        writer.setBooleanValue( bean,
+                                value );
     }
 
     public void setByteValue(Object bean,
                              byte value) {
-        writer.setByteValue( bean, value );
+        writer.setByteValue( bean,
+                             value );
 
     }
 
     public void setCharValue(Object bean,
                              char value) {
-        writer.setCharValue( bean, value );
+        writer.setCharValue( bean,
+                             value );
     }
 
     public void setDoubleValue(Object bean,
                                double value) {
-        writer.setDoubleValue( bean, value );
+        writer.setDoubleValue( bean,
+                               value );
     }
 
     public void setFloatValue(Object bean,
                               float value) {
-        writer.setFloatValue( bean, value );
+        writer.setFloatValue( bean,
+                              value );
     }
 
     public void setIntValue(Object bean,
                             int value) {
-        writer.setIntValue( bean, value );
+        writer.setIntValue( bean,
+                            value );
     }
 
     public void setLongValue(Object bean,
                              long value) {
-        writer.setLongValue( bean, value );
+        writer.setLongValue( bean,
+                             value );
     }
 
     public void setShortValue(Object bean,
                               short value) {
-        writer.setShortValue( bean, value );
+        writer.setShortValue( bean,
+                              value );
     }
 
     public void setValue(Object bean,
                          Object value) {
-        writer.setValue( bean, value );
+        writer.setValue( bean,
+                         value );
+    }
+
+    public void setBigDecimalValue(Object bean,
+                              BigDecimal value) {
+        writer.setBigDecimalValue( bean,
+                              value );
+    }
+
+    public void setBigIntegerValue(Object bean,
+                              BigInteger value) {
+        writer.setBigIntegerValue( bean,
+                              value );
     }
 
 }

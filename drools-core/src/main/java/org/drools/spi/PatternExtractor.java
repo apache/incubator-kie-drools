@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -13,6 +15,7 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.util.ClassUtils;
+import org.drools.util.MathUtils;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -260,6 +263,28 @@ public class PatternExtractor
     public Object getValue(Object object) {
         return getValue( null,
                          object );
+    }
+    
+    public BigDecimal getBigDecimalValue(Object object) {
+        return getBigDecimalValue( null,
+                                   object );
+    }
+
+    public BigInteger getBigIntegerValue(Object object) {
+        return getBigIntegerValue( null,
+                                   object );
+    }
+
+    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
+                                         Object object) {
+        return MathUtils.getBigDecimal( getValue( workingMemory,
+                                                  object ) );
+    }
+
+    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
+                                         Object object) {
+        return MathUtils.getBigInteger( getValue( workingMemory,
+                                                  object ) );
     }
 
     public boolean isNullValue(Object object) {

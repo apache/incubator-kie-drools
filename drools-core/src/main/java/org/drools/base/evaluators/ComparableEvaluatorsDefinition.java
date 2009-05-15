@@ -37,6 +37,7 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.DateUtils;
+import org.drools.util.MathUtils;
 
 /**
  * This class defines all the comparable built in
@@ -218,7 +219,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
+            final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigDecimalValue() ) < 0;
         }
 
@@ -227,8 +228,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( workingMemory, left ) ) < 0;
+            final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo( context.declaration.getExtractor().getBigDecimalValue( workingMemory, left ) ) < 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -236,8 +237,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) < 0;
+            final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).left )) < 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -247,8 +248,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) extractor2.getValue( workingMemory, object2 ) ) < 0;
+            final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
+            return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) < 0;
         }
 
         public String toString() {
@@ -274,7 +275,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
+            final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigDecimalValue() ) <= 0;
         }
 
@@ -283,8 +284,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( workingMemory, left ) ) <= 0;
+            final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo( context.declaration.getExtractor().getBigDecimalValue( workingMemory, left ) ) <= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -292,8 +293,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) <= 0;
+            final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).left ) ) <= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -303,8 +304,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) extractor2.getValue( workingMemory, object2 ) ) <= 0;
+            final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
+            return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) <= 0;
         }
 
         public String toString() {
@@ -330,7 +331,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
+            final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigDecimalValue() ) > 0;
         }
 
@@ -339,8 +340,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( workingMemory, left ) ) > 0;
+            final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo( context.declaration.getExtractor().getBigDecimalValue( workingMemory, left ) ) > 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -348,8 +349,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) > 0;
+            final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).left ) ) > 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -359,8 +360,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) extractor2.getValue( workingMemory, object2 ) ) > 0;
+            final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
+            return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) > 0;
         }
 
         public String toString() {
@@ -386,7 +387,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
+            final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigDecimalValue() ) >= 0;
         }
 
@@ -395,8 +396,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( workingMemory, left ) ) >= 0;
+            final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo( context.declaration.getExtractor().getBigDecimalValue( workingMemory, left ) ) >= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -404,8 +405,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) >= 0;
+            final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).left ) ) >= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -415,8 +416,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigDecimal comp = (BigDecimal) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) extractor2.getValue( workingMemory, object2 ) ) >= 0;
+            final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
+            return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) >= 0;
         }
 
         public String toString() {
@@ -442,7 +443,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
+            final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigIntegerValue() ) < 0;
         }
 
@@ -451,8 +452,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigInteger) context.declaration.getExtractor().getValue( workingMemory, left ) ) < 0;
+            final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo(  context.declaration.getExtractor().getBigIntegerValue( workingMemory, left ) ) < 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -460,8 +461,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigInteger) ((ObjectVariableContextEntry) context).left ) < 0;
+            final BigInteger comp =  context.extractor.getBigIntegerValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigInteger(  ((ObjectVariableContextEntry) context).left )) < 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -471,8 +472,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) extractor2.getValue( workingMemory, object2 ) ) < 0;
+            final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
+            return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) < 0;
         }
 
         public String toString() {
@@ -498,7 +499,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
+            final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigIntegerValue() ) <= 0;
         }
 
@@ -507,8 +508,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigInteger) context.declaration.getExtractor().getValue( workingMemory, left ) ) <= 0;
+            final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo(  context.declaration.getExtractor().getBigIntegerValue( workingMemory, left ) ) <= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -516,8 +517,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigInteger) ((ObjectVariableContextEntry) context).left ) <= 0;
+            final BigInteger comp = context.extractor.getBigIntegerValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).left )) <= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -527,8 +528,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) extractor2.getValue( workingMemory, object2 ) ) <= 0;
+            final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
+            return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) <= 0;
         }
 
         public String toString() {
@@ -554,7 +555,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
+            final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigIntegerValue() ) > 0;
         }
 
@@ -563,8 +564,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigInteger) context.declaration.getExtractor().getValue( workingMemory, left ) ) > 0;
+            final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo( context.declaration.getExtractor().getBigIntegerValue( workingMemory, left ) ) > 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -572,8 +573,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigInteger) ((ObjectVariableContextEntry) context).left ) > 0;
+            final BigInteger comp =  context.extractor.getBigIntegerValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).left ) ) > 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -583,8 +584,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) extractor2.getValue( workingMemory, object2 ) ) > 0;
+            final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
+            return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) > 0;
         }
 
         public String toString() {
@@ -610,7 +611,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
+            final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
             return comp.compareTo( object2.getBigIntegerValue() ) >= 0;
         }
 
@@ -619,8 +620,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.rightNull ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( (BigInteger) context.declaration.getExtractor().getValue( workingMemory, left ) ) >= 0;
+            final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
+            return comp.compareTo(  context.declaration.getExtractor().getBigIntegerValue( workingMemory, left ) ) >= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -628,8 +629,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( (BigInteger) ((ObjectVariableContextEntry) context).left ) >= 0;
+            final BigInteger comp =  context.extractor.getBigIntegerValue( workingMemory, right );
+            return comp.compareTo( MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).left ) ) >= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -639,8 +640,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            final BigInteger comp = (BigInteger) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) extractor2.getValue( workingMemory, object2 ) ) >= 0;
+            final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
+            return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) >= 0;
         }
 
         public String toString() {

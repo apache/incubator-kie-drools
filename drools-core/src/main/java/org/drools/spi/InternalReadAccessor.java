@@ -16,6 +16,9 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.drools.common.InternalWorkingMemory;
 
 public interface InternalReadAccessor
@@ -23,6 +26,10 @@ public interface InternalReadAccessor
     ReadAccessor {
 
     public Object getValue(InternalWorkingMemory workingMemory, Object object);
+
+    public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory, Object object);
+
+    public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory, Object object);
 
     public char getCharValue(InternalWorkingMemory workingMemory, Object object);
 

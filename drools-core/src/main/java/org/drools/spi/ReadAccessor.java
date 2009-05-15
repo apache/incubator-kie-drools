@@ -1,6 +1,8 @@
 package org.drools.spi;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.base.ValueType;
 
@@ -26,6 +28,10 @@ import org.drools.base.ValueType;
 public interface ReadAccessor {
 
     public Object getValue(Object object);
+
+    public BigDecimal getBigDecimalValue(Object object);
+
+    public BigInteger getBigIntegerValue(Object object);
 
     public char getCharValue(Object object);
 

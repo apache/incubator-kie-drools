@@ -18,6 +18,8 @@ package org.drools.spi;
 
 import java.io.Externalizable;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.base.ValueType;
 
@@ -34,6 +36,10 @@ public interface WriteAccessor
     public int getIndex();
 
     public void setValue( Object bean, Object value );
+
+    public void setBigDecimalValue( Object bean, BigDecimal value );
+
+    public void setBigIntegerValue( Object bean, BigInteger value );
 
     public void setCharValue( Object bean, char value );
 
