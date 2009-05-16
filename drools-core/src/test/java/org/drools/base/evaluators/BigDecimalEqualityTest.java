@@ -264,24 +264,20 @@ public class BigDecimalEqualityTest extends TestCase {
 
         public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
                                              Object object) {
-            // TODO Auto-generated method stub
-            return null;
+            return (BigDecimal) val;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
         public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
                                              Object object) {
-            // TODO Auto-generated method stub
-            return null;
+            return (BigInteger) val;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
         public BigDecimal getBigDecimalValue(Object object) {
-            // TODO Auto-generated method stub
-            return null;
+            return (BigDecimal) val;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
         public BigInteger getBigIntegerValue(Object object) {
-            // TODO Auto-generated method stub
-            return null;
+            return (BigInteger) val;  //To change body of implemented methods use File | Settings | File Templates.
         }
     }
     
