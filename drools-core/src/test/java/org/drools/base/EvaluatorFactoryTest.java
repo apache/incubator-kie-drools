@@ -32,8 +32,16 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
+import org.drools.agent.MockRuleAgent;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.reteoo.MockObjectSink;
+import org.drools.reteoo.MockRightTupleSink;
+import org.drools.reteoo.ReteTest;
+import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.rule.VariableRestriction.CharVariableContextEntry;
@@ -54,7 +62,7 @@ import org.drools.util.MathUtils;
 public class EvaluatorFactoryTest extends TestCase {
 
     private EvaluatorRegistry registry = new EvaluatorRegistry();
-
+    
     public void testObject() {
 
         final List list = new ArrayList();
@@ -530,12 +538,12 @@ public class EvaluatorFactoryTest extends TestCase {
                                                          extractor,
                                                          null );
         final ValueType coerced = evaluator.getCoercedValueType();
-
+        
         if ( coerced.isIntegerNumber() ) {
             final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                                    declaration,
-                                                                                   evaluator );
-
+                                                                                   evaluator );                                 
+            
             if ( row[2] == null ) {
                 context.leftNull = true;
             } else {

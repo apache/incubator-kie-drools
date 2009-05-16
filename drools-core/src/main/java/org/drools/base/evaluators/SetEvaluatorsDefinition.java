@@ -291,26 +291,36 @@ public class SetEvaluatorsDefinition
         return this.evaluators.supportsType( type );
     }
 
-    private static Map<Class, PrimitiveArrayContainsEvaluator> primitiveArrayEvaluator = new HashMap() {
-                                                                                           {
-                                                                                               put( boolean[].class,
-                                                                                                    new BooleanArrayContainsEvaluator() );
-                                                                                               put( byte[].class,
-                                                                                                    new ByteArrayContainsEvaluator() );
-                                                                                               put( short[].class,
-                                                                                                    new ShortArrayContainsEvaluator() );
-                                                                                               put( char[].class,
-                                                                                                    new CharArrayContainsEvaluator() );
-                                                                                               put( int[].class,
-                                                                                                    new IntegerArrayContainsEvaluator() );
-                                                                                               put( long[].class,
-                                                                                                    new LongArrayContainsEvaluator() );
-                                                                                               put( float[].class,
-                                                                                                    new FloatArrayContainsEvaluator() );
-                                                                                               put( double[].class,
-                                                                                                    new DoubleArrayContainsEvaluator() );
-                                                                                           }
-                                                                                       };
+    private static ObjectArrayContainsEvaluator objectArrayEvaluator    = new ObjectArrayContainsEvaluator();
+
+    private static Map<Class, ArrayContains>    primitiveArrayEvaluator = new HashMap() {
+                                                                            {
+                                                                                put( boolean[].class,
+                                                                                     new BooleanArrayContainsEvaluator() );
+                                                                                put( byte[].class,
+                                                                                     new ByteArrayContainsEvaluator() );
+                                                                                put( short[].class,
+                                                                                     new ShortArrayContainsEvaluator() );
+                                                                                put( char[].class,
+                                                                                     new CharArrayContainsEvaluator() );
+                                                                                put( int[].class,
+                                                                                     new IntegerArrayContainsEvaluator() );
+                                                                                put( long[].class,
+                                                                                     new LongArrayContainsEvaluator() );
+                                                                                put( float[].class,
+                                                                                     new FloatArrayContainsEvaluator() );
+                                                                                put( double[].class,
+                                                                                     new DoubleArrayContainsEvaluator() );
+                                                                            }
+                                                                        };
+
+    public static ArrayContains getArrayContains(Class cls) {
+        ArrayContains eval = primitiveArrayEvaluator.get( cls );
+        if ( eval == null ) {
+            eval = objectArrayEvaluator;
+        }
+        return eval;
+    }
 
     /*  *********************************************************
      *                Evaluator Implementations
@@ -335,9 +345,9 @@ public class SetEvaluatorsDefinition
 
             if ( array == null ) return false;
 
-            return primitiveArrayEvaluator.get( array.getClass() ).contains( array,
-                                                                             object2,
-                                                                             true );
+            return getArrayContains( array.getClass() ).contains( array,
+                                                                  object2,
+                                                                  true );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -346,11 +356,11 @@ public class SetEvaluatorsDefinition
             final Object array = ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return false;
 
-            return primitiveArrayEvaluator.get( array.getClass() ).contains( array,
-                                                                             workingMemory,
-                                                                             context.declaration.getExtractor(),
-                                                                             left,
-                                                                             true );
+            return getArrayContains( array.getClass() ).contains( array,
+                                                                  workingMemory,
+                                                                  context.declaration.getExtractor(),
+                                                                  left,
+                                                                  true );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -361,11 +371,11 @@ public class SetEvaluatorsDefinition
 
             if ( array == null ) return false;
 
-            return primitiveArrayEvaluator.get( array.getClass() ).contains( array,
-                                                                             workingMemory,
-                                                                             context.declaration.getExtractor(),
-                                                                             context.getTuple().get( context.getVariableDeclaration() ).getObject(),
-                                                                             true );
+            return getArrayContains( array.getClass() ).contains( array,
+                                                                  workingMemory,
+                                                                  context.declaration.getExtractor(),
+                                                                  context.getTuple().get( context.getVariableDeclaration() ).getObject(),
+                                                                  true );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -378,11 +388,11 @@ public class SetEvaluatorsDefinition
 
             if ( array == null ) return false;
 
-            return primitiveArrayEvaluator.get( array.getClass() ).contains( array,
-                                                                             workingMemory,
-                                                                             extractor2,
-                                                                             object2,
-                                                                             true );
+            return getArrayContains( array.getClass() ).contains( array,
+                                                                  workingMemory,
+                                                                  extractor2,
+                                                                  object2,
+                                                                  true );
         }
 
         public String toString() {
@@ -1272,7 +1282,7 @@ public class SetEvaluatorsDefinition
         }
     }
 
-    public interface PrimitiveArrayContainsEvaluator {
+    public interface ArrayContains {
         Class getArrayType();
 
         boolean contains(Object array,
@@ -1288,7 +1298,7 @@ public class SetEvaluatorsDefinition
 
     public static class BooleanArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue value,
@@ -1320,7 +1330,7 @@ public class SetEvaluatorsDefinition
 
             return negate == false;
         }
-        
+
         private boolean contains(byte[] array,
                                  byte value,
                                  boolean negate) {
@@ -1332,7 +1342,6 @@ public class SetEvaluatorsDefinition
 
             return negate == false;
         }
-                
 
         public Class getArrayType() {
             return boolean[].class;
@@ -1342,12 +1351,14 @@ public class SetEvaluatorsDefinition
 
     public static class ByteArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue value,
                                 boolean negate) {
-            return contains( (byte[]) array, value.getByteValue(), negate );
+            return contains( (byte[]) array,
+                             value.getByteValue(),
+                             negate );
         }
 
         public boolean contains(Object array,
@@ -1355,10 +1366,12 @@ public class SetEvaluatorsDefinition
                                 InternalReadAccessor accessor,
                                 Object object,
                                 boolean negate) {
-            return contains( (byte[]) array, accessor.getByteValue( workingMemory,
-                                                                    object ), negate );
+            return contains( (byte[]) array,
+                             accessor.getByteValue( workingMemory,
+                                                    object ),
+                             negate );
         }
-        
+
         private boolean contains(byte[] array,
                                  byte value,
                                  boolean negate) {
@@ -1369,7 +1382,7 @@ public class SetEvaluatorsDefinition
             }
 
             return negate == false;
-        }         
+        }
 
         public Class getArrayType() {
             return byte[].class;
@@ -1379,12 +1392,14 @@ public class SetEvaluatorsDefinition
 
     public static class ShortArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue value,
                                 boolean negate) {
-            return contains( (short[]) array, value.getShortValue(), negate );
+            return contains( (short[]) array,
+                             value.getShortValue(),
+                             negate );
         }
 
         public boolean contains(Object array,
@@ -1392,10 +1407,12 @@ public class SetEvaluatorsDefinition
                                 InternalReadAccessor accessor,
                                 Object object,
                                 boolean negate) {
-            return contains( (short[]) array, accessor.getShortValue( workingMemory,
-                                                              object ), negate );
+            return contains( (short[]) array,
+                             accessor.getShortValue( workingMemory,
+                                                     object ),
+                             negate );
         }
-        
+
         private boolean contains(short[] array,
                                  short value,
                                  boolean negate) {
@@ -1406,7 +1423,7 @@ public class SetEvaluatorsDefinition
             }
 
             return negate == false;
-        }        
+        }
 
         public Class getArrayType() {
             return short[].class;
@@ -1415,7 +1432,7 @@ public class SetEvaluatorsDefinition
 
     public static class CharArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue value,
@@ -1456,7 +1473,7 @@ public class SetEvaluatorsDefinition
 
     public static class IntegerArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue value,
@@ -1497,7 +1514,7 @@ public class SetEvaluatorsDefinition
 
     public static class LongArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue value,
@@ -1538,7 +1555,7 @@ public class SetEvaluatorsDefinition
 
     public static class FloatArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue value,
@@ -1578,7 +1595,7 @@ public class SetEvaluatorsDefinition
 
     public static class DoubleArrayContainsEvaluator
         implements
-        PrimitiveArrayContainsEvaluator {
+        ArrayContains {
 
         public boolean contains(Object array,
                                 FieldValue fieldValue,
@@ -1613,6 +1630,46 @@ public class SetEvaluatorsDefinition
 
         public Class getArrayType() {
             return double[].class;
+        }
+    }
+
+    public static class ObjectArrayContainsEvaluator
+        implements
+        ArrayContains {
+
+        public boolean contains(Object array,
+                                FieldValue fieldValue,
+                                boolean negate) {
+            return contains( (Object[]) array,
+                             fieldValue.getValue(),
+                             negate );
+        }
+
+        public boolean contains(Object array,
+                                InternalWorkingMemory workingMemory,
+                                InternalReadAccessor accessor,
+                                Object object,
+                                boolean negate) {
+            return contains( (Object[]) array,
+                             accessor.getValue( workingMemory,
+                                                object ),
+                             negate );
+        }
+
+        private boolean contains(Object[] array,
+                                 Object value,
+                                 boolean negate) {
+            for ( int i = 0, length = array.length; i < length; i++ ) {
+                if ( array[i].equals( value ) ) {
+                    return negate == true;
+                }
+            }
+
+            return negate == false;
+        }
+
+        public Class getArrayType() {
+            return Object[].class;
         }
     }
 }

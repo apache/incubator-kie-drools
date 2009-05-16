@@ -12,7 +12,7 @@ function boolean isNonEmptyObjectArray(Object[] array) {
 
 rule "Primitive array in function" salience 20
   when
-    Primitives( $array : primitiveArrayAttribute )
+    Primitives( $array : primitiveIntArray )
     eval( testNonEmptyArray($array) )
   then
      result.add( new Integer( $array.length ) );
@@ -28,7 +28,7 @@ end
 
 rule "Test Array" salience 0
   when
-    Primitives( $array : primitiveArrayAttribute -> (($array != null) && ($array.length > 0)))
+    Primitives( $array : primitiveIntArray -> (($array != null) && ($array.length > 0)))
   then
     result.add( new Integer( $array.length ) );
 end
