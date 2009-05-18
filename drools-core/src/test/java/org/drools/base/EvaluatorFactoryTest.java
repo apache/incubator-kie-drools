@@ -90,11 +90,10 @@ public class EvaluatorFactoryTest extends TestCase {
 
         final Object[] field = new Object[]{"foo", "bar"};
 
-        final Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE}, {field, "==", field, Boolean.TRUE}, {field, "!=", new Object[]{"foo"}, Boolean.TRUE}, {field, "contains", "foo", Boolean.TRUE},
-                {field, "contains", "xyz", Boolean.FALSE}, {field, "contains", null, Boolean.FALSE}, {null, "contains", "foo", Boolean.FALSE}, {field, "excludes", "foo", Boolean.FALSE}, {field, "excludes", "xyz", Boolean.TRUE},
-                {field, "excludes", null, Boolean.TRUE}, {null, "excludes", "foo", Boolean.TRUE}, {field, "!=", null, Boolean.TRUE}, {field, "==", null, Boolean.FALSE}, {null, "==", field, Boolean.FALSE}, {null, "==", null, Boolean.TRUE},
-                {null, "!=", field, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, {"foo", "memberOf", field, Boolean.TRUE}, {"xyz", "memberOf", field, Boolean.FALSE}, {null, "memberOf", field, Boolean.FALSE},
-                {"foo", "memberOf", null, Boolean.FALSE}, {"foo", "not memberOf", field, Boolean.FALSE}, {"xyz", "not memberOf", field, Boolean.TRUE}, {null, "not memberOf", field, Boolean.TRUE}, {"foo", "not memberOf", null, Boolean.TRUE}};
+        final Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE}, {field, "==", field, Boolean.TRUE}, {field, "!=", new Object[]{"foo"}, Boolean.TRUE}, /*{field, "contains", "foo", Boolean.TRUE},   */
+
+                {field, "!=", null, Boolean.TRUE}, {field, "==", null, Boolean.FALSE}, {null, "==", field, Boolean.FALSE}, {null, "==", null, Boolean.TRUE},
+                {null, "!=", field, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.ARRAY_TYPE );
