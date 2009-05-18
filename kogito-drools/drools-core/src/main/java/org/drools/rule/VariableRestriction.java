@@ -108,7 +108,7 @@ public class VariableRestriction
                                        final InternalFactHandle handle) {
         return this.evaluator.evaluateCachedLeft( ((VariableContextEntry) context).workingMemory,
                                                   (VariableContextEntry) context,
-                                                  this.evaluator.prepareLeftObject( handle ) );
+                                                  this.evaluator.prepareRightObject( handle ) );
     }
 
     public boolean isAllowedCachedRight(final LeftTuple tuple,
