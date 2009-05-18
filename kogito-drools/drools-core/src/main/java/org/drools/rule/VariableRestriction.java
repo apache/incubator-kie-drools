@@ -101,7 +101,7 @@ public class VariableRestriction
                                         this.readAccessor,
                                         this.evaluator.prepareLeftObject( handle ),
                                         this.declaration.getExtractor(),
-                                        this.evaluator.prepareLeftObject( handle ) );
+                                        this.evaluator.prepareRightObject( handle ) );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
