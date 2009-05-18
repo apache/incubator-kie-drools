@@ -2,16 +2,18 @@ package com.notidiots;
 
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
-import org.drools.rule.FactType;
+import org.drools.definition.type.FactType;
 
 public class MortgageApplicationTest {
 
+    
 	/**
 	 * @param args
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+	    
 		RuleAgent agent = RuleAgent.newRuleAgent("/mortgageapproval.properties");
 		RuleBase rb = agent.getRuleBase();
 
