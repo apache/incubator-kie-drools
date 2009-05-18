@@ -378,10 +378,10 @@
       </mediaobject>
     </figure>
 
-    <para>The per category "analist" permissions are quite useful - you can
+    <para>The per category "analyst" permissions are quite useful - you can
     also augment their permissions with a specific package (so on top of their
     category rights, they can see and play with a particular package - which
-    may be used as a "practice" area, or test area for instance). The above
+    may be used as a "practice" area, or test area for instance). This
     provides a few ways to manage permissions in a coarse or fine grained way,
     as suits the different types of users.</para>
 
