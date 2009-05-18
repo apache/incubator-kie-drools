@@ -771,9 +771,9 @@
         altogether, just use "when" and "then" to mark the condition and
         action sections respectively). Normally you would use the IDE to edit
         raw DRL files, since it has all the advanced tooling and content
-        assistance and debugging, however there are times when a rule may have
-        to deal with something fairly technical. In any typical package of
-        rules, you generally have a been for some "technical rules" - you can
+        assistance and debugging. However, there are times when a rule may have
+        to deal with something fairly technical in a package in Guvnor. In any typical package of
+        rules, you generally have a need for some "technical rules" - you can
         mix and match all the rule types together of course.</para>
 
         <figure>
