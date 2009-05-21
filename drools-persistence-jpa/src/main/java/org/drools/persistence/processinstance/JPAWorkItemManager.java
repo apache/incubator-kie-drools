@@ -60,7 +60,9 @@ public class JPAWorkItemManager implements WorkItemManager {
             } else {
                 System.err.println("Could not find work item handler for " + workItem.getName());
             }
-            workItems.remove(id);
+            if (workItems != null) {
+            	workItems.remove(id);
+            }
             em.remove(workItemInfo);
         }
 	}
