@@ -29,13 +29,14 @@
       </listitem>
     </itemizedlist>
 
-    <para>An algorithm that checks every possible solution (even with pruning) can easily run for a couple of years on a
+    <para>An algorithm that checks every possible solution (even with pruning) can easily run for billions of years on a
     single real-life planning problem. Most of the time, we are happy with a feasible solution found in a limited amount
     of time. Local search tends to find a feasible solution relatively fast. Because it acts very much like a human, it
     is also pretty natural to program.</para>
 
-    <para>Local search solves a problem making a move on the current solution to change it into a better solution. It
-    does that number of times till it is satisfied with the solution. It starts with the starting solution.</para>
+    <para>Local search solves a problem by making a move on the current solution which changes it into a better
+    solution. It does that number of times till it is satisfied with the solution. It starts with the starting
+    solution.</para>
 
     <para>A local search algorithm and the drools rule engine turn out to be a really nice combination, because:</para>
 
