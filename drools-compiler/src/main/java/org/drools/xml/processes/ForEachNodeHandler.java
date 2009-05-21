@@ -9,6 +9,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.xml.ExtensibleXmlParser;
+import org.drools.xml.XmlDumper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -34,7 +35,7 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
     	}
     	String collectionExpression = forEachNode.getCollectionExpression();
     	if (collectionExpression != null) {
-    		xmlDump.append("collectionExpression=\"" + collectionExpression + "\" ");
+    		xmlDump.append("collectionExpression=\"" + XmlDumper.replaceIllegalChars(collectionExpression) + "\" ");
     	}
     	boolean waitForCompletion = forEachNode.isWaitForCompletion();
     	if (!waitForCompletion) {
