@@ -37,12 +37,12 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The traveling salesman
-        problem</ulink></para>
+        <para><link xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The traveling salesman
+        problem</link></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="http://mat.gsia.cmu.edu/TOURN/">The traveling tournament problem</ulink></para>
+        <para><link xlink:href="http://mat.gsia.cmu.edu/TOURN/">The traveling tournament problem</link></para>
       </listitem>
 
       <listitem>
@@ -106,12 +106,12 @@
   <section>
     <title>Status of drools-solver</title>
 
-    <para>Drools-solver is an <emphasis role="bold">beta</emphasis> module of Drools. The API is almost stable but
-    backward incompatible changes can occur. With the recipe called
-    <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and deal with any backwards
-    incompatible changes between versions. You can find this recipe in subversion and in every release.</para>
+    <para>Drools-solver is a beta module of Drools. The API is almost stable but backward incompatible changes can
+    occur. With the recipe called <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and
+    deal with any backwards incompatible changes between versions. You can find this recipe in subversion and in every
+    release.</para>
 
-    <para>You can download a release of Drools-solver from <link
+    <para>You can download a release of drools-solver from <link
     xlink:href="http://www.jboss.org/drools/downloads.html">the drools download site</link>. It is also available on
     <link xlink:href="http://repository.jboss.com/maven2/">the jboss maven repository</link>.</para>
   </section>
