@@ -33,6 +33,10 @@
       </listitem>
 
       <listitem>
+        <para>Bin packaging</para>
+      </listitem>
+
+      <listitem>
         <para><ulink url="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The traveling salesman
         problem</ulink></para>
       </listitem>
@@ -107,9 +111,9 @@
     <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and deal with any backwards
     incompatible changes between versions. You can find this recipe in subversion and in every release.</para>
 
-    <para>You can download a beta release of Drools-solver from <ulink
-    url="http://www.jboss.org/drools/downloads.html">the drools download site</ulink>. It is also available on
-    <ulink />the jboss maven repository.</para>
+    <para>You can download a release of Drools-solver from <link
+    xlink:href="http://www.jboss.org/drools/downloads.html">the drools download site</link>. It is also available on
+    <link xlink:href="http://repository.jboss.com/maven2/">the jboss maven repository</link>.</para>
   </section>
 
   <section>
@@ -121,7 +125,7 @@
     <programlisting>$ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ drools
 ...
 $ cd drools
-$ mvn -Dmaven.test.skip clean install
+$ mvn -DskipTests clean install
 ...</programlisting>
 
     <para>After that, you can run any example directly from the command line, for example to run the n queens example,
