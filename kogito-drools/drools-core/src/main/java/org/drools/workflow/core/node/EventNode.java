@@ -3,10 +3,10 @@ package org.drools.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.definition.process.Connection;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTransformer;
 import org.drools.process.core.event.EventTypeFilter;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.NodeImpl;
 

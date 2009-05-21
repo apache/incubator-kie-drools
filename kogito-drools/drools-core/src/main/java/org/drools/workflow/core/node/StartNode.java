@@ -19,7 +19,7 @@ package org.drools.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workflow.core.Connection;
+import org.drools.definition.process.Connection;
 
 /**
  * Default implementation of a start node.
