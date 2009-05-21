@@ -449,9 +449,9 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
         </listitem>
       </itemizedlist>
 
-      <para><ulink url="http://mat.gsia.cmu.edu/TOURN/">You can find a
+      <para><link xlink:href="http://mat.gsia.cmu.edu/TOURN/">You can find a
       detailed description as well as several records of this problem
-      here.</ulink></para>
+      here.</link></para>
     </section>
 
     <section>
@@ -741,10 +741,10 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
       <para>It uses large test data sets of real-life universities.</para>
 
-      <para><ulink
-      url="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">You
+      <para><link
+      xlink:href="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">You
       can find a more detailed description of this problem
-      here.</ulink></para>
+      here.</link></para>
     </section>
 
     <section>
