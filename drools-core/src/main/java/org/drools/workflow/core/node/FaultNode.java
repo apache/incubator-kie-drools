@@ -1,6 +1,6 @@
 package org.drools.workflow.core.node;
 
-import org.drools.workflow.core.Connection;
+import org.drools.definition.process.Connection;
 
 
 /*

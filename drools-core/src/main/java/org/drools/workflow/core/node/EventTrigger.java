@@ -7,6 +7,8 @@ import org.drools.process.core.event.EventFilter;
 
 public class EventTrigger extends Trigger {
 
+	private static final long serialVersionUID = 4L;
+	
 	private List<EventFilter> filters = new ArrayList<EventFilter>();
 	
 	public void addEventFilter(EventFilter eventFilter) {

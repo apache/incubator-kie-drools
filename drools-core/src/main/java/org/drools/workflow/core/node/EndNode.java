@@ -16,7 +16,7 @@ package org.drools.workflow.core.node;
  * limitations under the License.
  */
 
-import org.drools.workflow.core.Connection;
+import org.drools.definition.process.Connection;
 
 /**
  * Default implementation of an end node.
