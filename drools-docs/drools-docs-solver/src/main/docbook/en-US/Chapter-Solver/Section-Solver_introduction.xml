@@ -6,10 +6,10 @@
   <title>Solver introduction</title>
 
   <section>
-    <title>What is a Solver?</title>
+    <title>What is drools-solver?</title>
 
-    <para>Drools-solver combines a search algorithm with the power of the drools rule engine to solve planning problems.
-    Good examples of such planning problems include:</para>
+    <para><emphasis role="bold">Drools-solver solves planning problems</emphasis> by combining a search algorithm with
+    the power of the drools rule engine. Good examples of such planning problems include:</para>
 
     <itemizedlist>
       <listitem>
@@ -110,48 +110,86 @@
     occur. With the recipe called <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and
     deal with any backwards incompatible changes between versions. You can find this recipe in subversion and in every
     release.</para>
-
-    <para>You can download a release of drools-solver from <link
-    xlink:href="http://www.jboss.org/drools/downloads.html">the drools download site</link>. It is also available on
-    <link xlink:href="http://repository.jboss.com/maven2/">the jboss maven repository</link>.</para>
   </section>
 
   <section>
-    <title>Building drools-solver and running an example</title>
+    <title>Getting drools-solver and running the examples</title>
 
-    <para>You can also easily build it from source yourself. Check out drools from subversion and do a maven 2 build
-    with the solver profile:</para>
+    <section>
+      <title>Getting the release package and running the examples</title>
 
-    <programlisting>$ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ drools
+      <para>You can download a release of drools-solver from <link
+      xlink:href="http://www.jboss.org/drools/downloads.html">the drools download site</link>. To run an example, just
+      run the script (<filename>runExamples.sh</filename> on linux or <filename>runExamples.bat</filename> on windows)
+      and pick an example:</para>
+
+      <programlisting>$ ./runExamples.sh</programlisting>
+    </section>
+
+    <section>
+      <title>Get it with maven 2</title>
+
+      <para>The drools-solver jars are available on <link xlink:href="http://repository.jboss.com/maven2/">the jboss
+      maven repository</link>. If you use maven 2, just add a dependency to <literal>drools-solver-core</literal> in
+      your project's <filename>pom.xml</filename>:</para>
+
+      <programlisting>    &lt;dependency&gt;
+        &lt;groupId&gt;org.drools.solver&lt;/groupId&gt;
+        &lt;artifactId&gt;drools-solver-core&lt;/artifactId&gt;
+        &lt;version&gt;5.x&lt;/version&gt;
+    &lt;/dependency&gt;</programlisting>
+
+      <para>You might also need to add the jboss repository in your respository manager (nexus, archiva, ...) or your
+      <filename>~/settings.xml</filename>:</para>
+
+      <programlisting>    &lt;repositories&gt;
+        &lt;repository&gt;
+            &lt;id&gt;repository.jboss.org&lt;/id&gt;
+            &lt;url&gt;http://repository.jboss.org/maven2&lt;/url&gt;
+            &lt;snapshots&gt;
+                &lt;enabled&gt;false&lt;/enabled&gt;
+            &lt;/snapshots&gt;
+            &lt;releases&gt;
+               &lt;enabled&gt;true&lt;/enabled&gt;
+            &lt;/releases&gt;
+        &lt;/repository&gt;
+        ...
+    &lt;/repositories&gt;</programlisting>
+    </section>
+
+    <section>
+      <title>Build it from source</title>
+
+      <para>You can also easily build it from source yourself. Checkout drools from subversion and do a maven 2
+      build:</para>
+
+      <programlisting>$ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ drools
 ...
 $ cd drools
 $ mvn -DskipTests clean install
 ...</programlisting>
 
-    <para>After that, you can run any example directly from the command line, for example to run the n queens example,
-    run:</para>
+      <para>After that, you can run any example directly from the command line, just run this command and pick an
+      example:</para>
 
-    <programlisting>$ cd drools-solver/drools-solver-examples/
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
+      <programlisting>$ cd drools-solver/drools-solver-examples/
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.app.ExamplesApp"
 ...</programlisting>
+    </section>
+  </section>
 
-    <para>You will use drools-solver with the latest, unstable snapshot of the drools rule engine. If you would rather
-    use a stable version of the drools rule engine, edit <literal>/drools-solver/pom.xml</literal> and overwrite the
-    drools jar versions, before building and running the examples:</para>
+  <section>
+    <title>Questions, issues and patches</title>
 
-    <programlisting>    &lt;dependencyManagement&gt;
-        &lt;dependencies&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.drools&lt;/groupId&gt;
-                &lt;artifactId&gt;drools-core&lt;/artifactId&gt;
-                &lt;version&gt;5.0.1&lt;/version&gt;
-            &lt;/dependency&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.drools&lt;/groupId&gt;
-                &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
-                &lt;version&gt;5.0.1&lt;/version&gt;
-            &lt;/dependency&gt;
-        &lt;/dependencies&gt;
-    &lt;/dependencyManagement&gt;</programlisting>
+    <para>Your questions are welcome on <link xlink:href="http://www.jboss.org/drools/lists.html">the user mailing
+    list</link>. You can read/write to the mailing list without littering your mailbox through <link
+    xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
+
+    <para>Feel free to report an issue in the drools-solver code or in this manual to <link
+    xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools JIRA</link>. Select the component
+    <literal>drools-solver</literal>. </para>
+
+    <para>Patches are very welcome and get priority treatment! Attach them to a JIRA issue and optionally send a mail to
+    the dev list.</para>
   </section>
 </section>
