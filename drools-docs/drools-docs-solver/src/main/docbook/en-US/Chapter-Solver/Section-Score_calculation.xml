@@ -56,8 +56,8 @@ end</programlisting>
     based score calculation algorithm.</emphasis> Just let the drools rule engine do the hard work.</para>
 
     <para><emphasis role="bold">Adding more constraints is <emphasis role="bold">easy and </emphasis>scalable</emphasis>
-    (once you understand the drools rule syntax). This allows you to add it a bunch of soft constraint score rules on
-    top of the hard constraints score rules with little effort and at a reasonable performance cost. For example, for a
+    (once you understand the drools rule syntax). This allows you to add a bunch of soft constraint score rules on top
+    of the hard constraints score rules with little effort and at a reasonable performance cost. For example, for a
     freight routing problem you could add a soft constraint to avoid the certain flagged highways at rush hour.</para>
   </section>
 
