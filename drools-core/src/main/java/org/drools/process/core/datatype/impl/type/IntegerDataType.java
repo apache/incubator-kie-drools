@@ -59,7 +59,7 @@ public class IntegerDataType
 	}
 
 	public String getStringType() {
-		return "String";
+		return "Integer";
 	}
 
 }
