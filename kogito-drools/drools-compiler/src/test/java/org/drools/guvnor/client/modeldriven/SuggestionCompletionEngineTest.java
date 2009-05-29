@@ -275,6 +275,66 @@ public class SuggestionCompletionEngineTest extends TestCase {
     	assertNull(sce.getEnums("Nothing", vals, "value"));
 
     }
+    
+    public void testSmartEnumsDependingOfSeveralFieldsTwo() {
+        final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+        sce.dataEnumLists = new HashMap();
+        sce.dataEnumLists.put("Fact.field1", new String[] {"a1", "a2"});
+        sce.dataEnumLists.put("Fact.field2", new String[] {"b1", "b2"});
+        sce.dataEnumLists.put("Fact.field3[field1=a1,field2=b1]", new String[] {"c1","c2","c3"});
+        sce.dataEnumLists.put("Fact.field4[field1=a1]", new String[] {"d1", "d2"});
+        
+        FactPattern pat = new FactPattern("Fact");
+        SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
+        sfc.value = "a1";
+        pat.addConstraint(sfc);
+        SingleFieldConstraint sfc2 = new SingleFieldConstraint("field2");
+        sfc2.value = "b1";
+        pat.addConstraint(sfc2);
+        
+        String[] result = sce.getEnums(pat, "field3").fixedList;
+        assertEquals(3, result.length);
+        assertEquals("c1", result[0]);
+        assertEquals("c2", result[1]);
+        assertEquals("c3", result[2]);
+
+    }
+    
+    public void testSmartEnumsDependingOfSeveralFieldsFive() {
+        final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+        sce.dataEnumLists = new HashMap();
+        sce.dataEnumLists.put("Fact.field1", new String[] {"a1", "a2"});
+        sce.dataEnumLists.put("Fact.field2", new String[] {"b1", "b2"});
+        sce.dataEnumLists.put("Fact.field3", new String[] {"c1","c2","c3"});
+        sce.dataEnumLists.put("Fact.longerField4", new String[] {"d1", "d2"});
+        sce.dataEnumLists.put("Fact.field5", new String[] {"e1", "e2"});
+        sce.dataEnumLists.put("Fact.field6[field1=a1, field2=b2, field3=c3,longerField4=d1,field5=e2]", new String[] {"f1", "f2"});
+        
+        FactPattern pat = new FactPattern("Fact");
+        SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
+        sfc.value = "a1";
+        pat.addConstraint(sfc);
+        SingleFieldConstraint sfc2 = new SingleFieldConstraint("field2");
+        sfc2.value = "b2";
+        pat.addConstraint(sfc2);
+        SingleFieldConstraint sfc3 = new SingleFieldConstraint("field3");
+        sfc3.value = "c3";
+        pat.addConstraint(sfc3);
+        SingleFieldConstraint sfc4 = new SingleFieldConstraint("longerField4");
+        sfc4.value = "d1";
+        pat.addConstraint(sfc4);
+        
+        assertNull( sce.getEnums(pat, "field6") );
+
+        SingleFieldConstraint sfc5 = new SingleFieldConstraint("field5");
+        sfc5.value = "e2";
+        pat.addConstraint(sfc5);
+        
+        String[] result2 = sce.getEnums(pat, "field6").fixedList;
+        assertEquals(2, result2.length);
+        assertEquals("f1", result2[0]);
+        assertEquals("f2", result2[1]);
+    }
 
     public void testSmarterLookupEnums() {
     	final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();

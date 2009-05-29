@@ -275,23 +275,40 @@ public class SuggestionCompletionEngine
 
         if ( pat.constraintList != null && pat.constraintList.constraints != null ) {
             // we may need to check for data dependent enums
-            Object _typeField = dataEnumLookupFields.get( pat.factType + "." + field );
-            if ( _typeField instanceof String ) {
-                String typeField = (String) _typeField;
+            Object _typeFields = dataEnumLookupFields.get( pat.factType + "." + field );
+            if ( _typeFields instanceof String ) {
+                String typeFields = (String) _typeFields;
                 FieldConstraint[] cons = pat.constraintList.constraints;
-                for ( int i = 0; i < cons.length; i++ ) {
-                    FieldConstraint con = cons[i];
-                    if ( con instanceof SingleFieldConstraint ) {
-                        SingleFieldConstraint sfc = (SingleFieldConstraint) con;
-                        if ( sfc.fieldName.equals( typeField ) ) {
-                            String key = pat.factType + "." + field + "[" + typeField + "=" + sfc.value + "]";
-                            return DropDownData.create( (String[]) this.dataEnumLists.get( key ) );
+
+                String key = pat.factType + "." + field + "[";
+
+                String[] splitTypeFields = typeFields.split( "," );
+                for ( int j = 0; j < splitTypeFields.length; j++ ) {
+                    String typeField = splitTypeFields[j];
+
+                    for ( int i = 0; i < cons.length; i++ ) {
+                        FieldConstraint con = cons[i];
+                        if ( con instanceof SingleFieldConstraint ) {
+                            SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+
+                            if ( sfc.fieldName.trim().equals( typeField.trim() ) ) {
+                                key += typeField + "=" + sfc.value;
+
+                                if ( j != (splitTypeFields.length - 1) ) {
+                                    key += ",";
+                                }
+                            }
                         }
                     }
                 }
-            } else if ( _typeField != null ) {
+
+                key += "]";
+
+                return DropDownData.create( (String[]) this.dataEnumLists.get( key ) );
+            
+            } else if ( _typeFields != null ) {
                 // these enums are calculated on demand, server side...
-                String[] fieldsNeeded = (String[]) _typeField;
+                String[] fieldsNeeded = (String[]) _typeFields;
                 String queryString = getQueryString( pat.factType,
                                                      field,
                                                      this.dataEnumLists );
@@ -410,8 +427,18 @@ public class SuggestionCompletionEngine
                     String predicate = key.substring( ix + 1,
                                                       key.indexOf( ']' ) );
                     if ( predicate.indexOf( '=' ) > -1 ) {
-                        String typeField = predicate.substring( 0,
-                                                                predicate.indexOf( '=' ) );
+                        
+                        String[] bits = predicate.split( "," );
+                        String typeField = "";
+
+                        for ( int i = 0; i < bits.length; i++ ) {
+                            typeField += bits[i].substring( 0,
+                                                            bits[i].indexOf( '=' ) );
+                            if ( i != (bits.length - 1) ) {
+                                typeField += ",";
+                            }
+                        }
+ 
                         dataEnumLookupFields.put( factField,
                                                   typeField );
                     } else {
