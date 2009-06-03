@@ -32,16 +32,8 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.drools.agent.MockRuleAgent;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.MockLeftTupleSink;
-import org.drools.reteoo.MockObjectSink;
-import org.drools.reteoo.MockRightTupleSink;
-import org.drools.reteoo.ReteTest;
-import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.rule.VariableRestriction.CharVariableContextEntry;
@@ -117,18 +109,45 @@ public class EvaluatorFactoryTest extends TestCase {
     }
 
     public void testInteger() {
-
+        
         Collection col = new ArrayList();
         col.add( new Integer( 42 ) );
         col.add( new Integer( 45 ) );
 
-        final Object[][] data = {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE}, {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE}, {new Integer( 42 ), ">=", new Integer( 41 ), Boolean.TRUE},
-                {new Integer( 42 ), "!=", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), ">", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), "<=", new Integer( 42 ), Boolean.TRUE},
-                {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE}, {new Integer( 42 ), "!=", null, Boolean.TRUE}, {new Integer( 42 ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE},
-                {null, "!=", new Integer( 42 ), Boolean.TRUE}, {null, "==", new Integer( 42 ), Boolean.FALSE}, {null, "<", new Integer( 43 ), Boolean.FALSE}, {null, ">=", new Integer( -10 ), Boolean.FALSE},
-                {null, ">", new Integer( -10 ), Boolean.FALSE}, {null, "<=", new Integer( 42 ), Boolean.FALSE}, {new Integer( 42 ), "memberOf", col, Boolean.TRUE}, {new Integer( 43 ), "memberOf", col, Boolean.FALSE},
-                {null, "memberOf", col, Boolean.FALSE}, {new Integer( 42 ), "memberOf", null, Boolean.FALSE}, {new Integer( 42 ), "not memberOf", col, Boolean.FALSE}, {new Integer( 43 ), "not memberOf", col, Boolean.TRUE},
-                {null, "not memberOf", col, Boolean.TRUE}, {new Integer( 42 ), "not memberOf", null, Boolean.FALSE}};
+        final Object[][] data = 
+               {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE}, 
+                {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE}, 
+                {new Integer( 42 ), ">=", new Integer( 41 ), Boolean.TRUE},
+                {new Integer( 42 ), "!=", new Integer( 41 ), Boolean.TRUE}, 
+                {new Integer( 42 ), ">", new Integer( 41 ), Boolean.TRUE}, 
+                {new Integer( 42 ), "<=", new Integer( 42 ), Boolean.TRUE},
+                {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE}, 
+                {new Integer( 42 ), "!=", null, Boolean.TRUE}, 
+                {new Integer( 42 ), "==", null, Boolean.FALSE}, 
+                {new Integer( 42 ), ">", null, Boolean.FALSE}, 
+                {new Integer( 42 ), ">=", null, Boolean.FALSE}, 
+                {new Integer( -42 ), "<", null, Boolean.FALSE}, 
+                {new Integer( -42 ), "<=", null, Boolean.FALSE}, 
+                {null, ">", null, Boolean.FALSE}, 
+                {null, ">=", null, Boolean.FALSE}, 
+                {null, "<", null, Boolean.FALSE}, 
+                {null, "<=", null, Boolean.FALSE}, 
+                {null, "==", null, Boolean.TRUE}, 
+                {null, "!=", null, Boolean.FALSE},
+                {null, "!=", new Integer( 42 ), Boolean.TRUE}, 
+                {null, "==", new Integer( 42 ), Boolean.FALSE}, 
+                {null, "<", new Integer( 43 ), Boolean.FALSE}, 
+                {null, ">=", new Integer( -10 ), Boolean.FALSE},
+                {null, ">", new Integer( -10 ), Boolean.FALSE}, 
+                {null, "<=", new Integer( 42 ), Boolean.FALSE}, 
+                {new Integer( 42 ), "memberOf", col, Boolean.TRUE}, 
+                {new Integer( 43 ), "memberOf", col, Boolean.FALSE},
+                {null, "memberOf", col, Boolean.FALSE}, 
+                {new Integer( 42 ), "memberOf", null, Boolean.FALSE}, 
+                {new Integer( 42 ), "not memberOf", col, Boolean.FALSE}, 
+                {new Integer( 43 ), "not memberOf", col, Boolean.TRUE},
+                {null, "not memberOf", col, Boolean.TRUE}, 
+                {new Integer( 42 ), "not memberOf", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PINTEGER_TYPE );
