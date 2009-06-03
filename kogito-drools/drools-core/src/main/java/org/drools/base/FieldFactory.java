@@ -16,8 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.base.field.BooleanFieldImpl;
@@ -26,6 +24,7 @@ import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.spi.FieldValue;
 import org.drools.util.DateUtils;
+import org.drools.util.MathUtils;
 
 public class FieldFactory {
     private static final FieldFactory INSTANCE = new FieldFactory();
@@ -90,9 +89,9 @@ public class FieldFactory {
         } else if ( valueType == ValueType.OBJECT_TYPE ) {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BIG_DECIMAL_TYPE ) {
-            field = new ObjectFieldImpl( new BigDecimal( value ) );
+            field = new ObjectFieldImpl( MathUtils.getBigDecimal( value ) );
         } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
-            field = new ObjectFieldImpl( new BigInteger( value ) );
+            field = new ObjectFieldImpl( MathUtils.getBigInteger( value ) );
         }
 
         return field;
@@ -187,9 +186,9 @@ public class FieldFactory {
         } else if ( valueType == ValueType.OBJECT_TYPE ) {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BIG_DECIMAL_TYPE ) {
-            field = new ObjectFieldImpl( value );
+            field = new ObjectFieldImpl( MathUtils.getBigDecimal( value ) );
         } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
-            field = new ObjectFieldImpl( value );
+            field = new ObjectFieldImpl( MathUtils.getBigInteger( value ) );
         }
 
         return field;
