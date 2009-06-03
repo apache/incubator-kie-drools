@@ -17,6 +17,8 @@
 package org.drools.rule.builder.dialect.java;
 
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.HashSet;
 
@@ -31,11 +33,19 @@ import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.guvnor.client.modeldriven.brl.FieldConstraint;
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
+import org.drools.rule.LiteralConstraint;
+import org.drools.rule.LiteralRestriction;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
@@ -237,4 +247,60 @@ public class RuleBuilderTest extends TestCase {
         mockery.assertIsSatisfied();
 
     }
+    
+    public void testBuildBigDecimalLiteralConstraint() throws Exception {
+        final PackageDescr pkgDescr = new PackageDescr("org.drools");
+        final RuleDescr ruleDescr = new RuleDescr("Test Rule");
+        AndDescr andDescr = new AndDescr();
+        PatternDescr patDescr = new PatternDescr("java.math.BigDecimal", "$bd");
+        FieldConstraintDescr fcd = new FieldConstraintDescr("this");
+        LiteralRestrictionDescr restr = new LiteralRestrictionDescr("==", "10");
+        fcd.addRestriction( restr );
+        patDescr.addConstraint( fcd );
+        andDescr.addDescr( patDescr );
+        ruleDescr.setLhs( andDescr );
+        ruleDescr.setConsequence( "" );
+        pkgDescr.addRule( ruleDescr );
+        
+        final PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackage( pkgDescr );
+
+        Assert.assertTrue( pkgBuilder.getErrors().toString(),
+                           pkgBuilder.getErrors().isEmpty() );
+
+        final Rule rule = pkgBuilder.getPackages()[0].getRule("Test Rule");
+        final GroupElement and = rule.getLhs();
+        final Pattern pat = (Pattern) and.getChildren().get( 0 );
+        final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
+        assertTrue("Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(), fc.getField().getValue() instanceof BigDecimal );
+    }
+
+    public void testBuildBigIntegerLiteralConstraint() throws Exception {
+        final PackageDescr pkgDescr = new PackageDescr("org.drools");
+        final RuleDescr ruleDescr = new RuleDescr("Test Rule");
+        AndDescr andDescr = new AndDescr();
+        PatternDescr patDescr = new PatternDescr("java.math.BigInteger", "$bd");
+        FieldConstraintDescr fcd = new FieldConstraintDescr("this");
+        LiteralRestrictionDescr restr = new LiteralRestrictionDescr("==", "10");
+        fcd.addRestriction( restr );
+        patDescr.addConstraint( fcd );
+        andDescr.addDescr( patDescr );
+        ruleDescr.setLhs( andDescr );
+        ruleDescr.setConsequence( "" );
+        pkgDescr.addRule( ruleDescr );
+        
+        final PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackage( pkgDescr );
+
+        Assert.assertTrue( pkgBuilder.getErrors().toString(),
+                           pkgBuilder.getErrors().isEmpty() );
+
+        final Rule rule = pkgBuilder.getPackages()[0].getRule("Test Rule");
+        final GroupElement and = rule.getLhs();
+        final Pattern pat = (Pattern) and.getChildren().get( 0 );
+        final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
+        assertTrue("Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(), fc.getField().getValue() instanceof BigInteger );
+    }
+
+    
 }
