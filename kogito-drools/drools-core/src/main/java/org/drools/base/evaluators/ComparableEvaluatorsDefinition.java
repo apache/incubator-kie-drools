@@ -216,7 +216,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
@@ -225,7 +225,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
@@ -234,7 +234,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
@@ -245,7 +245,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
@@ -272,7 +272,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
@@ -281,7 +281,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
@@ -290,7 +290,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
@@ -301,7 +301,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
@@ -328,7 +328,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
@@ -337,7 +337,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
@@ -346,7 +346,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
@@ -357,7 +357,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
@@ -384,7 +384,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigDecimal comp = extractor.getBigDecimalValue( workingMemory, object1 );
@@ -393,7 +393,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigDecimal comp = MathUtils.getBigDecimal( ((ObjectVariableContextEntry) context).right );
@@ -402,7 +402,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigDecimal comp = context.extractor.getBigDecimalValue( workingMemory, right );
@@ -413,7 +413,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
@@ -440,7 +440,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
@@ -449,7 +449,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
@@ -458,7 +458,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigInteger comp =  context.extractor.getBigIntegerValue( workingMemory, right );
@@ -469,7 +469,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
@@ -496,7 +496,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
@@ -505,7 +505,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
@@ -514,7 +514,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigInteger comp = context.extractor.getBigIntegerValue( workingMemory, right );
@@ -525,7 +525,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
@@ -552,7 +552,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
@@ -561,7 +561,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
@@ -570,7 +570,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigInteger comp =  context.extractor.getBigIntegerValue( workingMemory, right );
@@ -581,7 +581,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
@@ -608,7 +608,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final BigInteger comp =  extractor.getBigIntegerValue( workingMemory, object1 );
@@ -617,7 +617,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final BigInteger comp = MathUtils.getBigInteger( ((ObjectVariableContextEntry) context).right );
@@ -626,7 +626,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final BigInteger comp =  context.extractor.getBigIntegerValue( workingMemory, right );
@@ -637,7 +637,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
@@ -664,7 +664,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getByteValue( workingMemory, object1 ) < object2.getByteValue();
@@ -672,7 +672,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getByteValue( workingMemory, left );
@@ -680,7 +680,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getByteValue( workingMemory, right ) < ((LongVariableContextEntry) context).left;
@@ -690,7 +690,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getByteValue( workingMemory, object1 ) < extractor2.getByteValue( workingMemory, object2 );
@@ -716,7 +716,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getByteValue( workingMemory, object1 ) <= object2.getByteValue();
@@ -724,7 +724,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getByteValue( workingMemory, left );
@@ -732,7 +732,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getByteValue( workingMemory, right ) <= ((LongVariableContextEntry) context).left;
@@ -742,7 +742,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getByteValue( workingMemory, object1 ) <= extractor2.getByteValue( workingMemory, object2 );
@@ -768,7 +768,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getByteValue( workingMemory, object1 ) > object2.getByteValue();
@@ -776,7 +776,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getByteValue( workingMemory, left );
@@ -784,7 +784,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getByteValue( workingMemory, right ) > ((LongVariableContextEntry) context).left;
@@ -794,7 +794,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getByteValue( workingMemory, object1 ) > extractor2.getByteValue( workingMemory, object2 );
@@ -820,7 +820,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getByteValue( workingMemory, object1 ) >= object2.getByteValue();
@@ -828,7 +828,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getByteValue( workingMemory, left );
@@ -836,7 +836,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getByteValue( workingMemory, right ) >= ((LongVariableContextEntry) context).left;
@@ -846,7 +846,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getByteValue( workingMemory, object1 ) >= extractor2.getByteValue( workingMemory, object2 );
@@ -872,7 +872,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getCharValue( workingMemory, object1 ) < object2.getCharValue();
@@ -880,7 +880,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((CharVariableContextEntry) context).right < context.declaration.getExtractor().getCharValue( workingMemory, left );
@@ -888,7 +888,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getCharValue( workingMemory, right ) < ((CharVariableContextEntry) context).left;
@@ -898,7 +898,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getCharValue( workingMemory, object1 ) < extractor2.getCharValue( workingMemory, object2 );
@@ -924,7 +924,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getCharValue( workingMemory, object1 ) <= object2.getCharValue();
@@ -932,7 +932,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((CharVariableContextEntry) context).right <= context.declaration.getExtractor().getCharValue( workingMemory, left );
@@ -940,7 +940,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getCharValue( workingMemory, right ) <= ((CharVariableContextEntry) context).left;
@@ -950,7 +950,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getCharValue( workingMemory, object1 ) <= extractor2.getCharValue( workingMemory, object2 );
@@ -976,7 +976,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getCharValue( workingMemory, object1 ) > object2.getCharValue();
@@ -984,7 +984,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((CharVariableContextEntry) context).right > context.declaration.getExtractor().getCharValue( workingMemory, left );
@@ -992,7 +992,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getCharValue( workingMemory, right ) > ((CharVariableContextEntry) context).left;
@@ -1002,7 +1002,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getCharValue( workingMemory, object1 ) > extractor2.getCharValue( workingMemory, object2 );
@@ -1028,7 +1028,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getCharValue( workingMemory, object1 ) >= object2.getCharValue();
@@ -1036,7 +1036,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((CharVariableContextEntry) context).right >= context.declaration.getExtractor().getCharValue( workingMemory, left );
@@ -1044,7 +1044,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getCharValue( workingMemory, right ) >= ((CharVariableContextEntry) context).left;
@@ -1054,7 +1054,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getCharValue( workingMemory, object1 ) >= extractor2.getCharValue( workingMemory, object2 );
@@ -1080,7 +1080,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
@@ -1090,7 +1090,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
@@ -1100,7 +1100,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
@@ -1112,7 +1112,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
@@ -1141,7 +1141,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
@@ -1151,7 +1151,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
@@ -1161,7 +1161,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
@@ -1173,7 +1173,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
@@ -1202,7 +1202,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
@@ -1212,7 +1212,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
@@ -1222,7 +1222,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
@@ -1234,7 +1234,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
@@ -1263,7 +1263,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
@@ -1273,7 +1273,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
@@ -1283,7 +1283,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
@@ -1295,7 +1295,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
@@ -1324,7 +1324,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1333,7 +1333,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1342,7 +1342,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1353,7 +1353,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1380,7 +1380,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1389,7 +1389,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1398,7 +1398,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1409,7 +1409,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1436,7 +1436,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1445,7 +1445,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1454,7 +1454,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1465,7 +1465,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1492,7 +1492,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1501,7 +1501,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1510,7 +1510,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1521,7 +1521,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1548,7 +1548,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1557,7 +1557,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1566,7 +1566,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1577,7 +1577,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1604,7 +1604,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1613,7 +1613,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1622,7 +1622,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1633,7 +1633,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1660,7 +1660,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1669,7 +1669,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1678,7 +1678,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1689,7 +1689,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1716,7 +1716,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1725,7 +1725,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1734,7 +1734,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1745,7 +1745,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
@@ -1772,7 +1772,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getIntValue( workingMemory, object1 ) < object2.getIntValue();
@@ -1780,7 +1780,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getIntValue( workingMemory, left );
@@ -1788,7 +1788,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getIntValue( workingMemory, right ) < ((LongVariableContextEntry) context).left;
@@ -1798,7 +1798,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getIntValue( workingMemory, object1 ) < extractor2.getIntValue( workingMemory, object2 );
@@ -1824,7 +1824,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getIntValue( workingMemory, object1 ) <= object2.getIntValue();
@@ -1832,7 +1832,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getIntValue( workingMemory, left );
@@ -1840,7 +1840,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getIntValue( workingMemory, right ) <= ((LongVariableContextEntry) context).left;
@@ -1850,7 +1850,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getIntValue( workingMemory, object1 ) <= extractor2.getIntValue( workingMemory, object2 );
@@ -1876,7 +1876,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getIntValue( workingMemory, object1 ) > object2.getIntValue();
@@ -1884,7 +1884,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getIntValue( workingMemory, left );
@@ -1892,7 +1892,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getIntValue( workingMemory, right ) > ((LongVariableContextEntry) context).left;
@@ -1902,7 +1902,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getIntValue( workingMemory, object1 ) > extractor2.getIntValue( workingMemory, object2 );
@@ -1928,7 +1928,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getIntValue( workingMemory, object1 ) >= object2.getIntValue();
@@ -1936,7 +1936,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getIntValue( workingMemory, left );
@@ -1944,7 +1944,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getIntValue( workingMemory, right ) >= ((LongVariableContextEntry) context).left;
@@ -1954,7 +1954,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getIntValue( workingMemory, object1 ) >= extractor2.getIntValue( workingMemory, object2 );
@@ -1980,7 +1980,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getLongValue( workingMemory, object1 ) < object2.getLongValue();
@@ -1988,7 +1988,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getLongValue( workingMemory, left );
@@ -1996,7 +1996,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getLongValue( workingMemory, right ) < ((LongVariableContextEntry) context).left;
@@ -2006,7 +2006,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getLongValue( workingMemory, object1 ) < extractor2.getLongValue( workingMemory, object2 );
@@ -2032,7 +2032,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getLongValue( workingMemory, object1 ) <= object2.getLongValue();
@@ -2040,7 +2040,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getLongValue( workingMemory, left );
@@ -2048,7 +2048,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getLongValue( workingMemory, right ) <= ((LongVariableContextEntry) context).left;
@@ -2058,7 +2058,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getLongValue( workingMemory, object1 ) <= extractor2.getLongValue( workingMemory, object2 );
@@ -2084,7 +2084,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getLongValue( workingMemory, object1 ) > object2.getLongValue();
@@ -2092,7 +2092,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getLongValue( workingMemory, left );
@@ -2100,7 +2100,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getLongValue( workingMemory, right ) > ((LongVariableContextEntry) context).left;
@@ -2110,7 +2110,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getLongValue( workingMemory, object1 ) > extractor2.getLongValue( workingMemory, object2 );
@@ -2136,7 +2136,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getLongValue( workingMemory, object1 ) >= object2.getLongValue();
@@ -2144,7 +2144,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getLongValue( workingMemory, left );
@@ -2152,7 +2152,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getLongValue( workingMemory, right ) >= ((LongVariableContextEntry) context).left;
@@ -2162,7 +2162,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getLongValue( workingMemory, object1 ) >= extractor2.getLongValue( workingMemory, object2 );
@@ -2187,7 +2187,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
@@ -2196,7 +2196,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
@@ -2205,7 +2205,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
@@ -2216,7 +2216,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
@@ -2244,7 +2244,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
@@ -2253,7 +2253,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
@@ -2262,7 +2262,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
@@ -2273,7 +2273,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
@@ -2301,7 +2301,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
@@ -2310,7 +2310,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
@@ -2319,7 +2319,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
@@ -2330,7 +2330,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
@@ -2358,7 +2358,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
@@ -2367,7 +2367,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
@@ -2376,7 +2376,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || ((ObjectVariableContextEntry) context).left == null ) {
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
@@ -2387,7 +2387,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
@@ -2414,7 +2414,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getShortValue( workingMemory, object1 ) < object2.getShortValue();
@@ -2422,7 +2422,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getShortValue( workingMemory, left );
@@ -2430,7 +2430,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getShortValue( workingMemory, right ) < ((LongVariableContextEntry) context).left;
@@ -2440,7 +2440,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getShortValue( workingMemory, object1 ) < extractor2.getShortValue( workingMemory, object2 );
@@ -2466,7 +2466,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getShortValue( workingMemory, object1 ) <= object2.getShortValue();
@@ -2474,7 +2474,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getShortValue( workingMemory, left );
@@ -2482,7 +2482,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getShortValue( workingMemory, right ) <= ((LongVariableContextEntry) context).left;
@@ -2492,7 +2492,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getShortValue( workingMemory, object1 ) <= extractor2.getShortValue( workingMemory, object2 );
@@ -2518,7 +2518,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getShortValue( workingMemory, object1 ) > object2.getShortValue();
@@ -2526,7 +2526,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getShortValue( workingMemory, left );
@@ -2534,7 +2534,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getShortValue( workingMemory, right ) > ((LongVariableContextEntry) context).left;
@@ -2544,7 +2544,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getShortValue( workingMemory, object1 ) > extractor2.getShortValue( workingMemory, object2 );
@@ -2570,7 +2570,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
-            if( extractor.isNullValue( workingMemory, object1 ) ) {
+            if( extractor.isNullValue( workingMemory, object1 ) || object2.getValue() == null ) {
                 return false;
             }
             return extractor.getShortValue( workingMemory, object1 ) >= object2.getShortValue();
@@ -2578,7 +2578,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            if( context.rightNull ) {
+            if( context.rightNull || context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return false;
             }
             return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getShortValue( workingMemory, left );
@@ -2586,7 +2586,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            if( context.extractor.isNullValue( workingMemory, right ) ) {
+            if( context.extractor.isNullValue( workingMemory, right ) || context.leftNull ) {
                 return false;
             }
             return context.extractor.getShortValue( workingMemory, right ) >= ((LongVariableContextEntry) context).left;
@@ -2596,7 +2596,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
-            if( extractor1.isNullValue( workingMemory, object1 ) ) {
+            if( extractor1.isNullValue( workingMemory, object1 ) || extractor2.isNullValue( workingMemory, object2 ) ) {
                 return false;
             }
             return extractor1.getShortValue( workingMemory, object1 ) >= extractor2.getShortValue( workingMemory, object2 );
