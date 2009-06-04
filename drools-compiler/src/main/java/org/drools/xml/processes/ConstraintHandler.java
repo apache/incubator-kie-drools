@@ -74,9 +74,25 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
 	            }
 	        }
 	        constraint.setConstraint(text);
+
 	        splitNode.internalSetConstraint(connectionRef, constraint);
+
+       
+            
         } else if (parent instanceof Constrainable) {
         	Constrainable constrainable = (Constrainable) parent;
+             Constraint constraint = new ConstraintImpl();
+
+	        final String name = element.getAttribute("name");
+	        constraint.setName(name);
+	        final String priority = element.getAttribute("priority");
+	        if (priority != null && priority.length() != 0) {
+	            constraint.setPriority(new Integer(priority));
+	        }
+	        final String type = element.getAttribute("type");
+	        constraint.setType(type);
+	        final String dialect = element.getAttribute("dialect");
+	        constraint.setDialect(dialect);
 	        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
 	        if (text != null) {
 	            text = text.trim();
@@ -84,7 +100,8 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
 	                text = null;
 	            }
 	        }
-	        constrainable.setConstraint(text);
+            constraint.setConstraint(text);
+	        constrainable.addConstraint(name, constraint);
         } else {
         	throw new SAXException("Invalid parent node " + parent);
         }

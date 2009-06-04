@@ -46,6 +46,7 @@ import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.workflow.core.node.CompositeNode.NodeAndType;
+import org.drools.workflow.core.node.StateNode;
 import org.mvel2.ErrorDetail;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -219,7 +220,17 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add( new ProcessValidationErrorImpl(process,
                         "Milestone node '" + node.getName() + "' [" + node.getId() + "] has no constraint."));
                 }
-            } else if (node instanceof SubProcessNode) {
+            }else if (node instanceof StateNode) {
+                final StateNode stateNode = (StateNode) node;
+                if (stateNode.getFrom() == null) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "State node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection."));
+                }
+
+               
+               
+            }
+            else if (node instanceof SubProcessNode) {
                 final SubProcessNode subProcess = (SubProcessNode) node;
                 if (subProcess.getFrom() == null) {
                     errors.add(new ProcessValidationErrorImpl(process,

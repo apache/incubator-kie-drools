@@ -12,6 +12,7 @@ import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
@@ -27,6 +28,8 @@ public class ProcessNodeBuilderRegistry {
         register( EndNode.class,
                   new ExtendedNodeBuilder() );
         register( MilestoneNode.class,
+                  new EventBasedNodeBuilder() );
+        register( StateNode.class,
                   new EventBasedNodeBuilder() );
         register( RuleSetNode.class,
                   new EventBasedNodeBuilder() );

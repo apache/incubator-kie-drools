@@ -1,5 +1,7 @@
 package org.drools.workflow.core.node;
 
+import org.drools.workflow.core.Constraint;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -28,12 +30,15 @@ public class MilestoneNode extends EventBasedNode implements Constrainable {
 
 	private String            constraint;
 
-    public void setConstraint(final String constraint) {
+    public void addConstraint(String name, Constraint constraint) {
+        this.constraint = constraint.getConstraint();
+    }
+    public void setConstraint(String constraint){
         this.constraint = constraint;
     }
 
-    public String getConstraint() {
+    public String getConstraint(){
         return this.constraint;
     }
-
+    
 }

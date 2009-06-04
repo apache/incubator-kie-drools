@@ -53,6 +53,7 @@ import org.drools.workflow.core.node.ConstraintTrigger;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.Trigger;
 import org.drools.xml.XmlProcessReader;
 import org.drools.xml.processes.RuleFlowMigrator;
@@ -313,6 +314,9 @@ public class ProcessBuilder {
                 MilestoneNode milestone = (MilestoneNode) nodes[i];
                 builder.append( createMilestoneRule( process,
                                                      milestone ) );
+            } else if ( nodes[i] instanceof StateNode ) {
+                StateNode state = (StateNode) nodes[i];
+                builder.append( createAllStateRules(process, state) );
             } else if ( nodes[i] instanceof StartNode ) {
                 StartNode startNode = (StartNode) nodes[i];
                 List<Trigger> triggers = startNode.getTriggers();
@@ -340,6 +344,18 @@ public class ProcessBuilder {
     private String createMilestoneRule(Process process,
                                        MilestoneNode milestone) {
         return "rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getId() + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + milestone.getConstraint() + "\n" + "    then \n" + "end \n\n";
+    }
+    private String createStateRule(Process process,
+                                       StateNode state, String key) {
+        return "rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getId() + "-" + key + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + state.getConstraints().get(key).getConstraint() + "\n" + "    then \n" + "end \n\n";
+    }
+    private String createAllStateRules(Process process, StateNode state){
+        String result = "";
+        for(String key : state.getConstraints().keySet()){
+            result  += createStateRule(process, state, key);
+        }
+        return result;
+
     }
 
     private String createStartConstraintRule(Process process,
