@@ -18,6 +18,8 @@ package org.drools.workflow.instance.node;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.process.Process;
@@ -39,6 +41,7 @@ import org.mvel2.MVEL;
 public class SubProcessNodeInstance extends EventBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 400L;
+    private static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{(\\S+)\\}", Pattern.DOTALL);
     
     private long processInstanceId;
 	
@@ -73,6 +76,35 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
             }
         }
         String processId = getSubProcessNode().getProcessId();
+        // resolve processId if necessary
+        Map<String, String> replacements = new HashMap<String, String>();
+		Matcher matcher = PARAMETER_MATCHER.matcher(processId);
+        while (matcher.find()) {
+        	String paramName = matcher.group(1);
+        	if (replacements.get(paramName) == null) {
+            	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                	resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                if (variableScopeInstance != null) {
+                    Object variableValue = variableScopeInstance.getVariable(paramName);
+                	String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+	                replacements.put(paramName, variableValueString);
+                } else {
+                	try {
+                		Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
+	                	replacements.put(paramName, variableValueString);
+                	} catch (Throwable t) {
+	                    System.err.println("Could not find variable scope for variable " + paramName);
+	                    System.err.println("when trying to replace variable in processId for sub process " + getNodeName());
+	                    System.err.println("Continuing without setting process id.");
+                	}
+                }
+        	}
+        }
+        for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+        	processId = processId.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+        }
+        // start process instance
         Process process = ((InternalRuleBase) ((ProcessInstance) getProcessInstance())
     		.getWorkingMemory().getRuleBase()).getProcess(processId);
         if (process == null) {
