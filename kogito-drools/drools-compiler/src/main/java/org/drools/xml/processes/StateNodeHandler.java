@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Set;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.core.node.NewStateNode;
 import org.drools.workflow.core.node.StateNode;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.XmlDumper;
