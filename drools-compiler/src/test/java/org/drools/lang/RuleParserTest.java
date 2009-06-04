@@ -4008,6 +4008,54 @@ public class RuleParserTest extends TestCase {
                       qualifiedIdentifierRestrictionDescr.getText() );
     }
 
+    public void testAndRestrictionConnective() throws Exception {
+        final String source = "rule \"Test\" when ( $r :Person( $n : name == 'Bob' && $a : age == 20) ) then end";
+
+        parse( "compilation_unit",
+               "compilation_unit",
+               source );
+
+        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
+        assertFalse( parser.hasErrors() );
+
+        assertEquals( "Test",
+                      rule.getName() );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "$r",
+                      patternDescr.getIdentifier() );
+        assertEquals( 4,
+                      patternDescr.getDescrs().size() );
+        FieldBindingDescr nameBind = (FieldBindingDescr) patternDescr.getDescrs().get( 0 );
+        assertEquals( "$n", nameBind.getIdentifier() );
+        assertEquals( "name", nameBind.getFieldName() );
+        FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) patternDescr.getDescrs().get( 1 );
+        assertEquals( "name",
+                      fieldConstraintDescr.getFieldName() );
+        assertEquals( 1,
+                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
+        LiteralRestrictionDescr literalRestrictionDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
+        assertEquals( "==",
+                      literalRestrictionDescr.getEvaluator() );
+        assertEquals( "Bob",
+                      literalRestrictionDescr.getText() );
+        
+        FieldBindingDescr ageBind = (FieldBindingDescr) patternDescr.getDescrs().get( 2 );
+        assertEquals( "$a", ageBind.getIdentifier() );
+        assertEquals( "age", ageBind.getFieldName() );
+        fieldConstraintDescr = (FieldConstraintDescr) patternDescr.getDescrs().get( 3 );
+        assertEquals( "age",
+                      fieldConstraintDescr.getFieldName() );
+        assertEquals( 1,
+                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
+        literalRestrictionDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
+        assertEquals( "==",
+                      literalRestrictionDescr.getEvaluator() );
+        assertEquals( "20",
+                      literalRestrictionDescr.getText() );
+    }
+
     public void testTypeWithMetaData() throws Exception {
 
         parseResource( "compilation_unit",
