@@ -11,8 +11,16 @@ public class ModifyCommand
     implements
     Command<Object> {
 
+    /**
+     * if this is true, modify can be any MVEL expressions. If false, it will only allow literal values.
+     * (false should be use when taking input from an untrusted source, such as a web service).
+     */
+    public static boolean ALLOW_MODIFY_EXPRESSIONS = true;
+
+
     private FactHandle       handle;
     private List<Setter> setters;
+
 
     public ModifyCommand(FactHandle handle,
                          List<Setter> setters) {
@@ -46,7 +54,11 @@ public class ModifyCommand
             if ( i++ > 0 ) {
                 sbuilder.append( "," );
             }
-            sbuilder.append( setter.getAccessor() + " = " + setter.getValue() + "\n" );
+            if (ALLOW_MODIFY_EXPRESSIONS) {
+                sbuilder.append( setter.getAccessor() + " = " + setter.getValue() + "\n" );
+            } else {
+                sbuilder.append( setter.getAccessor() + " = '" + setter.getValue().replace("\"", "") + "'\n" );
+            }
         }
         sbuilder.append( "}" );
         return sbuilder.toString();
