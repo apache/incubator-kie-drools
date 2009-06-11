@@ -1,7 +1,12 @@
 package org.drools.guvnor.client.modeldriven;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
@@ -31,6 +36,43 @@ public class SuggestionCompletionEngine2Test extends TestCase {
             assertFalse( "Method " + s + " is not allowed.",
                          allowedMethod( s ) );
         }
+
+    }
+
+    public void testJarFileWithSourceFiles() {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        // Add jar file
+        String header = "package foo \n import org.test.Person \n import org.test.Banana \n ";
+        List jars = new ArrayList();
+        JarInputStream jis = null;
+        SuggestionCompletionEngine suggestionCompletionEngine = null;
+
+        try {
+            jis = new JarInputStream( this.getClass().getResourceAsStream( "/JarWithSourceFiles.jar" ) );
+            jars.add( jis );
+        } catch ( IOException e ) {
+            fail( "Could not load jar" );
+        }
+
+        try {
+            suggestionCompletionEngine = loader.getSuggestionEngine( header,
+                                                                     jars,
+                                                                     new ArrayList() );
+        } catch ( ClassFormatError e ) {
+            fail( "Can not load suggestions " + e );
+        }
+
+        // Check that it throws no error and has class files inside.
+        assertNotNull( jis );
+        assertNotNull( suggestionCompletionEngine );
+        assertEquals( 2,
+                      suggestionCompletionEngine.getFactTypes().length );
+
+        List<String> list = Arrays.asList( suggestionCompletionEngine.getFactTypes() );
+
+        assertTrue( list.contains( "Person" ) );
+        assertTrue( list.contains( "Banana" ) );
 
     }
 

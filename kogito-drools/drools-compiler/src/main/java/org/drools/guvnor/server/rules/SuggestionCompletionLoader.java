@@ -278,7 +278,6 @@ public class SuggestionCompletionLoader {
      */
     private void populateModelInfo(final PackageDescr pkgDescr,
                                    final List jars) {
-    	//FIX nheron
         for (final Iterator it = pkgDescr.getImports().iterator(); it.hasNext();) {
             final ImportDescr imp = (ImportDescr) it.next();
             final String className = imp.getTarget();
@@ -471,7 +470,7 @@ public class SuggestionCompletionLoader {
             final byte[] buf = new byte[1024];
             int len  ;
             while ((entry = jis.getNextJarEntry()) != null) {
-                if (!entry.isDirectory()) {
+                if (!entry.isDirectory() && entry.getName().endsWith( ".class" )) {
                     final ByteArrayOutputStream out = new ByteArrayOutputStream();
                     while ((len = jis.read(buf)) >= 0) {
                         out.write(buf,
