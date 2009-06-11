@@ -1,6 +1,5 @@
 package org.drools.runtime.rule;
 
-import org.drools.runtime.StatelessKnowledgeSessionResults;
 
 /**
  * This interface is used as part of the StatelessKnowledSession, which is the interface returned from the KnowledgeBase.
