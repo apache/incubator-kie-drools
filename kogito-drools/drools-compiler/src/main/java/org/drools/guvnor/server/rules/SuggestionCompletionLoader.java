@@ -383,14 +383,27 @@ public class SuggestionCompletionLoader {
                             List jars) {
         Class clazz = null;
         try {
-            clazz = resolver.resolveType(className);
-        } catch (ClassNotFoundException e1) {
-            try {
-                addJars(jars);
-                clazz = resolver.resolveType(className);
-            } catch (Exception e) {
-                this.errors.add("Class not found: " + className);
-            }
+            clazz = resolver.resolveType( className );
+        } catch ( ClassFormatError e1 ) {
+            clazz = loadClass( className,
+                               jars,
+                               clazz );
+        } catch ( ClassNotFoundException e1 ) {
+            clazz = loadClass( className,
+                               jars,
+                               clazz );
+        }
+        return clazz;
+    }
+
+    private Class loadClass(String className,
+                            List jars,
+                            Class clazz) {
+        try {
+            addJars( jars );
+            clazz = resolver.resolveType( className );
+        } catch ( Exception e ) {
+            this.errors.add( "Class not found: " + className );
         }
         return clazz;
     }
