@@ -127,7 +127,7 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected int                                                            id;
+    protected int                                                             id;
 
     /** The arguments used when adding/removing a property change listener. */
     protected Object[]                                                        addRemovePropertyChangeListenerArgs;
@@ -164,7 +164,7 @@ public abstract class AbstractWorkingMemory
     protected Queue<WorkingMemoryAction>                                      actionQueue;
 
     protected volatile boolean                                                evaluatingActionQueue;
-    
+
     protected ReentrantLock                                                   lock;
 
     protected boolean                                                         discardOnLogicalOverride;
@@ -215,8 +215,8 @@ public abstract class AbstractWorkingMemory
     private Map<String, ExitPoint>                                            exitPoints;
 
     private Environment                                                       environment;
-    
-    private ExecutionResults                                              batchExecutionResult;
+
+    private ExecutionResults                                                  batchExecutionResult;
 
     // ------------------------------------------------------------
     // Constructors
@@ -257,13 +257,13 @@ public abstract class AbstractWorkingMemory
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.environment = environment;
-        
-        Globals globals =  ( Globals ) this.environment.get( EnvironmentName.GLOBALS );
+
+        Globals globals = (Globals) this.environment.get( EnvironmentName.GLOBALS );
         if ( globals != null ) {
-            if ( !(globals instanceof GlobalResolver )) {
-                this.globalResolver = new GlobalsAdapter( globals );   
+            if ( !(globals instanceof GlobalResolver) ) {
+                this.globalResolver = new GlobalsAdapter( globals );
             } else {
-                this.globalResolver = ( GlobalResolver ) globals;
+                this.globalResolver = (GlobalResolver) globals;
             }
         } else {
             this.globalResolver = new MapGlobalResolver();
@@ -329,24 +329,26 @@ public abstract class AbstractWorkingMemory
         initPartitionManagers();
         initTransient();
     }
-    
-    public static class GlobalsAdapter implements GlobalResolver {
+
+    public static class GlobalsAdapter
+        implements
+        GlobalResolver {
         private Globals globals;
-        
+
         public GlobalsAdapter(Globals globals) {
             this.globals = globals;
         }
-        
-        
+
         public Object resolveGlobal(String identifier) {
             return this.globals.get( identifier );
         }
 
         public void setGlobal(String identifier,
                               Object value) {
-            this.globals.set( identifier, value );
+            this.globals.set( identifier,
+                              value );
         }
-        
+
     }
 
     // ------------------------------------------------------------
@@ -367,7 +369,7 @@ public abstract class AbstractWorkingMemory
 
         for ( EntryPointNode entryPointNode : this.ruleBase.getRete().getEntryPointNodes().values() ) {
             EntryPoint id = entryPointNode.getEntryPoint();
-            if( !  EntryPoint.DEFAULT.equals( id ) ) {
+            if ( !EntryPoint.DEFAULT.equals( id ) ) {
                 WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( id,
                                                                             entryPointNode,
                                                                             this );
@@ -623,47 +625,50 @@ public abstract class AbstractWorkingMemory
         this.agenda.halt();
     }
 
-    public synchronized int fireAllRules() throws FactException {
+    public int fireAllRules() throws FactException {
         return fireAllRules( null,
                              -1 );
     }
 
-    public synchronized int fireAllRules(int fireLimit) throws FactException {
+    public int fireAllRules(int fireLimit) throws FactException {
         return fireAllRules( null,
                              fireLimit );
     }
 
-    public synchronized int fireAllRules(final AgendaFilter agendaFilter) throws FactException {
+    public int fireAllRules(final AgendaFilter agendaFilter) throws FactException {
         return fireAllRules( agendaFilter,
                              -1 );
     }
 
-    public synchronized int fireAllRules(final AgendaFilter agendaFilter,
-                                         int fireLimit) throws FactException {
-        // If we're already firing a rule, then it'll pick up
-        // the firing for any other assertObject(..) that get
-        // nested inside, avoiding concurrent-modification
-        // exceptions, depending on code paths of the actions.
-        if ( isSequential() ) {
-            for ( Iterator it = this.liaPropagations.iterator(); it.hasNext(); ) {
-                ((LIANodePropagation) it.next()).doPropagation( this );
-            }
-        }
-
-        // do we need to call this in advance?
-        executeQueuedActions();
-
-        int fireCount = 0;
+    public int fireAllRules(final AgendaFilter agendaFilter,
+                            int fireLimit) throws FactException {
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
             try {
-                fireCount = this.agenda.fireAllRules( agendaFilter,
-                                                      fireLimit );
+                synchronized ( this ) {
+                    // If we're already firing a rule, then it'll pick up
+                    // the firing for any other assertObject(..) that get
+                    // nested inside, avoiding concurrent-modification
+                    // exceptions, depending on code paths of the actions.
+                    if ( isSequential() ) {
+                        for ( Iterator it = this.liaPropagations.iterator(); it.hasNext(); ) {
+                            ((LIANodePropagation) it.next()).doPropagation( this );
+                        }
+                    }
+
+                    // do we need to call this in advance?
+                    executeQueuedActions();
+
+                    int fireCount = 0;
+                    fireCount = this.agenda.fireAllRules( agendaFilter,
+                                                          fireLimit );
+                    return fireCount;
+                }
             } finally {
                 this.firing.set( false );
             }
         }
-        return fireCount;
+        return 0;
     }
 
     /**
@@ -674,7 +679,7 @@ public abstract class AbstractWorkingMemory
      * @throws IllegalStateException
      *             if this method is called when running in sequential mode
      */
-    public synchronized void fireUntilHalt() {
+    public void fireUntilHalt() {
         fireUntilHalt( null );
     }
 
@@ -689,19 +694,21 @@ public abstract class AbstractWorkingMemory
      * @throws IllegalStateException
      *             if this method is called when running in sequential mode
      */
-    public synchronized void fireUntilHalt(final AgendaFilter agendaFilter) {
+    public void fireUntilHalt(final AgendaFilter agendaFilter) {
         if ( isSequential() ) {
             throw new IllegalStateException( "fireUntilHalt() can not be called in sequential mode." );
         }
 
-        executeQueuedActions();
-        try {
-            if ( this.firing.compareAndSet( false,
-                                            true ) ) {
-                this.agenda.fireUntilHalt( agendaFilter );
+        if ( this.firing.compareAndSet( false,
+                                        true ) ) {
+            try {
+                synchronized( this ) {
+                    executeQueuedActions();
+                    this.agenda.fireUntilHalt( agendaFilter );
+                }
+            } finally {
+                this.firing.set( false );
             }
-        } finally {
-            this.firing.set( false );
         }
     }
 
@@ -1133,12 +1140,12 @@ public abstract class AbstractWorkingMemory
                 // can't retract an already retracted handle
                 return;
             }
-            
+
             // the handle might have been disconnected, so reconnect if it has
             if ( factHandle instanceof DisconnectedFactHandle ) {
                 handle = this.objectStore.reconnect( handle );
             }
-            
+
             removePropertyChangeListener( handle );
 
             if ( activation != null ) {
@@ -1214,12 +1221,12 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
-            
+
             // the handle might have been disconnected, so reconnect if it has
             if ( factHandle instanceof DisconnectedFactHandle ) {
                 handle = this.objectStore.reconnect( handle );
             }
-            
+
             if ( handle.getId() == -1 ) {
                 // the handle is invalid, most likely already retracted, so
                 // return
@@ -1254,14 +1261,14 @@ public abstract class AbstractWorkingMemory
                 // the hashCode and equality has changed, so we must update the
                 // EqualityKey
                 EqualityKey key = handle.getEqualityKey();
-                if(key != null){
-                key.removeFactHandle( handle );
+                if ( key != null ) {
+                    key.removeFactHandle( handle );
 
-                // If the equality key is now empty, then remove it
-                if ( key.isEmpty() ) {
-                    this.tms.remove( key );
+                    // If the equality key is now empty, then remove it
+                    if ( key.isEmpty() ) {
+                        this.tms.remove( key );
+                    }
                 }
-            }
             }
         } finally {
             this.lock.unlock();
@@ -1287,31 +1294,31 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
-            
+
             // the handle might have been disconnected, so reconnect if it has
             if ( factHandle instanceof DisconnectedFactHandle ) {
                 handle = this.objectStore.reconnect( handle );
             }
-            
+
             final Object originalObject = handle.getObject();
 
             if ( this.maintainTms ) {
-                if(handle.getEqualityKey() != null ){
-                int status = handle.getEqualityKey().getStatus();
+                if ( handle.getEqualityKey() != null ) {
+                    int status = handle.getEqualityKey().getStatus();
 
-                // now use an existing EqualityKey, if it exists, else create a
-                // new one
-                EqualityKey key = this.tms.get( object );
-                if ( key == null ) {
-                    key = new EqualityKey( handle,
-                                           status );
-                    this.tms.put( key );
-                } else {
-                    key.addFactHandle( handle );
+                    // now use an existing EqualityKey, if it exists, else create a
+                    // new one
+                    EqualityKey key = this.tms.get( object );
+                    if ( key == null ) {
+                        key = new EqualityKey( handle,
+                                               status );
+                        this.tms.put( key );
+                    } else {
+                        key.addFactHandle( handle );
+                    }
+
+                    handle.setEqualityKey( key );
                 }
-
-                handle.setEqualityKey( key );
-            }
             }
 
             this.handleFactory.increaseFactHandleRecency( handle );
@@ -1352,13 +1359,17 @@ public abstract class AbstractWorkingMemory
                 null,
                 null );
     }
-   public void update(final org.drools.runtime.rule.FactHandle factHandle,
+
+    public void update(final org.drools.runtime.rule.FactHandle factHandle,
                        final Object object,
                        final Rule rule,
                        final Activation activation) throws FactException {
 
-       update((org.drools.FactHandle)factHandle, object, rule, activation);
-   }
+        update( (org.drools.FactHandle) factHandle,
+                object,
+                rule,
+                activation );
+    }
 
     /**
      * modify is implemented as half way retract / assert due to the truth
@@ -1374,7 +1385,7 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.readLock();
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
-            
+
             // the handle might have been disconnected, so reconnect if it has
             if ( factHandle instanceof DisconnectedFactHandle ) {
                 factHandle = this.objectStore.reconnect( factHandle );
@@ -1485,12 +1496,12 @@ public abstract class AbstractWorkingMemory
                     try {
                         action.execute( this );
                     } catch ( Exception e ) {
-                        if( e instanceof RuntimeDroolsException ) {
+                        if ( e instanceof RuntimeDroolsException ) {
                             // rethrow the exception
-                            throw ((RuntimeDroolsException)e);
+                            throw ((RuntimeDroolsException) e);
                         } else {
-                            System.err.println("************************************************");
-                            System.err.println("Exception caught while executing action: "+action.toString());
+                            System.err.println( "************************************************" );
+                            System.err.println( "Exception caught while executing action: " + action.toString() );
                             e.printStackTrace();
                         }
                     }
@@ -1831,10 +1842,11 @@ public abstract class AbstractWorkingMemory
         WorkingMemoryEntryPoint wmEntryPoint = this.entryPoints.get( name );
         return wmEntryPoint;
     }
-    
+
     public Collection<WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
         return this.entryPoints.values();
     }
+
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return this.typeConfReg;
     }
@@ -1858,22 +1870,22 @@ public abstract class AbstractWorkingMemory
     public PartitionTaskManager getPartitionManager(final RuleBasePartitionId partitionId) {
         return partitionManagers.get( partitionId );
     }
-    
+
     public void startBatchExecution() {
         this.ruleBase.readLock();
         this.lock.lock();
         this.batchExecutionResult = new BatchExecutionResultImpl();
     }
-    
+
     public BatchExecutionResultImpl getExecutionResult() {
-        return ( BatchExecutionResultImpl ) this.batchExecutionResult;
+        return (BatchExecutionResultImpl) this.batchExecutionResult;
     }
-    
+
     public void endBatchExecution() {
         this.batchExecutionResult = null;
         this.lock.unlock();
         this.ruleBase.readUnlock();
-    }    
+    }
 
     // public static class FactHandleInvalidation implements WorkingMemoryAction
     // {
