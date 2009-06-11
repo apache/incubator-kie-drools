@@ -721,7 +721,7 @@ public class JavaDialect
 
             counter++;
             final String fileName = packageName.replaceAll( "\\.",
-                                                            "/" ) + newName + "_" + counter + ext;
+                                                            "/" ) + "/" + newName + "_" + counter + "." + ext;
 
             //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
             exists = src != null && src.isAvailable( fileName );
