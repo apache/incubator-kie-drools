@@ -27,10 +27,10 @@ public class TimerNodeHandler extends AbstractNodeHandler {
                 timerNode.setTimer(timer);
             }
             if (delay != null && delay.length() != 0 ) {
-                timer.setDelay(new Long(delay));
+                timer.setDelay(delay);
             }
             if (period != null && period.length() != 0 ) {
-                timer.setPeriod(new Long(period));
+                timer.setPeriod(period);
             }
         }
     }
@@ -46,7 +46,7 @@ public class TimerNodeHandler extends AbstractNodeHandler {
         Timer timer = timerNode.getTimer();
         if (timer != null) {
             xmlDump.append("delay=\"" + timer.getDelay() + "\" ");
-            if (timer.getPeriod() > 0) {
+            if (timer.getPeriod() != null) {
                 xmlDump.append(" period=\"" + timer.getPeriod() + "\" ");
             }
         }

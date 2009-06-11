@@ -76,7 +76,7 @@ public class MilestoneNodeFactory extends NodeFactory {
         return this;
     }
 
-    public MilestoneNodeFactory timer(long delay, long period, String dialect, String action) {
+    public MilestoneNodeFactory timer(String delay, String period, String dialect, String action) {
     	Timer timer = new Timer();
     	timer.setDelay(delay);
     	timer.setPeriod(period);

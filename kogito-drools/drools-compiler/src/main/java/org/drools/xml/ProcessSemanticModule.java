@@ -4,6 +4,7 @@ import org.drools.xml.processes.ActionNodeHandler;
 import org.drools.xml.processes.CompositeNodeHandler;
 import org.drools.xml.processes.ConnectionHandler;
 import org.drools.xml.processes.ConstraintHandler;
+import org.drools.xml.processes.DynamicNodeHandler;
 import org.drools.xml.processes.EndNodeHandler;
 import org.drools.xml.processes.EventFilterHandler;
 import org.drools.xml.processes.EventNodeHandler;
@@ -109,6 +110,8 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
         addHandler( "trigger",
      		               new TriggerHandler() );
         addHandler( "state",
-     		        new StateNodeHandler() );        
+     		               new StateNodeHandler() );        
+        addHandler( "dynamic",
+ 		                   new DynamicNodeHandler() );        
     }
 }

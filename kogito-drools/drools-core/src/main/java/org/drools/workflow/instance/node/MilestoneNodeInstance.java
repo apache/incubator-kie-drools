@@ -56,7 +56,7 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
                 "A MilestoneNode only accepts default incoming connections!");
         }
         String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
-        	+ "-" + getNode().getId();
+        	+ "-" + getMilestoneNode().getUniqueId();
         boolean isActive = ((InternalAgenda) getProcessInstance().getAgenda())
 			.isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
         if (isActive) {

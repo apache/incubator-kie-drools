@@ -245,4 +245,9 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         }
 	}
 
+	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
+		throw new IllegalArgumentException(
+			"Completing a node instance that has no outgoing connection not supported.");
+	}
+
 }

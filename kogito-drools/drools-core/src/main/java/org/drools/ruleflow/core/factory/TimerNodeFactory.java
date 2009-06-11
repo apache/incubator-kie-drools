@@ -44,7 +44,7 @@ public class TimerNodeFactory extends NodeFactory {
         return this;
     }
     
-    public TimerNodeFactory delay(long delay) {
+    public TimerNodeFactory delay(String delay) {
     	Timer timer = getTimerNode().getTimer();
     	if (timer == null) {
     		timer = new Timer();
@@ -54,7 +54,7 @@ public class TimerNodeFactory extends NodeFactory {
     	return this;
     }
     
-    public TimerNodeFactory period(long period) {
+    public TimerNodeFactory period(String period) {
     	Timer timer = getTimerNode().getTimer();
     	if (timer == null) {
     		timer = new Timer();

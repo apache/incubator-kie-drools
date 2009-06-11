@@ -29,8 +29,6 @@ public class ProcessNodeBuilderRegistry {
                   new ExtendedNodeBuilder() );
         register( MilestoneNode.class,
                   new EventBasedNodeBuilder() );
-        register( StateNode.class,
-                  new EventBasedNodeBuilder() );
         register( RuleSetNode.class,
                   new EventBasedNodeBuilder() );
         register( SubProcessNode.class,

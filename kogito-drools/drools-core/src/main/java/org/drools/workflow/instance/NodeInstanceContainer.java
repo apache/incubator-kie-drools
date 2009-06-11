@@ -22,5 +22,7 @@ public interface NodeInstanceContainer extends org.drools.runtime.process.NodeIn
     void removeNodeInstance(NodeInstance nodeInstance);
     
     NodeContainer getNodeContainer();
+    
+    void nodeInstanceCompleted(NodeInstance nodeInstance, String outType);
 
 }

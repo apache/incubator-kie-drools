@@ -140,6 +140,8 @@
 				<xs:element ref="drools:forEach"/>
 				<xs:element ref="drools:eventNode"/>
 				<xs:element ref="drools:fault"/>
+				<xs:element ref="drools:state"/>
+				<xs:element ref="drools:dynamic"/>
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
@@ -511,6 +513,38 @@
 			<xs:attribute name="height" type="xs:string"/>
 			<xs:attribute name="faultName" type="xs:string"/>
 			<xs:attribute name="faultVariable" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="state">
+		<xs:complexType>
+			<xs:sequence minOccurs="0">
+				<xs:element ref="drools:constraints"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
+			<xs:attribute name="type" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dynamic">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:variables"/>
+				<xs:element ref="drools:exceptionHandlers"/>
+				<xs:element ref="drools:nodes"/>
+				<xs:element ref="drools:connections"/>
+				<xs:element ref="drools:in-ports"/>
+				<xs:element ref="drools:out-ports"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="connections">

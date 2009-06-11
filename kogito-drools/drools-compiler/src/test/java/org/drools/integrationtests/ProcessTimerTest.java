@@ -42,7 +42,7 @@ public class ProcessTimerTest extends TestCase {
 			"  <nodes>\n" +
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <end id=\"2\" name=\"End\" />\n" +
-			"    <timerNode id=\"3\" name=\"Timer\" delay=\"800\" period=\"200\" />\n" +
+			"    <timerNode id=\"3\" name=\"Timer\" delay=\"800ms\" period=\"200ms\" />\n" +
 			"    <actionNode id=\"4\" name=\"Action\" >\n" +
 			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
 			"myList.add( new Message() );\n" +
@@ -119,6 +119,37 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         
         session2.halt();
+	}
+	
+	public void testIncorrectTimerNode() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"\n" +
+			"  <header>\n" +
+			"  </header>\n" +
+			"\n" +
+			"  <nodes>\n" +
+			"    <start id=\"1\" name=\"Start\" />\n" +
+			"    <end id=\"2\" name=\"End\" />\n" +
+			"    <timerNode id=\"3\" name=\"Timer\" delay=\"800msdss\" period=\"200mssds\" />\n" +
+			"  </nodes>\n" +
+			"\n" +
+			"  <connections>\n" +
+			"    <connection from=\"1\" to=\"3\" />\n" +
+			"    <connection from=\"3\" to=\"2\" />\n" +
+			"  </connections>\n" +
+			"\n" +
+			"</process>");
+		builder.addRuleFlow(source);
+		assertEquals(2, builder.getErrors().size());
+		for (DroolsError error: builder.getErrors().getErrors()) {
+			System.err.println(error);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -200,6 +231,48 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(1, myList.size());
         
         session2.halt();
+	}
+
+	public void testIncorrectOnEntryTimer() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"\n" +
+			"  <header>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+			"  </header>\n" +
+			"\n" +
+			"  <nodes>\n" +
+			"    <start id=\"1\" name=\"Start\" />\n" +
+			"    <milestone id=\"2\" name=\"Wait\" >\n" +
+			"      <timers>\n" +
+			"        <timer id=\"1\" delay=\"300asdf\" period=\"asfd\" >\n" +
+			"          <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
+			"        </timer>\n" +
+			"      </timers>\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >eval(false)</constraint>\n" +
+			"    </milestone>\n" +
+			"    <end id=\"3\" name=\"End\" />\n" +
+			"  </nodes>\n" +
+			"\n" +
+			"  <connections>\n" +
+			"    <connection from=\"1\" to=\"2\" />\n" +
+			"    <connection from=\"2\" to=\"3\" />\n" +
+			"  </connections>\n" +
+			"\n" +
+			"</process>");
+		builder.addRuleFlow(source);
+		
+		assertEquals(2, builder.getErrors().size());
+		for (DroolsError error: builder.getErrors().getErrors()) {
+			System.err.println(error);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

@@ -60,8 +60,6 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.core.ContextContainer;
-import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.instance.ProcessInstance;
@@ -69,7 +67,6 @@ import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
@@ -1625,46 +1622,24 @@ public abstract class AbstractWorkingMemory
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        ProcessInstance processInstance = (ProcessInstance) getProcessInstance( process );
-        processInstance.setWorkingMemory( this );
-        processInstance.setProcess( process );
-        processInstanceManager.addProcessInstance( processInstance );
-        // set variable default values
-        // TODO: should be part of processInstanceImpl?
-        VariableScope variableScope = (VariableScope) ((ContextContainer) process).getDefaultContext( VariableScope.VARIABLE_SCOPE );
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
-        // set input parameters
-        if ( parameters != null ) {
-            if ( variableScope != null ) {
-                for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
-                    variableScopeInstance.setVariable( entry.getKey(),
-                                                       entry.getValue() );
-                }
-            } else {
-                throw new IllegalArgumentException( "This process does not support parameters!" );
-            }
+        ProcessInstance processInstance = startProcess( process, parameters );
+        
+        if (processInstance != null) { 
+	        // start process instance
+	        getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance, this );
+	        processInstance.start();
+	        getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance, this );
         }
-        // start
-        getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
-                                                                    this );
-        processInstance.start();
-        getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance,
-                                                                   this );
-
         return processInstance;
     }
 
-    public ProcessInstance getProcessInstance(final Process process) {
+    private ProcessInstance startProcess(final Process process, Map<String, Object> parameters) {
         ProcessInstanceFactoryRegistry processRegistry = ((InternalRuleBase) getRuleBase()).getConfiguration().getProcessInstanceFactoryRegistry();
         ProcessInstanceFactory conf = processRegistry.getProcessInstanceFactory( process );
         if ( conf == null ) {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }
-        ProcessInstance processInstance = conf.createProcessInstance();
-        if ( processInstance == null ) {
-            throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
-        }
-        return processInstance;
+        return conf.createProcessInstance(process, this, parameters);
     }
 
     public ProcessInstanceManager getProcessInstanceManager() {
@@ -1783,6 +1758,27 @@ public abstract class AbstractWorkingMemory
             result.add( iterator.next() );
         }
         return result;
+    }
+    
+    public List iterateNonDefaultEntryPointObjectsToList() {
+    	List result = new ArrayList();
+    	for (Map.Entry<String, WorkingMemoryEntryPoint> entry: getEntryPoints().entrySet()) {
+    		WorkingMemoryEntryPoint entryPoint = entry.getValue();
+    		if (entryPoint instanceof NamedEntryPoint) {
+			    result.add(new EntryPointObjects(
+		    		entry.getKey(), new ArrayList(entry.getValue().getObjects())));
+    		}
+    	}
+        return result;
+    }
+    
+    private class EntryPointObjects {
+    	private String name;
+    	private List objects;
+    	public EntryPointObjects(String name, List objects) {
+    		this.name = name;
+    		this.objects = objects;
+    	}
     }
 
     public Entry[] getActivationParameters(long activationId) {

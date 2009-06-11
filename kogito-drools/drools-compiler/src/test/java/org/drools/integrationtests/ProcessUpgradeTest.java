@@ -87,7 +87,7 @@ public class ProcessUpgradeTest extends TestCase {
             "    <ruleSet id=\"2\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
             "    <actionNode id=\"4\" name=\"Action\" >" +
             "      <action type=\"expression\" dialect=\"java\">System.out.println();\n" +
-            "list.add(\"Executed\");</action>/n" +
+            "list.add(\"Executed\");</action>\n" +
             "    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +

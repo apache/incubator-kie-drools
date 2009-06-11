@@ -9,8 +9,8 @@ import java.io.Serializable;
 public class Timer implements Serializable {
 
     private long id;
-    private long delay;
-    private long period;
+    private String delay;
+    private String period;
     
     public long getId() {
         return id;
@@ -20,33 +20,33 @@ public class Timer implements Serializable {
         this.id = id;
     }
     
-    public long getDelay() {
+    public String getDelay() {
         return delay;
     }
     
-    public void setDelay(long delay) {
+    public void setDelay(String delay) {
         this.delay = delay;
     }
     
-    public long getPeriod() {
+    public String getPeriod() {
         return period;
     }
     
-    public void setPeriod(long period) {
+    public void setPeriod(String period) {
         this.period = period;
     }
     
     public String toString() {
     	String result =  "Timer";
-    	if (delay != 0 || period != 0) {
+    	if (delay != null || period != null) {
     		result += "[";
-    		if (delay != 0) {
+    		if (delay != null) {
     			result += "delay=" + delay;
-    			if (period != 0) {
+    			if (period != null) {
     				result += ", ";
     			}
     		}
-    		if (period != 0) {
+    		if (period != null) {
     			result += "period=" + period;
     		}
     		result += "]";

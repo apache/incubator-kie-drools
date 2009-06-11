@@ -97,7 +97,7 @@ public class SubProcessNodeFactory extends NodeFactory {
         return this;
     }
 
-    public SubProcessNodeFactory timer(long delay, long period, String dialect, String action) {
+    public SubProcessNodeFactory timer(String delay, String period, String dialect, String action) {
     	Timer timer = new Timer();
     	timer.setDelay(delay);
     	timer.setPeriod(period);

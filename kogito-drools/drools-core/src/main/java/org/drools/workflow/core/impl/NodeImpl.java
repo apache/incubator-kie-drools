@@ -28,6 +28,7 @@ import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextResolver;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.node.CompositeNode;
 
 /**
  * Default implementation of a node.
@@ -57,6 +58,17 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
 
     public long getId() {
         return this.id;
+    }
+    
+    public String getUniqueId() {
+    	String result = id + "";
+    	NodeContainer nodeContainer = getNodeContainer();
+    	while (nodeContainer instanceof CompositeNode) {
+    		CompositeNode composite = (CompositeNode) nodeContainer;
+    		result = composite.getId() + ":" + result;
+    		nodeContainer = composite.getNodeContainer();
+    	}
+    	return result;
     }
 
     public void setId(final long id) {
