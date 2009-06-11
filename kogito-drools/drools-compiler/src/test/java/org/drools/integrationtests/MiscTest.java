@@ -4633,7 +4633,39 @@ public class MiscTest extends TestCase {
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( map ) );
+    }
 
+    // this is an MVEL regression that we need fixed in mvel-2.0.11
+    public void FIXME_testMapAccessWithVariable() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccessWithVariable.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        Map map = new HashMap();
+        map.put( "name",
+                 "Edson" );
+        map.put( "surname",
+                 "Tirelli" );
+        map.put( "age",
+                 "28" );
+
+        workingMemory.insert( map );
+        workingMemory.insert( "name" );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( map ) );
     }
 
     public void testHalt() throws Exception {
@@ -6660,6 +6692,50 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testFireAllWhenFiringUntilHalt() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        Runnable fireUntilHalt = new Runnable() {
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        };
+        Runnable fireAllRules = new Runnable() {
+            public void run() {
+                ksession.fireAllRules();
+            }
+        };
+        Thread t1 = new Thread( fireUntilHalt );
+        Thread t2 = new Thread( fireAllRules );
+        t1.start();
+        try {
+            Thread.currentThread().sleep( 500 );
+        } catch ( InterruptedException e ) {
+        }
+        t2.start();
+        // give the chance for t2 to finish
+        try {
+            Thread.currentThread().sleep( 1000 );
+        } catch ( InterruptedException e ) {
+        }
+        boolean aliveT2 = t2.isAlive();
+        ksession.halt();
+        try {
+            Thread.currentThread().sleep( 1000 );
+        } catch ( InterruptedException e ) {
+        }
+        boolean aliveT1 = t1.isAlive();
+        if( t2.isAlive() ){
+            t2.interrupt();
+        }
+        if( t1.isAlive() ) {
+            t1.interrupt();
+        }
+        assertFalse( "T2 should have finished", aliveT2 );
+        assertFalse( "T1 should have finished", aliveT1 );
+    }
+    
     public void testDroolsQueryCleanup() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryMemoryLeak.drl",

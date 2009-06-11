@@ -29,7 +29,6 @@ public class MVELSalienceBuilderTest extends TestCase {
     private InstrumentedBuildContent context;
     private RuleBase                 ruleBase;
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         final Package pkg = new Package( "pkg1" );
