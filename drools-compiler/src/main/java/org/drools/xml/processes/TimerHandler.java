@@ -47,10 +47,10 @@ public class TimerHandler extends BaseAbstractHandler implements Handler {
         Timer timer = new Timer();
         timer.setId(new Long(id));
         if (delay != null && delay.length() != 0 ) {
-            timer.setDelay(new Long(delay));
+            timer.setDelay(delay);
         }
         if (period != null && period.length() != 0 ) {
-            timer.setPeriod(new Long(period));
+            timer.setPeriod(period);
         }
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         DroolsAction action = null;

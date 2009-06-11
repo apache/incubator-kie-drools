@@ -7,6 +7,7 @@ import org.drools.definition.process.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
+import org.drools.workflow.core.node.DynamicNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.FaultNode;
@@ -26,6 +27,7 @@ import org.drools.workflow.instance.impl.factory.ReuseNodeFactory;
 import org.drools.workflow.instance.node.ActionNodeInstance;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.CompositeNodeInstance;
+import org.drools.workflow.instance.node.DynamicNodeInstance;
 import org.drools.workflow.instance.node.EndNodeInstance;
 import org.drools.workflow.instance.node.EventNodeInstance;
 import org.drools.workflow.instance.node.FaultNodeInstance;
@@ -84,6 +86,8 @@ public class NodeInstanceFactoryRegistry {
                   new CreateNewNodeFactory( EventNodeInstance.class ) );
         register( StateNode.class,
                   new CreateNewNodeFactory( StateNodeInstance.class ) );
+        register( DynamicNode.class,
+                  new CreateNewNodeFactory( DynamicNodeInstance.class ) );
     }
 
     public void register(Class< ? extends Node> cls,

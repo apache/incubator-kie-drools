@@ -11,6 +11,7 @@ import org.drools.process.instance.timer.TimerManager;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.time.TimeUtils;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.node.EventBasedNode;
 import org.drools.workflow.instance.WorkflowProcessInstance;
@@ -44,8 +45,12 @@ public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	
     protected TimerInstance createTimerInstance(Timer timer) {
     	TimerInstance timerInstance = new TimerInstance();
-    	timerInstance.setDelay(timer.getDelay());
-    	timerInstance.setPeriod(timer.getPeriod());
+    	timerInstance.setDelay(TimeUtils.parseTimeString(timer.getDelay()));
+    	if (timer.getPeriod() == null) {
+    		timerInstance.setPeriod(0);
+    	} else {
+    		timerInstance.setPeriod(TimeUtils.parseTimeString(timer.getPeriod()));
+    	}
     	timerInstance.setTimerId(timer.getId());
     	return timerInstance;
     }

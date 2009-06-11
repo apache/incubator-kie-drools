@@ -55,6 +55,7 @@ import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.Trigger;
+import org.drools.workflow.core.node.StateNode.ConnectionRef;
 import org.drools.xml.XmlProcessReader;
 import org.drools.xml.processes.RuleFlowMigrator;
 
@@ -69,9 +70,6 @@ public class ProcessBuilder {
     private PackageBuilder                packageBuilder;
     private final List<DroolsError>       errors                         = new ArrayList<DroolsError>();
     private Map<String, ProcessValidator> processValidators              = new HashMap<String, ProcessValidator>();
-    private static final String           XSL_FROM_4_TO_5                = "/org/drools/xml/processes/RuleFlowFrom4To5.xsl";
-    private static final String           PROCESS_ELEMENT_WITH_NAMESPACE = "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" + "    xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                                                           + "    xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n";
 
     public ProcessBuilder(PackageBuilder packageBuilder) {
         this.packageBuilder = packageBuilder;
@@ -316,7 +314,7 @@ public class ProcessBuilder {
                                                      milestone ) );
             } else if ( nodes[i] instanceof StateNode ) {
                 StateNode state = (StateNode) nodes[i];
-                builder.append( createAllStateRules(process, state) );
+                builder.append( createStateRules(process, state) );
             } else if ( nodes[i] instanceof StartNode ) {
                 StartNode startNode = (StartNode) nodes[i];
                 List<Trigger> triggers = startNode.getTriggers();
@@ -337,21 +335,43 @@ public class ProcessBuilder {
     private String createSplitRule(Process process,
                                    Connection connection,
                                    String constraint) {
-        return "rule \"RuleFlow-Split-" + process.getId() + "-" + connection.getFrom().getId() + "-" + connection.getTo().getId() + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + constraint + "\n" + "    then \n"
-               + "end \n\n";
+        return 
+        	"rule \"RuleFlow-Split-" + process.getId() + "-" +
+        		((org.drools.workflow.core.Node) connection.getFrom()).getUniqueId() + "-" + 
+        		((org.drools.workflow.core.Node) connection.getTo()).getUniqueId() + "-" +
+        		connection.getToType() + "\" \n" +
+        	"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
+        	"    when \n" + 
+        	"      " + constraint + "\n" + 
+        	"    then \n" +
+            "end \n\n";
     }
 
     private String createMilestoneRule(Process process,
                                        MilestoneNode milestone) {
-        return "rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getId() + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + milestone.getConstraint() + "\n" + "    then \n" + "end \n\n";
+        return 
+        	"rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getUniqueId() + "\" \n" + 
+        	"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
+        	"    when \n" + 
+        	"      " + milestone.getConstraint() + "\n" + 
+        	"    then \n" + 
+        	"end \n\n";
     }
-    private String createStateRule(Process process,
-                                       StateNode state, String key) {
-        return "rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getId() + "-" + key + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + state.getConstraints().get(key).getConstraint() + "\n" + "    then \n" + "end \n\n";
+    
+    private String createStateRule(Process process, StateNode state, ConnectionRef key) {
+        return 
+        	"rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" + 
+        		key.getNodeId() + "-" + key.getToType() + "\" \n" + 
+    		"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
+    		"    when \n" + 
+    		"      " + state.getConstraints().get(key).getConstraint() + "\n" + 
+    		"    then \n" + 
+    		"end \n\n";
     }
-    private String createAllStateRules(Process process, StateNode state){
+    
+    private String createStateRules(Process process, StateNode state){
         String result = "";
-        for(String key : state.getConstraints().keySet()){
+        for(ConnectionRef key : state.getConstraints().keySet()){
             result  += createStateRule(process, state, key);
         }
         return result;
@@ -360,16 +380,20 @@ public class ProcessBuilder {
 
     private String createStartConstraintRule(Process process,
                                              ConstraintTrigger trigger) {
-        String result = "rule \"RuleFlow-Start-" + process.getId() + "\" \n" + "    when\n" + "        " + trigger.getConstraint() + "\n" + "    then\n";
+        String result = 
+        	"rule \"RuleFlow-Start-" + process.getId() + "\" \n" + 
+        	"    when\n" + 
+        	"        " + trigger.getConstraint() + "\n" + 
+        	"    then\n";
         Map<String, String> inMappings = trigger.getInMappings();
         if ( inMappings != null && !inMappings.isEmpty() ) {
             result += "        java.util.Map params = new java.util.HashMap();\n";
             for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
                 result += "        params.put(\"" + entry.getKey() + "\", " + entry.getValue() + ");\n";
             }
-            result += "        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\", params);\n" + "end\n\n";
+            result += "        kcontext.getKnowledgeRuntime().startProcess(\"" + process.getId() + "\", params);\n" + "end\n\n";
         } else {
-            result += "        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\");\n" + "end\n\n";
+            result += "        kcontext.getKnowledgeRuntime().startProcess(\"" + process.getId() + "\");\n" + "end\n\n";
         }
         return result;
     }

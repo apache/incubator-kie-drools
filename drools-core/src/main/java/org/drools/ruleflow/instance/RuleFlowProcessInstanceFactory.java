@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.process.instance.AbstractProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.ProcessInstanceFactory;
 
-public class RuleFlowProcessInstanceFactory implements ProcessInstanceFactory, Externalizable {
+public class RuleFlowProcessInstanceFactory extends AbstractProcessInstanceFactory implements Externalizable {
 
     private static final long serialVersionUID = 400L;
 

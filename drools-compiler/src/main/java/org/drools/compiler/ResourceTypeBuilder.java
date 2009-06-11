@@ -8,6 +8,6 @@ public interface ResourceTypeBuilder {
 	
 	void setPackageBuilder(PackageBuilder packageBuilder);
 	
-	void addKnowledgeResource(Resource resource, ResourceType type, ResourceConfiguration configuration);
+	void addKnowledgeResource(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception;
 
 }

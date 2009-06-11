@@ -41,6 +41,7 @@ import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.ConstraintTrigger;
+import org.drools.workflow.core.node.DynamicNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventTrigger;
@@ -52,6 +53,7 @@ import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
@@ -84,6 +86,8 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(new CompositeContextNode());
         process.addNode(new EventNode());
         process.addNode(new FaultNode());
+        process.addNode(new StateNode());
+        process.addNode(new DynamicNode());
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml == null) {
@@ -100,7 +104,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(15, process.getNodes().length);
+        assertEquals(17, process.getNodes().length);
         
         String xml2 = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml2 == null) {
@@ -223,13 +227,13 @@ public class XMLPersistenceTest extends TestCase {
         ruleSetNode.setMetaData("height", 4);
         ruleSetNode.setRuleFlowGroup("ruleFlowGroup");
         Timer timer = new Timer();
-        timer.setDelay(100);
-        timer.setPeriod(100);
+        timer.setDelay("100");
+        timer.setPeriod("100");
         action = new DroolsConsequenceAction("dialect", "consequence");
         ruleSetNode.addTimer(timer, action);
         timer = new Timer();
-        timer.setDelay(200);
-        timer.setPeriod(200);
+        timer.setDelay("200");
+        timer.setPeriod("200");
         action = new DroolsConsequenceAction("dialect", "consequence");
         ruleSetNode.addTimer(timer, action);
         process.addNode(ruleSetNode);
@@ -303,13 +307,13 @@ public class XMLPersistenceTest extends TestCase {
         milestone.setMetaData("height", 4);
         milestone.setConstraint("constraint");
         timer = new Timer();
-        timer.setDelay(100);
-        timer.setPeriod(100);
+        timer.setDelay("100");
+        timer.setPeriod("100");
         action = new DroolsConsequenceAction("dialect", "consequence");
         milestone.addTimer(timer, action);
         timer = new Timer();
-        timer.setDelay(200);
-        timer.setPeriod(200);
+        timer.setDelay("200");
+        timer.setPeriod("200");
         action = new DroolsConsequenceAction("dialect", "consequence");
         milestone.addTimer(timer, action);
         List<DroolsAction> actions = new ArrayList<DroolsAction>();
@@ -335,13 +339,13 @@ public class XMLPersistenceTest extends TestCase {
         subProcess.addInMapping("subvar1", "var1");
         subProcess.addOutMapping("subvar2", "var2");
         timer = new Timer();
-        timer.setDelay(100);
-        timer.setPeriod(100);
+        timer.setDelay("100");
+        timer.setPeriod("100");
         action = new DroolsConsequenceAction("dialect", "consequence");
         subProcess.addTimer(timer, action);
         timer = new Timer();
-        timer.setDelay(200);
-        timer.setPeriod(200);
+        timer.setDelay("200");
+        timer.setPeriod("200");
         action = new DroolsConsequenceAction("dialect", "consequence");
         subProcess.addTimer(timer, action);
         subProcess.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
@@ -367,13 +371,13 @@ public class XMLPersistenceTest extends TestCase {
         workItemNode.addInMapping("param1", "var1");
         workItemNode.addOutMapping("param2", "var2");
         timer = new Timer();
-        timer.setDelay(100);
-        timer.setPeriod(100);
+        timer.setDelay("100");
+        timer.setPeriod("100");
         action = new DroolsConsequenceAction("dialect", "consequence");
         workItemNode.addTimer(timer, action);
         timer = new Timer();
-        timer.setDelay(200);
-        timer.setPeriod(200);
+        timer.setDelay("200");
+        timer.setPeriod("200");
         action = new DroolsConsequenceAction("dialect", "consequence");
         workItemNode.addTimer(timer, action);
         workItemNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
@@ -410,8 +414,8 @@ public class XMLPersistenceTest extends TestCase {
         timerNode.setMetaData("width", 3);
         timerNode.setMetaData("height", 4);
         timer = new Timer();
-        timer.setDelay(1000);
-        timer.setPeriod(1000);
+        timer.setDelay("1000");
+        timer.setPeriod("1000");
         timerNode.setTimer(timer);
         process.addNode(timerNode);
         new ConnectionImpl(humanTaskNode, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
@@ -468,7 +472,31 @@ public class XMLPersistenceTest extends TestCase {
         endNode.setMetaData("width", 3);
         endNode.setMetaData("height", 4);
         process.addNode(endNode);
-        new ConnectionImpl(compositeNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
+        
+        StateNode stateNode = new StateNode();
+        stateNode.setName("state");
+        stateNode.setMetaData("x", 1);
+        stateNode.setMetaData("y", 2);
+        stateNode.setMetaData("width", 3);
+        stateNode.setMetaData("height", 4);
+        new ConnectionImpl(compositeNode, Node.CONNECTION_DEFAULT_TYPE, stateNode, Node.CONNECTION_DEFAULT_TYPE);
+        connection = new ConnectionImpl(stateNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
+        constraint = new ConstraintImpl();
+        constraint.setName("constraint1 ><&&");
+        constraint.setPriority(1);
+        constraint.setDialect("dialect1");
+        constraint.setType("type1");
+        constraint.setConstraint("constraint-text1 %&<>");
+        stateNode.setConstraint(connection, constraint);
+        connection = new ConnectionImpl(stateNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
+        constraint = new ConstraintImpl();
+        constraint.setName("constraint2");
+        constraint.setPriority(2);
+        constraint.setDialect("dialect2");
+        constraint.setType("type2");
+        constraint.setConstraint("constraint-text2");
+        stateNode.setConstraint(connection, constraint);
+        process.addNode(stateNode);
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, true);
         if (xml == null) {
@@ -484,7 +512,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(15, process.getNodes().length);
+        assertEquals(16, process.getNodes().length);
         
         assertEquals(2, process.getImports().size());
         assertEquals(2, process.getGlobals().size());

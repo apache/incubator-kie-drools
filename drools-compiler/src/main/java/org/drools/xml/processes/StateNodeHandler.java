@@ -1,14 +1,12 @@
 package org.drools.xml.processes;
 
 import java.util.Map;
-import java.util.Set;
+
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.StateNode;
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.workflow.core.node.StateNode.ConnectionRef;
 import org.drools.xml.XmlDumper;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 public class StateNodeHandler extends AbstractNodeHandler {
 
@@ -21,37 +19,37 @@ public class StateNodeHandler extends AbstractNodeHandler {
         return StateNode.class;
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
-            throws SAXException {
-        super.handleNode(node, element, uri, localName, parser);
-        StateNode stateNode = (StateNode) node;
-        for (String eventType: stateNode.getActionTypes()) {
-        	handleAction(node, element, eventType);
-        }
-    }
-    
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		StateNode stateNode = (StateNode) node;
 		writeNode("state", stateNode, xmlDump, includeMeta);
-        Map<String,Constraint> constraints = stateNode.getConstraints();
-        if (constraints != null || stateNode.getTimers() != null || stateNode.containsActions()) {
-            xmlDump.append(">\n");
-            Set<String> keys = constraints.keySet();
-            for(String key : keys ){
-                if (constraints.get(key) != null) {
-                    xmlDump.append("      <constraint type=\"rule\" dialect=\"mvel\" >"
-                            + XmlDumper.replaceIllegalChars(constraints.get(key).getConstraint().trim()) + "</constraint>" + EOL);
-                }
-            }
-            for (String eventType: stateNode.getActionTypes()) {
-                writeActions(eventType, stateNode.getActions(eventType), xmlDump);
-            }
-            writeTimers(stateNode.getTimers(), xmlDump);
-            endNode("state", xmlDump);
-        } else {
-            endNode(xmlDump);
+        xmlDump.append(">\n");
+        if (!stateNode.getConstraints().isEmpty()) {
+	        xmlDump.append("      <constraints>" + EOL);
+	        for (Map.Entry<ConnectionRef, Constraint> entry: stateNode.getConstraints().entrySet()) {
+	            ConnectionRef connection = entry.getKey();
+	            Constraint constraint = entry.getValue();
+	            xmlDump.append("        <constraint "
+	                + "toNodeId=\"" + connection.getNodeId() + "\" "
+	                + "toType=\"" + connection.getToType() + "\" ");
+	            String name = constraint.getName();
+	            if (name != null && !"".equals(name)) {
+	                xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
+	            }
+	            int priority = constraint.getPriority();
+	            if (priority != 0) {
+	                xmlDump.append("priority=\"" + constraint.getPriority() + "\" ");
+	            }
+	            xmlDump.append("type=\"rule\" dialect=\"mvel\" ");
+	            String constraintString = constraint.getConstraint();
+	            if (constraintString != null) {
+	                xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraintString) + "</constraint>" + EOL);
+	            } else {
+	                xmlDump.append("/>" + EOL);
+	            }
+	        }
+	        xmlDump.append("      </constraints>" + EOL);
         }
+        endNode("state", xmlDump);
 	}
 
 }

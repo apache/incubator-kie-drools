@@ -44,6 +44,8 @@ public interface Node extends org.drools.definition.process.Node, Contextable, S
      * @param name 	the name of the node
      */
     void setName(String name);
+    
+    String getUniqueId();
 
     void addIncomingConnection(String type, Connection connection);
     

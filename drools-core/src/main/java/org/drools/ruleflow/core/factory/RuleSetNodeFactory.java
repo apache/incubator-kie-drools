@@ -50,7 +50,7 @@ public class RuleSetNodeFactory extends NodeFactory {
         return this;
     }
     
-    public RuleSetNodeFactory timer(long delay, long period, String dialect, String action) {
+    public RuleSetNodeFactory timer(String delay, String period, String dialect, String action) {
     	Timer timer = new Timer();
     	timer.setDelay(delay);
     	timer.setPeriod(period);

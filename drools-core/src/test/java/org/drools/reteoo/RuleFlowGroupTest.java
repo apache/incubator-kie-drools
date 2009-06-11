@@ -497,7 +497,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         process.addNode( end );
 
         // rules for split
-        final Rule splitRule1 = new Rule( "RuleFlow-Split-1-" + split.getId() + "-" + ruleSet1.getId() );
+        final Rule splitRule1 = new Rule( "RuleFlow-Split-1-" + split.getUniqueId() + "-" + ruleSet1.getUniqueId() + "-" + Node.CONNECTION_DEFAULT_TYPE );
         splitRule1.setRuleFlowGroup( "DROOLS_SYSTEM" );
         splitRule1.setConsequence( consequence );
 
@@ -507,7 +507,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                                   splitRule1.getLhs(),
                                                                   buildContext );
 
-        final Rule splitRule2 = new Rule( "RuleFlow-Split-1-" + split.getId() + "-" + ruleSet2.getId() );
+        final Rule splitRule2 = new Rule( "RuleFlow-Split-1-" + split.getUniqueId() + "-" + ruleSet2.getUniqueId() + "-" + Node.CONNECTION_DEFAULT_TYPE );
         splitRule2.setRuleFlowGroup( "DROOLS_SYSTEM" );
         splitRule2.setConsequence( consequence );
 

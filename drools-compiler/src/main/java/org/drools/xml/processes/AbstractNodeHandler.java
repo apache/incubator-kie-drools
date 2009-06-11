@@ -224,8 +224,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 				}
     		});
     		for (Timer timer: timerList) {
-    			xmlDump.append("        <timer id=\"" + timer.getId() + "\" delay=\"" + timer.getDelay() + "\" ");
-                if (timer.getPeriod() > 0) {
+    			xmlDump.append("        <timer id=\"" + timer.getId() + "\" ");
+				if (timer.getDelay() != null) {
+					xmlDump.append("delay=\"" + timer.getDelay() + "\" ");
+				}
+    			if (timer.getPeriod() != null) {
                     xmlDump.append("period=\"" + timer.getPeriod() + "\" ");
                 }
                 xmlDump.append(">" + EOL);

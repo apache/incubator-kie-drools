@@ -17,19 +17,16 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
-import org.drools.audit.WorkingMemoryConsoleLogger;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.event.RuleFlowEventListener;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.GetProcessInstanceCommand;
 import org.drools.process.command.StartProcessCommand;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.process.core.timer.Timer;
-import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
@@ -634,7 +631,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         timerNode.setId( 2 );
         timerNode.setName( "Timer" );
         Timer timer = new Timer();
-        timer.setDelay( 2000 );
+        timer.setDelay( "2000" );
         timerNode.setTimer( timer );
         process.addNode( timerNode );
         new ConnectionImpl( start,
@@ -727,7 +724,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         timerNode.setId( 2 );
         timerNode.setName( "Timer" );
         Timer timer = new Timer();
-        timer.setDelay( 0 );
+        timer.setDelay( "0" );
         timerNode.setTimer( timer );
         process.addNode( timerNode );
         new ConnectionImpl( start,

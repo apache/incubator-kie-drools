@@ -17,6 +17,7 @@ package org.drools.workflow.instance.impl;
  */
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
@@ -118,9 +119,15 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
     
     protected void triggerCompleted(String type, boolean remove) {
         if (remove) {
-            ((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+            ((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+            	.removeNodeInstance(this);
         }
-        for (Connection connection: getNode().getOutgoingConnections(type)) {
+        List<Connection> connections = getNode().getOutgoingConnections(type);
+        if (connections == null || connections.isEmpty()) {
+        	((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+        		.nodeInstanceCompleted(this, type);
+        }
+        for (Connection connection: connections) {
         	// stop if this process instance has been aborted / completed
         	if (getProcessInstance().getState() != ProcessInstance.STATE_ACTIVE) {
         		return;
