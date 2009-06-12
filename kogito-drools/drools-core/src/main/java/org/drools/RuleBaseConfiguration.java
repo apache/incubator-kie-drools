@@ -812,31 +812,33 @@ public class RuleBaseConfiguration
             List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval( content,
                                                                                                   new HashMap() );
             for ( Map<String, Object> workDefinitionMap : workDefinitionsMap ) {
-                WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
-                workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
-                workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
-                workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
-                workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
-                Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
-                Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
-                if ( parameterMap != null ) {
-                    for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
-                        parameters.add( new ParameterDefinitionImpl( entry.getKey(),
-                                                                     entry.getValue() ) );
-                    }
-                }
-                workDefinition.setParameters( parameters );
-                Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
-                Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
-                if ( resultMap != null ) {
-                    for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
-                        results.add( new ParameterDefinitionImpl( entry.getKey(),
-                                                                  entry.getValue() ) );
-                    }
-                }
-                workDefinition.setResults( results );
-                this.workDefinitions.put( workDefinition.getName(),
-                                          workDefinition );
+            	if (workDefinitionMap != null) {
+	                WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
+	                workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
+	                workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
+	                workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
+	                workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
+	                Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
+	                Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
+	                if ( parameterMap != null ) {
+	                    for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
+	                        parameters.add( new ParameterDefinitionImpl( entry.getKey(),
+	                                                                     entry.getValue() ) );
+	                    }
+	                }
+	                workDefinition.setParameters( parameters );
+	                Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
+	                Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
+	                if ( resultMap != null ) {
+	                    for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
+	                        results.add( new ParameterDefinitionImpl( entry.getKey(),
+	                                                                  entry.getValue() ) );
+	                    }
+	                }
+	                workDefinition.setResults( results );
+	                this.workDefinitions.put( workDefinition.getName(),
+	                                          workDefinition );
+            	}
             }
         } catch ( Throwable t ) {
             System.err.println( "Error occured while loading work definitions " + location );
