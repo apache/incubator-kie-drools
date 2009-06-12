@@ -82,7 +82,6 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
     "icon" : "icons/notification.gif"
   ]
 
-  // add more work items here ...
 ]
 </programlisting>
 
