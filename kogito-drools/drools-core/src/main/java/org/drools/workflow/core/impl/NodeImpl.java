@@ -183,6 +183,44 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         }
     }
     
+    /** Helper method for nodes that have at most one default incoming connection */
+	public Connection getFrom() {
+        final List<Connection> list =
+            getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        if (list.size() == 0) {
+            return null;
+        }
+        if (list.size() == 1) {
+        	return list.get(0);
+        }
+        throw new IllegalArgumentException(
+    		"Trying to retrieve the from connection but multiple connections are present");
+    }
+
+    /** Helper method for nodes that have at most one default outgoing connection */
+    public Connection getTo() {
+        final List<Connection> list =
+            getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        if (list.size() == 0) {
+            return null;
+        }
+        if (list.size() == 1) {
+        	return list.get(0);
+        }
+        throw new IllegalArgumentException(
+    		"Trying to retrieve the to connection but multiple connections are present");
+    }
+
+    /** Helper method for nodes that have multiple default incoming connections */
+    public List<Connection> getDefaultIncomingConnections() {
+        return getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+    }
+
+    /** Helper method for nodes that have multiple default outgoing connections */
+    public List<Connection> getDefaultOutgoingConnections() {
+        return getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+    }
+
     public NodeContainer getNodeContainer() {
         return nodeContainer;
     }

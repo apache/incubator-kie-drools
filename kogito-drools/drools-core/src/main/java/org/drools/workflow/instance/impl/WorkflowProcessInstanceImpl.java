@@ -42,7 +42,7 @@ import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.WorkflowProcessInstance;
-import org.drools.workflow.instance.node.EventBasedNodeInstance;
+import org.drools.workflow.instance.node.StateBasedNodeInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.drools.workflow.instance.node.EventNodeInstance;
 import org.drools.workflow.instance.node.EventNodeInstanceInterface;
@@ -195,8 +195,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	public void disconnect() {
 		removeEventListeners();
 		for (NodeInstance nodeInstance : nodeInstances) {
-			if (nodeInstance instanceof EventBasedNodeInstance) {
-				((EventBasedNodeInstance) nodeInstance).removeEventListeners();
+			if (nodeInstance instanceof StateBasedNodeInstance) {
+				((StateBasedNodeInstance) nodeInstance).removeEventListeners();
 			}
 		}
 		super.disconnect();

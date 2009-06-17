@@ -28,7 +28,7 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         String independent = element.getAttribute("independent");
         subProcessNode.setIndependent(!"false".equals(independent));
         for (String eventType: subProcessNode.getActionTypes()) {
-        	handleAction(node, element, eventType);
+        	handleAction(subProcessNode, element, eventType);
         }
     }
 

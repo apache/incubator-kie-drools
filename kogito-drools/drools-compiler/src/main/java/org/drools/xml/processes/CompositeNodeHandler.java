@@ -37,6 +37,10 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         CompositeNode compositeNode = (CompositeNode) node;
         writeAttributes(compositeNode, xmlDump, includeMeta);
         xmlDump.append(">" + EOL);
+    	for (String eventType: compositeNode.getActionTypes()) {
+        	writeActions(eventType, compositeNode.getActions(eventType), xmlDump);
+        }
+        writeTimers(compositeNode.getTimers(), xmlDump);
         if (compositeNode instanceof CompositeContextNode) {
         	VariableScope variableScope = (VariableScope)
 				((CompositeContextNode) compositeNode).getDefaultContext(VariableScope.VARIABLE_SCOPE);

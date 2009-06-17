@@ -21,6 +21,7 @@ import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.spi.Activation;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.instance.NodeInstanceContainer;
@@ -34,6 +35,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
     }
     
 	public void internalTrigger(NodeInstance from, String type) {
+		super.internalTrigger(from, type);
         // TODO: composite states trigger
         StateNode stateNode = getStateNode();
         Connection selected = null;
@@ -62,14 +64,33 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
         }
 	}
 	
+    protected boolean isLinkedIncomingNodeRequired() {
+    	return false;
+    }
+    
 	public void signalEvent(String type, Object event) {
 		if ("signal".equals(type)) {
-			String connectionType = NodeImpl.CONNECTION_DEFAULT_TYPE;
 			if (event instanceof String) {
-				connectionType = (String) event;
+				for (Connection connection: getStateNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
+					boolean selected = false;
+					Constraint constraint = getStateNode().getConstraint(connection);
+					if (constraint == null) {
+						if (((String) event).equals(connection.getTo().getName())) {
+							selected = true;
+						}
+					} else if (((String) event).equals(constraint.getName())) {
+						selected = true;
+					}
+					if (selected) {
+						triggerEvent(ExtendedNodeImpl.EVENT_NODE_EXIT);
+						removeEventListeners();
+						((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+		            		.removeNodeInstance(this);
+						triggerConnection(connection);
+						return;
+					}
+				}
 			}
-			removeEventListeners();
-			triggerCompleted(connectionType, true);
 		} else {
 			super.signalEvent(type, event);
 		}

@@ -26,7 +26,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         final String waitForCompletion = element.getAttribute("waitForCompletion");
         workItemNode.setWaitForCompletion(!"false".equals(waitForCompletion));
         for (String eventType: workItemNode.getActionTypes()) {
-        	handleAction(node, element, eventType);
+        	handleAction(workItemNode, element, eventType);
         }
     }
 

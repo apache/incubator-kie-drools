@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.drools.definition.process.Node;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.HumanTaskNode;
@@ -45,6 +46,10 @@ public class ProcessNodeBuilderRegistry {
                   new ActionNodeBuilder() );
         register( Split.class,
                   new SplitNodeBuilder() );
+        register( CompositeContextNode.class,
+                  new EventBasedNodeBuilder() );
+        register( StateNode.class,
+                  new EventBasedNodeBuilder() );
     }
 
     public void register(Class< ? extends Node> cls,

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.node.Split;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.XmlDumper;
@@ -44,12 +45,11 @@ public class SplitNodeHandler extends AbstractNodeHandler {
         } else {
             xmlDump.append(">" + EOL);
             xmlDump.append("      <constraints>" + EOL);
-            for (Map.Entry<Split.ConnectionRef, Constraint> entry: splitNode.getConstraints().entrySet()) {
-                Split.ConnectionRef connection = entry.getKey();
+            for (Map.Entry<ConnectionRef, Constraint> entry: splitNode.getConstraints().entrySet()) {
+                ConnectionRef connection = entry.getKey();
                 Constraint constraint = entry.getValue();
                 xmlDump.append("        <constraint "
-                        + "toNodeId=\"" + connection.getNodeId() + "\" "
-                        + "toType=\"" + connection.getToType() + "\" ");
+                        + "toNodeId=\"" + connection.getNodeId() + "\" ");
                 String name = constraint.getName();
                 if (name != null && !"".equals(name)) {
                     xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");

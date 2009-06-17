@@ -38,7 +38,7 @@ import org.mvel2.MVEL;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessNodeInstance extends EventBasedNodeInstance implements EventListener {
+public class SubProcessNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 400L;
     private static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{(\\S+)\\}", Pattern.DOTALL);

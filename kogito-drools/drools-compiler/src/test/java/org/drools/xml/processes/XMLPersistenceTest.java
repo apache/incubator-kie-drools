@@ -479,6 +479,23 @@ public class XMLPersistenceTest extends TestCase {
         stateNode.setMetaData("y", 2);
         stateNode.setMetaData("width", 3);
         stateNode.setMetaData("height", 4);
+        timer = new Timer();
+        timer.setDelay("100");
+        timer.setPeriod("100");
+        action = new DroolsConsequenceAction("dialect", "consequence");
+        stateNode.addTimer(timer, action);
+        timer = new Timer();
+        timer.setDelay("200");
+        timer.setPeriod("200");
+        action = new DroolsConsequenceAction("dialect", "consequence");
+        stateNode.addTimer(timer, action);
+        actions = new ArrayList<DroolsAction>();
+        action1 = new DroolsConsequenceAction("java", "System.out.println(\"action1\");");
+        actions.add(action1);
+        action2 = new DroolsConsequenceAction("java", "System.out.println(\"action2\");");
+        actions.add(action2);
+        stateNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
+        stateNode.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         new ConnectionImpl(compositeNode, Node.CONNECTION_DEFAULT_TYPE, stateNode, Node.CONNECTION_DEFAULT_TYPE);
         connection = new ConnectionImpl(stateNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
         constraint = new ConstraintImpl();
@@ -529,7 +546,7 @@ public class XMLPersistenceTest extends TestCase {
         
         System.out.println(xml2);
         
-//        assertEquals(xml, xml2);
+        assertEquals(xml, xml2);
         
         // test serialization of process elements
         new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(process);

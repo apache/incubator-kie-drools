@@ -4,8 +4,7 @@ import java.util.HashSet;
 
 import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.impl.ExtendedNodeImpl;
-import org.drools.workflow.core.node.EventBasedNode;
+import org.drools.workflow.core.node.StateBasedNode;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -18,7 +17,7 @@ public class TimerHandler extends BaseAbstractHandler implements Handler {
     public TimerHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet<Class<?>>();
-            this.validParents.add( ExtendedNodeImpl.class );
+            this.validParents.add( StateBasedNode.class );
 
             this.validPeers = new HashSet<Class<?>>();         
             this.validPeers.add( null );
@@ -39,7 +38,7 @@ public class TimerHandler extends BaseAbstractHandler implements Handler {
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         Element element = parser.endElementBuilder();
-        EventBasedNode eventBasedNode = (EventBasedNode) parser.getParent();
+        StateBasedNode parent = (StateBasedNode) parser.getParent();
         String id = element.getAttribute("id");
         emptyAttributeCheck( localName, "id", id, parser );
         String delay = element.getAttribute("delay");
@@ -58,7 +57,7 @@ public class TimerHandler extends BaseAbstractHandler implements Handler {
     		Element actionXml = (Element) xmlNode;
     		action = AbstractNodeHandler.extractAction(actionXml);
         }
-        eventBasedNode.addTimer(timer, action);
+        parent.addTimer(timer, action);
         return null;
     }
 

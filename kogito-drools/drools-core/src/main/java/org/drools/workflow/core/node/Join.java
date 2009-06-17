@@ -77,21 +77,7 @@ public class Join extends NodeImpl {
     	return n;
     }
 
-    public Connection getTo() {
-        final List<Connection> list =
-            getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-        if (list.size() > 0) {
-            return (Connection) list.get(0);
-        }
-        return null;
-    }
-    
-    public List<Connection> getDefaultIncomingConnections() {
-        return getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-    }
-
-    public void validateAddIncomingConnection(final String type,
-            final Connection connection) {
+    public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
@@ -105,7 +91,7 @@ public class Join extends NodeImpl {
             throw new IllegalArgumentException(
                 "This type of node only accepts default outgoing connection type!");
         }
-        if (!getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+        if (getTo() != null) {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one outgoing connection");
         }

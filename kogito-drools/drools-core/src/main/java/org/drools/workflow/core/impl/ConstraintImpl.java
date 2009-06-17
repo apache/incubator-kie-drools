@@ -36,8 +36,8 @@ public class ConstraintImpl implements Constraint, Serializable {
     private String             name;
     private String             constraint;
     private int                priority;
-    private String             dialect;
-    private String             type;
+    private String             dialect = "mvel";
+    private String             type = "rule";
 
     public String getConstraint() {
         return this.constraint;

@@ -9,7 +9,7 @@ import org.drools.time.TimeUtils;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.instance.WorkflowProcessInstance;
 
-public class TimerNodeInstance extends EventBasedNodeInstance implements EventListener {
+public class TimerNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 400L;
     

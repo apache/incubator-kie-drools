@@ -20,14 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.definition.process.Connection;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 /**
  * Default implementation of a start node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class StartNode extends SequenceNode {
+public class StartNode extends ExtendedNodeImpl {
 
+	private static final String[] EVENT_TYPES =
+		new String[] { EVENT_NODE_EXIT };
+	
     private static final long serialVersionUID = 400L;
     
     private List<Trigger> triggers;
@@ -53,6 +57,10 @@ public class StartNode extends SequenceNode {
 		this.triggers = triggers;
 	}
 		
+	public String[] getActionTypes() {
+		return EVENT_TYPES;
+	}
+	
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
             "A start node does not have an incoming connection!");
@@ -61,6 +69,18 @@ public class StartNode extends SequenceNode {
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
             "A start node does not have an incoming connection!");
+    }
+    
+    public void validateAddOutgoingConnection(final String type, final Connection connection) {
+        super.validateAddOutgoingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default outgoing connection type!");
+        }
+        if (getTo() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one outgoing connection!");
+        }
     }
     
 }

@@ -1,6 +1,7 @@
 package org.drools.workflow.core.node;
 
 import org.drools.definition.process.Connection;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 
 /*
@@ -25,8 +26,11 @@ import org.drools.definition.process.Connection;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class FaultNode extends SequenceNode {
+public class FaultNode extends ExtendedNodeImpl {
 
+	private static final String[] EVENT_TYPES =
+		new String[] { EVENT_NODE_ENTER };
+	
 	private static final long serialVersionUID = 400L;
 	
 	private String faultName;
@@ -48,9 +52,29 @@ public class FaultNode extends SequenceNode {
 		this.faultName = faultName;
 	}
 	
+	public String[] getActionTypes() {
+		return EVENT_TYPES;
+	}
+	
+    public void validateAddIncomingConnection(final String type, final Connection connection) {
+        super.validateAddIncomingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default incoming connection type!");
+        }
+        if (getFrom() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one incoming connection!");
+        }
+    }
+
 	public void validateAddOutgoingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
             "A fault node does not have an outgoing connection!");
     }
 
+    public void validateRemoveOutgoingConnection(final String type, final Connection connection) {
+        throw new UnsupportedOperationException(
+            "A fault node does not have an outgoing connection!");
+    }
 }
