@@ -182,7 +182,12 @@ public class KnowledgeBaseImpl
     }
 
     public KnowledgePackage getKnowledgePackage(String packageName) {
-        return new KnowledgePackageImp( this.ruleBase.getPackage( packageName ) );
+        Package pkg = this.ruleBase.getPackage( packageName );
+        if ( pkg != null ) {
+            return new KnowledgePackageImp( pkg );
+        } else {
+            return null; 
+        }
     }
 
     public Process getProcess(String processId) {
