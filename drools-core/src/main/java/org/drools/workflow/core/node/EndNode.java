@@ -17,14 +17,18 @@ package org.drools.workflow.core.node;
  */
 
 import org.drools.definition.process.Connection;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 /**
  * Default implementation of an end node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class EndNode extends SequenceNode {
+public class EndNode extends ExtendedNodeImpl {
 
+	private static final String[] EVENT_TYPES =
+		new String[] { EVENT_NODE_ENTER };
+	
     private static final long serialVersionUID = 400L;
     
     private boolean terminate = true;
@@ -36,6 +40,22 @@ public class EndNode extends SequenceNode {
 	public void setTerminate(boolean terminate) {
 		this.terminate = terminate;
 	}
+
+	public String[] getActionTypes() {
+		return EVENT_TYPES;
+	}
+	
+    public void validateAddIncomingConnection(final String type, final Connection connection) {
+        super.validateAddIncomingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default incoming connection type!");
+        }
+        if (getFrom() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one incoming connection!");
+        }
+    }
 
 	public void validateAddOutgoingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(

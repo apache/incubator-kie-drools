@@ -25,7 +25,7 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
         super.handleNode(node, element, uri, localName, parser);
         MilestoneNode milestoneNode = (MilestoneNode) node;
         for (String eventType: milestoneNode.getActionTypes()) {
-        	handleAction(node, element, eventType);
+        	handleAction(milestoneNode, element, eventType);
         }
     }
     

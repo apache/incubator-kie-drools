@@ -27,7 +27,7 @@ import org.drools.workflow.core.node.RuleSetNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleSetNodeInstance extends EventBasedNodeInstance
+public class RuleSetNodeInstance extends StateBasedNodeInstance
     implements
     RuleFlowGroupListener {
 

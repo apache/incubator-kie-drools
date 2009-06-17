@@ -118,7 +118,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         }
     }
     
-    protected void handleAction(final Node node, final Element element, String type) {
+    protected void handleAction(final ExtendedNodeImpl node, final Element element, String type) {
         NodeList nodeList = element.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
         	org.w3c.dom.Node xmlNode = nodeList.item(i);
@@ -131,7 +131,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 	DroolsAction action = extractAction(subXmlNode);
                 	actions.add(action);
                 }
-                ((ExtendedNodeImpl) node).setActions(type, actions);
+            	node.setActions(type, actions);
         		return;
         	}
         }

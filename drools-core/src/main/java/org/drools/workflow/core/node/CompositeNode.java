@@ -17,7 +17,7 @@ import org.drools.workflow.core.impl.NodeImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeInterface {
+public class CompositeNode extends StateBasedNode implements NodeContainer, EventNodeInterface {
 
     private static final long serialVersionUID = 400L;
     
@@ -323,7 +323,9 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
     
     public class NodeAndType implements Serializable {
 
-        private long nodeId;
+		private static final long serialVersionUID = 1L;
+		
+		private long nodeId;
         private String type;
         private transient Node node;
         
@@ -408,15 +410,6 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         
         public String getInType() {
             return inType;
-        }
-        
-        public Connection getTo() {
-            final List<Connection> list =
-                getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-            if (list.size() > 0) {
-                return (Connection) list.get(0);
-            }
-            return null;
         }
         
     }

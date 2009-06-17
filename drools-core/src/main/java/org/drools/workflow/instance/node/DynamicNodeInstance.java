@@ -35,6 +35,8 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
 	public void nodeInstanceCompleted(org.drools.workflow.instance.NodeInstance nodeInstance, String outType) {
+		// TODO what if we reach the end of one branch but others might still need to be created ?
+		// TODO are we sure there will always be node instances left if we are not done yet?
 		if (!executing && getNodeInstances(false).isEmpty()) {
     		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
     	}

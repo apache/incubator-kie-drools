@@ -9,7 +9,9 @@ import org.drools.process.core.context.variable.Mappable;
 
 public class Trigger implements Mappable, Serializable {
 	
-    private Map<String, String> inMapping = new HashMap<String, String>();
+	private static final long serialVersionUID = 4L;
+	
+	private Map<String, String> inMapping = new HashMap<String, String>();
 
     public void addInMapping(String subVariableName, String variableName) {
         inMapping.put(subVariableName, variableName);

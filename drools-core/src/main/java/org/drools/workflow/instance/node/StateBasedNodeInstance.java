@@ -13,18 +13,18 @@ import org.drools.runtime.process.NodeInstance;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.time.TimeUtils;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.node.EventBasedNode;
+import org.drools.workflow.core.node.StateBasedNode;
 import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 
-public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {
+public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {
 	
 	private static final long serialVersionUID = 4L;
 
 	private List<Long> timerInstances;
 
-	public EventBasedNode getEventBasedNode() {
-        return (EventBasedNode) getNode();
+	public StateBasedNode getEventBasedNode() {
+        return (StateBasedNode) getNode();
     }
     
 	public void internalTrigger(NodeInstance from, String type) {

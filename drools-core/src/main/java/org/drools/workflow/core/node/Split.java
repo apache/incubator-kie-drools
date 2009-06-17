@@ -16,7 +16,6 @@ package org.drools.workflow.core.node;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.Map;
 
 import org.drools.definition.process.Connection;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.impl.NodeImpl;
 
 /**
@@ -31,7 +31,7 @@ import org.drools.workflow.core.impl.NodeImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class Split extends NodeImpl {
+public class Split extends NodeImpl implements Constrainable {
 
     public static final int TYPE_UNDEFINED = 0;
     /**
@@ -101,11 +101,10 @@ public class Split extends NodeImpl {
             if ( connection == null ) {
                 throw new IllegalArgumentException( "connection is null" );
             }
-            if (getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) != null
-                    && !getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).contains(connection)) {
+            if (!getDefaultOutgoingConnections().contains(connection)) {
                 throw new IllegalArgumentException("connection is unknown:" + connection);
             }
-            internalSetConstraint(
+            addConstraint(
                 new ConnectionRef(connection.getTo().getId(), connection.getToType()),
                 constraint);
         } else {
@@ -113,7 +112,11 @@ public class Split extends NodeImpl {
         }
     }
 
-    public void internalSetConstraint(ConnectionRef connectionRef, Constraint constraint) {
+    public void addConstraint(ConnectionRef connectionRef, Constraint constraint) {
+    	if (connectionRef == null) {
+    		throw new IllegalArgumentException(
+				"A split node only accepts constraints linked to a connection");
+    	}
         this.constraints.put(connectionRef, constraint);
     }
 
@@ -121,21 +124,7 @@ public class Split extends NodeImpl {
         return Collections.unmodifiableMap( this.constraints );
     }
 
-    public Connection getFrom() {
-        final List<Connection> list =
-            getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-        if (list.size() > 0) {
-            return (Connection) list.get(0);
-        }
-        return null;
-    }
-    
-    public List<Connection> getDefaultOutgoingConnections() {
-        return getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-    }
-
-    public void validateAddIncomingConnection(final String type,
-            final Connection connection) {
+    public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
@@ -169,37 +158,4 @@ public class Split extends NodeImpl {
     	this.constraints.remove(ref);
     }
     
-    public static class ConnectionRef implements Serializable {
-        
-        private static final long serialVersionUID = 4L;
-		
-		private String toType;
-        private long nodeId;
-        
-        public ConnectionRef(long nodeId, String toType) {
-            this.nodeId = nodeId;
-            this.toType = toType;
-        }
-        
-        public String getToType() {
-            return toType;
-        }
-        
-        public long getNodeId() {
-            return nodeId;
-        }
-        
-        public boolean equals(Object o) {
-            if (o instanceof ConnectionRef) {
-                ConnectionRef c = (ConnectionRef) o;
-                return toType.equals(c.toType) && nodeId == c.nodeId;
-            }
-            return false;
-        }
-        
-        public int hashCode() {
-            return 7*toType.hashCode() + (int) nodeId;
-        }
-    }
-
 }

@@ -47,6 +47,7 @@ import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.ConstraintTrigger;
@@ -55,7 +56,6 @@ import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.Trigger;
-import org.drools.workflow.core.node.StateNode.ConnectionRef;
 import org.drools.xml.XmlProcessReader;
 import org.drools.xml.processes.RuleFlowMigrator;
 
@@ -358,24 +358,28 @@ public class ProcessBuilder {
         	"end \n\n";
     }
     
-    private String createStateRule(Process process, StateNode state, ConnectionRef key) {
-        return 
-        	"rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" + 
-        		key.getNodeId() + "-" + key.getToType() + "\" \n" + 
-    		"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
-    		"    when \n" + 
-    		"      " + state.getConstraints().get(key).getConstraint() + "\n" + 
-    		"    then \n" + 
-    		"end \n\n";
-    }
+    private String createStateRule(Process process, StateNode state, ConnectionRef key, Constraint constraint) {
+    	if (constraint.getConstraint() == null
+    			|| constraint.getConstraint().trim().length() == 0) {
+    		return "";
+    	} else {
+	        return 
+	        	"rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" + 
+	        		key.getNodeId() + "-" + key.getToType() + "\" \n" + 
+	    		"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
+	    		"    when \n" + 
+	    		"      " + state.getConstraints().get(key).getConstraint() + "\n" + 
+	    		"    then \n" + 
+	    		"end \n\n";
+    	}
+	}
     
-    private String createStateRules(Process process, StateNode state){
+    private String createStateRules(Process process, StateNode state) {
         String result = "";
-        for(ConnectionRef key : state.getConstraints().keySet()){
-            result  += createStateRule(process, state, key);
+        for (Map.Entry<ConnectionRef, Constraint> entry: state.getConstraints().entrySet()) {
+    		result += createStateRule(process, state, entry.getKey(), entry.getValue());
         }
         return result;
-
     }
 
     private String createStartConstraintRule(Process process,

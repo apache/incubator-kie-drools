@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.definition.process.Connection;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.Mappable;
 
@@ -28,7 +29,7 @@ import org.drools.process.core.context.variable.Mappable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNode extends EventBasedNode implements Mappable {
+public class WorkItemNode extends StateBasedNode implements Mappable {
 
 	private static final long serialVersionUID = 400L;
 	
@@ -86,4 +87,28 @@ public class WorkItemNode extends EventBasedNode implements Mappable {
         this.waitForCompletion = waitForCompletion;
     }
 
+    public void validateAddIncomingConnection(final String type, final Connection connection) {
+        super.validateAddIncomingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default incoming connection type!");
+        }
+        if (getFrom() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one incoming connection!");
+        }
+    }
+
+    public void validateAddOutgoingConnection(final String type, final Connection connection) {
+        super.validateAddOutgoingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default outgoing connection type!");
+        }
+        if (getTo() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one outgoing connection!");
+        }
+    }
+    
 }

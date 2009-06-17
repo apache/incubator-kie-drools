@@ -34,6 +34,7 @@ import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
+import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -43,7 +44,7 @@ import org.drools.workflow.instance.impl.NodeInstanceImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInstanceContainer, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
+public class CompositeNodeInstance extends StateBasedNodeInstance implements NodeInstanceContainer, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 
     private static final long serialVersionUID = 400L;
     
@@ -81,20 +82,29 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     }
     
     public void internalTrigger(final org.drools.runtime.process.NodeInstance from, String type) {
+    	super.internalTrigger(from, type);
         CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(type);
-        List<Connection> connections = nodeAndType.getNode().getIncomingConnections(nodeAndType.getType());
-        for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
-            Connection connection = iterator.next();
-            if ((connection.getFrom() instanceof CompositeNode.CompositeNodeStart) &&
-            		(from == null || 
-    				((CompositeNode.CompositeNodeStart) connection.getFrom()).getInNode().getId() == from.getNodeId())) {
-                NodeInstance nodeInstance = getNodeInstance(connection.getFrom());
-                ((org.drools.workflow.instance.NodeInstance) nodeInstance).trigger(null, nodeAndType.getType());
-                return;
-            }
+        if (nodeAndType != null) {
+	        List<Connection> connections = nodeAndType.getNode().getIncomingConnections(nodeAndType.getType());
+	        for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
+	            Connection connection = iterator.next();
+	            if ((connection.getFrom() instanceof CompositeNode.CompositeNodeStart) &&
+	            		(from == null || 
+	    				((CompositeNode.CompositeNodeStart) connection.getFrom()).getInNode().getId() == from.getNodeId())) {
+	                NodeInstance nodeInstance = getNodeInstance(connection.getFrom());
+	                ((org.drools.workflow.instance.NodeInstance) nodeInstance).trigger(null, nodeAndType.getType());
+	                return;
+	            }
+	        }
         }
-        throw new IllegalArgumentException(
-            "Could not find start for composite node: " + type);
+        if (isLinkedIncomingNodeRequired()) {
+	        throw new IllegalArgumentException(
+	            "Could not find start for composite node: " + type);
+        }
+    }
+    
+    protected boolean isLinkedIncomingNodeRequired() {
+    	return true;
     }
 
     public void triggerCompleted(String outType) {
@@ -182,6 +192,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     }
 
 	public void signalEvent(String type, Object event) {
+		super.signalEvent(type, event);
 		for (Node node: getCompositeNode().getNodes()) {
 			if (node instanceof EventNodeInterface) {
 				if (((EventNodeInterface) node).acceptsEvent(type, event)) {

@@ -18,9 +18,9 @@ package org.drools.ruleflow.core.factory;
 import org.drools.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.node.Split;
-import org.drools.workflow.core.node.Split.ConnectionRef;
 
 /**
  *
@@ -61,7 +61,7 @@ public class SplitFactory extends NodeFactory {
         constraintImpl.setDialect(dialect);
         constraintImpl.setConstraint(constraint);
         constraintImpl.setPriority(priority);
-        getSplit().internalSetConstraint(
+        getSplit().addConstraint(
     		new ConnectionRef(toNodeId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
         return this;
     }

@@ -12,6 +12,7 @@ import org.drools.definition.process.Process;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.Split;
@@ -31,10 +32,10 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
             return;
         }
         // we need to clone the map, so we can update the original while iterating.
-        Map<Split.ConnectionRef, Constraint> map = new HashMap<Split.ConnectionRef, Constraint>( splitNode.getConstraints() );
-        for ( Iterator<Map.Entry<Split.ConnectionRef, Constraint>> it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<Split.ConnectionRef, Constraint> entry = it.next();
-            Split.ConnectionRef connection = entry.getKey();
+        Map<ConnectionRef, Constraint> map = new HashMap<ConnectionRef, Constraint>( splitNode.getConstraints() );
+        for ( Iterator<Map.Entry<ConnectionRef, Constraint>> it = map.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<ConnectionRef, Constraint> entry = it.next();
+            ConnectionRef connection = entry.getKey();
             ConstraintImpl constraint = (ConstraintImpl) entry.getValue();
             Connection outgoingConnection = null; 
             for (Connection out: splitNode.getDefaultOutgoingConnections()) {

@@ -39,5 +39,6 @@ public class PersisterEnums {
     public static final short HUMAN_TASK_NODE_INSTANCE  = 27;
     public static final short FOR_EACH_NODE_INSTANCE    = 28;
     public static final short TIMER                     = 29;
+    public static final short STATE_NODE_INSTANCE       = 30;
 
 }

@@ -18,7 +18,6 @@ import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.runtime.process.ProcessInstance;
@@ -31,6 +30,7 @@ import org.drools.workflow.instance.node.HumanTaskNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
+import org.drools.workflow.instance.node.StateNodeInstance;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
 import org.drools.workflow.instance.node.TimerNodeInstance;
 import org.drools.workflow.instance.node.WorkItemNodeInstance;
@@ -158,6 +158,16 @@ public abstract class AbstractProcessInstanceMarshaller implements
 	        } else if ( nodeInstance instanceof CompositeContextNodeInstance ) {
 	            stream.writeShort( PersisterEnums.COMPOSITE_NODE_INSTANCE );
 	            CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
+	            List<Long> timerInstances = 
+	            	((CompositeContextNodeInstance) nodeInstance).getTimerInstances();
+	            if (timerInstances != null) {
+	            	stream.writeInt(timerInstances.size());
+	            	for (Long id: timerInstances) {
+	            		stream.writeLong(id);
+	            	}
+	            } else {
+	            	stream.writeInt(0);
+	            }
 	            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) compositeNodeInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
 	            Map<String, Object> variables = variableScopeInstance.getVariables();
 	            List<String> keys = new ArrayList<String>( variables.keySet() );
@@ -206,6 +216,18 @@ public abstract class AbstractProcessInstanceMarshaller implements
 	                }
 	            }
 	            stream.writeShort( PersisterEnums.END );
+	        } else if ( nodeInstance instanceof StateNodeInstance ) {
+	            stream.writeShort( PersisterEnums.STATE_NODE_INSTANCE );
+	            List<Long> timerInstances = 
+	            	((StateNodeInstance) nodeInstance).getTimerInstances();
+	            if (timerInstances != null) {
+	            	stream.writeInt(timerInstances.size());
+	            	for (Long id: timerInstances) {
+	            		stream.writeLong(id);
+	            	}
+	            } else {
+	            	stream.writeInt(0);
+	            }
 	        } else {
 	            throw new IllegalArgumentException( "Unknown node instance type: " + nodeInstance );
 	        }
@@ -378,9 +400,28 @@ public abstract class AbstractProcessInstanceMarshaller implements
             break;
         case PersisterEnums.COMPOSITE_NODE_INSTANCE :
             nodeInstance = new CompositeContextNodeInstance();
+            nbTimerInstances = stream.readInt();
+            if (nbTimerInstances > 0) {
+            	List<Long> timerInstances = new ArrayList<Long>();
+            	for (int i = 0; i < nbTimerInstances; i++) {
+            		timerInstances.add(stream.readLong());
+            	}
+            	((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
+            }
             break;
         case PersisterEnums.FOR_EACH_NODE_INSTANCE :
             nodeInstance = new ForEachNodeInstance();
+            break;
+        case PersisterEnums.STATE_NODE_INSTANCE :
+            nodeInstance = new StateNodeInstance();
+            nbTimerInstances = stream.readInt();
+            if (nbTimerInstances > 0) {
+            	List<Long> timerInstances = new ArrayList<Long>();
+            	for (int i = 0; i < nbTimerInstances; i++) {
+            		timerInstances.add(stream.readLong());
+            	}
+            	((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
+            }
             break;
         default :
             throw new IllegalArgumentException( "Unknown node type: " + nodeType );

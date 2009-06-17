@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.DroolsAction;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
-public class EventBasedNode extends SequenceNode {
+public class StateBasedNode extends ExtendedNodeImpl {
 
     private static final long serialVersionUID = 400L;
 
@@ -32,8 +33,10 @@ public class EventBasedNode extends SequenceNode {
 		timers.put(timer, action);
 	}
 	
-	public void internalSetTimers(Map<Timer, DroolsAction> timers) {
-		this.timers = timers;
+	public void removeAllTimers() {
+		if (timers != null) {
+			timers.clear();
+		}
 	}
-
+	
 }

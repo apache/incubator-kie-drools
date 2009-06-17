@@ -41,7 +41,7 @@ import org.drools.workflow.core.node.MilestoneNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneNodeInstance extends EventBasedNodeInstance implements AgendaEventListener {
+public class MilestoneNodeInstance extends StateBasedNodeInstance implements AgendaEventListener {
 
     private static final long serialVersionUID = 400L;
 

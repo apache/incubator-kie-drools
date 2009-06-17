@@ -1,6 +1,8 @@
 package org.drools.workflow.core.node;
 
+import org.drools.definition.process.Connection;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConnectionRef;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -24,21 +26,50 @@ import org.drools.workflow.core.Constraint;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneNode extends EventBasedNode implements Constrainable {
+public class MilestoneNode extends StateBasedNode implements Constrainable {
 
-	private static final long serialVersionUID = 8552568488755348247L;
+	private static final long serialVersionUID = 4L;
 
-	private String            constraint;
+	private String constraint;
 
-    public void addConstraint(String name, Constraint constraint) {
+    public void addConstraint(ConnectionRef connection, Constraint constraint) {
+    	if (connection != null) {
+    		throw new IllegalArgumentException(
+				"A Milestone node only accepts one simple constraint");
+    	}
         this.constraint = constraint.getConstraint();
     }
+    
     public void setConstraint(String constraint){
         this.constraint = constraint;
     }
 
     public String getConstraint(){
         return this.constraint;
+    }
+    
+    public void validateAddIncomingConnection(final String type, final Connection connection) {
+        super.validateAddIncomingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default incoming connection type!");
+        }
+        if (getFrom() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one incoming connection!");
+        }
+    }
+
+    public void validateAddOutgoingConnection(final String type, final Connection connection) {
+        super.validateAddOutgoingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default outgoing connection type!");
+        }
+        if (getTo() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one outgoing connection!");
+        }
     }
     
 }
