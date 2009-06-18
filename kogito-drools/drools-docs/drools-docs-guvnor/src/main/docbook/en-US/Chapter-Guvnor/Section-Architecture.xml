@@ -70,7 +70,7 @@
       eventuality not to occur), the flag -Dmaven.test.skip=true can be used
       to prevent failing unit tests from preventing the build.</para>
 
-      <para>When wishing to build the BRMS, go into the drools-jbrms
+      <para>When wishing to build Guvnor, go into the drools-guvnor
       directory, and run <code>mvn package</code>. This will run the tests,
       and then build a deployable war. The only thing this will not do is
       rebuild the GWT front end (see the next section for details on that).
@@ -84,7 +84,7 @@
       <para>The GUI widgets for the web front end are developed with GWT
       (Google Web Toolkit). If there is a need to make changes to or build the
       GUI, GWT will need to be downloaded separately. Once GWT is downloaded,
-      the <filename>build.properties</filename> file in the drools-jbrms
+      the <filename>build.properties</filename> file in the drools-guvnor
       directory to point to where GWT is installed. Once this is completed,
       the ant tasks can be used to build the GWT components, as well as launch
       GWT in debug/hosted mode if it is desired. If running the build, it will
@@ -116,9 +116,9 @@
       mode</emphasis> using the GWT browser, which is great for debugging
       (from GUI to back end, the code can be stepped through, and changes made
       on the fly and simply hit refresh). There is a
-      <filename>Guvnor.launch</filename> file in in the drools-jbrms
+      <filename>Guvnor.launch</filename> file in in the drools-guvnor
       directory. To launch Guvnor in debug mode, open the Run dialog
-      (Run-&gt;Run), and then choose <emphasis>JBRMS</emphasis> from the list.
+      (Run-&gt;Run), and then choose <emphasis>Guvnor</emphasis> from the list.
       Launching this will open a new window, with the BRMS in debug mode,
       ready to go</para>
 
@@ -156,7 +156,7 @@
     make it easier to upgrade to newer releases as they come out (and is
     recommended).</para>
 
-    <para>The <filename>JBRMS.html</filename> file can be customized. For
+    <para>The <filename>Guvnor.html</filename> file can be customized. For
     example to change logos or embed the BRMS in another page. Take a look at
     the <filename>Guvnor.html</filename> file for details.</para>
   </section>
