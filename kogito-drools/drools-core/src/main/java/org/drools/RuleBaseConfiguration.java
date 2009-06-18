@@ -288,7 +288,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
             setConsequenceExceptionHandler( StringUtils.isEmpty( value ) ? DefaultConsequenceExceptionHandler.class.getName() : value );
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
-            setRuleBaseUpdateHandler( StringUtils.isEmpty( value ) ? FireAllRulesRuleBaseUpdateListener.class.getName() : value );
+            setRuleBaseUpdateHandler( StringUtils.isEmpty( value ) ? "" : value );
         } else if ( name.equals( "drools.conflictResolver" ) ) {
             setConflictResolver( RuleBaseConfiguration.determineConflictResolver( StringUtils.isEmpty( value ) ? DepthConflictResolver.class.getName() : value ) );
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
@@ -426,7 +426,7 @@ public class RuleBaseConfiguration
                                                                             "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
 
         setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
-                                                                      "org.drools.base.FireAllRulesRuleBaseUpdateListener" ) );
+                                                                      "" ) );
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );

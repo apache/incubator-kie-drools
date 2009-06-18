@@ -408,6 +408,40 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
     }
     
+    public void testRulebaseSetUpdateHandler() {
+        // this test is to avoid a regression, since update handler was supposed to be disabled in Drools 5.
+        // At this moment, we no longer want to expose the update handler API, so, we did not created an Option
+        // class for it.
+        
+        // checking the string based getProperty() method
+        assertEquals( "",
+                      config.getProperty( "drools.ruleBaseUpdateHandler" ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( "drools.ruleBaseUpdateHandler",
+                            "somethingElse" );
+        
+        // checking the string based getProperty() method
+        assertEquals( "somethingElse",
+                      config.getProperty( "drools.ruleBaseUpdateHandler" ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( "drools.ruleBaseUpdateHandler",
+                            null );
+        
+        // checking the string based getProperty() method
+        assertEquals( "",
+                      config.getProperty( "drools.ruleBaseUpdateHandler" ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( "drools.ruleBaseUpdateHandler",
+                            "" );
+        
+        // checking the string based getProperty() method
+        assertEquals( "",
+                      config.getProperty( "drools.ruleBaseUpdateHandler" ) );
+    }
+    
     
     
 
