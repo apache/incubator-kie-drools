@@ -24,7 +24,7 @@
     with the defaults.</para>
 
     <para>When you have downloaded the Guvnor distribution (which you can get
-    from http://www.jboss.org/drools), you will find the drools-jbrms.war file
+    from http://www.jboss.org/drools), you will find the drools-guvnor.war file
     in the zip file. Copy the WAR file into the deployment directory of you
     app server, and then start your app server. If you need to customize some
     settings, you can first "explode" (unzip) the war file, and change any
@@ -34,7 +34,7 @@
 
     <para>Once the drools-guvnor.war has been placed in the deployment
     directory, and the application server started, you should navigate to
-    http://localhost/drools-jbrms and check that Guvnor appears. (Obviously
+    http://localhost/drools-guvnor and check that Guvnor appears. (Obviously
     substitute the URL for what your application server is configured
     to).</para>
 
