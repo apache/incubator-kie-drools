@@ -1200,6 +1200,7 @@ public class MarshallingTest extends TestCase {
         pkg = builder.getPackage();
 
         ruleBase.addPackage( pkg );
+        session2.fireAllRules();
 
         assertEquals( 2,
                       ((List) session2.getGlobal( "list" )).size() );

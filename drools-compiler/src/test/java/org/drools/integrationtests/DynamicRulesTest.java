@@ -101,6 +101,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBase.addPackage( pkg2 );
 
         //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        workingMemory.fireAllRules();
         assertEquals( 3,
                       list.size() );
 
@@ -122,6 +123,7 @@ public class DynamicRulesTest extends TestCase {
 
         // Package 3 has a rule working on Person instances.
         // As we added person instance in advance, rule should fire now
+        workingMemory.fireAllRules();
 
         Assert.assertEquals( "Rule from package 3 should have been fired",
                              "match Person ok",
@@ -138,8 +140,9 @@ public class DynamicRulesTest extends TestCase {
         builder.addPackageFromDrl( reader );
         final Package pkg4 = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg4 );
+        workingMemory.fireAllRules();
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-
+        
         Assert.assertEquals( "Rule from package 4 should have been fired",
                              "Who likes Stilton ok",
                              bob.getStatus() );
@@ -558,6 +561,8 @@ public class DynamicRulesTest extends TestCase {
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectDynamicRules2.drl" ) ) );
         final Package pkg2 = builder2.getPackage();
         ruleBase.addPackage( pkg2 );
+        workingMemory.fireAllRules();
+        
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         // fire all rules is automatic
@@ -680,6 +685,7 @@ public class DynamicRulesTest extends TestCase {
             PackageBuilder fredBuilder = new PackageBuilder();
             fredBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesFred.drl" ) ) );
             ruleBase.addPackage( fredBuilder.getPackage() );
+            session.fireAllRules();
 
             assertEquals( 2,
                           results.size() );
@@ -692,6 +698,7 @@ public class DynamicRulesTest extends TestCase {
             PackageBuilder edBuilder = new PackageBuilder();
             edBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesEd.drl" ) ) );
             ruleBase.addPackage( edBuilder.getPackage() );
+            session.fireAllRules();
 
             assertEquals( 2,
                           results.size() );
@@ -909,6 +916,7 @@ public class DynamicRulesTest extends TestCase {
 
         ruleBaseWM.removePackage( packageName );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        workingMemory.fireAllRules();
         assertEquals( 1,
                       results.size() );
         assertEquals( 3,
@@ -917,6 +925,7 @@ public class DynamicRulesTest extends TestCase {
 
         ruleBaseWM.removePackage( packageName );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
+        workingMemory.fireAllRules();
         assertEquals( 1,
                       results.size() );
         assertEquals( 3,
