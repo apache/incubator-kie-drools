@@ -46,8 +46,8 @@
       </listitem>
 
       <listitem>
-        <para>Miss manners too (although drools-solver would solve this differently than the pure drools rule engine
-        example)</para>
+        <para>Miss manners too (although the drools-solver example solves this differently than the pure drools rule
+        engine example)</para>
       </listitem>
     </itemizedlist>
 
@@ -110,6 +110,8 @@
     occur. With the recipe called <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and
     deal with any backwards incompatible changes between versions. You can find this recipe in subversion and in every
     release.</para>
+
+    <para>Drools-solver, like Drools, is open source software under the Apache Software License.</para>
   </section>
 
   <section>
@@ -185,11 +187,12 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.app.ExamplesApp"
     list</link>. You can read/write to the mailing list without littering your mailbox through <link
     xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
 
-    <para>Feel free to report an issue in the drools-solver code or in this manual to <link
-    xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools JIRA</link>. Select the component
-    <literal>drools-solver</literal>. </para>
+    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the drools-solver code
+    or for this manual to <link xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools JIRA</link>. Select
+    the component <literal>drools-solver</literal>.</para>
 
     <para>Patches are very welcome and get priority treatment! Attach them to a JIRA issue and optionally send a mail to
-    the dev list.</para>
+    the dev mailing list to get the issue fixed fast. By open sourcing your improvements, you 'll benefit from
+    improvements made upon your improvements.</para>
   </section>
 </section>
