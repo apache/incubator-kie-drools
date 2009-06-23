@@ -20,8 +20,8 @@
 
       <itemizedlist>
         <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal solution, it finds all optimal
-          solutions.</para>
+          <para>It knows when it has found an optimal solution. If there is more then 1 optimal solution, it finds all
+          optimal solutions.</para>
         </listitem>
 
         <listitem>
@@ -33,8 +33,8 @@
 
       <itemizedlist>
         <listitem>
-          <para>It has a horrible performance and scalability. Mostly unusable for a real-world problem due to time
-          constraints.</para>
+          <para>It performs and scales horribly. Mostly unusable for a real-world problem due to time
+          limitations.</para>
         </listitem>
       </itemizedlist>
 
@@ -52,8 +52,12 @@
 
       <itemizedlist>
         <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal solution, it can find all optimal
-          solutions if needed.</para>
+          <para>It knows when it has found an optimal solution. If there is more then 1 optimal solution, it can find
+          all optimal solutions if needed.</para>
+        </listitem>
+
+        <listitem>
+          <para>It can determine the bounds of a problem, which gives an indication of the quality of a solution.</para>
         </listitem>
       </itemizedlist>
 
@@ -61,25 +65,24 @@
 
       <itemizedlist>
         <listitem>
-          <para>It still scales very badly.</para>
+          <para>It still scales very badly. Mostly unusable for a real-world problem due to time limitations.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Branch and bound is currently not implemented in drools-solver.</para>
+      <para>Branch and bound is currently not implemented in drools-solver. But we have plans to implement it in the
+      future, as a reference for validating the output of the other solver types.</para>
     </section>
 
     <section>
       <title>Simplex</title>
 
-      <para>Simplex turns all constraints and data into a big equation, which it transmutes into a mathematical function
-      without local optima. It then finds an optimal solution to the planning problem by finding an optima of that
-      mathematical function.</para>
+      <para>Simplex is an algorithm to find the numerical solution of a linear programming problem.</para>
 
       <para>Advantages:</para>
 
       <itemizedlist>
         <listitem>
-          <para>It finds an optimal solution.</para>
+          <para>It knows when it has found an optimal solution.</para>
         </listitem>
       </itemizedlist>
 
@@ -87,19 +90,51 @@
 
       <itemizedlist>
         <listitem>
-          <para>It's usually rather complex and mathematical to implement constraints.</para>
+          <para>It's complex and mathematical to implement constraints.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Drools-solver does not currently implement simplex.</para>
+      <para>Drools-solver does not implement simplex.</para>
+    </section>
+
+    <section>
+      <title>Genetic algorithms</title>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It's scalable</para>
+        </listitem>
+
+        <listitem>
+          <para>Given a limited time, it can still deliver a pretty decent solution.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It does not know when it has found an optimal solution.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the optimal score is unknown (which is usually the case), it must be told when to stop looking (for
+          example based on time spend, user input, ...).</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The genetic algorithm is currently not implemented in drools-solver.</para>
     </section>
 
     <section>
       <title>Local search (tabu search, simulated annealing, ...)</title>
 
-      <para>Local search starts from an initial solution and evolves that single solution into a better and better
-      solution. It uses a single search path of solutions. At each solution in this path it evaluates a number of
-      possible moves on the solution and applies the most suitable move to take the step to the next solution.</para>
+      <para>Local search starts from an initial solution and evolves that single solution into a mostly better and
+      better solution. It uses a single search path of solutions, not a search tree. At each solution in this path it
+      evaluates a number of moves on the solution and applies the most suitable move to take the step to the next
+      solution.</para>
 
       <para>Local search works a lot like a human planner: it uses a single search path and moves facts around to find a
       good feasible solution.</para>
@@ -121,8 +156,7 @@
         </listitem>
 
         <listitem>
-          <para>It generally needs to worry about less negative hard constraints, because the move pattern can fulfill a
-          number of the negative hard constraints.</para>
+          <para>Given a limited time, it can still deliver a pretty decent solution.</para>
         </listitem>
       </itemizedlist>
 
@@ -141,6 +175,19 @@
 
       <para>Drools-solver implements local search, including tabu search and simulated annealing.</para>
     </section>
+  </section>
+
+  <section>
+    <title>The size of real world problems</title>
+
+    <para>As a planning problem gets bigger, the search space tends to blow up really fast. It's not uncommon to see
+    that it's possible to optimally plan 5 people in less then a second, while planning 6 people optimally would take
+    years. Take a look at the problem size of the examples: many instances have a lot more possible solutions than there
+    are supposedly atoms in the known universe (10^80).</para>
+
+    <para>Planning competitions (such as the International Timetabling Competition) show that local search variations
+    (tabu search, simulated annealing, ...) usually perform best for real-world problems given real-world time
+    limitations.</para>
   </section>
 
   <section>
