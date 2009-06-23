@@ -20,9 +20,9 @@ public interface KnowledgeRuntime
                    Object object);
 
     Object getGlobal(String identifier);
-    
+
     Globals getGlobals();
-    
+
     Environment getEnvironment();
 
     /**
@@ -36,4 +36,5 @@ public interface KnowledgeRuntime
                            ExitPoint exitPoint);
 
     void unregisterExitPoint(String name);
+
 }
