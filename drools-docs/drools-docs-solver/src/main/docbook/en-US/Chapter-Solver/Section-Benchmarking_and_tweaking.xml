@@ -26,7 +26,7 @@
     <programlisting>    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
     benchmarker.configure("/org/drools/solver/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
     benchmarker.benchmark();
-    behchmarker.writeResults(resultFile);</programlisting>
+    benchmarker.writeResults(resultFile);</programlisting>
 
     <para>A basic benchmarker configuration file looks something like this:</para>
 
