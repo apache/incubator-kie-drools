@@ -6806,4 +6806,30 @@ public class MiscTest extends TestCase {
         }
     }
 
+    public void testJBRules2140() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_JBRules2140.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results",
+                            results );
+        ksession.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+        assertTrue( results.contains( "java" ) );
+        assertTrue( results.contains( "mvel" ) );
+
+    }
+
 }

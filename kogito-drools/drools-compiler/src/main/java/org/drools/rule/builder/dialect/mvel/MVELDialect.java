@@ -335,7 +335,7 @@ public class MVELDialect
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver,
                             Resource resource) {
-        Serializable s1 = compile( (String) functionDescr.getContent(),
+        Serializable s1 = compile( (String) functionDescr.getText(),
                                    null,
                                    null,
                                    null,
