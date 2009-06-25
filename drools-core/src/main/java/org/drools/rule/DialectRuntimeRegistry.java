@@ -108,27 +108,18 @@ public class DialectRuntimeRegistry
     }
 
     public void onBeforeExecute() {
-        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-            DialectRuntimeData data = (DialectRuntimeData) it.next();
+        // Java dialect MUST be the first to be processed.
+        DialectRuntimeData data = this.dialects.get( "java" );
+        if( data != null ) {
             data.onBeforeExecute();
         }
-        //        // detect if any dialect is dirty, if so reload() them all
-        //        boolean isDirty = false;
-        //        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-        //            DialectRuntimeData data = (DialectRuntimeData) it.next();
-        //            if ( data.isDirty() ) {
-        //                isDirty = true;
-        //                break;
-        //            }
-        //        }
-        //
-        //        //if ( isDirty ) {
-        //        this.classLoader = new CompositeClassLoader();
-        //        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-        //            DialectRuntimeData data = (DialectRuntimeData) it.next();
-        //            data.reload();
-        //        }
-        //        //}
+        
+        // then, all others
+        for ( Map.Entry<String, DialectRuntimeData> entry : this.dialects.entrySet() ) {
+            if( ! "java".equals( entry.getKey() ) ) {
+                entry.getValue().onBeforeExecute();
+            }
+        }
     }
 
     public void clear() {

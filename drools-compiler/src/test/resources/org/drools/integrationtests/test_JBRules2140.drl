@@ -1,0 +1,39 @@
+package org.drools
+ 
+global java.util.List results;
+
+function void aaa() { 
+   // just a dummy function to force java dialect recompilation
+}
+
+declare SomeBean
+    prop : String
+end
+ 
+rule "setup 1"
+    dialect "mvel" 
+when
+    eval(true)
+then
+    SomeBean someBean = new SomeBean();
+    someBean.setProp("mvel");
+    insert(someBean);
+end
+
+rule "setup 2"
+    dialect "java" 
+when
+    eval(true)
+then
+    SomeBean someBean = new SomeBean();
+    someBean.setProp("java");
+    insert(someBean);
+end
+
+rule "match"
+    salience -20
+when
+    $bean : SomeBean()
+then
+    results.add( $bean.getProp() );
+end 
