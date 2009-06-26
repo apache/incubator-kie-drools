@@ -29,6 +29,12 @@ public class DSLSentenceTest extends TestCase {
         assertEquals( "this is variable here and here",sen.toString() );
     }
 
+    public void testLogColonSentence(){
+        final DSLSentence sen = new DSLSentence();
+        sen.sentence = "Log : \"{message}\"";
+        assertEquals( "Log : \"message\"",sen.toString() );
+    }
+
     public void testWithNewLines() {
     	final DSLSentence sen = new DSLSentence();
         sen.sentence = "this is {variable}\\n here and {here}";
