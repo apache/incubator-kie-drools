@@ -15,6 +15,7 @@ import org.drools.command.CommandFactory;
 import org.drools.command.Setter;
 import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.process.command.AbortWorkItemCommand;
 import org.drools.process.command.CompleteWorkItemCommand;
 import org.drools.process.command.FireAllRulesCommand;
@@ -102,6 +103,8 @@ public class BatchExecutionHelperProviderImpl
                        FlatQueryResults.class );
         xstream.alias( "query-results",
                        NativeQueryResults.class );
+        xstream.alias("fact-handle", DefaultFactHandle.class);
+
 
         xstream.registerConverter( new InsertConverter( xstream.getMapper() ) );
         xstream.registerConverter( new RetractConverter( xstream.getMapper() ) );
@@ -119,6 +122,7 @@ public class BatchExecutionHelperProviderImpl
         xstream.registerConverter( new GetObjectsConverter( xstream.getMapper() ) );
         xstream.registerConverter( new BatchExecutionResultConverter( xstream.getMapper() ) );
         xstream.registerConverter( new QueryResultsConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new FactHandleConverter(xstream.getMapper()));
 
         return xstream;
     }
@@ -220,6 +224,29 @@ public class BatchExecutionHelperProviderImpl
             return clazz.equals( InsertObjectCommand.class );
         }
 
+    }
+
+    public static class FactHandleConverter extends AbstractCollectionConverter
+        implements
+        Converter {
+        public FactHandleConverter(Mapper mapper) {
+            super(mapper);
+        }
+
+        public boolean canConvert(Class aClass) {
+            return FactHandle.class.isAssignableFrom(aClass);
+        }
+
+        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext marshallingContext) {
+            FactHandle fh = (FactHandle) object;
+            //writer.startNode("fact-handle");
+            writer.addAttribute("externalForm", fh.toExternalForm());
+            //writer.endNode();
+        }
+
+        public Object unmarshal(HierarchicalStreamReader hierarchicalStreamReader, UnmarshallingContext unmarshallingContext) {
+            throw new UnsupportedOperationException("Unable to unmarshal fact handles.");
+        }
     }
 
     public static class ModifyConverter extends AbstractCollectionConverter
