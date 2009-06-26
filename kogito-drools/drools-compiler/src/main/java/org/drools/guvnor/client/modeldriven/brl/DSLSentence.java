@@ -19,23 +19,26 @@ public class DSLSentence
     public String toString() {
         final char[] chars = this.sentence.toCharArray();
         boolean inBracket = false;
-        boolean inBracketAfterColon=false;
+        boolean inBracketAfterColon = false;
 
         String result = "";
         for ( int i = 0; i < chars.length; i++ ) {
             final char c = chars[i];
-            if ( c != '{' && c != '}' && c!=':' && !inBracketAfterColon) {
+            if ( c != '{' && c != '}' && c != ':' && !inBracketAfterColon ) {
                 result += c;
-            }else if(c =='{'){
-            	inBracket = true;
-            }else if(c=='}'){
-            	inBracket = false;
-            	inBracketAfterColon = false;
-            }else if(c==':' && inBracket){
-            	inBracketAfterColon = true;
+            } else if ( c == '{' ) {
+                inBracket = true;
+            } else if ( c == '}' ) {
+                inBracket = false;
+                inBracketAfterColon = false;
+            } else if ( c == ':' && inBracket ) {
+                inBracketAfterColon = true;
+            } else if ( c == ':' && !inBracket ) {
+                result += c;
             }
         }
-        return result.replace("\\n", "\n");
+        return result.replace( "\\n",
+                               "\n" );
     }
 
     /**
