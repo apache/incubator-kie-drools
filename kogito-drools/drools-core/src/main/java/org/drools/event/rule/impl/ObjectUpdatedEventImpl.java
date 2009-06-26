@@ -21,7 +21,7 @@ public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements O
         super( ((InternalWorkingMemory) event.getWorkingMemory() ).getKnowledgeRuntime(), event.getPropagationContext() );
         factHandle = event.getFactHandle();
         object = event.getObject();
-        object = event.getOldObject();
+        oldObject = event.getOldObject();
     }    
     
     public void writeExternal(ObjectOutput out) throws IOException {
