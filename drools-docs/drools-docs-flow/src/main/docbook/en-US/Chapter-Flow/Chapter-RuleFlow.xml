@@ -1473,6 +1473,113 @@ ksession.startProcess("...");
   </section>
   
   <section>
+    <title>Updating processes</title>
+
+  <para>Over time, processes may evolve, for example because the process itself
+  needs to be improved, or due to changing requirements.  Actually, you cannot really
+  update a process, you can only deploy a new version of the process, the old process
+  will still exist.  That is because existing process instances might still need that
+  process definition.  So the new process should have a different id, though the name
+  could be the same, and you can use the version parameter to show when a process is
+  updated (the version parameter is just a String and is not validated by the process
+  framework itself, so you can select your own format for specifying minor/major
+  updates, etc.).</para>
+
+  <para>Whenever a process is updated, it is important to determine what should happen
+  to the already running process instances.  There are various strategies one could
+  consider for each running instance:
+    <itemizedlist>
+      <listitem><emphasis>Proceed</emphasis>: The running process instance proceeds as
+      normal, following the process (definition) as it was defined when the process
+      instance was started.  As a result, the already running instance will proceed as
+      if the process was never updated.  New instances can be started using the updated
+      process.</listitem>
+      <listitem><emphasis>Abort (and restart)</emphasis>: The already running instance
+      is aborted.  If necessary, the process instance can be restarted using the new
+      process definition.</listitem>
+      <listitem><emphasis>Transfer</emphasis>: The process instance is migrated to the
+      new process definition, meaning that - once it has been migrated successfully -
+      it will continue executing based on the updated process logic.</listitem>
+    </itemizedlist>
+  </para>
+
+  <para>By default, Drools Flow uses the proceed approach, meaning that multiple
+  versions of the same process can be deployed, but existing process instances will
+  simply continue executing based on the process definition that was used when starting
+  the process instance.  Running process instances could always be aborted as well of
+  course, using the process management API.  Process instance migration is more difficult
+  and is explained in the following paragraphs.</para>
+
+    <section>
+      <title>Process instance migration</title>
+
+    <para>A process instance contains all the runtime information needed to continue
+    execution at some later point in time.  This includes all the data linked to this
+    process instance (as variables), but also the current state in the process diagram.
+    For each node that is currently active, a node instance is used to represent this.
+    This node instance can also contain additional state linked to the execution of that
+    specific node only.  There are different types of node instances, one for each type
+    of node.</para>
+
+    <para>A process instance only contains the runtime state and is linked to a particular
+    process (indirectly, using id references) that represents the process logic that needs
+    to be followed when executing this process instance (this clear separation of definition
+    and runtime state allows reuse of the definition accross all process instances based
+    on this process and minimizes runtime state).  As a result, updating a running process
+    instance to a newer version so it used the new process logic instead of the old one is
+    simply a matter of changing the referenced process id from the old to the new id.</para>
+
+    <para>However, this does not take into account that the state of the process instance (the
+    variable instances and the node instances) might need to be migrated as well.  In cases
+    where the process is only extended and all existing wait states are kept, this is pretty
+    straightforward, the runtime state of the process instance does not need to change at all.
+    However, it is also possible that a more sofisticated mapping is necessary.  For example,
+    when an existing wait state is removed, or split into multiple wait states, an existing 
+    process instance that is waiting in that state cannot simply be updated.  Or when a new
+    process variable is introduced, that variable might need to be initiazed correctly so it
+    can be used in the remainder of the (updated) process.</para>
+
+    <para>The WorkflowProcessInstanceUpgrader can be used to upgrade a workflow process
+    instance to a newer process instance.  Of course, you need to provide the process instance
+    and the new process id. By default, Drools Flow will automatically map old node instances
+    to new node instances with the same id.  But you can provide a mapping of the old (unique)
+    node id to the new node id.  The unique node id is the node id, preceded by the node ids
+    of its parents (with a colon inbetween), to allow to uniquely identify a node when composite
+    nodes are used (as a node id is only unique within its node container.  The new node id
+    is simply the new node id in the node container (so no unique node id here, simply the new
+    node id).  The following code snippet shows a simple example.</para>
+
+    <programlisting>
+// create the session and start the process "com.sample.ruleflow"
+KnowledgeBuilder kbuilder = ...
+StatefulKnowledgeSession ksession = ...
+ProcessInstance processInstance = ksession.startProcess("com.sample.ruleflow");
+
+// add a new version of the process "com.sample.ruleflow2"
+kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add(..., ResourceType.DRF);
+kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+// migrate process instance to new version
+Map&lt;String, Long&gt; mapping = new HashMap&lt;String, Long&gt;();
+// top level node 2 is mapped to a new node with id 3
+mapping.put("2", 3L); 
+// node 2, which is part of composite node 5, is mapped to a new node with id 4
+mapping.put("5.2", 4L); 
+WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
+   ksession, processInstance.getId(),
+   "com.sample.ruleflow2", mapping);</programlisting>
+
+    <para>If this kind of mapping is still insufficient, you can still describe your own custom
+    mappers for specific situations.  Be sure to first disconnect the process instance, change
+    the state accordingly and then reconnect the process instance, similar to how the 
+    WorkflowProcessinstanceUpgrader does it.</para>
+
+    </section>
+
+  </section>
+
+  <section>
     <title>Assigning Rules to a Ruleflow Group</title>
 
   <para>Drools already provides some functionality to define the order in
