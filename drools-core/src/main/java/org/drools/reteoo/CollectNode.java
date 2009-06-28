@@ -16,13 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -38,14 +31,18 @@ import org.drools.util.Entry;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * @author etirelli
  *
  */
-public class CollectNode extends BetaNode
-    implements
-    LeftTupleSink,
-    ObjectSink {    
+public class CollectNode extends BetaNode {
     private static final long          serialVersionUID = 400L;
 
     private Collect                    collect;
