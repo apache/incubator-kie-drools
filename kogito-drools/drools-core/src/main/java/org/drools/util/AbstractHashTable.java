@@ -110,17 +110,14 @@ public abstract class AbstractHashTable
                 continue;
             }
             this.table[i] = null;
-            Entry next = null;
-            while ( entry != null ) {
-                next = entry.getNext();
-
+            do{
                 final int index = indexOf( entry.hashCode(),
                                            newTable.length );
                 entry.setNext( newTable[index] );
                 newTable[index] = entry;
 
-                entry = next;
-            }
+                entry = entry.getNext();
+            } while ( entry != null );
         }
 
         this.table = newTable;
