@@ -1,16 +1,13 @@
 package org.drools.integrationtests;
 
-import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -57,7 +54,6 @@ import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.DefaultMarshaller;
 import org.drools.marshalling.impl.RuleBaseNodes;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooStatefulSession;
@@ -2183,8 +2179,9 @@ public class MarshallingTest extends TestCase {
                                      20 ) );
         ksession.insert( new Person( "Bob",
                                      "brie" ) );
-        
-        ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
+
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );
 
         ksession.fireAllRules();
 
@@ -2246,8 +2243,71 @@ public class MarshallingTest extends TestCase {
                     session.getObjects().iterator().next() );
         in.close();
     }
-    
-    
+
+    public void testAccumulateSerialization() {
+        try {
+            KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            knowledgeBuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SerializableAccumulate.drl" ),
+                                  ResourceType.DRL );
+
+            if( knowledgeBuilder.hasErrors() ) {
+                fail( knowledgeBuilder.getErrors().toString() );
+            }
+            
+            KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+            knowledgeBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+            StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+            ksession.setGlobal( "results",
+                                new ArrayList() );
+
+            Cheese t1 = new Cheese( "brie",
+                                    10 );
+            Cheese t2 = new Cheese( "brie",
+                                    15 );
+            Cheese t3 = new Cheese( "stilton",
+                                    20 );
+            Cheese t4 = new Cheese( "brie",
+                                    30 );
+
+            ksession.insert( t1 );
+            ksession.insert( t2 );
+            ksession.insert( t3 );
+            ksession.insert( t4 );
+            
+            //ksession.fireAllRules();
+            Marshaller marshaller = createSerializableMarshaller( knowledgeBase );
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new DroolsObjectOutputStream( baos );
+            out.writeObject( knowledgeBase );
+            marshaller.marshall( out,
+                                 ksession );
+            out.flush();
+            out.close();
+
+            ObjectInputStream in = new DroolsObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ) );
+            knowledgeBase = (KnowledgeBase) in.readObject();
+            marshaller = createSerializableMarshaller( knowledgeBase );
+            ksession = marshaller.unmarshall( in );
+            in.close();
+
+            // setting the global again, since it is not serialized with the session
+            List<List> results = (List<List>) new ArrayList<List>();
+            ksession.setGlobal( "results", results );
+            assertNotNull( results );
+            
+            ksession.fireAllRules();
+            ksession.dispose();
+
+            assertEquals( 1,
+                          results.size() );
+            assertEquals( 3,
+                          results.get( 0 ).size() );
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
 
     private Marshaller createSerializableMarshaller(KnowledgeBase knowledgeBase) {
         ObjectMarshallingStrategyAcceptor acceptor = MarshallerFactory.newClassFilterAcceptor( new String[]{"*.*"} );
