@@ -1,0 +1,17 @@
+package org.drools
+
+import java.util.List
+
+global List results
+
+rule "test accumulate serialization"
+when
+    $total : List() from accumulate( 
+         $c : Cheese( type == "brie" ),
+         init( java.util.ArrayList s = new java.util.ArrayList(); ),
+         action( s.add($c); ),
+         reverse( s.remove($c); ),
+         result( s ) )
+then
+    results.add( $total );
+end
