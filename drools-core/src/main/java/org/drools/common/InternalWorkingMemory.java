@@ -139,4 +139,35 @@ public interface InternalWorkingMemory
     public BatchExecutionResultImpl getExecutionResult();
     
     public void endBatchExecution();
+    
+    /**
+     * This method must be called before starting any new work in the engine,
+     * like inserting a new fact or firing a new rule. It will reset the engine
+     * idle time counter.
+     * 
+     * This method must be extremely light to avoid contentions when called by 
+     * multiple threads/entry-points
+     */
+    public void startOperation();
+
+    /**
+     * This method must be called after finishing any work in the engine,
+     * like inserting a new fact or firing a new rule. It will reset the engine
+     * idle time counter.
+     * 
+     * This method must be extremely light to avoid contentions when called by 
+     * multiple threads/entry-points
+     */
+    public void endOperation();
+    
+    /**
+     * Returns the number of time units (usually ms) that the engine is idle
+     * according to the session clock or -1 if it is not idle.
+     * 
+     * This method is not synchronised and might return an approximate value.
+     *  
+     * @return
+     */
+    public long getIdleTime();
+    
 }

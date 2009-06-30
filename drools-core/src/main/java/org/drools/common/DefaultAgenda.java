@@ -912,69 +912,74 @@ public class DefaultAgenda
         // We do this first as if a node modifies a fact that causes a recursion
         // on an empty pattern
         // we need to make sure it re-activates
-        increaseDormantActivations();
-
-        final EventSupport eventsupport = (EventSupport) this.workingMemory;
-
-        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation,
-                                                                        this.workingMemory );
-
-        if ( activation.getActivationGroupNode() != null ) {
-            // We know that this rule will cancel all other activatiosn in the
-            // group
-            // so lets remove the information now, before the consequence fires
-            final ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
-            activationGroup.removeActivation( activation );
-            clearAndCancelActivationGroup( activationGroup );
-        }
-        activation.setActivated( false );
-
+        this.workingMemory.startOperation();
         try {
-            this.knowledgeHelper.setActivation( activation );
-            activation.getRule().getConsequence().evaluate( this.knowledgeHelper,
-                                                            this.workingMemory );
-            this.knowledgeHelper.reset();
-        } catch ( final Exception e ) {
-            if ( this.legacyConsequenceExceptionHandler != null ) {
-                this.legacyConsequenceExceptionHandler.handleException( activation,
-                                                                        this.workingMemory,
-                                                                        e );
-            } else if ( this.consequenceExceptionHandler != null ) {
-                this.consequenceExceptionHandler.handleException( activation,
-                                                                  new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory ),
-                                                                  e );
-            } else {
-                throw new RuntimeException( e );
-            }
-        }
+            increaseDormantActivations();
 
-        if ( activation.getRuleFlowGroupNode() != null ) {
-            final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-            // it is possible that the ruleflow group is no longer active if it was
-            // cleared during execution of this activation
-            if (ruleFlowGroup.isActive()) {
-            	ruleFlowGroup.removeActivation( activation );
-            }
-        }
+            final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        // if the tuple contains expired events 
-        for ( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-            if ( tuple.getLastHandle().isEvent() ) {
-                EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
-                // handles "expire" only in stream mode.
-                if ( handle.isExpired() ) {
-                    // decrease the activation count for the event
-                    handle.decreaseActivationsCount();
-                    if ( handle.getActivationsCount() == 0 ) {
-                        // and if no more activations, retract the handle
-                        handle.getEntryPoint().retract( handle );
+            eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation,
+                                                                            this.workingMemory );
+
+            if ( activation.getActivationGroupNode() != null ) {
+                // We know that this rule will cancel all other activatiosn in the
+                // group
+                // so lets remove the information now, before the consequence fires
+                final ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
+                activationGroup.removeActivation( activation );
+                clearAndCancelActivationGroup( activationGroup );
+            }
+            activation.setActivated( false );
+
+            try {
+                this.knowledgeHelper.setActivation( activation );
+                activation.getRule().getConsequence().evaluate( this.knowledgeHelper,
+                                                                this.workingMemory );
+                this.knowledgeHelper.reset();
+            } catch ( final Exception e ) {
+                if ( this.legacyConsequenceExceptionHandler != null ) {
+                    this.legacyConsequenceExceptionHandler.handleException( activation,
+                                                                            this.workingMemory,
+                                                                            e );
+                } else if ( this.consequenceExceptionHandler != null ) {
+                    this.consequenceExceptionHandler.handleException( activation,
+                                                                      new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory ),
+                                                                      e );
+                } else {
+                    throw new RuntimeException( e );
+                }
+            }
+
+            if ( activation.getRuleFlowGroupNode() != null ) {
+                final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+                // it is possible that the ruleflow group is no longer active if it was
+                // cleared during execution of this activation
+                if (ruleFlowGroup.isActive()) {
+                    ruleFlowGroup.removeActivation( activation );
+                }
+            }
+
+            // if the tuple contains expired events 
+            for ( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+                if ( tuple.getLastHandle().isEvent() ) {
+                    EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
+                    // handles "expire" only in stream mode.
+                    if ( handle.isExpired() ) {
+                        // decrease the activation count for the event
+                        handle.decreaseActivationsCount();
+                        if ( handle.getActivationsCount() == 0 ) {
+                            // and if no more activations, retract the handle
+                            handle.getEntryPoint().retract( handle );
+                        }
                     }
                 }
             }
-        }
 
-        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation,
-                                                                       this.workingMemory );
+            eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation,
+                                                                           this.workingMemory );
+        } finally {
+            this.workingMemory.endOperation();
+        }
     }
 
     public void increaseActiveActivations() {

@@ -46,14 +46,7 @@ public class RulebasePartitioningTest extends TestCase {
                                             config );
     }
     
-    public void testDummy() {
-        // I've added this until edson stops sucking.
-    }
-    
-    /**
-     * Edson Sucks so I'm making this a @FIXME
-     */
-    public void FIXME_testRulebasePartitions1() throws Exception {
+    public void testRulebasePartitions1() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_rulebasePartitions1.drl" ) ) );
         final org.drools.rule.Package pkg = builder.getPackage();

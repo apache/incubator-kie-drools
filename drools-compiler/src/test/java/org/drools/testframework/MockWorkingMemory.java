@@ -562,4 +562,19 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
+    public void endOperation() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public long getIdleTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public void startOperation() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
