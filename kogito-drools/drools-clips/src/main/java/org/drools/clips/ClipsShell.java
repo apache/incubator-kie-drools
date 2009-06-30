@@ -365,7 +365,7 @@ public class ClipsShell
         }
         builder.append( "}" );
 
-        functionDescr.setContent( builder.toString() );
+        functionDescr.setText( builder.toString() );
         functionDescr.setDialect( "clips" );
 
         PackageDescr pkgDescr = createPackageDescr( functionDescr.getNamespace() );

@@ -102,32 +102,34 @@ public class NamedEntryPoint
             // you cannot assert a null object
             return null;
         }
-
-        ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                      object );
-
-        InternalFactHandle handle = this.handleFactory.newFactHandle( object,
-                                                                      typeConf,
-                                                                      wm );
-        handle.setEntryPoint( this );
-        this.objectStore.addHandle( handle,
-                                    object );
-
-        if ( dynamic ) {
-            addPropertyChangeListener( object );
-        }
-
+        
         try {
-            this.lock.lock();
-            insert( handle,
-                    object,
-                    rule,
-                    activation );
+            this.wm.startOperation();
+            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                          object );
+            InternalFactHandle handle = this.handleFactory.newFactHandle( object,
+                                                                          typeConf,
+                                                                          wm );
+            handle.setEntryPoint( this );
+            this.objectStore.addHandle( handle,
+                                        object );
+            if ( dynamic ) {
+                addPropertyChangeListener( object );
+            }
+            try {
+                this.lock.lock();
+                insert( handle,
+                        object,
+                        rule,
+                        activation );
 
+            } finally {
+                this.lock.unlock();
+            }
+            return handle;
         } finally {
-            this.lock.unlock();
+            this.wm.endOperation();
         }
-        return handle;
     }
 
     protected void insert(final InternalFactHandle handle,
@@ -178,6 +180,7 @@ public class NamedEntryPoint
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
+            this.wm.startOperation();
 
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = handle.getObject();
@@ -237,6 +240,7 @@ public class NamedEntryPoint
 
             this.wm.executeQueuedActions();
         } finally {
+            this.wm.endOperation();
             this.lock.unlock();
         }
     }
@@ -257,6 +261,7 @@ public class NamedEntryPoint
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
+            this.wm.startOperation();
 
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             if ( handle.getId() == -1 ) {
@@ -299,6 +304,7 @@ public class NamedEntryPoint
 
             this.wm.executeQueuedActions();
         } finally {
+            this.wm.endOperation();
             this.lock.unlock();
         }
     }
@@ -315,6 +321,7 @@ public class NamedEntryPoint
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
+            this.wm.startOperation();
 
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             // final Object originalObject = (handle.isShadowFact()) ?
@@ -350,6 +357,7 @@ public class NamedEntryPoint
                                                this.wm );
 
         } finally {
+            this.wm.endOperation();
             this.lock.unlock();
         }
     }
@@ -381,6 +389,7 @@ public class NamedEntryPoint
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
+            this.wm.startOperation();
 
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = handle.getObject();
@@ -419,6 +428,7 @@ public class NamedEntryPoint
 
             this.wm.executeQueuedActions();
         } finally {
+            this.wm.endOperation();
             this.lock.unlock();
         }
     }

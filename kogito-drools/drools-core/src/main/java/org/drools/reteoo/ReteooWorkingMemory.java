@@ -45,7 +45,6 @@ import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -134,57 +133,62 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     public QueryResults getQueryResults(final String query,
                                         final Object[] arguments) {
 
-        Object object = new DroolsQuery( query,
-                                         arguments );
-        InternalFactHandle handle = this.handleFactory.newFactHandle( object,
-                                                                      this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                   object ),
-                                                                      this );
+        try {
+            startOperation();
+            Object object = new DroolsQuery( query,
+                                             arguments );
+            InternalFactHandle handle = this.handleFactory.newFactHandle( object,
+                                                                          this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
+                                                                                                                                       object ),
+                                                                          this );
 
-        insert( handle,
-                object,
-                null,
-                null,
-                this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                    object ) );
+            insert( handle,
+                    object,
+                    null,
+                    null,
+                    this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                        object ) );
 
-        final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
-        Query queryObj = null;
-        List list = null;
+            final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
+            Query queryObj = null;
+            List list = null;
 
-        if ( node == null ) {
-            // There are no results, first check the query object actually exists
-            final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
-            for ( int i = 0; i < pkgs.length; i++ ) {
-                final Rule rule = pkgs[i].getRule( query );
-                if ( (rule != null) && (rule instanceof Query) ) {
-                    queryObj = (Query) rule;
-                    break;
+            if ( node == null ) {
+                // There are no results, first check the query object actually exists
+                final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
+                for ( int i = 0; i < pkgs.length; i++ ) {
+                    final Rule rule = pkgs[i].getRule( query );
+                    if ( (rule != null) && (rule instanceof Query) ) {
+                        queryObj = (Query) rule;
+                        break;
+                    }
                 }
-            }
 
-            this.handleFactory.destroyFactHandle( handle );
+                this.handleFactory.destroyFactHandle( handle );
 
-            if ( queryObj == null ) {
-                throw new IllegalArgumentException( "Query '" + query + "' does not exist" );
-            }
-            list = Collections.EMPTY_LIST;
-        } else {
-            list = (List) this.getNodeMemory( node );
-
-            if ( list == null ) {
+                if ( queryObj == null ) {
+                    throw new IllegalArgumentException( "Query '" + query + "' does not exist" );
+                }
                 list = Collections.EMPTY_LIST;
             } else {
-                this.clearNodeMemory( node );
+                list = (List) this.getNodeMemory( node );
+
+                if ( list == null ) {
+                    list = Collections.EMPTY_LIST;
+                } else {
+                    this.clearNodeMemory( node );
+                }
+                queryObj = (Query) node.getRule();
+
+                this.handleFactory.destroyFactHandle( handle );
             }
-            queryObj = (Query) node.getRule();
 
-            this.handleFactory.destroyFactHandle( handle );
+            return new QueryResults( list,
+                                     queryObj,
+                                     this );
+        } finally {
+            endOperation();
         }
-
-        return new QueryResults( list,
-                                 queryObj,
-                                 this );
     }
 
     void setQueryResults(final String query,

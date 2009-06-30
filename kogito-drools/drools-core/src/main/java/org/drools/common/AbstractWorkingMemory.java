@@ -214,6 +214,13 @@ public abstract class AbstractWorkingMemory
     private Environment                                                       environment;
 
     private ExecutionResults                                                  batchExecutionResult;
+    
+    // this is a counter of concurrent operations happening. When this counter is zero, 
+    // the engine is idle.
+    private AtomicLong                                                        opCounter;
+    // this is the timestamp of the end of the last operation, based on the session clock,
+    // or -1 if there are operation being executed at this moment
+    private AtomicLong                                                        lastIdleTimestamp;
 
     // ------------------------------------------------------------
     // Constructors
@@ -325,6 +332,9 @@ public abstract class AbstractWorkingMemory
         initProcessEventListeners();
         initPartitionManagers();
         initTransient();
+        
+        this.opCounter = new AtomicLong(0);
+        this.lastIdleTimestamp = new AtomicLong( -1 );
     }
 
     public static class GlobalsAdapter
@@ -398,27 +408,37 @@ public abstract class AbstractWorkingMemory
      * running in multi-thread mode
      */
     public void startPartitionManagers() {
-        if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-            int maxThreads = (this.ruleBase.getConfiguration().getMaxThreads() > 0) ? this.ruleBase.getConfiguration().getMaxThreads() : this.ruleBase.getPartitionIds().size();
-            if ( this.threadPool.compareAndSet( null,
-                                                Executors.newFixedThreadPool( maxThreads ) ) ) {
-                for ( PartitionTaskManager task : this.partitionManagers.values() ) {
-                    task.setPool( this.threadPool.get() );
+        startOperation();
+        try {
+            if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
+                int maxThreads = (this.ruleBase.getConfiguration().getMaxThreads() > 0) ? this.ruleBase.getConfiguration().getMaxThreads() : this.ruleBase.getPartitionIds().size();
+                if ( this.threadPool.compareAndSet( null,
+                                                    Executors.newFixedThreadPool( maxThreads ) ) ) {
+                    for ( PartitionTaskManager task : this.partitionManagers.values() ) {
+                        task.setPool( this.threadPool.get() );
+                    }
                 }
             }
+        } finally {
+            endOperation();
         }
     }
 
     public void stopPartitionManagers() {
-        if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-            java.util.concurrent.ExecutorService service = this.threadPool.get();
-            if ( this.threadPool.compareAndSet( service,
-                                                null ) ) {
-                service.shutdown();
-                for ( PartitionTaskManager task : this.partitionManagers.values() ) {
-                    task.setPool( null );
+        startOperation();
+        try {
+            if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
+                java.util.concurrent.ExecutorService service = this.threadPool.get();
+                if ( this.threadPool.compareAndSet( service,
+                                                    null ) ) {
+                    service.shutdown();
+                    for ( PartitionTaskManager task : this.partitionManagers.values() ) {
+                        task.setPool( null );
+                    }
                 }
             }
+        } finally {
+            endOperation();
         }
     }
 
@@ -448,6 +468,8 @@ public abstract class AbstractWorkingMemory
         this.actionQueue.clear();
 
         this.propagationIdCounter = new AtomicLong( propagationCounter );
+        this.opCounter.set( 0 );
+        this.lastIdleTimestamp.set( -1 );
 
         // TODO should these be cleared?
         // we probably neeed to do CEP and Flow timers too
@@ -542,6 +564,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.ruleBase.readLock();
             this.lock.lock();
+            startOperation();
             // Make sure the global has been declared in the RuleBase
             final Map globalDefintions = this.ruleBase.getGlobals();
             final Class type = (Class) globalDefintions.get( identifier );
@@ -555,6 +578,7 @@ public abstract class AbstractWorkingMemory
                                                value );
             }
         } finally {
+            endOperation();
             this.lock.unlock();
             this.ruleBase.readUnlock();
         }
@@ -850,169 +874,175 @@ public abstract class AbstractWorkingMemory
             return null;
         }
 
-        ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                      object );
-
-        InternalFactHandle handle = null;
-
-        if ( isSequential() ) {
-            handle = createHandle( object,
-                                   typeConf );
-            insert( handle,
-                    object,
-                    rule,
-                    activation,
-                    typeConf );
-            return handle;
-        }
-
         try {
-            this.ruleBase.readLock();
-            this.lock.lock();
-            // check if the object already exists in the WM
-            handle = (InternalFactHandle) this.objectStore.getHandleForObject( object );
+            startOperation();
+            
+            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                          object );
 
-            if ( this.maintainTms ) {
+            InternalFactHandle handle = null;
 
-                EqualityKey key = null;
+            if ( isSequential() ) {
+                handle = createHandle( object,
+                                       typeConf );
+                insert( handle,
+                        object,
+                        rule,
+                        activation,
+                        typeConf );
+                return handle;
+            }
+            try {
+                this.ruleBase.readLock();
+                this.lock.lock();
+                // check if the object already exists in the WM
+                handle = (InternalFactHandle) this.objectStore.getHandleForObject( object );
 
-                if ( handle == null ) {
-                    // lets see if the object is already logical asserted
-                    key = this.tms.get( object );
-                } else {
-                    // Object is already asserted, so check and possibly correct
-                    // its
-                    // status and then return the handle
-                    key = handle.getEqualityKey();
+                if ( this.maintainTms ) {
 
-                    if ( key.getStatus() == EqualityKey.STATED ) {
-                        // return null as you cannot justify a stated object.
+                    EqualityKey key = null;
+
+                    if ( handle == null ) {
+                        // lets see if the object is already logical asserted
+                        key = this.tms.get( object );
+                    } else {
+                        // Object is already asserted, so check and possibly correct
+                        // its
+                        // status and then return the handle
+                        key = handle.getEqualityKey();
+
+                        if ( key.getStatus() == EqualityKey.STATED ) {
+                            // return null as you cannot justify a stated object.
+                            return handle;
+                        }
+
+                        if ( !logical ) {
+                            // this object was previously justified, so we have to
+                            // override it to stated
+                            key.setStatus( EqualityKey.STATED );
+                            this.tms.removeLogicalDependencies( handle );
+                        } else {
+                            // this was object is already justified, so just add new
+                            // logical dependency
+                            this.tms.addLogicalDependency( handle,
+                                                           activation,
+                                                           activation.getPropagationContext(),
+                                                           rule );
+                        }
+
                         return handle;
                     }
 
-                    if ( !logical ) {
-                        // this object was previously justified, so we have to
-                        // override it to stated
-                        key.setStatus( EqualityKey.STATED );
-                        this.tms.removeLogicalDependencies( handle );
-                    } else {
-                        // this was object is already justified, so just add new
-                        // logical dependency
-                        this.tms.addLogicalDependency( handle,
-                                                       activation,
-                                                       activation.getPropagationContext(),
-                                                       rule );
-                    }
+                    // At this point we know the handle is null
+                    if ( key == null ) {
+                        handle = createHandle( object,
+                                               typeConf );
 
-                    return handle;
-                }
-
-                // At this point we know the handle is null
-                if ( key == null ) {
-                    handle = createHandle( object,
-                                           typeConf );
-
-                    key = new EqualityKey( handle );
-                    handle.setEqualityKey( key );
-                    this.tms.put( key );
-                    if ( !logical ) {
-                        key.setStatus( EqualityKey.STATED );
-                    } else {
-                        key.setStatus( EqualityKey.JUSTIFIED );
-                        this.tms.addLogicalDependency( handle,
-                                                       activation,
-                                                       activation.getPropagationContext(),
-                                                       rule );
-                    }
-                } else if ( !logical ) {
-                    if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                        // Its previous justified, so switch to stated and
-                        // remove
-                        // logical dependencies
-                        final InternalFactHandle justifiedHandle = key.getFactHandle();
-                        this.tms.removeLogicalDependencies( justifiedHandle );
-
-                        if ( this.discardOnLogicalOverride ) {
-                            // override, setting to new instance, and return
-                            // existing handle
+                        key = new EqualityKey( handle );
+                        handle.setEqualityKey( key );
+                        this.tms.put( key );
+                        if ( !logical ) {
                             key.setStatus( EqualityKey.STATED );
-                            handle = key.getFactHandle();
-
-                            if ( AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
-                                // as assertMap may be using an "identity"
-                                // equality comparator,
-                                // we need to remove the handle from the map,
-                                // before replacing the object
-                                // and then re-add the handle. Otherwise we may
-                                // end up with a leak.
-                                this.objectStore.updateHandle( handle,
-                                                               object );
-                            } else {
-                                Object oldObject = handle.getObject();
-                            }
-                            return handle;
                         } else {
-                            // override, then instantiate new handle for
-                            // assertion
-                            key.setStatus( EqualityKey.STATED );
+                            key.setStatus( EqualityKey.JUSTIFIED );
+                            this.tms.addLogicalDependency( handle,
+                                                           activation,
+                                                           activation.getPropagationContext(),
+                                                           rule );
+                        }
+                    } else if ( !logical ) {
+                        if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                            // Its previous justified, so switch to stated and
+                            // remove
+                            // logical dependencies
+                            final InternalFactHandle justifiedHandle = key.getFactHandle();
+                            this.tms.removeLogicalDependencies( justifiedHandle );
+
+                            if ( this.discardOnLogicalOverride ) {
+                                // override, setting to new instance, and return
+                                // existing handle
+                                key.setStatus( EqualityKey.STATED );
+                                handle = key.getFactHandle();
+
+                                if ( AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
+                                    // as assertMap may be using an "identity"
+                                    // equality comparator,
+                                    // we need to remove the handle from the map,
+                                    // before replacing the object
+                                    // and then re-add the handle. Otherwise we may
+                                    // end up with a leak.
+                                    this.objectStore.updateHandle( handle,
+                                                                   object );
+                                } else {
+                                    Object oldObject = handle.getObject();
+                                }
+                                return handle;
+                            } else {
+                                // override, then instantiate new handle for
+                                // assertion
+                                key.setStatus( EqualityKey.STATED );
+                                handle = createHandle( object,
+                                                       typeConf );
+                                handle.setEqualityKey( key );
+                                key.addFactHandle( handle );
+                            }
+
+                        } else {
                             handle = createHandle( object,
                                                    typeConf );
-                            handle.setEqualityKey( key );
                             key.addFactHandle( handle );
+                            handle.setEqualityKey( key );
+
                         }
 
                     } else {
-                        handle = createHandle( object,
-                                               typeConf );
-                        key.addFactHandle( handle );
-                        handle.setEqualityKey( key );
-
+                        if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                            // only add as logical dependency if this wasn't
+                            // previously
+                            // stated
+                            this.tms.addLogicalDependency( key.getFactHandle(),
+                                                           activation,
+                                                           activation.getPropagationContext(),
+                                                           rule );
+                            return key.getFactHandle();
+                        } else {
+                            // You cannot justify a previously stated equality equal
+                            // object, so return null
+                            return null;
+                        }
                     }
 
                 } else {
-                    if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                        // only add as logical dependency if this wasn't
-                        // previously
-                        // stated
-                        this.tms.addLogicalDependency( key.getFactHandle(),
-                                                       activation,
-                                                       activation.getPropagationContext(),
-                                                       rule );
-                        return key.getFactHandle();
-                    } else {
-                        // You cannot justify a previously stated equality equal
-                        // object, so return null
-                        return null;
+                    if ( handle != null ) {
+                        return handle;
                     }
+                    handle = createHandle( object,
+                                           typeConf );
+
                 }
 
-            } else {
-                if ( handle != null ) {
-                    return handle;
+                // if the dynamic parameter is true or if the
+                // user declared the fact type with the meta tag:
+                // @propertyChangeSupport
+                if ( dynamic || typeConf.isDynamic() ) {
+                    addPropertyChangeListener( object );
                 }
-                handle = createHandle( object,
-                                       typeConf );
 
+                insert( handle,
+                        object,
+                        rule,
+                        activation,
+                        typeConf );
+
+            } finally {
+                this.lock.unlock();
+                this.ruleBase.readUnlock();
             }
-
-            // if the dynamic parameter is true or if the
-            // user declared the fact type with the meta tag:
-            // @propertyChangeSupport
-            if ( dynamic || typeConf.isDynamic() ) {
-                addPropertyChangeListener( object );
-            }
-
-            insert( handle,
-                    object,
-                    rule,
-                    activation,
-                    typeConf );
-
+            return handle;
         } finally {
-            this.lock.unlock();
-            this.ruleBase.readUnlock();
+            endOperation();
         }
-        return handle;
+
     }
 
     private InternalFactHandle createHandle(final Object object,
@@ -1130,6 +1160,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.ruleBase.readLock();
             this.lock.lock();
+            startOperation();
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
@@ -1198,6 +1229,7 @@ public abstract class AbstractWorkingMemory
 
             executeQueuedActions();
         } finally {
+            endOperation();
             this.lock.unlock();
             this.ruleBase.readUnlock();
         }
@@ -1215,6 +1247,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.ruleBase.readLock();
             this.lock.lock();
+            startOperation();
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
@@ -1268,6 +1301,7 @@ public abstract class AbstractWorkingMemory
                 }
             }
         } finally {
+            endOperation();
             this.lock.unlock();
             this.ruleBase.readUnlock();
         }
@@ -1288,6 +1322,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.ruleBase.readLock();
             this.lock.lock();
+            startOperation();
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
@@ -1344,6 +1379,7 @@ public abstract class AbstractWorkingMemory
             executeQueuedActions();
 
         } finally {
+            endOperation();
             this.lock.unlock();
             this.ruleBase.readUnlock();
         }
@@ -1381,6 +1417,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.ruleBase.readLock();
             this.lock.lock();
+            startOperation();
             this.ruleBase.executeQueuedActions();
 
             // the handle might have been disconnected, so reconnect if it has
@@ -1478,33 +1515,39 @@ public abstract class AbstractWorkingMemory
 
             executeQueuedActions();
         } finally {
+            endOperation();
             this.lock.unlock();
             this.ruleBase.readUnlock();
         }
     }
 
     public void executeQueuedActions() {
-        synchronized ( this.actionQueue ) {
-            if ( !this.actionQueue.isEmpty() && !evaluatingActionQueue ) {
-                evaluatingActionQueue = true;
-                WorkingMemoryAction action = null;
+        try {
+            startOperation();
+            synchronized ( this.actionQueue ) {
+                if ( !this.actionQueue.isEmpty() && !evaluatingActionQueue ) {
+                    evaluatingActionQueue = true;
+                    WorkingMemoryAction action = null;
 
-                while ( (action = actionQueue.poll()) != null ) {
-                    try {
-                        action.execute( this );
-                    } catch ( Exception e ) {
-                        if ( e instanceof RuntimeDroolsException ) {
-                            // rethrow the exception
-                            throw ((RuntimeDroolsException) e);
-                        } else {
-                            System.err.println( "************************************************" );
-                            System.err.println( "Exception caught while executing action: " + action.toString() );
-                            e.printStackTrace();
+                    while ( (action = actionQueue.poll()) != null ) {
+                        try {
+                            action.execute( this );
+                        } catch ( Exception e ) {
+                            if ( e instanceof RuntimeDroolsException ) {
+                                // rethrow the exception
+                                throw ((RuntimeDroolsException) e);
+                            } else {
+                                System.err.println( "************************************************" );
+                                System.err.println( "Exception caught while executing action: " + action.toString() );
+                                e.printStackTrace();
+                            }
                         }
                     }
+                    evaluatingActionQueue = false;
                 }
-                evaluatingActionQueue = false;
             }
+        } finally {
+            endOperation();
         }
     }
 
@@ -1615,22 +1658,27 @@ public abstract class AbstractWorkingMemory
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        if ( !this.actionQueue.isEmpty() ) {
-            executeQueuedActions();
+        try {
+            startOperation();
+            if ( !this.actionQueue.isEmpty() ) {
+                executeQueuedActions();
+            }
+            final Process process = ((InternalRuleBase) getRuleBase()).getProcess( processId );
+            if ( process == null ) {
+                throw new IllegalArgumentException( "Unknown process ID: " + processId );
+            }
+            ProcessInstance processInstance = startProcess( process, parameters );
+            
+            if (processInstance != null) { 
+                // start process instance
+                getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance, this );
+                processInstance.start();
+                getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance, this );
+            }
+            return processInstance;
+        } finally {
+            endOperation();
         }
-        final Process process = ((InternalRuleBase) getRuleBase()).getProcess( processId );
-        if ( process == null ) {
-            throw new IllegalArgumentException( "Unknown process ID: " + processId );
-        }
-        ProcessInstance processInstance = startProcess( process, parameters );
-        
-        if (processInstance != null) { 
-	        // start process instance
-	        getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance, this );
-	        processInstance.start();
-	        getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance, this );
-        }
-        return processInstance;
     }
 
     private ProcessInstance startProcess(final Process process, Map<String, Object> parameters) {
@@ -1947,6 +1995,49 @@ public abstract class AbstractWorkingMemory
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         return this.entryPoints;
+    }
+    
+    /**
+     * This method must be called before starting any new work in the engine,
+     * like inserting a new fact or firing a new rule. It will reset the engine
+     * idle time counter.
+     * 
+     * This method must be extremely light to avoid contentions when called by 
+     * multiple threads/entry-points
+     */
+    public void startOperation() {
+        if( this.opCounter.getAndIncrement() == 0) {
+            // means the engine was idle, reset the timestamp
+            this.lastIdleTimestamp.set( -1 );
+        }
+    }
+
+    /**
+     * This method must be called after finishing any work in the engine,
+     * like inserting a new fact or firing a new rule. It will reset the engine
+     * idle time counter.
+     * 
+     * This method must be extremely light to avoid contentions when called by 
+     * multiple threads/entry-points
+     */
+    public void endOperation() {
+        if( this.opCounter.decrementAndGet() == 0) {
+            // means the engine is idle, so, set the timestamp
+            this.lastIdleTimestamp.set( this.timerManager.getTimerService().getCurrentTime() );
+        }
+    }
+    
+    /**
+     * Returns the number of time units (usually ms) that the engine is idle
+     * according to the session clock or -1 if it is not idle.
+     * 
+     * This method is not synchronised and might return an approximate value.
+     *  
+     * @return
+     */
+    public long getIdleTime() {
+        long lastIdle = this.lastIdleTimestamp.get();
+        return lastIdle > -1 ? timerManager.getTimerService().getCurrentTime() - lastIdle : -1;
     }
 
 }
