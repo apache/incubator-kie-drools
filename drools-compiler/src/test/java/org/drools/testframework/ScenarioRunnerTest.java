@@ -1,5 +1,7 @@
 package org.drools.testframework;
 
+import static org.mvel2.MVEL.eval;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -28,6 +30,7 @@ import org.drools.guvnor.client.modeldriven.testing.VerifyField;
 import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.rule.TimeMachine;
+import org.mvel2.MVEL;
 
 public class ScenarioRunnerTest extends RuleUnit {
 	
@@ -690,6 +693,44 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals( "stilton",
                       c2.getType() );
 
+    }
+    
+    /**
+     * Check if global list is empty.
+     */
+    public void testWithGlobalList() throws Exception {
+        Scenario sc = new Scenario();
+        sc.globals.add( new FactData( "List",
+                                      "testList",
+                                      new ArrayList(),
+                                      false ) );
+
+        Expectation[] assertions = new Expectation[2];
+
+        assertions[0] = new VerifyFact( "testList",
+                                        ls( new VerifyField( "empty",
+                                                             "true",
+                                                             "==" ) ) );
+        assertions[1] = new VerifyFact( "testList",
+                                        ls( new VerifyField( "size",
+                                                             "0",
+                                                             "==" ) ) );
+
+        sc.fixtures.addAll( Arrays.asList( assertions ) );
+
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "java.util.List" );
+
+        MockWorkingMemory wm = new MockWorkingMemory();
+        ScenarioRunner run = new ScenarioRunner( sc,
+                                                 resolver,
+                                                 wm );
+
+        List testList = (List) wm.globals.get( "testList" );
+        assertTrue( testList.isEmpty() );
+        assertEquals( 0,
+                      testList.size() );
     }
 
     @SuppressWarnings("deprecation")
