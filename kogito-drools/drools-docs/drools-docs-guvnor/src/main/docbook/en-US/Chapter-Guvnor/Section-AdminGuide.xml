@@ -135,8 +135,7 @@
       <para>Locate the repository.xml file that was generated, and open it -
       it will be annotated with comments describing many of the different
       options. From here on, you will need to know a little about Jackrabbit
-      Persistence managers:
-      http://jackrabbit.apache.org/doc/config.html</para>
+      Persistence managers:http://wiki.apache.org/jackrabbit/PersistenceManagerFAQ</para>
 
       <para>There are a few persistence managers, some are database specific
       (eg Oracle). There is a SimpleDBPersistenceManager which works with any
