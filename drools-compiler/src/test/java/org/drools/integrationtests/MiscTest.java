@@ -21,11 +21,14 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -151,6 +154,11 @@ import org.drools.util.Entry;
 import org.drools.util.ObjectHashSet;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 import org.drools.xml.XmlDumper;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.optimizers.OptimizerFactory;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -1178,45 +1186,6 @@ public class MiscTest extends TestCase {
 
         assertEquals( "r1",
                       list.get( 0 ) );
-    }
-
-    public void FIXMEtestDeclaredFactWithoutFields() throws Exception {
-        String rule = "package com.jboss.qa;\n";
-        rule += "global java.util.List list\n";
-        rule += "declare Address\n";
-        rule += "end\n";
-        rule += "rule \"r1\"\n";
-        rule += "    dialect \"mvel\"\n";
-        rule += "when\n";
-        rule += "    Address()\n";
-        rule += "then\n";
-        rule += "    list.add(\"r1\");\n";
-        rule += "end\n";
-        
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ) );
-        final Package pkg = builder.getPackage();
-        
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
-        
-        List list = new ArrayList();
-        session.setGlobal( "list",
-                           list );
-        
-        FactType addressFact = ruleBase.getFactType( "com.jboss.qa.Address" );
-        Object address = addressFact.newInstance();
-        session.insert( address );
-        session.fireAllRules();
-
-        list = (List) session.getGlobal( "list" );
-        assertEquals( 1,
-                      list.size() );
-
-        assertEquals( "r1",
-                      list.get( 0 ) );
-        
     }
 
     public void testNullHandling() throws Exception {
@@ -6871,4 +6840,59 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testGeneratedBeansSerializable() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_GeneratedBeansSerializable.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        // test kbase serialization
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        // Retrieve the generated fact type
+        FactType cheeseFact = kbase.getFactType( "org.drools.generatedbeans",
+                                                 "Cheese" );
+        
+        assertTrue( "Generated beans must be serializable",
+                    Serializable.class.isAssignableFrom( cheeseFact.getFactClass() ));
+
+        // Create a new Fact instance
+        Object cheese = cheeseFact.newInstance();
+        cheeseFact.set( cheese,
+                        "type",
+                        "stilton" );
+        
+        // another instance
+        Object cheese2 = cheeseFact.newInstance();
+        cheeseFact.set( cheese2,
+                        "type",
+                        "brie" );
+
+        // creating a stateful session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<Number> results = new ArrayList<Number>();
+        ksession.setGlobal( "results",
+                            results );
+
+        // inserting fact
+        ksession.insert( cheese );
+        ksession.insert( cheese2 );
+
+        // firing rules
+        ksession.fireAllRules();
+
+        // checking results
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 2,
+                      results.get( 0 ).intValue() );
+
+    }
+
+
 }
+
