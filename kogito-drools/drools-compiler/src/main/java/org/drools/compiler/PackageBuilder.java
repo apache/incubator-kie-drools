@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -127,7 +128,7 @@ public class PackageBuilder {
 
     private CompositeClassLoader          rootClassLoader;
 
-    private Map<String, Class<?>>            globals;
+    private Map<String, Class< ? >>       globals;
 
     private Resource                      resource;
 
@@ -233,7 +234,7 @@ public class PackageBuilder {
         this.pkgRegistryMap.put( pkg.getName(),
                                  pkgRegistry );
 
-        globals = new HashMap<String, Class<?>>();
+        globals = new HashMap<String, Class< ? >>();
     }
 
     public PackageBuilder(RuleBase ruleBase,
@@ -258,7 +259,7 @@ public class PackageBuilder {
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
-        globals = new HashMap<String, Class<?>>();
+        globals = new HashMap<String, Class< ? >>();
     }
 
     /**
@@ -381,18 +382,18 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromBrl(final Resource resource)
-			throws DroolsParserException, IOException {
-		this.resource = resource;
+    public void addPackageFromBrl(final Resource resource) throws DroolsParserException,
+                                                          IOException {
+        this.resource = resource;
 
-        String brl = loadBrlFile(resource.getReader());
-		RuleModel model = BRXMLPersistence.getInstance().unmarshal(brl);
-		String drl = BRDRLPersistence.getInstance().marshal(model);
+        String brl = loadBrlFile( resource.getReader() );
+        RuleModel model = BRXMLPersistence.getInstance().unmarshal( brl );
+        String drl = BRDRLPersistence.getInstance().marshal( model );
         final DrlParser parser = new DrlParser();
         DefaultExpander expander = getDslExpander();
 
         try {
-            String str = expander.expand( new StringReader(drl) );
+            String str = expander.expand( new StringReader( drl ) );
             if ( expander.hasErrors() ) {
                 this.results.addAll( expander.getErrors() );
             }
@@ -406,7 +407,7 @@ public class PackageBuilder {
             throw new RuntimeException( e );
         }
         this.resource = null;
-	}
+    }
 
     private String loadBrlFile(final Reader drl) throws IOException {
         final StringBuilder buf = new StringBuilder();
@@ -418,7 +419,7 @@ public class PackageBuilder {
         }
         return buf.toString();
     }
-    
+
     public void addDsl(Resource resource) throws IOException {
         this.resource = resource;
 
@@ -483,37 +484,37 @@ public class PackageBuilder {
                                      ResourceType type,
                                      ResourceConfiguration configuration) {
         try {
-            if ( ResourceType.DRL.equals( type )) {
-               ((InternalResource) resource).setResourceType( type );
+            if ( ResourceType.DRL.equals( type ) ) {
+                ((InternalResource) resource).setResourceType( type );
                 addPackageFromDrl( resource );
-            } else if ( ResourceType.DSLR.equals( type )) {
+            } else if ( ResourceType.DSLR.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 addPackageFromDslr( resource );
-            } else if ( ResourceType.DSL.equals( type )) {
+            } else if ( ResourceType.DSL.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 addDsl( resource );
-            } else if ( ResourceType.XDRL.equals( type )) {
+            } else if ( ResourceType.XDRL.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 addPackageFromXml( resource );
-            } else if ( ResourceType.BRL.equals( type )) {
-                ((InternalResource) resource).setResourceType( type ); 
+            } else if ( ResourceType.BRL.equals( type ) ) {
+                ((InternalResource) resource).setResourceType( type );
                 addPackageFromBrl( resource );
-            } else if ( ResourceType.DRF.equals( type )) {
+            } else if ( ResourceType.DRF.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 addProcessFromXml( resource );
-            } else if ( ResourceType.DTABLE.equals( type )) {
+            } else if ( ResourceType.DTABLE.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
 
                 String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
                                                                           dtableConfiguration );
                 addPackageFromDrl( new StringReader( string ) );
-            } else if ( ResourceType.PKG.equals( type )) {
+            } else if ( ResourceType.PKG.equals( type ) ) {
                 InputStream is = resource.getInputStream();
                 Package pkg = (Package) DroolsStreamUtils.streamIn( is );
                 is.close();
                 addPackage( pkg );
-            } else if ( ResourceType.CHANGE_SET.equals( type )) {
+            } else if ( ResourceType.CHANGE_SET.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
                 if ( resource instanceof ClassPathResource ) {
@@ -545,13 +546,15 @@ public class PackageBuilder {
                     }
                 }
             } else {
-            	ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder(type);
-            	if (builder != null) {
-	            	builder.setPackageBuilder(this);
-	            	builder.addKnowledgeResource(resource, type, configuration);
-            	} else {
-            		throw new RuntimeException("Unknown resource type: " + type);
-            	}
+                ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
+                if ( builder != null ) {
+                    builder.setPackageBuilder( this );
+                    builder.addKnowledgeResource( resource,
+                                                  type,
+                                                  configuration );
+                } else {
+                    throw new RuntimeException( "Unknown resource type: " + type );
+                }
             }
         } catch ( RuntimeException e ) {
             throw e;
@@ -582,7 +585,7 @@ public class PackageBuilder {
         if ( isEmpty( packageDescr.getNamespace() ) ) {
             packageDescr.setNamespace( this.configuration.getDefaultPackageName() );
         }
-        if( ! checkNamespace( packageDescr.getNamespace() ) ) {
+        if ( !checkNamespace( packageDescr.getNamespace() ) ) {
             return;
         }
 
@@ -601,7 +604,8 @@ public class PackageBuilder {
         // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
             for ( final FactTemplateDescr factTempl : packageDescr.getFactTemplates() ) {
-                addFactTemplate( packageDescr, factTempl );
+                addFactTemplate( packageDescr,
+                                 factTempl );
             }
 
             if ( !packageDescr.getFunctions().isEmpty() ) {
@@ -644,7 +648,8 @@ public class PackageBuilder {
                     ruleDescr.setNamespace( packageDescr.getNamespace() );
                 }
                 if ( isEmpty( ruleDescr.getDialect() ) ) {
-                    ruleDescr.addAttribute( new AttributeDescr( "dialect", pkgRegistry.getDialect() ) );
+                    ruleDescr.addAttribute( new AttributeDescr( "dialect",
+                                                                pkgRegistry.getDialect() ) );
                 }
                 addRule( ruleDescr );
             }
@@ -670,7 +675,7 @@ public class PackageBuilder {
      */
     private boolean checkNamespace(String newName) {
         if ( this.configuration == null ) return true;
-        if( (! this.pkgRegistryMap.isEmpty()) && (! this.pkgRegistryMap.containsKey( newName )) ) {
+        if ( (!this.pkgRegistryMap.isEmpty()) && (!this.pkgRegistryMap.containsKey( newName )) ) {
             return this.configuration.isAllowMultipleNamespaces();
         }
         return true;
@@ -904,7 +909,7 @@ public class PackageBuilder {
             final String identifier = global.getIdentifier();
             final String className = global.getType();
 
-            Class<?> clazz;
+            Class< ? > clazz;
             try {
                 clazz = pkgRegistry.getTypeResolver().resolveType( className );
                 pkgRegistry.getPackage().addGlobal( identifier,
@@ -1016,10 +1021,10 @@ public class PackageBuilder {
                 }
                 type.setExpirationOffset( timeParser.parse( expiration )[0].longValue() );
             }
-            
+
             boolean dynamic = typeDescr.getMetaAttributes().containsKey( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
             type.setDynamic( dynamic );
-            
+
             pkgRegistry.getPackage().addTypeDeclaration( type );
         }
     }
@@ -1069,7 +1074,10 @@ public class PackageBuilder {
         // need to fix classloader?
         ClassBuilder cb = new ClassBuilder();
         String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
-        ClassDefinition def = new ClassDefinition( fullName );
+        // generated beans should be serializable
+        ClassDefinition def = new ClassDefinition( fullName,
+                                                   Object.class.getName(),
+                                                   new String[]{Serializable.class.getName()} );
         Map<String, TypeFieldDescr> flds = typeDescr.getFields();
         try {
             for ( TypeFieldDescr field : flds.values() ) {
@@ -1120,7 +1128,8 @@ public class PackageBuilder {
                                         pkgRegistry.getTypeResolver() );
     }
 
-    private void addFactTemplate(final PackageDescr pkgDescr, final FactTemplateDescr factTemplateDescr) {
+    private void addFactTemplate(final PackageDescr pkgDescr,
+                                 final FactTemplateDescr factTemplateDescr) {
         final List fields = new ArrayList();
         int index = 0;
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( pkgDescr.getNamespace() );
@@ -1186,8 +1195,8 @@ public class PackageBuilder {
      */
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
-        if( ! this.pkgRegistryMap.isEmpty() ) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[0]; 
+        if ( !this.pkgRegistryMap.isEmpty() ) {
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[0];
         }
         Package pkg = null;
         if ( pkgRegistry != null ) {
@@ -1249,7 +1258,7 @@ public class PackageBuilder {
         return expander;
     }
 
-    public Map<String, Class<?>> getGlobals() {
+    public Map<String, Class< ? >> getGlobals() {
         return this.globals;
     }
 
