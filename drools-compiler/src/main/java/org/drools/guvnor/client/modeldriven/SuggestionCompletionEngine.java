@@ -86,7 +86,7 @@ public class SuggestionCompletionEngine
      * Contains a map of { TypeName.field : String[] } - where a list is valid
      * values to display in a drop down for a given Type.field combination.
      */
-    public Map<String, String[]>          dataEnumLists          = new HashMap();                                                                                              // TODO this is
+    public Map<String, String[]>          dataEnumLists          = new HashMap<String, String[]>();                                                                            // TODO this is
     // a PROBLEM as
     // its not
     // always
@@ -276,12 +276,14 @@ public class SuggestionCompletionEngine
         if ( pat.constraintList != null && pat.constraintList.constraints != null ) {
             // we may need to check for data dependent enums
             Object _typeFields = dataEnumLookupFields.get( pat.factType + "." + field );
+
             if ( _typeFields instanceof String ) {
                 String typeFields = (String) _typeFields;
                 FieldConstraint[] cons = pat.constraintList.constraints;
 
-                String key = pat.factType + "." + field + "[";
+                String key = pat.factType + "." + field;
 
+                boolean addOpeninColumn = true;
                 String[] splitTypeFields = typeFields.split( "," );
                 for ( int j = 0; j < splitTypeFields.length; j++ ) {
                     String typeField = splitTypeFields[j];
@@ -292,6 +294,10 @@ public class SuggestionCompletionEngine
                             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
 
                             if ( sfc.fieldName.trim().equals( typeField.trim() ) ) {
+                                if ( addOpeninColumn ) {
+                                    key += "[";
+                                    addOpeninColumn = false;
+                                }
                                 key += typeField + "=" + sfc.value;
 
                                 if ( j != (splitTypeFields.length - 1) ) {
@@ -302,10 +308,12 @@ public class SuggestionCompletionEngine
                     }
                 }
 
-                key += "]";
+                if ( !addOpeninColumn ) {
+                    key += "]";
+                }
 
                 return DropDownData.create( (String[]) this.dataEnumLists.get( key ) );
-            
+
             } else if ( _typeFields != null ) {
                 // these enums are calculated on demand, server side...
                 String[] fieldsNeeded = (String[]) _typeFields;
@@ -427,7 +435,7 @@ public class SuggestionCompletionEngine
                     String predicate = key.substring( ix + 1,
                                                       key.indexOf( ']' ) );
                     if ( predicate.indexOf( '=' ) > -1 ) {
-                        
+
                         String[] bits = predicate.split( "," );
                         String typeField = "";
 
@@ -438,7 +446,7 @@ public class SuggestionCompletionEngine
                                 typeField += ",";
                             }
                         }
- 
+
                         dataEnumLookupFields.put( factField,
                                                   typeField );
                     } else {
@@ -485,7 +493,7 @@ public class SuggestionCompletionEngine
             for ( MethodInfo info : infos ) {
                 methodList.add( info.getName() );
             }
-        } 
+        }
 
         return methodList;
     }
