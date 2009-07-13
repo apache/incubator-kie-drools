@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.drools.runtime.ExecutionResults;
 
-public class BatchExecutionResultImpl implements ExecutionResults {
+public class ExecutionResultImpl implements ExecutionResults {
     Map<String, Object> results = new HashMap<String, Object>();    
     Map<String, Object> facts = new HashMap<String, Object>();
     

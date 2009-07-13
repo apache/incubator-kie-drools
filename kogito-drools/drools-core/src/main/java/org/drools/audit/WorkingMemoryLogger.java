@@ -35,6 +35,7 @@ import org.drools.audit.event.RuleBaseLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Node;
@@ -135,7 +136,7 @@ public abstract class WorkingMemoryLogger
     		((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
     	} else if (session instanceof CommandBasedStatefulKnowledgeSession) {
     		WorkingMemoryEventManager eventManager = 
-    			((CommandBasedStatefulKnowledgeSession) session).getCommandService().getSession();
+    			((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
     		eventManager.addEventListener( (WorkingMemoryEventListener) this );
     		eventManager.addEventListener( (AgendaEventListener) this );
     		eventManager.addEventListener( (RuleFlowEventListener) this );

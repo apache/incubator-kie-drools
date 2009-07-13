@@ -1,10 +1,15 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalAgenda;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.AgendaImpl;
 
-public class ClearRuleFlowGroupCommand implements Command<Object> {
+public class ClearRuleFlowGroupCommand implements GenericCommand<Object> {
 
 	private String name;
 	
@@ -16,8 +21,9 @@ public class ClearRuleFlowGroupCommand implements Command<Object> {
 		this.name = name;
 	}
 
-	public Object execute(ReteooWorkingMemory session) {
-		new AgendaImpl((InternalAgenda) session.getAgenda()).getRuleFlowGroup(name).clear();
+    public Void execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        ((StatefulKnowledgeSessionImpl)ksession).session.getAgenda().getRuleFlowGroup( this.name ).clear();
 		return null;
 	}
 

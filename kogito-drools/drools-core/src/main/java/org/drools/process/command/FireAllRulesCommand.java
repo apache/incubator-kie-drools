@@ -1,12 +1,16 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.AgendaFilter;
 
 public class FireAllRulesCommand
     implements
-    Command<Integer> {
+    GenericCommand<Integer> {
 
     private int          max          = -1;
     private AgendaFilter agendaFilter = null;
@@ -26,13 +30,14 @@ public class FireAllRulesCommand
         return this.max;
     }
 
-    public Integer execute(ReteooWorkingMemory session) {
+    public Integer execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         if ( max != -1 ) {
-            return session.fireAllRules( max );
+            return ksession.fireAllRules( max );
         } else if ( agendaFilter != null ) {
-            return session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
+            return ((StatefulKnowledgeSessionImpl)ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
         } else {
-            return session.fireAllRules();
+            return ksession.fireAllRules();
         }
     }
 

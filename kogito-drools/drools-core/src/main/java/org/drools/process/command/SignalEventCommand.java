@@ -1,9 +1,12 @@
 package org.drools.process.command;
 
-import org.drools.process.instance.ProcessInstance;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 
-public class SignalEventCommand implements Command<Object> {
+public class SignalEventCommand implements GenericCommand<Object> {
 	
 	private long processInstanceId = -1;
 	private String eventType;
@@ -50,11 +53,13 @@ public class SignalEventCommand implements Command<Object> {
 		this.event = event;
 	}
 
-	public Object execute(ReteooWorkingMemory session) {
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
 		if (processInstanceId == -1) {
-			session.getSignalManager().signalEvent(eventType, event);
+		    ksession.signalEvent(eventType, event);
 		} else {
-			ProcessInstance processInstance = session.getProcessInstance(processInstanceId);
+			ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
 			if (processInstance != null) {
 				processInstance.signalEvent(eventType, event);
 			}

@@ -13,6 +13,9 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.command.Command;
+import org.drools.command.impl.ContextImpl;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -688,10 +691,12 @@ public class StatefulKnowledgeSessionImpl
         return new NativeQueryResults( this.session.getQueryResults( query, arguments ) );
     }
     
+    private KnowledgeCommandContext commandContext = new KnowledgeCommandContext( new ContextImpl("ksession", null), null, this.kbase, this);
+    
     public ExecutionResults execute(Command command) {        
         try {
             session.startBatchExecution();
-            ((org.drools.process.command.Command)command).execute( session );
+            ((GenericCommand)command).execute( commandContext );
             ExecutionResults result = session.getExecutionResult();
             return result;
         } finally {

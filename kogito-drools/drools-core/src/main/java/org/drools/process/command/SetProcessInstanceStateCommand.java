@@ -1,9 +1,16 @@
 package org.drools.process.command;
 
+import java.util.Collection;
+
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
-public class SetProcessInstanceStateCommand implements Command<Object> {
+public class SetProcessInstanceStateCommand implements GenericCommand<Object> {
 	
 	private Long processInstanceId;
 	private int state;
@@ -24,11 +31,12 @@ public class SetProcessInstanceStateCommand implements Command<Object> {
 		this.state = state;
 	}
 
-	public Object execute(ReteooWorkingMemory session) {
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 		if (processInstanceId == null) {
 			return null;
 		}
-		((ProcessInstance) session.getProcessInstance(processInstanceId)).setState(state);
+		((ProcessInstance) ksession.getProcessInstance(processInstanceId)).setState(state);
 		return null;
 	}
 

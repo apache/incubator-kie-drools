@@ -1,13 +1,12 @@
 package org.drools.process.command;
 
 import org.drools.StatefulSession;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
 
 public interface CommandService {
 	
-	<T> T execute(Command<T> command);
+	<T> T execute(GenericCommand<T> command);
 
-	StatefulSession getSession();
-	
-	void dispose();
-	
+	Context getContext();	
 }

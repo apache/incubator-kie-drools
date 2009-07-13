@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
-public class StartProcessCommand implements Command<ProcessInstance> {
+public class StartProcessCommand implements GenericCommand<ProcessInstance> {
 	
 	private String processId;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -37,13 +41,15 @@ public class StartProcessCommand implements Command<ProcessInstance> {
 		this.data = data;
 	}
 
-	public ProcessInstance execute(ReteooWorkingMemory session) {
+    public ProcessInstance execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
 		if (data != null) {
 			for (Object o: data) {
-				session.insert(o);
+				ksession.insert(o);
 			}
 		}
-		ProcessInstance processInstance = (ProcessInstance) session.startProcess(processId, parameters);
+		ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
 		return processInstance;
 	}
 

@@ -1,9 +1,15 @@
 package org.drools.process.command;
 
-import org.drools.process.instance.ProcessInstance;
-import org.drools.reteoo.ReteooWorkingMemory;
+import java.util.Collection;
 
-public class GetProcessInstanceCommand implements Command<ProcessInstance> {
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
+
+public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance> {
 	
 	private Long processInstanceId;
 	
@@ -15,11 +21,12 @@ public class GetProcessInstanceCommand implements Command<ProcessInstance> {
 		this.processInstanceId = processInstanceId;
 	}
 	
-	public ProcessInstance execute(ReteooWorkingMemory session) {
+    public ProcessInstance execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 		if (processInstanceId == null) {
 			return null;
 		}
-		return session.getProcessInstance(processInstanceId);
+		return ksession.getProcessInstance(processInstanceId);
 	}
 
 	public String toString() {

@@ -3,15 +3,20 @@ package org.drools.process.command;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 
 public class GetProcessInstancesCommand
     implements
-    Command<Collection<ProcessInstance>> {
+    GenericCommand<Collection<ProcessInstance>> {
 
-    public Collection<ProcessInstance> execute(ReteooWorkingMemory session) {
-        Collection<org.drools.process.instance.ProcessInstance> instances = session.getProcessInstances();
+    public Collection<ProcessInstance> execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
+        Collection<ProcessInstance> instances = ksession.getProcessInstances();
         Collection<ProcessInstance> result = new ArrayList<ProcessInstance>();
 
         for ( ProcessInstance instance : instances ) {

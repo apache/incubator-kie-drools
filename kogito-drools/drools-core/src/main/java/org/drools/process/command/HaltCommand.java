@@ -1,13 +1,18 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class HaltCommand
     implements
-    Command<Object> {
+    GenericCommand<Void> {
 
-    public Object execute(ReteooWorkingMemory session) {
-        session.halt();
+    public Void execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        ksession.halt();
         return null;
     }
 

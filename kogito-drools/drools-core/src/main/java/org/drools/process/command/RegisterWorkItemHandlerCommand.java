@@ -1,9 +1,16 @@
 package org.drools.process.command;
 
-import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.process.WorkItemHandler;
+import java.util.Collection;
 
-public class RegisterWorkItemHandlerCommand implements Command<Object> {
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.rule.FactHandle;
+
+public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
 	
 	private WorkItemHandler handler;
 	private String workItemName;
@@ -24,8 +31,9 @@ public class RegisterWorkItemHandlerCommand implements Command<Object> {
 		this.workItemName = workItemName;
 	}
 
-	public Object execute(ReteooWorkingMemory session) {
-		session.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();        
+        ksession.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
 		return null;
 	}
 

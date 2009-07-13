@@ -1,11 +1,16 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 public class GetObjectCommand
     implements
-    Command<Object> {
+    GenericCommand<Object> {
 
     private FactHandle factHandle;
     private String     outIdentifier;
@@ -22,9 +27,12 @@ public class GetObjectCommand
         this.outIdentifier = outIdentifier;
     }
 
-    public Object execute(ReteooWorkingMemory session) {
-        Object object = session.getObject( factHandle );
-        session.getExecutionResult().getResults().put( this.outIdentifier,
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
+        Object object = ksession.getObject( factHandle );
+        
+        ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier,
                                                        object );
 
         return object;

@@ -1,11 +1,15 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 public class GetFactHandleCommand
     implements
-    Command<FactHandle> {
+    GenericCommand<FactHandle> {
 
     private Object object;
 
@@ -13,12 +17,12 @@ public class GetFactHandleCommand
         this.object = object;
     }
 
-    public FactHandle execute(ReteooWorkingMemory session) {
-        session.getFactHandle( object );
-        return null;
+    public FactHandle execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        return ksession.getFactHandle( object );
     }
 
     public String toString() {
-        return "session.getFactHandle( " + object + " );";
+        return "ksession.getFactHandle( " + object + " );";
     }
 }

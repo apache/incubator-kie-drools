@@ -146,6 +146,6 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 
 	public Command newBatchExecution(List<? extends Command> commands) {
 		return new BatchExecutionImpl(
-				(List<org.drools.process.command.Command>) commands);
+				(List<GenericCommand>) commands);
 	}
 }

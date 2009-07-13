@@ -21,7 +21,7 @@ import org.drools.rule.TimeMachine;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.impl.BatchExecutionResultImpl;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -136,7 +136,7 @@ public interface InternalWorkingMemory
     
     public void startBatchExecution();
     
-    public BatchExecutionResultImpl getExecutionResult();
+    public ExecutionResultImpl getExecutionResult();
     
     public void endBatchExecution();
     

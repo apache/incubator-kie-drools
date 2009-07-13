@@ -1,10 +1,14 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalAgenda;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.AgendaImpl;
 
-public class ClearActivationGroupCommand implements Command<Object> {
+public class ClearActivationGroupCommand implements GenericCommand<Object> {
 
 	private String name;
 	
@@ -16,8 +20,9 @@ public class ClearActivationGroupCommand implements Command<Object> {
 		this.name = name;
 	}
 
-	public Object execute(ReteooWorkingMemory session) {
-		new AgendaImpl((InternalAgenda) session.getAgenda()).getActivationGroup(name).clear();
+    public Void execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        ksession.getAgenda().getActivationGroup( this.name ).clear();
 		return null;
 	}
 

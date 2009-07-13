@@ -1,28 +1,25 @@
 package org.drools.process.command.impl;
 
 import org.drools.StatefulSession;
-import org.drools.process.command.Command;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
 import org.drools.process.command.CommandService;
 import org.drools.reteoo.ReteooWorkingMemory;
 
 public class DefaultCommandService implements CommandService {
 
-	private ReteooWorkingMemory session;
+	private Context context;
 	
-	public DefaultCommandService(StatefulSession session) {
-		this.session = ( ReteooWorkingMemory ) session;
+	public DefaultCommandService(Context context) {
+		this.context = context;
 	}
 	
-	public StatefulSession getSession() {
-		return ( StatefulSession ) session;
+	public Context getContext() {
+		return context;
 	}
 	
-	public <T> T execute(Command<T> command) {
-		return command.execute(session);
-	}
-	
-	public void dispose() {
-		session.dispose();
+	public <T> T execute(GenericCommand<T> command) {
+		return command.execute(context);
 	}
 
 }
