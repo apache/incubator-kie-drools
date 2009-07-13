@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 public class InsertElementsCommand
     implements
-    Command<Collection<FactHandle>> {
+    GenericCommand<Collection<FactHandle>> {
     public Iterable objects;
 
     private String  outIdentifier;
@@ -34,18 +39,19 @@ public class InsertElementsCommand
         this.objects = objects;
     }
 
-    public Collection<FactHandle> execute(ReteooWorkingMemory session) {
+    public Collection<FactHandle> execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         List<FactHandle> handles = new ArrayList<FactHandle>();
         for ( Object object : objects ) {
-            handles.add( session.insert( object ) );
+            handles.add( ksession.insert( object ) );
         }
 
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {
-                session.getExecutionResult().getResults().put( this.outIdentifier,
+                ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier,
                                                                objects );
             }
-            session.getExecutionResult().getFactHandles().put( this.outIdentifier,
+            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getFactHandles().put( this.outIdentifier,
                                                                handles );
         }
         return handles;

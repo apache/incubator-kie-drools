@@ -2,18 +2,23 @@ package org.drools.process.command;
 
 import java.util.Collection;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class GetWorkingMemoryEntryPointsCommand
     implements
-    Command<Collection<? extends WorkingMemoryEntryPoint>> {
+    GenericCommand<Collection< ? extends WorkingMemoryEntryPoint>> {
 
     public GetWorkingMemoryEntryPointsCommand() {
     }
 
-    public Collection<? extends WorkingMemoryEntryPoint> execute(ReteooWorkingMemory session) {
-        return session.getWorkingMemoryEntryPoints();
+    public Collection< ? extends WorkingMemoryEntryPoint> execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        return ksession.getWorkingMemoryEntryPoints();
     }
 
     public String toString() {

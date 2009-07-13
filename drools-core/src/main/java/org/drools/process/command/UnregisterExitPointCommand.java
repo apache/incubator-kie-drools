@@ -1,11 +1,15 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class UnregisterExitPointCommand
     implements
-    Command<Object> {
+    GenericCommand<Object> {
 
     private String name;
 
@@ -13,10 +17,10 @@ public class UnregisterExitPointCommand
         this.name = name;
     }
 
-    public Object execute(ReteooWorkingMemory session) {
-        ReteooStatefulSession reteooStatefulSession = (ReteooStatefulSession) session;
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
-        reteooStatefulSession.unregisterExitPoint( name );
+        ksession.unregisterExitPoint( name );
 
         return null;
     }

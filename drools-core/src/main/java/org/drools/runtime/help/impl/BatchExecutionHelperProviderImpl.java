@@ -35,7 +35,7 @@ import org.drools.rule.Declaration;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.help.BatchExecutionHelperProvider;
 import org.drools.runtime.impl.BatchExecutionImpl;
-import org.drools.runtime.impl.BatchExecutionResultImpl;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
@@ -94,7 +94,7 @@ public class BatchExecutionHelperProviderImpl
         xstream.alias( "get-objects",
                        GetObjectsCommand.class );
         xstream.alias( "execution-results",
-                       BatchExecutionResultImpl.class );
+                       ExecutionResultImpl.class );
         xstream.alias( "fire-all-rules",
                        FireAllRulesCommand.class );
         xstream.alias( "query",
@@ -870,7 +870,7 @@ public class BatchExecutionHelperProviderImpl
                 writer.endNode();
             }
 
-            for ( String identifier : ((BatchExecutionResultImpl) result).getFactHandles().keySet() ) {
+            for ( String identifier : ((ExecutionResultImpl) result).getFactHandles().keySet() ) {
 
                 Object handle = result.getFactHandle( identifier );
                 if ( handle instanceof FactHandle ) {
@@ -900,7 +900,7 @@ public class BatchExecutionHelperProviderImpl
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            BatchExecutionResultImpl result = new BatchExecutionResultImpl();
+            ExecutionResultImpl result = new ExecutionResultImpl();
             Map results = result.getResults();
             Map facts = result.getFactHandles();
 

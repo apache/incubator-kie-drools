@@ -1,11 +1,19 @@
 package org.drools.process.command;
 
+import java.util.Collection;
+
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ExecutionResults;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 
-public class QueryCommand  implements Command<QueryResults> {
+public class QueryCommand  implements GenericCommand<QueryResults> {
     private String outIdentifier;
     private String name;
     private Object[] arguments;
@@ -37,17 +45,19 @@ public class QueryCommand  implements Command<QueryResults> {
         this.arguments = arguments;
     }
 
-    public QueryResults execute(ReteooWorkingMemory session) {
+    public QueryResults execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
         QueryResults results = null;
         
         if ( arguments == null || arguments.length == 0 ) {
-            results = new NativeQueryResults( session.getQueryResults( name ) );
+            results = ksession.getQueryResults( name );
         } else {
-            results = new NativeQueryResults( session.getQueryResults( name, this.arguments ) );
+            results = ksession.getQueryResults( name, this.arguments );
         }
         
         if ( this.outIdentifier != null ) {
-            session.getExecutionResult().getResults().put( this.outIdentifier, results );
+            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, results );
         }
 
         return results;

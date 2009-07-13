@@ -1,17 +1,21 @@
 package org.drools.process.command;
 
-import org.drools.event.AgendaEventListener;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.event.RuleFlowEventListener;
-import org.drools.event.WorkingMemoryEventListener;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class RemoveEventListenerCommand
     implements
-    Command<Object> {
+    GenericCommand<Object> {
 
     private WorkingMemoryEventListener workingMemoryEventListener = null;
     private AgendaEventListener        agendaEventListener        = null;
-    private RuleFlowEventListener      ruleFlowEventListener      = null;
+    private ProcessEventListener       processEventListener       = null;
 
     public RemoveEventListenerCommand(WorkingMemoryEventListener listener) {
         this.workingMemoryEventListener = listener;
@@ -21,17 +25,18 @@ public class RemoveEventListenerCommand
         this.agendaEventListener = listener;
     }
 
-    public RemoveEventListenerCommand(RuleFlowEventListener listener) {
-        this.ruleFlowEventListener = listener;
+    public RemoveEventListenerCommand(ProcessEventListener listener) {
+        this.processEventListener = listener;
     }
 
-    public Object execute(ReteooWorkingMemory session) {
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         if ( workingMemoryEventListener != null ) {
-            session.removeEventListener( workingMemoryEventListener );
+            ksession.removeEventListener( workingMemoryEventListener );
         } else if ( agendaEventListener != null ) {
-            session.removeEventListener( agendaEventListener );
+            ksession.removeEventListener( agendaEventListener );
         } else {
-            session.removeEventListener( ruleFlowEventListener );
+            ksession.removeEventListener( processEventListener );
         }
         return null;
     }
@@ -42,7 +47,7 @@ public class RemoveEventListenerCommand
         } else if ( agendaEventListener != null ) {
             return "session.removeEventListener( " + agendaEventListener + " );";
         } else {
-            return "session.removeEventListener( " + ruleFlowEventListener + " );";
+            return "session.removeEventListener( " + processEventListener + " );";
         }
     }
 }

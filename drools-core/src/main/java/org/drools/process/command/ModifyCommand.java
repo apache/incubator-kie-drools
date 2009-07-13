@@ -1,15 +1,20 @@
 package org.drools.process.command;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.command.Context;
 import org.drools.command.Setter;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.mvel2.MVEL;
 
 public class ModifyCommand
     implements
-    Command<Object> {
+    GenericCommand<Object> {
 
     /**
      * if this is true, modify can be any MVEL expressions. If false, it will only allow literal values.
@@ -28,12 +33,13 @@ public class ModifyCommand
         this.setters = setters;
     }
 
-    public Object execute(ReteooWorkingMemory session) {
-        Object object = session.getObject( this.handle );
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        Object object = ksession.getObject( this.handle );
         MVEL.eval( getMvelExpr(),
                    object );
 
-        session.update( handle,
+        ksession.update( handle,
                         object );
         return object;
     }

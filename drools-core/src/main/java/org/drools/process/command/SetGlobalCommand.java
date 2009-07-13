@@ -1,16 +1,22 @@
 package org.drools.process.command;
 
+import org.drools.KnowledgeBase;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class SetGlobalCommand
     implements
-    Command<Void> {
+    GenericCommand<Void> {
 
-    private String identifier;
-    private Object object;
-    
-    private String outIdentifier;
-    
+    private String  identifier;
+    private Object  object;
+
+    private String  outIdentifier;
+
     private boolean out;
 
     public SetGlobalCommand(String identifier,
@@ -19,14 +25,16 @@ public class SetGlobalCommand
         this.object = object;
     }
 
-    public Void execute(ReteooWorkingMemory session) {
+    public Void execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+
         if ( this.out ) {
-            session.getExecutionResult().getResults().put( ( this.outIdentifier != null ) ? this.outIdentifier : this.identifier, 
-                                                                object );
+            ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult().getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
+                                                                                                     object );
         }
-        
-        session.setGlobal( this.identifier,
-                           this.object );
+
+        ksession.setGlobal( this.identifier,
+                            this.object );
         return null;
     }
 
@@ -53,8 +61,8 @@ public class SetGlobalCommand
 
     public void setOut(boolean out) {
         this.out = out;
-    }    
-    
+    }
+
     public String toString() {
         return "session.setGlobal(" + this.identifier + ", " + this.object + ");";
     }

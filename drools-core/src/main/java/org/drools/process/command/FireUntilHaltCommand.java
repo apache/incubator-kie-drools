@@ -1,12 +1,16 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.AgendaFilter;
 
 public class FireUntilHaltCommand
     implements
-    Command<Object> {
+    GenericCommand<Object> {
 
     private AgendaFilter agendaFilter = null;
 
@@ -17,7 +21,9 @@ public class FireUntilHaltCommand
         this.agendaFilter = agendaFilter;
     }
 
-    public Object execute(ReteooWorkingMemory session) {
+    public Integer execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        ReteooWorkingMemory session = ((StatefulKnowledgeSessionImpl)ksession).session;
         if ( agendaFilter != null ) {
             session.fireUntilHalt( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
         } else {

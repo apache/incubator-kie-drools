@@ -3,9 +3,13 @@ package org.drools.process.command;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
-public class CompleteWorkItemCommand implements Command<Object> {
+public class CompleteWorkItemCommand implements GenericCommand<Object> {
 	
 	private long workItemId;
 	private Map<String, Object> results = new HashMap<String, Object>();
@@ -37,8 +41,9 @@ public class CompleteWorkItemCommand implements Command<Object> {
 		this.results = results;
 	}
 
-	public Object execute(ReteooWorkingMemory session) {
-		session.getWorkItemManager().completeWorkItem(workItemId, results);
+    public Void execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+		ksession.getWorkItemManager().completeWorkItem(workItemId, results);
 		return null;
 	}
 

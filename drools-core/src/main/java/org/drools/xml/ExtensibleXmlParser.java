@@ -251,7 +251,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
         if ( !localParser.isNamespaceAware() ) {
             throw new RuntimeException( "parser must be namespace-aware" );
         }
-
+        
         localParser.parse( in,
                            this );
 

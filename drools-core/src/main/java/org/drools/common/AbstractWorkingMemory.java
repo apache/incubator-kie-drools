@@ -87,7 +87,7 @@ import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.impl.BatchExecutionResultImpl;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.spi.Activation;
@@ -1918,11 +1918,11 @@ public abstract class AbstractWorkingMemory
     public void startBatchExecution() {
         this.ruleBase.readLock();
         this.lock.lock();
-        this.batchExecutionResult = new BatchExecutionResultImpl();
+        this.batchExecutionResult = new ExecutionResultImpl();
     }
 
-    public BatchExecutionResultImpl getExecutionResult() {
-        return (BatchExecutionResultImpl) this.batchExecutionResult;
+    public ExecutionResultImpl getExecutionResult() {
+        return (ExecutionResultImpl) this.batchExecutionResult;
     }
 
     public void endBatchExecution() {

@@ -1,12 +1,17 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 public class InsertObjectCommand
     implements
-    Command<FactHandle> {
+    GenericCommand<FactHandle> {
 
     private Object  object;
 
@@ -18,8 +23,11 @@ public class InsertObjectCommand
         this.object = object;
     }
 
-    public FactHandle execute(ReteooWorkingMemory session) {
-        FactHandle factHandle = session.insert( object );
+    public FactHandle execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        FactHandle factHandle = ksession.insert( object );
+        
+        ReteooWorkingMemory session = ((StatefulKnowledgeSessionImpl)ksession).session;
 
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {

@@ -5,13 +5,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class GetObjectsCommand
     implements
-    Command<Collection> {
+    GenericCommand<Collection> {
 
     public String getOutIdentifier() {
 		return outIdentifier;
@@ -32,19 +37,22 @@ public class GetObjectsCommand
         this.filter = filter;
     }
 
-    public Collection execute(ReteooWorkingMemory session) {        
+    public Collection execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
         Collection col = null;
         
         if ( filter != null ) {
-            col =  getObjects( session, filter );
+            
+            col =  ksession.getObjects( this.filter );
         } else {
-            col =  getObjects(session);
+            col =  ksession.getObjects( );
         }
         
         if ( this.outIdentifier != null ) {
             List objects = new ArrayList( col );
             
-            session.getExecutionResult().getResults().put( this.outIdentifier, objects );
+            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, objects );
         }
         
         return col;

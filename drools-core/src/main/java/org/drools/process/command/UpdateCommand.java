@@ -1,11 +1,15 @@
 package org.drools.process.command;
 
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 public class UpdateCommand
     implements
-    Command<Object> {
+    GenericCommand<Object> {
 
     private FactHandle handle;
     private Object     object;
@@ -16,8 +20,10 @@ public class UpdateCommand
         this.object = object;
     }
 
-    public Object execute(ReteooWorkingMemory session) {
-        session.update( handle,
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
+        ksession.update( handle,
                         object );
         return null;
     }

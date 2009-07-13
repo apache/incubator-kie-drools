@@ -1,17 +1,23 @@
 package org.drools.process.command;
 
-import org.drools.event.AgendaEventListener;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.WorkingMemoryEventListener;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class AddEventListenerCommand
     implements
-    Command<Object> {
+    GenericCommand<Object> {
 
     private WorkingMemoryEventListener workingMemoryEventlistener = null;
     private AgendaEventListener        agendaEventlistener        = null;
-    private RuleFlowEventListener      ruleFlowEventlistener      = null;
+    private ProcessEventListener       processEventListener       = null;
 
     public AddEventListenerCommand(WorkingMemoryEventListener listener) {
         this.workingMemoryEventlistener = listener;
@@ -20,18 +26,21 @@ public class AddEventListenerCommand
     public AddEventListenerCommand(AgendaEventListener listener) {
         this.agendaEventlistener = listener;
     }
+    
+    public AddEventListenerCommand(ProcessEventListener listener) {
+        this.processEventListener = listener;
+    }    
 
-    public AddEventListenerCommand(RuleFlowEventListener listener) {
-        this.ruleFlowEventlistener = listener;
-    }
 
-    public Object execute(ReteooWorkingMemory session) {
+    public Void execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        
         if ( workingMemoryEventlistener != null ) {
-            session.addEventListener( workingMemoryEventlistener );
+            ksession.addEventListener( workingMemoryEventlistener );
         } else if ( agendaEventlistener != null ) {
-            session.addEventListener( agendaEventlistener );
+            ksession.addEventListener( agendaEventlistener );
         } else {
-            session.addEventListener( ruleFlowEventlistener );
+            ksession.addEventListener( processEventListener );
         }
         return null;
     }
@@ -41,8 +50,10 @@ public class AddEventListenerCommand
             return "session.addEventListener( " + workingMemoryEventlistener + " );";
         } else if ( agendaEventlistener != null ) {
             return "session.addEventListener( " + agendaEventlistener + " );";
-        } else {
-            return "session.addEventListener( " + ruleFlowEventlistener + " );";
-        }
+        }  else  if ( processEventListener != null ) {
+            return "session.addEventListener( " + processEventListener + " );";
+        } 
+        
+        return "AddEventListenerCommand";
     }
 }
