@@ -17,12 +17,16 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
+import org.drools.command.Command;
+import org.drools.command.Context;
+import org.drools.command.impl.ContextImpl;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.processinstance.JPAProcessInstanceManager;
 import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
-import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -39,9 +43,10 @@ public class SingleSessionCommandService
     private EntityManager               em;
     private SessionInfo                 sessionInfo;
     private JPASessionMarshallingHelper marshallingHelper;
-    private StatefulSession             session;
+    //private StatefulSession             session;
     private StatefulKnowledgeSession    ksession;
     private Environment                 env;
+    private KnowledgeCommandContext     kContext;
 
     public void checkEnvironment(Environment env) {        
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null ) {
@@ -79,14 +84,18 @@ public class SingleSessionCommandService
             conf = new SessionConfiguration();
         }
         this.env = env;
-        this.sessionInfo = new SessionInfo();
-
-        this.session = ((KnowledgeBaseImpl) kbase).ruleBase.newStatefulSession( (SessionConfiguration) conf,
-                                                                                this.env );
+        this.sessionInfo = new SessionInfo();        
         
-        this.ksession = new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session );
+        
+        ReteooStatefulSession session = ( ReteooStatefulSession ) ((KnowledgeBaseImpl)kbase).ruleBase.newStatefulSession( (SessionConfiguration) conf, 
+                                                                                                 this.env );
+        this.ksession = new StatefulKnowledgeSessionImpl( session, kbase );
+        
+        //this.ksession = kbase.newStatefulKnowledgeSession( conf, this.env );
+        
+        this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession );
 
-        ((JPASignalManager) this.session.getSignalManager()).setCommandService( this );
+        ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
 
         this.marshallingHelper = new JPASessionMarshallingHelper( this.ksession,
                                                                   conf );
@@ -120,11 +129,11 @@ public class SingleSessionCommandService
         }
         
         // update the session id to be the same as the session info id
-        ((ReteooStatefulSession) this.session).setId( this.sessionInfo.getId() );
+        ((StatefulKnowledgeSessionImpl)ksession).session.setId( this.sessionInfo.getId() );
 
         new Thread( new Runnable() {
             public void run() {
-                session.fireUntilHalt();
+                ksession.fireUntilHalt();
             }
         } );
     }
@@ -175,22 +184,22 @@ public class SingleSessionCommandService
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
 		this.ksession = this.marshallingHelper.getObject();
-		this.session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
-        ((JPASignalManager) this.session.getSignalManager()).setCommandService( this );
+		this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession );
+        ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
 
         new Thread( new Runnable() {
             public void run() {
-                session.fireUntilHalt();
+                ksession.fireUntilHalt();
             }
         } );
     }
 
-    public StatefulSession getSession() {
-        return this.session;
+    public Context getContext() {
+        return this.kContext;
     }
 
-    public synchronized <T> T execute(Command<T> command) {
-        session.halt();
+    public synchronized <T> T execute(GenericCommand<T> command) {
+        ksession.halt();
 
         boolean localTransaction = false;
         UserTransaction ut = null;
@@ -217,8 +226,7 @@ public class SingleSessionCommandService
                 // have to create a new localEM as an EM part of a transaction cannot do a find.
                 // this.sessionInfo.rollback();
                 this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
-                                                     this.ksession );
-                this.session = (StatefulSession) ((StatefulKnowledgeSessionImpl) this.ksession).session;                
+                                                     this.ksession );                
             }
 
             this.em.joinTransaction();
@@ -226,7 +234,7 @@ public class SingleSessionCommandService
 
             registerRollbackSync();
 
-            T result = command.execute( ( ReteooWorkingMemory ) session );
+            T result = command.execute( this.kContext );
 
             if ( localTransaction ) {
                 // it's a locally created transaction so commit
@@ -239,8 +247,8 @@ public class SingleSessionCommandService
                 this.env.set( EnvironmentName.ENTITY_MANAGER, null );
                 
                 // clean up cached process and work item instances
-                ((JPAProcessInstanceManager) ((ReteooWorkingMemory) session).getProcessInstanceManager()).clearProcessInstances();
-                ((JPAWorkItemManager) ((ReteooWorkingMemory) session).getWorkItemManager()).clearWorkItems();
+                ((JPAProcessInstanceManager) ((StatefulKnowledgeSessionImpl)ksession).session.getProcessInstanceManager()).clearProcessInstances();
+                ((JPAWorkItemManager) ((StatefulKnowledgeSessionImpl)ksession).session.getWorkItemManager()).clearWorkItems();
             }
             
             return result;
@@ -265,15 +273,15 @@ public class SingleSessionCommandService
         } finally {
             new Thread( new Runnable() {
                 public void run() {
-                    session.fireUntilHalt();
+                    ksession.fireUntilHalt();
                 }
             } );
         }
     }
 
     public void dispose() {
-        if ( session != null ) {
-            session.dispose();
+        if ( ksession != null ) {
+            ksession.dispose();
         }
     }
 
@@ -332,9 +340,13 @@ public class SingleSessionCommandService
             }
             env.set( EnvironmentName.ENTITY_MANAGER, null );
             
+            
+            
             // clean up cached process and work item instances
-            ((JPAProcessInstanceManager) ((ReteooWorkingMemory) session).getProcessInstanceManager()).clearProcessInstances();
-            ((JPAWorkItemManager) ((ReteooWorkingMemory) session).getWorkItemManager()).clearWorkItems();
+            if ( ksession != null ) {
+                ((JPAProcessInstanceManager) ((StatefulKnowledgeSessionImpl)ksession).session.getProcessInstanceManager()).clearProcessInstances();
+                ((JPAWorkItemManager) ((StatefulKnowledgeSessionImpl)ksession).session.getWorkItemManager()).clearWorkItems();
+            }
 
         }
 
