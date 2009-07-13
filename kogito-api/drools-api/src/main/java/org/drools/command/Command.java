@@ -1,5 +1,7 @@
 package org.drools.command;
 
-public interface Command<T> {
+import java.io.Serializable;
+
+public interface Command<T> extends Serializable {
 
 }
