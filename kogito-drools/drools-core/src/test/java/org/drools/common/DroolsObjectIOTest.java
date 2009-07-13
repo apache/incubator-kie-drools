@@ -29,6 +29,9 @@ public class DroolsObjectIOTest  extends TestCase {
     private static final GroupElement   testGroupElement    = new GroupElement();
 
     static class Test implements Serializable {
+        public Test() {
+            
+        }
         String  str = TEST_FILE;
     }
     
