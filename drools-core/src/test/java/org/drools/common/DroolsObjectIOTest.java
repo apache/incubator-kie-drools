@@ -31,6 +31,11 @@ public class DroolsObjectIOTest  extends TestCase {
     static class Test implements Serializable {
         String  str = TEST_FILE;
     }
+    
+    public DroolsObjectIOTest() {
+        
+    }
+    
     public void testFileIO() throws Exception {
         File    file    = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
         ByteArrayOutputStream   bytes   = new ByteArrayOutputStream();
