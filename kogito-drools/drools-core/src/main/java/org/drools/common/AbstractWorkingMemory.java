@@ -374,9 +374,20 @@ public abstract class AbstractWorkingMemory
                               this );
         this.entryPoint = EntryPoint.DEFAULT;
 
-        for ( EntryPointNode entryPointNode : this.ruleBase.getRete().getEntryPointNodes().values() ) {
+        updateEntryPointsCache();
+    }
+
+    public void updateEntryPointsCache() {
+        Map<EntryPoint, EntryPointNode> reteEPs = this.ruleBase.getRete().getEntryPointNodes();
+
+        // first create a temporary cache to find which entry points were removed from the network
+        Map<String, WorkingMemoryEntryPoint> cache = new HashMap<String, WorkingMemoryEntryPoint>(this.entryPoints);
+        
+        // now, add any entry point that was added to the knowledge base
+        for ( EntryPointNode entryPointNode : reteEPs.values() ) {
             EntryPoint id = entryPointNode.getEntryPoint();
-            if ( !EntryPoint.DEFAULT.equals( id ) ) {
+            cache.remove( id.getEntryPointId() );
+            if ( !EntryPoint.DEFAULT.equals( id ) && !this.entryPoints.containsKey( id ) ) {
                 WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( id,
                                                                             entryPointNode,
                                                                             this );
@@ -384,6 +395,9 @@ public abstract class AbstractWorkingMemory
                                       wmEntryPoint );
             }
         }
+        
+        // now, if there is any element left in the cache, remove them as they were removed from the network
+        this.entryPoints.keySet().removeAll( cache.keySet() );
     }
 
     /**
@@ -1557,8 +1571,13 @@ public abstract class AbstractWorkingMemory
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
         synchronized ( this.actionQueue ) {
-            this.actionQueue.add( action );
-            this.agenda.notifyHalt();
+            try {
+                startOperation();
+                this.actionQueue.add( action );
+                this.agenda.notifyHalt();
+            } finally {
+                endOperation();
+            }
         }
     }
 
@@ -2038,6 +2057,17 @@ public abstract class AbstractWorkingMemory
     public long getIdleTime() {
         long lastIdle = this.lastIdleTimestamp.get();
         return lastIdle > -1 ? timerManager.getTimerService().getCurrentTime() - lastIdle : -1;
+    }
+
+    /**
+     * Returns the number of time units (usually ms) to
+     * the next scheduled job
+     * 
+     * @return the number of time units until the next scheduled job or -1 if
+     *         there is no job scheduled
+     */
+    public long getTimeToNextJob() {
+        return this.timerManager.getTimerService().getTimeToNextJob();
     }
 
 }
