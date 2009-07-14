@@ -577,4 +577,14 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
+    public long getTimeToNextJob() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public void updateEntryPointsCache() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

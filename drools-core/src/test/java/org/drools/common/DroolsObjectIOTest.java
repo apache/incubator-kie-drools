@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.util.DroolsStreamUtils;
+import org.junit.Ignore;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 3, 2008 Time: 11:19:44 AM To change this template use File |
@@ -28,6 +29,7 @@ public class DroolsObjectIOTest  extends TestCase {
     private static final String TEST_FILE   = "test.dat";
     private static final GroupElement   testGroupElement    = new GroupElement();
 
+    @Ignore
     static class Test implements Serializable {
         public Test() {
             

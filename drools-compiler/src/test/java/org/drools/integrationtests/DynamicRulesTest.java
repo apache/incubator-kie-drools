@@ -25,6 +25,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -39,6 +40,7 @@ import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class DynamicRulesTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -142,7 +144,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBase.addPackage( pkg4 );
         workingMemory.fireAllRules();
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        
+
         Assert.assertEquals( "Rule from package 4 should have been fired",
                              "Who likes Stilton ok",
                              bob.getStatus() );
@@ -356,7 +358,7 @@ public class DynamicRulesTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.insert( new Precondition( "genericcode",
-                                                "genericvalue" ) );
+                                          "genericvalue" ) );
         session.fireAllRules();
 
         RuleBase ruleBaseWM = session.getRuleBase();
@@ -562,7 +564,7 @@ public class DynamicRulesTest extends TestCase {
         final Package pkg2 = builder2.getPackage();
         ruleBase.addPackage( pkg2 );
         workingMemory.fireAllRules();
-        
+
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         // fire all rules is automatic
@@ -574,13 +576,15 @@ public class DynamicRulesTest extends TestCase {
     }
 
     public void testDynamicNotNode() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_CollectDynamicRules1.drl", getClass() ), ResourceType.DRL );        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_CollectDynamicRules1.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
-            fail ( kbuilder.getErrors().toString() );
-        }        
+            fail( kbuilder.getErrors().toString() );
+        }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );        
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
 
@@ -598,18 +602,22 @@ public class DynamicRulesTest extends TestCase {
         ksession.insert( a );
         ksession.insert( b );
         ksession.insert( c );
-        
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl", getClass() ), ResourceType.DRL );        
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
-            fail ( kbuilder.getErrors().toString() );
-        }                        
-        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );        
+            fail( kbuilder.getErrors().toString() );
+        }
+        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
         kbase.addKnowledgePackages( kpkgs );
-        kbase = SerializationHelper.serializeObject( kbase );    
-        
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), false );
-        
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
+                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
+                                                                              false );
+
         results = (List) ksession.getGlobal( "results" );
 
         ksession.fireAllRules();
@@ -620,18 +628,22 @@ public class DynamicRulesTest extends TestCase {
         kbase.removeKnowledgePackage( "org.drools" );
 
         ksession.retract( ksession.getFactHandle( b ) );
-        
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl", getClass() ), ResourceType.DRL );        
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_DynamicNotNode.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
-            fail ( kbuilder.getErrors().toString() );
-        }                        
-        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );        
+            fail( kbuilder.getErrors().toString() );
+        }
+        kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newIdentityMarshallingStrategy(), false );
-        
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
+                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
+                                                                              false );
+
         results = (List) ksession.getGlobal( "results" );
         ksession.fireAllRules();
 
@@ -739,7 +751,7 @@ public class DynamicRulesTest extends TestCase {
 
         final List list = new ArrayList();
         session.setGlobal( "results",
-                                 list );
+                           list );
 
         Order order = new Order();
 
@@ -954,6 +966,45 @@ public class DynamicRulesTest extends TestCase {
             e.printStackTrace();
             fail( "Should not raise any exception" );
         }
+    }
+
+    public void testDynamicRuleAdditionsWithEntryPoints() throws Exception {
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_DynamicWithEntryPoint.drl" ) );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( reader ),
+                      ResourceType.DRL );
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        // now lets add some knowledge to the kbase
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        List<StockTick> results = new ArrayList<StockTick>();
+        ksession.setGlobal( "results",
+                            results );
+
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "in-channel" );
+        ep.insert( new StockTick( 1,
+                                  "RHT",
+                                  20,
+                                  10000 ) );
+        ep.insert( new StockTick( 2,
+                                  "RHT",
+                                  21,
+                                  15000 ) );
+        ep.insert( new StockTick( 3,
+                                  "RHT",
+                                  22,
+                                  20000 ) );
+
+        ksession.fireAllRules();
+        assertEquals( 3,
+                      results.size() );
+
     }
 
     public class SubvertedClassLoader extends URLClassLoader {

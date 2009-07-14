@@ -11,14 +11,12 @@ import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -170,4 +168,14 @@ public interface InternalWorkingMemory
      */
     public long getIdleTime();
     
+    /**
+     * Returns the number of time units (usually ms) to
+     * the next scheduled job
+     * 
+     * @return the number of time units until the next scheduled job or -1 if
+     *         there is no job scheduled
+     */
+    public long getTimeToNextJob();
+    
+    public void updateEntryPointsCache();     
 }
