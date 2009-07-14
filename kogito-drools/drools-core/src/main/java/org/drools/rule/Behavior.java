@@ -92,5 +92,17 @@ public interface Behavior extends RuleComponent, Cloneable {
      */
     public void expireTuples(Object context, 
                              InternalWorkingMemory workingMemory);
+
+    /**
+     * Some behaviors might change the expiration offset for the 
+     * associated fact type. Example: time sliding windows. 
+     * 
+     * For these behaviors, this method must return the expiration
+     * offset associated to them.
+     * 
+     * @return the expiration offset for this behavior or -1 if 
+     *         they don't have a time based expiration offset.
+     */
+    public long getExpirationOffset();
     
 }
