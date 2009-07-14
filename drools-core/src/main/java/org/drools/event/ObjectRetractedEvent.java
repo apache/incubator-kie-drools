@@ -29,6 +29,8 @@ public class ObjectRetractedEvent extends WorkingMemoryEvent {
     private final FactHandle  handle;
 
     private final Object      oldObject;
+    
+    private final int         type;
 
     public ObjectRetractedEvent(final WorkingMemory workingMemory,
                                 final PropagationContext propagationContext,
@@ -38,6 +40,7 @@ public class ObjectRetractedEvent extends WorkingMemoryEvent {
                propagationContext );
         this.handle = handle;
         this.oldObject = oldObject;
+        this.type = propagationContext.getType();
     }
 
     public FactHandle getFactHandle() {
@@ -48,7 +51,12 @@ public class ObjectRetractedEvent extends WorkingMemoryEvent {
         return this.oldObject;
     }
 
-    public String toString() {
-        return "[ObjectRetracted: handle=" + this.handle + "; old_object=" + this.oldObject + "]";
+    public int getType() {
+        return this.type;
     }
+    
+    public String toString() {
+        return "[ObjectRetracted: type="+PropagationContext.typeDescr[type]+" handle=" + this.handle + "; old_object=" + this.oldObject + "]";
+    }
+    
 }

@@ -148,6 +148,14 @@ public class SlidingLengthWindow
     }
     
 
+    /**
+     * Length windows don't change expiration offset, so
+     * always return -1
+     */
+    public long getExpirationOffset() {
+        return -1;
+    }
+
     public String toString() {
         return "SlidingLengthWindow( size="+size+" )";
     }

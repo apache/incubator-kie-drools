@@ -165,4 +165,9 @@ public class JDKTimerService
 
     }
 
+    public long getTimeToNextJob() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

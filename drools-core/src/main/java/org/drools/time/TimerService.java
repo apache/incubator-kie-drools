@@ -55,5 +55,14 @@ public interface TimerService {
 	 * Shuts the service down
 	 */
     public void shutdown();
+    
+    /**
+     * Returns the number of time units (usually ms) to
+     * the next scheduled job
+     * 
+     * @return the number of time units until the next scheduled job or -1 if
+     *         there is no job scheduled
+     */
+    public long getTimeToNextJob();
 	
 }

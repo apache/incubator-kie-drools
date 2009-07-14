@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import org.drools.common.EventFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
@@ -156,11 +157,12 @@ public class SlidingTimeWindow
                                             tuple ) ) {
             queue.expiringTuple = tuple;
             queue.queue.remove();
+            final InternalFactHandle handle = tuple.getFactHandle();
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.EXPIRATION,
                                                                                       null,
                                                                                       null,
-                                                                                      tuple.getFactHandle() );
+                                                                                      handle );
             tuple.getRightTupleSink().retractRightTuple( tuple,
                                                          propagationContext,
                                                          workingMemory );
@@ -198,6 +200,10 @@ public class SlidingTimeWindow
                                                   new PointInTimeTrigger( nextTimestamp ) );
             jobctx.setJobHandle( handle );
         }
+    }
+
+    public long getExpirationOffset() {
+        return this.size;
     }
 
     public String toString() {
@@ -337,7 +343,5 @@ public class SlidingTimeWindow
             // TODO Auto-generated method stub
 
         }
-
     }
-
 }

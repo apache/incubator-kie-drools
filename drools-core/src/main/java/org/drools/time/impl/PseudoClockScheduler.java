@@ -124,8 +124,8 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      */
-    public long advanceTime(long amount,
-                            TimeUnit unit) {
+    public synchronized long advanceTime(long amount,
+                                         TimeUnit unit) {
         this.timer += unit.toMillis( amount );
         this.runCallBacks();
         return this.timer;
@@ -158,7 +158,7 @@ public class PseudoClockScheduler
 
     private void runCallBacks() {
         ScheduledJob item = queue.peek();
-        while ( item != null && ( item.getTrigger().hasNextFireTime().getTime() <= this.timer ) ) {
+        while ( item != null && (item.getTrigger().hasNextFireTime().getTime() <= this.timer) ) {
             // remove the head
             queue.remove();
             // updates the trigger
@@ -172,6 +172,11 @@ public class PseudoClockScheduler
             // get next head
             item = queue.peek();
         }
+    }
+
+    public synchronized long getTimeToNextJob() {
+        ScheduledJob item = queue.peek();
+        return ( item != null ) ? item.getTrigger().hasNextFireTime().getTime() - this.timer : -1;
     }
 
     /**

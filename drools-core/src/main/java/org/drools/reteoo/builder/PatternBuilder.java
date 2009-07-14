@@ -279,6 +279,11 @@ public class PatternBuilder
                 }
                 
             }
+            for( Behavior behavior : pattern.getBehaviors() ) {
+                if( behavior.getExpirationOffset() != -1 ) {
+                    expirationOffset = Math.max( behavior.getExpirationOffset(), expirationOffset );
+                }
+            }
             if( expirationOffset == 0) {
                 otn.setExpirationOffset( context.getTemporalDistance().getExpirationOffset( pattern ) );
             } else {

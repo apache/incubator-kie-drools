@@ -20,6 +20,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -1071,7 +1072,7 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void testIdleTime2() throws Exception {
+    public void testIdleTimeAndTimeToNextJob() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
         final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
@@ -1083,87 +1084,106 @@ public class CepEspTest extends TestCase {
         conf.setClockType( ClockType.PSEUDO_CLOCK );
         StatefulSession wm = ruleBase.newStatefulSession( conf,
                                                           null );
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(wm);
+        logger.setFileName( "audit" );
 
-        List results = new ArrayList();
+        try {
+            List results = new ArrayList();
 
-        wm.setGlobal( "results",
-                      results );
-        InternalWorkingMemory iwm = (InternalWorkingMemory) wm;
+            wm.setGlobal( "results",
+                          results );
+            InternalWorkingMemory iwm = (InternalWorkingMemory) wm;
 
-        // how to initialize the clock?
-        // how to configure the clock?
-        SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
-        clock.advanceTime( 5,
-                           TimeUnit.SECONDS ); // 5 seconds
-        wm.insert( new OrderEvent( "1",
-                                   "customer A",
-                                   70 ) );
-        assertEquals( 0,
-                      iwm.getIdleTime() );
+            // how to initialize the clock?
+            // how to configure the clock?
+            SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
+            clock.advanceTime( 5,
+                               TimeUnit.SECONDS ); // 5 seconds
+            
+            // there is no next job, so returns -1
+            assertEquals( -1, iwm.getTimeToNextJob());
+            wm.insert( new OrderEvent( "1",
+                                       "customer A",
+                                       70 ) );
+            assertEquals( 0,
+                          iwm.getIdleTime() );
+            // now, there is a next job in 30 seconds: expire the event
+            assertEquals( 30000, iwm.getTimeToNextJob());
 
-        wm.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 70,
-                      ((Number) results.get( 0 )).intValue() );
+            wm.fireAllRules();
+            assertEquals( 1,
+                          results.size() );
+            assertEquals( 70,
+                          ((Number) results.get( 0 )).intValue() );
 
-        // advance clock and assert new data
-        clock.advanceTime( 10,
-                           TimeUnit.SECONDS ); // 10 seconds
-        wm.insert( new OrderEvent( "2",
-                                   "customer A",
-                                   60 ) );
-        wm.fireAllRules();
+            // advance clock and assert new data
+            clock.advanceTime( 10,
+                               TimeUnit.SECONDS ); // 10 seconds
+            // next job is in 20 seconds: expire the event
+            assertEquals( 20000, iwm.getTimeToNextJob());
+            
+            wm.insert( new OrderEvent( "2",
+                                       "customer A",
+                                       60 ) );
+            wm.fireAllRules();
 
-        assertEquals( 2,
-                      results.size() );
-        assertEquals( 65,
-                      ((Number) results.get( 1 )).intValue() );
+            assertEquals( 2,
+                          results.size() );
+            assertEquals( 65,
+                          ((Number) results.get( 1 )).intValue() );
 
-        // advance clock and assert new data
-        clock.advanceTime( 10,
-                           TimeUnit.SECONDS ); // 10 seconds
-        wm.insert( new OrderEvent( "3",
-                                   "customer A",
-                                   50 ) );
-        wm.fireAllRules();
-        assertEquals( 3,
-                      results.size() );
-        assertEquals( 60,
-                      ((Number) results.get( 2 )).intValue() );
+            // advance clock and assert new data
+            clock.advanceTime( 10,
+                               TimeUnit.SECONDS ); // 10 seconds
+            // next job is in 10 seconds: expire the event
+            assertEquals( 10000, iwm.getTimeToNextJob());
+            
+            wm.insert( new OrderEvent( "3",
+                                       "customer A",
+                                       50 ) );
+            wm.fireAllRules();
+            assertEquals( 3,
+                          results.size() );
+            assertEquals( 60,
+                          ((Number) results.get( 2 )).intValue() );
 
-        // advance clock and assert new data
-        clock.advanceTime( 10,
-                           TimeUnit.SECONDS ); // 10 seconds
-        // advancing clock time will cause events to expire
-        assertEquals( 0,
-                      iwm.getIdleTime() );
+            // advance clock and assert new data
+            clock.advanceTime( 10,
+                               TimeUnit.SECONDS ); // 10 seconds
+            // advancing clock time will cause events to expire
+            assertEquals( 0,
+                          iwm.getIdleTime() );
+            // next job is in 10 seconds: expire another event
+            //assertEquals( 10000, iwm.getTimeToNextJob());
 
-        wm.insert( new OrderEvent( "4",
-                                   "customer A",
-                                   25 ) );
-        wm.fireAllRules();
+            wm.insert( new OrderEvent( "4",
+                                       "customer A",
+                                       25 ) );
+            wm.fireAllRules();
 
-        // first event should have expired, making average under the rule threshold, so no additional rule fire
-        assertEquals( 3,
-                      results.size() );
+            // first event should have expired, making average under the rule threshold, so no additional rule fire
+            assertEquals( 3,
+                          results.size() );
 
-        // advance clock and assert new data
-        clock.advanceTime( 10,
-                           TimeUnit.SECONDS ); // 10 seconds
+            // advance clock and assert new data
+            clock.advanceTime( 10,
+                               TimeUnit.SECONDS ); // 10 seconds
 
-        wm.insert( new OrderEvent( "5",
-                                   "customer A",
-                                   70 ) );
-        assertEquals( 0,
-                      iwm.getIdleTime() );
+            wm.insert( new OrderEvent( "5",
+                                       "customer A",
+                                       70 ) );
+            assertEquals( 0,
+                          iwm.getIdleTime() );
 
-        //        wm  = SerializationHelper.serializeObject(wm);
-        wm.fireAllRules();
+            //        wm  = SerializationHelper.serializeObject(wm);
+            wm.fireAllRules();
 
-        // still under the threshold, so no fire
-        assertEquals( 3,
-                      results.size() );
+            // still under the threshold, so no fire
+            assertEquals( 3,
+                          results.size() );
+        } finally {
+            logger.writeToDisk();
+        }
     }
 
 }
