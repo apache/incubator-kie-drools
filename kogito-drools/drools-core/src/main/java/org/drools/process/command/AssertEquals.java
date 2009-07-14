@@ -3,17 +3,10 @@ package org.drools.process.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.AgendaFilter;
+import org.drools.util.StringUtils;
 import org.mvel2.MVEL;
 
 public class AssertEquals
@@ -65,11 +58,53 @@ public class AssertEquals
         vars.put( "actual",
                   actualObject );
 
-        Assert.assertTrue( this.message,
-                           (Boolean) MVEL.eval( "expected == actual",
-                                                vars ) );
+        if ( ((Boolean) MVEL.eval( "expected != actual",
+                                   vars )) ) {
+            throw new AssertionError( format( this.message,
+                                              expectedObject,
+                                              actualObject ) );
+        }
+
+        //        Assert.assertTrue( this.message,
+        //                           (Boolean) MVEL.eval( "expected == actual",
+        //                                                vars ) );
 
         return null;
+    }
+
+    static String format(String message,
+                         Object expected,
+                         Object actual) {
+        StringBuilder builder = new StringBuilder();
+
+        if ( !StringUtils.isEmpty( message ) ) {
+            builder.append( message );
+            builder.append( " " );
+        }
+        String expectedString = String.valueOf( expected );
+        String actualString = String.valueOf( actual );
+        if ( expectedString.equals( actualString ) ) {
+            builder.append( "expected: " );
+            builder.append( formatClassAndValue( expected,
+                                                 expectedString ) );
+
+            builder.append( " but was: " );
+            builder.append( formatClassAndValue( actual,
+                                                 actualString ) );
+        } else {
+            builder.append( "expected:<" );
+            builder.append( expectedString );
+            builder.append( "> but was:<" );
+            builder.append( actualString );
+        }
+
+        return builder.toString();
+    }
+
+    private static String formatClassAndValue(Object value,
+                                              String valueString) {
+        String className = value == null ? "null" : value.getClass().getName();
+        return className + "<" + valueString + ">";
     }
 
     public String toString() {
