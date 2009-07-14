@@ -39,6 +39,7 @@ public class DroolsObjectIOTest  extends TestCase {
         
     }
     
+    @org.junit.Test
     public void testFileIO() throws Exception {
         File    file    = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
         ByteArrayOutputStream   bytes   = new ByteArrayOutputStream();
@@ -93,6 +94,7 @@ public class DroolsObjectIOTest  extends TestCase {
         }
     }
 
+    @org.junit.Test
     public void testObject() throws Exception {
         SerializableObject    obj = new ExternalizableObject();
 
@@ -134,6 +136,7 @@ public class DroolsObjectIOTest  extends TestCase {
         return bytes.toByteArray();
     }
 
+    @org.junit.Test
     public void testStreaming() throws Exception {
         Package pkg = new Package("test");
 
