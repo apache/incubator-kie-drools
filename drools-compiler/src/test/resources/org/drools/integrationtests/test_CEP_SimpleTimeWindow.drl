@@ -9,7 +9,7 @@ end
 rule "average over threshold"
 when
     Number( $avg : intValue >= 50 ) from accumulate(
-              OrderEvent( $amt : total ) over window:time(30000),
+              OrderEvent( $amt : total ) over window:time(30s),
               average( $amt ) )
 then
     //System.out.println( "Over threshold: "+$avg );
