@@ -9,7 +9,9 @@ import java.util.Set;
 
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.KnowledgeRuntime;
+import org.junit.Ignore;
 
+@Ignore
 public class CollectionTest {
 
     public static class Person {
