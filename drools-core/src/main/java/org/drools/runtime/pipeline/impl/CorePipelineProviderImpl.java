@@ -2,7 +2,7 @@ package org.drools.runtime.pipeline.impl;
 
 import java.util.List;
 
-import org.drools.process.command.InsertElementsCommand;
+import org.drools.command.InsertElementsCommand;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.pipeline.Action;

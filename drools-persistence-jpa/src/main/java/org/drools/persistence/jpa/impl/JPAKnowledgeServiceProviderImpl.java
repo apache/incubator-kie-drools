@@ -4,10 +4,10 @@ import java.util.Properties;
 
 import org.drools.KnowledgeBase;
 import org.drools.SessionConfiguration;
+import org.drools.command.CommandService;
+import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
 import org.drools.persistence.session.SingleSessionCommandService;
-import org.drools.process.command.CommandService;
-import org.drools.process.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;

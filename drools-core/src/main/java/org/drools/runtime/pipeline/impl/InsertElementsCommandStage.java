@@ -5,7 +5,7 @@ package org.drools.runtime.pipeline.impl;
 
 import java.util.Collection;
 
-import org.drools.process.command.InsertElementsCommand;
+import org.drools.command.InsertElementsCommand;
 import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 

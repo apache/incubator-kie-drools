@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.process.command.CommandService;
+import org.drools.command.CommandService;
 import org.drools.process.instance.ProcessInstanceManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.process.instance.event.SignalManagerFactory;
