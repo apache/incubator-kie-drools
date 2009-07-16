@@ -3,7 +3,7 @@
  */
 package org.drools.runtime.pipeline.impl;
 
-import org.drools.command.InsertObjectCommand;
+import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 

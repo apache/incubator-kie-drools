@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.drools.command.runtime.rule;
 
 import java.util.ArrayList;
 import java.util.Collection;

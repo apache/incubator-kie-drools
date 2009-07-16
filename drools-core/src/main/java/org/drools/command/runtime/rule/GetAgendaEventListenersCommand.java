@@ -1,26 +1,25 @@
-package org.drools.command;
+package org.drools.command.runtime.rule;
 
 import java.util.Collection;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class GetWorkingMemoryEventListenersCommand
+public class GetAgendaEventListenersCommand
     implements
-    GenericCommand<Collection<WorkingMemoryEventListener>> {
+    GenericCommand<Collection<AgendaEventListener>> {
 
-    public Collection<WorkingMemoryEventListener> execute(Context context) {
+    public Collection<AgendaEventListener> execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return ksession.getWorkingMemoryEventListeners();
+        return ksession.getAgendaEventListeners();
     }
 
     public String toString() {
-        return "session.getWorkingMemoryEventListeners();";
+        return "session.getAgendaEventListeners();";
     }
-
 }

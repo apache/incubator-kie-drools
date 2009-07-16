@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.drools.command.runtime.rule;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
@@ -8,7 +8,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.AgendaImpl;
 
-public class ClearAgendaGroupCommand implements GenericCommand<Object> {
+public class AgendaGroupSetFocusCommand implements GenericCommand<Object> {
 
 	private String name;
 	
@@ -22,12 +22,12 @@ public class ClearAgendaGroupCommand implements GenericCommand<Object> {
 
     public Void execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        ksession.getAgenda().getAgendaGroup( this.name ).clear();
+        ksession.getAgenda().getAgendaGroup( this.name ).setFocus();
 		return null;
 	}
 
 	public String toString() {
-		return "session.getAgenda().getAgendaGroup(" + name + ").clear();";
+		return "session.getAgenda().getAgendaGroup(" + name + ").setFocus();";
 	}
 	
 }
