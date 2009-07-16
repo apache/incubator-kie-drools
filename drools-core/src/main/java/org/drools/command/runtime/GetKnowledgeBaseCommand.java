@@ -1,23 +1,28 @@
-package org.drools.command;
+package org.drools.command.runtime;
 
+import org.drools.KnowledgeBase;
+import org.drools.RuleBase;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class GetEnvironmentCommand
+public class GetKnowledgeBaseCommand
     implements
-    GenericCommand<Environment> {
+    GenericCommand<KnowledgeBase> {
 
-    public Environment execute(Context context) {
+    public GetKnowledgeBaseCommand() {
+    }
+
+    public KnowledgeBase execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return ksession.getEnvironment();
+        return ksession.getKnowledgeBase();
     }
 
     public String toString() {
-        return "session.getEnvironment();";
+        return "session.getRuleBase();";
     }
 
 }
