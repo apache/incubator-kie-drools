@@ -1,4 +1,4 @@
-package org.drools.command.process;
+package org.drools.command.runtime.process;
 
 import java.util.HashMap;
 import java.util.List;
