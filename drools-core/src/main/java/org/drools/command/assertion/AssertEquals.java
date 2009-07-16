@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.drools.command.assertion;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,17 +1,19 @@
-package org.drools.command;
+package org.drools.command.process;
 
 import java.util.Collection;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.rule.FactHandle;
 
-public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance> {
+public class SetProcessInstanceStateCommand implements GenericCommand<Object> {
 	
 	private Long processInstanceId;
+	private int state;
 	
 	public Long getProcessInstanceId() {
 		return processInstanceId;
@@ -21,12 +23,21 @@ public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance
 		this.processInstanceId = processInstanceId;
 	}
 	
-    public ProcessInstance execute(Context context) {
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+    public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 		if (processInstanceId == null) {
 			return null;
 		}
-		return ksession.getProcessInstance(processInstanceId);
+		((ProcessInstance) ksession.getProcessInstance(processInstanceId)).setState(state);
+		return null;
 	}
 
 	public String toString() {
