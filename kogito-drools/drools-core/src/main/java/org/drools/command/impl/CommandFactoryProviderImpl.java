@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryProvider;
-import org.drools.command.CompleteWorkItemCommand;
-import org.drools.command.GetGlobalCommand;
-import org.drools.command.SetGlobalCommand;
 import org.drools.command.Setter;
+import org.drools.command.runtime.GetGlobalCommand;
+import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
+import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;

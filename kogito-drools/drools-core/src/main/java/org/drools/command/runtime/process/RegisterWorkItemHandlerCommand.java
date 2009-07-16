@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.drools.command.runtime.process;
 
 import java.util.Collection;
 

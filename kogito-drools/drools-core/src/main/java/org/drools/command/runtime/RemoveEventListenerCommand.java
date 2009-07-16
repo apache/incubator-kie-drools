@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.drools.command.runtime;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
