@@ -6,8 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.drools.WorkingMemory;
-import org.drools.process.command.CommandService;
-import org.drools.process.command.SignalEventCommand;
+import org.drools.command.CommandService;
+import org.drools.command.SignalEventCommand;
 import org.drools.process.instance.event.DefaultSignalManager;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.ProcessInstance;
