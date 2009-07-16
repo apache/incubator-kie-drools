@@ -10,15 +10,15 @@ import java.util.Map.Entry;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.command.AbortWorkItemCommand;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
 import org.drools.command.CompleteWorkItemCommand;
 import org.drools.command.GetGlobalCommand;
 import org.drools.command.SetGlobalCommand;
 import org.drools.command.Setter;
-import org.drools.command.SignalEventCommand;
-import org.drools.command.StartProcessCommand;
+import org.drools.command.process.AbortWorkItemCommand;
+import org.drools.command.process.SignalEventCommand;
+import org.drools.command.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
 import org.drools.command.runtime.rule.GetObjectsCommand;
