@@ -1,6 +1,9 @@
 package org.drools.clips;
 
+import org.junit.Ignore;
 
+
+@Ignore
 public class CompiledFunctionsTest { //extends TestCase {
 //    private CLPParser parser;
 //
