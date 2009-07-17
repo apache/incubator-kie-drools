@@ -43,10 +43,10 @@ public class MannersBenchmark {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(pkg);
 
-        for (ObjectTypeNode node : ((InternalRuleBase) ruleBase).getRete().getObjectTypeNodes()) {
-            CompiledNetwork compiledNetwork = ObjectTypeNodeCompiler.compile(builder, node);
-            node.setCompiledNetwork(compiledNetwork);
-        }
+//        for (ObjectTypeNode node : ((InternalRuleBase) ruleBase).getRete().getObjectTypeNodes()) {
+//            CompiledNetwork compiledNetwork = ObjectTypeNodeCompiler.compile(builder, node);
+//            node.setCompiledNetwork(compiledNetwork);
+//        }
 
         String filename;
         if (args.length != 0) {
