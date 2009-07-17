@@ -43,10 +43,10 @@ public class MannersBenchmark {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(pkg);
 
-//        for (ObjectTypeNode node : ((InternalRuleBase) ruleBase).getRete().getObjectTypeNodes()) {
-//            CompiledNetwork compiledNetwork = ObjectTypeNodeCompiler.compile(builder, node);
-//            node.setCompiledNetwork(compiledNetwork);
-//        }
+        for (ObjectTypeNode node : ((InternalRuleBase) ruleBase).getRete().getObjectTypeNodes()) {
+            CompiledNetwork compiledNetwork = ObjectTypeNodeCompiler.compile(builder, node);
+            node.setCompiledNetwork(compiledNetwork);
+        }
 
         String filename;
         if (args.length != 0) {
@@ -56,7 +56,7 @@ public class MannersBenchmark {
             filename = "manners128.dat";
         }
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 3; ++i) {
             InputStream is = MannersBenchmark.class.getResourceAsStream(filename);
             List list = getInputObjects(is);
             StatefulSession session = ruleBase.newStatefulSession();
