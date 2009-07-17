@@ -27,12 +27,6 @@ public interface WorkingMemory
     void halt();
 
     /**
-     * Returns the session clock instance assigned to this session
-     * @return
-     */
-    public <T extends SessionClock> T getSessionClock();
-
-    /**
      * Returns a reference to this session's <code>Agenda</code>.
      * 
      * @return
