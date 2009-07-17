@@ -93,6 +93,7 @@ public class TimerManager {
     	for (TimerInstance timer: timers.values()) {
     		timerService.removeJob( timer.getJobHandle() );
     	}
+    	timerService.shutdown();
     }
     
     public TimerService getTimerService() {

@@ -26,6 +26,7 @@ public class JDKTimerServiceTest extends TestCase {
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
         Thread.sleep( 500 );
+        timeService.shutdown();
         assertEquals( 1, ctx.getList().size() ); 
     }    
     
@@ -35,7 +36,7 @@ public class JDKTimerServiceTest extends TestCase {
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
         Thread.sleep( 500 );
-        
+        timeService.shutdown();
         assertEquals( 3, ctx.getList().size() );
     }    
         
@@ -47,7 +48,7 @@ public class JDKTimerServiceTest extends TestCase {
 		ctx.setLimit( 3 );
 		timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);		
 		Thread.sleep( 1000 );
-		
+        timeService.shutdown();
 		assertEquals( 4, ctx.getList().size() );
 	}
 	
