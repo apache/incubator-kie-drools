@@ -635,10 +635,10 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     the time is up, the perfect score has been reached, ... The only thing you can't depend on is on finding the optimal
     solution (unless you know the optimal score), because a local search solver doesn't know that when it finds the
     optimal solution. For real-life problems this doesn't turn out to be much of a problem, because finding the optimal
-    solution would take years, so you 'll want to terminate early anyway.</para>
+    solution would take years, so you 'll want to terminate sooner anyway.</para>
 
-    <para>You can configure when a local search solver needs to stop by configuring a Termination. You can implement your own
-    <literal>Termination</literal>, although the build-in Terminations should suffice for most needs.</para>
+    <para>You can configure when a local search solver needs to stop by configuring a Termination. You can implement
+    your own <literal>Termination</literal>, although the build-in Terminations should suffice for most needs.</para>
 
     <section>
       <title>TimeMillisSpendTermination</title>
@@ -656,11 +656,11 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     &lt;/termination&gt;</programlisting>
 
       <para>Note that the time taken by a <literal>StartingSolutionInitializer</literal> also is taken into account by
-      this Termination. So if you give the solver 2 minutes to solve something, but the initializer takes 1 minute, the local
-      search solver will only have a minute left.</para>
+      this Termination. So if you give the solver 2 minutes to solve something, but the initializer takes 1 minute, the
+      local search solver will only have a minute left.</para>
 
-      <para>Note that if you use this Termination, you will most likely sacrifice reproducability. The best solution will
-      depend on available CPU time, not only because it influences the amount of steps taken, but also because time
+      <para>Note that if you use this Termination, you will most likely sacrifice reproducability. The best solution
+      will depend on available CPU time, not only because it influences the amount of steps taken, but also because time
       gradient based algorithms (such as simulated annealing) will probably act differently on each run.</para>
     </section>
 
@@ -677,8 +677,8 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     <section>
       <title>FeasableScoreTermination</title>
 
-      <para>Terminates when a feasible score has been reached. You can also use this Termination if you know the perfect score,
-      for example for 4 queens:</para>
+      <para>Terminates when a feasible score has been reached. You can also use this Termination if you know the perfect
+      score, for example for 4 queens:</para>
 
       <programlisting>    &lt;termination&gt;
         &lt;feasableScore&gt;0&lt;/feasableScore&gt;
@@ -708,7 +708,8 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     <section>
       <title>Combining Terminations</title>
 
-      <para>Terminations can be combined, for example: terminate after 100 steps or if a score of 0 has been reached:</para>
+      <para>Terminations can be combined, for example: terminate after 100 steps or if a score of 0 has been
+      reached:</para>
 
       <programlisting>    &lt;termination&gt;
         &lt;terminationCompositionStyle&gt;OR&lt;/terminationCompositionStyle&gt;
@@ -716,8 +717,8 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
         &lt;feasableScore&gt;0&lt;/feasableScore&gt;
     &lt;/termination&gt;</programlisting>
 
-      <para>Alternatively you can use AND, for example: terminate after reaching a feasible score of at least -100 and no
-      improvements in 5 steps:</para>
+      <para>Alternatively you can use AND, for example: terminate after reaching a feasible score of at least -100 and
+      no improvements in 5 steps:</para>
 
       <programlisting>    &lt;termination&gt;
         &lt;terminationCompositionStyle&gt;AND&lt;/terminationCompositionStyle&gt;
@@ -727,6 +728,27 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
       <para>This ensures it doesn't just terminate after finding a feasible solution, but also makes any obvious
       improvements on that solution before terminating.</para>
+    </section>
+
+    <section>
+      <title>Another thread can ask a Solver to terminate early</title>
+
+      <para>Sometimes you 'll want to terminate a Solver early from another thread, for example because a user action or
+      a server restart. That cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
+      and if it will occur. Therefor the <literal>Solver</literal> interface has these 2 thread-safe methods:</para>
+
+      <programlisting>public interface Solver {
+
+    // ...
+
+    boolean terminateEarly();
+    boolean isTerminatedEarly();
+
+}</programlisting>
+
+      <para>If you call the <literal>terminateEarly()</literal> method from another thread, the
+      <literal>Solver</literal> will terminate at its earliest convenience and the <literal>solve()</literal> method
+      will return in the original solver thread.</para>
     </section>
   </section>
 </section>
