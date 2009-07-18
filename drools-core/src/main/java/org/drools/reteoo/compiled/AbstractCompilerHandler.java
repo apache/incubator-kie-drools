@@ -3,6 +3,7 @@ package org.drools.reteoo.compiled;
 import org.drools.base.ClassFieldReader;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.Sink;
+import org.drools.rule.ContextEntry;
 
 /**
  * This handler is used as a base class for all {@link org.drools.reteoo.compiled.NetworkHandler}s used for
@@ -29,6 +30,12 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
 
     protected String getVariableName(AlphaNode alphaNode) {
         Class<?> variableType = getVariableType(alphaNode);
+
+        return getVariableName(variableType, alphaNode.getId());
+    }
+
+    protected String getContextVariableName(AlphaNode alphaNode) {
+        Class<?> variableType = ContextEntry.class;
 
         return getVariableName(variableType, alphaNode.getId());
     }

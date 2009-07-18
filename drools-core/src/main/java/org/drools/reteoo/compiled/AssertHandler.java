@@ -88,7 +88,7 @@ class AssertHandler extends AbstractCompilerHandler {
         builder.append("if ( ").append(getVariableName(alphaNode)).
                 append(".isAllowed(").append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(", ").
-                append(getVariableName(alphaNode)).append(".createContextEntry()) ) {").append(NEWLINE);
+                append(getContextVariableName(alphaNode)).append(") ) {").append(NEWLINE);
 
     }
 
