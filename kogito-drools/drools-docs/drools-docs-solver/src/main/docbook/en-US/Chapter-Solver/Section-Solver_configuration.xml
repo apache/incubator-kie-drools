@@ -228,9 +228,8 @@
       </listitem>
     </orderedlist>
 
-    <para>A <literal>Solver</literal> should currently directly be accessed from a single thread. Support from accessing
-    it from a different thread, for example to terminate solving early or to change the problem facts in real-time, will be
-    added in future releases.</para>
+    <para>A <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
+    specifically javadocced as thread-safe.</para>
   </section>
 
   <section>
