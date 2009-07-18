@@ -5,6 +5,7 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.Sink;
+import org.drools.rule.ContextEntry;
 
 import java.util.*;
 
@@ -53,6 +54,13 @@ class DeclarationsHandler extends AbstractCompilerHandler {
         return PRIVATE_MODIFIER + " " + variableType.getName() + " " + variableName + "; // " + comment;
     }
 
+    private String getContextVariableDeclaration(AlphaNode alphaNode){
+        Class<?> variableType = ContextEntry.class;
+        String variableName = getContextVariableName(alphaNode);
+
+        return PRIVATE_MODIFIER + " " + variableType.getName() + " " + variableName + ";";
+    }
+
     private String getVariableDeclaration(Sink sink) {
         Class<?> declarationType = getVariableType(sink);
         String variableName = getVariableName(sink);
@@ -80,6 +88,7 @@ class DeclarationsHandler extends AbstractCompilerHandler {
     @Override
     public void startNonHashedAlphaNode(AlphaNode alphaNode) {
         builder.append(getVariableDeclaration(alphaNode)).append(NEWLINE);
+        builder.append(getContextVariableDeclaration(alphaNode)).append(NEWLINE);        
     }
 
     @Override
