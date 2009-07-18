@@ -629,76 +629,76 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
   </section>
 
   <section>
-    <title>Finish</title>
+    <title>Termination</title>
 
     <para>Sooner or later the local search solver will have to stop solving. This can be because of a number of reasons:
     the time is up, the perfect score has been reached, ... The only thing you can't depend on is on finding the optimal
     solution (unless you know the optimal score), because a local search solver doesn't know that when it finds the
     optimal solution. For real-life problems this doesn't turn out to be much of a problem, because finding the optimal
-    solution would take years, so you 'll want to finish early anyway.</para>
+    solution would take years, so you 'll want to terminate early anyway.</para>
 
-    <para>You can configure when a local search solver needs to stop by configuring a Finish. You can implement your own
-    <literal>Finish</literal>, although the build-in finishes should suffice for most needs.</para>
+    <para>You can configure when a local search solver needs to stop by configuring a Termination. You can implement your own
+    <literal>Termination</literal>, although the build-in Terminations should suffice for most needs.</para>
 
     <section>
-      <title>TimeMillisSpendFinish</title>
+      <title>TimeMillisSpendTermination</title>
 
-      <para>Finishes when an amount of time has been reached:</para>
+      <para>Terminates when an amount of time has been reached:</para>
 
-      <programlisting>    &lt;finish&gt;
+      <programlisting>    &lt;termination&gt;
         &lt;maximumMinutesSpend&gt;2&lt;/maximumMinutesSpend&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
 
       <para>or</para>
 
-      <programlisting>    &lt;finish&gt;
+      <programlisting>    &lt;termination&gt;
         &lt;maximumHouresSpend&gt;1&lt;/maximumHouresSpend&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
 
       <para>Note that the time taken by a <literal>StartingSolutionInitializer</literal> also is taken into account by
-      this finish. So if you give the solver 2 minutes to solve something, but the initializer takes 1 minute, the local
+      this Termination. So if you give the solver 2 minutes to solve something, but the initializer takes 1 minute, the local
       search solver will only have a minute left.</para>
 
-      <para>Note that if you use this finish, you will most likely sacrifice reproducability. The best solution will
+      <para>Note that if you use this Termination, you will most likely sacrifice reproducability. The best solution will
       depend on available CPU time, not only because it influences the amount of steps taken, but also because time
       gradient based algorithms (such as simulated annealing) will probably act differently on each run.</para>
     </section>
 
     <section>
-      <title>StepCountFinish</title>
+      <title>StepCountTermination</title>
 
-      <para>Finishes when an amount of steps has been reached:</para>
+      <para>Terminates when an amount of steps has been reached:</para>
 
-      <programlisting>    &lt;finish&gt;
+      <programlisting>    &lt;termination&gt;
         &lt;maximumStepCount&gt;100&lt;/maximumStepCount&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
     </section>
 
     <section>
-      <title>FeasableScoreFinish</title>
+      <title>FeasableScoreTermination</title>
 
-      <para>Finishes when a feasible score has been reached. You can also use this finish if you know the perfect score,
+      <para>Terminates when a feasible score has been reached. You can also use this Termination if you know the perfect score,
       for example for 4 queens:</para>
 
-      <programlisting>    &lt;finish&gt;
+      <programlisting>    &lt;termination&gt;
         &lt;feasableScore&gt;0&lt;/feasableScore&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
 
       <para>For a solver problem with hard and soft contraints, you can define it like this:</para>
 
-      <programlisting>    &lt;finish&gt;
+      <programlisting>    &lt;termination&gt;
         &lt;feasableScore&gt;0hard/-5000soft&lt;/feasableScore&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
     </section>
 
     <section>
-      <title>UnimprovedStepCountFinish</title>
+      <title>UnimprovedStepCountTermination</title>
 
-      <para>Finishes when the best score hasn't improved in a number of steps:</para>
+      <para>Terminates when the best score hasn't improved in a number of steps:</para>
 
-      <programlisting>    &lt;finish&gt;
+      <programlisting>    &lt;termination&gt;
         &lt;maximumUnimprovedStepCount&gt;100&lt;/maximumUnimprovedStepCount&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
 
       <para>If it hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort
       to continue. We have observed that once a new best solution is found (even after a long time of no improvement on
@@ -706,27 +706,27 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     </section>
 
     <section>
-      <title>Combining finishes</title>
+      <title>Combining Terminations</title>
 
-      <para>Finishes can be combined, for example: finish after 100 steps or if a score of 0 has been reached:</para>
+      <para>Terminations can be combined, for example: terminate after 100 steps or if a score of 0 has been reached:</para>
 
-      <programlisting>    &lt;finish&gt;
-        &lt;finishCompositionStyle&gt;OR&lt;/finishCompositionStyle&gt;
+      <programlisting>    &lt;termination&gt;
+        &lt;terminationCompositionStyle&gt;OR&lt;/terminationCompositionStyle&gt;
         &lt;maximumStepCount&gt;100&lt;/maximumStepCount&gt;
         &lt;feasableScore&gt;0&lt;/feasableScore&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
 
-      <para>Alternatively you can use AND, for example: finish after reaching a feasible score of at least -100 and no
+      <para>Alternatively you can use AND, for example: terminate after reaching a feasible score of at least -100 and no
       improvements in 5 steps:</para>
 
-      <programlisting>    &lt;finish&gt;
-        &lt;finishCompositionStyle&gt;AND&lt;/finishCompositionStyle&gt;
+      <programlisting>    &lt;termination&gt;
+        &lt;terminationCompositionStyle&gt;AND&lt;/terminationCompositionStyle&gt;
         &lt;maximumUnimprovedStepCount&gt;5&lt;/maximumUnimprovedStepCount&gt;
         &lt;feasableScore&gt;-100&lt;/feasableScore&gt;
-    &lt;/finish&gt;</programlisting>
+    &lt;/termination&gt;</programlisting>
 
-      <para>This ensures it doesn't just finish after finding a feasible solution, but also makes any obvious
-      improvements on that solution before finishing.</para>
+      <para>This ensures it doesn't just terminate after finding a feasible solution, but also makes any obvious
+      improvements on that solution before terminating.</para>
     </section>
   </section>
 </section>
