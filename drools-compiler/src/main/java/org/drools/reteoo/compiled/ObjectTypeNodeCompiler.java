@@ -76,7 +76,7 @@ public class ObjectTypeNodeCompiler {
      * This method will output the package statement, followed by the opening of the class declaration
      */
     private void createClassDeclaration() {
-        builder.append("package ").append(PACKAGE_NAME).append(");").append(NEWLINE);
+        builder.append("package ").append(PACKAGE_NAME).append(";").append(NEWLINE);
         builder.append("public class ").append(generatedClassSimpleName).append(" extends ").
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
     }
