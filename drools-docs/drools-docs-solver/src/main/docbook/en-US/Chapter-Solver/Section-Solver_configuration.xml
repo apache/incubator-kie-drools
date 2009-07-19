@@ -251,7 +251,7 @@
         &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
     &lt;/scoreDefinition&gt;
     &lt;termination&gt;
-        &lt;feasableScore&gt;0&lt;/feasableScore&gt;
+        &lt;scoreAttained&gt;0&lt;/scoreAttained&gt;
     &lt;/termination&gt;
     &lt;selector&gt;
         &lt;moveFactoryClass&gt;org.drools.solver.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
