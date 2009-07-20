@@ -79,7 +79,7 @@ public class GuidedDTDRLPersistence {
 			if (validCell(cell)) {
 				if (c instanceof ActionInsertFactCol) {
 					ActionInsertFactCol ac = (ActionInsertFactCol)c;
-					LabelledAction a = find(actions, ac.boundName);
+					LabelledAction a = findByLabelledAction(actions, ac.boundName);
 					if (a == null) {
 						a = new LabelledAction();
 						a.boundName  = ac.boundName;
@@ -92,7 +92,7 @@ public class GuidedDTDRLPersistence {
 					ins.addFieldValue(val);
 				} else if (c instanceof ActionRetractFactCol) {
 					ActionRetractFactCol rf = (ActionRetractFactCol)c;
-					LabelledAction a = find(actions, rf.boundName);
+					LabelledAction a = findByLabelledAction(actions, rf.boundName);
 					if (a == null) {
 						a = new LabelledAction();
 						a.action = new ActionRetractFact(rf.boundName);
@@ -101,7 +101,7 @@ public class GuidedDTDRLPersistence {
 					}
 				} else if (c instanceof ActionSetFieldCol) {
 					ActionSetFieldCol sf = (ActionSetFieldCol)c;
-					LabelledAction a = find(actions, sf.boundName);
+					LabelledAction a = findByLabelledAction(actions, sf.boundName);
 					if (a == null) {
 						a = new LabelledAction();
 						a.boundName = sf.boundName;
@@ -131,7 +131,7 @@ public class GuidedDTDRLPersistence {
 		}
 	}
 
-	private LabelledAction find(List<LabelledAction> actions, String boundName) {
+	private LabelledAction findByLabelledAction(List<LabelledAction> actions, String boundName) {
 		for (LabelledAction labelledAction : actions) {
 			if (labelledAction.boundName.equals(boundName)) {
 				return labelledAction;
@@ -156,7 +156,7 @@ public class GuidedDTDRLPersistence {
 			if (validCell(cell)) {
 
 				//get or create the pattern it belongs too
-				FactPattern fp = find(patterns, c.boundName);
+				FactPattern fp = findByFactPattern(patterns, c.boundName);
 				if (fp == null) {
 					fp = new FactPattern(c.factType);
 					fp.boundName = c.boundName;
@@ -206,7 +206,7 @@ public class GuidedDTDRLPersistence {
 		return operator == null || "".equals(operator);
 	}
 
-	private FactPattern find(List<FactPattern> patterns, String boundName) {
+	private FactPattern findByFactPattern(List<FactPattern> patterns, String boundName) {
 		for (FactPattern factPattern : patterns) {
 			if (factPattern.boundName.equals(boundName)) {
 				return factPattern;
