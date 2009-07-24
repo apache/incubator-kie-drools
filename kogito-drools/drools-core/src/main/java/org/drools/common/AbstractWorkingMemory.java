@@ -1547,14 +1547,7 @@ public abstract class AbstractWorkingMemory
                         try {
                             action.execute( this );
                         } catch ( Exception e ) {
-                            if ( e instanceof RuntimeDroolsException ) {
-                                // rethrow the exception
-                                throw ((RuntimeDroolsException) e);
-                            } else {
-                                System.err.println( "************************************************" );
-                                System.err.println( "Exception caught while executing action: " + action.toString() );
-                                e.printStackTrace();
-                            }
+                            throw new RuntimeDroolsException("Unexpected exception executing action "+action.toString(), e);
                         }
                     }
                     evaluatingActionQueue = false;
