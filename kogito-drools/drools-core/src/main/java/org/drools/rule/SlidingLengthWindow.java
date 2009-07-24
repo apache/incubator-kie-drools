@@ -39,7 +39,7 @@ public class SlidingLengthWindow
     Behavior {
 
     private int size;
-    
+
     public SlidingLengthWindow() {
         this( 0 );
     }
@@ -69,7 +69,7 @@ public class SlidingLengthWindow
      */
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeInt( this.size );
-        
+
     }
 
     public BehaviorType getType() {
@@ -99,12 +99,12 @@ public class SlidingLengthWindow
      *
      * @see org.drools.rule.Behavior#assertRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public void assertRightTuple(final Object context,
-                                 final RightTuple rightTuple,
-                                 final InternalWorkingMemory workingMemory) {
+    public boolean assertRightTuple(final Object context,
+                                    final RightTuple rightTuple,
+                                    final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
         window.pos = (window.pos + 1) % window.rightTuples.length;
-        if( window.rightTuples[window.pos] != null ) {
+        if ( window.rightTuples[window.pos] != null ) {
             final RightTuple tuple = window.rightTuples[window.pos];
             // retract previous
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
@@ -116,9 +116,10 @@ public class SlidingLengthWindow
                                                          propagationContext,
                                                          workingMemory );
             tuple.unlinkFromRightParent();
-            
+
         }
         window.rightTuples[window.pos] = rightTuple;
+        return true;
     }
 
     /**
@@ -130,12 +131,12 @@ public class SlidingLengthWindow
                                   final RightTuple rightTuple,
                                   final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
-        final int last = ( window.pos == 0 ) ? window.rightTuples.length-1 : window.pos-1;
+        final int last = (window.pos == 0) ? window.rightTuples.length - 1 : window.pos - 1;
         // we start the loop on current pos because the most common scenario is to retract the
         // right tuple referenced by the current "pos" position, causing this loop to only execute
         // the first iteration
-        for( int i = window.pos; i != last; i = (i+1)%window.rightTuples.length ) {
-            if( window.rightTuples[i] == rightTuple ) {
+        for ( int i = window.pos; i != last; i = (i + 1) % window.rightTuples.length ) {
+            if ( window.rightTuples[i] == rightTuple ) {
                 window.rightTuples[i] = null;
                 break;
             }
@@ -146,7 +147,6 @@ public class SlidingLengthWindow
                              InternalWorkingMemory workingMemory) {
         // do nothing
     }
-    
 
     /**
      * Length windows don't change expiration offset, so
@@ -157,7 +157,7 @@ public class SlidingLengthWindow
     }
 
     public String toString() {
-        return "SlidingLengthWindow( size="+size+" )";
+        return "SlidingLengthWindow( size=" + size + " )";
     }
 
     /**
@@ -168,11 +168,11 @@ public class SlidingLengthWindow
     private static class SlidingLengthWindowContext
         implements
         Externalizable {
-        
+
         public RightTuple[] rightTuples;
-        public int pos = 0;
-        
-        public SlidingLengthWindowContext( final int size ) {
+        public int          pos = 0;
+
+        public SlidingLengthWindowContext(final int size) {
             this.rightTuples = new RightTuple[size];
         }
 
@@ -180,7 +180,7 @@ public class SlidingLengthWindow
                                                 ClassNotFoundException {
             this.pos = in.readInt();
             this.rightTuples = (RightTuple[]) in.readObject();
-            
+
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {

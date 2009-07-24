@@ -42,7 +42,7 @@ public class BehaviorManager
     public BehaviorManager() {
         this( NO_BEHAVIORS );
     }
-    
+
     /**
      * @param behaviors
      */
@@ -83,12 +83,13 @@ public class BehaviorManager
     public boolean assertRightTuple(final Object behaviorContext,
                                     final RightTuple rightTuple,
                                     final InternalWorkingMemory workingMemory) {
+        boolean result = true;
         for ( int i = 0; i < behaviors.length; i++ ) {
-            behaviors[i].assertRightTuple( ((Object[]) behaviorContext)[i],
-                                           rightTuple,
-                                           workingMemory );
+            result = result && behaviors[i].assertRightTuple( ((Object[]) behaviorContext)[i],
+                                                              rightTuple,
+                                                              workingMemory );
         }
-        return true;
+        return result;
     }
 
     /**
