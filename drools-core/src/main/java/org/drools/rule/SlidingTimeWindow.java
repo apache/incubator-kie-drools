@@ -48,7 +48,7 @@ public class SlidingTimeWindow
     Externalizable,
     Behavior {
 
-    private long size;
+    private long              size;
     // stateless job
     private final BehaviorJob job = new BehaviorJob();
 
@@ -110,9 +110,9 @@ public class SlidingTimeWindow
      *
      * @see org.drools.rule.Behavior#assertRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public void assertRightTuple(final Object context,
-                                 final RightTuple rightTuple,
-                                 final InternalWorkingMemory workingMemory) {
+    public boolean assertRightTuple(final Object context,
+                                    final RightTuple rightTuple,
+                                    final InternalWorkingMemory workingMemory) {
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         queue.queue.add( rightTuple );
         if ( queue.queue.peek() == rightTuple ) {
@@ -121,6 +121,7 @@ public class SlidingTimeWindow
                                   workingMemory,
                                   queue );
         }
+        return true;
     }
 
     /**
@@ -253,7 +254,7 @@ public class SlidingTimeWindow
 
     private static class BehaviorJobContext
         implements
-        JobContext, 
+        JobContext,
         Externalizable {
         public InternalWorkingMemory workingMemory;
         public Behavior              behavior;
@@ -289,7 +290,7 @@ public class SlidingTimeWindow
 
         public void writeExternal(ObjectOutput out) throws IOException {
             // TODO Auto-generated method stub
-            
+
         }
 
     }
