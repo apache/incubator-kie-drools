@@ -56,7 +56,7 @@ import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.ExecutionResults;
+import org.drools.result.ExecutionResults;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;

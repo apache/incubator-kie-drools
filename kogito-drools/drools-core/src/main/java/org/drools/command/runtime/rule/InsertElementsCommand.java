@@ -4,55 +4,77 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.result.ExecutionResults;
+import org.drools.result.InsertElementsResult;
+
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+@XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand
     implements
     GenericCommand<Collection<FactHandle>> {
-    public Iterable objects;
 
+    @XmlElement(name="object", required = true)
+    protected List<Object> objects;
+
+    @XmlAttribute
     private String  outIdentifier;
 
-    private boolean returnObject = true;
+    @XmlAttribute
+    private Boolean returnObject = true;
 
     public InsertElementsCommand() {
-        this.objects = new ArrayList();
+        this.objects = new ArrayList<Object>();
     }
 
-    public InsertElementsCommand(Iterable objects) {
-        this.objects = objects;
+    public InsertElementsCommand(Iterable<Object> objects) {
+    	this();
+    	for( Object obj: objects ){
+    		this.objects.add( obj );
+    	}
     }
 
-    public Iterable getObjects() {
+    public Iterable<Object> getObjects() {
         return this.objects;
     }
 
-    public void setObjects(Iterable objects) {
-        this.objects = objects;
+    public void setObjects(Iterable<Object> objects) {
+        this.objects = new ArrayList<Object>();
+    	for( Object obj: objects ){
+    		this.objects.add( obj );
+    	}
     }
 
     public Collection<FactHandle> execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+
         List<FactHandle> handles = new ArrayList<FactHandle>();
         for ( Object object : objects ) {
             handles.add( ksession.insert( object ) );
         }
 
         if ( outIdentifier != null ) {
+            ExecutionResults execRes = ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult();
+            InsertElementsResult insRes = new InsertElementsResult( outIdentifier );
             if ( this.returnObject ) {
-                ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier,
-                                                               objects );
+                insRes.setObjects( objects ); 
             }
-            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getFactHandles().put( this.outIdentifier,
-                                                               handles );
+            insRes.setHandles( handles );
+            execRes.getResults().add( insRes );
         }
         return handles;
     }
@@ -66,10 +88,14 @@ public class InsertElementsCommand
     }
 
     public boolean isReturnObject() {
-        return returnObject;
+        if (returnObject == null) {
+            return true;
+        } else {
+            return returnObject;
+        }
     }
 
-    public void setReturnObject(boolean returnObject) {
+    public void setReturnObject(Boolean returnObject) {
         this.returnObject = returnObject;
     }
 

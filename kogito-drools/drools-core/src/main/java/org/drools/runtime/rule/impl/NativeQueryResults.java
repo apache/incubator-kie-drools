@@ -3,15 +3,18 @@ package org.drools.runtime.rule.impl;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.command.Command;
+import org.drools.result.GenericResult;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.QueryResults;
 
 public class NativeQueryResults
     implements
-    QueryResults {
+	QueryResults {
     
     private org.drools.QueryResults results;
+    private Command<?> command;
 
     public NativeQueryResults(org.drools.QueryResults results) {
         this.results = results;
@@ -31,6 +34,14 @@ public class NativeQueryResults
     
     public Iterator<QueryResultsRow> iterator() {
         return new QueryResultsIterator( this.results.iterator() );
+    }
+
+    public void setCommand(Command<?> command){
+	this.command = command;
+    }
+
+    public Command<?> getCommand(){
+        return this.command;
     }
 
     private class QueryResultsIterator
