@@ -1,11 +1,12 @@
 package org.drools.runtime.rule;
 
+import java.io.Externalizable;
 import java.io.Serializable;
 
 /**
  * An interface for accumulate external function implementations
- */
-public interface AccumulateFunction {
+ */ 
+public interface AccumulateFunction extends Externalizable {
 
     /**
      * Creates and returns a new context object
