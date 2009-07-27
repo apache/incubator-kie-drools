@@ -32,10 +32,13 @@ import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.DefaultFactHandle;
 import org.drools.rule.Declaration;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.help.BatchExecutionHelperProvider;
 import org.drools.runtime.impl.BatchExecutionImpl;
-import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.result.ExecutionResults;
+import org.drools.result.ExecutionResultsImpl;
+import org.drools.result.GenericResult;
+import org.drools.result.InsertElementsResult;
+import org.drools.result.InsertObjectResult;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
@@ -93,8 +96,9 @@ public class BatchExecutionHelperProviderImpl
                        GetObjectCommand.class );
         xstream.alias( "get-objects",
                        GetObjectsCommand.class );
+	/*** WL ***/
         xstream.alias( "execution-results",
-                       ExecutionResultImpl.class );
+                       ExecutionResultsImpl.class );
         xstream.alias( "fire-all-rules",
                        FireAllRulesCommand.class );
         xstream.alias( "query",
@@ -120,6 +124,7 @@ public class BatchExecutionHelperProviderImpl
         xstream.registerConverter( new SetGlobalConverter( xstream.getMapper() ) );
         xstream.registerConverter( new GetGlobalConverter( xstream.getMapper() ) );
         xstream.registerConverter( new GetObjectsConverter( xstream.getMapper() ) );
+	/** WL **/
         xstream.registerConverter( new BatchExecutionResultConverter( xstream.getMapper() ) );
         xstream.registerConverter( new QueryResultsConverter( xstream.getMapper() ) );
         xstream.registerConverter( new FactHandleConverter(xstream.getMapper()));
@@ -847,6 +852,7 @@ public class BatchExecutionHelperProviderImpl
         }
     }
 
+    /*** WL ***/
     public static class BatchExecutionResultConverter extends AbstractCollectionConverter
         implements
         Converter {
@@ -870,7 +876,8 @@ public class BatchExecutionHelperProviderImpl
                 writer.endNode();
             }
 
-            for ( String identifier : ((ExecutionResultImpl) result).getFactHandles().keySet() ) {
+	    /*=================
+            for ( String identifier : ((ExecutionResultsImpl) result).getFactHandles().keySet() ) {
 
                 Object handle = result.getFactHandle( identifier );
                 if ( handle instanceof FactHandle ) {
@@ -894,12 +901,36 @@ public class BatchExecutionHelperProviderImpl
 
                     writer.endNode();
                 }
-
+            }
+            ======================*/
+            for ( GenericResult genRes: result.getResults() ){
+            	String identifier = genRes.getIdentifier();
+            	if( genRes instanceof InsertObjectResult ){
+            		FactHandle handle = (FactHandle)((InsertObjectResult)genRes).getFactHandle();
+            		writer.startNode( "fact-handle" );
+            		writer.addAttribute( "identifier",
+            				identifier );
+            		writer.addAttribute( "externalForm",
+            				handle.toExternalForm() );
+            	} else if( genRes instanceof InsertElementsResult ){
+            		writer.startNode( "fact-handles" );
+            		writer.addAttribute( "identifier",
+            				identifier );
+            		for( FactHandle handle: ((InsertElementsResult)genRes).getHandles() ){
+            			writer.startNode( "fact-handle" );
+            			writer.addAttribute( "externalForm",
+            					handle.toExternalForm() );
+            			writer.endNode();
+            		}
+            		writer.endNode();
+            	}
             }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
+            return null;
+	    /**** WL
             ExecutionResultImpl result = new ExecutionResultImpl();
             Map results = result.getResults();
             Map facts = result.getFactHandles();
@@ -936,12 +967,15 @@ public class BatchExecutionHelperProviderImpl
             }
 
             return result;
+            ***/
         }
 
         public boolean canConvert(Class clazz) {
             return ExecutionResults.class.isAssignableFrom( clazz );
         }
     }
+    
+
 
     public static class QueryResultsConverter extends AbstractCollectionConverter
         implements

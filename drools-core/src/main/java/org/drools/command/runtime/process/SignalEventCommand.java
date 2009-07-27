@@ -1,14 +1,22 @@
 package org.drools.command.runtime.process;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 
+@XmlAccessorType( XmlAccessType.NONE )
 public class SignalEventCommand implements GenericCommand<Object> {
 	
-	private long processInstanceId = -1;
+	@XmlAttribute
+	private Long processInstanceId;
+	@XmlAttribute(required = true)
 	private String eventType;
 	private Object event;	
 	
@@ -30,10 +38,14 @@ public class SignalEventCommand implements GenericCommand<Object> {
     }
 
     public long getProcessInstanceId() {
-		return processInstanceId;
+		if (processInstanceId == null) {
+		    return -1L;
+		} else {
+		    return processInstanceId;
+		}
 	}
 
-	public void setProcessInstanceId(long processInstanceId) {
+	public void setProcessInstanceId(Long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
 
@@ -56,7 +68,7 @@ public class SignalEventCommand implements GenericCommand<Object> {
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-		if (processInstanceId == -1) {
+		if (getProcessInstanceId() == -1) {
 		    ksession.signalEvent(eventType, event);
 		} else {
 			ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);

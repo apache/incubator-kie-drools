@@ -10,6 +10,8 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
+import org.drools.result.ExecutionResults;
+import org.drools.result.GetObjectsResult;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -43,16 +45,17 @@ public class GetObjectsCommand
         Collection col = null;
         
         if ( filter != null ) {
-            
             col =  ksession.getObjects( this.filter );
         } else {
             col =  ksession.getObjects( );
         }
         
         if ( this.outIdentifier != null ) {
+
             List objects = new ArrayList( col );
             
-            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, objects );
+            ExecutionResults execRes = (ExecutionResults)((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
+            execRes.getResults().add( new GetObjectsResult( this.outIdentifier, objects ) );
         }
         
         return col;

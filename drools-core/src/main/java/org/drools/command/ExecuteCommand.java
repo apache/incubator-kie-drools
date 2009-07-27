@@ -7,7 +7,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.ExecutionResults;
+import org.drools.result.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 

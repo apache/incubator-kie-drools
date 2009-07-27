@@ -1,5 +1,9 @@
 package org.drools.command.runtime.rule;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
@@ -8,10 +12,12 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.AgendaFilter;
 
+@XmlAccessorType( XmlAccessType.NONE )
 public class FireAllRulesCommand
     implements
     GenericCommand<Integer> {
 
+    @XmlAttribute
     private int          max          = -1;
     private AgendaFilter agendaFilter = null;
 
@@ -28,6 +34,10 @@ public class FireAllRulesCommand
     
     public int getMax() {
         return this.max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
     }
 
     public Integer execute(Context context) {
