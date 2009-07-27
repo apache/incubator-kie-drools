@@ -1,7 +1,6 @@
 package org.drools.runtime.pipeline;
 
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBContext;
 
 /**
  * 
@@ -9,7 +8,8 @@ import javax.xml.bind.Unmarshaller;
  *
  */
 public interface JaxbTransformerProvider {
-    Transformer newJaxbFromXmlTransformer(Unmarshaller unmarshaller);
-
-    Transformer newJaxbToXmlTransformer(Marshaller marshaller);
+    Transformer newJaxbFromXmlTransformer( JAXBContext jaxbCtx );
+    Transformer newJaxbFromXmlCommandTransformer( JAXBContext jaxbCtx );
+    Transformer newJaxbToXmlTransformer( JAXBContext jaxbCtx );
+    Transformer newJaxbToXmlResultTransformer( JAXBContext jaxbCtx );
 }

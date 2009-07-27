@@ -3,8 +3,6 @@ package org.drools.runtime.pipeline;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReader;
@@ -479,11 +477,22 @@ public class PipelineFactory {
      *                                                           xjcOpts,
      *                                                           "xsd" );
      * </pre>
-     * @param unmarshaller
+     * @param jaxbContext
      * @return
      */
-    public static Transformer newJaxbFromXmlTransformer(Unmarshaller unmarshaller) {
-        return getJaxbPipelineProvider().newJaxbFromXmlTransformer( unmarshaller );
+    public static Transformer newJaxbFromXmlTransformer( JAXBContext jaxbCtx ) {
+        return getJaxbPipelineProvider().newJaxbFromXmlTransformer( jaxbCtx );
+    }
+    
+    /**
+     * Transforms from XML to a BatchExecutionCommand which contains pojos. The pojos will
+     * be unmarshalled using the given context.
+     *       
+     * @param jaxbCtx the JAXB context for the embedded pojos.
+     * @return
+     */
+    public static Transformer newJaxbFromXmlCommandTransformer( JAXBContext jaxbCtx ) {
+        return getJaxbPipelineProvider().newJaxbFromXmlCommandTransformer( jaxbCtx );
     }
 
     /**
@@ -496,11 +505,22 @@ public class PipelineFactory {
      *  transformer.setReceiver( receiver );
      *
      * 
-     * @param marshaller
+     * @param jaxbCtx
      * @return
      */
-    public static Transformer newJaxbToXmlTransformer(Marshaller marshaller) {
-        return getJaxbPipelineProvider().newJaxbToXmlTransformer( marshaller );
+    public static Transformer newJaxbToXmlTransformer( JAXBContext jaxbCtx ) {
+        return getJaxbPipelineProvider().newJaxbToXmlTransformer( jaxbCtx );
+    }
+    
+    /**
+     * Transforms from a batch execution result to XML using JAXB; the resulting
+     * XML is set as the propagating object.
+     *
+     * @param jaxbCtx JAXB context for marshalling pojos in the result
+     * @return
+     */
+    public static Transformer newJaxbToXmlResultTransformer( JAXBContext jaxbCtx ) {
+        return getJaxbPipelineProvider().newJaxbToXmlResultTransformer( jaxbCtx );
     }
 
     /**
