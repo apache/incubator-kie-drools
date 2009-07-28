@@ -4392,6 +4392,48 @@ public class MiscTest extends TestCase {
                       results.get( 3 ) );
     }
 
+    public void testConstraintConnectorOr() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ConstraintConnectorOr.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<Person> results = new ArrayList<Person>();
+        ksession.setGlobal( "results", results );
+
+        final Person mark = new Person( "Mark" );
+        mark.setAlive( true );
+        mark.setHappy( true );
+        
+        final Person bush = new Person( "Bush" );
+        bush.setAlive( true );
+        bush.setHappy( false );
+
+        final Person conan = new Person( "Conan" );
+        conan.setAlive( false );
+        conan.setHappy( true );
+        
+        final Person nero = new Person( "Nero" );
+        nero.setAlive( false );
+        nero.setHappy( false );
+        
+        ksession.insert( mark );
+        ksession.insert( bush );
+        ksession.insert( conan );
+        ksession.insert( nero );
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 3, results.size() );
+        assertTrue( results.contains( mark ) );
+        assertTrue( results.contains( bush ) );
+        assertTrue( results.contains( conan ) );
+    }
+
     public void testMatchesNotMatchesCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesNotMatches.drl" ) ) );
