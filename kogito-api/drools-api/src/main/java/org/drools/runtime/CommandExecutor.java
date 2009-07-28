@@ -1,7 +1,6 @@
 package org.drools.runtime;
 
 import org.drools.command.Command;
-import org.drools.result.ExecutionResults;
 
 /**
  * <p>
