@@ -6,7 +6,6 @@ import java.util.Map;
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryProvider;
 import org.drools.command.Setter;
-import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -146,6 +145,7 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 	}
 
 	public Command newBatchExecution(List<? extends Command> commands) {
-		return new BatchExecutionCommand((List<GenericCommand<?>>) commands);
+		return new BatchExecutionImpl(
+				(List<GenericCommand>) commands);
 	}
 }

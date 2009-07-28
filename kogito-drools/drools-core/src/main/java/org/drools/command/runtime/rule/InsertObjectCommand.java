@@ -1,39 +1,23 @@
 package org.drools.command.runtime.rule;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-
-import org.drools.result.ExecutionResults;
-import org.drools.result.InsertObjectResult;
-
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-@XmlAccessorType( XmlAccessType.NONE )
 public class InsertObjectCommand
     implements
     GenericCommand<FactHandle> {
 
-    @XmlElement(required = true)
     private Object  object;
 
-    @XmlAttribute(name = "out-identifier")
     private String  outIdentifier;
 
-    @XmlAttribute(name = "return-object")
     private boolean returnObject = true;
-
-    public InsertObjectCommand() {
-    }
 
     public InsertObjectCommand(Object object) {
         this.object = object;
@@ -44,13 +28,14 @@ public class InsertObjectCommand
         FactHandle factHandle = ksession.insert( object );
         
         ReteooWorkingMemory session = ((StatefulKnowledgeSessionImpl)ksession).session;
+
         if ( outIdentifier != null ) {
-            ExecutionResults execRes = ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult();
-            InsertObjectResult insRes = new InsertObjectResult( outIdentifier, factHandle );
             if ( this.returnObject ) {
-                insRes.setObject( object ); 
+                session.getExecutionResult().getResults().put( this.outIdentifier,
+                                                               object );
             }
-            execRes.getResults().add( insRes );
+            session.getExecutionResult().getFactHandles().put( this.outIdentifier,
+                                                         factHandle );
         }
 
         return factHandle;
@@ -58,10 +43,6 @@ public class InsertObjectCommand
 
     public Object getObject() {
         return this.object;
-    }
-
-    public void setObject( Object object ) {
-        this.object = object;
     }
 
     public String getOutIdentifier() {

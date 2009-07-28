@@ -40,7 +40,6 @@ import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
-import org.drools.result.ExecutionResultsImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
@@ -49,6 +48,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -532,7 +532,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public ExecutionResultsImpl getExecutionResult() {
+    public ExecutionResultImpl getExecutionResult() {
         // TODO Auto-generated method stub
         return null;
     }

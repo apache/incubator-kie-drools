@@ -69,8 +69,6 @@ import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
-import org.drools.result.ExecutionResults;
-import org.drools.result.ExecutionResultsImpl;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactHandle;
 import org.drools.reteoo.InitialFactHandleDummyObject;
@@ -85,9 +83,11 @@ import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.spi.Activation;
@@ -1930,11 +1930,11 @@ public abstract class AbstractWorkingMemory
     public void startBatchExecution() {
         this.ruleBase.readLock();
         this.lock.lock();
-        this.batchExecutionResult = new ExecutionResultsImpl();
+        this.batchExecutionResult = new ExecutionResultImpl();
     }
 
-    public ExecutionResults getExecutionResult() {
-        return (ExecutionResults) this.batchExecutionResult;
+    public ExecutionResultImpl getExecutionResult() {
+        return (ExecutionResultImpl) this.batchExecutionResult;
     }
 
     public void endBatchExecution() {

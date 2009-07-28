@@ -1,44 +1,27 @@
 package org.drools.command.runtime.rule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import java.util.Collection;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-
-import org.drools.result.ExecutionResults;
-import org.drools.result.QueryResult;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 
-@XmlAccessorType( XmlAccessType.NONE )
 public class QueryCommand  implements GenericCommand<QueryResults> {
-
-    @XmlAttribute(name = "out-identifier")
     private String outIdentifier;
-    @XmlAttribute(required = true)
     private String name;
-    @XmlElement(name="argument")
-    private List<Object> arguments;
-
-    public QueryCommand() {
-    }
+    private Object[] arguments;
     
     public QueryCommand(String outIdentifier, String name, Object[] arguments) {
         this.outIdentifier = outIdentifier;
         this.name = name;
-        this.arguments = arguments != null ? Arrays.asList( arguments ) : Arrays.asList();
+        this.arguments = arguments;
     }
     
     public String getOutIdentifier() {
@@ -55,13 +38,10 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
     public void setName(String name) {
         this.name = name;
     }
-    public List<Object> getArguments() {
-        if (this.arguments == null) {
-            this.arguments = new ArrayList<Object>();
-        }
-        return this.arguments;
+    public Object[] getArguments() {
+        return arguments;
     }
-    public void setArguments(List<Object> arguments) {
+    public void setArguments(Object[] arguments) {
         this.arguments = arguments;
     }
 
@@ -70,17 +50,14 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
         
         QueryResults results = null;
         
-        if ( this.arguments == null || this.arguments.size() == 0 ) {
+        if ( arguments == null || arguments.length == 0 ) {
             results = ksession.getQueryResults( name );
         } else {
-            results = ksession.getQueryResults( name, this.arguments.toArray() );
+            results = ksession.getQueryResults( name, this.arguments );
         }
         
         if ( this.outIdentifier != null ) {
-            ExecutionResults execRes =
-                (ExecutionResults)((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
-            QueryResult queryRes = new QueryResult( outIdentifier, results );
-            execRes.getResults().add( queryRes );
+            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, results );
         }
 
         return results;

@@ -56,6 +56,7 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
 public class ReteooWorkingMemory extends AbstractWorkingMemory {
+
     /**
      *
      */

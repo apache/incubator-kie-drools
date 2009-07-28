@@ -4,8 +4,7 @@ import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.result.ExecutionResults;
-import org.drools.result.GetObjectsResult;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -33,8 +32,8 @@ public class GetObjectCommand
         
         Object object = ksession.getObject( factHandle );
         
-        ExecutionResults execRes = (ExecutionResults)((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
-        execRes.getResults().add( new GetObjectsResult( this.outIdentifier, object ) );
+        ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier,
+                                                       object );
 
         return object;
     }
