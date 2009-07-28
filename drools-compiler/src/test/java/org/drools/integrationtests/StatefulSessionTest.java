@@ -19,9 +19,10 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.concurrent.Future;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
-import org.drools.result.ExecutionResults;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.runtime.impl.ExecutionResultImpl;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;

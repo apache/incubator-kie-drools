@@ -34,8 +34,8 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
-import org.drools.result.ExecutionResults;
 import org.drools.rule.Package;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
@@ -158,11 +158,15 @@ public class StatelessSessionTest extends TestCase {
         
         assertEquals( 30,
                       stilton.getPrice() ); 
+        
         assertNull( result.getValue( "list1" ) );
+        
         list2 = ( List ) result.getValue( "list2" );
         assertEquals( 1, list2.size() );
         assertSame( stilton, list2.get( 0 ) );
-                  
+        
+          
+        
         list3 = ( List ) result.getValue( "outList3" );
         assertEquals( 1, list3.size() );
         assertSame( stilton, list3.get( 0 ) );        
@@ -224,6 +228,7 @@ public class StatelessSessionTest extends TestCase {
         cmds.add(  CommandFactory.newQuery( "cheeses", "cheeses" ) );
         
         ExecutionResults batchResult = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+        
         org.drools.runtime.rule.QueryResults results = ( org.drools.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
         assertEquals( 3, results.size() );        
         assertEquals( 2, results.getIdentifiers().length );
