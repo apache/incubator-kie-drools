@@ -2,8 +2,6 @@ package org.drools.runtime.rule;
 
 import java.util.Iterator;
 
-import org.drools.result.GenericResult;
-
 /**
  * <p>
  * Contains the results of a query. The identifiers is a map of the declarations for the query, only patterns or fields that are bound can
