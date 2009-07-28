@@ -24,39 +24,40 @@ public class Person
     private char              sex;
 
     private boolean           alive;
+    private boolean           happy;
 
     private String            status;
 
     private Cheese            cheese;
 
-    private List<Address>   addresses = new ArrayList<Address>();
+    private List<Address>     addresses        = new ArrayList<Address>();
 
-//    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-//        name    = (String)in.readObject();
-//        likes    = (String)in.readObject();
-//        age     = in.readInt();
-//        bigDecimal    = (BigDecimal)in.readObject();
-//        bigInteger    = (BigInteger)in.readObject();
-//        hair    = (String)in.readObject();
-//        sex     = in.readChar();
-//        alive   = in.readBoolean();
-//        status    = (String)in.readObject();
-//        cheese    = (Cheese)in.readObject();
-//        addresses    = (List)in.readObject();
-//    }
-//
-//    public void writeExternal(ObjectOutput out) throws IOException {
-//        out.writeObject(name);
-//        out.writeObject(likes);
-//        out.writeObject(bigDecimal);
-//        out.writeObject(bigInteger);
-//        out.writeObject(hair);
-//        out.writeChar(sex);
-//        out.writeBoolean(alive);
-//        out.writeObject(status);
-//        out.writeObject(cheese);
-//        out.writeObject(addresses);
-//    }
+    //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    //        name    = (String)in.readObject();
+    //        likes    = (String)in.readObject();
+    //        age     = in.readInt();
+    //        bigDecimal    = (BigDecimal)in.readObject();
+    //        bigInteger    = (BigInteger)in.readObject();
+    //        hair    = (String)in.readObject();
+    //        sex     = in.readChar();
+    //        alive   = in.readBoolean();
+    //        status    = (String)in.readObject();
+    //        cheese    = (Cheese)in.readObject();
+    //        addresses    = (List)in.readObject();
+    //    }
+    //
+    //    public void writeExternal(ObjectOutput out) throws IOException {
+    //        out.writeObject(name);
+    //        out.writeObject(likes);
+    //        out.writeObject(bigDecimal);
+    //        out.writeObject(bigInteger);
+    //        out.writeObject(hair);
+    //        out.writeChar(sex);
+    //        out.writeBoolean(alive);
+    //        out.writeObject(status);
+    //        out.writeObject(cheese);
+    //        out.writeObject(addresses);
+    //    }
 
     public Person() {
 
@@ -82,8 +83,8 @@ public class Person
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
-    
-    public void addAddress( Address address ) {
+
+    public void addAddress(Address address) {
         this.addresses.add( address );
     }
 
@@ -269,6 +270,14 @@ public class Person
 
     public void setCheese(final Cheese cheese) {
         this.cheese = cheese;
+    }
+
+    public boolean isHappy() {
+        return happy;
+    }
+
+    public void setHappy(boolean happy) {
+        this.happy = happy;
     }
 
 }
