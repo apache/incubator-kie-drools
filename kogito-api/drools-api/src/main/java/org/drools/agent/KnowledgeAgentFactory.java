@@ -74,6 +74,17 @@ import org.drools.io.ResourceFactory;
  * ResourceFactory.getResourceChangeNotifierService().start();
  * ResourceFactory.getResourceChangeScannerService().start();
  * </pre>
+ *
+ * <p>
+ * For resources that are "polled" from a remote source (via http or similar) - sometimes you may want a local file based cache,
+ * in case the remote service is not available for whatever reason.
+ * To enable this:
+ * Set the system property: "drools.resource.urlcache" to a directory which can be written to and read from
+ * as a cache - so remote resources will be cached with last known good copies. This will allow the service to be restarted
+ * even if the remote source is not available. 
+ * For example -Ddrools.resource.urlcache=/home/rulecaches
+ *
+ * </p>
  * 
  * @see org.drools.agent.KnowledgeAgent
  * @see org.drools.agent.KnowledgeAgentConfiguration
