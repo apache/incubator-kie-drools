@@ -8,10 +8,16 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,13 +31,23 @@ import com.sun.net.ssl.HttpsURLConnection;
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
  *
+ * Added in local file cache ability for http and https urls.
+ *
+ * Set the system property: "drools.resource.urlcache" to a directory which can be written to and read from
+ * as a cache - so remote resources will be cached with last known good copies.
  */
 public class UrlResource extends BaseResource
     implements
     InternalResource,
     Externalizable {
+
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+
+    public static File CACHE_DIR = getCacheDir();
+
     private URL  url;
     private long lastRead = -1;
+    private static final String DROOLS_RESOURCE_URLCACHE = "drools.resource.urlcache";
 
     public UrlResource() {
 
@@ -70,7 +86,69 @@ public class UrlResource extends BaseResource
      * @see java.net.URLConnection#getInputStream()
      */
     public InputStream getInputStream() throws IOException {
-        this.lastRead = getLastModified();
+        try {
+            long lastMod  = grabLastMod();
+            if (lastMod == 0) {
+                //we will try the cache...
+                if (cacheFileExists()) return fromCache();
+            }
+            if (lastMod > 0 && lastMod > lastRead) {
+                if (CACHE_DIR != null && url.getProtocol().equals("http") || url.getProtocol().equals("https")) {
+                    //lets grab a copy and cache it in case we need it in future...
+                    cacheStream();
+                }
+            }
+            this.lastRead = lastMod;
+            return grabStream();
+        } catch (IOException e) {
+            if (cacheFileExists()) {
+                return fromCache();
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private boolean cacheFileExists() {
+        return CACHE_DIR != null && getCacheFile().exists();
+    }
+
+    private InputStream fromCache() throws FileNotFoundException, UnsupportedEncodingException {
+       File fi = getCacheFile();
+       return new FileInputStream(fi);
+    }
+
+    private File getCacheFile()  {
+        try {
+            return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Save a copy in the local cache - in case remote source is not available in future.
+     */
+    private void cacheStream() {
+        try {
+            File fi = getCacheFile();
+            if (fi.exists()) fi.delete();
+            FileOutputStream fout = new FileOutputStream(fi);
+            InputStream in = grabStream();
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int n;
+            while (-1 != (n = in.read(buffer))) {
+                fout.write(buffer, 0, n);
+            }
+            fout.flush();
+            fout.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private InputStream grabStream() throws IOException {
         URLConnection con = this.url.openConnection();
         con.setUseCaches( false );
         return con.getInputStream();
@@ -85,7 +163,6 @@ public class UrlResource extends BaseResource
      * @param originalUrl the original URL
      * @param originalPath the original URL path
      * @return the cleaned URL
-     * @see org.springframework.util.StringUtils#cleanPath
      */
     private URL getCleanedUrl(URL originalUrl,
                               String originalPath) {
@@ -116,27 +193,43 @@ public class UrlResource extends BaseResource
 
     public long getLastModified() {
         try {
-            // use File, as http rounds milliseconds on some machines, this fine level of granularity is only really an issue for testing
-            // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504473
-            if ( "file".equals( url.getProtocol() ) ) {
-                File file = getFile();
-                return file.lastModified();
-            } else {
-                URLConnection conn = getURL().openConnection();
-                if ( conn instanceof HttpURLConnection ) {
-                    ((HttpURLConnection) conn).setRequestMethod( "HEAD" );
-                }
-                long date =  conn.getLastModified();
-                if (date == 0) {
-                     try {
-                         date = Long.parseLong(conn.getHeaderField("lastModified"));
-                     } catch (Exception e) { /* well, we tried ... */ }
-                }
-                return date;
+            long lm = grabLastMod();
+            //try the cache.
+            if (lm == 0 && cacheFileExists()) {
+                //OK we will return it from the local cached copy, as remote one isn't available.. 
+                return getCacheFile().lastModified();
             }
+            return lm;
         } catch ( IOException e ) {
-            throw new RuntimeException( "Unable to get LastMofified for ClasspathResource",
-                                        e );
+            //try the cache...
+            if (cacheFileExists()) {
+                //OK we will return it from the local cached copy, as remote one isn't available..
+                return getCacheFile().lastModified();
+            } else {
+                throw new RuntimeException( "Unable to get LastMofified for ClasspathResource",
+                                            e );
+            }
+        }
+    }
+
+    private long grabLastMod() throws IOException {
+        // use File, as http rounds milliseconds on some machines, this fine level of granularity is only really an issue for testing
+        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504473
+        if ( "file".equals( url.getProtocol() ) ) {
+            File file = getFile();
+            return file.lastModified();
+        } else {
+            URLConnection conn = getURL().openConnection();
+            if ( conn instanceof HttpURLConnection) {
+                ((HttpURLConnection) conn).setRequestMethod( "HEAD" );
+            }
+            long date =  conn.getLastModified();
+            if (date == 0) {
+                 try {
+                     date = Long.parseLong(conn.getHeaderField("lastModified"));
+                 } catch (Exception e) { /* well, we tried ... */ }
+            }
+            return date;
         }
     }
 
@@ -203,4 +296,12 @@ public class UrlResource extends BaseResource
         return "[UrlResource path='" + this.url.toString() + "']";
     }
 
+    private static File getCacheDir() {
+        String root = System.getProperty(DROOLS_RESOURCE_URLCACHE, "NONE");
+        if (root.equals("NONE")) {
+            return null;
+        } else {
+            return new File(root);
+        }
+    }
 }

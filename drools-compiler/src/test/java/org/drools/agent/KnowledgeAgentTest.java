@@ -33,6 +33,7 @@ import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
+import org.drools.io.impl.UrlResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.pipeline.Action;
@@ -80,6 +81,10 @@ public class KnowledgeAgentTest extends TestCase {
     }
     
     public void  testModifyFileUrl() throws Exception {
+
+
+        UrlResource.CACHE_DIR = new File(".");
+
         String rule1 = "";
         rule1 += "package org.drools.test\n";
         rule1 += "global java.util.List list\n";
@@ -184,7 +189,24 @@ public class KnowledgeAgentTest extends TestCase {
 
         assertTrue( list.contains( "rule3" ) );
         assertTrue( list.contains( "rule2" ) );
-        kagent.monitorResourceChangeEvents( false );        
+        kagent.monitorResourceChangeEvents( false );
+
+        server.stop();
+
+
+        //now try it with the server stopped, so cache has to be used...
+        kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent",
+                                                                         kbase,
+                                                                         aconf );
+        kagent.monitorResourceChangeEvents(true);
+        assertEquals("test agent", kagent.getName());
+
+
+        //hmmm...
+        kagent.applyChangeSet( ResourceFactory.newFileResource(fxml)  );
+
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        assertNotNull(ksession);
     }
     
     public void  testModifyFileUrlWithStateless() throws Exception {
@@ -286,7 +308,12 @@ public class KnowledgeAgentTest extends TestCase {
         
         assertTrue( list.contains( "rule3" ) );
         assertTrue( list.contains( "rule2" ) );
-        kagent.monitorResourceChangeEvents( false );        
+
+
+        kagent.monitorResourceChangeEvents( false );
+
+
+
     }    
 
     public void  testModifyPackageUrl() throws Exception {
