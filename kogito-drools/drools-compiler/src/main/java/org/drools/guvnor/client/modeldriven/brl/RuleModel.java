@@ -12,15 +12,14 @@ public class RuleModel
      * file name is preferred (ie it could get out of sync with the name of the file it is in).
      */
     public String          name;
-    public String		   parentName;
+    public String          parentName;
     public String          modelVersion = "1.0";
 
     public RuleAttribute[] attributes   = new RuleAttribute[0];
-    public RuleMetadata[] metadataList   = new RuleMetadata[0];
+    public RuleMetadata[]  metadataList = new RuleMetadata[0];
 
     public IPattern[]      lhs          = new IPattern[0];
     public IAction[]       rhs          = new IAction[0];
-
 
     /**
      * This will return the fact pattern that a variable is bound to.
@@ -43,14 +42,51 @@ public class RuleModel
         }
         return null;
     }
+
+    public String getFieldConstraint(final String var) {
+        if ( this.lhs == null ) {
+            return null;
+        }
+        for ( int i = 0; i < this.lhs.length; i++ ) {
+
+            if ( this.lhs[i] instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) this.lhs[i];
+                for ( FieldConstraint z : p.getFieldConstraints() ) {
+                    return giveFieldBinding( z,
+                                             var );
+                }
+            }
+
+        }
+        return null;
+    }
+
+    private String giveFieldBinding(FieldConstraint f,
+                                    String var) {
+        if ( f instanceof SingleFieldConstraint ) {
+            SingleFieldConstraint s = (SingleFieldConstraint) f;
+            if ( s.isBound() == true && var.equals( s.fieldBinding ) ) {
+                return s.fieldType;
+            }
+        }
+        if ( f instanceof CompositeFieldConstraint ) {
+            CompositeFieldConstraint s = (CompositeFieldConstraint) f;
+            for ( FieldConstraint ss : s.constraints ) {
+                return giveFieldBinding( s,
+                                         var );
+            }
+        }
+        return null;
+    }
+
     /*
-     * Get the bound fact of a rhs action
-     * Fix nheron
-     */
-    public ActionInsertFact getRhsBoundFact(final String var){
-    	if (this.rhs==null){
-    		return null;
-    	}
+          * Get the bound fact of a rhs action
+          * Fix nheron
+          */
+    public ActionInsertFact getRhsBoundFact(final String var) {
+        if ( this.rhs == null ) {
+            return null;
+        }
         for ( int i = 0; i < this.rhs.length; i++ ) {
 
             if ( this.rhs[i] instanceof ActionInsertFact ) {
@@ -60,7 +96,7 @@ public class RuleModel
                 }
             }
         }
-    	return null;
+        return null;
     }
 
     /**
@@ -77,14 +113,48 @@ public class RuleModel
                 if ( p.boundName != null ) {
                     list.add( p.boundName );
                 }
+                List<String> fieldBindings = getListFieldBinding( p );
+                if ( fieldBindings != null ) {
+                    list.addAll( fieldBindings );
+                }
             }
         }
         return list;
 
     }
+
+    private List<String> getListFieldBinding(FactPattern fact) {
+        List<String> result = new ArrayList<String>();
+
+        for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
+            FieldConstraint fc = fact.getFieldConstraints()[j];
+            List<String> s = giveFieldBinding( fc );
+            result.addAll( s );
+        }
+        return result;
+    }
+
+    private List<String> giveFieldBinding(FieldConstraint f) {
+        List<String> result = new ArrayList<String>();
+        if ( f instanceof SingleFieldConstraint ) {
+            SingleFieldConstraint s = (SingleFieldConstraint) f;
+            if ( s.isBound() == true ) {
+                result.add( s.fieldBinding );
+            }
+        }
+        if ( f instanceof CompositeFieldConstraint ) {
+            CompositeFieldConstraint s = (CompositeFieldConstraint) f;
+            for ( FieldConstraint ss : s.constraints ) {
+                List<String> t = giveFieldBinding( s );
+                result.addAll( t );
+            }
+        }
+        return result;
+    }
+
     /**
      * @return A list of bound facts of the rhs(String). Or empty list if none are found.
-     * Fix nheron
+     *         Fix nheron
      */
     public List getRhsBoundFacts() {
         if ( this.rhs == null ) {
@@ -102,11 +172,11 @@ public class RuleModel
         return list;
 
     }
+
     /**
-     *
      * @param idx Remove this index from the LHS.
-     * returns false if it was NOT allowed to remove this item (ie
-     * it is used on the RHS).
+     *            returns false if it was NOT allowed to remove this item (ie
+     *            it is used on the RHS).
      */
     public boolean removeLhsItem(final int idx) {
 
@@ -228,9 +298,10 @@ public class RuleModel
         }
         this.attributes = newList;
     }
-    
+
     /**
-     * Add metaData 
+     * Add metaData
+     *
      * @param metadata
      */
     public void addMetadata(final RuleMetadata metadata) {
@@ -259,44 +330,43 @@ public class RuleModel
         this.metadataList = newList;
 
     }
-    
+
     /**
      * Locate metadata element
+     *
      * @param attributeName - value to look for
      * @return null if not found
      */
-    public RuleMetadata getMetaData(String attributeName){
-    
-    	if (metadataList != null && attributeName != null){
-    		for (int i = 0; i < metadataList.length; i++) {
-    			if (attributeName.equals(metadataList[i].attributeName)){
-    				return metadataList[i];
-    			}
-			}
-    	}
-    	return null;
+    public RuleMetadata getMetaData(String attributeName) {
+
+        if ( metadataList != null && attributeName != null ) {
+            for ( int i = 0; i < metadataList.length; i++ ) {
+                if ( attributeName.equals( metadataList[i].attributeName ) ) {
+                    return metadataList[i];
+                }
+            }
+        }
+        return null;
     }
-    
-	/**
-	 * Update metaData element if it exists or add it otherwise 
-	 * @param target
-	 * @return 
-	 * 		true on update of existing element
-	 * 		false on added of element
-	 * 		
-	 */
-	public boolean updateMetadata(final RuleMetadata target) {
 
-		RuleMetadata metaData = getMetaData(target.attributeName);
-		if (metaData != null) {
-			metaData.value = target.value;
-			return true;
-		}
+    /**
+     * Update metaData element if it exists or add it otherwise
+     *
+     * @param target
+     * @return true on update of existing element
+     *         false on added of element
+     */
+    public boolean updateMetadata(final RuleMetadata target) {
 
-		addMetadata(target);
-		return false;
-	}
-    
+        RuleMetadata metaData = getMetaData( target.attributeName );
+        if ( metaData != null ) {
+            metaData.value = target.value;
+            return true;
+        }
+
+        addMetadata( target );
+        return false;
+    }
 
     /**
      * This uses a deceptively simple algorithm to determine
@@ -312,10 +382,10 @@ public class RuleModel
 
                 if ( fact.constraintList != null ) {
                     final FieldConstraint[] cons = fact.constraintList.constraints;
-                    if (cons != null) {
+                    if ( cons != null ) {
                         for ( int k = 0; k < cons.length; k++ ) {
                             FieldConstraint fc = cons[k];
-                            if (fc instanceof SingleFieldConstraint) {
+                            if ( fc instanceof SingleFieldConstraint ) {
                                 final SingleFieldConstraint c = (SingleFieldConstraint) fc;
                                 if ( c == con ) {
                                     return result;
@@ -354,17 +424,17 @@ public class RuleModel
         List result = new ArrayList();
         for ( int i = 0; i < this.lhs.length; i++ ) {
             IPattern pat = this.lhs[i];
-            if (pat instanceof FactPattern) {
+            if ( pat instanceof FactPattern ) {
                 FactPattern fact = (FactPattern) pat;
-                if (fact.isBound()) {
+                if ( fact.isBound() ) {
                     result.add( fact.boundName );
                 }
 
                 for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
                     FieldConstraint fc = fact.getFieldConstraints()[j];
-                    if (fc instanceof SingleFieldConstraint) {
+                    if ( fc instanceof SingleFieldConstraint ) {
                         SingleFieldConstraint con = (SingleFieldConstraint) fc;
-                        if (con.isBound()) {
+                        if ( con.isBound() ) {
                             result.add( con.fieldBinding );
                         }
                     }
@@ -372,10 +442,10 @@ public class RuleModel
             }
         }
         for ( int i = 0; i < this.rhs.length; i++ ) {
-        	IAction pat = this.rhs[i];
-            if (pat instanceof ActionInsertFact) {
-            	ActionInsertFact fact = (ActionInsertFact) pat;
-                if (fact.isBound()) {
+            IAction pat = this.rhs[i];
+            if ( pat instanceof ActionInsertFact ) {
+                ActionInsertFact fact = (ActionInsertFact) pat;
+                if ( fact.isBound() ) {
                     result.add( fact.getBoundName() );
                 }
             }
@@ -396,7 +466,7 @@ public class RuleModel
      */
     public boolean hasDSLSentences() {
 
-        if (this.lhs != null) {
+        if ( this.lhs != null ) {
             for ( int i = 0; i < this.lhs.length; i++ ) {
                 if ( lhs[i] instanceof DSLSentence ) {
                     return true;
@@ -404,7 +474,7 @@ public class RuleModel
             }
         }
 
-        if (this.rhs != null) {
+        if ( this.rhs != null ) {
             for ( int i = 0; i < this.rhs.length; i++ ) {
                 if ( rhs[i] instanceof DSLSentence ) {
                     return true;
@@ -413,7 +483,6 @@ public class RuleModel
         }
 
         return false;
-   }
-
+    }
 
 }

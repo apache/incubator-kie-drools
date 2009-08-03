@@ -110,14 +110,31 @@ public class RuleModelTest extends TestCase {
 		model.lhs[1] = y;
 		y.boundName = "y";
 
+		final SingleFieldConstraint[] cons = new SingleFieldConstraint[2];
+		y.constraintList = new CompositeFieldConstraint();
+		y.constraintList.constraints = cons;
+		cons[0] = new SingleFieldConstraint("age");
+		cons[0].fieldBinding = "qbc";
+		cons[0].fieldType = "String";
+		cons[0].connectives = new ConnectiveConstraint[1];
+		cons[0].connectives[0] = new ConnectiveConstraint("&", "x");
+		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		cons[1] = new SingleFieldConstraint("make");
+		cons[1].fieldType = "Long";
+		cons[1].connectives = new ConnectiveConstraint[1];
+		cons[1].connectives[0] = new ConnectiveConstraint("=", "2");
+		cons[1].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+
+
 		final FactPattern other = new FactPattern("House");
 		model.lhs[2] = other;
 
 		final List b = model.getBoundFacts();
-		assertEquals(2, b.size());
+		assertEquals(3, b.size());
 
 		assertEquals("x", b.get(0));
 		assertEquals("y", b.get(1));
+		assertEquals("qbc", b.get(2));
 
 	}
 
@@ -379,4 +396,45 @@ public class RuleModelTest extends TestCase {
 		assertEquals("abc", vars.get(0));
 	}
 
+	public void testGetFieldConstraint() {
+		final RuleModel model = new RuleModel();
+		model.lhs = new IPattern[3];
+		final FactPattern x = new FactPattern("Boat");
+		model.lhs[0] = x;
+		x.boundName = "x";
+
+		final FactPattern y = new FactPattern("Car");
+		model.lhs[1] = y;
+		y.boundName = "y";
+		final SingleFieldConstraint[] cons = new SingleFieldConstraint[2];
+		y.constraintList = new CompositeFieldConstraint();
+		y.constraintList.constraints = cons;
+		cons[0] = new SingleFieldConstraint("age");
+		cons[0].fieldBinding = "qbc";
+		cons[0].fieldType = "String";
+		cons[0].connectives = new ConnectiveConstraint[1];
+		cons[0].connectives[0] = new ConnectiveConstraint("&", "x");
+		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		cons[1] = new SingleFieldConstraint("make");
+		cons[1].fieldType = "Long";
+		cons[1].connectives = new ConnectiveConstraint[1];
+		cons[1].connectives[0] = new ConnectiveConstraint("=", "2");
+		cons[1].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+
+		final FactPattern other = new FactPattern("House");
+		model.lhs[2] = other;
+		other.boundName = "q";
+		final SingleFieldConstraint[] cons2 = new SingleFieldConstraint[1];
+		cons2[0] = new SingleFieldConstraint();
+		other.constraintList = new CompositeFieldConstraint();
+		other.constraintList.constraints = cons2;
+		String varTypeString = model.getFieldConstraint("qbc");
+		assertEquals("String", varTypeString);
+		String varTypeLong = model.getFieldConstraint("make");
+		assertEquals(null, varTypeLong);
+		FactPattern varTypeBoat = model.getBoundFact("x");
+		assertEquals("Boat", varTypeBoat.factType);
+		FactPattern varTypeCar = model.getBoundFact("y");
+		assertEquals("Car", varTypeCar.factType);
+	}
 }
