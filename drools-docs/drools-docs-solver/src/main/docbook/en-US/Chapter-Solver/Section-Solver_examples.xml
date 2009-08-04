@@ -944,4 +944,56 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       </itemizedlist>
     </section>
   </section>
+
+  <section>
+    <title>Patient admission scheduling (PAS)</title>
+
+    <para>In this problem, we have to assign each patient (that will come to the hospital) a bed for each night that the
+    patient will stay in the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and
+    departure dates of the patients is fixed: only a bed needs to be assigned for each night.</para>
+
+    <para>There are a couple of hard constraints:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>2 patients shouldn't be assigned to the same bed in the same night.</para>
+      </listitem>
+
+      <listitem>
+        <para>A room can have a gender limitation: only females, only males, the same gender in the same night or no
+        gender limitation at all.</para>
+      </listitem>
+
+      <listitem>
+        <para>A departement can have a minimum or maximum age.</para>
+      </listitem>
+
+      <listitem>
+        <para>A patient can require a room with specific equipment(s).</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>And of course, there are also some soft constraints:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>A patient can prefer a maximum room size, for example if he/she want a single room.</para>
+      </listitem>
+
+      <listitem>
+        <para>A patient is best assigned to a department that specializes in his/her problem.</para>
+      </listitem>
+
+      <listitem>
+        <para>A patient is best assigned to a room that specializes in his/her problem.</para>
+      </listitem>
+
+      <listitem>
+        <para>A patient can prefer a room with specific equipment(s).</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this
+    webpage</link> and the test data comes from real world hospitals.</para>
+  </section>
 </section>
