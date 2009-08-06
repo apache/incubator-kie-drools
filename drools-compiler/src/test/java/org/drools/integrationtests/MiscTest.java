@@ -26,9 +26,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -154,14 +152,13 @@ import org.drools.util.Entry;
 import org.drools.util.ObjectHashSet;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 import org.drools.xml.XmlDumper;
-import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
-import org.mvel2.compiler.CompiledExpression;
-import org.mvel2.compiler.ExpressionCompiler;
-import org.mvel2.optimizers.OptimizerFactory;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
+    
+    private final Mockery context = new Mockery();
 
     protected RuleBase getRuleBase() throws Exception {
 
@@ -6935,6 +6932,40 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testAddRemoveListeners() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_AddRemoveListeners.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        // creating listener as a jmock proxy
+        final org.drools.event.rule.WorkingMemoryEventListener wmeListener = context.mock(org.drools.event.rule.WorkingMemoryEventListener.class);
+        
+        context.checking(new Expectations() {{
+            exactly(2).of(wmeListener).objectInserted( with(any(org.drools.event.rule.ObjectInsertedEvent.class)) );
+        }});
+        
+        ksession.addEventListener( wmeListener );
+        
+        // listener will be notified of both facts insertion
+        ksession.insert( new Cheese("stilton") );
+        ksession.insert( wmeListener );
+        
+        // firing rules will remove listener
+        ksession.fireAllRules();
+        
+        // inserting another object into the working memory, listener should NOT be notified,
+        // since it is no longer listening.
+        ksession.insert( new Cheese("brie") );
+
+        context.assertIsSatisfied();
+    }
 
 }
 

@@ -1,0 +1,11 @@
+package org.drools
+
+import org.drools.event.rule.WorkingMemoryEventListener
+
+rule "remove listener"
+when
+	listener : WorkingMemoryEventListener();
+then
+	drools.getKnowledgeRuntime().removeEventListener(listener);
+	retract(listener);
+end

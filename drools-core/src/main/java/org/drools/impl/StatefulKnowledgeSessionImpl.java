@@ -82,10 +82,6 @@ public class StatefulKnowledgeSessionImpl
     public ReteooWorkingMemory                                                session;
     public KnowledgeBaseImpl                                                  kbase;
 
-    public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
-    public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
-    public Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners;
-
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
         this( session,
               new KnowledgeBaseImpl( session.getRuleBase() ) );
@@ -96,24 +92,7 @@ public class StatefulKnowledgeSessionImpl
         this.session = session;
         this.session.setKnowledgeRuntime( this );
         this.kbase = ( KnowledgeBaseImpl ) kbase;
-        this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
-        this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
-        this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
     }
-    
-    public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session,
-                                        KnowledgeBase kbase,
-                                        Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners,
-                                        Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners,
-                                        Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners) {                                        
-                                        
-        this.session = session;
-        this.session.setKnowledgeRuntime( this );
-        this.kbase = ( KnowledgeBaseImpl ) kbase;
-        this.mappedWorkingMemoryListeners = mappedWorkingMemoryListeners;
-        this.mappedAgendaListeners = mappedAgendaListeners;
-        this.mappedProcessListeners = mappedProcessListeners;
-    }    
     
     public int getId() {
         return this.session.getId();
@@ -129,49 +108,82 @@ public class StatefulKnowledgeSessionImpl
 
     public void addEventListener(WorkingMemoryEventListener listener) {
         WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
-        this.mappedWorkingMemoryListeners.put( listener,
-                                               wrapper );
         this.session.addEventListener( wrapper );
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
-        WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
+        WorkingMemoryEventListenerWrapper wrapper = null;
+        if( listener != null && ! ( listener instanceof WorkingMemoryEventListenerWrapper ) ) {
+            wrapper = new WorkingMemoryEventListenerWrapper( listener );
+        } else {
+            wrapper = (WorkingMemoryEventListenerWrapper) listener;
+        }
         this.session.removeEventListener( wrapper );
     }
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-        return Collections.unmodifiableCollection( this.mappedWorkingMemoryListeners.keySet() );
+        List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
+        for( WorkingMemoryEventListener listener : ((List<WorkingMemoryEventListener>)this.session.getWorkingMemoryEventListeners()) ) {
+            if( listener instanceof WorkingMemoryEventListenerWrapper ) {
+                listeners.add( ((WorkingMemoryEventListenerWrapper)listener).unWrap() );
+            } else {
+                listeners.add( listener );
+            }
+        }
+        return Collections.unmodifiableCollection( listeners );
     }
 
     public void addEventListener(AgendaEventListener listener) {
         AgendaEventListenerWrapper wrapper = new AgendaEventListenerWrapper( listener );
-        this.mappedAgendaListeners.put( listener,
-                                        wrapper );
         this.session.addEventListener( wrapper );
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        return Collections.unmodifiableCollection( this.mappedAgendaListeners.keySet() );
+        List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
+        for( AgendaEventListener listener : ((List<AgendaEventListener>)this.session.getAgendaEventListeners()) ) {
+            if( listener instanceof AgendaEventListenerWrapper ) {
+                listeners.add( ((AgendaEventListenerWrapper)listener).unWrap() );
+            } else {
+                listeners.add( listener );
+            }
+        }
+        return Collections.unmodifiableCollection( listeners );
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        AgendaEventListenerWrapper wrapper = this.mappedAgendaListeners.remove( listener );
+        AgendaEventListenerWrapper wrapper = null;
+        if( listener != null && ! ( listener instanceof AgendaEventListenerWrapper ) ) {
+            wrapper = new AgendaEventListenerWrapper( listener );
+        } else {
+            wrapper = (AgendaEventListenerWrapper) listener;
+        }
         this.session.removeEventListener( wrapper );
     }
 
     public void addEventListener(ProcessEventListener listener) {
         ProcessEventListenerWrapper wrapper = new ProcessEventListenerWrapper( listener );
-        this.mappedProcessListeners.put( listener,
-                                         wrapper );
         this.session.addEventListener( wrapper );
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        return Collections.unmodifiableCollection( this.mappedProcessListeners.keySet() );
+        List<ProcessEventListener> listeners = new ArrayList<ProcessEventListener>();
+        for( ProcessEventListener listener : ((List<ProcessEventListener>)this.session.getRuleFlowEventListeners()) ) {
+            if( listener instanceof ProcessEventListenerWrapper ) {
+                listeners.add( ((ProcessEventListenerWrapper)listener).unWrap() );
+            } else {
+                listeners.add( listener );
+            }
+        }
+        return Collections.unmodifiableCollection( listeners );
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        ProcessEventListenerWrapper wrapper = this.mappedProcessListeners.get( listener );
+        ProcessEventListenerWrapper wrapper = null;
+        if( listener != null && ! ( listener instanceof ProcessEventListenerWrapper ) ) {
+            wrapper = new ProcessEventListenerWrapper( listener );
+        } else {
+            wrapper = (ProcessEventListenerWrapper) listener;
+        }
         this.session.removeEventListener( wrapper );
     }
 
@@ -490,7 +502,7 @@ public class StatefulKnowledgeSessionImpl
     public static class WorkingMemoryEventListenerWrapper
         implements
         org.drools.event.WorkingMemoryEventListener {
-        private WorkingMemoryEventListener listener;
+        private final WorkingMemoryEventListener listener;
 
         public WorkingMemoryEventListenerWrapper(WorkingMemoryEventListener listener) {
             this.listener = listener;
@@ -511,12 +523,42 @@ public class StatefulKnowledgeSessionImpl
         public WorkingMemoryEventListener unWrap() {
             return listener;
         }
+        
+        /**
+         * Since this is a class adapter for API compatibility, the 
+         * equals() and hashCode() methods simply delegate the calls 
+         * to the wrapped instance. That is implemented this way
+         * in order for them to be able to match corresponding instances
+         * in internal hash-based maps and sets.  
+         */
+        @Override
+        public int hashCode() {
+            return listener!=null ? listener.hashCode() : 0;
+        }
+        
+        /**
+         * Since this is a class adapter for API compatibility, the 
+         * equals() and hashCode() methods simply delegate the calls 
+         * to the wrapped instance. That is implemented this way
+         * in order for them to be able to match corresponding instances
+         * in internal hash-based maps and sets.  
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if( listener == null || obj == null ) {
+                return obj == listener;
+            }
+            if( obj instanceof WorkingMemoryEventListenerWrapper ) {
+                return this.listener.equals( ((WorkingMemoryEventListenerWrapper)obj).unWrap() );
+            }
+            return this.listener.equals( obj );
+        }
     }
 
     public static class AgendaEventListenerWrapper
         implements
         org.drools.event.AgendaEventListener {
-        private AgendaEventListener listener;
+        private final AgendaEventListener listener;
 
         public AgendaEventListenerWrapper(AgendaEventListener listener) {
             this.listener = listener;
@@ -565,12 +607,41 @@ public class StatefulKnowledgeSessionImpl
             return listener;
         }
 
+        /**
+         * Since this is a class adapter for API compatibility, the 
+         * equals() and hashCode() methods simply delegate the calls 
+         * to the wrapped instance. That is implemented this way
+         * in order for them to be able to match corresponding instances
+         * in internal hash-based maps and sets.  
+         */
+        @Override
+        public int hashCode() {
+            return listener!=null ? listener.hashCode() : 0;
+        }
+        
+        /**
+         * Since this is a class adapter for API compatibility, the 
+         * equals() and hashCode() methods simply delegate the calls 
+         * to the wrapped instance. That is implemented this way
+         * in order for them to be able to match corresponding instances
+         * in internal hash-based maps and sets.  
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if( listener == null || obj == null ) {
+                return obj == listener;
+            }
+            if( obj instanceof AgendaEventListenerWrapper ) {
+                return this.listener.equals( ((AgendaEventListenerWrapper)obj).unWrap() );
+            }
+            return this.listener.equals( obj );
+        }
     }
 
     public static class ProcessEventListenerWrapper
         implements
         org.drools.event.RuleFlowEventListener {
-        private ProcessEventListener listener;
+        private final ProcessEventListener listener;
 
         public ProcessEventListenerWrapper(ProcessEventListener listener) {
             this.listener = listener;
@@ -642,6 +713,36 @@ public class StatefulKnowledgeSessionImpl
 
         public ProcessEventListener unWrap() {
             return listener;
+        }
+        
+        /**
+         * Since this is a class adapter for API compatibility, the 
+         * equals() and hashCode() methods simply delegate the calls 
+         * to the wrapped instance. That is implemented this way
+         * in order for them to be able to match corresponding instances
+         * in internal hash-based maps and sets.  
+         */
+        @Override
+        public int hashCode() {
+            return listener!=null ? listener.hashCode() : 0;
+        }
+        
+        /**
+         * Since this is a class adapter for API compatibility, the 
+         * equals() and hashCode() methods simply delegate the calls 
+         * to the wrapped instance. That is implemented this way
+         * in order for them to be able to match corresponding instances
+         * in internal hash-based maps and sets.  
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if( listener == null || obj == null ) {
+                return obj == listener;
+            }
+            if( obj instanceof ProcessEventListenerWrapper ) {
+                return this.listener.equals( ((ProcessEventListenerWrapper)obj).unWrap() );
+            }
+            return this.listener.equals( obj );
         }
 
     }

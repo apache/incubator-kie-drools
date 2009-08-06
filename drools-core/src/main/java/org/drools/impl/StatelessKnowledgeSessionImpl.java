@@ -104,11 +104,10 @@ public class StatelessKnowledgeSessionImpl
                                                               (SessionConfiguration) this.conf,
                                                               this.environment );
 
+            // we don't pass the mapped listener wrappers to the session constructor anymore,
+            // because they would be ignored anyway, since the wm already contains those listeners
             StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( wm,
-                                                                                      new KnowledgeBaseImpl( this.ruleBase ),
-                                                                                      mappedWorkingMemoryListeners,
-                                                                                      mappedAgendaListeners,
-                                                                                      mappedProcessListeners );
+                                                                                      new KnowledgeBaseImpl( this.ruleBase ) );
 
             ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
             wm.setKnowledgeRuntime( ksession );
