@@ -40,40 +40,7 @@ public class DSLMappingFileTest extends TestCase {
 
     }
 
-    public void FIXME_testParseFileWithBrackets() {
-        String file = "[when][]ATTRIBUTE \"{attr}\" IS IN [{list}]=Attribute( {attr} in ({list}) )";
-        try {
-            final Reader reader = new StringReader( file );
-            this.file = new DSLTokenizedMappingFile();
-
-            final boolean parsingResult = this.file.parseAndLoad( reader );
-            reader.close();
-
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
-
-            assertEquals( 1,
-                          this.file.getMapping().getEntries().size() );
-
-            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
-
-            assertEquals( DSLMappingEntry.CONDITION,
-                          entry.getSection() );
-            assertEquals( DSLMappingEntry.EMPTY_METADATA,
-                          entry.getMetaData() );
-            assertEquals( "ATTRIBUTE \"{attr}\" IS IN [{list}]",
-                          entry.getMappingKey() );
-            assertEquals( "Attribute( {attr} in ({list}) )",
-                          entry.getMappingValue() );
-
-        } catch ( final IOException e ) {
-            e.printStackTrace();
-            fail( "Should not raise exception " );
-        }
-    }
-
-    public void FIXME_testParseFileWithEscaptedBrackets() {
+    public void testParseFileWithEscaptedBrackets() {
         String file = "[when][]ATTRIBUTE \"{attr}\" IS IN \\[{list}\\]=Attribute( {attr} in ({list}) )";
         try {
             final Reader reader = new StringReader( file );
@@ -107,6 +74,46 @@ public class DSLMappingFileTest extends TestCase {
 
     }
 
+    public void testParseFileWithEscaptedCurlyBrackets() {
+        String file = "[consequence][$policy]Add surcharge {surcharge} to Policy=modify(policy) \\{price = {surcharge}\\}";
+        try {
+            final Reader reader = new StringReader( file );
+            this.file = new DSLTokenizedMappingFile();
+
+            final boolean parsingResult = this.file.parseAndLoad( reader );
+            reader.close();
+
+            assertTrue( this.file.getErrors().toString(),
+                        parsingResult );
+            assertTrue( this.file.getErrors().isEmpty() );
+
+            assertEquals( 1,
+                          this.file.getMapping().getEntries().size() );
+
+            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
+
+            assertEquals( DSLMappingEntry.CONSEQUENCE,
+                          entry.getSection() );
+            assertEquals( "$policy",
+                          entry.getMetaData().toString() );
+            assertEquals( "Add surcharge {surcharge} to Policy",
+                          entry.getMappingKey() );
+            assertEquals( "modify(policy) \\{price = {surcharge}\\}",
+                          entry.getMappingValue() );
+            
+            String input = "Add surcharge 300 to Policy";
+            String expected = "modify(policy) {price = 300}"; 
+            String result = entry.getKeyPattern().matcher( input ).replaceAll( entry.getValuePattern() );
+            
+            assertEquals( expected, 
+                          result );
+
+        } catch ( final IOException e ) {
+            e.printStackTrace();
+            fail( "Should not raise exception " );
+        }
+
+    }
     /**
      * Right now this test fails because there is no RHS for the rule. It connects the "then" and "end" to "thenend".
      */
