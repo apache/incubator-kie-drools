@@ -19,10 +19,13 @@ package org.drools.rule;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -83,7 +86,8 @@ public class Collect extends ConditionalElement
             // FactTemplateObject type is not allowed
             if ( this.cls == null ) {
                 ClassObjectType objType = ((ClassObjectType) this.resultPattern.getObjectType());
-                this.cls = ((InternalRuleBase)wm.getRuleBase()).getRootClassLoader().loadClass( objType.getClassName() );
+                String className = determineResultClassName( objType );
+                this.cls = ((InternalRuleBase)wm.getRuleBase()).getRootClassLoader().loadClass( className );
             }
             return (Collection) this.cls.newInstance();
         } catch ( final ClassCastException cce ) {
@@ -99,6 +103,29 @@ public class Collect extends ConditionalElement
             throw new RuntimeDroolsException( "Collect CE could not resolve return result class '" + ((ClassObjectType) this.resultPattern.getObjectType()).getClassName() + "'",
                                               e );            
         }
+    }
+
+    /**
+     * If the user uses an interface as a result type, use a default
+     * concrete class.
+     * 
+     * List -> ArrayList
+     * Collection -> ArrayList
+     * Set -> HashSet
+     * 
+     * @param objType
+     * @return
+     */
+    private String determineResultClassName(ClassObjectType objType) {
+        String className = objType.getClassName();
+        if( List.class.getName().equals( className ) ) {
+            className = ArrayList.class.getName();
+        } else if( Set.class.getName().equals( className ) ) {
+            className = HashSet.class.getName();
+        } else if( Collection.class.getName().equals( className ) ) {
+            className = ArrayList.class.getName();
+        }
+        return className;
     }
 
     public Map getInnerDeclarations() {

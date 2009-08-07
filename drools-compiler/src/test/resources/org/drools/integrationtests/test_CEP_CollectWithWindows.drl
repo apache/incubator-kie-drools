@@ -1,0 +1,27 @@
+package org.drools;
+
+import java.util.List
+
+global List timeResults;
+global List lengthResults;
+
+declare OrderEvent
+    @role( event )
+    @expires( 2m )
+end
+
+rule "collect with time window"
+when
+    $list : List( empty == false ) from collect(
+              $o : OrderEvent() over window:time(30s) )
+then
+    timeResults.add( $list.size() );
+end
+
+rule "collect with length window"
+when
+    $list : List( empty == false ) from collect(
+              $o : OrderEvent() over window:length(3) )
+then
+    lengthResults.add( $list.size() );
+end
