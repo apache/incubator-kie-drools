@@ -20,6 +20,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.Collect;
@@ -278,6 +279,12 @@ public class CollectNode extends BetaNode {
                                   final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
+        
+        final InternalFactHandle origin = (InternalFactHandle) context.getFactHandleOrigin();
+        if( context.getType() == PropagationContext.EXPIRATION ) {
+            ((PropagationContextImpl)context).setFactHandle( null );
+        }
+        
         behavior.retractRightTuple( memory.betaMemory.getBehaviorContext(), rightTuple, workingMemory );
         memory.betaMemory.getRightTupleMemory().remove( rightTuple );
 
@@ -291,6 +298,11 @@ public class CollectNode extends BetaNode {
                               memory );
             leftTuple = tmp;
         }
+
+        if( context.getType() == PropagationContext.EXPIRATION ) {
+            ((PropagationContextImpl)context).setFactHandle( origin );
+        }
+
     }
 
     /**
@@ -355,7 +367,7 @@ public class CollectNode extends BetaNode {
 
         if ( context.getType() == PropagationContext.ASSERTION ) {
             ((Collection) colctx.resultTuple.getFactHandle().getObject()).add( handle.getObject() );
-        } else if ( context.getType() == PropagationContext.RETRACTION ) {
+        } else if ( context.getType() == PropagationContext.RETRACTION || context.getType() == PropagationContext.EXPIRATION ) {
             ((Collection) colctx.resultTuple.getFactHandle().getObject()).remove( handle.getObject() );
         } else if ( context.getType() == PropagationContext.MODIFICATION || context.getType() == PropagationContext.RULE_ADDITION || context.getType() == PropagationContext.RULE_REMOVAL ) {
             if ( isAssert ) {

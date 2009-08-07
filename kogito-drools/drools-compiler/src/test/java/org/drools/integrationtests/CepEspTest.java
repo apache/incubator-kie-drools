@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.OrderEvent;
 import org.drools.RuleBase;
@@ -1084,7 +1085,7 @@ public class CepEspTest extends TestCase {
         conf.setClockType( ClockType.PSEUDO_CLOCK );
         StatefulSession wm = ruleBase.newStatefulSession( conf,
                                                           null );
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(wm);
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
         logger.setFileName( "audit" );
 
         try {
@@ -1099,16 +1100,18 @@ public class CepEspTest extends TestCase {
             SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
             clock.advanceTime( 5,
                                TimeUnit.SECONDS ); // 5 seconds
-            
+
             // there is no next job, so returns -1
-            assertEquals( -1, iwm.getTimeToNextJob());
+            assertEquals( -1,
+                          iwm.getTimeToNextJob() );
             wm.insert( new OrderEvent( "1",
                                        "customer A",
                                        70 ) );
             assertEquals( 0,
                           iwm.getIdleTime() );
             // now, there is a next job in 30 seconds: expire the event
-            assertEquals( 30000, iwm.getTimeToNextJob());
+            assertEquals( 30000,
+                          iwm.getTimeToNextJob() );
 
             wm.fireAllRules();
             assertEquals( 1,
@@ -1120,8 +1123,9 @@ public class CepEspTest extends TestCase {
             clock.advanceTime( 10,
                                TimeUnit.SECONDS ); // 10 seconds
             // next job is in 20 seconds: expire the event
-            assertEquals( 20000, iwm.getTimeToNextJob());
-            
+            assertEquals( 20000,
+                          iwm.getTimeToNextJob() );
+
             wm.insert( new OrderEvent( "2",
                                        "customer A",
                                        60 ) );
@@ -1136,8 +1140,9 @@ public class CepEspTest extends TestCase {
             clock.advanceTime( 10,
                                TimeUnit.SECONDS ); // 10 seconds
             // next job is in 10 seconds: expire the event
-            assertEquals( 10000, iwm.getTimeToNextJob());
-            
+            assertEquals( 10000,
+                          iwm.getTimeToNextJob() );
+
             wm.insert( new OrderEvent( "3",
                                        "customer A",
                                        50 ) );
@@ -1186,4 +1191,129 @@ public class CepEspTest extends TestCase {
         }
     }
 
+    public void testCollectWithWindows() throws Exception {
+        // read in the source
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_CollectWithWindows.drl" ) ),
+                      ResourceType.DRL );
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
+                                                                               null );
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(ksession);
+        logger.setFileName( "audit" );
+
+        List<Number> timeResults = new ArrayList<Number>();
+        List<Number> lengthResults = new ArrayList<Number>();
+
+        ksession.setGlobal( "timeResults",
+                            timeResults );
+        ksession.setGlobal( "lengthResults",
+                            lengthResults );
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.getSessionClock();
+
+        try {
+            // First interaction
+            clock.advanceTime( 5,
+                               TimeUnit.SECONDS ); // 5 seconds
+            ksession.insert( new OrderEvent( "1",
+                                             "customer A",
+                                             70 ) );
+
+            ksession.fireAllRules();
+
+            assertEquals( 1,
+                          timeResults.size() );
+            assertEquals( 1,
+                          timeResults.get( 0 ).intValue() );
+            assertEquals( 1,
+                          lengthResults.size() );
+            assertEquals( 1,
+                          lengthResults.get( 0 ).intValue() );
+
+            // Second interaction: advance clock and assert new data
+            clock.advanceTime( 10,
+                               TimeUnit.SECONDS ); // 10 seconds
+            ksession.insert( new OrderEvent( "2",
+                                             "customer A",
+                                             60 ) );
+            ksession.fireAllRules();
+
+            assertEquals( 2,
+                          timeResults.size() );
+            assertEquals( 2,
+                          timeResults.get( 1 ).intValue() );
+            assertEquals( 2,
+                          lengthResults.size() );
+            assertEquals( 2,
+                          lengthResults.get( 1 ).intValue() );
+
+            // Third interaction: advance clock and assert new data
+            clock.advanceTime( 10,
+                               TimeUnit.SECONDS ); // 10 seconds
+            ksession.insert( new OrderEvent( "3",
+                                             "customer A",
+                                             50 ) );
+            ksession.fireAllRules();
+
+            assertEquals( 3,
+                          timeResults.size() );
+            assertEquals( 3,
+                          timeResults.get( 2 ).intValue() );
+            assertEquals( 3,
+                          lengthResults.size() );
+            assertEquals( 3,
+                          lengthResults.get( 2 ).intValue() );
+
+            // Fourth interaction: advance clock and assert new data
+            clock.advanceTime( 10,
+                               TimeUnit.SECONDS ); // 10 seconds
+            ksession.insert( new OrderEvent( "4",
+                                             "customer A",
+                                             25 ) );
+            ksession.fireAllRules();
+
+            // first event should have expired now
+            assertEquals( 4,
+                          timeResults.size() );
+            assertEquals( 3,
+                          timeResults.get( 3 ).intValue() );
+            assertEquals( 4,
+                          lengthResults.size() );
+            assertEquals( 3,
+                          lengthResults.get( 3 ).intValue() );
+
+            // Fifth interaction: advance clock and assert new data
+            clock.advanceTime( 5,
+                               TimeUnit.SECONDS ); // 10 seconds
+            ksession.insert( new OrderEvent( "5",
+                                             "customer A",
+                                             70 ) );
+            ksession.fireAllRules();
+
+            assertEquals( 5,
+                          timeResults.size() );
+            assertEquals( 4,
+                          timeResults.get( 4 ).intValue() );
+            assertEquals( 5,
+                          lengthResults.size() );
+            assertEquals( 3,
+                          lengthResults.get( 4 ).intValue() );
+        } finally {
+            logger.writeToDisk();
+        }
+
+    }
 }

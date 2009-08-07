@@ -63,4 +63,8 @@ public class OrderEvent implements Serializable {
         this.total = total;
     }
 
+    @Override
+    public String toString() {
+        return "OrderEvent( id="+id+" customer="+customer+" total="+total+" )";
+    }
 }

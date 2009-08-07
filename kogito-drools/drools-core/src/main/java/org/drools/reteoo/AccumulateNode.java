@@ -442,7 +442,7 @@ public class AccumulateNode extends BetaNode {
                                          workingMemory );
             }
         } else {
-            // retraction
+            // retraction and expiration
             this.accumulate.reverse( memory.workingMemoryContext,
                                      accctx.context,
                                      tuple,
