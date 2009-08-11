@@ -98,9 +98,9 @@ public class FieldIndexEntryTest extends TestCase {
         // test add
         index.add( h1RightTuple );
         index.add( h2RightTuple );
-        assertEquals( h2,
-                      index.first.getFactHandle() );
         assertEquals( h1,
+                      index.first.getFactHandle() );
+        assertEquals( h2,
                       ((RightTuple) index.first.getNext()).getFactHandle() );
 
         // test get
@@ -159,11 +159,11 @@ public class FieldIndexEntryTest extends TestCase {
         index.add( h1RightTuple );
         index.add( h2RightTuple );
         index.add( h3RightTuple );
-        assertEquals( h3,
+        assertEquals( h1,
                       index.first.getFactHandle() );
         assertEquals( h2,
                       ((RightTuple) index.first.getNext()).getFactHandle() );
-        assertEquals( h1,
+        assertEquals( h3,
                       ((RightTuple) index.first.getNext().getNext()).getFactHandle() );
 
         // test get
@@ -177,23 +177,23 @@ public class FieldIndexEntryTest extends TestCase {
         // test removal for combinations
         //remove first
         index.remove( h3RightTuple );
-        assertEquals( h2,
-                      index.first.getFactHandle() );
         assertEquals( h1,
+                      index.first.getFactHandle() );
+        assertEquals( h2,
                       ((RightTuple) index.first.getNext()).getFactHandle() );
 
         index.add( h3RightTuple );
         index.remove( h2RightTuple );
-        assertEquals( h3,
-                      index.first.getFactHandle() );
         assertEquals( h1,
+                      index.first.getFactHandle() );
+        assertEquals( h3,
                       ((RightTuple) index.first.getNext()).getFactHandle() );
 
         index.add( h2RightTuple );
         index.remove( h1RightTuple );
-        assertEquals( h2,
-                      index.first.getFactHandle() );
         assertEquals( h3,
+                      index.first.getFactHandle() );
+        assertEquals( h2,
                       ((RightTuple) index.first.getNext()).getFactHandle() );
 
         index.remove( index.first );

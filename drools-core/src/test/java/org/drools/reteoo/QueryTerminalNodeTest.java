@@ -191,13 +191,13 @@ public class QueryTerminalNodeTest extends TestCase {
         QueryResult result = results.get( 0 );
         assertEquals( 1,
                       result.size() );
-        assertEquals( stilton2,
+        assertEquals( stilton1,
                       result.get( 0 ) );
 
         result = results.get( 1 );
         assertEquals( 1,
                       result.size() );
-        assertEquals( stilton1,
+        assertEquals( stilton2,
                       result.get( 0 ) );
 
         int i = 0;
@@ -206,10 +206,10 @@ public class QueryTerminalNodeTest extends TestCase {
             assertEquals( 1,
                           result.size() );
             if ( i == 1 ) {
-                assertSame( stilton1,
+                assertSame( stilton2,
                             result.get( 0 ) );
             } else {
-                assertSame( stilton2,
+                assertSame( stilton1,
                             result.get( 0 ) );
             }
             i++;

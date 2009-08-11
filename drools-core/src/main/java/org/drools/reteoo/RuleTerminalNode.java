@@ -60,13 +60,13 @@ public final class RuleTerminalNode extends BaseNode
     // Instance members
     // ------------------------------------------------------------
 
-    private int               sequence = -1; // -1 means not set
+    private int               sequence         = -1;  // -1 means not set
 
     /**
      *
      */
     private static final long serialVersionUID = 400L;
-        
+
     /** The rule to invoke upon match. */
     private Rule              rule;
     /**
@@ -121,7 +121,7 @@ public final class RuleTerminalNode extends BaseNode
         subrule = (GroupElement) in.readObject();
         tupleSource = (LeftTupleSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();       
+        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -142,7 +142,7 @@ public final class RuleTerminalNode extends BaseNode
     public Rule getRule() {
         return this.rule;
     }
-    
+
     public GroupElement getSubRule() {
         return this.subrule;
     }
@@ -163,9 +163,9 @@ public final class RuleTerminalNode extends BaseNode
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         assertLeftTuple( tuple,
-                     context,
-                     workingMemory,
-                     true );
+                         context,
+                         workingMemory,
+                         true );
 
     }
 
@@ -180,11 +180,13 @@ public final class RuleTerminalNode extends BaseNode
      *             If an error occurs while asserting.
      */
     public void assertLeftTuple(final LeftTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory,
-                            final boolean fireActivationCreated) {
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory,
+                                final boolean fireActivationCreated) {
         //check if the rule is effective
-        if ( !this.rule.isEffective( workingMemory.getTimeMachine(), tuple, workingMemory ) ) {
+        if ( !this.rule.isEffective( workingMemory.getTimeMachine(),
+                                     tuple,
+                                     workingMemory ) ) {
             return;
         }
 
@@ -197,21 +199,15 @@ public final class RuleTerminalNode extends BaseNode
             return;
         }
 
-        //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
-        // @FIXME
-        final LeftTuple cloned = tuple;//new LeftTuple( tuple );
-
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Duration dur = this.rule.getDuration();
 
         if ( dur != null && dur.getDuration( tuple ) > 0 ) {
-            final ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
-                                                                      cloned,
-                                                                      agenda,
-                                                                      context,
-                                                                      this.rule,
-                                                                      this.subrule );
+            final ScheduledAgendaItem item = agenda.createScheduledAgendaItem( tuple,
+                                                                               context,
+                                                                               this.rule,
+                                                                               this.subrule );
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
 
             agenda.scheduleItem( item );
@@ -231,19 +227,18 @@ public final class RuleTerminalNode extends BaseNode
             // ----------------
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
 
-            final AgendaItem item = new AgendaItem( context.getPropagationNumber(),
-                                                    cloned,
-                                                    rule.getSalience().getValue( tuple,
-                                                                                 workingMemory ),
-                                                    context,
-                                                    this.rule,
-                                                    this.subrule );
+            final AgendaItem item = agenda.createAgendaItem( tuple,
+                                                             rule.getSalience().getValue( tuple,
+                                                                                          workingMemory ),
+                                                             context,
+                                                             this.rule,
+                                                             this.subrule );
 
             item.setSequenence( this.sequence );
 
             tuple.setActivation( item );
             memory.getTupleMemory().add( tuple );
-            
+
             boolean added = agenda.addActivation( item );
 
             item.setActivated( added );
@@ -265,12 +260,12 @@ public final class RuleTerminalNode extends BaseNode
         memory.getTupleMemory().remove( leftTuple );
 
         final Activation activation = leftTuple.getActivation();
-        
+
         // activation can be null if the LeftTuple previous propagated into a no-loop
         if ( activation == null ) {
             return;
         }
-        
+
         if ( activation.getLogicalDependencies() != null && !activation.getLogicalDependencies().isEmpty() ) {
             context.addRetractedTuple( this.rule,
                                        activation );
@@ -287,7 +282,7 @@ public final class RuleTerminalNode extends BaseNode
             }
 
             // on fact expiration, we don't remove the activation, but let it fire
-            if( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
+            if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
                 EventFactHandle efh = (EventFactHandle) context.getFactHandleOrigin();
                 efh.increaseActivationsCount();
             } else {
@@ -297,8 +292,8 @@ public final class RuleTerminalNode extends BaseNode
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
                 }
 
-                if ( activation.getRuleFlowGroupNode() != null ) {
-                    final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+                if ( activation.getActivationNode() != null ) {
+                    final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
                     ruleFlowGroup.removeActivation( activation );
                 }
 
@@ -458,23 +453,23 @@ public final class RuleTerminalNode extends BaseNode
         final RuleTerminalNode other = (RuleTerminalNode) object;
         return this.rule.equals( other.rule );
     }
-    
+
     public short getType() {
         return NodeTypeEnums.RuleTerminalNode;
-    }    
+    }
 
     public static class TerminalNodeMemory
         implements
         Externalizable {
-        private static final long   serialVersionUID = 400L;
+        private static final long serialVersionUID = 400L;
 
-//        private InternalAgendaGroup agendaGroup;
-//
-//        private ActivationGroup     activationGroup;
-//
-//        private RuleFlowGroup       ruleFlowGroup;
+        //        private InternalAgendaGroup agendaGroup;
+        //
+        //        private ActivationGroup     activationGroup;
+        //
+        //        private RuleFlowGroup       ruleFlowGroup;
 
-        private LeftTupleList      tupleMemory;
+        private LeftTupleList     tupleMemory;
 
         public TerminalNodeMemory() {
             this.tupleMemory = new LeftTupleList();
@@ -482,45 +477,45 @@ public final class RuleTerminalNode extends BaseNode
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-//            agendaGroup = (InternalAgendaGroup) in.readObject();
-//            activationGroup = (ActivationGroup) in.readObject();
-//            ruleFlowGroup = (RuleFlowGroup) in.readObject();
+            //            agendaGroup = (InternalAgendaGroup) in.readObject();
+            //            activationGroup = (ActivationGroup) in.readObject();
+            //            ruleFlowGroup = (RuleFlowGroup) in.readObject();
             tupleMemory = (LeftTupleList) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-//            out.writeObject( agendaGroup );
-//            out.writeObject( activationGroup );
-//            out.writeObject( ruleFlowGroup );
+            //            out.writeObject( agendaGroup );
+            //            out.writeObject( activationGroup );
+            //            out.writeObject( ruleFlowGroup );
             out.writeObject( tupleMemory );
         }
 
-//        public InternalAgendaGroup getAgendaGroup() {
-//            return this.agendaGroup;
-//        }
-//
-//        public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
-//            this.agendaGroup = agendaGroup;
-//        }
-//
-//        public ActivationGroup getActivationGroup() {
-//            return this.activationGroup;
-//        }
-//
-//        public void setActivationGroup(final ActivationGroup activationGroup) {
-//            this.activationGroup = activationGroup;
-//        }
+        //        public InternalAgendaGroup getAgendaGroup() {
+        //            return this.agendaGroup;
+        //        }
+        //
+        //        public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
+        //            this.agendaGroup = agendaGroup;
+        //        }
+        //
+        //        public ActivationGroup getActivationGroup() {
+        //            return this.activationGroup;
+        //        }
+        //
+        //        public void setActivationGroup(final ActivationGroup activationGroup) {
+        //            this.activationGroup = activationGroup;
+        //        }
 
         public LeftTupleList getTupleMemory() {
             return this.tupleMemory;
         }
 
-//        public RuleFlowGroup getRuleFlowGroup() {
-//            return this.ruleFlowGroup;
-//        }
-//
-//        public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
-//            this.ruleFlowGroup = ruleFlowGroup;
-//        }
+        //        public RuleFlowGroup getRuleFlowGroup() {
+        //            return this.ruleFlowGroup;
+        //        }
+        //
+        //        public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
+        //            this.ruleFlowGroup = ruleFlowGroup;
+        //        }
     }
 }

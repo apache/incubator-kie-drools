@@ -222,5 +222,9 @@ public class ArrayAgendaGroup
     
     public void setFocus() {
         throw new UnsupportedOperationException();
+    }
+    
+    public void remove(AgendaItem agendaItem) {
+        throw new UnsupportedOperationException();
     }    
 }

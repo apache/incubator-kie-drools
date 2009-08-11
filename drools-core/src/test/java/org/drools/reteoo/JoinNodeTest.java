@@ -220,9 +220,9 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.memory.getLeftTupleMemory().size() );
 
         LeftTuple leftTuple = this.memory.getLeftTupleMemory().getFirst( null );
-        assertEquals( tuple1,
-                      leftTuple );
         assertEquals( tuple0,
+                      leftTuple );
+        assertEquals( tuple1,
                       leftTuple.getNext() );
     }
 
@@ -330,8 +330,8 @@ public class JoinNodeTest extends DroolsTestCase {
                                                                                            this.node,
                                                                                            true ) );
 
-        final InternalFactHandle rf1 = rightTuple.getFactHandle();
-        final InternalFactHandle rf0 = ((RightTuple) rightTuple.getNext()).getFactHandle();
+        final InternalFactHandle rf0 = rightTuple.getFactHandle();
+        final InternalFactHandle rf1 = ((RightTuple) rightTuple.getNext()).getFactHandle();
 
         assertEquals( f0,
                       rf0 );

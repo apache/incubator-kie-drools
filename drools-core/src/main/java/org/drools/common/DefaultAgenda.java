@@ -39,6 +39,8 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
+import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -48,6 +50,7 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
+import org.drools.spi.Tuple;
 import org.drools.util.ClassUtils;
 import org.drools.util.LinkedListNode;
 
@@ -114,6 +117,8 @@ public class DefaultAgenda
 
     protected volatile AtomicBoolean                            halt             = new AtomicBoolean( false );
 
+    private int                                                 activationCounter;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -169,6 +174,31 @@ public class DefaultAgenda
         } else {
             this.consequenceExceptionHandler = (org.drools.runtime.rule.ConsequenceExceptionHandler) object;
         }
+    }
+
+    public AgendaItem createAgendaItem(final Tuple tuple,
+                                       final int salience,
+                                       final PropagationContext context,
+                                       final Rule rule,
+                                       final GroupElement subrule) {
+        return new AgendaItem( activationCounter++,
+                               tuple,
+                               salience,
+                               context,
+                               rule,
+                               subrule );
+    }
+
+    public ScheduledAgendaItem createScheduledAgendaItem(final Tuple tuple,
+                                                         final PropagationContext context,
+                                                         final Rule rule,
+                                                         final GroupElement subrule) {
+        return new ScheduledAgendaItem( activationCounter++,
+                                        tuple,
+                                        this,
+                                        context,
+                                        rule,
+                                        subrule );
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
@@ -548,12 +578,12 @@ public class DefaultAgenda
     public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
         return this.agendaGroups;
     }
-    
+
     public InternalAgendaGroup getMainAgendaGroup() {
-        if ( this.main ==  null ) {
+        if ( this.main == null ) {
             this.main = (InternalAgendaGroup) getAgendaGroup( AgendaGroup.MAIN );
         }
-        
+
         return this.main;
     }
 
@@ -769,8 +799,8 @@ public class DefaultAgenda
                 item.getActivationGroupNode().getActivationGroup().removeActivation( item );
             }
 
-            if ( item.getRuleFlowGroupNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = item.getRuleFlowGroupNode().getRuleFlowGroup();
+            if ( item.getActivationNode() != null ) {
+                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) item.getActivationNode().getParentContainer();
                 ruleFlowGroup.removeActivation( item );
             }
 
@@ -810,14 +840,14 @@ public class DefaultAgenda
                 activation.setActivated( false );
                 activation.remove();
 
-                if ( activation.getRuleFlowGroupNode() != null ) {
-                    final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+                if ( activation.getActivationNode() != null ) {
+                    final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
                     ruleFlowGroup.removeActivation( activation );
                 }
 
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
                                                                               this.workingMemory,
-                                                                              ActivationCancelledCause.CLEAR);
+                                                                              ActivationCancelledCause.CLEAR );
             }
         }
         activationGroup.clear();
@@ -834,7 +864,7 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         for ( Iterator it = ruleFlowGroup.iterator(); it.hasNext(); ) {
-            RuleFlowGroupNode node = (RuleFlowGroupNode) it.next();
+            ActivationNode node = (ActivationNode) it.next();
             AgendaItem item = (AgendaItem) node.getActivation();
             if ( item != null ) {
                 item.setActivated( false );
@@ -950,11 +980,11 @@ public class DefaultAgenda
                 }
             }
 
-            if ( activation.getRuleFlowGroupNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+            if ( activation.getActivationNode() != null ) {
+                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
                 // it is possible that the ruleflow group is no longer active if it was
                 // cleared during execution of this activation
-                if (ruleFlowGroup.isActive()) {
+                if ( ruleFlowGroup.isActive() ) {
                     ruleFlowGroup.removeActivation( activation );
                 }
             }
@@ -1016,7 +1046,7 @@ public class DefaultAgenda
 
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
-        for ( Iterator<RuleFlowGroupNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
+        for ( Iterator<ActivationNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
             Activation activation = activations.next().getActivation();
             if ( ruleName.equals( activation.getRule().getName() ) ) {
                 if ( checkProcessInstance( activation,
@@ -1067,9 +1097,9 @@ public class DefaultAgenda
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
-        	boolean fired = fireNextItem( agendaFilter );
-        	fired = fired || !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
-        	this.workingMemory.executeQueuedActions();
+            boolean fired = fireNextItem( agendaFilter );
+            fired = fired || !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
+            this.workingMemory.executeQueuedActions();
             if ( !fired ) {
                 try {
                     synchronized ( this.halt ) {
@@ -1107,7 +1137,7 @@ public class DefaultAgenda
     private final int updateFireLimit(final int fireLimit) {
         return fireLimit > 0 ? fireLimit - 1 : fireLimit;
     }
-    
+
     public void notifyHalt() {
         synchronized ( this.halt ) {
             this.halt.notifyAll();

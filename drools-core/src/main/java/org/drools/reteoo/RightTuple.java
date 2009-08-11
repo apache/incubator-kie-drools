@@ -23,8 +23,6 @@ public class RightTuple
 
     private RightTupleSink     sink;
 
-    private int                hashCode;
-
     public RightTuple() {
 
     }
@@ -32,7 +30,6 @@ public class RightTuple
     public RightTuple(InternalFactHandle handle,
                       RightTupleSink sink) {
         this.handle = handle;
-        this.hashCode = this.handle.hashCode();
         this.sink = sink;
 
         RightTuple currentFirst = handle.getRightTuple();
@@ -154,16 +151,8 @@ public class RightTuple
         this.betaChildren = betachildren;
     }
 
-    public int getHashCode() {
-        return hashCode;
-    }
-
-    public void setHashCode(int hashCode) {
-        this.hashCode = hashCode;
-    }
-
     public int hashCode() {
-        return this.hashCode;
+        return this.handle.hashCode();
     }
 
     public String toString() {
@@ -177,7 +166,7 @@ public class RightTuple
         }
 
         // A ReteTuple is  only the same if it has the same hashCode, factId and parent
-        if ( (other == null) || (this.hashCode != other.hashCode) ) {
+        if ( (other == null) || (hashCode() != other.hashCode()) ) {
             return false;
         }
 

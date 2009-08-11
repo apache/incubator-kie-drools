@@ -19,26 +19,27 @@ package org.drools.common;
 import org.drools.spi.Activation;
 import org.drools.util.AbstractBaseLinkedListNode;
 
-public class RuleFlowGroupNode extends AbstractBaseLinkedListNode {
+public class ActivationNode extends AbstractBaseLinkedListNode {
 
     private static final long     serialVersionUID = 400L;
 
     private Activation            activation;
-    private InternalRuleFlowGroup ruleFlowGroup;
+    private Object parentContainer;
 
-    public RuleFlowGroupNode(final Activation activation,
-                             final InternalRuleFlowGroup ruleFlowGroup) {
+    public ActivationNode(final Activation activation,
+                          final Object parentContainer) {
         super();
         this.activation = activation;
-        this.ruleFlowGroup = ruleFlowGroup;
+        this.activation.setActivationNode( this );
+        this.parentContainer = parentContainer;
     }
 
     public Activation getActivation() {
         return this.activation;
     }
 
-    public InternalRuleFlowGroup getRuleFlowGroup() {
-        return this.ruleFlowGroup;
+    public Object getParentContainer() {
+        return this.parentContainer;
     }
 
 }

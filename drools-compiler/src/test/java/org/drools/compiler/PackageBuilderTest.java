@@ -40,7 +40,7 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
-import org.drools.common.RuleFlowGroupNode;
+import org.drools.common.ActivationNode;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
@@ -1610,12 +1610,12 @@ public class PackageBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public RuleFlowGroupNode getRuleFlowGroupNode() {
+        public ActivationNode getActivationNode() {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public void setRuleFlowGroupNode(final RuleFlowGroupNode ruleFlowGroupNode) {
+        public void setActivationNode(final ActivationNode ruleFlowGroupNode) {
             // TODO Auto-generated method stub
 
         }

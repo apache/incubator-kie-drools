@@ -147,7 +147,7 @@ public class ExecutionFlowControlTest extends TestCase {
         }
     }
 
-    public void testSalienceInteger() throws Exception {
+    public void testSalienceIntegerAndDepthCrs() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceIntegerRule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -167,15 +167,18 @@ public class ExecutionFlowControlTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "Two rules should have been fired",
-                             2,
+        Assert.assertEquals( "Three rules should have been fired",
+                             3,
                              list.size() );
-        Assert.assertEquals( "Rule 3 should have been fired first",
-                             "Rule 3",
+        Assert.assertEquals( "Rule 4 should have been fired first",
+                             "Rule 4",
                              list.get( 0 ) );
         Assert.assertEquals( "Rule 2 should have been fired second",
                              "Rule 2",
-                             list.get( 1 ) );
+                             list.get( 1 ) );        
+        Assert.assertEquals( "Rule 3 should have been fired third",
+                             "Rule 3",
+                             list.get( 2 ) );        
     }
 
     public void testSalienceExpression() throws Exception {

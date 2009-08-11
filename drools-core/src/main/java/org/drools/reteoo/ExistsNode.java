@@ -101,7 +101,7 @@ public class ExistsNode extends BetaNode {
                                           workingMemory,
                                           leftTuple );
 
-        for ( RightTuple rightTuple = memory.getRightTupleMemory().getLast( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getPrevious() ) {
+        for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                        rightTuple.getFactHandle() ) ) {
 
@@ -274,7 +274,7 @@ public class ExistsNode extends BetaNode {
         //
         //        this.constraints.resetFactHandle( memory.getContext() );
         // assign now, so we can remove from memory before doing any possible propagations
-        final RightTuple rootBlocker = (RightTuple) rightTuple.getPrevious();
+        final RightTuple rootBlocker = (RightTuple) rightTuple.getNext();
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         behavior.retractRightTuple( memory.getBehaviorContext(),
@@ -298,7 +298,7 @@ public class ExistsNode extends BetaNode {
                                               leftTuple );
 
             // we know that older tuples have been checked so continue previously
-            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) newBlocker.getPrevious() ) {
+            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) newBlocker.getNext() ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
                     leftTuple.setBlocker( newBlocker );

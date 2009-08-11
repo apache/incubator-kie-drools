@@ -209,9 +209,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
         final RightTupleList list = map.get( new LeftTuple( stiltonHandle3,
                                                             null,
                                                             true ) );
-        assertSame( stiltonHandle2,
-                    list.first.getFactHandle() );
         assertSame( stiltonHandle1,
+                    list.first.getFactHandle() );
+        assertSame( stiltonHandle2,
                     ((RightTuple) list.first.getNext()).getFactHandle() );
     }
 

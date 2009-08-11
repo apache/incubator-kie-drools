@@ -99,7 +99,7 @@ public class NotNode extends BetaNode {
                                           workingMemory,
                                           leftTuple );
 
-        for ( RightTuple rightTuple = memory.getRightTupleMemory().getLast( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getPrevious() ) {
+        for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                        rightTuple.getFactHandle() ) ) {
                 leftTuple.setBlocker( rightTuple );
@@ -205,7 +205,7 @@ public class NotNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         // assign now, so we can remove from memory before doing any possible propagations
-        final RightTuple rootBlocker = (RightTuple) rightTuple.getPrevious();
+        final RightTuple rootBlocker = (RightTuple) rightTuple.getNext();
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         behavior.retractRightTuple( memory.getBehaviorContext(),
@@ -228,8 +228,8 @@ public class NotNode extends BetaNode {
                                               workingMemory,
                                               leftTuple );
 
-            // we know that older tuples have been checked so continue previously
-            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) newBlocker.getPrevious() ) {
+            // we know that older tuples have been checked so continue next
+            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) newBlocker.getNext() ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
                     leftTuple.setBlocker( newBlocker );

@@ -47,10 +47,10 @@ public class RightTupleList
     }
 
     public void add(final RightTuple rightTuple) {
-        if ( this.first != null ) {
-            this.first.setPrevious( rightTuple );
-            rightTuple.setNext( this.first );
-            this.first = rightTuple;
+        if ( this.last != null ) {
+            this.last.setNext( rightTuple );
+            rightTuple.setPrevious( this.last );
+            this.last = rightTuple;
         } else {
             this.first = rightTuple;
             this.last = rightTuple;;
@@ -81,6 +81,9 @@ public class RightTupleList
             this.last = null;
             this.first = null;
         }
+        
+        rightTuple.setPrevious( null );
+        rightTuple.setNext( null );
     }
 
     public RightTuple get(final InternalFactHandle handle) {
@@ -175,15 +178,6 @@ public class RightTupleList
     public boolean equals(final Object object) {
         final RightTupleList other = (RightTupleList) object;
         return this.hashCode == other.hashCode && this.index == other.index;
-    }
-
-    public Entry getPrevious() {
-        return null;
-        //          return this.previous;            
-    }
-
-    public void setPrevious(Entry previous) {
-        //          this.previous = previous;
     }
 
     public Entry getNext() {

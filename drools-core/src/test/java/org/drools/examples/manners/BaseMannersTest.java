@@ -138,10 +138,10 @@ public abstract class BaseMannersTest extends TestCase {
         
         this.pkg.addRule( getAssignFirstSeatRule() );
         this.pkg.addRule( getFindSeating() );
+        this.pkg.addRule( getMakePath() );        
         this.pkg.addRule( getPathDone() );
-        this.pkg.addRule( getMakePath() );
-        this.pkg.addRule( getContinueProcessing() );
-        this.pkg.addRule( getAreWeDone() );
+        this.pkg.addRule( getContinueProcessing() );        
+        this.pkg.addRule( getAreWeDone() );        
         this.pkg.addRule( getAllDone() );
 
     }
@@ -549,7 +549,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.update( tuple.get( contextDeclaration ),
                                    context );
 
-                    //                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
+                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();

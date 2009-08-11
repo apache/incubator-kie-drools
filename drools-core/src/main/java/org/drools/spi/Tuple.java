@@ -60,12 +60,6 @@ public interface Tuple
     InternalFactHandle[] getFactHandles();
 
     /**
-     * Returns the tuple recency
-     * @return
-     */
-    long getRecency();
-
-    /**
      * Returns the size of this tuple in number of elements (patterns)
      * @return
      */
