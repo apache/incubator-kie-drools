@@ -18,6 +18,7 @@ public class LeftTupleList
     public Entry                   next;
 
     public LeftTuple               first;
+    public LeftTuple               last;
 
     private int                    hashCode;
     private Index                  index;
@@ -41,14 +42,20 @@ public class LeftTupleList
     public LeftTuple getFirst(RightTuple rightTuple) {
         return this.first;
     }
+    
+    public LeftTuple getLast(RightTuple lastTuple) {
+        return this.first;
+    }    
 
     public void add(final LeftTuple leftTuple) {
-        if ( this.first != null ) {
-            leftTuple.setNext( this.first );
-            this.first.setPrevious( leftTuple );
+        if ( this.last != null ) {
+            this.last.setNext( leftTuple );
+            leftTuple.setPrevious( this.last );
+            this.last = leftTuple;
+        } else {
+            this.first = leftTuple;
+            this.last = leftTuple;;
         }
-
-        this.first = leftTuple;
 
         this.size++;
     }
@@ -58,20 +65,23 @@ public class LeftTupleList
         LeftTuple next = (LeftTuple) leftTuple.getNext();
 
         if ( previous != null && next != null ) {
-            //remove  from middle
+            // remove from middle
             previous.setNext( next );
             next.setPrevious( previous );
         } else if ( next != null ) {
-            //remove from first
+            // remove from first
             this.first = next;
             next.setPrevious( null );
         } else if ( previous != null ) {
-            //remove from end
+            // remove from end
+            this.last = previous;
             previous.setNext( null );
         } else {
+            // remove everything
+            this.last = null;
             this.first = null;
         }
-
+        
         leftTuple.setPrevious( null );
         leftTuple.setNext( null );
 
@@ -176,14 +186,6 @@ public class LeftTupleList
 
     public void setNext(final Entry next) {
         this.next = next;
-    }
-
-    public Entry getPrevious() {
-        return null;
-    }
-
-    public void setPrevious(Entry previous) {
-        //      this.previous = previous;           
     }
 
     public String toString() {

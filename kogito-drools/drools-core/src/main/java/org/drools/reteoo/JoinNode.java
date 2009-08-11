@@ -123,6 +123,39 @@ public class JoinNode extends BetaNode {
 
         this.constraints.resetTuple( memory.getContext() );
     }
+    
+//    public void assertLeftTuple(final LeftTuple leftTuple,
+//                                RightTuple rightTuple,
+//                                final PropagationContext context,
+//                                final InternalWorkingMemory workingMemory) {
+//        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+//
+//        if ( this.tupleMemoryEnabled ) {
+//            memory.getLeftTupleMemory().add( leftTuple );
+//        }
+//
+//        this.constraints.updateFromTuple( memory.getContext(),
+//                                          workingMemory,
+//                                          leftTuple );
+//        if ( rightTuple == null ) {
+//            rightTuple = memory.getRightTupleMemory().getFirst( leftTuple );
+//        }
+//        
+//        boolean suspend = false;
+//        for ( ;rightTuple != null && !suspend; rightTuple = (RightTuple) rightTuple.getNext() ) {
+//            final InternalFactHandle handle = rightTuple.getFactHandle();
+//            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+//                                                       handle ) ) {
+//                this.sink.propagateAssertLeftTuple( leftTuple,
+//                                                    rightTuple,
+//                                                    context,
+//                                                    workingMemory,
+//                                                    this.tupleMemoryEnabled );
+//            }
+//        }
+//
+//        this.constraints.resetTuple( memory.getContext() );
+//    }    
 
     /**
      * Assert a new <code>FactHandleImpl</code>. The left input of

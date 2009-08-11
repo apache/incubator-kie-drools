@@ -246,8 +246,8 @@ public class MVELTest extends TestCase {
         assertEquals("TestObject.stayHasDaysOfWeek: java|false|[2008-04-01, 2008-04-10]", list.get(1));
         assertEquals("TestObject.checkHighestPriority: mvel|2", list.get(2));
         assertEquals("TestObject.stayHasDaysOfWeek: mvel|false|[2008-04-01, 2008-04-10]", list.get(3));
-        assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|java", list.get(4));
-        assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|mvel", list.get(5));
+        assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|mvel", list.get(4));
+        assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|java", list.get(5));
     }
 
     private Package compileRule(String drl) throws Exception {

@@ -73,12 +73,12 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
                        final Activation rhs) {
         long leftRecency = 0;
         long rightRecency = 0;
-        if ( lhs.getTuple() instanceof LeftTuple ) {
-            leftRecency = (lhs.getTuple()).getRecency();
-        }
-        if ( rhs.getTuple() instanceof LeftTuple ) {
-            rightRecency = (rhs.getTuple()).getRecency();
-        }
+//        if ( lhs.getTuple() instanceof LeftTuple ) {
+//            leftRecency = (lhs.getTuple()).getRecency();
+//        }
+//        if ( rhs.getTuple() instanceof LeftTuple ) {
+//            rightRecency = (rhs.getTuple()).getRecency();
+//        }
         return (rightRecency > leftRecency) ? 1 : (rightRecency < leftRecency) ? -1 : 0;
     }
 

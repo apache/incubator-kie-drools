@@ -90,7 +90,7 @@ public class AgendaItem
 
     private ActivationGroupNode activationGroupNode;
 
-    private RuleFlowGroupNode   ruleFlowGroupNode;
+    private ActivationNode   activationNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -139,7 +139,7 @@ public class AgendaItem
         activated = in.readBoolean();
         agendaGroup = (InternalAgendaGroup) in.readObject();
         activationGroupNode = (ActivationGroupNode) in.readObject();
-        ruleFlowGroupNode = (RuleFlowGroupNode) in.readObject();
+        activationNode = (ActivationNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -156,7 +156,7 @@ public class AgendaItem
         out.writeBoolean( activated );
         out.writeObject( agendaGroup );
         out.writeObject( activationGroupNode );
-        out.writeObject( ruleFlowGroupNode );
+        out.writeObject( activationNode );
     }
 
     public PropagationContext getPropagationContext() {
@@ -258,19 +258,19 @@ public class AgendaItem
         return this.tuple.hashCode();
     }
 
-    public void enqueued(final Queue queue,
-                         final int index) {
-        this.queue = queue;
+    public void enqueued(final int index) {
         this.index = index;
     }
 
     public void dequeue() {
-        if ( this.queue != null ) {
-            // will only be null if the AgendaGroup is locked when the activation add was attempted
-            this.queue.dequeue( this.index );
-            this.queue = null;
+        if ( this.agendaGroup != null ) {
+        	this.agendaGroup.remove( this );
         }
         this.activated = false;
+    }
+    
+    public int getIndex() {
+    	return this.index;
     }
 
     public void remove() {
@@ -293,12 +293,12 @@ public class AgendaItem
         this.agendaGroup = agendaGroup;
     }
 
-    public RuleFlowGroupNode getRuleFlowGroupNode() {
-        return this.ruleFlowGroupNode;
+    public ActivationNode getActivationNode() {
+        return this.activationNode;
     }
 
-    public void setRuleFlowGroupNode(final RuleFlowGroupNode ruleFlowGroupNode) {
-        this.ruleFlowGroupNode = ruleFlowGroupNode;
+    public void setActivationNode(final ActivationNode activationNode) {
+        this.activationNode = activationNode;
     }
 
     public GroupElement getSubRule() {

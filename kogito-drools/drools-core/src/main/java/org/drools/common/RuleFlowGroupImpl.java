@@ -132,7 +132,7 @@ public class RuleFlowGroupImpl
             ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowGroupDeactivated( this,
                                                                                                               this.workingMemory );
             final Iterator it = this.list.iterator();
-            for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
+            for ( ActivationNode node = (ActivationNode) it.next(); node != null; node = (ActivationNode) it.next() ) {
                 final Activation activation = node.getActivation();
                 activation.remove();
                 if ( activation.getActivationGroupNode() != null ) {
@@ -163,7 +163,7 @@ public class RuleFlowGroupImpl
     private void triggerActivations() {
         // iterate all activations adding them to their AgendaGroups
         final Iterator it = this.list.iterator();
-        for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
+        for ( ActivationNode node = (ActivationNode) it.next(); node != null; node = (ActivationNode) it.next() ) {
             final Activation activation = node.getActivation();
             ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
         }
@@ -181,9 +181,9 @@ public class RuleFlowGroupImpl
     }
 
     public void addActivation(final Activation activation) {
-        final RuleFlowGroupNode node = new RuleFlowGroupNode( activation,
+        final ActivationNode node = new ActivationNode( activation,
                                                               this );
-        activation.setRuleFlowGroupNode( node );
+        activation.setActivationNode( node );
         this.list.add( node );
 
         if ( this.active ) {
@@ -192,7 +192,7 @@ public class RuleFlowGroupImpl
     }
 
     public void removeActivation(final Activation activation) {
-        final RuleFlowGroupNode node = activation.getRuleFlowGroupNode();
+        final ActivationNode node = activation.getActivationNode();
         this.list.remove( node );
         activation.setActivationGroupNode( null );
         if ( this.active && this.autoDeactivate ) {

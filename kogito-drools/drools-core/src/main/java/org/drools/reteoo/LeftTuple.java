@@ -21,10 +21,6 @@ public class LeftTuple
 
     private Activation         activation;
 
-    private long               recency;
-
-    private int                hashCode;
-
     private RightTuple         blocker;
 
     private LeftTuple          blockedPrevious;
@@ -61,9 +57,6 @@ public class LeftTuple
                      LeftTupleSink sink,
                      boolean leftTupleMemoryEnabled) {
         this.handle = factHandle;
-        this.recency = factHandle.getRecency();
-
-        this.hashCode = handle.hashCode();
 
         if ( leftTupleMemoryEnabled ) {
             LeftTuple currentFirst = handle.getLeftTuple();
@@ -82,9 +75,7 @@ public class LeftTuple
                      boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.index;
         this.parent = leftTuple.parent;
-        this.recency = leftTuple.recency;
         this.handle = leftTuple.handle;
-        this.hashCode = leftTuple.hashCode();
 
         if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;
@@ -105,8 +96,6 @@ public class LeftTuple
         this.handle = rightTuple.getFactHandle();
         this.index = leftTuple.index + 1;
         this.parent = leftTuple;
-        this.recency = leftTuple.recency + this.handle.getRecency();
-        this.hashCode = leftTuple.hashCode ^ (handle.hashCode() * 31);
 
         if ( leftTupleMemoryEnabled ) {
             this.rightParent = rightTuple;
@@ -326,11 +315,7 @@ public class LeftTuple
             entry = entry.parent;
         }
         return handles;
-    }
-    
-    public long getRecency() {
-        return this.recency;
-    }
+    }    
 
     public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
@@ -360,9 +345,9 @@ public class LeftTuple
         this.activation = activation;
     }
 
-    public int hashCode() {
-        return this.hashCode;
-    }
+//    public int hashCode() {        
+//        return this.hashCode;
+//    }
 
     public String toString() {
         final StringBuilder buffer = new StringBuilder();
@@ -376,6 +361,10 @@ public class LeftTuple
         return buffer.toString();
     }
 
+    
+    public int hashCode() {
+        return this.handle.hashCode();
+    }
     /**
      * We use this equals method to avoid the cast
      * @param tuple
@@ -388,7 +377,7 @@ public class LeftTuple
         }
 
         // A LeftTuple is  only the same if it has the same hashCode, factId and parent
-        if ( this.hashCode != other.hashCode ) {
+        if ( this.hashCode() != other.hashCode() ) {
             return false;
         }
 

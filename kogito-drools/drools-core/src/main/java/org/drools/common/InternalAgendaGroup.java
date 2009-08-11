@@ -12,5 +12,7 @@ public interface InternalAgendaGroup extends AgendaGroup {
     
     public Activation[] getQueue();
     
-    public void clear();        
+    public void clear();
+
+	public void remove(AgendaItem agendaItem);        
 }

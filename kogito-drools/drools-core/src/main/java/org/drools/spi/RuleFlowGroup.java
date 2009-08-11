@@ -19,13 +19,13 @@ package org.drools.spi;
 import java.io.Externalizable;
 import java.util.Iterator;
 
-import org.drools.common.RuleFlowGroupNode;
+import org.drools.common.ActivationNode;
 
 public interface RuleFlowGroup extends org.drools.runtime.rule.RuleFlowGroup {
 
     String getName();
 
-    public Iterator<RuleFlowGroupNode> iterator();
+    public Iterator<ActivationNode> iterator();
 
     boolean isEmpty();
 

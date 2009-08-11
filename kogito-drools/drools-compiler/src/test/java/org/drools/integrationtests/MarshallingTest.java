@@ -1433,12 +1433,12 @@ public class MarshallingTest extends TestCase {
 
         assertEquals( 3,
                       ((List) session.getGlobal( "list" )).size() );
-        assertEquals( bobba,
-                      ((List) session.getGlobal( "list" )).get( 2 ) );
-        assertEquals( c3po,
-                      ((List) session.getGlobal( "list" )).get( 1 ) );
         assertEquals( r2d2,
                       ((List) session.getGlobal( "list" )).get( 0 ) );
+        assertEquals( c3po,
+                      ((List) session.getGlobal( "list" )).get( 1 ) );
+        assertEquals( bobba,
+                      ((List) session.getGlobal( "list" )).get( 2 ) );
 
         session = getSerialisedStatefulSession( session );
 
@@ -1451,10 +1451,10 @@ public class MarshallingTest extends TestCase {
 
         assertEquals( 5,
                       ((List) session.getGlobal( "list" )).size() );
-        assertEquals( r2d2,
-                      ((List) session.getGlobal( "list" )).get( 3 ) );
         assertEquals( bobba,
                       ((List) session.getGlobal( "list" )).get( 4 ) );
+        assertEquals( r2d2,
+                      ((List) session.getGlobal( "list" )).get( 3 ) );
 
         session = getSerialisedStatefulSession( session );
 
@@ -1585,9 +1585,9 @@ public class MarshallingTest extends TestCase {
 
         // now remove a cheese, should be no change
         ksession.retract( ksession.getFactHandle( stilton ) );
-        ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
-                                                          true );
+//        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+//                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+//                                                          true );
         ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );

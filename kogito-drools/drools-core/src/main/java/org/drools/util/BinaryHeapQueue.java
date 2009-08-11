@@ -134,7 +134,7 @@ public class BinaryHeapQueue
             grow();
         }
 
-        percolateUpMinHeap( element );
+        percolateUpMaxHeap( element );
     }
 
     /**
@@ -186,86 +186,154 @@ public class BinaryHeapQueue
                                            this.elements[index / 2] );
             }
             if ( index > 1 && compareToParent < 0 ) {
-                percolateUpMinHeap( index );
+                percolateUpMaxHeap( index );
             } else {
-                percolateDownMinHeap( index );
+                percolateDownMaxHeap( index );
             }
         }
 
         return result;
     }
 
+//    /**
+//     * Percolates Queueable down heap from the position given by the index.
+//     * <p/>
+//     * Assumes it is a minimum heap.
+//     *
+//     * @param index the index for the Queueable
+//     */
+//    private void percolateDownMinHeap(final int index) {
+//        final Queueable element = this.elements[index];
+//        int hole = index;
+//
+//        while ( (hole * 2) <= this.size ) {
+//            int child = hole * 2;
+//
+//            // if we have a right child and that child can not be percolated
+//            // up then move onto other child
+//            if ( child != this.size && compare( this.elements[child + 1],
+//                                                this.elements[child] ) < 0 ) {
+//                child++;
+//            }
+//
+//            // if we found resting place of bubble then terminate search
+//            if ( compare( this.elements[child],
+//                          element ) >= 0 ) {
+//                break;
+//            }
+//
+//            setElement( hole,
+//                        this.elements[child] );
+//            hole = child;
+//        }
+//
+//        setElement( hole,
+//                    element );
+//    }
+//
+//    /**
+//     * Percolates Queueable up heap from the position given by the index.
+//     * <p/>
+//     * Assumes it is a minimum heap.
+//     *
+//     * @param index the index of the Queueable to be percolated up
+//     */
+//    private void percolateUpMinHeap(final int index) {
+//        int hole = index;
+//        final Queueable element = this.elements[hole];
+//        while ( hole > 1 && compare( element,
+//                                     this.elements[hole / 2] ) < 0 ) {
+//            // save Queueable that is being pushed down
+//            // as the Queueable "bubble" is percolated up
+//            final int next = hole / 2;
+//            setElement( hole,
+//                        this.elements[next] );
+//            hole = next;
+//        }
+//        setElement( hole,
+//                    element );
+//    }
+//
+//    /**
+//     * Percolates a new Queueable up heap from the bottom.
+//     * <p/>
+//     * Assumes it is a minimum heap.
+//     *
+//     * @param element the Queueable
+//     */
+//    private void percolateUpMinHeap(final Queueable element) {
+//        setElement( ++this.size,
+//                    element );
+//        percolateUpMinHeap( this.size );
+//    }
+    
     /**
-     * Percolates Queueable down heap from the position given by the index.
-     * <p/>
-     * Assumes it is a minimum heap.
+     * Percolates element down heap from the position given by the index.
+     * <p>
+     * Assumes it is a maximum heap.
      *
-     * @param index the index for the Queueable
+     * @param index the index of the element
      */
-    private void percolateDownMinHeap(final int index) {
-        final Queueable element = this.elements[index];
+    protected void percolateDownMaxHeap(final int index) {
+        final Queueable element = elements[index];
         int hole = index;
 
-        while ( (hole * 2) <= this.size ) {
+        while ((hole * 2) <= size) {
             int child = hole * 2;
 
             // if we have a right child and that child can not be percolated
             // up then move onto other child
-            if ( child != this.size && compare( this.elements[child + 1],
-                                                this.elements[child] ) < 0 ) {
+            if (child != size && compare(elements[child + 1], elements[child]) > 0) {
                 child++;
             }
 
             // if we found resting place of bubble then terminate search
-            if ( compare( this.elements[child],
-                          element ) >= 0 ) {
+            if (compare(elements[child], element) <= 0) {
                 break;
             }
 
-            setElement( hole,
-                        this.elements[child] );
+            setElement( hole, elements[child] );
             hole = child;
         }
 
-        setElement( hole,
-                    element );
+        setElement( hole, element);
     }
-
+    
+    
     /**
-     * Percolates Queueable up heap from the position given by the index.
-     * <p/>
-     * Assumes it is a minimum heap.
+     * Percolates element up heap from from the position given by the index.
+     * <p>
+     * Assume it is a maximum heap.
      *
-     * @param index the index of the Queueable to be percolated up
+     * @param index the index of the element to be percolated up
      */
-    private void percolateUpMinHeap(final int index) {
+    protected void percolateUpMaxHeap(final int index) {
         int hole = index;
-        final Queueable element = this.elements[hole];
-        while ( hole > 1 && compare( element,
-                                     this.elements[hole / 2] ) < 0 ) {
-            // save Queueable that is being pushed down
-            // as the Queueable "bubble" is percolated up
+        Queueable element = elements[hole];
+
+        while (hole > 1 && compare(element, elements[hole / 2]) > 0) {
+            // save element that is being pushed down
+            // as the element "bubble" is percolated up
             final int next = hole / 2;
-            setElement( hole,
-                        this.elements[next] );
+            setElement( hole, elements[next] );
             hole = next;
         }
-        setElement( hole,
-                    element );
+
+        setElement( hole, element );
     }
 
     /**
-     * Percolates a new Queueable up heap from the bottom.
-     * <p/>
-     * Assumes it is a minimum heap.
+     * Percolates a new element up heap from the bottom.
+     * <p>
+     * Assume it is a maximum heap.
      *
-     * @param element the Queueable
+     * @param element the element
      */
-    private void percolateUpMinHeap(final Queueable element) {
-        setElement( ++this.size,
-                    element );
-        percolateUpMinHeap( this.size );
+    protected void percolateUpMaxHeap(final Queueable element) {
+        setElement( ++size, element );
+        percolateUpMaxHeap(size);
     }
+    
 
     /**
      * Compares two objects using the comparator if specified, or the
@@ -302,8 +370,7 @@ public class BinaryHeapQueue
     private void setElement(final int index,
                             final Queueable element) {
         this.elements[index] = element;
-        element.enqueued( this,
-                          index );
+        element.enqueued( index );
     }
 
     public Queueable[] getQueueable() {

@@ -1385,9 +1385,12 @@ public class MiscTest extends TestCase {
         FactHandle handle = session.insert( mycheese );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
-        assertEquals( "rule 2b",
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
         assertTrue( ((List) session.getGlobal( "list" )).size() == 2 );
+        assertEquals( "rule 4",
+                      ((List) session.getGlobal( "list" )).get( 0 ) );        
+        assertEquals( "rule 2b",
+                      ((List) session.getGlobal( "list" )).get( 1 ) );
+
 
         //Test 2nd level (parent) to make sure rule honors the extend rule
         final List list2 = new ArrayList();
@@ -5408,7 +5411,7 @@ public class MiscTest extends TestCase {
                            list2 );
 
         SpecialString first42 = new SpecialString( "42" );
-        SpecialString second43 = new SpecialString( "42" );
+        SpecialString second43 = new SpecialString( "43" );
         SpecialString world = new SpecialString( "World" );
         session.insert( world );
         session.insert( first42 );
@@ -5423,26 +5426,26 @@ public class MiscTest extends TestCase {
         assertEquals( 6,
                       list2.size() );
 
-        assertEquals( second43,
-                      list1.get( 0 ) );
         assertEquals( first42,
+                      list1.get( 0 ) );
+        assertEquals( world,
                       list1.get( 1 ) );
         assertEquals( second43,
                       list1.get( 2 ) );
-        assertEquals( world,
+        assertEquals( second43,
                       list1.get( 3 ) );
         assertEquals( world,
                       list1.get( 4 ) );
         assertEquals( first42,
                       list1.get( 5 ) );
 
-        assertEquals( first42,
+        assertEquals( second43,
                       list2.get( 0 ) );
         assertEquals( second43,
                       list2.get( 1 ) );
-        assertEquals( world,
+        assertEquals( first42,
                       list2.get( 2 ) );
-        assertEquals( second43,
+        assertEquals( world,
                       list2.get( 3 ) );
         assertEquals( first42,
                       list2.get( 4 ) );

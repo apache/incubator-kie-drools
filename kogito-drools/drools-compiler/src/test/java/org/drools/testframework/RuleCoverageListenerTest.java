@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
-import org.drools.common.RuleFlowGroupNode;
+import org.drools.common.ActivationNode;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -104,7 +104,7 @@ class MockActivation
         return new Rule( ruleName );
     }
 
-    public RuleFlowGroupNode getRuleFlowGroupNode() {
+    public ActivationNode getActivationNode() {
         return null;
     }
 
@@ -136,7 +136,7 @@ class MockActivation
     public void setLogicalDependencies(LinkedList justified) {
     }
 
-    public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
+    public void setActivationNode(ActivationNode ruleFlowGroupNode) {
     }
 
     public Collection<FactHandle> getFactHandles() {

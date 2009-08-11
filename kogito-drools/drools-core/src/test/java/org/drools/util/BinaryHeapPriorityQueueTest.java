@@ -32,7 +32,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
                                                  100000 );
 
         for ( int i = 0; i < 100000; ++i ) {
-            items.add( new LongQueueable( random.nextLong() ) );
+            items.add( new LongQueueable( queue, random.nextLong() ) );
         }
 
         final long startEnqueue = System.currentTimeMillis();
@@ -67,7 +67,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
                                                            100000 );
 
         for ( int i = 0; i < 100000; ++i ) {
-            items.add( new LongQueueable( random.nextLong() ) );
+            items.add( new LongQueueable( queue, random.nextLong() ) );
         }
 
         final long startEnqueue = System.currentTimeMillis();
