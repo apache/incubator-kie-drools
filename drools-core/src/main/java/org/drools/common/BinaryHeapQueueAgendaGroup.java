@@ -156,8 +156,6 @@ public class BinaryHeapQueueAgendaGroup
         throw new UnsupportedOperationException();
     }
 
-
-    @Override
     public void remove(AgendaItem agendaItem) {
         this.queue.dequeue( agendaItem.getIndex() );
     }
