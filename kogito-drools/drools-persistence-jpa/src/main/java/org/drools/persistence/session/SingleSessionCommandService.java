@@ -131,11 +131,11 @@ public class SingleSessionCommandService
         // update the session id to be the same as the session info id
         ((StatefulKnowledgeSessionImpl)ksession).session.setId( this.sessionInfo.getId() );
 
-        new Thread( new Runnable() {
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        } );
+//        new Thread( new Runnable() {
+//            public void run() {
+//                ksession.fireUntilHalt();
+//            }
+//        } );
     }
 
     public SingleSessionCommandService(int sessionId,
@@ -187,11 +187,14 @@ public class SingleSessionCommandService
 		this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession );
         ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
 
-        new Thread( new Runnable() {
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        } );
+        // update the session id to be the same as the session info id
+        ((StatefulKnowledgeSessionImpl)ksession).session.setId( this.sessionInfo.getId() );
+
+//        new Thread( new Runnable() {
+//            public void run() {
+//                ksession.fireUntilHalt();
+//            }
+//        } );
     }
 
     public Context getContext() {
@@ -270,12 +273,12 @@ public class SingleSessionCommandService
                 throw new RuntimeException( "Could not execute command",
                                             t1 );
             }
-        } finally {
-            new Thread( new Runnable() {
-                public void run() {
-                    ksession.fireUntilHalt();
-                }
-            } );
+//        } finally {
+//            new Thread( new Runnable() {
+//                public void run() {
+//                    ksession.fireUntilHalt();
+//                }
+//            } );
         }
     }
 
