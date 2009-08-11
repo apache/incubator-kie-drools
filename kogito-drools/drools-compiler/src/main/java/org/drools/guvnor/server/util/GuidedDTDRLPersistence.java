@@ -189,7 +189,12 @@ public class GuidedDTDRLPersistence {
 					case ISingleFieldConstraint.TYPE_PREDICATE:
 						SingleFieldConstraint pred = new SingleFieldConstraint();
 						pred.constraintValueType = c.constraintValueType;
-						pred.value = cell;
+                        if (c.factField != null && c.factField.indexOf("$param") > -1) {
+                            //handle interpolation
+                            pred.value = c.factField.replace("$param", cell);  
+                        } else {
+						    pred.value = cell;
+                        }
 						fp.addConstraint(pred);
 						break;
 				default:
