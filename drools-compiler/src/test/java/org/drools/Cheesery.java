@@ -56,6 +56,13 @@ public class Cheesery
         recalculateTotalAmount();
     }
 
+    /**
+     * Used to check inline evals.
+     */
+    public boolean hasSomeFlavour(String flavour) {
+        return "zesty".equals(flavour);
+    }
+
     private void recalculateTotalAmount() {
         this.totalAmount = 0;
         for( Iterator it = this.cheeses.iterator(); it.hasNext(); ) {
