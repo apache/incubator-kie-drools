@@ -176,7 +176,6 @@ public class SimpleAgendaGroup
 
     }
 
-    @Override
     public void remove(AgendaItem agendaItem) {
         int salience = agendaItem.getSalience();
 
