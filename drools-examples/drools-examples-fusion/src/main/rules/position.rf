@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Adjust Position" id="adjust position" package-name="org.drools.examples.broker.model" >
+
+  <header>
+    <imports>
+      <import name="org.drools.examples.broker.model.Action" />
+      <import name="org.drools.examples.broker.model.PortfolioAction" />
+    </imports>
+    <variables>
+      <variable name="symbol" >
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+      </variable>
+      <variable name="quant" >
+        <type name="org.drools.process.core.datatype.impl.type.UndefinedDataType" />
+      </variable>
+    </variables>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="16" y="101" width="48" height="48" />
+    <end id="3" name="End" x="515" y="101" width="48" height="48" />
+    <ruleSet id="4" name="Evaluate Position" x="96" y="101" width="106" height="48" ruleFlowGroup="evaluate position" />
+    <actionNode id="6" name="Buy Shares" x="315" y="16" width="87" height="48" >
+        <action type="expression" dialect="mvel" >System.out.println( "Buying #{quant}  "+symbol+" shares" );</action>
+    </actionNode>
+    <actionNode id="7" name="Sell Shares" x="317" y="192" width="87" height="48" >
+        <action type="expression" dialect="mvel" >System.out.println( "Selling #{quant}  "+symbol+" shares" );</action>
+    </actionNode>
+    <split id="11" name="Take Action" x="234" y="101" width="49" height="49" type="2" >
+      <constraints>
+        <constraint toNodeId="7" name="Sell" priority="1" type="rule" dialect="mvel" >PortfolioAction( action == Action.SELL )  from entry-point "Analysis Events"</constraint>
+        <constraint toNodeId="12" name="No action" priority="1" type="rule" dialect="mvel" >PortfolioAction( action == Action.NOACTION ) from entry-point "Analysis Events"</constraint>
+        <constraint toNodeId="6" name="Buy" priority="1" type="rule" dialect="mvel" >PortfolioAction( action == Action.BUY )  from entry-point "Analysis Events"</constraint>
+      </constraints>
+    </split>
+    <join id="12" name="Action taken" x="434" y="101" width="49" height="49" type="2" />
+  </nodes>
+
+  <connections>
+    <connection from="12" to="3" />
+    <connection from="1" to="4" />
+    <connection from="11" to="6" />
+    <connection from="11" to="7" />
+    <connection from="4" to="11" />
+    <connection from="11" to="12" />
+    <connection from="6" to="12" />
+    <connection from="7" to="12" />
+  </connections>
+
+</process>

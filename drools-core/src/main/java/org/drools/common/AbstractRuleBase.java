@@ -46,6 +46,7 @@ import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
+import org.drools.management.DroolsManagementAgent;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
@@ -130,6 +131,10 @@ abstract public class AbstractRuleBase
     public synchronized int nextWorkingMemoryCounter() {
         return this.workingMemoryCounter++;
     }
+    
+    public synchronized long getWorkingMemoryCounter() {
+        return this.workingMemoryCounter;
+    }
 
     /**
      * Construct.
@@ -139,13 +144,10 @@ abstract public class AbstractRuleBase
     public AbstractRuleBase(final String id,
                             final RuleBaseConfiguration config,
                             final FactHandleFactory factHandleFactory) {
-        if ( id != null ) {
-            this.id = id;
-        } else {
-            this.id = "default";
-        }
+        
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
+        createRulebaseId( id );
         this.factHandleFactory = factHandleFactory;
 
         if ( this.config.isSequential() ) {
@@ -162,6 +164,19 @@ abstract public class AbstractRuleBase
         this.partitionIDs = new ArrayList<RuleBasePartitionId>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
+    }
+
+    private void createRulebaseId(final String id) {
+        String key = ""; 
+        if( config.isMBeansEnabled() ) {
+            DroolsManagementAgent agent = DroolsManagementAgent.getInstance();
+            key = String.valueOf( agent.getNextKnowledgeBaseId() );
+        }
+        if ( id != null ) {
+            this.id = id+key;
+        } else {
+            this.id = "default"+key;
+        }
     }
 
     // ------------------------------------------------------------

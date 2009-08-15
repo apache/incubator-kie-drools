@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.drools.base.FireAllRulesRuleBaseUpdateListener;
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
@@ -42,6 +41,7 @@ import org.drools.conf.IndexLeftBetaMemoryOption;
 import org.drools.conf.IndexRightBetaMemoryOption;
 import org.drools.conf.KnowledgeBaseOption;
 import org.drools.conf.LogicalOverrideOption;
+import org.drools.conf.MBeansOption;
 import org.drools.conf.MaintainTMSOption;
 import org.drools.conf.MaxThreadsOption;
 import org.drools.conf.MultiValueKnowledgeBaseOption;
@@ -112,6 +112,7 @@ import org.mvel2.MVEL;
  * drools.sessionClock = &lt;qualified class name&gt;
  * drools.maxThreads = &lt;-1|1..n&gt;
  * drools.multithreadEvaluation = &lt;true|false&gt;
+ * drools.mbeans = &lt;enabled|disabled&gt;
  * </pre>
  */
 public class RuleBaseConfiguration
@@ -148,6 +149,9 @@ public class RuleBaseConfiguration
     // in parallel by using multiple internal threads
     private boolean                        multithread;
     private int                            maxThreads;
+
+    // this property activates MBean monitoring and management
+    private boolean                        mbeansEnabled;
 
     private ConflictResolver               conflictResolver;
 
@@ -299,6 +303,8 @@ public class RuleBaseConfiguration
             setMaxThreads( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt( value ) );
         } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
             setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( StringUtils.isEmpty( value ) ? "cloud" : value ) );
+        } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
+            setMBeansEnabled( MBeansOption.isEnabled( value ) );
         }
     }
 
@@ -348,6 +354,8 @@ public class RuleBaseConfiguration
             return Integer.toString( getMaxThreads() );
         } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
             return getEventProcessingMode().getMode();
+        } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
+            return isMBeansEnabled() ? "enabled" : "disabled";
         }
 
         return null;
@@ -439,8 +447,12 @@ public class RuleBaseConfiguration
 
         setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( MaxThreadsOption.PROPERTY_NAME,
                                                                              "3" ) ) );
+        
         setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( this.chainedProperties.getProperty( EventProcessingOption.PROPERTY_NAME,
-                                                                                                                  "cloud" ) ) );
+                                                                                                                        "cloud" ) ) );
+        
+        setMBeansEnabled( MBeansOption.isEnabled( this.chainedProperties.getProperty( MBeansOption.PROPERTY_NAME,
+                                                                                      "disabled" ) ) );
     }
 
     /**
@@ -812,33 +824,33 @@ public class RuleBaseConfiguration
             List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval( content,
                                                                                                   new HashMap() );
             for ( Map<String, Object> workDefinitionMap : workDefinitionsMap ) {
-            	if (workDefinitionMap != null) {
-	                WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
-	                workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
-	                workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
-	                workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
-	                workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
-	                Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
-	                Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
-	                if ( parameterMap != null ) {
-	                    for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
-	                        parameters.add( new ParameterDefinitionImpl( entry.getKey(),
-	                                                                     entry.getValue() ) );
-	                    }
-	                }
-	                workDefinition.setParameters( parameters );
-	                Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
-	                Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
-	                if ( resultMap != null ) {
-	                    for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
-	                        results.add( new ParameterDefinitionImpl( entry.getKey(),
-	                                                                  entry.getValue() ) );
-	                    }
-	                }
-	                workDefinition.setResults( results );
-	                this.workDefinitions.put( workDefinition.getName(),
-	                                          workDefinition );
-            	}
+                if ( workDefinitionMap != null ) {
+                    WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
+                    workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
+                    workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
+                    workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
+                    workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
+                    Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
+                    Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
+                    if ( parameterMap != null ) {
+                        for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
+                            parameters.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                                         entry.getValue() ) );
+                        }
+                    }
+                    workDefinition.setParameters( parameters );
+                    Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
+                    Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
+                    if ( resultMap != null ) {
+                        for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
+                            results.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                                      entry.getValue() ) );
+                        }
+                    }
+                    workDefinition.setResults( results );
+                    this.workDefinitions.put( workDefinition.getName(),
+                                              workDefinition );
+                }
             }
         } catch ( Throwable t ) {
             System.err.println( "Error occured while loading work definitions " + location );
@@ -960,6 +972,26 @@ public class RuleBaseConfiguration
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+
+    /**
+     * Defines if the RuleBase should expose management and monitoring MBeans
+     * 
+     * @param enableMultithread true for multi-thread or 
+     *                     false for single-thread. Default is false.
+     */
+    public void setMBeansEnabled(boolean mbeansEnabled) {
+        checkCanChange();
+        this.mbeansEnabled = mbeansEnabled;
+    }
+
+    /**
+     * Returns true if the management and monitoring through MBeans is active 
+     * 
+     * @return
+     */
+    public boolean isMBeansEnabled() {
+        return this.mbeansEnabled;
     }
 
     public static class AssertBehaviour
@@ -1169,11 +1201,11 @@ public class RuleBaseConfiguration
         } else if ( IndexRightBetaMemoryOption.class.equals( option ) ) {
             return (T) (this.indexRightBetaMemory ? IndexRightBetaMemoryOption.YES : IndexRightBetaMemoryOption.NO);
         } else if ( AssertBehaviorOption.class.equals( option ) ) {
-            return (T) ( ( this.assertBehaviour == AssertBehaviour.IDENTITY ) ? AssertBehaviorOption.IDENTITY : AssertBehaviorOption.EQUALITY);
+            return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? AssertBehaviorOption.IDENTITY : AssertBehaviorOption.EQUALITY);
         } else if ( LogicalOverrideOption.class.equals( option ) ) {
-            return (T) ( ( this.logicalOverride == LogicalOverride.DISCARD ) ? LogicalOverrideOption.DISCARD : LogicalOverrideOption.PRESERVE);
+            return (T) ((this.logicalOverride == LogicalOverride.DISCARD) ? LogicalOverrideOption.DISCARD : LogicalOverrideOption.PRESERVE);
         } else if ( SequentialAgendaOption.class.equals( option ) ) {
-            return (T) ( ( this.sequentialAgenda == SequentialAgenda.SEQUENTIAL ) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
+            return (T) ((this.sequentialAgenda == SequentialAgenda.SEQUENTIAL) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
         } else if ( AlphaThresholdOption.class.equals( option ) ) {
             return (T) AlphaThresholdOption.get( alphaNodeHashingThreshold );
         } else if ( CompositeKeyDepthOption.class.equals( option ) ) {
@@ -1183,7 +1215,8 @@ public class RuleBaseConfiguration
             try {
                 handler = (Class< ? extends ConsequenceExceptionHandler>) Class.forName( consequenceExceptionHandler );
             } catch ( ClassNotFoundException e ) {
-                throw new RuntimeDroolsException("Unable to resolve ConsequenceExceptionHandler class: "+consequenceExceptionHandler, e);
+                throw new RuntimeDroolsException( "Unable to resolve ConsequenceExceptionHandler class: " + consequenceExceptionHandler,
+                                                  e );
             }
             return (T) ConsequenceExceptionHandlerOption.get( handler );
         } else if ( EventProcessingOption.class.equals( option ) ) {
@@ -1192,9 +1225,11 @@ public class RuleBaseConfiguration
             return (T) MaxThreadsOption.get( getMaxThreads() );
         } else if ( MultithreadEvaluationOption.class.equals( option ) ) {
             return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
+        } else if ( MBeansOption.class.equals( option ) ) {
+            return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
         }
         return null;
-        
+
     }
 
     public <T extends KnowledgeBaseOption> void setOption(T option) {
@@ -1213,16 +1248,16 @@ public class RuleBaseConfiguration
         } else if ( option instanceof IndexRightBetaMemoryOption ) {
             setIndexRightBetaMemory( ((IndexRightBetaMemoryOption) option).isIndexRightBetaMemory() );
         } else if ( option instanceof AssertBehaviorOption ) {
-            setAssertBehaviour( ( option == AssertBehaviorOption.IDENTITY ) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY );
+            setAssertBehaviour( (option == AssertBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY );
         } else if ( option instanceof LogicalOverrideOption ) {
-            setLogicalOverride( ( option == LogicalOverrideOption.DISCARD ) ? LogicalOverride.DISCARD : LogicalOverride.PRESERVE );
+            setLogicalOverride( (option == LogicalOverrideOption.DISCARD) ? LogicalOverride.DISCARD : LogicalOverride.PRESERVE );
         } else if ( option instanceof SequentialAgendaOption ) {
-            setSequentialAgenda( ( option == SequentialAgendaOption.SEQUENTIAL ) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC );
+            setSequentialAgenda( (option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC );
         } else if ( option instanceof AlphaThresholdOption ) {
             setAlphaNodeHashingThreshold( ((AlphaThresholdOption) option).getThreshold() );
         } else if ( option instanceof CompositeKeyDepthOption ) {
             setCompositeKeyDepth( ((CompositeKeyDepthOption) option).getDepth() );
-        } else if ( option instanceof ConsequenceExceptionHandlerOption) {
+        } else if ( option instanceof ConsequenceExceptionHandlerOption ) {
             setConsequenceExceptionHandler( ((ConsequenceExceptionHandlerOption) option).getHandler().getName() );
         } else if ( option instanceof EventProcessingOption ) {
             setEventProcessingMode( (EventProcessingOption) option );
@@ -1230,7 +1265,9 @@ public class RuleBaseConfiguration
             setMaxThreads( ((MaxThreadsOption) option).getMaxThreads() );
         } else if ( option instanceof MultithreadEvaluationOption ) {
             setMultithreadEvaluation( ((MultithreadEvaluationOption) option).isMultithreadEvaluation() );
-        } 
+        } else if ( option instanceof MBeansOption ) {
+            setMBeansEnabled( ((MBeansOption) option).isEnabled() );
+        }
 
     }
 
