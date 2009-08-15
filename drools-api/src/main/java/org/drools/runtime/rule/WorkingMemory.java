@@ -2,8 +2,6 @@ package org.drools.runtime.rule;
 
 import java.util.Collection;
 
-import org.drools.time.SessionClock;
-
 /**
  * The <code>WorkingMemory</code> is a super-interface for all <code>StatefulKnowledgeSession</code>s.
  * Although, users are encouraged to use <code>StatefulKnowledgeSession</code> or <code>KnowledgeRuntime</code>
