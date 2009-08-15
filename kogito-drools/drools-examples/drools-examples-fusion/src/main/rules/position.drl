@@ -1,0 +1,42 @@
+package org.drools.examples.broker
+
+import org.drools.examples.broker.model.SuddenDropEvent
+import org.drools.examples.broker.model.PortfolioAction
+import java.util.Map
+import java.util.HashMap
+
+import function org.drools.examples.broker.misc.Utils.selectAction
+
+dialect "mvel"
+
+declare PortfolioAction
+    @role( event )
+end
+
+# an event declaration to represent situations
+# where a suddent drop happens. In this case we are not
+# defining any explicit expiration policy. 
+declare SuddenDropEvent
+    @role( event )
+end
+
+rule "Start adjust position process"
+when
+    $sde : SuddenDropEvent( ) from entry-point "Analysis Events"
+then
+    variables = [ "symbol" : $sde.symbol ];
+    drools.getKnowledgeRuntime().startProcess( "adjust position", variables );
+end
+
+rule "Check current position and take action if necessary"
+    ruleflow-group "evaluate position"
+when
+    $sde : SuddenDropEvent( ) from entry-point "Analysis Events"
+then
+    with( pa = new PortfolioAction() ) {
+        action = selectAction(),
+        symbol = $sde.symbol,
+        quant = 100
+    }
+    entryPoints["Analysis Events"].insert( pa );
+end    

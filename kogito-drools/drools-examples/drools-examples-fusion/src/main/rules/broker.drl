@@ -3,9 +3,10 @@ package org.drools.examples.broker
 # importing classes
 import org.drools.examples.broker.model.Company
 import org.drools.examples.broker.model.StockTick
+import org.drools.examples.broker.model.SuddenDropEvent
 
 # it is possible to import static methods as functions for usage in the rules
-import function org.drools.examples.broker.ui.Utils.percent
+import function org.drools.examples.broker.misc.Utils.percent
 
 # a common pattern is to expose services to rules through
 # a helper service class
@@ -21,6 +22,13 @@ declare StockTick
     @role( event )
     @expires( 2m )
 end 
+
+# an event declaration to represent situations
+# where a suddent drop happens. In this case we are not
+# defining any explicit expiration policy. 
+declare SuddenDropEvent
+    @role( event )
+end
 
 # One can even declare helper facts to make rules easier and
 # simpler to write and maintain
@@ -78,6 +86,15 @@ when
     $st : StockTick( $sb : symbol, $ts : timestamp, $pr : price, $dt : delta < -0.05 ) from entry-point "StockTick stream"
     not( StockTick( symbol == $sb, timestamp > $ts ) from entry-point "StockTick stream" )
 then
-    services.log( "Drop >5%: "+$sb+" delta: $"+percent($dt)+" price: $"+$pr );
+    services.log( "Drop >5%: "+$sb+" delta: "+percent($dt)+" price: $"+$pr );
+    
+    # we also want to create an event and forward it into the engine to a predefined entry point
+    # that is being listened by other rules 
+    with( sde = new SuddenDropEvent() ) {
+        symbol = $sb,
+        percent = $dt,
+        timestamp = $ts
+    }
+    entryPoints["Analysis Events"].insert( sde );
 end
 

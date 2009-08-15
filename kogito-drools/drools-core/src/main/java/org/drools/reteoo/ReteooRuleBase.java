@@ -44,6 +44,7 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.management.DroolsManagementAgent;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
@@ -140,8 +141,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
                           final FactHandleFactory factHandleFactory) {
         super( id,
                config,
-               factHandleFactory );
+               factHandleFactory ); 
         setupRete();
+        if( config.isMBeansEnabled() ) {
+            DroolsManagementAgent.getInstance().registerKnowledgeBase( this ); 
+        }
     }
 
     private void setupRete() {
