@@ -626,6 +626,18 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     solver remembers the best solution it has encountered through the entire search path. Each time the current solution
     is better than the last best solution, the current solution is cloned and referenced as the new best
     solution.</para>
+
+    <para>You can listen to solver events, including when the best solution changes during solving, by adding a
+    <literal>SolverEventListener</literal> to the <literal>Solver</literal>:</para>
+
+    <programlisting>public interface Solver {
+
+    // ...
+
+    void addEventListener(SolverEventListener eventListener);
+    void removeEventListener(SolverEventListener eventListener);
+
+}</programlisting>
   </section>
 
   <section>
