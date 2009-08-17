@@ -13,12 +13,11 @@ public class Utils {
     }
     
     public static Action selectAction() {
-        return Action.NOACTION;
-//        int action = rand.nextInt( 3 );
-//        switch (action) {
-//            case 1 : return Action.BUY;
-//            case 2 : return Action.SELL;
-//            default : return Action.NOACTION;
-//        }
+        int action = rand.nextInt( 3 );
+        switch (action) {
+            case 1 : return Action.BUY;
+            case 2 : return Action.SELL;
+            default : return Action.NOACTION;
+        }
     }
 }
