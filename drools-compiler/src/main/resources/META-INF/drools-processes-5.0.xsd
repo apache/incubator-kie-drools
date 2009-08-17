@@ -532,7 +532,6 @@
 			<xs:attribute name="y" type="xs:string"/>
 			<xs:attribute name="width" type="xs:string"/>
 			<xs:attribute name="height" type="xs:string"/>
-			<xs:attribute name="type" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="dynamic">
