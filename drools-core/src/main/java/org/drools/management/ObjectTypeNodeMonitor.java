@@ -76,7 +76,7 @@ public class ObjectTypeNodeMonitor implements ObjectTypeNodeMonitorMBean  {
     public String getNameSufix() {
         char[] name = node.getEntryPoint().getEntryPointId().toCharArray();
         for( int i = 0; i < name.length; i++ ) {
-            if( ! Character.isLetter( name[i] ) ) {
+            if( ! Character.isLetter( name[i] ) && name[i] != ' ' ) {
                 name[i] = '_';
             }
         }
