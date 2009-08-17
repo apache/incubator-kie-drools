@@ -143,7 +143,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                config,
                factHandleFactory ); 
         setupRete();
-        if( config.isMBeansEnabled() ) {
+        if( config != null && config.isMBeansEnabled() ) {
             DroolsManagementAgent.getInstance().registerKnowledgeBase( this ); 
         }
     }
