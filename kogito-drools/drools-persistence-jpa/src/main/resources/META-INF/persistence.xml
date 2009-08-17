@@ -26,7 +26,7 @@
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
 	        <property name="hibernate.max_fetch_depth" value="3"/>
 		    <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="true" />	
+            <property name="hibernate.show_sql" value="false" />	
             <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
 	    </properties>        
     </persistence-unit>

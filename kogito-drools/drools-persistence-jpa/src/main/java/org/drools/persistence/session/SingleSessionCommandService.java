@@ -16,8 +16,6 @@ import org.apache.commons.collections.map.IdentityMap;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
 import org.drools.command.impl.ContextImpl;
@@ -29,7 +27,6 @@ import org.drools.persistence.processinstance.JPAProcessInstanceManager;
 import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -105,17 +102,25 @@ public class SingleSessionCommandService
         this.emf = (EntityManagerFactory) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
         this.em = emf.createEntityManager(); // how can I ensure this is an extended entity?
         //        System.out.println( ((EntityManagerImpl) this.em).getFlushMode() );
+        boolean localTransaction = false;
         UserTransaction ut = null;
         try {
             InitialContext ctx = new InitialContext();
             ut = (UserTransaction) ctx.lookup( "java:comp/UserTransaction" );
-            ut.begin();
+            if ( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) {
+                // If there is no transaction then start one, we will commit within the same Command
+                ut.begin();
+                localTransaction = true;
+            }
             registerRollbackSync();
             this.em.joinTransaction();
 
             this.em.persist( this.sessionInfo );
 
-            ut.commit();
+            if ( localTransaction ) {
+                // it's a locally created transaction so commit
+                ut.commit();
+            }
             
         } catch ( Throwable t1 ) {
             try {
@@ -151,15 +156,24 @@ public class SingleSessionCommandService
         this.emf = (EntityManagerFactory) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
         this.em = emf.createEntityManager(); // how can I ensure this is an extended entity?
         //System.out.println(((EntityManagerImpl) this.em).getFlushMode());
+        
+        boolean localTransaction = false;
         UserTransaction ut = null;
         try {
             InitialContext ctx = new InitialContext();
             ut = (UserTransaction) ctx.lookup( "java:comp/UserTransaction" );
-            ut.begin();
-            registerRollbackSync();
+            if ( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) {
+                // If there is no transaction then start one, we will commit within the same Command
+                ut.begin();
+                localTransaction = true;
+            }
             this.em.joinTransaction();
+            registerRollbackSync();
             sessionInfo = this.em.find( SessionInfo.class, sessionId );
-            ut.commit();
+            if ( localTransaction ) {
+                // it's a locally created transaction so commit
+                ut.commit();
+            }
         } catch ( Throwable t1 ) {
             try {
                 if ( ut != null ) {

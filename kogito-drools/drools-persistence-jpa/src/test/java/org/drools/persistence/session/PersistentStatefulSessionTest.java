@@ -143,7 +143,10 @@ public class PersistentStatefulSessionTest extends TestCase {
                  TransactionManagerServices.getTransactionManager() );
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
+        UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut.begin();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        ut.commit();
 
         //      EntityManager em = emf.createEntityManager();
         //      SessionInfo sInfo = em.find( SessionInfo.class, 1 );
@@ -154,7 +157,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         List list = new ArrayList();
 
         // insert and commit
-        UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         ksession.setGlobal( "list",
                             list );
@@ -193,7 +196,10 @@ public class PersistentStatefulSessionTest extends TestCase {
                       list.size() );
         
         // now load the ksession
+        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut.begin();
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getId(), kbase, null, env );
+        ut.commit();
         
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
