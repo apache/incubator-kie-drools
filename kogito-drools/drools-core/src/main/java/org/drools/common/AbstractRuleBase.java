@@ -167,14 +167,14 @@ abstract public class AbstractRuleBase
     }
 
     private void createRulebaseId(final String id) {
-        String key = ""; 
-        if( config.isMBeansEnabled() ) {
-            DroolsManagementAgent agent = DroolsManagementAgent.getInstance();
-            key = String.valueOf( agent.getNextKnowledgeBaseId() );
-        }
-        if ( id != null ) {
-            this.id = id+key;
+        if( id != null ) {
+            this.id = id;
         } else {
+            String key = ""; 
+            if( config.isMBeansEnabled() ) {
+                DroolsManagementAgent agent = DroolsManagementAgent.getInstance();
+                key = String.valueOf( agent.getNextKnowledgeBaseId() );
+            }
             this.id = "default"+key;
         }
     }

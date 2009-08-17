@@ -32,14 +32,14 @@ public class KnowledgeBaseMonitoring
     implements
     KnowledgeBaseMonitoringMBean {
 
-    private static final String KBASE_PREFIX = "org.drools.kbases.";
+    private static final String KBASE_PREFIX = "org.drools.kbases";
     
     private ReteooRuleBase kbase;
     private ObjectName name;
     
     public KnowledgeBaseMonitoring(ReteooRuleBase kbase) {
         this.kbase = kbase;
-        this.name = DroolsManagementAgent.createObjectName(KBASE_PREFIX + kbase.getId() + ":type=KnowledgeBase");
+        this.name = DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":id="+kbase.getId());
     }
     
     public ObjectName getName() {
@@ -75,14 +75,23 @@ public class KnowledgeBaseMonitoring
     }
     
     public String getEntryPoints() {
+        // the dependent mbeans are created here in order to delay their creating 
+        // until the this kbase is actually inspected 
+        createDependentMBeans();
+        return kbase.getRete().getEntryPointNodes().keySet().toString();
+    }
+
+    private void createDependentMBeans() {
         for( EntryPointNode epn : kbase.getRete().getEntryPointNodes().values() ) {
             for( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
                 ObjectTypeNodeMonitor otnm = new ObjectTypeNodeMonitor( otn );
-                ObjectName name = DroolsManagementAgent.createObjectName( this.name.getDomain() + ":type=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType="+((ClassObjectType)otn.getObjectType()).getClassName() );
+                ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",type=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType="+((ClassObjectType)otn.getObjectType()).getClassName() );
                 DroolsManagementAgent.getInstance().registerMBean( kbase, otnm, name );
             }
         }
-        return kbase.getRete().getEntryPointNodes().keySet().toString();
+        KBaseConfigurationMonitor kbcm = new KBaseConfigurationMonitor( kbase.getConfiguration() );
+        ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",type=Configuration" );
+        DroolsManagementAgent.getInstance().registerMBean( kbase, kbcm, name );
     }
     
 }
