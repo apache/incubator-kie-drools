@@ -199,7 +199,6 @@
 
     void setStartingSolution(Solution solution);
 
-    Score getBestScore();
     Solution getBestSolution();
     
     void solve();
@@ -289,6 +288,9 @@
 
     <programlisting>public interface Solution {
 
+    Score getScore();
+    void setScore(Score score);
+
     Collection&lt;? extends Object&gt; getFacts();
 
     Solution cloneSolution();
@@ -304,6 +306,25 @@
     // ...
 
 }</programlisting>
+
+    <section>
+      <title>The getScore and setScore methods</title>
+
+      <para>A <literal>Solution</literal> requires a score property. The score property is null if the
+      <literal>Solution</literal> is unitialized or if the score has not yet been (re)calculated.The score property is
+      ussually typed to the specific <literal>Score</literal> implementation you use. For example, NQueens uses a
+      <literal>SimpleScore</literal>:</para>
+
+      <programlisting>    private SimpleScore score;
+
+    public SimpleScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (SimpleScore) score;
+    }</programlisting>
+    </section>
 
     <section>
       <title>The getFacts method</title>
@@ -331,6 +352,7 @@
             clonedQueenList.add(queen.clone());
         }
         clone.queenList = clonedQueenList;
+        clone.score = score;
         return clone;
     }</programlisting>
 
@@ -352,6 +374,7 @@
             clonedLessonList.add(lesson.clone());
         }
         clone.lessonList = clonedLessonList;
+        clone.score = score;
         return clone;
     }</programlisting>
     </section>
