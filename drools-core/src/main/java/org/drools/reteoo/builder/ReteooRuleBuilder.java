@@ -89,8 +89,7 @@ public class ReteooRuleBuilder {
      */
     public List<TerminalNode> addRule(final Rule rule,
                         final InternalRuleBase rulebase,
-                        final ReteooBuilder.IdGenerator idGenerator) throws InvalidPatternException {
-
+                        final ReteooBuilder.IdGenerator idGenerator) throws InvalidPatternException {    	
         // the list of terminal nodes
         final List<TerminalNode> nodes = new ArrayList<TerminalNode>();
 

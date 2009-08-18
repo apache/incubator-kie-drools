@@ -25,6 +25,7 @@ import java.util.List;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
@@ -35,6 +36,7 @@ import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.util.ConcurrentRightTupleList;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
@@ -80,6 +82,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     protected boolean         objectMemory = true;   // hard coded to true
     protected boolean         tupleMemoryEnabled;
+    protected boolean         concurrentRightTupleMemory = false;
 
     // ------------------------------------------------------------
     // Constructors
@@ -128,6 +131,8 @@ public abstract class BetaNode extends LeftTupleSource
         nextObjectSinkNode = (ObjectSinkNode) in.readObject();
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
+        concurrentRightTupleMemory = in.readBoolean();
+        
         super.readExternal( in );
     }
 
@@ -142,6 +147,8 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject( nextObjectSinkNode );
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
+        out.writeBoolean( concurrentRightTupleMemory );
+        
         super.writeExternal( out );
     }
 
@@ -299,8 +306,18 @@ public abstract class BetaNode extends LeftTupleSource
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
+    
+    
 
-    public String toString() {
+    public boolean isConcurrentRightTupleMemory() {
+		return concurrentRightTupleMemory;
+	}
+
+	public void setConcurrentRightTupleMemory(boolean concurrentRightTupleMemory) {
+		this.concurrentRightTupleMemory = concurrentRightTupleMemory;
+	}
+
+	public String toString() {
         return "";
     }
 
@@ -412,6 +429,17 @@ public abstract class BetaNode extends LeftTupleSource
      */
     public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
+    }
+    
+    public RightTuple createRightTuple(InternalFactHandle handle,
+                                       RightTupleSink sink) {
+        if ( !this.concurrentRightTupleMemory ) {
+            return new RightTuple(handle,
+                                  sink);
+        } else {
+            return new ConcurrentRightTuple(handle,
+                                            sink);
+        }
     }
     
 }

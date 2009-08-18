@@ -42,7 +42,7 @@ import org.drools.util.Iterator;
  *
  */
 public class NotNode extends BetaNode {
-    private static final long serialVersionUID = 400L;    
+    private static final long serialVersionUID = 400L;
 
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
@@ -142,8 +142,8 @@ public class NotNode extends BetaNode {
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final RightTuple rightTuple = new RightTuple( factHandle,
-                                                      this );
+        final RightTuple rightTuple = createRightTuple( factHandle,
+                                                        this );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
@@ -298,10 +298,10 @@ public class NotNode extends BetaNode {
                                   workingMemory );
         }
     }
-    
+
     public short getType() {
         return NodeTypeEnums.NotNode;
-    } 
+    }
 
     public String toString() {
         ObjectSource source = this.rightInput;

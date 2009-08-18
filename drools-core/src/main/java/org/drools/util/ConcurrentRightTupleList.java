@@ -3,73 +3,63 @@
  */
 package org.drools.util;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.util.AbstractHashTable.Index;
 
-public class RightTupleList
+public class ConcurrentRightTupleList
     implements
     RightTupleMemory,
     Entry {
-    private static final long      serialVersionUID = 400L;
+    private static final long          serialVersionUID = 400L;
 
-    public Entry                   previous;
-    public Entry                   next;
+    public AtomicReference<Entry>      previous;
+    public AtomicReference<Entry>      next;
 
-    public RightTuple              first;
-    public RightTuple              last;
+    public AtomicReference<RightTuple> first;
+    public AtomicReference<RightTuple> last;
 
-    private int                    hashCode;
-    private Index                  index;
+    private final int                  hashCode;
+    private final Index                index;
 
-    private TupleHashTableIterator iterator;
-
-    public RightTupleList() {
+    public ConcurrentRightTupleList() {
         // this is not an index bucket
         this.hashCode = 0;
         this.index = null;
+
+        this.previous = new AtomicReference<Entry>();
+        this.next = new AtomicReference<Entry>();
+
+        this.first = new AtomicReference<RightTuple>();
+        this.last = new AtomicReference<RightTuple>();
     }
 
-    public RightTupleList(final Index index,
-                          final int hashCode) {
+    public ConcurrentRightTupleList(final Index index,
+                                    final int hashCode) {
         this.index = index;
         this.hashCode = hashCode;
-    }
-    
-    public RightTupleList(final Index index,
-                          final int hashCode,
-                          final Entry next) {
-        this.index = index;
-        this.hashCode = hashCode;
-        this.next = next;
-    }    
-
-    public RightTupleList(RightTupleList p, final Entry next) {
-        this.index = p.index;
-        this.hashCode = p.hashCode;
-        this.next = next;
-        this.first = p.first;
-        this.last = p.last;
     }
 
     public RightTuple getFirst(LeftTuple leftTuple) {
-        return this.first;
+        return this.first.get();
     }
 
     public RightTuple getLast(LeftTuple leftTuple) {
-        return this.last;
+        return this.last.get();
     }
 
     public void add(final RightTuple rightTuple) {
         if ( this.last != null ) {
-            this.last.setNext( rightTuple );
-            rightTuple.setPrevious( this.last );
-            this.last = rightTuple;
+            this.last.get().setNext( rightTuple );
+            rightTuple.setPrevious( this.last.get() );
+            this.last.set( rightTuple );
         } else {
-            this.first = rightTuple;
-            this.last = rightTuple;;
+            this.first.set( rightTuple );
+            this.last.set( rightTuple );
         }
     }
 
@@ -86,24 +76,24 @@ public class RightTupleList
             next.setPrevious( previous );
         } else if ( next != null ) {
             // remove from first
-            this.first = next;
+            this.first.set( next );
             next.setPrevious( null );
         } else if ( previous != null ) {
             // remove from end
-            this.last = previous;
+            this.last.set( previous );
             previous.setNext( null );
         } else {
             // remove everything
             this.last = null;
             this.first = null;
         }
-        
+
         rightTuple.setPrevious( null );
         rightTuple.setNext( null );
     }
 
     public RightTuple get(final InternalFactHandle handle) {
-        RightTuple current = this.first;
+        RightTuple current = this.first.get();
         while ( current != null ) {
             if ( handle == current.getFactHandle() ) {
                 return current;
@@ -119,7 +109,7 @@ public class RightTupleList
 
     public RightTuple get(final RightTuple rightTuple) {
         InternalFactHandle handle = rightTuple.getFactHandle();
-        RightTuple current = this.first;
+        RightTuple current = this.first.get();
         while ( current != null ) {
             if ( handle == current.getFactHandle() ) {
                 return current;
@@ -135,7 +125,7 @@ public class RightTupleList
 
     public int size() {
         int i = 0;
-        RightTuple current = this.first;
+        RightTuple current = this.first.get();
         while ( current != null ) {
             current = (RightTuple) current.getNext();
             i++;
@@ -144,47 +134,18 @@ public class RightTupleList
     }
 
     public Iterator iterator() {
-        if ( this.iterator == null ) {
-            this.iterator = new TupleHashTableIterator();
-        }
-        this.iterator.reset( this.first );
-        return this.iterator;
-    }
-
-    public static class TupleHashTableIterator
-        implements
-        Iterator {
-        private RightTuple current;
-
-        public void reset(RightTuple first) {
-            this.current = first;
-        }
-
-        public Object next() {
-            if ( this.current != null ) {
-                RightTuple returnValue = this.current;
-                this.current = (RightTuple) current.getNext();
-                return returnValue;
-            } else {
-                return null;
-            }
-        }
-
-        public void remove() {
-            // do nothing
-        }
+        throw new UnsupportedOperationException();
     }
 
     public boolean matches(final Object object,
                            final int objectHashCode) {
-        System.out.println( index + " : " + this.first + " : " + object );
-        return this.hashCode == objectHashCode && this.index.equal( this.first.getFactHandle().getObject(),
+        return this.hashCode == objectHashCode && this.index.equal( this.first.get().getFactHandle().getObject(),
                                                                     object );
     }
 
     public boolean matches(final LeftTuple tuple,
                            final int tupleHashCode) {
-        return this.hashCode == tupleHashCode && this.index.equal( this.first.getFactHandle().getObject(),
+        return this.hashCode == tupleHashCode && this.index.equal( this.first.get().getFactHandle().getObject(),
                                                                    tuple );
     }
 
@@ -193,29 +154,25 @@ public class RightTupleList
     }
 
     public boolean equals(final Object object) {
-        final RightTupleList other = (RightTupleList) object;
+        final ConcurrentRightTupleList other = (ConcurrentRightTupleList) object;
         return this.hashCode == other.hashCode && this.index == other.index;
     }
 
     public Entry getNext() {
-        return this.next;
+        return this.next.get();
     }
 
     public void setNext(final Entry next) {
-        this.next = next;
+        this.next.set( next );
     }
 
     public boolean isIndexed() {
         return (this.index != null);
     }
-    
-    public Index getIndex() {
-        return this.index;
-    }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for ( RightTuple rightTuple = (RightTuple) this.first; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        for ( RightTuple rightTuple = (RightTuple) this.first.get(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             builder.append( rightTuple );
         }
 

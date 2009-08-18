@@ -57,7 +57,7 @@ public class JoinNode extends BetaNode {
     /**
      *
      */
-    private static final long serialVersionUID = 400L;    
+    private static final long serialVersionUID = 400L;
 
     public JoinNode() {
 
@@ -123,39 +123,39 @@ public class JoinNode extends BetaNode {
 
         this.constraints.resetTuple( memory.getContext() );
     }
-    
-//    public void assertLeftTuple(final LeftTuple leftTuple,
-//                                RightTuple rightTuple,
-//                                final PropagationContext context,
-//                                final InternalWorkingMemory workingMemory) {
-//        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-//
-//        if ( this.tupleMemoryEnabled ) {
-//            memory.getLeftTupleMemory().add( leftTuple );
-//        }
-//
-//        this.constraints.updateFromTuple( memory.getContext(),
-//                                          workingMemory,
-//                                          leftTuple );
-//        if ( rightTuple == null ) {
-//            rightTuple = memory.getRightTupleMemory().getFirst( leftTuple );
-//        }
-//        
-//        boolean suspend = false;
-//        for ( ;rightTuple != null && !suspend; rightTuple = (RightTuple) rightTuple.getNext() ) {
-//            final InternalFactHandle handle = rightTuple.getFactHandle();
-//            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
-//                                                       handle ) ) {
-//                this.sink.propagateAssertLeftTuple( leftTuple,
-//                                                    rightTuple,
-//                                                    context,
-//                                                    workingMemory,
-//                                                    this.tupleMemoryEnabled );
-//            }
-//        }
-//
-//        this.constraints.resetTuple( memory.getContext() );
-//    }    
+
+    //    public void assertLeftTuple(final LeftTuple leftTuple,
+    //                                RightTuple rightTuple,
+    //                                final PropagationContext context,
+    //                                final InternalWorkingMemory workingMemory) {
+    //        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+    //
+    //        if ( this.tupleMemoryEnabled ) {
+    //            memory.getLeftTupleMemory().add( leftTuple );
+    //        }
+    //
+    //        this.constraints.updateFromTuple( memory.getContext(),
+    //                                          workingMemory,
+    //                                          leftTuple );
+    //        if ( rightTuple == null ) {
+    //            rightTuple = memory.getRightTupleMemory().getFirst( leftTuple );
+    //        }
+    //        
+    //        boolean suspend = false;
+    //        for ( ;rightTuple != null && !suspend; rightTuple = (RightTuple) rightTuple.getNext() ) {
+    //            final InternalFactHandle handle = rightTuple.getFactHandle();
+    //            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+    //                                                       handle ) ) {
+    //                this.sink.propagateAssertLeftTuple( leftTuple,
+    //                                                    rightTuple,
+    //                                                    context,
+    //                                                    workingMemory,
+    //                                                    this.tupleMemoryEnabled );
+    //            }
+    //        }
+    //
+    //        this.constraints.resetTuple( memory.getContext() );
+    //    }    
 
     /**
      * Assert a new <code>FactHandleImpl</code>. The left input of
@@ -180,8 +180,8 @@ public class JoinNode extends BetaNode {
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        RightTuple rightTuple = new RightTuple( factHandle,
-                                                this );
+        RightTuple rightTuple = createRightTuple( factHandle,
+                                                  this );
 
         if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
                                          rightTuple,
@@ -209,7 +209,7 @@ public class JoinNode extends BetaNode {
                                                     rightTuple,
                                                     context,
                                                     workingMemory,
-                                                    this.tupleMemoryEnabled  );
+                                                    this.tupleMemoryEnabled );
             }
             i++;
         }
@@ -287,7 +287,7 @@ public class JoinNode extends BetaNode {
                     sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                          rightTuple,
                                                          sink,
-                                                         this.tupleMemoryEnabled  ),
+                                                         this.tupleMemoryEnabled ),
                                           context,
                                           workingMemory );
                 }
@@ -296,7 +296,7 @@ public class JoinNode extends BetaNode {
             this.constraints.resetTuple( memory.getContext() );
         }
     }
-    
+
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }

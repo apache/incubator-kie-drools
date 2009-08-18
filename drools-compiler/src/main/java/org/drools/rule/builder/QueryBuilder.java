@@ -11,6 +11,7 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
+import org.drools.rule.Query;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
@@ -43,7 +44,10 @@ public class QueryBuilder implements EngineElementBuilder {
 
         String[] params = queryDescr.getParameters();
         String[] types = queryDescr.getParameterTypes();
-        int i = 0;
+        int i = 0;        
+        
+        Declaration[] declarations = new Declaration[ params.length ];
+        
         try {
             for ( i = 0; i < params.length; i++ ) {
                 Declaration declr = pattern.addDeclaration( params[i] );
@@ -55,7 +59,12 @@ public class QueryBuilder implements EngineElementBuilder {
                 PatternBuilder.registerReadAccessor( context, objectType, "arguments", reader );
                 
                 declr.setReadAccessor( reader );
-            }
+                
+                declarations[i] = declr;
+             }            
+            
+            ((Query)context.getRule()).setParameters( declarations );
+            
         } catch ( ClassNotFoundException e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           queryDescr,
