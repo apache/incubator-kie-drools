@@ -7,7 +7,7 @@ import org.drools.util.RightTupleList;
 public class RightTuple
     implements
     Entry {
-    private InternalFactHandle handle;
+    protected InternalFactHandle handle;
 
     private RightTuple         handlePrevious;
     private RightTuple         handleNext;
@@ -21,7 +21,7 @@ public class RightTuple
 
     private LeftTuple          blocked;
 
-    private RightTupleSink     sink;
+    protected RightTupleSink     sink;
 
     public RightTuple() {
 

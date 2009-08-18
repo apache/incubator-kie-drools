@@ -1,5 +1,18 @@
 package org.drools.rule;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Calendar;
+import java.util.Map;
+
+import org.drools.io.Resource;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
+import org.drools.spi.Duration;
+import org.drools.spi.Enabled;
+import org.drools.spi.Salience;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -26,10 +39,22 @@ public class Query extends Rule {
     public Query() {
         
     }
+    
+    private Declaration[] parameters;
 
     public Query(final String name) {
         super( name );
     }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+    	super.writeExternal( out );
+        out.writeObject( parameters );
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        this.parameters = ( Declaration[] ) in.readObject();
+    }    
 
     /**
      * Override this as Queries will NEVER have a consequence, and it should
@@ -38,5 +63,13 @@ public class Query extends Rule {
     public boolean isValid() {
         return super.isSemanticallyValid();
     }
+
+	public void setParameters(Declaration[] parameters) {
+		this.parameters = parameters;
+	}
+	
+	public Declaration[] getParameters() {
+		return this.parameters;
+	}
 
 }
