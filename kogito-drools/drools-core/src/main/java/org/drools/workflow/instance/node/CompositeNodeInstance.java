@@ -28,9 +28,11 @@ import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.EventListener;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
+import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
@@ -96,6 +98,23 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	                return;
 	            }
 	        }
+        } else {
+        	// try to search for start nodes
+        	boolean found = false;
+        	for (Node node: getCompositeNode().getNodes()) {
+        		if (node instanceof StartNode) {
+        			StartNode startNode = (StartNode) node;
+        			if (startNode.getTriggers() == null || startNode.getTriggers().isEmpty()) {
+    	                NodeInstance nodeInstance = getNodeInstance(startNode.getTo().getTo());
+    	                ((org.drools.workflow.instance.NodeInstance) nodeInstance)
+    	                	.trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+    	                found = true;
+        			}
+        		}
+        	}
+        	if (found) {
+        		return;
+        	}
         }
         if (isLinkedIncomingNodeRequired()) {
 	        throw new IllegalArgumentException(
