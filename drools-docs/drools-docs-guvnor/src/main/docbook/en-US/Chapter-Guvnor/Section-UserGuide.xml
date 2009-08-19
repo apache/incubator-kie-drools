@@ -771,10 +771,11 @@
         altogether, just use "when" and "then" to mark the condition and
         action sections respectively). Normally you would use the IDE to edit
         raw DRL files, since it has all the advanced tooling and content
-        assistance and debugging. However, there are times when a rule may have
-        to deal with something fairly technical in a package in Guvnor. In any typical package of
-        rules, you generally have a need for some "technical rules" - you can
-        mix and match all the rule types together of course.</para>
+        assistance and debugging. However, there are times when a rule may
+        have to deal with something fairly technical in a package in Guvnor.
+        In any typical package of rules, you generally have a need for some
+        "technical rules" - you can mix and match all the rule types together
+        of course.</para>
 
         <figure>
           <title>DRL technical rule</title>
@@ -1172,8 +1173,8 @@ public class SampleDataSource2 {
       <para>Snapshots, URLS and binary packages:</para>
 
       <para>URLs are central to how built packages are provided. The BRMS
-      provides packages via URLs (for download and use by the Knowledge Agent).
-      These URLs take the form of:
+      provides packages via URLs (for download and use by the Knowledge
+      Agent). These URLs take the form of:
       http://&lt;server&gt;/drools-guvnor/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
 
       <para>&lt;packageName&gt; is the name you gave the package.
@@ -1182,9 +1183,9 @@ public class SampleDataSource2 {
       package, not a snapshot). You can use these in the agent, or you can
       paste them into your browser and it will download them as a file.</para>
 
-      <para>Refer to the section on the Knowledge Agent for details on how you can
-      use these URLs (and binary downloads) in your application, and how rules
-      can be updated on the fly.</para>
+      <para>Refer to the section on the Knowledge Agent for details on how you
+      can use these URLs (and binary downloads) in your application, and how
+      rules can be updated on the fly.</para>
 
       <figure>
         <title>Deployment snapshots</title>
@@ -1397,17 +1398,17 @@ public class SampleDataSource2 {
 
     <para>Its all very interesting to manage rules, but how to you use or
     "consume" them in your application? This section covers the usage of the
-    KnowledgeAgent deployment component that automates most of this for you.</para>
+    KnowledgeAgent deployment component that automates most of this for
+    you.</para>
 
     <section>
       <title>The Knowledge Agent</title>
 
-      <para>The knowledge agent is a component which is embedded in the Drools API. 
-      To use this, you don't need any extra
-      components. In fact, if you are using Guvnor, your application should
-      only need to include the drools-api and drools-core dependencies in its classpath
-      (drools and mvel jars only), and no other rules specific
-      dependencies.</para>
+      <para>The knowledge agent is a component which is embedded in the Drools
+      API. To use this, you don't need any extra components. In fact, if you
+      are using Guvnor, your application should only need to include the
+      drools-api and drools-core dependencies in its classpath (drools and
+      mvel jars only), and no other rules specific dependencies.</para>
 
       <para>Note that there is also a drools-ant ant task, so you can build
       rules as part of an ant script (for example in cases where the rules are
@@ -1418,7 +1419,12 @@ public class SampleDataSource2 {
       the ant task), you are ready to use the agent in your target
       application.</para>
 
-<para>The Following example constructs an agent that will build a new KnowledgeBase from the files specified in the path String. It will poll those files every 60 seconds, which is the default, to see if they are updated. If new files are found it will construct a new KnowledgeBase. If the change set specifies a resource that is a directory it's contents will be scanned for changes too.</para>
+      <para>The Following example constructs an agent that will build a new
+      KnowledgeBase from the files specified in the path String. It will poll
+      those files every 60 seconds, which is the default, to see if they are
+      updated. If new files are found it will construct a new KnowledgeBase.
+      If the change set specifies a resource that is a directory it's contents
+      will be scanned for changes too.</para>
 
       <programlisting>
  KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
@@ -1426,9 +1432,12 @@ public class SampleDataSource2 {
  KnowledgeBase kbase = kagent.getKnowledgeBase();
 </programlisting>
 
-<para>The KnowledgeAgent can accept a configuration that allows for some of the defaults to be changed. An example property is "drools.agent.scanDirectories", by default any specified directories are scanned for new additions, it is possible to disable this.</para>
+      <para>The KnowledgeAgent can accept a configuration that allows for some
+      of the defaults to be changed. An example property is
+      "drools.agent.scanDirectories", by default any specified directories are
+      scanned for new additions, it is possible to disable this.</para>
 
- <programlisting>KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+      <programlisting>KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
  KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
  kaconf.setProperty( "drools.agent.scanDirectories",
@@ -1437,21 +1446,22 @@ public class SampleDataSource2 {
  KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
                                                                   kaconf );
  kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add</programlisting>
- 
 
- <para>An example of the change-set.xml.</para>
+      <para>An example of the change-set.xml.</para>
 
- <programlisting><![CDATA[<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
-        xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >
-        <add> 
-          <resource source='http://localhost:9000/TEST.pkg' type='PKG' />
-        </add> 
-</change-set>]]></programlisting>
+        xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' &gt;
+        &lt;add&gt; 
+          &lt;resource source='http://localhost:9000/TEST.pkg' type='PKG' /&gt;
+        &lt;/add&gt; 
+&lt;/change-set&gt;</programlisting>
 
- <para>Resource scanning is not on by default, it's a service and must be started, the same is for notification. This can be done via the ResourceFactory.</para>
+      <para>Resource scanning is not on by default, it's a service and must be
+      started, the same is for notification. This can be done via the
+      ResourceFactory.</para>
 
- <programlisting>ResourceFactory.getResourceChangeNotifierService().start();
+      <programlisting>ResourceFactory.getResourceChangeNotifierService().start();
 ResourceFactory.getResourceChangeScannerService().start();</programlisting>
 
       <para>Following shows the deployment screen of Guvnor, which provides
@@ -1485,9 +1495,11 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
     <section>
       <title>Drools execution server</title>
 
-      <para>
-	IMPORTANT NOTE: the exact message formats described here are likely to slightly change post drools 5 (as support for processes and stateful sessions is added). The following will be preserved for compatability, but may be deprecated in favour of more flexible formats that are in the pipelines. 
-      </para>
+      <para>IMPORTANT NOTE: the exact message formats described here are
+      likely change post drools 5 (as support for processes and stateful
+      sessions is added). The following will be preserved for compatability,
+      but may be deprecated in favour of more flexible formats that are in the
+      pipelines (ie consider the following to be DEPRECATED).</para>
 
       <para>The drools execution server (drools-server) module is a war which
       you can deploy to execute knowledgebases (rulebases) remotely for any
@@ -1527,8 +1539,8 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
 
         <para>To configure a "knowledgebase" - you create a properties file
         with a knowledge agent configuration in it (see the section above for
-        details on the options in the knowledge agent configuration). The name of
-        this properties file will be the name in the URL that you use to
+        details on the options in the knowledge agent configuration). The name
+        of this properties file will be the name in the URL that you use to
         access this servive. So lets take the example of
         teamallocation.properties: an agent configuration for a service that
         will allocated some piece of work to a team. teamallocation.properties
@@ -1715,14 +1727,14 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
       <title>Manual deployment</title>
 
       <para>This section is only needed for advanced users who are integrating
-      deployment into their own mechanism. Normally you should use the knowledge
-      agent.</para>
+      deployment into their own mechanism. Normally you should use the
+      knowledge agent.</para>
 
       <para>For those who do not wish to use the automatic deployment of the
       KnowledgeAgent, "rolling your own" is quite simple. The binary packages
       emitted by Guvnor are serialized Package objects. You can deserialize
-      them and add them into any knowledgebase - essentially that is all you need
-      to do.</para>
+      them and add them into any knowledgebase - essentially that is all you
+      need to do.</para>
 
       <para>From Guvnor, binary packages are provided either from the latest
       version of a package (once you have successfully validated and built a

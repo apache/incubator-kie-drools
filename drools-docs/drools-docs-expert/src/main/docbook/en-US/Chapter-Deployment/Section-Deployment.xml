@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
   <title>Deployment options</title>
 
   <para>Once you have rules integrated in your application (or ideally before)
@@ -17,9 +17,10 @@
 
   <para>The recommended way of deploying depends on how you are managing your
   rules. If you are using the BRMS, you should use the RuleAgent (the detailed
-  documentation for this is in the chapter on the BRMS). You can still use the
-  RuleAgent even without the BRMS, in which case you will need to use ant (the drools-ant task or
-  something custom) to create serialized "Package" objects of your rules.</para>
+  documentation for this is in the chapter on the BRMS/Guvnor). You can still
+  use the RuleAgent even without the BRMS, in which case you will need to use
+  ant (the drools-ant task or something custom) to create serialized "Package"
+  objects of your rules.</para>
 
   <para>As every organization is subtly different, and different deployment
   patterns will be needed. Many organizations have (or should have)
@@ -33,52 +34,10 @@
   should be able to deploy either as the agent, or in the classpath.</para>
 
   <section>
-    <title>Deployment using the RuleAgent</title>
+    <title>Deployment using the KnowledgeAgent</title>
 
     <para>The easiest and most automated way to deploy rules is to use the
-    RuleAgent. This is described in detail in the BRMS user guide. In short,
-    the rule agent requires that you build binary packages of rules outside of
-    "your" application (ie the application that is using rules).</para>
-
-    <para>The upside of this is that your application only needs to include
-    drools-core.jar - no other dependencies (of course you need the classes
-    that form the model that the rules use as well !). It also means the agent
-    can be configured to automatically monitor for rule changes - directly to
-    the BRMS, or from a file/directory.</para>
-
-    <para>To use the rule agent in your application use the following
-    code:</para>
-
-    <programlisting>RuleAgent agent = RuleAgent.newRuleAgent("/MyRules.properties");     
-RuleBase rb = agent.getRuleBase(); 
-rb.newStatefulSession.... 
-//now assert your facts into the session and away you go !
-</programlisting>
-
-    <para>The MyRules.properties is a configuration file which (in the above
-    case) should be on the root of your classpath:</para>
-
-    <programlisting>##
-## RuleAgent configuration file example
-##
-
-
-
-dir=/my/dir
-url=http://some.url/here http://some.url/here
-localCacheDir=/foo/bar/cache
-poll=30
-
-
-name=MyConfig</programlisting>
-
-    <para>In the above config, the agent will look for binary package files in
-    /my/dir, and also at the specified URLs. It will pick up any changes for
-    these packages and apply them to the rulebase.</para>
-
-    <para>If you are using the BRMS, you can use the url feature. You can use
-    "file" or "dir" if the packages need to be manually migrated to your
-    production servers.</para>
+    Knowlegde Agent as described in the quick start guide. This can access rules from the file system, classpath, web server, the Guvnor server (which is really a web server) and more. Rules can be in DRL, XLS, compiled binary form and more.</para>
   </section>
 
   <section>
@@ -293,5 +252,4 @@ name=MyConfig</programlisting>
     <para>A future release of Drools will contain a rule repository (server)
     component that will directly support the above patterns, and more.</para>
   </section>
-  
 </section>
