@@ -103,7 +103,14 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
     change set, the entire contents of that directory will be scanned for
     changes.</para>
 
-    <para>A not on remote HTTP Url Resources: if your knowledge agent is
+    <para>For polling to occur, the polling and notifier services must be started: 
+<programlisting>ResourceFactory.getResourceChangeNotifierService().start();
+ResourceFactory.getResourceChangeScannerService().start();</programlisting>
+    </para>
+
+    <section>
+      <title>Remote HTTP resource caching</title>
+      <para>A note on remote HTTP Url Resources: if your knowledge agent is
     "pulling" resources from a http(s) URL, then you might rightly be
     concerned if that resource (remote web server) suddenly disappears. To
     survive a restart when a resource is no longer available remotely (eg the
@@ -118,5 +125,7 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
     agent to use should it be restarted (when a remote resource becomes
     available, and is updated, it will automatically update the local cache
     copy). </para>
+
+    </section>
   </section>
 </section>
