@@ -115,8 +115,10 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	    	ProcessInstance processInstance = ( ProcessInstance )
 	    		((ProcessInstance) getProcessInstance()).getWorkingMemory()
 	    			.startProcess(processId, parameters);
-	    	if (!getSubProcessNode().isWaitForCompletion()
-	    	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
+	    	if (!getSubProcessNode().isWaitForCompletion()) {
+	    		triggerCompleted();
+	    	} else if (processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
+	    		handleOutMappings(processInstance);
 	    		triggerCompleted();
 	    	} else {
 	    		this.processInstanceId = processInstance.getId();
@@ -173,28 +175,32 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     
     public void processInstanceCompleted(ProcessInstance processInstance) {
         removeEventListeners();
-        VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
-            processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-        for (Map.Entry<String, String> mapping: getSubProcessNode().getOutMappings().entrySet()) {
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
-            if (variableScopeInstance != null) {
-            	Object value = subProcessVariableScopeInstance.getVariable(mapping.getKey());
-            	if (value == null) {
-            		try {
-                		value = MVEL.eval(mapping.getKey(), new VariableScopeResolverFactory(subProcessVariableScopeInstance));
-                	} catch (Throwable t) {
-                		// do nothing
-                	}
-            	}
-                variableScopeInstance.setVariable(mapping.getValue(), value);
-            } else {
-                System.err.println("Could not find variable scope for variable " + mapping.getValue());
-                System.err.println("when trying to complete SubProcess node " + getSubProcessNode().getName());
-                System.err.println("Continuing without setting variable.");
-            }
-        }
+        handleOutMappings(processInstance);
         triggerCompleted();
+    }
+    
+    private void handleOutMappings(ProcessInstance processInstance) {
+        VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
+	        processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+	    for (Map.Entry<String, String> mapping: getSubProcessNode().getOutMappings().entrySet()) {
+	        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	            resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
+	        if (variableScopeInstance != null) {
+	        	Object value = subProcessVariableScopeInstance.getVariable(mapping.getKey());
+	        	if (value == null) {
+	        		try {
+	            		value = MVEL.eval(mapping.getKey(), new VariableScopeResolverFactory(subProcessVariableScopeInstance));
+	            	} catch (Throwable t) {
+	            		// do nothing
+	            	}
+	        	}
+	            variableScopeInstance.setVariable(mapping.getValue(), value);
+	        } else {
+	            System.err.println("Could not find variable scope for variable " + mapping.getValue());
+	            System.err.println("when trying to complete SubProcess node " + getSubProcessNode().getName());
+	            System.err.println("Continuing without setting variable.");
+	        }
+	    }
     }
 
 }
