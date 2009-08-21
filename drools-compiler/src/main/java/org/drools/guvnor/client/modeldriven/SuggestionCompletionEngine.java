@@ -336,8 +336,11 @@ public class SuggestionCompletionEngine
                         }
                     }
                 }
-                return DropDownData.create( queryString,
-                                            valuePairs );
+
+                if ( valuePairs.length > 0 && valuePairs[0] != null ) {
+                    return DropDownData.create( queryString,
+                                                valuePairs );
+                }
             }
         }
         return DropDownData.create( getEnumValues( pat.factType,
