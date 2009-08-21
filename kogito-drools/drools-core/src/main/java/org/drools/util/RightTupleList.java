@@ -177,7 +177,6 @@ public class RightTupleList
 
     public boolean matches(final Object object,
                            final int objectHashCode) {
-        System.out.println( index + " : " + this.first + " : " + object );
         return this.hashCode == objectHashCode && this.index.equal( this.first.getFactHandle().getObject(),
                                                                     object );
     }
