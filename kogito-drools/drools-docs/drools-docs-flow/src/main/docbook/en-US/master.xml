@@ -61,6 +61,7 @@
   <xi:include href="Chapter-Debugging/Chapter-Debugging.xml" />
   <xi:include href="Chapter-Eclipse/Chapter-Eclipse.xml" />
   <xi:include href="Chapter-BAM/Chapter-BAM.xml" />
+  <xi:include href="Chapter-BPMN2/Chapter-BPMN2.xml" />
     
   <index/>
 </book>
