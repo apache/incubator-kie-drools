@@ -1,0 +1,1137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:xi="http://www.w3.org/2001/XInclude"
+                    xmlns:svg="http://www.w3.org/2000/svg"
+                    xmlns:m="http://www.w3.org/1998/Math/MathML"
+                    xmlns:html="http://www.w3.org/1999/xhtml"
+                    xmlns:db="http://docbook.org/ns/docbook" xml:base="./">
+
+  <title>Business Process Model and Notation (BPMN)</title>
+
+  <para>The Business Process Model and Notation (BPMN) 2.0 specification is steadily moving forward on its way to become a great standard, and we are adopting it for our process modeling in Drools Flow.  BPMN 2.0 not only defines a standard on how to graphically represent a business process (like BPMN 1.1), but now also includes execution semantics for the elements defined, and an XML format on how to store (and share) process definitions.</para>
+
+  <para>In a first fase, we are migrating our custom Drools Flow XML format to the BPMN 2.0 XML, as defined in the specification.  The following list gives an overview of the various elements that can already be expressed (and executed) using the BPMN 2.0 XML format:</para>
+
+  <itemizedlist>
+    <listitem><emphasis>Flow objects</emphasis>
+      <itemizedlist>
+        <listitem>Events
+          <itemizedlist>
+            <listitem>Start Event (None)</listitem>
+            <listitem>End Event (Terminate)</listitem>
+            <listitem>Intermediate Event (Signal)</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Activities
+          <itemizedlist>
+            <listitem>Script Task (Java or MVEL expression language)</listitem>
+            <listitem>Service Task</listitem>
+            <listitem>User Task</listitem>
+            <listitem>Business Rule Task</listitem>
+            <listitem>Reusable Sub-Process (Call Activity)</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Gateways
+          <itemizedlist>
+            <listitem>Diverging
+              <itemizedlist>
+                <listitem>Exclusive</listitem>
+                <listitem>Parallel</listitem>
+              </itemizedlist>
+            </listitem>
+            <listitem>Converging
+              <itemizedlist>
+                <listitem>Exclusive</listitem>
+                <listitem>Parallel</listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem><emphasis>Data</emphasis>
+      <itemizedlist>
+        <listitem>Java type language</listitem>
+        <listitem>Process properties</listitem>
+        <listitem>Activity properties</listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem><emphasis>Connecting objects</emphasis>
+      <itemizedlist>
+        <listitem>Sequence flow</listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para>For example, consider the following BPMN process for performing evaluations.  Whenever an evaluation process is started for a specific employee, that employee must first perform a self-evaluation, after which the project manager and human resource manager must also fill in their evaluation, as shown in the figure below.</para>
+
+<mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-BPMN2/Evaluation.png"/></imageobject></mediaobject>
+
+  <para>An executable version of this process expressed using BPMN 2.0 XML would look something like this (note that the process needs to contain all the details to make it execuble, including all the parameters for each of the tasks present, hence the large process definition):</para>
+
+  <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:tns="http://www.jboss.org/drools"&gt;
+
+  &lt;itemDefinition id="employeeItem" structureRef="java.lang.Object" /&gt;
+
+  &lt;resource id="Actor" name="Human Actor" /&gt;
+
+  &lt;process id="com.sample.evaluation" name="Evaluation Process" &gt;
+
+    &lt;!-- process variables --&gt;
+    &lt;property id="employee" itemSubjectRef="tns:employeeItem"/&gt;
+
+    &lt;!-- nodes --&gt;
+    &lt;startEvent id="_1" name="StartProcess" g:x="16" g:y="56" g:width="48" g:height="48" /&gt;
+    &lt;userTask id="_2" name="Self Evaluation" g:x="96" g:y="56" g:width="143" g:height="48" &gt;
+      &lt;ioSpecification&gt;
+        &lt;dataInput id="_2_CommentInput" name="Comment" /&gt;
+        &lt;dataInput id="_2_TaskNameInput" name="TaskName" /&gt;
+        &lt;dataInput id="_2_PriorityInput" name="Priority" /&gt;
+        &lt;dataInput id="_2_ContentInput" name="Content" /&gt;
+        &lt;dataInput id="_2_SkippableInput" name="Skippable" /&gt;
+        &lt;inputSet&gt;
+          &lt;dataInputRefs&gt;_2_CommentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_2_TaskNameInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_2_PriorityInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_2_ContentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_2_SkippableInput&lt;/dataInputRefs&gt;
+        &lt;/inputSet&gt;
+        &lt;outputSet&gt;
+        &lt;/outputSet&gt;
+      &lt;/ioSpecification&gt;
+      &lt;property id="_2_Comment" /&gt;
+      &lt;property id="_2_TaskName" /&gt;
+      &lt;property id="_2_Priority" /&gt;
+      &lt;property id="_2_Content" /&gt;
+      &lt;property id="_2_Skippable" /&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;You need to perform a self-evaluation&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_CommentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_2_Comment&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_2_CommentInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_TaskNameInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_2_TaskName&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_2_TaskNameInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_PriorityInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_2_Priority&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_2_PriorityInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_ContentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_2_Content&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_2_ContentInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;false&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_SkippableInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_2_Skippable&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_2_SkippableInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;potentialOwner resourceRef="tns:Actor" &gt;
+        &lt;resourceAssignmentExpression&gt;
+          &lt;formalExpression&gt;#{employee}&lt;/formalExpression&gt;
+        &lt;/resourceAssignmentExpression&gt;
+      &lt;/potentialOwner&gt;
+    &lt;/userTask&gt;
+    &lt;parallelGateway id="_3" name="Diverge" g:x="271" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" /&gt;
+    &lt;userTask id="_4" name="HR Manager Evaluation" g:x="352" g:y="96" g:width="225" g:height="48" &gt;
+      &lt;ioSpecification&gt;
+        &lt;dataInput id="_4_CommentInput" name="Comment" /&gt;
+        &lt;dataInput id="_4_TaskNameInput" name="TaskName" /&gt;
+        &lt;dataInput id="_4_PriorityInput" name="Priority" /&gt;
+        &lt;dataInput id="_4_ContentInput" name="Content" /&gt;
+        &lt;dataInput id="_4_SkippableInput" name="Skippable" /&gt;
+        &lt;inputSet&gt;
+          &lt;dataInputRefs&gt;_4_CommentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_4_TaskNameInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_4_PriorityInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_4_ContentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_4_SkippableInput&lt;/dataInputRefs&gt;
+        &lt;/inputSet&gt;
+        &lt;outputSet&gt;
+        &lt;/outputSet&gt;
+      &lt;/ioSpecification&gt;
+      &lt;property id="_4_Comment" /&gt;
+      &lt;property id="_4_TaskName" /&gt;
+      &lt;property id="_4_Priority" /&gt;
+      &lt;property id="_4_Content" /&gt;
+      &lt;property id="_4_Skippable" /&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;You need to perform an evaluation for #{employee}&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_CommentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_4_Comment&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_4_CommentInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_TaskNameInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_4_TaskName&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_4_TaskNameInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_PriorityInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_4_Priority&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_4_PriorityInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_ContentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_4_Content&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_4_ContentInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;false&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_SkippableInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_4_Skippable&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_4_SkippableInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;potentialOwner resourceRef="tns:Actor" &gt;
+        &lt;resourceAssignmentExpression&gt;
+          &lt;formalExpression&gt;mary&lt;/formalExpression&gt;
+        &lt;/resourceAssignmentExpression&gt;
+      &lt;/potentialOwner&gt;
+    &lt;/userTask&gt;
+    &lt;userTask id="_5" name="Project Manager Evaluation" g:x="352" g:y="16" g:width="225" g:height="48" &gt;
+      &lt;ioSpecification&gt;
+        &lt;dataInput id="_5_CommentInput" name="Comment" /&gt;
+        &lt;dataInput id="_5_TaskNameInput" name="TaskName" /&gt;
+        &lt;dataInput id="_5_PriorityInput" name="Priority" /&gt;
+        &lt;dataInput id="_5_ContentInput" name="Content" /&gt;
+        &lt;dataInput id="_5_SkippableInput" name="Skippable" /&gt;
+        &lt;inputSet&gt;
+          &lt;dataInputRefs&gt;_5_CommentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_5_TaskNameInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_5_PriorityInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_5_ContentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_5_SkippableInput&lt;/dataInputRefs&gt;
+        &lt;/inputSet&gt;
+        &lt;outputSet&gt;
+        &lt;/outputSet&gt;
+      &lt;/ioSpecification&gt;
+      &lt;property id="_5_Comment" /&gt;
+      &lt;property id="_5_TaskName" /&gt;
+      &lt;property id="_5_Priority" /&gt;
+      &lt;property id="_5_Content" /&gt;
+      &lt;property id="_5_Skippable" /&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;You need to perform an evaluation for #{employee}&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_CommentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_5_Comment&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_5_CommentInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_TaskNameInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_5_TaskName&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_5_TaskNameInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_PriorityInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_5_Priority&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_5_PriorityInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_ContentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_5_Content&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_5_ContentInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;false&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_SkippableInput&lt;/to&gt;
+        &lt;/assignment&gt;
+        &lt;sourceRef&gt;_5_Skippable&lt;/sourceRef&gt;
+        &lt;targetRef&gt;_5_SkippableInput&lt;/targetRef&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;potentialOwner resourceRef="tns:Actor" &gt;
+        &lt;resourceAssignmentExpression&gt;
+          &lt;formalExpression&gt;john&lt;/formalExpression&gt;
+        &lt;/resourceAssignmentExpression&gt;
+      &lt;/potentialOwner&gt;
+    &lt;/userTask&gt;
+    &lt;parallelGateway id="_6" name="Converge" g:x="603" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" /&gt;
+    &lt;endEvent id="_7" name="EndProcess" g:x="683" g:y="56" g:width="48" g:height="48" /&gt;
+
+    &lt;!-- connections --&gt;
+    &lt;sequenceFlow sourceRef="_2" targetRef="_3" /&gt;
+    &lt;sequenceFlow sourceRef="_3" targetRef="_4" g:bendpoints="[295,120]" /&gt;
+    &lt;sequenceFlow sourceRef="_6" targetRef="_7" /&gt;
+    &lt;sequenceFlow sourceRef="_1" targetRef="_2" /&gt;
+    &lt;sequenceFlow sourceRef="_3" targetRef="_5" g:bendpoints="[295,39]" /&gt;
+    &lt;sequenceFlow sourceRef="_5" targetRef="_6" g:bendpoints="[627,40]" /&gt;
+    &lt;sequenceFlow sourceRef="_4" targetRef="_6" g:bendpoints="[627,121]" /&gt;
+
+  &lt;/process&gt;
+
+&lt;/definitions&gt;</programlisting>
+
+  <para>The following code fragment shows you how to load a BPMN process into your knowledge base ...</para>
+
+  <programlisting>
+private static KnowledgeBase readKnowledgeBase() throws Exception {
+  KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+  ((PackageBuilderConfiguration) conf).initSemanticModules();
+  ((PackageBuilderConfiguration) conf).loadSemanticModule("BPMN2SemanticModule.conf");
+  KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+  kbuilder.add(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.DRF);
+  KnowledgeBuilderErrors errors = kbuilder.getErrors();
+  if (errors.size() &gt; 0) {
+    for (KnowledgeBuilderError error: errors) {
+      System.err.println(error);
+    }
+    throw new IllegalArgumentException("Could not parse knowledge.");
+  }
+  KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+  kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+  return kbase;
+}</programlisting>
+
+  <para> ... and how to execute this process.</para>
+
+  <programlisting>
+KnowledgeBase kbase = readKnowledgeBase();
+StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());
+// start a new process instance
+Map&lt;String, Object&gt; params = new HashMap&lt;String, Object&gt;();
+params.put("employee", "krisv");
+ksession.startProcess("com.sample.evaluation", params);</programlisting>
+
+  <para>In more detail, the following table gives an overview of which features of the Drools Flow language have already been ported to the BPMN 2.0 XML format. A green check mark means that the functionality can be expressed using the features defined in the BPMN 2.0 specification.  Sometimes however, the specification does not specify how some (of the more advanced) features can be expressed using BPMN 2.0 syntax.  Luckily, the XML Schema is extensible, so in those cases we extend the BPMN 2.0 specification with additional attributes and/or elements so that these features can be stored in XML as well.  Custom extensions to the BPMN 2.0 format are shown using an orange check mark.  As shown in the table below, most of the basic BPMN 2.0 nodes are already supported.</para>
+
+  <table>
+    <title>Keywords</title>
+    <tgroup cols="3">Drools BPMN 2.0 features
+      <colspec colnum="2" align="center" width="3cm"/>
+      <colspec colnum="3" align="center" width="3cm"/>
+      <thead>
+        <row>
+          <entry>Feature</entry>
+          <entry>Drools BPMN</entry>
+          <entry>Drools Flow</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry>A. Process-level</entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Imports</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Function Imports</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Variable</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - primitive Java types</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - Java object types</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - default value</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Swimlanes</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Exception handlers</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - fault name</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - bind to variable</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - action</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>B. Nodes</entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>1. Start Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - rule trigger</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - signal trigger</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - parameter mapping</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>2. End Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - terminate</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>3. Action Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - Java dialect</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>  * access to variables, global, context</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - MVEL dialect</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>   * access to variables, global, context</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>4. RuleSet Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check_orange.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - timers</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>5. Split Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - AND</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - XOR</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - OR</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - Java code constraints</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - MVEL code constraints</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - rule constraints</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - constraint names</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - constraint priorities</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>6. Join Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>AND</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>XOR</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Discriminator</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>n-of-m</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>7. State Node</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - timers</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on entry actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on exit actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - automatic transition constraints</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - manual transition signal</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>8. SubProcess Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - timers</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on entry actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on exit actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - wait for completion</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check_orange.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - independant</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check_orange.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - parameter mapping (in/out)</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - dynamic process id</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>9. WorkItem Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - parameters</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - parameter mapping (in/out)</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - timers</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on entry actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on exit actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - wait for completion</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>10. Timer Node</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - delay, period</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>11. Human Task Node (also see WorkItem Node)</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - swimlane</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>12. Composite Node</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - timers</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on entry actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - on exit actions</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - variables</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - exception handlers</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - multiple entry points</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - multiple exit points</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>13. ForEach Node</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - bind to variable</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - wait for completion</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - multiple entry points</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - multiple exit points</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>14. Event Node</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - bind to variable </entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - internal / external</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - event filters</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>15. Fault Node</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - fault name</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - fault data</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Graphical information (x, y, width, height)</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check_orange.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>C. Connections</entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>From, To</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>From type</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>To type</entry>
+          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Graphical information (bendpoints)</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check_orange.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </table>
+
+</chapter>
