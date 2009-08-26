@@ -63,6 +63,7 @@ public class DefaultRuleSheetListener
     RuleSheetListener {
 
     //keywords
+    public static final String            QUERIES_TAG          = "Queries";
     public static final String            FUNCTIONS_TAG          = "Functions";
     public static final String            IMPORT_TAG             = "Import";
     public static final String            SEQUENTIAL_FLAG        = "Sequential";
@@ -151,6 +152,10 @@ public class DefaultRuleSheetListener
 
         final String functions = getProperties().getProperty( FUNCTIONS_TAG );
         ruleset.addFunctions( functions );
+
+        final String queries = getProperties().getProperty( QUERIES_TAG );
+        ruleset.addQueries(queries);
+
         return ruleset;
     }
 

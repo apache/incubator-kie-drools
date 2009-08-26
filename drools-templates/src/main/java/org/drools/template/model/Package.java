@@ -40,12 +40,15 @@ public class Package
 
     private Functions _functions;
 
+    private Queries _queries;
+
     public Package(final String name) {
         this._name = name;
         this._imports = new LinkedList<Import>();
         this._variables = new LinkedList<Global>();
         this._rules = new LinkedList<Rule>();
         this._functions = new Functions();
+        this._queries = new Queries();
     }
 
     public void addImport(final Import imp) {
@@ -62,6 +65,9 @@ public class Package
 
     public void addFunctions(final String listing) {
         this._functions.setFunctionsListing( listing );
+    }
+    public void addQueries(final String listing) {
+        this._queries.setQueriesListing( listing );
     }
 
     public String getName() {
@@ -91,6 +97,7 @@ public class Package
         renderDRL( this._variables,
                    out );
         this._functions.renderDRL( out );
+        this._queries.renderDRL(out);
         renderDRL( this._rules,
                    out );
 
