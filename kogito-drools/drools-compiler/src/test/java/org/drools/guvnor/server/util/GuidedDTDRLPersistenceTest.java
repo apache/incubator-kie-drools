@@ -210,6 +210,103 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
         
     }
 
+
+    public void testInOperator() {
+        GuidedDecisionTable dt = new GuidedDecisionTable();
+        dt.tableName = "michael";
+
+        AttributeCol attr = new AttributeCol();
+        attr.attr = "salience";
+        attr.defaultValue = "66";
+        dt.attributeCols.add(attr);
+
+        ConditionCol con = new ConditionCol();
+        con.boundName = "f1";
+        con.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        con.factField = "age";
+        con.factType = "Driver";
+        con.header = "Driver f1 age";
+        con.operator = "==";
+        dt.conditionCols.add(con);
+
+        ConditionCol con2 = new ConditionCol();
+        con2.boundName = "f1";
+        con2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        con2.factField = "name";
+        con2.factType = "Driver";
+        con2.header = "Driver f1 name";
+        con2.operator = "in";
+        dt.conditionCols.add(con2);
+
+        ConditionCol con3 = new ConditionCol();
+        con3.boundName = "f1";
+        con3.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
+        con3.factField = "rating";
+        con3.factType = "Driver";
+        con3.header = "Driver rating";
+        con3.operator = "==";
+        dt.conditionCols.add(con3);
+
+
+        ConditionCol con4 = new ConditionCol();
+        con4.boundName = "f2";
+        con4.constraintValueType = ISingleFieldConstraint.TYPE_PREDICATE;
+        con4.factType = "Driver";
+        con4.header = "Driver 2 pimp";
+        con4.factField = "(not needed)";
+        dt.conditionCols.add(con4);
+
+
+        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ins.boundName = "ins";
+        ins.factType = "Cheese";
+        ins.factField = "price";
+        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        dt.actionCols.add(ins);
+
+        ActionRetractFactCol ret = new ActionRetractFactCol();
+        ret.boundName = "f2";
+        dt.actionCols.add(ret);
+
+        ActionSetFieldCol set = new ActionSetFieldCol();
+        set.boundName = "f1";
+        set.factField = "goo1";
+        set.type = SuggestionCompletionEngine.TYPE_STRING;
+        dt.actionCols.add(set);
+
+        ActionSetFieldCol set2 = new ActionSetFieldCol();
+        set2.boundName = "f1";
+        set2.factField = "goo2";
+        set2.defaultValue = "whee";
+        set2.type = SuggestionCompletionEngine.TYPE_STRING;
+        dt.actionCols.add(set2);
+
+        dt.data = new String[][] {
+                new String[] {"1", "desc", "42", "33", "michael, manik", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
+                new String[] {"2", "desc", "", "39", "bob, frank", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
+        };
+
+
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal(dt);
+
+
+        assertTrue(drl.indexOf("name in (\"michael\",") > 0);
+        
+
+    }
+
+    public void testCellCSV() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        assertEquals("(\"Michael\", \"Mark\", \"Peter\")", p.makeInList("Michael, Mark, Peter"));
+        assertEquals("(\"Michael\")", p.makeInList("Michael"));
+        assertEquals("(\"Michael\")", p.makeInList("\"Michael\""));
+        assertEquals("(\"Michael\", \"Ma rk\", \"Peter\")", p.makeInList("Michael, \"Ma rk\", Peter"));
+        assertEquals("(WEE WAAH)", p.makeInList("(WEE WAAH)"));
+    }
+
+
 	public void testCellVal() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		assertFalse(p.validCell(null));
