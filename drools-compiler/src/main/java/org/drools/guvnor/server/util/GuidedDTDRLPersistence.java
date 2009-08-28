@@ -2,6 +2,7 @@ package org.drools.guvnor.server.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
@@ -181,7 +182,12 @@ public class GuidedDTDRLPersistence {
 							}
 						} else {
 							sfc.operator = c.operator;
-							sfc.value = cell;
+                            if (c.operator.equals("in")) {
+                                sfc.value = makeInList(cell);
+                            } else {
+                                sfc.value = cell;
+                            }
+
 						}
 						sfc.constraintValueType = c.constraintValueType;
 						fp.addConstraint(sfc);
@@ -205,9 +211,27 @@ public class GuidedDTDRLPersistence {
 		rm.lhs = patterns.toArray(new IPattern[patterns.size()]);
 	}
 
+    /**
+     * take a CSV list and turn it into DRL syntax
+     */
+    String makeInList(String cell) {
+        if (cell.startsWith("(")) return cell;
+        String res = "";
+        StringTokenizer st = new StringTokenizer(cell, ",");
+        while (st.hasMoreTokens()) {
+            String t = st.nextToken().trim();
+            if (t.startsWith("\"")) {
+                res += t;
+            } else {
+                res += "\"" + t + "\"";
+            }
+            if (st.hasMoreTokens()) res += ", ";
+        }
+        return "(" + res + ")";
+    }
 
 
-	private boolean no(String operator) {
+    private boolean no(String operator) {
 		return operator == null || "".equals(operator);
 	}
 

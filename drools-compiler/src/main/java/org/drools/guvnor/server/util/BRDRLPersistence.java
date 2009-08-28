@@ -328,9 +328,13 @@ public class BRDRLPersistence implements BRLPersistence {
 				buf.append(" )");
 				break;
 			case ISingleFieldConstraint.TYPE_LITERAL:
-				buf.append('"');
-				buf.append(value);
-				buf.append('"');
+                if (operator.equals("in")) {
+                    buf.append(value);
+                } else {
+                    buf.append('"');
+                    buf.append(value);
+                    buf.append('"');
+                }
 				break;
 			default:
 				buf.append(value);
