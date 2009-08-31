@@ -745,6 +745,24 @@
         configured. "Attribute columns" are for setting attributes on a per
         rule (row) basis, such as salience. Web based decision tables are
         compiled into DRL like all other rule assets.</para>
+
+        <para>Column configurations: when you edit or create a new column, you
+        will be given a choice of the type of constraint: Literal (the value
+        in the cell will be compared with the field using the operator),
+        Formula (in which case the expression in the cell will be evaluated
+        and then compared with the field) and Predicate (this means no field
+        is needed, the expression will be evaluated to true or false). You can
+        set a default value, but normally if there is no value in the cell,
+        that constraint will not apply. </para>
+
+        <para>The "in" operator: when you chose the operator that says "is in
+        the following list" then the cell value can be a comma separated list
+        of values, of which as long as one of them matches the specified
+        field, that constraint will be deemed true. </para>
+
+        <para>In general, there are little "info" icons (with the letter "i")
+        which if you click on, a popup description of the feature is provided
+        in context. </para>
       </section>
 
       <section>
