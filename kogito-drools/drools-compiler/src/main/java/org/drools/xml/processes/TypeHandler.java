@@ -43,8 +43,10 @@ public class TypeHandler extends BaseAbstractHandler
             dataType = (DataType) Class.forName(name).newInstance();
             // TODO make this pluggable so datatypes can read in other properties as well
             if (dataType instanceof ObjectDataType) {
-                final String className = attrs.getValue("className");
-                emptyAttributeCheck(localName, "className", className, parser);
+                String className = attrs.getValue("className");
+                if (className == null) {
+                	className = "java.lang.Object";
+                }
                 ((ObjectDataType) dataType).setClassName(className);
             }
         } catch (ClassNotFoundException e) {

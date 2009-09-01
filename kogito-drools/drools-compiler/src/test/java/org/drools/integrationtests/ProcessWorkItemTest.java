@@ -47,7 +47,7 @@ public class ProcessWorkItemTest extends TestCase {
     		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.drools.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"Number\" >\n" +
     		"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
