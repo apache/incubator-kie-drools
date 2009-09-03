@@ -10,12 +10,13 @@ import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
+import org.drools.process.instance.ContextableInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.workflow.core.node.CompositeContextNode;
 
-public class CompositeContextNodeInstance extends CompositeNodeInstance implements ContextInstanceContainer {
+public class CompositeContextNodeInstance extends CompositeNodeInstance implements ContextInstanceContainer, ContextableInstance {
 
 	private static final long serialVersionUID = 4L;
 	

@@ -28,6 +28,10 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         return CompositeNode.class;
     }
     
+    public boolean allowNesting() {
+    	return true;
+    }
+    
     protected String getNodeName() {
     	return "composite";
     }
