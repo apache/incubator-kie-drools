@@ -3,6 +3,8 @@ package org.drools.guvnor.server.rules;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -445,6 +447,8 @@ public class SuggestionCompletionLoader {
             final Class type = inspector.getFieldTypes().get(field);
             final String fieldType = getFieldType(type);
             this.builder.addFieldType(shortTypeName + "." + field, fieldType);
+            Field f = inspector.getFieldTypesField().get(field);
+            this.builder.addFieldTypeField(shortTypeName + "." + field,f);
         }
         
         ClassMethodInspector methodInspector = new ClassMethodInspector(clazz);

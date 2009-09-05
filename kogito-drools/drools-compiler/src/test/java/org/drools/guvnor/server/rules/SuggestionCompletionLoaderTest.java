@@ -42,6 +42,10 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("Cheese", eng.getFieldType( "SomeFact", "cheese"));
         assertEquals(SuggestionCompletionEngine.TYPE_BOOLEAN, eng.getFieldType( "SomeFact", "dead"));
         assertEquals(SuggestionCompletionEngine.TYPE_BOOLEAN, eng.getFieldType( "SomeFact", "alive"));
+        assertEquals(SuggestionCompletionEngine.TYPE_COLLECTION,eng.getFieldType( "SomeFact", "factList"));
+        assertEquals("SomeFact",eng.getParametricFieldType("SomeFact", "factList"));
+        assertEquals(SuggestionCompletionEngine.TYPE_COLLECTION,eng.getFieldType( "SomeFact", "factListString"));
+        assertEquals("String",eng.getParametricFieldType("SomeFact", "factListString"));
 
     }
 
