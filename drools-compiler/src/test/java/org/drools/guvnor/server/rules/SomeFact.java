@@ -3,6 +3,8 @@ package org.drools.guvnor.server.rules;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.Cheese;
 
@@ -26,6 +28,10 @@ public class SomeFact {
     private Date              date;
 
     private Boolean           dead;
+
+    private List<SomeFact> factList = new ArrayList<SomeFact>();
+
+    private List<String> factListString = new ArrayList<String>();
 
     public int getAge() {
         return age;
@@ -121,6 +127,21 @@ public class SomeFact {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    public List<SomeFact> getFactList() {
+        return factList;
+    }
+
+    public List<String> getFactListString() {
+        return factListString;
+    }
+
+    public void setFactListString(List<String> factListString) {
+        this.factListString = factListString;
+    }
+
+    public void setFactList(List<SomeFact> factList) {
+        this.factList = factList;
     }
 
 }

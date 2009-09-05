@@ -69,6 +69,14 @@ public class SuggestionCompletionEngine
      * 
      */
     public Map<String, String>            fieldTypes;
+        /**
+     * A map of the field that containts the parametrized type of a collection
+     * List<String> name
+     * key = "name"
+     * value = "Strint" 
+     *
+     */
+    public Map<String, String>            fieldParametersType = new HashMap<String, String>();
 
     /**
      * Contains a map of globals (name is key) and their type (value).
@@ -232,7 +240,16 @@ public class SuggestionCompletionEngine
                                final String fieldName) {
         return (String) this.fieldTypes.get( factType + "." + fieldName );
     }
-
+    /*
+     * returns the type of parametric class
+     * List<String> a in a class called Toto
+     * key =   "Toto.a"
+     * value = "String"
+     */
+     public String getParametricFieldType(final String factType,
+                               final String fieldName) {
+        return (String) this.fieldParametersType.get( factType + "." + fieldName );
+    }
     public boolean isGlobalVariable(final String variable) {
         return this.globalTypes.containsKey( variable );
     }
@@ -271,7 +288,7 @@ public class SuggestionCompletionEngine
     public DropDownData getEnums(FactPattern pat,
                                  String field) {
 
-        Map dataEnumLookupFields = loadDataEnumLookupFields();
+      Map dataEnumLookupFields = loadDataEnumLookupFields();
 
         if ( pat.constraintList != null && pat.constraintList.constraints != null ) {
             // we may need to check for data dependent enums
