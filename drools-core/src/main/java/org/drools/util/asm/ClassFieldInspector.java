@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,35 +49,38 @@ import org.mvel2.asm.Type;
 public class ClassFieldInspector {
 
     private final Map<String, Integer>    fieldNames    = new HashMap<String, Integer>();
-    private final Map<String, Class< ? >> fieldTypes    = new HashMap<String, Class< ? >>();
+    private final Map<String, Class <?>>  fieldTypes    = new HashMap<String, Class <?>>();
+    private final Map<String, Field>      fieldTypesField= new HashMap<String, Field>();
     private final Map<String, Method>     getterMethods = new HashMap<String, Method>();
     private final Map<String, Method>     setterMethods = new HashMap<String, Method>();
     private final Set<String>             nonGetters    = new HashSet<String>();
+    private       Class< ? >              classUnderInspection = null;
 
     /**
-     * @param clazz The class sthat the fields to be shadowed are extracted for.
+     * @param classUnderInspection The class sthat the fields to be shadowed are extracted for.
      * @throws IOException
      */
-    public ClassFieldInspector(final Class< ? > clazz) throws IOException {
-        this( clazz,
+    public ClassFieldInspector(final Class< ? > classUnderInspection) throws IOException {
+        this(classUnderInspection,
               true );
     }
 
-    public ClassFieldInspector(final Class< ? > clazz,
+    public ClassFieldInspector(final Class< ? > classUnderInspection,
                                final boolean includeFinalMethods) throws IOException {
-        final String name = getResourcePath( clazz );
-        final InputStream stream = clazz.getResourceAsStream( name );
+        this.classUnderInspection = classUnderInspection;
+        final String name = getResourcePath(classUnderInspection);
+        final InputStream stream = classUnderInspection.getResourceAsStream( name );
 
         if ( stream != null ) {
             try {
-            processClassWithByteCode( clazz,
+            processClassWithByteCode(classUnderInspection,
                                       stream,
                                       includeFinalMethods );
             } finally {
                 stream.close();
             }
         } else {
-            processClassWithoutByteCode( clazz,
+            processClassWithoutByteCode(classUnderInspection,
                                          includeFinalMethods );
         }
     }
@@ -142,7 +146,7 @@ public class ClassFieldInspector {
                 // want public methods that start with 'get' or 'is' and have no args, and return a value
                 final int fieldIndex = this.fieldNames.size();
                 addToMapping( methods[i],
-                              fieldIndex );
+                              fieldIndex);
 
             } else if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (methods[i].getParameterTypes().length == 1) && (methods[i].getName().startsWith( "set" )) ) {
 
@@ -173,7 +177,14 @@ public class ClassFieldInspector {
     /**
      * @return A mapping of field types (unboxed).
      */
-    public Map<String, Class< ? >> getFieldTypes() {
+    public Map<String, Field> getFieldTypesField() {
+        return this.fieldTypesField;
+    }
+        /**
+     * @return A mapping of field types (unboxed).
+     */
+    public Map<String,Class <?>> getFieldTypes() {
+
         return this.fieldTypes;
     }
 
@@ -254,6 +265,12 @@ public class ClassFieldInspector {
      */
     private void storeGetterSetter(final Method method,
                                    final String fieldName) {
+        Field f = null;
+        try {
+            f =  classUnderInspection.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+           // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         if ( method.getName().startsWith( "set" ) ) {
             this.setterMethods.put( fieldName,
                                     method );
@@ -261,11 +278,17 @@ public class ClassFieldInspector {
                 this.fieldTypes.put( fieldName,
                                      method.getParameterTypes()[0] );
             }
+            if ( !fieldTypesField.containsKey( fieldName ) ) {
+                this.fieldTypesField.put( fieldName,
+                                     f );
+            }
         } else {
             this.getterMethods.put( fieldName,
                                     method );
             this.fieldTypes.put( fieldName,
                                  method.getReturnType() );
+            this.fieldTypesField.put( fieldName,
+                                     f );
         }
     }
 
