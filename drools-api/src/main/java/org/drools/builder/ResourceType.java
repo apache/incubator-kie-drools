@@ -1,10 +1,11 @@
 package org.drools.builder;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResourceType {
+public class ResourceType implements Serializable {
 
     private String                                 name;
 
