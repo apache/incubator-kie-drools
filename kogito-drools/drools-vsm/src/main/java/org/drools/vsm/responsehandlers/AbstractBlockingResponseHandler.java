@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.drools.distributed.responsehandlers;
+package org.drools.vsm.responsehandlers;
 
 public abstract class AbstractBlockingResponseHandler extends AbstractBaseResponseHandler {
 

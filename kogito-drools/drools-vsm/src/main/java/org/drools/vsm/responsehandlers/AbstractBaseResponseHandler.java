@@ -1,4 +1,4 @@
-package org.drools.distributed.responsehandlers;
+package org.drools.vsm.responsehandlers;
 
 import org.drools.vsm.BaseMinaHandler;
 
