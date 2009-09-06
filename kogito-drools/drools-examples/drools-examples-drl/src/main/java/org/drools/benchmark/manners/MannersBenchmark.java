@@ -50,7 +50,8 @@ public class MannersBenchmark {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
 
-        for ( int i = 0; i < 10; i++ ) {
+        long totalTime = 0;
+        for ( int i = 0; i < 5; i++ ) {
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     
             String filename;
@@ -72,9 +73,13 @@ public class MannersBenchmark {
     
             long start = System.currentTimeMillis();
             ksession.fireAllRules();
-            System.err.println( System.currentTimeMillis() - start );
+            long time = System.currentTimeMillis() - start;
+            System.err.println( time );
+            totalTime += time;
             ksession.dispose();
         }
+        
+        System.out.println( "average : " + totalTime / 5 );
     }
 
     /**

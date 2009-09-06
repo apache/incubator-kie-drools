@@ -13,6 +13,7 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.command.Command;
+import org.drools.command.Context;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
@@ -62,6 +63,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
@@ -792,17 +794,30 @@ public class StatefulKnowledgeSessionImpl
         return new NativeQueryResults( this.session.getQueryResults( query, arguments ) );
     }
     
-    private KnowledgeCommandContext commandContext = new KnowledgeCommandContext( new ContextImpl("ksession", null), null, this.kbase, this);
+    private KnowledgeCommandContext commandContext = new KnowledgeCommandContext( new ContextImpl("ksession", null), null, this.kbase, this, null);
     
     public ExecutionResults execute(Command command) {        
+        return execute(null, command);
+    }
+    
+    public ExecutionResults execute(Context context, Command command) {
+        ExecutionResultImpl results = null;
+        if ( context != null ) {
+            results = ( ExecutionResultImpl ) ((KnowledgeCommandContext)context).getExecutionResults();
+        }
+        
+        if ( results == null ) {
+            results = new ExecutionResultImpl();
+        }
+        
         try {
-            session.startBatchExecution();
-            ((GenericCommand)command).execute( commandContext );
+            session.startBatchExecution( results );
+            ((GenericCommand)command).execute( new KnowledgeCommandContext( context, null, this.kbase, this, null) );
             ExecutionResults result = session.getExecutionResult();
             return result;
         } finally {
             session.endBatchExecution();
-        }
+        }        
     }
 
 }

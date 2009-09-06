@@ -132,7 +132,7 @@ public interface InternalWorkingMemory
     public SessionConfiguration getSessionConfiguration();
     
     
-    public void startBatchExecution();
+    public void startBatchExecution(ExecutionResultImpl results);
     
     public ExecutionResultImpl getExecutionResult();
     

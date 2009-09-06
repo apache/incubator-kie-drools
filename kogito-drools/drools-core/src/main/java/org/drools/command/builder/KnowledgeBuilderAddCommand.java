@@ -23,6 +23,7 @@ public class KnowledgeBuilderAddCommand
         this.resourceType = resourceType;
         this.resourceConfiguration = resourceConfiguration;
     }
+    
 
     public Void execute(Context context) {
         KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();

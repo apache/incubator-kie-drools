@@ -1927,10 +1927,10 @@ public abstract class AbstractWorkingMemory
         return partitionManagers.get( partitionId );
     }
 
-    public void startBatchExecution() {
+    public void startBatchExecution(ExecutionResultImpl results) {
         this.ruleBase.readLock();
         this.lock.lock();
-        this.batchExecutionResult = new ExecutionResultImpl();
+        this.batchExecutionResult = results;
     }
 
     public ExecutionResultImpl getExecutionResult() {

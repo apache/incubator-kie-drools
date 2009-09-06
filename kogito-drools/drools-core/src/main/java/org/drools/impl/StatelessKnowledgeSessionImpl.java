@@ -41,6 +41,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
 import org.drools.runtime.impl.BatchExecutionImpl;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.AgendaFilter;
 
 public class StatelessKnowledgeSessionImpl
@@ -231,10 +232,11 @@ public class StatelessKnowledgeSessionImpl
                                                                                         null ),
                                                                        null,
                                                                        null,
-                                                                       ksession );
+                                                                       ksession,
+                                                                       null );
 
         try {
-            ((StatefulKnowledgeSessionImpl) ksession).session.startBatchExecution();
+            ((StatefulKnowledgeSessionImpl) ksession).session.startBatchExecution( new ExecutionResultImpl() );
 
             ((GenericCommand) command).execute( context );
             // did the user take control of fireAllRules, if not we will auto execute
