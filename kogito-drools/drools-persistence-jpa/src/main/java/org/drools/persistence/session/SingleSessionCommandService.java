@@ -90,7 +90,7 @@ public class SingleSessionCommandService
         
         //this.ksession = kbase.newStatefulKnowledgeSession( conf, this.env );
         
-        this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession );
+        this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession, null );
 
         ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
 
@@ -198,7 +198,7 @@ public class SingleSessionCommandService
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
 		this.ksession = this.marshallingHelper.getObject();
-		this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession );
+		this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession, null );
         ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
 
         // update the session id to be the same as the session info id
