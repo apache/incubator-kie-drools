@@ -13,11 +13,12 @@
   <classpathentry kind="src" path="/drools-core"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/hsqldb/hsqldb/1.8.0.2/hsqldb-1.8.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock-legacy/2.5.1/jmock-legacy-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/joda-time/joda-time/1.6/joda-time-1.6.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.10/mvel2-2.0.10.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12/mvel2-2.0.12.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
 </classpath>
