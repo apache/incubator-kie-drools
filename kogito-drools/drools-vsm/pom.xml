@@ -26,16 +26,18 @@
  </build-->
 
       <dependencies>
-            
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-api</artifactId>
-    	</dependency>
-    	         		  
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-core</artifactId>
-    	</dependency>         		  
+	    <dependency>
+	      <groupId>org.drools</groupId>
+	      <artifactId>drools-api</artifactId>
+	    </dependency>    
+	    <dependency>
+	      <groupId>org.drools</groupId>
+	      <artifactId>drools-core</artifactId>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.drools</groupId>
+	      <artifactId>drools-compiler</artifactId>
+	    </dependency>         		  
            
     	<dependency>
     		<groupId>org.apache.mina</groupId>
@@ -53,8 +55,7 @@
     		<groupId>org.slf4j</groupId>
     		<artifactId>slf4j-api</artifactId>
     		<version>1.5.2</version>
-    	</dependency>          	 
-        
+    	</dependency>          	         
       </dependencies>              
                   
 </project>
