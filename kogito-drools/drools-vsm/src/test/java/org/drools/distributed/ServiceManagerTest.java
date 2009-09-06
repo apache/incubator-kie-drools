@@ -91,10 +91,7 @@ public class ServiceManagerTest extends TestCase {
     	
     	StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     	int fired = ksession.fireAllRules();
-    	System.out.println( "fired : " + fired );
-    	
-    	Thread.sleep( 50 * 1000 * 60);
-    
+    	assertEquals( 2, fired );
     }
 
 }
