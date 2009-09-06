@@ -48,28 +48,34 @@ public abstract class WaltzBenchmark {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-
-        String filename;
-        if ( args.length != 0 ) {
-            String arg = args[0];
-            filename = arg;
-        } else {
-            filename = "waltz12.dat";
+        long totalTime = 0;
+        for ( int i = 0; i < 5; i++ ) {
+            StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+    
+            String filename;
+            if ( args.length != 0 ) {
+                String arg = args[0];
+                filename = arg;
+            } else {
+                filename = "waltz50.dat";
+            }
+    
+            loadLines( session,
+                       filename );
+    
+            Stage stage = new Stage( Stage.DUPLICATE );
+            session.insert( stage );
+    
+            long start = System.currentTimeMillis();
+            session.setGlobal( "time",
+                               start );
+            session.fireAllRules();
+            long time = System.currentTimeMillis() - start;
+            System.err.println( time );
+            totalTime += time;
+            session.dispose();
         }
-
-        loadLines( session,
-                   filename );
-
-        Stage stage = new Stage( Stage.DUPLICATE );
-        session.insert( stage );
-
-        long start = System.currentTimeMillis();
-        session.setGlobal( "time",
-                           start );
-        session.fireAllRules();
-        System.out.println( (System.currentTimeMillis() - start) / 1000 );
-        session.dispose();
+        System.out.println( "average : " + totalTime / 5 );
     }
 
     private static void loadLines(WorkingMemory wm,

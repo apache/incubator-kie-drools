@@ -1,0 +1,40 @@
+[INFO] [hyperjaxb3:generate {execution: default}]
+[INFO] Removed old generateDirectory 'C:\dev\drools\trunk7\drools-process\drools-process-task\target\generated-sources\xjc'.
+[ERROR] Class [org.drools.task.TQuery] declares an attribute wildcard. This is currently not supported. See issue #46.
+        org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
+
+[ERROR] Class [org.drools.task.TExtensibleElements] declares an attribute wildcard. This is currently not supported. See issue #46.
+        org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
+
+[ERROR] Class [org.drools.task.TLiteral] declares an attribute wildcard. This is currently not supported. See issue #46.
+        org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
+
+[ERROR] Class [org.drools.task.TExpression] declares an attribute wildcard. This is currently not supported. See issue #46.
+        org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
+
+[ERROR] Class [org.drools.task.TExtensibleMixedContentElements] declares an attribute wildcard. This is currently not supported. See issue #46.
+        org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
+
+[INFO] Succesfully generated output to: C:\dev\drools\trunk7\drools-process\drools-process-task\target\generated-sources\xjc
+[INFO] [resources:resources]
+[INFO] Using default encoding to copy filtered resources.
+Downloading: http://download.java.net/maven/2/org/drools/drools-core/5.0.0.20080716.092257-204/drools-core-5.0.0.20080716.092257-204.pom
+Downloading: http://download.java.net/maven/1/org.drools/poms/drools-core-5.0.0.20080716.092257-204.pom
+Downloading: http://repository.jboss.com/maven2/org/drools/drools-core/5.0.0.20080716.092257-204/drools-core-5.0.0.20080716.092257-204.pom
+Downloading: http://www.jfrog.org/artifactory/plugins-releases@repo/org/drools/drools-core/5.0.0.20080716.092257-204/drools-core-5.0.0.20080716.092257-204.pom
+Downloading: http://repository.jboss.org/maven2/org/drools/drools-core/5.0.0.20080716.092257-204/drools-core-5.0.0.20080716.092257-204.pom
+Downloading: http://repo1.maven.org/maven2/org/drools/drools-core/5.0.0.20080716.092257-204/drools-core-5.0.0.20080716.092257-204.pom
+[INFO] [compiler:compile]
+[INFO] Compiling 49 source files to C:\dev\drools\trunk7\drools-process\drools-process-task\target\classes
+[INFO] [resources:testResources]
+[INFO] Using default encoding to copy filtered resources.
+[INFO] [compiler:testCompile]
+[INFO] Nothing to compile - all classes are up to date
+Downloading: http://download.java.net/maven/2/org/drools/drools-compiler/5.0.0.20080716.092257-204/drools-compiler-5.0.0.20080716.092257-204.pom
+Downloading: http://download.java.net/maven/1/org.drools/poms/drools-compiler-5.0.0.20080716.092257-204.pom
+Downloading: http://repository.jboss.com/maven2/org/drools/drools-compiler/5.0.0.20080716.092257-204/drools-compiler-5.0.0.20080716.092257-204.pom
+Downloading: http://www.jfrog.org/artifactory/plugins-releases@repo/org/drools/drools-compiler/5.0.0.20080716.092257-204/drools-compiler-5.0.0.20080716.092257-204.pom
+Downloading: http://repository.jboss.org/maven2/org/drools/drools-compiler/5.0.0.20080716.092257-204/drools-compiler-5.0.0.20080716.092257-204.pom
+Downloading: http://repo1.maven.org/maven2/org/drools/drools-compiler/5.0.0.20080716.092257-204/drools-compiler-5.0.0.20080716.092257-204.pom
+[INFO] [surefire:test]
+[INFO] Surefire report directory: C:\dev\drools\trunk7\drools-process\drools-process-task\target\surefire-reports

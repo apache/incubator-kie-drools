@@ -79,6 +79,13 @@ rule pathDone
 		update( context );
 end
 
+rule continue
+    when
+        context : Context( state == Context.CHECK_DONE ) 
+    then
+        context.setState( Context.ASSIGN_SEATS ); 
+        update( context );
+end
 
 rule areWeDone
     when
@@ -87,14 +94,6 @@ rule areWeDone
         Seating( rightSeat == lastSeat ) 
     then
         context.setState(Context.PRINT_RESULTS ); 
-        update( context );
-end
-
-rule continue
-    when
-        context : Context( state == Context.CHECK_DONE ) 
-    then
-        context.setState( Context.ASSIGN_SEATS ); 
         update( context );
 end
 

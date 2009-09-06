@@ -1,10 +1,13 @@
 package org.drools.compiler;
 
+import java.io.Serializable;
+
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Rule;
 
-public class RuleBuildError extends DescrBuildError {
+public class RuleBuildError extends DescrBuildError  {
     private final Rule rule;
+    
     public RuleBuildError(final Rule rule,
                            final BaseDescr descr,
                            final Object object,

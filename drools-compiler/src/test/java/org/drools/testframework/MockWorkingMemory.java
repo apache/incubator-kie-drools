@@ -537,7 +537,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public void startBatchExecution() {
+    public void startBatchExecution(ExecutionResultImpl results) {
         // TODO Auto-generated method stub
         
     }

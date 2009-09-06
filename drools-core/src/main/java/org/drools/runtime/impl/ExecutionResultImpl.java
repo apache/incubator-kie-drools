@@ -1,12 +1,13 @@
 package org.drools.runtime.impl;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.runtime.ExecutionResults;
 
-public class ExecutionResultImpl implements ExecutionResults {
+public class ExecutionResultImpl implements ExecutionResults, Serializable {
     Map<String, Object> results = new HashMap<String, Object>();    
     Map<String, Object> facts = new HashMap<String, Object>();
     

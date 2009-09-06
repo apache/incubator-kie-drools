@@ -1,0 +1,29 @@
+with ( new Task() ) { 
+    taskData = (with ( new TaskData() ) {
+                   documentAccessType = AccessType.Inline,
+                   documentType = "MVEL"
+                }),
+    deadlines = ( with ( new Deadlines() ) {
+        startDeadlines = [ 
+            (with (new Deadline()) {
+                date = new Date( now.time + 5000 ),            
+                escalations = [ 
+                    (with (new Escalation()) {
+                        name = "My Start Escalation",
+                        constraints = [new BooleanExpression( "mvel", "true" )],
+                        notifications = [ 
+                            (with (new EmailNotification()) {
+                                recipients = [ users['tony' ], users['darth' ] ],
+                                emailHeaders = [ 'en-UK' : (with (new EmailNotificationHeader()) { 
+                                    language = 'en-UK',
+                                    subject = "@{doc.subject}",
+                                    body = "@{doc.body}"
+                                }) ]                                                                                                                                                                                  
+                            }) 
+                        ]                                               
+                    }) 
+                ]
+            })
+        ]
+    })        
+};

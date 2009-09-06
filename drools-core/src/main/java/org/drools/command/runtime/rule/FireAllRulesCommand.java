@@ -5,7 +5,9 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.AgendaFilter;
 
 public class FireAllRulesCommand
@@ -14,8 +16,13 @@ public class FireAllRulesCommand
 
     private int          max          = -1;
     private AgendaFilter agendaFilter = null;
+    private String       outIdentifier;
 
     public FireAllRulesCommand() {
+    }
+
+    public FireAllRulesCommand(String outIdentifer) {
+        this.outIdentifier = outIdentifer;
     }
 
     public FireAllRulesCommand(int max) {
@@ -25,20 +32,35 @@ public class FireAllRulesCommand
     public FireAllRulesCommand(AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
     }
-    
+
+    public FireAllRulesCommand(String outIdentifier,
+                               int max,
+                               AgendaFilter agendaFilter) {
+        this.outIdentifier = outIdentifier;
+        this.max = max;
+        this.agendaFilter = agendaFilter;
+    }
+
     public int getMax() {
         return this.max;
     }
 
     public Integer execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        int fired;
         if ( max != -1 ) {
-            return ksession.fireAllRules( max );
+            fired = ksession.fireAllRules( max );
         } else if ( agendaFilter != null ) {
-            return ((StatefulKnowledgeSessionImpl)ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
+            fired = ((StatefulKnowledgeSessionImpl) ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
         } else {
-            return ksession.fireAllRules();
+            fired = ksession.fireAllRules();
         }
+
+        if ( this.outIdentifier != null ) {
+            ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier,
+                                                                                                                fired );
+        }
+        return fired;
     }
 
     public String toString() {

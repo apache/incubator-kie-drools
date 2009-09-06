@@ -1,0 +1,21 @@
+format = new java.text.SimpleDateFormat( "dd/MMM/yyyy" );
+        
+[ 'peter' : [ new TaskSummary( 1, 'Dies ist mein task Name Jan', 'Das ist mein task Thema Jan', 'Das ist mein task Beschreibung Jan',
+                               Status.Ready, 20, false, users[ 'peter' ], null, 
+                               format.parse( "15/Jan/2008" ), format.parse( "20/Jan/2008" ), null ),
+              new TaskSummary( 1, 'Dies ist mein task Name May', 'Das ist mein task Thema May', 'Das ist mein task Beschreibung May',
+                               Status.Created, 20, false, users[ 'peter' ], users[ 'steve' ], 
+                               format.parse( "15/May/2008" ), format.parse( "20/May/2008" ),null ),
+              new TaskSummary( 1, 'Dies ist mein task Name Mar', 'Das ist mein task Thema Mar', 'Das ist mein task Beschreibung Mar',
+                               Status.Ready, 90, false, users[ 'peter' ], users[ 'steve' ], 
+                               format.parse( "15/Mar/2008" ), format.parse( "20/Mar/2008" ), null ) ],                                                                     
+  'steve' : [ new TaskSummary( 1, 'Dies ist mein task Name Feb', 'Das ist mein task Thema Feb', 'Das ist mein task Beschreibung Feb',
+                               Status.Ready, 150, false, users[ 'steve' ], users[ 'tony' ], 
+                               format.parse( "15/Feb/2008" ), format.parse( "20/Feb/2008" ), null ),
+              new TaskSummary( 1, 'Dies ist mein task Name Jun', 'Das ist mein task Thema Jun', 'Das ist mein task Beschreibung Jun',
+                               Status.Created, 15, false, users[ 'steve' ], users[ 'steve' ], 
+                               format.parse( "15/Jun/2008" ), format.parse( "20/Jun/2008" ), null ) ]                      
+  'darth' : [ new TaskSummary( 1, 'Dies ist mein task Name Apr', 'Das ist mein task Thema Apr', 'Das ist mein task Beschreibung Apr',
+                               Status.Created, 20, false, users[ 'darth' ], users[ 'bobba' ], 
+                               format.parse( "15/Apr/2008" ), format.parse( "20/Apr/2008" ), null ) ]                                                                                                                                              
+]
