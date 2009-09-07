@@ -9,45 +9,48 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.FactHandle;
 
 public class ExecuteCommand
     implements
     GenericCommand<ExecutionResults> {
 
+    private String   outIdentifier;
     private Command  command;
 
     public ExecuteCommand(Command  command) {
         this.command = command;
     }
+    
+    public ExecuteCommand(String identifier, Command  command) {
+        this.command = command;
+        this.outIdentifier = identifier;
+    }    
 
     public ExecutionResults execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-      
-        return ksession.execute( this.command );
-
+        
+        ExecutionResults kresults = ksession.execute( this.command );
+        if ( this.outIdentifier != null ) {
+            ((ExecutionResultImpl)((KnowledgeCommandContext) context ).getExecutionResults()).getResults().put( this.outIdentifier, kresults );
+        }        
+        
+        return kresults;
     }
 
     public Command getCommand() {
         return this.command;
     }
+       
+    public String getOutIdentifier() {
+        return this.outIdentifier;
+    }
 
-//    public String getOutIdentifier() {
-//        return this.outIdentifier;
-//    }
-//
-//    public void setOutIdentifier(String outIdentifier) {
-//        this.outIdentifier = outIdentifier;
-//    }
-
-//    public boolean isReturnObject() {
-//        return returnObject;
-//    }
-//
-//    public void setReturnObject(boolean returnObject) {
-//        this.returnObject = returnObject;
-//    }
-
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+    
     public String toString() {
         return "session.execute(" + this.command + ");";
     }
