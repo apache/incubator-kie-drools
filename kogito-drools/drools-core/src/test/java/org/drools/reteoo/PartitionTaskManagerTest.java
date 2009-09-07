@@ -20,9 +20,12 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.concurrent.ExternalExecutorService;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.concurrent.DeterministicScheduler;
+
+import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 /**
  * Test case for PartitionTaskManager
@@ -31,14 +34,16 @@ import org.jmock.lib.concurrent.DeterministicScheduler;
  */
 public class PartitionTaskManagerTest extends TestCase {
     Mockery context = new Mockery();
-    private PartitionTaskManager manager;
+    private PartitionManager manager; 
+    private PartitionTaskManager taskManager;
     private InternalWorkingMemory workingMemory;
 
     @Override
     public void setUp() {
         RuleBase rulebase = RuleBaseFactory.newRuleBase();
         workingMemory = (InternalWorkingMemory) rulebase.newStatefulSession();
-        manager = new PartitionTaskManager( workingMemory );
+        manager = new PartitionManager(workingMemory);
+        taskManager = new PartitionTaskManager( manager, workingMemory );
     }
 
     @Override
@@ -53,12 +58,13 @@ public class PartitionTaskManagerTest extends TestCase {
             oneOf( action ).execute( workingMemory );
         }});
 
-        manager.enqueue( action );
+        taskManager.enqueue( action );
 
         // this is a jmock helper class that implements the ExecutorService interface
         DeterministicScheduler pool = new DeterministicScheduler();
+        ExternalExecutorService service = new ExternalExecutorService( pool );
         // set the pool
-        manager.setPool( pool );
+        manager.setPool( service );  
 
         // executes all pending actions using current thread
         pool.runUntilIdle();
@@ -73,8 +79,9 @@ public class PartitionTaskManagerTest extends TestCase {
         
         // this is a jmock helper class that implements the ExecutorService interface
         DeterministicScheduler pool = new DeterministicScheduler();
+        ExternalExecutorService service = new ExternalExecutorService( pool );
         // set the pool
-        manager.setPool( pool );
+        manager.setPool( service ); 
         
         // set expectations for the scenario
         context.checking( new Expectations() {{
@@ -82,7 +89,7 @@ public class PartitionTaskManagerTest extends TestCase {
         }});
         
         // fire scenario
-        manager.enqueue( action );
+        taskManager.enqueue( action );
         
         // executes all pending actions using current thread
         pool.runUntilIdle();
@@ -99,20 +106,22 @@ public class PartitionTaskManagerTest extends TestCase {
         
         // set expectations for the scenario
         context.checking( new Expectations() {{
+            allowing(action).compareTo( with( any(PartitionTaskManager.Action.class) ) );
             exactly(5).of( action ).execute( workingMemory );
         }});
         
         // enqueue before pool
-        manager.enqueue( action );
-        manager.enqueue( action );
+        taskManager.enqueue( action );
+        taskManager.enqueue( action );
 
+        ExternalExecutorService service = new ExternalExecutorService( pool );
         // set the pool
-        manager.setPool( pool );
+        manager.setPool( service ); 
         
         // enqueue after setting the pool
-        manager.enqueue( action );
-        manager.enqueue( action );
-        manager.enqueue( action );
+        taskManager.enqueue( action );
+        taskManager.enqueue( action );
+        taskManager.enqueue( action );
         
         // executes all pending actions using current thread
         pool.runUntilIdle();

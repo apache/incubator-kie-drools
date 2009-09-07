@@ -163,7 +163,7 @@ public class MiscTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
 
         RuleBaseConfiguration config = new RuleBaseConfiguration();
-        //config.setPartitionsEnabled( true );
+        config.setMultithreadEvaluation( false );
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
@@ -1385,7 +1385,8 @@ public class MiscTest extends TestCase {
         FactHandle handle = session.insert( mycheese );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
-        assertTrue( ((List) session.getGlobal( "list" )).size() == 2 );
+        assertEquals( 2, 
+                      ((List) session.getGlobal( "list" )).size() );
         assertEquals( "rule 4",
                       ((List) session.getGlobal( "list" )).get( 0 ) );        
         assertEquals( "rule 2b",

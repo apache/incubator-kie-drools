@@ -20,6 +20,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
+import com.sun.corba.se.spi.orbutil.fsm.Action;
+
 /**
  * This is an asynchronous implementation of the CompositeObjectSinkAdapter that
  * is used to propagate facts both between nodes in the same or in different
@@ -44,9 +46,13 @@ public class AsyncCompositeObjectSinkAdapter extends CompositeObjectSinkAdapter 
             // same partition, so synchronous propagation is fine
             sink.assertObject( factHandle, context, workingMemory );
         } else {
+            int priority = org.drools.reteoo.PartitionTaskManager.Action.PRIORITY_HIGH;
+            if( this.partitionId.equals( RuleBasePartitionId.MAIN_PARTITION ) ) {
+                priority = org.drools.reteoo.PartitionTaskManager.Action.PRIORITY_NORMAL;
+            }
             // different partition, so use asynchronous propagation
-            PartitionTaskManager manager = workingMemory.getPartitionManager( sink.getPartitionId() );
-            manager.enqueue( new PartitionTaskManager.FactAssertAction(factHandle, context, sink ) );
+            PartitionTaskManager manager = workingMemory.getPartitionTaskManager( sink.getPartitionId() );
+            manager.enqueue( new PartitionTaskManager.FactAssertAction(factHandle, context, sink, priority ) );
         }
     }
 }

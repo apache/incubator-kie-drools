@@ -17,6 +17,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.PartitionTaskManager.Action;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -40,8 +41,8 @@ public class AsyncCompositeLeftTupleSinkAdapter extends CompositeLeftTupleSinkAd
             sink.assertLeftTuple( leftTuple, context, workingMemory );
         } else {
             // different partition, so use asynchronous propagation
-            PartitionTaskManager manager = workingMemory.getPartitionManager( this.partitionId );
-            manager.enqueue( new PartitionTaskManager.LeftTupleAssertAction( leftTuple, context, sink ) );
+            PartitionTaskManager manager = workingMemory.getPartitionTaskManager( this.partitionId );
+            manager.enqueue( new PartitionTaskManager.LeftTupleAssertAction( leftTuple, context, sink, Action.PRIORITY_HIGH ) );
         }
     }
 
@@ -54,8 +55,8 @@ public class AsyncCompositeLeftTupleSinkAdapter extends CompositeLeftTupleSinkAd
             sink.retractLeftTuple( leftTuple, context, workingMemory );
         } else {
             // different partition, so use asynchronous propagation
-            PartitionTaskManager manager = workingMemory.getPartitionManager( this.partitionId );
-            manager.enqueue( new PartitionTaskManager.LeftTupleRetractAction( leftTuple, context, sink ) );
+            PartitionTaskManager manager = workingMemory.getPartitionTaskManager( this.partitionId );
+            manager.enqueue( new PartitionTaskManager.LeftTupleRetractAction( leftTuple, context, sink, Action.PRIORITY_HIGH ) );
         }
     }
 }

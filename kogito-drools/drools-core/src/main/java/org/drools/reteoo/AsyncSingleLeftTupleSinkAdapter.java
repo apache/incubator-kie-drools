@@ -17,6 +17,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.PartitionTaskManager.Action;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -34,13 +35,13 @@ public class AsyncSingleLeftTupleSinkAdapter extends SingleLeftTupleSinkAdapter 
 
     protected void doPropagateAssertLeftTuple( PropagationContext context, InternalWorkingMemory workingMemory,
                                                LeftTuple leftTuple ) {
-        PartitionTaskManager manager = workingMemory.getPartitionManager( this.partitionId );
-        manager.enqueue( new PartitionTaskManager.LeftTupleAssertAction( leftTuple, context, this.sink ) );
+        PartitionTaskManager manager = workingMemory.getPartitionTaskManager( this.partitionId );
+        manager.enqueue( new PartitionTaskManager.LeftTupleAssertAction( leftTuple, context, this.sink, Action.PRIORITY_HIGH ) );
     }
 
     protected void doPropagateRetractLeftTuple( PropagationContext context, InternalWorkingMemory workingMemory,
                                                 LeftTuple leftTuple, LeftTupleSink tupleSink ) {
-        PartitionTaskManager manager = workingMemory.getPartitionManager( this.partitionId );
-        manager.enqueue( new PartitionTaskManager.LeftTupleRetractAction( leftTuple, context, tupleSink ) );
+        PartitionTaskManager manager = workingMemory.getPartitionTaskManager( this.partitionId );
+        manager.enqueue( new PartitionTaskManager.LeftTupleRetractAction( leftTuple, context, tupleSink, Action.PRIORITY_HIGH ) );
     }
 }

@@ -119,7 +119,7 @@ public interface InternalWorkingMemory
      *
      * @return the PartitionTaskManager
      */
-    public PartitionTaskManager getPartitionManager( RuleBasePartitionId partitionId );
+    public PartitionTaskManager getPartitionTaskManager( RuleBasePartitionId partitionId );
     
     public void setKnowledgeRuntime(KnowledgeRuntime kruntime);
     
@@ -178,4 +178,17 @@ public interface InternalWorkingMemory
     public long getTimeToNextJob();
     
     public void updateEntryPointsCache();     
+    
+    /**
+     * This method is called by the agenda before firing a new activation
+     * to ensure the working memory is in a safe state to fire the activation.
+     */
+    public void prepareToFireActivation();
+    
+    /**
+     * This method is called by the agenda right after an activation was fired
+     * to allow the working memory to resume any activities blocked during 
+     * activation firing. 
+     */
+    public void activationFired();
 }
