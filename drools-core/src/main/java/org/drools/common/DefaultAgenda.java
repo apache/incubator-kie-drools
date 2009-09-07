@@ -901,31 +901,36 @@ public class DefaultAgenda
      */
     public boolean fireNextItem(final AgendaFilter filter) throws ConsequenceException {
         boolean tryagain, result;
-        do {
-            tryagain = result = false;
-            final InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
-            // if there is a group with focus
-            if ( group != null ) {
-                final AgendaItem item = (AgendaItem) group.getNext();
-                // if there is an item to fire from that group
-                if ( item != null ) {
-                    // if that item is allowed to fire
-                    if ( filter == null || filter.accept( item ) ) {
-                        // fire it
-                        fireActivation( item );
-                        result = true;
-                    } else {
-                        // otherwise cancel it and try the next
-                        final EventSupport eventsupport = (EventSupport) this.workingMemory;
+        try {
+            do {
+                this.workingMemory.prepareToFireActivation();
+                tryagain = result = false;
+                final InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
+                // if there is a group with focus
+                if ( group != null ) {
+                    final AgendaItem item = (AgendaItem) group.getNext();
+                    // if there is an item to fire from that group
+                    if ( item != null ) {
+                        // if that item is allowed to fire
+                        if ( filter == null || filter.accept( item ) ) {
+                            // fire it
+                            fireActivation( item );
+                            result = true;
+                        } else {
+                            // otherwise cancel it and try the next
+                            final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-                        eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                                      this.workingMemory,
-                                                                                      ActivationCancelledCause.FILTER );
-                        tryagain = true;
+                            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                                          this.workingMemory,
+                                                                                          ActivationCancelledCause.FILTER );
+                            tryagain = true;
+                        }
                     }
                 }
-            }
-        } while ( tryagain );
+            } while ( tryagain );
+        } finally {
+            this.workingMemory.activationFired();
+        }
         return result;
     }
 

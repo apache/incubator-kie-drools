@@ -30,8 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,6 +57,8 @@ import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.MapGlobalResolver;
 import org.drools.concurrent.ExecutorService;
+import org.drools.concurrent.ExternalExecutorService;
+import org.drools.concurrent.PartitionsPriorityQueue;
 import org.drools.definition.process.Process;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -75,6 +82,7 @@ import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -118,109 +126,109 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    protected static final Class[]                                            ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
-    private static final int                                                  NODE_MEMORIES_ARRAY_GROWTH                    = 32;
+    protected static final Class[]                               ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    private static final int                                     NODE_MEMORIES_ARRAY_GROWTH                    = 32;
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected int                                                             id;
+    protected int                                                id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected Object[]                                                        addRemovePropertyChangeListenerArgs;
+    protected Object[]                                           addRemovePropertyChangeListenerArgs;
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected NodeMemories                                                    nodeMemories;
+    protected NodeMemories                                       nodeMemories;
 
-    protected ObjectStore                                                     objectStore;
+    protected ObjectStore                                        objectStore;
 
-    protected Map                                                             queryResults;
+    protected Map                                                queryResults;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver                                                  globalResolver;
+    protected GlobalResolver                                     globalResolver;
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport                                       workingMemoryEventSupport;
+    protected WorkingMemoryEventSupport                          workingMemoryEventSupport;
 
-    protected AgendaEventSupport                                              agendaEventSupport;
+    protected AgendaEventSupport                                 agendaEventSupport;
 
-    protected RuleFlowEventSupport                                            workflowEventSupport;
+    protected RuleFlowEventSupport                               workflowEventSupport;
 
-    protected List                                                            __ruleBaseEventListeners;
+    protected List                                               __ruleBaseEventListeners;
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase                                      ruleBase;
+    protected transient InternalRuleBase                         ruleBase;
 
-    protected FactHandleFactory                                               handleFactory;
+    protected FactHandleFactory                                  handleFactory;
 
-    protected TruthMaintenanceSystem                                          tms;
+    protected TruthMaintenanceSystem                             tms;
 
     /** Rule-firing agenda. */
-    protected InternalAgenda                                                  agenda;
+    protected InternalAgenda                                     agenda;
 
-    protected Queue<WorkingMemoryAction>                                      actionQueue;
+    protected Queue<WorkingMemoryAction>                         actionQueue;
 
-    protected volatile boolean                                                evaluatingActionQueue;
+    protected volatile boolean                                   evaluatingActionQueue;
 
-    protected ReentrantLock                                                   lock;
+    protected ReentrantLock                                      lock;
 
-    protected boolean                                                         discardOnLogicalOverride;
+    protected boolean                                            discardOnLogicalOverride;
 
     /**
      * This must be thread safe as it is incremented and read via different
      * EntryPoints
      */
-    protected AtomicLong                                                      propagationIdCounter;
+    protected AtomicLong                                         propagationIdCounter;
 
-    private boolean                                                           maintainTms;
-    private boolean                                                           sequential;
+    private boolean                                              maintainTms;
+    private boolean                                              sequential;
 
-    private List                                                              liaPropagations;
+    private List                                                 liaPropagations;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected volatile AtomicBoolean                                          firing;
+    protected volatile AtomicBoolean                             firing;
 
-    private ProcessInstanceManager                                            processInstanceManager;
+    private ProcessInstanceManager                               processInstanceManager;
 
-    private WorkItemManager                                                   workItemManager;
+    private WorkItemManager                                      workItemManager;
 
-    private TimerManager                                                      timerManager;
+    private TimerManager                                         timerManager;
 
-    private SignalManager                                                     signalManager;
+    private SignalManager                                        signalManager;
 
-    private TimeMachine                                                       timeMachine;
+    private TimeMachine                                          timeMachine;
 
-    protected transient ObjectTypeConfigurationRegistry                       typeConfReg;
+    protected transient ObjectTypeConfigurationRegistry          typeConfReg;
 
-    protected EntryPoint                                                      entryPoint;
-    protected transient EntryPointNode                                        entryPointNode;
+    protected EntryPoint                                         entryPoint;
+    protected transient EntryPointNode                           entryPointNode;
 
-    protected Map<String, WorkingMemoryEntryPoint>                            entryPoints;
+    protected Map<String, WorkingMemoryEntryPoint>               entryPoints;
 
-    protected InternalFactHandle                                              initialFactHandle;
+    protected InternalFactHandle                                 initialFactHandle;
 
-    protected SessionConfiguration                                            config;
+    protected SessionConfiguration                               config;
 
-    protected Map<RuleBasePartitionId, PartitionTaskManager>                  partitionManagers;
+    protected PartitionManager                                   partitionManager;
 
-    protected transient AtomicReference<java.util.concurrent.ExecutorService> threadPool                                    = new AtomicReference<java.util.concurrent.ExecutorService>();
+    protected transient AtomicReference<ExternalExecutorService> threadPool                                    = new AtomicReference<ExternalExecutorService>();
 
-    private Map<InternalFactHandle, PropagationContext>                       modifyContexts;
+    private Map<InternalFactHandle, PropagationContext>          modifyContexts;
 
-    private KnowledgeRuntime                                                  kruntime;
+    private KnowledgeRuntime                                     kruntime;
 
-    private Map<String, ExitPoint>                                            exitPoints;
+    private Map<String, ExitPoint>                               exitPoints;
 
-    private Environment                                                       environment;
+    private Environment                                          environment;
 
-    private ExecutionResults                                                  batchExecutionResult;
-    
+    private ExecutionResults                                     batchExecutionResult;
+
     // this is a counter of concurrent operations happening. When this counter is zero, 
     // the engine is idle.
-    private AtomicLong                                                        opCounter;
+    private AtomicLong                                           opCounter;
     // this is the timestamp of the end of the last operation, based on the session clock,
     // or -1 if there are operation being executed at this moment
-    private AtomicLong                                                        lastIdleTimestamp;
+    private AtomicLong                                           lastIdleTimestamp;
 
     // ------------------------------------------------------------
     // Constructors
@@ -332,8 +340,8 @@ public abstract class AbstractWorkingMemory
         initProcessEventListeners();
         initPartitionManagers();
         initTransient();
-        
-        this.opCounter = new AtomicLong(0);
+
+        this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
     }
 
@@ -381,8 +389,8 @@ public abstract class AbstractWorkingMemory
         Map<EntryPoint, EntryPointNode> reteEPs = this.ruleBase.getRete().getEntryPointNodes();
 
         // first create a temporary cache to find which entry points were removed from the network
-        Map<String, WorkingMemoryEntryPoint> cache = new HashMap<String, WorkingMemoryEntryPoint>(this.entryPoints);
-        
+        Map<String, WorkingMemoryEntryPoint> cache = new HashMap<String, WorkingMemoryEntryPoint>( this.entryPoints );
+
         // now, add any entry point that was added to the knowledge base
         for ( EntryPointNode entryPointNode : reteEPs.values() ) {
             EntryPoint id = entryPointNode.getEntryPoint();
@@ -395,7 +403,7 @@ public abstract class AbstractWorkingMemory
                                       wmEntryPoint );
             }
         }
-        
+
         // now, if there is any element left in the cache, remove them as they were removed from the network
         this.entryPoints.keySet().removeAll( cache.keySet() );
     }
@@ -406,13 +414,10 @@ public abstract class AbstractWorkingMemory
      */
     private void initPartitionManagers() {
         if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-
-            // the Map MUST be thread safe
-            this.partitionManagers = new ConcurrentHashMap<RuleBasePartitionId, PartitionTaskManager>();
+            this.partitionManager = new PartitionManager( this );
 
             for ( RuleBasePartitionId partitionId : this.ruleBase.getPartitionIds() ) {
-                this.partitionManagers.put( partitionId,
-                                            new PartitionTaskManager( this ) );
+                this.partitionManager.manage( partitionId );
             }
         }
     }
@@ -427,10 +432,8 @@ public abstract class AbstractWorkingMemory
             if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
                 int maxThreads = (this.ruleBase.getConfiguration().getMaxThreads() > 0) ? this.ruleBase.getConfiguration().getMaxThreads() : this.ruleBase.getPartitionIds().size();
                 if ( this.threadPool.compareAndSet( null,
-                                                    Executors.newFixedThreadPool( maxThreads ) ) ) {
-                    for ( PartitionTaskManager task : this.partitionManagers.values() ) {
-                        task.setPool( this.threadPool.get() );
-                    }
+                                                    createExecutorService( maxThreads ) ) ) {
+                    this.partitionManager.setPool( this.threadPool.get() );
                 }
             }
         } finally {
@@ -438,17 +441,19 @@ public abstract class AbstractWorkingMemory
         }
     }
 
+    private ExternalExecutorService createExecutorService(final int maxThreads) {
+        return new ExternalExecutorService( Executors.newFixedThreadPool( maxThreads ) );
+    }
+
     public void stopPartitionManagers() {
         startOperation();
         try {
             if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-                java.util.concurrent.ExecutorService service = this.threadPool.get();
+                ExternalExecutorService service = this.threadPool.get();
                 if ( this.threadPool.compareAndSet( service,
                                                     null ) ) {
                     service.shutdown();
-                    for ( PartitionTaskManager task : this.partitionManagers.values() ) {
-                        task.setPool( null );
-                    }
+                    partitionManager.shutdown();
                 }
             }
         } finally {
@@ -737,7 +742,7 @@ public abstract class AbstractWorkingMemory
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
             try {
-                synchronized( this ) {
+                synchronized ( this ) {
                     executeQueuedActions();
                     this.agenda.fireUntilHalt( agendaFilter );
                 }
@@ -890,7 +895,7 @@ public abstract class AbstractWorkingMemory
 
         try {
             startOperation();
-            
+
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
 
@@ -1547,7 +1552,8 @@ public abstract class AbstractWorkingMemory
                         try {
                             action.execute( this );
                         } catch ( Exception e ) {
-                            throw new RuntimeDroolsException("Unexpected exception executing action "+action.toString(), e);
+                            throw new RuntimeDroolsException( "Unexpected exception executing action " + action.toString(),
+                                                              e );
                         }
                     }
                     evaluatingActionQueue = false;
@@ -1679,13 +1685,16 @@ public abstract class AbstractWorkingMemory
             if ( process == null ) {
                 throw new IllegalArgumentException( "Unknown process ID: " + processId );
             }
-            ProcessInstance processInstance = startProcess( process, parameters );
-            
-            if (processInstance != null) { 
+            ProcessInstance processInstance = startProcess( process,
+                                                            parameters );
+
+            if ( processInstance != null ) {
                 // start process instance
-                getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance, this );
+                getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
+                                                                            this );
                 processInstance.start();
-                getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance, this );
+                getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance,
+                                                                           this );
             }
             return processInstance;
         } finally {
@@ -1693,13 +1702,16 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    private ProcessInstance startProcess(final Process process, Map<String, Object> parameters) {
+    private ProcessInstance startProcess(final Process process,
+                                         Map<String, Object> parameters) {
         ProcessInstanceFactoryRegistry processRegistry = ((InternalRuleBase) getRuleBase()).getConfiguration().getProcessInstanceFactoryRegistry();
         ProcessInstanceFactory conf = processRegistry.getProcessInstanceFactory( process );
         if ( conf == null ) {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }
-        return conf.createProcessInstance(process, this, parameters);
+        return conf.createProcessInstance( process,
+                                           this,
+                                           parameters );
     }
 
     public ProcessInstanceManager getProcessInstanceManager() {
@@ -1819,26 +1831,28 @@ public abstract class AbstractWorkingMemory
         }
         return result;
     }
-    
+
     public List iterateNonDefaultEntryPointObjectsToList() {
-    	List result = new ArrayList();
-    	for (Map.Entry<String, WorkingMemoryEntryPoint> entry: getEntryPoints().entrySet()) {
-    		WorkingMemoryEntryPoint entryPoint = entry.getValue();
-    		if (entryPoint instanceof NamedEntryPoint) {
-			    result.add(new EntryPointObjects(
-		    		entry.getKey(), new ArrayList(entry.getValue().getObjects())));
-    		}
-    	}
+        List result = new ArrayList();
+        for ( Map.Entry<String, WorkingMemoryEntryPoint> entry : getEntryPoints().entrySet() ) {
+            WorkingMemoryEntryPoint entryPoint = entry.getValue();
+            if ( entryPoint instanceof NamedEntryPoint ) {
+                result.add( new EntryPointObjects( entry.getKey(),
+                                                   new ArrayList( entry.getValue().getObjects() ) ) );
+            }
+        }
         return result;
     }
-    
+
     private class EntryPointObjects {
-    	private String name;
-    	private List objects;
-    	public EntryPointObjects(String name, List objects) {
-    		this.name = name;
-    		this.objects = objects;
-    	}
+        private String name;
+        private List   objects;
+
+        public EntryPointObjects(String name,
+                                 List objects) {
+            this.name = name;
+            this.objects = objects;
+        }
     }
 
     public Entry[] getActivationParameters(long activationId) {
@@ -1923,8 +1937,8 @@ public abstract class AbstractWorkingMemory
         return (SessionClock) this.getTimerManager().getTimerService();
     }
 
-    public PartitionTaskManager getPartitionManager(final RuleBasePartitionId partitionId) {
-        return partitionManagers.get( partitionId );
+    public PartitionTaskManager getPartitionTaskManager(final RuleBasePartitionId partitionId) {
+        return partitionManager.getPartitionTaskManager( partitionId );
     }
 
     public void startBatchExecution(ExecutionResultImpl results) {
@@ -2008,7 +2022,7 @@ public abstract class AbstractWorkingMemory
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         return this.entryPoints;
     }
-    
+
     /**
      * This method must be called before starting any new work in the engine,
      * like inserting a new fact or firing a new rule. It will reset the engine
@@ -2018,7 +2032,7 @@ public abstract class AbstractWorkingMemory
      * multiple threads/entry-points
      */
     public void startOperation() {
-        if( this.opCounter.getAndIncrement() == 0) {
+        if ( this.opCounter.getAndIncrement() == 0 ) {
             // means the engine was idle, reset the timestamp
             this.lastIdleTimestamp.set( -1 );
         }
@@ -2033,12 +2047,12 @@ public abstract class AbstractWorkingMemory
      * multiple threads/entry-points
      */
     public void endOperation() {
-        if( this.opCounter.decrementAndGet() == 0) {
+        if ( this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
             this.lastIdleTimestamp.set( this.timerManager.getTimerService().getCurrentTime() );
         }
     }
-    
+
     /**
      * Returns the number of time units (usually ms) that the engine is idle
      * according to the session clock or -1 if it is not idle.
@@ -2061,6 +2075,19 @@ public abstract class AbstractWorkingMemory
      */
     public long getTimeToNextJob() {
         return this.timerManager.getTimerService().getTimeToNextJob();
+    }
+
+    public void prepareToFireActivation() {
+        if ( this.partitionManager != null ) {
+            this.partitionManager.holdTasks();
+            this.partitionManager.waitForPendingTasks();
+        }
+    }
+
+    public void activationFired() {
+        if ( this.partitionManager != null ) {
+            this.partitionManager.releaseTasks();
+        }
     }
 
 }

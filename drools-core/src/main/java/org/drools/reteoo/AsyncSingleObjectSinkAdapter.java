@@ -38,7 +38,13 @@ public class AsyncSingleObjectSinkAdapter extends SingleObjectSinkAdapter {
     }
 
     public void propagateAssertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        PartitionTaskManager manager = workingMemory.getPartitionManager( this.sink.getPartitionId() );
-        manager.enqueue( new PartitionTaskManager.FactAssertAction(factHandle, context, this.sink ) );
+        // except for propagations from the MAIN partition, all other propagations have HIGH priority
+        int priority = org.drools.reteoo.PartitionTaskManager.Action.PRIORITY_HIGH;
+        if( this.partitionId.equals( RuleBasePartitionId.MAIN_PARTITION ) ) {
+            priority = org.drools.reteoo.PartitionTaskManager.Action.PRIORITY_NORMAL;
+        }
+ 
+        PartitionTaskManager manager = workingMemory.getPartitionTaskManager( this.sink.getPartitionId() );
+        manager.enqueue( new PartitionTaskManager.FactAssertAction(factHandle, context, this.sink, priority ) );
     }
 }

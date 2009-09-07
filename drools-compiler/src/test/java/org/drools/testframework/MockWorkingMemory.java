@@ -161,7 +161,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public PartitionTaskManager getPartitionManager(RuleBasePartitionId partitionId) {
+    public PartitionTaskManager getPartitionTaskManager(RuleBasePartitionId partitionId) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -583,6 +583,16 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public void updateEntryPointsCache() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void activationFired() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void prepareToFireActivation() {
         // TODO Auto-generated method stub
         
     }
