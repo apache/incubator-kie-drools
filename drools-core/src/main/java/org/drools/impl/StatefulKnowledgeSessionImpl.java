@@ -812,7 +812,7 @@ public class StatefulKnowledgeSessionImpl
         
         try {
             session.startBatchExecution( results );
-            ((GenericCommand)command).execute( new KnowledgeCommandContext( context, null, this.kbase, this, null) );
+            ((GenericCommand)command).execute( new KnowledgeCommandContext( context, null, this.kbase, this, results) );
             ExecutionResults result = session.getExecutionResult();
             return result;
         } finally {

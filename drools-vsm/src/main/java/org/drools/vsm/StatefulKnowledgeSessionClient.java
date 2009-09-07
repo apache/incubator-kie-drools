@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.mina.core.future.WriteFuture;
 import org.drools.KnowledgeBase;
 import org.drools.command.Command;
+import org.drools.command.ExecuteCommand;
 import org.drools.command.KnowledgeBaseAddKnowledgePackagesCommand;
 import org.drools.command.KnowledgeContextResolveFromContextCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
@@ -77,9 +78,7 @@ public class StatefulKnowledgeSessionClient
 
             if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
-            }
-            
-            System.out.println( "object" + object);
+            }            
 
             return (Integer) ((ExecutionResults) object).getValue( commandId );
         } catch ( Exception e ) {
@@ -109,8 +108,39 @@ public class StatefulKnowledgeSessionClient
     }
 
     public ExecutionResults execute(Command command) {
-        // TODO Auto-generated method stub
-        return null;
+        String commandId = "ksession.execute" + serviceManager.getNextId();
+        String kresultsId = "kresults_" + serviceManager.getSessionId();
+        
+        Message msg = new Message( serviceManager.getSessionId(),
+                                   serviceManager.counter.incrementAndGet(),
+                                   false,
+                                   null,
+                                   new KnowledgeContextResolveFromContextCommand( new ExecuteCommand( commandId, command ),
+                                                                                  null,
+                                                                                  null,
+                                                                                  instanceId, kresultsId ) );
+
+        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
+
+        try {
+            serviceManager.client.handler.addResponseHandler( msg.getResponseId(),
+                                                              handler );
+
+            serviceManager.client.session.write( msg );
+
+            Object object = handler.getMessage().getPayload();
+
+            if ( object == null ) {
+                throw new RuntimeException( "Response was not correctly received" );
+            }
+            
+            System.out.println( "object" + object);
+
+            return (ExecutionResults) ((ExecutionResults) object).getValue( commandId );
+        } catch ( Exception e ) {
+            throw new RuntimeException( "Unable to execute message",
+                                        e );
+        }
     }
 
     public Environment getEnvironment() {
