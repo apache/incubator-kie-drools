@@ -81,6 +81,7 @@ end
 # this rule shows a trick to get the last available event as well as 
 # how to call global services from the consequence
 rule "sudden drop"
+    enabled true
     agenda-group "report"
 when
     $st : StockTick( $sb : symbol, $ts : timestamp, $pr : price, $dt : delta < -0.05 ) from entry-point "StockTick stream"

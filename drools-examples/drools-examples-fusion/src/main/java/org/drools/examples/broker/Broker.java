@@ -31,6 +31,8 @@ import org.drools.examples.broker.model.CompanyRegistry;
 import org.drools.examples.broker.model.StockTick;
 import org.drools.examples.broker.ui.BrokerWindow;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
@@ -40,7 +42,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
  * @author etirelli
  */
 public class Broker implements EventReceiver, BrokerServices {
-    private static final String[] ASSET_FILES = { "/broker.drl", "/position.drl", "/position.rf" };
+    private static final String[] ASSET_FILES = { "/broker.drl", "/notify.drl", "/position.rf", "/position.drl" };
     
     private BrokerWindow window;
     private CompanyRegistry companies;
@@ -66,6 +68,7 @@ public class Broker implements EventReceiver, BrokerServices {
             this.session.fireAllRules();
             window.updateCompany( company.getSymbol() );
             window.updateTick( tick );
+            
         } catch ( Exception e ) {
             System.err.println("=============================================================");
             System.err.println("Unexpected exception caught: "+e.getMessage() );

@@ -78,8 +78,8 @@ public class BrokerWindow {
         
         frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
         frame.setTitle( "Drools Fusion Example: Simple Broker" );
-        frame.setResizable( false );
-        frame.pack();
+        frame.setResizable( true );
+        frame.setSize(800, 350);
         
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation( (screen.width-frame.getWidth())/2, (screen.height-frame.getHeight())/2 );
