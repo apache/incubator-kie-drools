@@ -25,8 +25,6 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.concurrent.DeterministicScheduler;
 
-import com.sun.corba.se.spi.orbutil.fsm.Action;
-
 /**
  * Test case for PartitionTaskManager
  *
