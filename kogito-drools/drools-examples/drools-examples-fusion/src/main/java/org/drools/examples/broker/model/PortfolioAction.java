@@ -56,7 +56,10 @@ public class PortfolioAction {
         this.quant = quant;
     }
 
-    
+    @Override
+    public String toString() {
+    	return "PortfolioAction( "+action+" "+symbol+" "+quant+ " )";
+    }
     
 
 

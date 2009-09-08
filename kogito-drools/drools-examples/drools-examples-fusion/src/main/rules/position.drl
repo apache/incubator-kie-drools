@@ -2,16 +2,13 @@ package org.drools.examples.broker
 
 import org.drools.examples.broker.model.SuddenDropEvent
 import org.drools.examples.broker.model.PortfolioAction
+import org.drools.examples.broker.model.Action
 import java.util.Map
 import java.util.HashMap
 
 import function org.drools.examples.broker.misc.Utils.selectAction
 
 dialect "mvel"
-
-declare PortfolioAction
-    @role( event )
-end
 
 # an event declaration to represent situations
 # where a suddent drop happens. In this case we are not
@@ -20,6 +17,7 @@ declare SuddenDropEvent
     @role( event )
 end
 
+# here we have an example of a rule that controls a process
 rule "Start adjust position process"
 when
     $sde : SuddenDropEvent( ) from entry-point "Analysis Events"
@@ -28,15 +26,46 @@ then
     drools.getKnowledgeRuntime().startProcess( "adjust position", variables );
 end
 
-rule "Check current position and take action if necessary"
+
+# bellow we have rules controlled by the process,
+# i.e., the process will fire these rules when necessary
+# to re-evaluate the position
+rule "If the drop is between 6% and 8%, buy more shares"
     ruleflow-group "evaluate position"
 when
-    $sde : SuddenDropEvent( ) from entry-point "Analysis Events"
+    $sde : SuddenDropEvent( percent >= -0.08 && < -0.06 ) from entry-point "Analysis Events"
 then
     with( pa = new PortfolioAction() ) {
-        action = selectAction(),
+        action = Action.BUY,
         symbol = $sde.symbol,
         quant = 100
     }
-    entryPoints["Analysis Events"].insert( pa );
+    insert( pa );
 end    
+
+rule "If the drop is on more than 8%, sell shares"
+    ruleflow-group "evaluate position"
+when
+    $sde : SuddenDropEvent( percent < -0.08 ) from entry-point "Analysis Events"
+then
+    with( pa = new PortfolioAction() ) {
+        action = Action.SELL,
+        symbol = $sde.symbol,
+        quant = 100
+    }
+    insert( pa );
+end    
+
+
+rule "If the drop is between 5% and 6%, do nothing"
+    ruleflow-group "evaluate position"
+when
+    $sde : SuddenDropEvent( percent >= -0.06 ) from entry-point "Analysis Events"
+then
+    with( pa = new PortfolioAction() ) {
+        action = Action.NOACTION,
+        symbol = $sde.symbol
+    }
+    insert( pa );
+end    
+
