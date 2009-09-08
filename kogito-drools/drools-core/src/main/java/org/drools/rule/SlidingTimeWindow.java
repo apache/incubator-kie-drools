@@ -159,14 +159,17 @@ public class SlidingTimeWindow
             queue.expiringTuple = tuple;
             queue.queue.remove();
             final InternalFactHandle handle = tuple.getFactHandle();
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.EXPIRATION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      handle );
-            tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                         propagationContext,
-                                                         workingMemory );
+            if( handle.isValid()) {
+                // if not expired yet, expire it
+                final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                          PropagationContext.EXPIRATION,
+                                                                                          null,
+                                                                                          null,
+                                                                                          handle );
+                tuple.getRightTupleSink().retractRightTuple( tuple,
+                                                             propagationContext,
+                                                             workingMemory );
+            }
             tuple.unlinkFromRightParent();
             queue.expiringTuple = null;
             tuple = queue.queue.peek();
