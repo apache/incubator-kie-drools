@@ -26,12 +26,16 @@ public interface ProcessInstanceMarshaller {
 
 	public void writeProcessInstance(MarshallerWriteContext context,
 			ProcessInstance processInstance) throws IOException;
+    public void writeProcessInstance(MarshallerWriteContext context,
+			ProcessInstance processInstance, boolean includeVariables) throws IOException;
 
 	public void writeNodeInstance(MarshallerWriteContext context,
 			NodeInstance nodeInstance) throws IOException;
 
 	public ProcessInstance readProcessInstance(MarshallerReaderContext context)
 			throws IOException;
+    public ProcessInstance readProcessInstance(MarshallerReaderContext context,
+            boolean includeVariables) throws IOException;
 
 	public NodeInstance readNodeInstance(MarshallerReaderContext context,
 			NodeInstanceContainer nodeInstanceContainer,
