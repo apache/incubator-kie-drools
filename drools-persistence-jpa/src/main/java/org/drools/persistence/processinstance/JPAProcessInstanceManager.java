@@ -28,7 +28,7 @@ public class JPAProcessInstanceManager
     }
 
     public void addProcessInstance(ProcessInstance processInstance) {
-        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo( processInstance );
+        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo( processInstance, this.workingMemory.getEnvironment() );
         EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
         em.persist( processInstanceInfo );
         ((ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
@@ -60,7 +60,7 @@ public class JPAProcessInstanceManager
         }
         processInstanceInfo.updateLastReadDate();
         processInstance = (ProcessInstance)
-        	processInstanceInfo.getProcessInstance(workingMemory);
+        	processInstanceInfo.getProcessInstance(workingMemory,this.workingMemory.getEnvironment());
         Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess( processInstance.getProcessId() );
         if ( process == null ) {
             throw new IllegalArgumentException( "Could not find process " + processInstance.getProcessId() );
