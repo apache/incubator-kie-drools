@@ -24,11 +24,12 @@ import org.drools.builder.KnowledgeBuilderProvider;
 import org.drools.command.Context;
 import org.drools.command.ContextManager;
 import org.drools.command.FinishedCommand;
-import org.drools.command.distributed.ServiceManagerClientConnectCommand;
-import org.drools.command.distributed.ServiceManagerServerContext;
+import org.drools.command.KnowledgeContextResolveFromContextCommand;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.command.vsm.ServiceManagerClientConnectCommand;
+import org.drools.command.vsm.ServiceManagerServerContext;
 import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
@@ -38,15 +39,7 @@ import org.drools.runtime.impl.ExecutionResultImpl;
 public class ServiceManagerServerResponseHandler extends IoHandlerAdapter {
     private ServiceManagerServer server;
 
-    private Map<String, Object>  registeredObjects;
 
-    private ContextManager       contextManager;
-
-    private Context              root;
-    private Context              temp;
-
-    private String               ROOT = "ROOT";
-    private String               TEMP = "__TEMP__";
 
     public static class ContextManagerImpl
         implements
@@ -75,14 +68,7 @@ public class ServiceManagerServerResponseHandler extends IoHandlerAdapter {
 
     public ServiceManagerServerResponseHandler(SystemEventListener systemEventListener) {
         this.systemEventListener = systemEventListener;
-        this.contextManager = new ContextManagerImpl();
 
-        this.root = new ContextImpl( ROOT,
-                                     this.contextManager );
-        ((ContextManagerImpl) this.contextManager).addContext( this.root );
-        
-        this.temp = new ContextImpl( TEMP, this.contextManager, this.root );
-        ((ContextManagerImpl) this.contextManager).addContext( this.temp );
     }
 
     public void setServiceManagerService(ServiceManagerServer server) {
@@ -128,7 +114,7 @@ public class ServiceManagerServerResponseHandler extends IoHandlerAdapter {
         } finally {
 
         }
-
+        
         List<GenericCommand> commands;
         if ( msg.getPayload() instanceof List ) {
             commands = (List<GenericCommand>) msg.getPayload();
@@ -138,7 +124,7 @@ public class ServiceManagerServerResponseHandler extends IoHandlerAdapter {
         }
 
         //KnowledgeCommandContext ktcx = new KnowledgeCommandContext(this.temp);
-        ContextImpl localSessionContext = new ContextImpl( "sesseion_" + msg.getSessionId(), this.contextManager, this.temp );
+        ContextImpl localSessionContext = new ContextImpl( "sesseion_" + msg.getSessionId(), this.server.getContextManager(), this.server.getTemp() );
         ExecutionResultImpl localKresults = new ExecutionResultImpl();
         localSessionContext.set( "kresults_" + msg.getSessionId(), localKresults );
         for ( GenericCommand cmd : commands ) {
