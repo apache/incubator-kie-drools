@@ -42,6 +42,10 @@ public class StatefulKnowledgeSessionClient
         this.instanceId = instanceId;
         this.serviceManager = serviceManager;
     }
+    
+    public String getInstanceId() {
+        return this.instanceId;
+    }
 
     public void dispose() {
         // TODO Auto-generated method stub
@@ -56,7 +60,7 @@ public class StatefulKnowledgeSessionClient
     public int fireAllRules() {
         String commandId = "ksession.fireAllRules" + serviceManager.getNextId();
         String kresultsId = "kresults_" + serviceManager.getSessionId();
-        
+
         Message msg = new Message( serviceManager.getSessionId(),
                                    serviceManager.counter.incrementAndGet(),
                                    false,
@@ -64,7 +68,8 @@ public class StatefulKnowledgeSessionClient
                                    new KnowledgeContextResolveFromContextCommand( new FireAllRulesCommand( commandId ),
                                                                                   null,
                                                                                   null,
-                                                                                  instanceId, kresultsId ) );
+                                                                                  instanceId,
+                                                                                  kresultsId ) );
 
         BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
 
@@ -78,7 +83,7 @@ public class StatefulKnowledgeSessionClient
 
             if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
-            }            
+            }
 
             return (Integer) ((ExecutionResults) object).getValue( commandId );
         } catch ( Exception e ) {
@@ -110,15 +115,17 @@ public class StatefulKnowledgeSessionClient
     public ExecutionResults execute(Command command) {
         String commandId = "ksession.execute" + serviceManager.getNextId();
         String kresultsId = "kresults_" + serviceManager.getSessionId();
-        
+
         Message msg = new Message( serviceManager.getSessionId(),
                                    serviceManager.counter.incrementAndGet(),
                                    false,
                                    null,
-                                   new KnowledgeContextResolveFromContextCommand( new ExecuteCommand( commandId, command ),
+                                   new KnowledgeContextResolveFromContextCommand( new ExecuteCommand( commandId,
+                                                                                                      command ),
                                                                                   null,
                                                                                   null,
-                                                                                  instanceId, kresultsId ) );
+                                                                                  instanceId,
+                                                                                  kresultsId ) );
 
         BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
 
@@ -133,8 +140,8 @@ public class StatefulKnowledgeSessionClient
             if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
             }
-            
-            System.out.println( "object" + object);
+
+            System.out.println( "object" + object );
 
             return (ExecutionResults) ((ExecutionResults) object).getValue( commandId );
         } catch ( Exception e ) {

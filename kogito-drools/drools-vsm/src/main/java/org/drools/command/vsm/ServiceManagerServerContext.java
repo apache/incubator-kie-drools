@@ -1,4 +1,4 @@
-package org.drools.command.distributed;
+package org.drools.command.vsm;
 
 import org.drools.command.Context;
 import org.drools.command.ContextManager;
