@@ -16,6 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -216,6 +217,8 @@ abstract public class AbstractRuleBase
         this.eventSupport.removeEventListener( RuleBaseEventListener.class );
         droolsStream.writeObject( this.eventSupport );
         if ( !isDrools ) {
+            droolsStream.flush();
+            droolsStream.close();
             bytes.close();
             out.writeObject( bytes.toByteArray() );
         }
@@ -239,13 +242,14 @@ abstract public class AbstractRuleBase
                                                   ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         DroolsObjectInput droolsStream;
-        boolean isDrools = in instanceof DroolsObjectInput;
+        boolean isDrools = in instanceof DroolsObjectInputStream;
+        ByteArrayInputStream bytes = null;
 
         if ( isDrools ) {
             droolsStream = (DroolsObjectInput) in;
         } else {
-            droolsStream = new DroolsObjectInputStream( (ObjectInputStream) in );
-
+            bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
+            droolsStream = new DroolsObjectInputStream( bytes );
         }
 
         this.rootClassLoader = new CompositeClassLoader( droolsStream.getParentClassLoader() );

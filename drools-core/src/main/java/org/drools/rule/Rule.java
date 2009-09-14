@@ -143,7 +143,6 @@ public class Rule
         } else {
             out.writeObject(this.consequence);   
         } 
-        
         out.writeObject(duration);
         out.writeLong(loadOrder);
         out.writeBoolean(noLoop);

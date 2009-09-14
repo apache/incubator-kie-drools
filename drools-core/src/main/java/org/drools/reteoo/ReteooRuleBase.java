@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -35,6 +36,9 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.DroolsObjectInput;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
@@ -167,9 +171,28 @@ public class ReteooRuleBase extends AbstractRuleBase {
      *
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
-        super.writeExternal( stream );
-        stream.writeObject( this.reteooBuilder );
-        stream.writeObject( this.rete );
+        DroolsObjectOutputStream droolsStream = null;
+        boolean isDrools = stream instanceof DroolsObjectOutputStream; 
+        ByteArrayOutputStream bytes = null;
+        
+        stream.writeBoolean( isDrools );
+        if ( isDrools ) {
+            droolsStream = (DroolsObjectOutputStream) stream;
+        } else {
+            bytes = new ByteArrayOutputStream();
+            droolsStream = new DroolsObjectOutputStream( bytes );
+        }
+        
+        super.writeExternal( droolsStream );
+        droolsStream.writeObject( this.reteooBuilder );
+        droolsStream.writeObject( this.rete );
+        
+        if ( !isDrools ) {
+            droolsStream.flush();
+            droolsStream.close();
+            bytes.close();
+            stream.writeObject( bytes.toByteArray() );
+        }
     }
 
     /**
@@ -180,9 +203,30 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        super.readExternal( stream );
-        this.reteooBuilder = (ReteooBuilder) stream.readObject();
-        this.rete = (Rete) stream.readObject();
+        DroolsObjectInput droolsStream = null;
+        boolean isDrools = stream instanceof DroolsObjectInputStream;
+        ByteArrayInputStream bytes = null;
+
+        boolean wasDrools = stream.readBoolean();
+        if( wasDrools && !isDrools) {
+            throw new IllegalArgumentException("The knowledge base was serialized using a DroolsObjectOutputStream. A DroolsObjectInputStream is required for deserialization.");
+        }
+        
+        if ( wasDrools ) {
+            droolsStream = (DroolsObjectInput) stream;
+        } else {
+            bytes = new ByteArrayInputStream( (byte[]) stream.readObject() );
+            droolsStream = new DroolsObjectInputStream( bytes );
+        }
+        
+        super.readExternal( droolsStream );
+        this.reteooBuilder = (ReteooBuilder) droolsStream.readObject();
+        this.reteooBuilder.setRuleBase( this );
+        this.rete = (Rete) droolsStream.readObject();
+        
+        if( !wasDrools ) {
+            droolsStream.close();
+        }
     }
 
     // ------------------------------------------------------------
