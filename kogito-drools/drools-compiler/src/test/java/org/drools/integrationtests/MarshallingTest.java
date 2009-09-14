@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.marshalling.impl.RuleBaseNodes;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooStatefulSession;
@@ -2306,6 +2308,111 @@ public class MarshallingTest extends TestCase {
         } catch ( Exception e ) {
             e.printStackTrace();
             fail(e.getMessage());
+        }
+    }
+    
+    public void testJBRULES_1946() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "Sample.drl" ) ),
+                      ResourceType.DRL );
+        
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            
+            oos.writeObject(kbase);
+            oos.flush();
+            oos.close();
+            baos.flush();
+            baos.close();
+            
+            byte[] serializedKb = baos.toByteArray();
+            
+            ByteArrayInputStream bais = new ByteArrayInputStream(serializedKb);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            
+            KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
+        } catch (OptionalDataException ode) {
+            ode.printStackTrace();
+            fail("EOF? "+ode.eof);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Unexpected exception: "+e.getMessage());
+        }
+    }
+
+    public void testJBRULES_1946_2() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "Sample.drl" ) ),
+                      ResourceType.DRL );
+        
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DroolsObjectOutputStream oos = new DroolsObjectOutputStream(baos);
+            
+            oos.writeObject(kbase);
+            oos.flush();
+            oos.close();
+            baos.flush();
+            baos.close();
+            
+            byte[] serializedKb = baos.toByteArray();
+            
+            ByteArrayInputStream bais = new ByteArrayInputStream(serializedKb);
+            DroolsObjectInputStream ois = new DroolsObjectInputStream(bais);
+            
+            KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
+        } catch (OptionalDataException ode) {
+            ode.printStackTrace();
+            fail("EOF? "+ode.eof);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Unexpected exception: "+e.getMessage());
+        }
+    }
+
+    public void testJBRULES_1946_3() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "Sample.drl" ) ),
+                      ResourceType.DRL );
+        
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DroolsObjectOutputStream oos = new DroolsObjectOutputStream(baos);
+            
+            oos.writeObject(kbase);
+            oos.flush();
+            oos.close();
+            baos.flush();
+            baos.close();
+            
+            byte[] serializedKb = baos.toByteArray();
+            
+            ByteArrayInputStream bais = new ByteArrayInputStream(serializedKb);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            
+            KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
+            fail("Should have raised an IllegalArgumentException since the kbase was serialized with a Drools Stream but deserialized with a regular stream");
+        } catch (IllegalArgumentException ode) {
+            // success
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Unexpected exception: "+e.getMessage());
         }
     }
 

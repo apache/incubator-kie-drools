@@ -305,7 +305,10 @@ public class ReteooBuilder
         droolsStream.writeObject( idGenerator );
         droolsStream.writeBoolean( ordered );
         if ( !isDrools ) {
+            droolsStream.flush();
+            droolsStream.close();
             bytes.close();
+            out.writeInt( bytes.size() );
             out.writeObject( bytes.toByteArray() );
         }
     }
@@ -323,15 +326,20 @@ public class ReteooBuilder
             bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
             droolsStream = new DroolsObjectInputStream( bytes );
         }
-        this.rules = (Map<Rule, BaseNode[]>) in.readObject();
-        this.idGenerator = (IdGenerator) in.readObject();
-        this.ordered = in.readBoolean();
-        this.ruleBase = droolsStream.getRuleBase();
+        
+        this.rules = (Map<Rule, BaseNode[]>) droolsStream.readObject();
+        this.idGenerator = (IdGenerator) droolsStream.readObject();
+        this.ordered = droolsStream.readBoolean();
         if ( !isDrools ) {
+            droolsStream.close();
             bytes.close();
         }
 
         this.ruleBuilder = new ReteooRuleBuilder();
+    }
+
+    public void setRuleBase(ReteooRuleBase reteooRuleBase) {
+        this.ruleBase = reteooRuleBase;
     }
 
 }
