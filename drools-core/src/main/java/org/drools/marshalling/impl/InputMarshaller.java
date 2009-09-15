@@ -331,9 +331,11 @@ public class InputMarshaller {
             Object object = handle.getObject();
             ClassObjectType objectType = new ClassObjectType( object.getClass() );
             ObjectTypeNode objectTypeNode = objectTypeNodes.get( objectType );
-            ObjectHashSet set = (ObjectHashSet) context.wm.getNodeMemory( objectTypeNode );
-            set.add( handle,
-                     false );
+            if (objectTypeNode != null) {
+	            ObjectHashSet set = (ObjectHashSet) context.wm.getNodeMemory( objectTypeNode );
+	            set.add( handle,
+	                     false );
+            }
         }
 
         InternalFactHandle handle = wm.getInitialFactHandle();
