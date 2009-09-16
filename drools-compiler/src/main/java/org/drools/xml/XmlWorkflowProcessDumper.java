@@ -188,7 +188,12 @@ public class XmlWorkflowProcessDumper {
         xmlDump.append("        <type name=\"" + dataType.getClass().getName() + "\" ");
         // TODO make this pluggable so datatypes can write out other properties as well
         if (dataType instanceof ObjectDataType) {
-        	xmlDump.append("className=\"" + ((ObjectDataType) dataType).getClassName() + "\" ");
+        	String className = ((ObjectDataType) dataType).getClassName();
+        	if (className != null
+        			&& className.trim().length() > 0 
+        			&& !"java.lang.Object".equals(className)) {
+        		xmlDump.append("className=\"" + className + "\" ");
+        	}
         }
         xmlDump.append("/>" + EOL);
     }
