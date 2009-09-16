@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:xi="http://www.w3.org/2001/XInclude"
+                    xmlns:svg="http://www.w3.org/2000/svg"
+                    xmlns:m="http://www.w3.org/1998/Math/MathML"
+                    xmlns:html="http://www.w3.org/1999/xhtml"
+                    xmlns:db="http://docbook.org/ns/docbook" xml:base="./" >
+  <title>Walkthrough</title>
+
+  <para>This section describes a sample application that combines processes
+  and rules, and walks you through the most important features of the Drools
+  platform.  Its main purpose is not to explain every step in detail, but rather
+  show the capabilities of the platform.  We will simply refer to more detailed
+  documentation (in other chapters) in case you are wondering how to do this
+  yourself.  The example itself can also be found in the drools-examples module.
+  </para>
+
+  <para>The example describes a fictitous company that specializes in
+  advertising public events.  Customers can register their events and the company
+  will make sure those events get added to for example a calendar on a web site,
+  a mailing list, or gets advertised in magazines, etc.  The part we will show
+  here is how they are managing the registration of customer events using a
+  process and a set of rules.  The process will be responsible for the validation
+  of the customer events, the registration in the company calendar and sending
+  feedback (in this case using email) to the customer.</para>
+
+  <para>Among other things, this example will show:
+    <orderedlist>
+      <listitem>How easy it is to create a simple event registration process that
+      combines process logic with rules.</listitem>
+      <listitem>How to test your application and find out what is happening using
+      our integrated debugging.</listitem>
+      <listitem>How to publish this business knowledge in a central location and
+      use Drools Guvnor to allow business users to look up and possibly modify
+      this information.</listitem>
+      <listitem>How to monitor your business using a history log of what is going
+      on and reports that visualize your key business indicators, and how to respond
+      to possible changes in the enviroment using complex event processing and
+      dynamically changing your business logic.</listitem>
+    </orderedlist>
+  </para>
+
+  <section>
+    <title>Creating a RuleFlow process</title>
+
+    <para>To manage the registration of customer events, we create a process and a set
+    of associated rules that define the necessary business logic.  The process describes
+    how to handle a request, from the moment it is received until after it has been
+    processed.</para>
+
+    <section>
+      <title>Creating the process</title>
+
+    <para>The following figure shows the resulting process.</para>
+
+    <figure>
+      <title>The "RegisterEvents" process</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/Process.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>
+    <orderedlist>
+      <listitem>A process should be started automatically whenever a request comes in.
+      This is implemented by adding a automatic trigger to the start node that starts
+      the process (and assigns the request to the "request" variable of the process
+      instance) whenever a request comes in.</listitem>
+      <listitem>We must first determine whether the request can be handled automatically.
+      Only requests that contain structured event descriptions can be handled automatically.
+      Non-structured requests must first be handled by a sales representative.  This choice
+      is shown as an XOR split node (exclusive choice), where the request is logged in case
+      it can be handled automatically, or assigned to a sales representative in the other case.
+      </listitem>
+      <listitem>We have to make sure all requests are handled in a specific time interval
+      (to avoid unhappy customers), so we added a timer to the "Register Events" human task.
+      If the task is not completed within 1 minute (for demo purposes we use small time
+      intervals, in reality this would probably be more like one day or something similar), a
+      reminder email is sent to the sales manager.  This mail will repeat itself every 30 seconds
+      until the request has been handled. This is implemented by adding a timer to the "Register
+      Events" human task that signals a timeout event whenever necessary.  The timeout event
+      is handled by the event node immediately underneath it.</listitem>
+      <listitem>While everyone can register events, gold customers get special advantages.
+      For example, only gold customers can register events more than one week upfront,
+      or more than one event at the same time.  Therefore, requests must be validated
+      before being processed.  The validation is handled by a set of validation rules that define
+      in which cases requests are invalid.</listitem>
+      <listitem>If an error is detected, the user must be notified of the errors by sending
+      back an email.</listitem>
+      <listitem>Each event in the (valid) request must be added to the calendar.  This can be
+      achieved by using a ForEach node that loops over all events in a request and adds them
+      one by one to the calendar.</listitem>
+    </orderedlist>
+    </para>
+
+    <para>Domain-specific work items (TODO) ...</para>
+
+    </section>
+
+    <section>
+      <title>Creating the rules</title>
+
+    <para>The rules that define the advantages of the different categories of customers (gold,
+    silver, etc.) are defined as a separate ruleset.  This makes it easy to change this logic
+    (e.g. give more advantages, add a new category, make changes for particular users, regions
+    or time periods) without having to change the process itself.  This makes it much easier for
+    the process to cope with changing requirements.</para>
+
+    <para>The figure below shows an example of a validation rule that makes sure that only
+    gold customers are allowed to do requests with more than 1 event simultaneously.  The rule
+    uses a predefined domain-specific language (DSL) so that the user can use natural language
+    to define the rules, making them much easier to read, create and update.</para>
+
+    <figure>
+      <title>A guided validation rule</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/GuidedValidationRule.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    </section>
+
+    <section>
+      <title>Executing the process</title>
+
+    <para>To execute our process and rules, we need to first create a knowledge base (containing
+    all relevant rules and processes), create a session to interact with and then insert a new
+    event request.  The following code snippet shows how this looks.  For more detail on how to create
+    the knowledge base and session, you can take a look at the source code in drools-examples.</para>
+
+<programlisting>public static final void main(String[] args) {
+  try {
+    // load up the knowledge base
+    KnowledgeBase kbase = readKnowledgeBase();
+    StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+    // create event request
+    EventRequest request = new EventRequest();
+    request.setEmail("drools.demo@gmail.com");
+    request.setDescription("Drools Flow Web Seminars");
+    Event event1 = new Event();
+    event1.setName("Drools Flow Web Seminar");
+    event1.setDescription("This seminar will showcase the most important features of Drools Flow.");
+    event1.setStart(new DateTime(new Date(109, 1, 6, 9, 0)).toString());
+    event1.setEnd(new DateTime(new Date(109, 1, 6, 12, 0)).toString());
+    request.addEvent(event1);
+    Event event2 = new Event();
+    event2.setName("Drools Flow Web Seminar");
+    event2.setDescription("This seminar will showcase the most important features of Drools Flow.");
+    event2.setStart(new DateTime(new Date(109, 1, 13, 9, 0)).toString());
+    event2.setEnd(new DateTime(new Date(109, 1, 13, 12, 0)).toString());
+    request.addEvent(event2);
+
+    // insert the request
+    ksession.insert(request);
+    ksession.fireAllRules();
+  } catch (Throwable t) {
+    t.printStackTrace();
+  }
+}</programlisting>
+
+    <para>Executing this code will add the two given events to the calendar, as shown in the screenshot below.</para>
+
+    <figure>
+      <title>The events show up in Google Calendar</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/GoogleCalendar.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    </section>
+
+  </section>
+
+  <section>
+    <title>Integrated debugging</title>
+
+    <para>Whenever you are testing your process or rules (or usually both simulaneously), it might be necessary to 
+    figure out why one specific decision was taken, or what the state is of your process at some point, etc.  Drools
+    provides an integrated debugging environment where you can stop the execution of your application at any point and
+    inspect the current state.</para>
+
+    <para>The following figure shows how you can simply add breakpoints in your rule consequences so you can determine
+    when those rules are executed exactly and what the values are of each of the bound variables.</para>
+
+    <figure>
+      <title>A breakpoint in a rule</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/IntegratedDebugging1.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>It also possible to look at the current state of all process instances.  For example, at the rule breakpoint shown
+    above, the process will be in the validation node (shown by a slightly thicker line around that node).</para> 
+
+    <figure>
+      <title>The process instance view</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/IntegratedDebugging2.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The working memory view shows all the data that is currently inserted into the session (in this case the request).
+    Similar views are provided for looking at the agenda and the globals.</para> 
+
+    <figure>
+      <title>The working memory view</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/IntegratedDebugging3.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Finally, the audit view can be used to show the history of all execution events (in a tree-based view).  This
+    view for example shows the different nodes that have already been executed, and shows that we are now executing the
+    "Invalid customer" rule.</para>
+
+    <figure>
+      <title>The audit view</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/IntegratedDebugging4.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+  </section>
+
+  <section>
+    <title>Web-based management using Drools Guvnor</title>
+
+    <para>Instead of having your processes and rules on some location on local disk, this logic can also be managed on a
+    more centralized knowledge repository.  Drools Guvnor allows users to publish their knowledge artefacts to a central
+    repository, and manage it through a web-based console.  The Guvnor Eclipse plugin makes it possible to upload your
+    knowledge to the repository.  It provides all the features needed to make your knowledge management easier: uploading,
+    downloading, versioning, diffs, etc.</para>
+
+    <para>Once the knowledge has been uploaded to Guvnor, business users can inspect all the knowledge and if necessary
+    update it.  For example, the following screenshot shows the guided validation rule as shown earlier but now from within
+    Guvnor.  Business users can change this rule or add new rules.</para>
+
+    <figure>
+      <title>A guided validation rule in Guvnor</title>
+      <mediaobject>
+        <imageobject>	  <imagedata align="center" fileref="images/Chapter-Walkthrough/GuvnorGuidedValidationRule.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Guvnor can also package all your knowledge so that it can be used to create a knowledge base for a session.  The
+    following screenshot shows how to package your knowledge in Guvnor.  The generated package is published on a predefined
+    URL so that this package can easily be downloaded by the runtime engine.  We are using a knowledge agent to load the
+    knowledge from Guvnor.  This knowledge agent also makes sure that my knowledge base that I am using at runtime is updated
+    automatically whenever a user rebuilds the package on Guvnor.</para>
+
+    <figure>
+      <title>Building the package in Guvnor</title>
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Walkthrough/GuvnorPackage.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+  </section>
+
+  <section>
+    <title>Monitoring and dynamic intervention</title>
+
+    <para>By adding a history logger to the process engine, all relevent events are stored in the database.  This history
+    log can then be used to monitor and analyze the execution of your processes.  We are using Eclipse BIRT (Business Intelligence
+    Reporting Tool) to create reports that show the key performance indicators.  We do provide some basic reports ourselves, but
+    it's easy to define your own reports yourself, using the predefined data sets containing all process history information, and
+    any other data sources you might want to add yourself.  The following screen shot shows how a chart can be created using the
+    Eclipse BIRT report editor.</para>
+
+    <figure>
+      <title>Creating a monitoring report</title>
+      <mediaobject>
+        <imageobject>	  <imagedata align="center" fileref="images/Chapter-Walkthrough/EventingReportEdit.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The next figure shows a simple report based on some history data, showing the number of requests every hour, and the
+    average completion time of the request in that hour.  These charts could be used to check for an unexpected drop or rise
+    of request, an increase in the average processing time, etc.  These charts could signal possible problems before the
+    situation really gets out of hand.</para>
+
+    <figure>
+      <title>The eventing report</title>
+      <mediaobject>
+        <imageobject>	  <imagedata align="center" fileref="images/Chapter-Walkthrough/EventingReport.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+  </section>
+
+</chapter>
