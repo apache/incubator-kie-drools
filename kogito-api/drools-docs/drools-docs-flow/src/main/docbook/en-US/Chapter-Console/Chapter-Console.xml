@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:xi="http://www.w3.org/2001/XInclude"
+                    xmlns:svg="http://www.w3.org/2000/svg"
+                    xmlns:m="http://www.w3.org/1998/Math/MathML"
+                    xmlns:html="http://www.w3.org/1999/xhtml"
+                    xmlns:db="http://docbook.org/ns/docbook" xml:base="./">
+
+  <title>Console</title>
+
+  <para>Drools processes can be managed through a web console.  This includes
+  features like managing your process instances (starting/stopping/inspecting),
+  inspecting your (human) task list and executing those tasks, and generating
+  reports.</para>
+
+  <para>The Drools build system generates two wars for you that can be deployed in your
+  application server and contains the necessary libraries, the actual application,
+  etc.  One jar contains the server application, the other one the client.  Download
+  gwt-console-server-drools-{version}.war and gwt-console-drools-{version}.war and deploy
+  them to your application server, {AS_HOME}/server/{configuration}/deploy (so for example,
+  we are using jboss-4.2.3.GA/server/default/deploy).</para>
+
+  <section>
+    <title>Installation</title>
+
+    <para>You need to have an application server installed.  This chapter assumes
+    you are using the JBoss AS version 4.2.3.GA, but other versions or other
+    application servers should be possible as well.</para>
+
+    <section>
+      <title>Installing Guvnor</title>
+
+      <para>The process management console uses Drools Guvnor for loading the process
+      definitions that can be used inside the console.  You therefore need to install
+      Guvnor, to be able to add new process definitions to the repository, so they
+      can then be managed through the console.  To do so, simply copy
+      drools-guvnor.war to your application server,
+      {AS_HOME}/server/{configuration}/deploy.</para>
+      
+    </section>
+
+    <section>
+      <title>Changing the persistence configuration of your runtime data</title>
+
+      <para>The persistence.xml that is included in the server war refers to
+      a JTA data source called "java:jdbc/testDS1" for storing the runtime information.
+      To define this data source, create a testDS1-ds.xml file with the following content
+      (note that we are using an embedded H2 in memory database, but similar configurations
+      for another JPA data source is possible as well of course), and copy it to your
+      application server deploy directory:</para>
+
+      <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;datasources&gt;
+  &lt;local-tx-datasource&gt;
+    &lt;jndi-name&gt;jdbc/testDS1&lt;/jndi-name&gt;
+    &lt;connection-url&gt;jdbc:h2:mem:mydb&lt;/connection-url&gt;
+    &lt;driver-class&gt;org.h2.jdbcx.JdbcDataSource&lt;/driver-class&gt;
+    &lt;user-name&gt;sa&lt;/user-name&gt;
+    &lt;password&gt;&lt;/password&gt;
+  &lt;/local-tx-datasource&gt;
+&lt;/datasources&gt;</programlisting>
+
+      <para>Also make sure that the driver class can be found on the server classpath.
+      In this case, we copied the h2-1.0.77.jar to the {AS_HOME}/server/{config}/lib
+      folder.</para>
+
+    </section>
+
+    <section>
+      <title>Changing the persistence configuration of your history data</title>
+
+      <para>Drools uses Hibernate to persist history information in a database,
+      for long term storagy.  The drools-bam module (inside the gwt-console-server-drools
+      war) contains a hibernate.cfg.xml file that contains the default configuration,
+      i.e using an embedded H2 in memory database.  However, this embedded database
+      does not allow concurrent access.  If you are planning to use reporting, concurrent
+      access might be required, so you should use the server configuration of the H2 in memory
+      database in that case.  Change the connection url in the hibernate.cfg.xml
+      to this:</para>
+
+      <programlisting>
+&lt;property name="connection.url"&gt;jdbc:h2:tcp://localhost/~/test&lt;/property&gt;</programlisting>
+
+      <para>In this case, you should also make sure you have the H2 database running in
+      server mode when running the application - for example by executing the org.h2.tools.Server
+      class.</para>
+
+    </section>
+
+    <section>
+      <title>Installing the reporting engine</title>
+
+      <para>The reporting engine is based on the Eclipse BIRT engine.  You need to
+      install the Eclipse BIRT runtime engine in your application server to be able to use
+      the reporting functionality.  To do so, create a new directory called 
+      {AS_HOME}/server/{configuration}/data/birt.  Download the Eclipse BIRT report
+      engine version 2.3.2 (birt-runtime-2_3_2_2.zip), extract it and copy the ReportEngine
+      directory to the newly created directory (the other directories are not needed).</para>
+
+      <para>Next, you need to copy your process instance reports to the newly created
+      directory as well.  Eclipse BIRT allows you to define your own reports based on
+      existing data sources.  The console expects two different reports:
+        <orderedlist>
+          <listitem><emphasis>overall_activity.rptdesign</emphasis>: this reports shows
+          an overview of all running process instances in your system</listitem>
+          <listitem><emphasis>process_summary.rptdesign</emphasis>: this reports is
+          shown when the user wants to look into one process definition.  It gives more
+          details about all instances for that process.</listitem>
+        </orderedlist>
+      We have created some example reports you could use and customize according to your
+      own requirements.  The example report templates can be found in the drools-bam
+      module (src/test/resources).  Note that these example reports are also using the H2
+      in memory database (in server mode).  If you configured the persistence of the history
+      data differently, you will have to update the data source of these reports accordingly.
+      You also need to copy your database drivers to the reporting plugin.  In our case,
+      using H2, copy the h2-1.0.77.jar to {AS_HOME}/server/{configuration}/data/birt/ReportEngine/plugins/
+      org.eclipse.birt.report.data.oda.jdbc_2.3.2.r232_v20090212/drivers.</para>
+
+    </section>
+
+    <section>
+      <title>User authentication</title>
+
+      <para>The application uses simple password authentication to verify who is allowed to
+      use the application.  For example, usernames / passwords can be specified in a 
+      users.properties file in {AS_HOME}/server/{configuration}/conf, for example:</para>
+
+      <programlisting>
+admin=admin
+krisv=mypassword</programlisting>
+
+      <para>The roles associated with these users can be specified in a roles.properties file
+      in the same directory, for example:</para>
+
+      <programlisting>
+admin=admin,manager,user
+krisv=admin,manager,user</programlisting>
+
+    </section>
+
+    <section>
+      <title>Configure memory settings</title>
+
+      <para>You might want to increase the memory that can be used by the application server
+      (especially the PermGen space) if you run into OutOfMemory exceptions.  To do so, edit
+      the run.conf or run.bat (depending on your OS) and for example add the following line:</para>
+
+     <programlisting>
+JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=256m"</programlisting>
+
+    </section>
+
+    <para>You are now ready to startup the application server.  If you are using human tasks in
+    your processes, you should also make sure you have the task service running (on 
+    127.0.0.1:9123).  Also make sure your database is up and running of course.</para>
+
+  </section>
+
+  <section>
+    <title>Adding process definitions in Guvnor</title>
+
+    <para>Drools Guvnor allows you to manage all your business knowledge in a (logically)
+    centralized location.   This includes all your process definitions, business rules, etc.
+    The process management console automatically retrieves all the processes from the latest
+    snapshot of the "default" package on Guvnor.  To find out how to get processes on the
+    Guvnor repository (for example manually uploading them, or using the Eclipse Guvnor
+    synchronization), check out the Guvnor documentation.  After deploying Guvnor to your
+    application server, navigate to the following URL to open up Guvnor (replace the host 
+    and/or port depending on how the application server is configured):
+    <ulink url="http://localhost:8080/gwt-console">http://localhost:8080/gwt-console</ulink></para>
+
+    <para>The following screenshot shows an example where the "default" package contains one
+    "Evaluation" process.  After adding the necessary process definitions, make sure to build
+    the package, so that the built package can be downloaded by the web console.</para>
+
+    <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/Guvnor.PNG"/></imageobject></mediaobject>
+
+  </section>
+
+  <section>
+    <title>Running the process management console</title>
+
+    <para>Now navigate to the following URL (replace the host and/or port depending on how the application server
+    is configured):
+    <ulink url="http://localhost:8080/gwt-console">http://localhost:8080/gwt-console</ulink></para>
+
+    <para>A login screen should pop up, asking for your user name and password.</para>
+
+    <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/Login.PNG"/></imageobject></mediaobject>
+
+    <para>After filling these in, the process management workbench should be opened, as shown in the
+    screenshot below.  On the right you will see several tabs, related to process instance management,
+    human task lists and reporting, as explained in the following sections.</para>
+
+    <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/Tasks.PNG"/></imageobject></mediaobject>
+
+    <section>
+      <title>Managing process instances</title>
+
+      <para>The "Processes" section allows you to inspect the process definitions that are currently
+      part of the installed knowledge base, start new process instances and manage running process
+      instances (which includes inspecting their state and data).</para>
+
+      <section>
+        <title>Inspecting process definitions</title>
+
+      <para>When you open the process definition list, all processes that are stored in the "default"
+      package on Guvnor are shown.  You can then either inspect process instances for one specific
+      process or start a new process instance.</para>
+
+      <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/ProcessDefinitions.PNG"/></imageobject></mediaobject>
+
+      </section>
+
+      <section>
+        <title>Starting new process instances</title>
+
+      <para>To start a new process instance for one specific process definition, select the process
+      definition in the process definition list and select the process instances tab.  Click on the
+      "Start" button to start a new instance of that specific process.  When a form is associated
+      with this particular process (to ask for additional information before starting the process),
+      this form will be shown.  After completing this form, the process will be started with the
+      provided information.</para>
+
+      <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/StartProcess.PNG"/></imageobject></mediaobject>
+
+      </section>
+
+      <section>
+        <title>Managing process instances</title>
+
+      <para>The process instances tab also contains a table showing all running instances of that
+      specific process definition.  Select a process instance to show the details of that specific
+      process instance.</para>
+
+      <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/ProcessInstances.PNG"/></imageobject></mediaobject>
+
+      </section>
+
+      <section>
+        <title>Inspecting process instance state</title>
+
+      <para>You can inspect the (top-level) variables of a specific process instance by clicking on
+      the "Instance Data" button.  This will show you how each variable defined in the process
+      maps to it's corresponding value for that specific process instance.</para>
+
+      <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/ProcessInstanceDiagram.PNG"/></imageobject></mediaobject>
+
+      </section>
+
+      <section>
+        <title>Inspecting process instance variables</title>
+
+      <para>You can inspect the state of a specific process instance by clicking on
+      the "Diagram" button.  This will show you the process flow chart, where a red
+      traingle is shown at each node that is currently active (like for example a human
+      task node waiting for the task to be completed or a join node waiting for more
+      incoming connections before continuing). [Note that multiple instances of one node
+      could be executing simultaneously. They will still be shown using only one red
+      triangle.]</para>
+
+      <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/ProcessInstanceData.PNG"/></imageobject></mediaobject>
+
+      </section>
+
+    </section>
+
+    <section>
+      <title>Human task lists</title>
+
+    <para>The task management section allows a user to see his/her current task list.
+    The group task list shows all the tasks that are not yet assigned to one specific
+    user but that the currently logged in user could claim.  The personal task list shows
+    all tasks that are assigned to the currently logged in user.  To execute a task,
+    select it in your personal task list and select "View".  If a form is associated
+    with the selected task (for example to ask for additional information), this form
+    will be shown.  After completing the form, the task will also be completed.</para>
+
+    <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/TaskForm.PNG"/></imageobject></mediaobject>
+
+    </section>
+
+    <section>
+      <title>Reporting</title>
+
+    <para>The reporting section allows you to view reports about the execution of
+    processes.  This includes an overall report showing an overview of all processes,
+    as shown below.</para>
+
+    <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/ReportOverall.PNG"/></imageobject></mediaobject>
+
+    <para>A report regarding one specific process instance can also be generated.</para>
+
+    <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/ReportProcess.PNG"/></imageobject></mediaobject>
+
+    <para>Drools Flow provides some sample reports that could be used to visualize some
+    generic execution characteristics like the number of active process instances per
+    process etc.  But custom reports could be generated to show the information your
+    company thinks is important, by replacing the report templates in the report
+    directory.</para>
+
+    </section>
+
+  </section>
+
+  <section>
+    <title>Adding new process / task forms</title>
+
+  <para>Forms can be used to (1) start a new process or (2) complete a human task.
+  We use freemarker templates to dynamically create forms. To create a form for a
+  specific process definition, create a freemarker template with the name 
+  {processId}.ftl.  The template itself should use HTML
+  code to model the form.  For example, the form to start the evalution process shown
+  above is defined in the com.sample.evaluation.ftl file:</para>
+
+  <programlisting>
+&lt;html&gt;
+&lt;body&gt;
+&lt;h2&gt;Start Performance Evaluation&lt;/h2&gt;
+&lt;hr&gt;
+&lt;form action="complete" method="POST" enctype="multipart/form-data"&gt;
+Please fill in your username: &lt;input type="text" name="employee" /&gt;&lt;/BR&gt;
+&lt;input type="submit" value="Complete"&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</programlisting>
+
+  <para>Similarly, task forms for a specific type of human task (uniquely identified
+  by its task name) can be linked to that human task by creating a freemarker template
+  with the name {taskName}.ftl.  The form has access to a "task" parameter that represents
+  the current human task, so it allows you to dynamically adjust the task form based on
+  the task input.  The task parameter is a Task model object as defined in the
+  drools-process-task module.  This for example allows you to customize the task form based
+  on the description or input data related to that task.  For example, the evaluation form
+  shown earlier uses the task parameter to access the description of the task and show that
+  in the task form:</para>
+
+  <programlisting>
+&lt;html&gt;
+&lt;body&gt;
+&lt;h2&gt;Employee evaluation&lt;/h2&gt;
+&lt;hr&gt;
+${task.descriptions[0].text}&lt;br/&gt;
+&lt;br/&gt;
+Please fill in the following evaluation form: 
+&lt;form action="complete" method="POST" enctype="multipart/form-data"&gt;
+Rate the overall performance: &lt;select name="performance"&gt;
+&lt;option value="outstanding"&gt;Outstanding&lt;/option&gt;
+&lt;option value="exceeding"&gt;Exceeding expectations&lt;/option&gt;
+&lt;option value="acceptable"&gt;Acceptable&lt;/option&gt;
+&lt;option value="below"&gt;Below average&lt;/option&gt;
+&lt;/select&gt;&lt;br/&gt;
+&lt;br/&gt;
+Check any that apply:&lt;br/&gt;
+&lt;input type="checkbox" name="initiative" value="initiative"&gt;Displaying initiative&lt;br/&gt;
+&lt;input type="checkbox" name="change" value="change"&gt;Thriving on change&lt;br/&gt;
+&lt;input type="checkbox" name="communication" value="communication"&gt;Good communication skills&lt;br/&gt;
+&lt;br/&gt;
+&lt;input type="submit" value="Complete"&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</programlisting>
+
+  <para>Data that is provided by the user when filling in the task form will be
+  added as parameters when completing the task.  For example, when completing the
+  task above, the Map of outcome parameters will include result variables called
+  "performance", "initiative", "change" and "communication".  The result parameters
+  can be accessed in the related process by mapping these parameters to process
+  variables.</para>
+
+  <para>Forms should be included in the drools-gwt-form.jar in the server war.</para>
+
+  </section>
+
+</chapter>
