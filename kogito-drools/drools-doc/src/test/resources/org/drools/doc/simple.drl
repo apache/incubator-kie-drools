@@ -1,0 +1,29 @@
+#created on: 12-Sep-2009
+package org.drools.doc
+
+#list any import classes here.
+
+
+
+#declare any global variables here
+
+
+
+
+rule "Your First Rule"
+	
+	when
+		#conditions
+	then 
+		#actions
+		
+end
+
+rule "Your Second Rule"
+	#include attributes such as "salience" here...
+	when
+		#conditions
+	then 
+		#actions
+		
+end
