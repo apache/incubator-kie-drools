@@ -20,8 +20,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
-import com.sun.corba.se.spi.orbutil.fsm.Action;
-
 /**
  * This is an asynchronous implementation of the CompositeObjectSinkAdapter that
  * is used to propagate facts both between nodes in the same or in different
