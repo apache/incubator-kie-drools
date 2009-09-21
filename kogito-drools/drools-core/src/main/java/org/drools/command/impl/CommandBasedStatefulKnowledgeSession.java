@@ -143,6 +143,13 @@ public class CommandBasedStatefulKnowledgeSession
         commandService.execute( command );
     }
 
+    public void signalEvent(String type,
+		            		Object event,
+		            		long processInstanceId) {
+		SignalEventCommand command = new SignalEventCommand( processInstanceId, type, event );
+		commandService.execute( command );
+	}
+
     public ProcessInstance startProcess(String processId) {
         return startProcess( processId,
                              null );
