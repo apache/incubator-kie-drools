@@ -1,0 +1,24 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List results;
+
+rule "test A"
+    salience 10
+when
+    $a: Cheese ( type == "stilton" )
+then
+    results.add( $a.getType() );
+end
+
+rule "test B" extends "test A"
+when
+    $b: Cheese ( type == "cheddar" )
+    $c: Cheese ( type == "brie" )
+then
+    modify( $a ) {
+        setType( $c.getType() )
+    }
+    results.add( $a.getType() );
+end

@@ -157,7 +157,7 @@ import org.jmock.Mockery;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
-    
+
     private final Mockery context = new Mockery();
 
     protected RuleBase getRuleBase() throws Exception {
@@ -1385,13 +1385,12 @@ public class MiscTest extends TestCase {
         FactHandle handle = session.insert( mycheese );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
-        assertEquals( 2, 
+        assertEquals( 2,
                       ((List) session.getGlobal( "list" )).size() );
         assertEquals( "rule 4",
-                      ((List) session.getGlobal( "list" )).get( 0 ) );        
+                      ((List) session.getGlobal( "list" )).get( 0 ) );
         assertEquals( "rule 2b",
                       ((List) session.getGlobal( "list" )).get( 1 ) );
-
 
         //Test 2nd level (parent) to make sure rule honors the extend rule
         final List list2 = new ArrayList();
@@ -1445,6 +1444,51 @@ public class MiscTest extends TestCase {
         //System.out.println(((List) session.getGlobal( "list" )).toString());
         assertTrue( ((List) session.getGlobal( "list" )).size() == 0 );
 
+    }
+
+    public void testExtends2() {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        try {
+            kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_RuleExtend.drl" ) ),
+                          ResourceType.DRL );
+
+            assertFalse( kbuilder.getErrors().toString(), 
+                         kbuilder.hasErrors() );
+            
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+            final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+            final List results = new ArrayList();
+            ksession.setGlobal( "results",
+                                results );
+
+            final Cheese stilton = new Cheese( "stilton",
+                                               5 );
+            final Cheese cheddar = new Cheese( "cheddar",
+                                               7 );
+            final Cheese brie = new Cheese( "brie",
+                                            5 );
+
+            ksession.insert( stilton );
+            ksession.insert( cheddar );
+            ksession.insert( brie );
+
+            ksession.fireAllRules();
+
+            assertEquals( 2,  
+                          results.size() );
+            assertEquals( "stilton", 
+                          results.get( 0 ) );
+            assertEquals( "brie", 
+                          results.get( 1 ) );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            if( kbuilder.hasErrors() )
+                System.out.println( kbuilder.getErrors() );
+            fail("Unexpected exception: "+e.getMessage());
+        }
     }
 
     public void testLatinLocale() throws Exception {
@@ -4397,19 +4441,21 @@ public class MiscTest extends TestCase {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ConstraintConnectorOr.drl" ) ),
                       ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-        
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<Person> results = new ArrayList<Person>();
-        ksession.setGlobal( "results", results );
+        ksession.setGlobal( "results",
+                            results );
 
         final Person mark = new Person( "Mark" );
         mark.setAlive( true );
         mark.setHappy( true );
-        
+
         final Person bush = new Person( "Bush" );
         bush.setAlive( true );
         bush.setHappy( false );
@@ -4417,19 +4463,20 @@ public class MiscTest extends TestCase {
         final Person conan = new Person( "Conan" );
         conan.setAlive( false );
         conan.setHappy( true );
-        
+
         final Person nero = new Person( "Nero" );
         nero.setAlive( false );
         nero.setHappy( false );
-        
+
         ksession.insert( mark );
         ksession.insert( bush );
         ksession.insert( conan );
         ksession.insert( nero );
-        
+
         ksession.fireAllRules();
-        
-        assertEquals( 3, results.size() );
+
+        assertEquals( 3,
+                      results.size() );
         assertTrue( results.contains( mark ) );
         assertTrue( results.contains( bush ) );
         assertTrue( results.contains( conan ) );
@@ -6746,7 +6793,7 @@ public class MiscTest extends TestCase {
     public void testFireAllWhenFiringUntilHalt() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         Runnable fireUntilHalt = new Runnable() {
             public void run() {
                 ksession.fireUntilHalt();
@@ -6777,16 +6824,18 @@ public class MiscTest extends TestCase {
         } catch ( InterruptedException e ) {
         }
         boolean aliveT1 = t1.isAlive();
-        if( t2.isAlive() ){
+        if ( t2.isAlive() ) {
             t2.interrupt();
         }
-        if( t1.isAlive() ) {
+        if ( t1.isAlive() ) {
             t1.interrupt();
         }
-        assertFalse( "T2 should have finished", aliveT2 );
-        assertFalse( "T1 should have finished", aliveT1 );
+        assertFalse( "T2 should have finished",
+                     aliveT2 );
+        assertFalse( "T1 should have finished",
+                     aliveT1 );
     }
-    
+
     public void testDroolsQueryCleanup() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryMemoryLeak.drl",
@@ -6899,16 +6948,16 @@ public class MiscTest extends TestCase {
         // Retrieve the generated fact type
         FactType cheeseFact = kbase.getFactType( "org.drools.generatedbeans",
                                                  "Cheese" );
-        
+
         assertTrue( "Generated beans must be serializable",
-                    Serializable.class.isAssignableFrom( cheeseFact.getFactClass() ));
+                    Serializable.class.isAssignableFrom( cheeseFact.getFactClass() ) );
 
         // Create a new Fact instance
         Object cheese = cheeseFact.newInstance();
         cheeseFact.set( cheese,
                         "type",
                         "stilton" );
-        
+
         // another instance
         Object cheese2 = cheeseFact.newInstance();
         cheeseFact.set( cheese2,
@@ -6945,31 +6994,32 @@ public class MiscTest extends TestCase {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         // creating listener as a jmock proxy
-        final org.drools.event.rule.WorkingMemoryEventListener wmeListener = context.mock(org.drools.event.rule.WorkingMemoryEventListener.class);
-        
-        context.checking(new Expectations() {{
-            exactly(2).of(wmeListener).objectInserted( with(any(org.drools.event.rule.ObjectInsertedEvent.class)) );
-        }});
-        
+        final org.drools.event.rule.WorkingMemoryEventListener wmeListener = context.mock( org.drools.event.rule.WorkingMemoryEventListener.class );
+
+        context.checking( new Expectations() {
+            {
+                exactly( 2 ).of( wmeListener ).objectInserted( with( any( org.drools.event.rule.ObjectInsertedEvent.class ) ) );
+            }
+        } );
+
         ksession.addEventListener( wmeListener );
-        
+
         // listener will be notified of both facts insertion
-        ksession.insert( new Cheese("stilton") );
+        ksession.insert( new Cheese( "stilton" ) );
         ksession.insert( wmeListener );
-        
+
         // firing rules will remove listener
         ksession.fireAllRules();
-        
+
         // inserting another object into the working memory, listener should NOT be notified,
         // since it is no longer listening.
-        ksession.insert( new Cheese("brie") );
+        ksession.insert( new Cheese( "brie" ) );
 
         context.assertIsSatisfied();
     }
 
 }
-
