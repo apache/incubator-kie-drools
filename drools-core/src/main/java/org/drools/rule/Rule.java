@@ -441,7 +441,7 @@ public class Rule
      */
     public Declaration getDeclaration(final String identifier) {
         if ( this.dirty || (this.declarations == null) ) {
-            this.declarations = this.lhsRoot.getOuterDeclarations();
+            this.declarations = this.getExtendedLhs(this, null).getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
@@ -478,7 +478,7 @@ public class Rule
      */
     public Declaration[] getDeclarations() {
         if ( this.dirty || (this.declarationArray == null) ) {
-            this.declarations = this.lhsRoot.getOuterDeclarations();
+            this.declarations = this.getExtendedLhs(this, null).getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
