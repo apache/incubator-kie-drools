@@ -33,5 +33,18 @@ public interface KnowledgeBaseMonitoringMBean {
     public String getPackages();
     
     public String getEntryPoints();     
+    
+    /**
+     * This operation creates, registers and starts
+     * all the dependent MBeans that allow monitor all the details
+     * in this KnowledgeBase. These mbeans are not started by default.
+     */
+    public void startInternalMBeans();
 
+    /**
+     * This operation will stop and dispose
+     * all the dependent MBeans that allow monitor all the details
+     * in this KnowledgeBase. These mbeans are not started by default.
+     */
+    public void stopInternalMBeans();
 }

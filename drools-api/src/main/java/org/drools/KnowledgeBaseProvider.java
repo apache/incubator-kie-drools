@@ -64,6 +64,20 @@ public interface KnowledgeBaseProvider {
     KnowledgeBase newKnowledgeBase();
 
     /**
+     * Instantiate and return a KnowledgeBase using a default KnowledgeBaseConfiguration
+     * and the given KnowledgeBase ID.
+     * 
+     * @param kbaseId 
+     *     A string Identifier for the knowledge base. Specially useful when enabling
+     *     JMX monitoring and management, as that ID will be used to compose the
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
+     *     IDs are unique. 
+     * @return
+     *      The KnowledgeBase
+     */
+    KnowledgeBase newKnowledgeBase( String kbaseId );
+
+    /**
      * Instantiate and return a KnowledgeBase using the given KnowledgeBaseConfiguration
      * 
      * @param conf
@@ -72,6 +86,22 @@ public interface KnowledgeBaseProvider {
      *     The KnowledgeBase
      */
     KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf);
+
+    /**
+     * Instantiate and return a KnowledgeBase using the given KnowledgeBaseConfiguration and
+     * the given KnowledgeBase ID.
+     * 
+     * @param kbaseId 
+     *     A string Identifier for the knowledge base. Specially useful when enabling
+     *     JMX monitoring and management, as that ID will be used to compose the
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
+     *     IDs are unique. 
+     * @param conf
+     *     The KnowledgeBaseConfiguration to be used
+     * @return
+     *     The KnowledgeBase
+     */
+    KnowledgeBase newKnowledgeBase(String kbaseId, KnowledgeBaseConfiguration conf);
 
     /**
      * Instantiate and return an Environment

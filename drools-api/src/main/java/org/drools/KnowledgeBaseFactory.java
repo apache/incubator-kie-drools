@@ -47,12 +47,45 @@ public class KnowledgeBaseFactory extends ProviderLocator {
     }
 
     /**
+     * Create a new KnowledgeBase using the default KnowledgeBaseConfiguration and
+     * the given KnowledgeBase ID.
+     * 
+     * @param kbaseId 
+     *     A string Identifier for the knowledge base. Specially useful when enabling
+     *     JMX monitoring and management, as that ID will be used to compose the
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
+     *     IDs are unique. 
+     * @return
+     *     The KnowledgeBase
+     */
+    public static KnowledgeBase newKnowledgeBase(String kbaseId) {
+        return getKnowledgeBaseProvider().newKnowledgeBase(kbaseId);
+    }
+
+    /**
      * Create a new KnowledgeBase using the given KnowledgeBaseConfiguration
      * @return
      *     The KnowledgeBase
      */
     public static KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
         return getKnowledgeBaseProvider().newKnowledgeBase( conf );
+    }
+
+    /**
+     * Create a new KnowledgeBase using the given KnowledgeBaseConfiguration and
+     * the given KnowledgeBase ID.
+     * 
+     * @param kbaseId 
+     *     A string Identifier for the knowledge base. Specially useful when enabling
+     *     JMX monitoring and management, as that ID will be used to compose the
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
+     *     IDs are unique. 
+     * @return
+     *     The KnowledgeBase
+     */
+    public static KnowledgeBase newKnowledgeBase(String kbaseId,
+                                                 KnowledgeBaseConfiguration conf) {
+        return getKnowledgeBaseProvider().newKnowledgeBase( kbaseId, conf );
     }
 
     /**
