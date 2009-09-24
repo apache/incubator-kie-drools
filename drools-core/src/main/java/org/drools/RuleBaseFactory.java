@@ -38,11 +38,31 @@ public class RuleBaseFactory {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             null );
     }
-    
+
+    public static RuleBase newRuleBase( final String rulebaseId ) {
+        return RuleBaseFactory.newRuleBase( rulebaseId,
+                                            RuleBase.RETEOO,
+                                            null );
+    }
+
     public static RuleBase newRuleBase(final RuleBaseConfiguration config) {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
-    }    
+    }
+
+    public static RuleBase newRuleBase(final String rulebaseId,
+                                       final RuleBaseConfiguration config) {
+        return RuleBaseFactory.newRuleBase( rulebaseId,
+                                            RuleBase.RETEOO,
+                                            config );
+    }
+
+    public static RuleBase newRuleBase(final String rulebaseId,
+                                       final int type) {
+        return RuleBaseFactory.newRuleBase( rulebaseId,
+                                            type,
+                                            null );
+    }
 
     public static RuleBase newRuleBase(final int type) {
         return RuleBaseFactory.newRuleBase( type,
@@ -52,10 +72,19 @@ public class RuleBaseFactory {
     /** Create a new RuleBase of the appropriate type */
     public static RuleBase newRuleBase(final int type,
                                        final RuleBaseConfiguration config) {
+        return RuleBaseFactory.newRuleBase( UUID.randomUUID().toString(),
+                                            type,
+                                            config );
+    }
+
+    /** Create a new RuleBase of the appropriate type */
+    public static RuleBase newRuleBase(final String rulebaseId,
+                                       final int type,
+                                       final RuleBaseConfiguration config) {
         switch ( type ) {
             case RuleBase.RETEOO :
-                
-                return new org.drools.reteoo.ReteooRuleBase( UUID.randomUUID().toString(),
+
+                return new org.drools.reteoo.ReteooRuleBase( rulebaseId,
                                                              config );
             default :
                 throw new IllegalArgumentException( "Unknown engine type: " + type );

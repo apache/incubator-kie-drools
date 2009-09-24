@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *  
  * @author etirelli
  */
-public class ExternalExecutorService
+public class ExternalExecutorService 
     implements
     java.util.concurrent.ExecutorService {
 
@@ -84,7 +84,7 @@ public class ExternalExecutorService
         }
         throw new RejectedExecutionException( "Execution service is terminated. No more tasks can be executed." );
     }
-
+ 
     /**
      * {@inheritDoc}
      */

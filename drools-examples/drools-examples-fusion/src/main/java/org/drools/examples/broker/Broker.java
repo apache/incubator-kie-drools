@@ -106,7 +106,7 @@ public class Broker implements EventReceiver, BrokerServices {
         KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( "Stock Broker", conf ); 
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
         return kbase;
     }
