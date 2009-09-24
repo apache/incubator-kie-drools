@@ -77,11 +77,10 @@ public class KnowledgeBaseMonitoring
     public String getEntryPoints() {
         // the dependent mbeans are created here in order to delay their creating 
         // until the this kbase is actually inspected 
-        createDependentMBeans();
         return kbase.getRete().getEntryPointNodes().keySet().toString();
     }
 
-    private void createDependentMBeans() {
+    public void startInternalMBeans() {
         for( EntryPointNode epn : kbase.getRete().getEntryPointNodes().values() ) {
             for( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
                 ObjectTypeNodeMonitor otnm = new ObjectTypeNodeMonitor( otn );
@@ -92,6 +91,10 @@ public class KnowledgeBaseMonitoring
         KBaseConfigurationMonitor kbcm = new KBaseConfigurationMonitor( kbase.getConfiguration() );
         ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",type=Configuration" );
         DroolsManagementAgent.getInstance().registerMBean( kbase, kbcm, name );
+    }
+
+    public void stopInternalMBeans() {
+        DroolsManagementAgent.getInstance().unregisterDependentsMBeansFromOwner( kbase );
     }
     
 }

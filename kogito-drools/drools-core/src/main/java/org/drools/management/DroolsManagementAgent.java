@@ -39,14 +39,14 @@ public class DroolsManagementAgent
     implements
     DroolsManagementAgentMBean {
 
-    private static final String          MBEAN_NAME = "org.drools:type=DroolsManagementAgent";
+    private static final String           MBEAN_NAME = "org.drools:type=DroolsManagementAgent";
 
-    private static DroolsManagementAgent INSTANCE;
-    private static MBeanServer           mbs;
-    
-    private long                         kbases;
-    private long                         ksessions;
-    private Map<Object, List<ObjectName>>    mbeans;
+    private static DroolsManagementAgent  INSTANCE;
+    private static MBeanServer            mbs;
+
+    private long                          kbases;
+    private long                          ksessions;
+    private Map<Object, List<ObjectName>> mbeans;
 
     private DroolsManagementAgent() {
         kbases = 0;
@@ -110,9 +110,10 @@ public class DroolsManagementAgent
                 mbs.registerMBean( mbean,
                                    name );
                 List<ObjectName> mbl = mbeans.get( owner );
-                if( mbl == null ) {
+                if ( mbl == null ) {
                     mbl = new LinkedList<ObjectName>();
-                    mbeans.put( owner, mbl );
+                    mbeans.put( owner,
+                                mbl );
                 }
                 mbl.add( name );
             }
@@ -121,28 +122,44 @@ public class DroolsManagementAgent
             e.printStackTrace();
         }
     }
-    
-    public void unregisterMBeansFromOwner( Object owner ) {
+
+    public void unregisterMBeansFromOwner(Object owner) {
         List<ObjectName> mbl = mbeans.remove( owner );
-        if( mbl != null ) {
+        if ( mbl != null ) {
             MBeanServer mbs = getMBeanServer();
-            for( ObjectName name : mbl ) {
+            for ( ObjectName name : mbl ) {
                 try {
                     mbs.unregisterMBean( name );
                 } catch ( Exception e ) {
-                    System.err.println("Exception unregistering mbean: "+name);
+                    System.err.println( "Exception unregistering mbean: " + name );
                     e.printStackTrace();
                 }
             }
         }
     }
-    
-    public static ObjectName createObjectName( String name ) {
+
+    public void unregisterDependentsMBeansFromOwner(Object owner) {
+        List<ObjectName> mbl = mbeans.get( owner );
+        if ( mbl != null ) {
+            MBeanServer mbs = getMBeanServer();
+            for ( ObjectName name : mbl.subList( 1, mbl.size() ) ) {
+                try {
+                    mbs.unregisterMBean( name );
+                } catch ( Exception e ) {
+                    System.err.println( "Exception unregistering mbean: " + name );
+                    e.printStackTrace();
+                }
+            }
+            mbl.subList( 1, mbl.size() ).clear();
+        }
+    }
+
+    public static ObjectName createObjectName(String name) {
         try {
             return new ObjectName( name );
         } catch ( Exception e ) {
-            System.err.println("This is a bug. Error creating ObjectName for MBean: "+name);
-            System.err.println("Please contact the development team and provide the following stack trace: "+e.getMessage() );
+            System.err.println( "This is a bug. Error creating ObjectName for MBean: " + name );
+            System.err.println( "Please contact the development team and provide the following stack trace: " + e.getMessage() );
             e.printStackTrace();
             return null;
         }

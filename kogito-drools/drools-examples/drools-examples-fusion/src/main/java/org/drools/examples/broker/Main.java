@@ -47,7 +47,7 @@ public class Main {
         CompanyRegistry registry = new CompanyRegistry();
         BrokerWindow window = new BrokerWindow( registry.getCompanies() );
         window.show();
-        //Thread.sleep( 10000 );
+        Thread.sleep( 10000 );
         Broker broker = new Broker( window, registry );
         
         TimerService clock = new JDKTimerService(1);

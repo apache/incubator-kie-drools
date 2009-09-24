@@ -9,7 +9,6 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseProvider;
 import org.drools.command.NewKnowledgeBaseCommand;
 import org.drools.command.SetVariableCommand;
-import org.drools.command.builder.NewKnowledgeBuilderCommand;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
@@ -28,7 +27,7 @@ public class KnowledgeBaseProviderClient
     }
 
     public KnowledgeBase newKnowledgeBase() {
-        return newKnowledgeBase( null );
+        return newKnowledgeBase( (KnowledgeBaseConfiguration) null );
     }
 
     public KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
@@ -79,6 +78,17 @@ public class KnowledgeBaseProviderClient
     }
 
     public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public KnowledgeBase newKnowledgeBase(String kbaseId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public KnowledgeBase newKnowledgeBase(String kbaseId,
+                                          KnowledgeBaseConfiguration conf) {
         // TODO Auto-generated method stub
         return null;
     }
