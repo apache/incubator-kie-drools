@@ -17,6 +17,7 @@
 package org.drools.examples.broker;
 
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -44,10 +45,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
         // set up and show main window
         UIManager.setLookAndFeel( new Plastic3DLookAndFeel() );
+        Locale.setDefault( Locale.US );
         CompanyRegistry registry = new CompanyRegistry();
         BrokerWindow window = new BrokerWindow( registry.getCompanies() );
         window.show();
-        Thread.sleep( 10000 );
+        //Thread.sleep( 10000 );
         Broker broker = new Broker( window, registry );
         
         TimerService clock = new JDKTimerService(1);
