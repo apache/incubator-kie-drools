@@ -33,6 +33,13 @@ import org.drools.runtime.ObjectFilter;
 public interface WorkingMemoryEntryPoint {
 
     /**
+     * Returns the String Id of this entry point
+     * 
+     * @return
+     */
+    public String getEntryPointId();
+
+    /**
      * Inserts a new fact into this entry point
      * 
      * @param object 
