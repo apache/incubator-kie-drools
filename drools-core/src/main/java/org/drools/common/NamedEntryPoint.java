@@ -539,6 +539,10 @@ public class NamedEntryPoint
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
+    }
+
+    public String getEntryPointId() {
+        return this.entryPoint.getEntryPointId();
     }    
 
 }
