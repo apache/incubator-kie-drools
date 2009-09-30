@@ -51,6 +51,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.rule.EntryPoint;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
@@ -390,6 +391,10 @@ public class CommandBasedStatefulKnowledgeSession
                                              query,
                                              arguments );
         return this.commandService.execute( cmd );
+    }
+    
+    public String getEntryPointId() {
+        return EntryPoint.DEFAULT.getEntryPointId();
     }
 
 }

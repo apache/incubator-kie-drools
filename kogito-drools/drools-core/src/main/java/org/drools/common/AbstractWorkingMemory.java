@@ -337,6 +337,11 @@ public abstract class AbstractWorkingMemory
 
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
+        
+    }
+
+    public String getEntryPointId() {
+        return EntryPoint.DEFAULT.getEntryPointId();
     }
 
     public static class GlobalsAdapter

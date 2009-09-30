@@ -3,7 +3,6 @@ package org.drools.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,9 +56,9 @@ import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -818,6 +817,10 @@ public class StatefulKnowledgeSessionImpl
         } finally {
             session.endBatchExecution();
         }        
+    }
+
+    public String getEntryPointId() {
+        return this.session.getEntryPointId();
     }
 
 }

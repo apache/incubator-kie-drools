@@ -597,4 +597,9 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
+    public String getEntryPointId() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
