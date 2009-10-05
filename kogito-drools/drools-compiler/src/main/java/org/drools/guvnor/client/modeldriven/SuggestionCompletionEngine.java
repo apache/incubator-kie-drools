@@ -69,14 +69,14 @@ public class SuggestionCompletionEngine
      * 
      */
     public Map<String, String>            fieldTypes;
-        /**
-     * A map of the field that containts the parametrized type of a collection
-     * List<String> name
-     * key = "name"
-     * value = "Strint" 
-     *
-     */
-    public Map<String, String>            fieldParametersType = new HashMap<String, String>();
+    /**
+    * A map of the field that containts the parametrized type of a collection
+    * List<String> name
+    * key = "name"
+    * value = "Strint" 
+    *
+    */
+    public Map<String, String>            fieldParametersType    = new HashMap<String, String>();
 
     /**
      * Contains a map of globals (name is key) and their type (value).
@@ -240,16 +240,18 @@ public class SuggestionCompletionEngine
                                final String fieldName) {
         return (String) this.fieldTypes.get( factType + "." + fieldName );
     }
+
     /*
      * returns the type of parametric class
      * List<String> a in a class called Toto
      * key =   "Toto.a"
      * value = "String"
      */
-     public String getParametricFieldType(final String factType,
-                               final String fieldName) {
+    public String getParametricFieldType(final String factType,
+                                         final String fieldName) {
         return (String) this.fieldParametersType.get( factType + "." + fieldName );
     }
+
     public boolean isGlobalVariable(final String variable) {
         return this.globalTypes.containsKey( variable );
     }
@@ -288,7 +290,7 @@ public class SuggestionCompletionEngine
     public DropDownData getEnums(FactPattern pat,
                                  String field) {
 
-      Map dataEnumLookupFields = loadDataEnumLookupFields();
+        Map dataEnumLookupFields = loadDataEnumLookupFields();
 
         if ( pat.constraintList != null && pat.constraintList.constraints != null ) {
             // we may need to check for data dependent enums
@@ -334,8 +336,10 @@ public class SuggestionCompletionEngine
             } else if ( _typeFields != null ) {
                 // these enums are calculated on demand, server side...
                 String[] fieldsNeeded = (String[]) _typeFields;
+
                 String queryString = getQueryString( pat.factType,
                                                      field,
+                                                     fieldsNeeded,
                                                      this.dataEnumLists );
 
                 String[] valuePairs = new String[fieldsNeeded.length];
@@ -388,6 +392,7 @@ public class SuggestionCompletionEngine
                 String[] fieldsNeeded = (String[]) _typeField;
                 String queryString = getQueryString( type,
                                                      field,
+                                                     fieldsNeeded,
                                                      this.dataEnumLists );
                 String[] valuePairs = new String[fieldsNeeded.length];
 
@@ -416,13 +421,39 @@ public class SuggestionCompletionEngine
      * Get the query string for a fact.field It will ignore any specified field,
      * and just look for the string - as there should only be one Fact.field of
      * this type (it is all determined server side).
+     * @param fieldsNeeded 
      */
     String getQueryString(String factType,
                           String field,
+                          String[] fieldsNeeded,
                           Map dataEnumLists) {
         for ( Iterator iterator = dataEnumLists.keySet().iterator(); iterator.hasNext(); ) {
             String key = (String) iterator.next();
-            if ( key.startsWith( factType + "." + field ) ) {
+            if ( key.startsWith( factType + "." + field ) && fieldsNeeded != null && key.contains( "[" ) ) {
+
+                String[] values = key.substring( key.indexOf( '[' ) + 1,
+                                                 key.lastIndexOf( ']' ) ).split( "," );
+
+                if ( values.length != fieldsNeeded.length ) {
+                    continue;
+                }
+
+                boolean fail = false;
+                for ( int i = 0; i < values.length; i++ ) {
+                    String a = values[i].trim();
+                    String b = fieldsNeeded[i].trim();
+                    if ( !a.equals( b ) ) {
+                        fail = true;
+                        break;
+                    }
+                }
+                if ( fail ) {
+                    continue;
+                }
+
+                String[] qry = (String[]) dataEnumLists.get( key );
+                return qry[0];
+            } else if ( key.startsWith( factType + "." + field ) && (fieldsNeeded == null || fieldsNeeded.length == 0) ) {
                 String[] qry = (String[]) dataEnumLists.get( key );
                 return qry[0];
             }
