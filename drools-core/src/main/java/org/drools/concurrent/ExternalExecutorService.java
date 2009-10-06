@@ -88,7 +88,7 @@ public class ExternalExecutorService
     /**
      * {@inheritDoc}
      */
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
+    public <T> List<Future<T>> invokeAll(Collection<Callable<T>> tasks,
                                          long timeout,
                                          TimeUnit unit) throws InterruptedException {
         ExecutorService service = delegate.get();
@@ -103,7 +103,7 @@ public class ExternalExecutorService
     /**
      * {@inheritDoc}
      */
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(Collection<Callable<T>> tasks) throws InterruptedException {
         ExecutorService service = delegate.get();
         if ( service != null ) {
             return service.invokeAll( taskManager.trackTasks( tasks ) );
@@ -114,7 +114,7 @@ public class ExternalExecutorService
     /**
      * {@inheritDoc}
      */
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks,
+    public <T> T invokeAny(Collection<Callable<T>> tasks,
                            long timeout,
                            TimeUnit unit) throws InterruptedException,
                                          ExecutionException,
@@ -132,7 +132,7 @@ public class ExternalExecutorService
     /**
      * {@inheritDoc}
      */
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException,
+    public <T> T invokeAny(Collection<Callable<T>> tasks) throws InterruptedException,
                                                          ExecutionException {
         ExecutorService service = delegate.get();
         if ( service != null ) {
@@ -345,7 +345,7 @@ public class ExternalExecutorService
          * 
          * @return the collection of ObservableCallable<T> tasks
          */
-        public <T> Collection<Callable<T>> trackTasks(Collection<? extends Callable<T>> tasksToTrack) {
+        public <T> Collection<Callable<T>> trackTasks(Collection<Callable<T>> tasksToTrack) {
             Collection<Callable<T>> results = new ArrayList<Callable<T>>( tasksToTrack.size() );
             for ( Callable<T> task : tasksToTrack ) {
                 results.add( trackTask( task ) );
