@@ -25,6 +25,8 @@ import java.util.Map;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.drools.common.AbstractWorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
 
 /**
@@ -101,6 +103,17 @@ public class DroolsManagementAgent
                        mbean.getName() );
     }
 
+    public void registerKnowledgeSession(InternalWorkingMemory ksession) {
+        KnowledgeSessionMonitoring mbean = new KnowledgeSessionMonitoring( ksession );
+        registerMBean( ksession, 
+                       mbean,
+                       mbean.getName() );
+    }
+
+    public void unregisterKnowledgeSession(InternalWorkingMemory ksession) {
+        unregisterMBeansFromOwner( ksession );
+    }
+
     public void registerMBean(Object owner,
                               Object mbean,
                               ObjectName name) {
@@ -128,14 +141,30 @@ public class DroolsManagementAgent
         if ( mbl != null ) {
             MBeanServer mbs = getMBeanServer();
             for ( ObjectName name : mbl ) {
-                try {
-                    mbs.unregisterMBean( name );
-                } catch ( Exception e ) {
-                    System.err.println( "Exception unregistering mbean: " + name );
-                    e.printStackTrace();
-                }
+                unregisterMBeanFromServer( mbs,
+                                           name );
             }
         }
+    }
+
+    private void unregisterMBeanFromServer(MBeanServer mbs,
+                                           ObjectName name) {
+        try {
+            mbs.unregisterMBean( name );
+        } catch ( Exception e ) {
+            System.err.println( "Exception unregistering mbean: " + name );
+            e.printStackTrace();
+        }
+    }
+    
+    public void unregisterMBean( Object owner, ObjectName mbean ) {
+        List<ObjectName> mbl = mbeans.get( owner );
+        if( mbl != null ) {
+            mbl.remove( mbean );
+        }
+        MBeanServer mbs = getMBeanServer();
+        unregisterMBeanFromServer( mbs,
+                                   mbean );
     }
 
     public void unregisterDependentsMBeansFromOwner(Object owner) {
@@ -143,12 +172,8 @@ public class DroolsManagementAgent
         if ( mbl != null ) {
             MBeanServer mbs = getMBeanServer();
             for ( ObjectName name : mbl.subList( 1, mbl.size() ) ) {
-                try {
-                    mbs.unregisterMBean( name );
-                } catch ( Exception e ) {
-                    System.err.println( "Exception unregistering mbean: " + name );
-                    e.printStackTrace();
-                }
+                unregisterMBeanFromServer( mbs,
+                                           name );
             }
             mbl.subList( 1, mbl.size() ).clear();
         }
@@ -171,4 +196,5 @@ public class DroolsManagementAgent
         }
         return mbs;
     }
+
 }

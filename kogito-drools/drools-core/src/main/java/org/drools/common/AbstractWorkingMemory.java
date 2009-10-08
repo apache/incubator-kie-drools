@@ -61,6 +61,7 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.management.DroolsManagementAgent;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.instance.ProcessInstance;
@@ -338,8 +339,15 @@ public abstract class AbstractWorkingMemory
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
         
+        initManagementBeans();
     }
 
+    private void initManagementBeans() {
+        if( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
+            DroolsManagementAgent.getInstance().registerKnowledgeSession( this ); 
+        }
+    }
+    
     public String getEntryPointId() {
         return EntryPoint.DEFAULT.getEntryPointId();
     }
@@ -1986,6 +1994,9 @@ public abstract class AbstractWorkingMemory
     // }
 
     public void dispose() {
+        if( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
+            DroolsManagementAgent.getInstance().unregisterKnowledgeSession( this ); 
+        }
         this.workingMemoryEventSupport.reset();
         this.agendaEventSupport.reset();
         this.workflowEventSupport.reset();
@@ -2021,7 +2032,19 @@ public abstract class AbstractWorkingMemory
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         return this.entryPoints;
     }
+    
+    public long getFactCount() {
+        return this.objectStore.size();
+    }
 
+    public long getTotalFactCount() {
+        long result = 0;
+        for( WorkingMemoryEntryPoint ep : this.entryPoints.values() ) {
+            result += ep.getFactCount();
+        }
+        return result;
+    }
+    
     /**
      * This method must be called before starting any new work in the engine,
      * like inserting a new fact or firing a new rule. It will reset the engine

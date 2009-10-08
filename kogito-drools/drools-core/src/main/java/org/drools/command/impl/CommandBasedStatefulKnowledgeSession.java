@@ -70,7 +70,7 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.RuleFlowGroup;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
-
+ 
 public class CommandBasedStatefulKnowledgeSession
     implements
     StatefulKnowledgeSession {
@@ -395,6 +395,11 @@ public class CommandBasedStatefulKnowledgeSession
     
     public String getEntryPointId() {
         return EntryPoint.DEFAULT.getEntryPointId();
+    }
+
+    public long getFactCount() {
+        // TODO: implement this
+        return 0;
     }
 
 }

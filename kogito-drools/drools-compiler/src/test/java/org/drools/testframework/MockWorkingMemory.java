@@ -602,4 +602,14 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
+    public long getFactCount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public long getTotalFactCount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

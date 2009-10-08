@@ -191,4 +191,14 @@ public interface InternalWorkingMemory
      * activation firing. 
      */
     public void activationFired();
+    
+    /**
+     * Returns the total number of facts in the working memory, i.e., counting
+     * all facts from all entry points. This is an approximate value and may not
+     * be accurate due to the concurrent nature of the entry points.
+     * 
+     * @return
+     */
+    public long getTotalFactCount();
+
 }

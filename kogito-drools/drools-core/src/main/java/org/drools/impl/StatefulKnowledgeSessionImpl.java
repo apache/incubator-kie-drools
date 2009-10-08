@@ -823,4 +823,9 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getEntryPointId();
     }
 
+    public long getFactCount() {
+        return this.session.getFactCount();
+    }
+
+    
 }

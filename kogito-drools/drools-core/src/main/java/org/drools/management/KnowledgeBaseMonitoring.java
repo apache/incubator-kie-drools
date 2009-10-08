@@ -39,7 +39,7 @@ public class KnowledgeBaseMonitoring
     
     public KnowledgeBaseMonitoring(ReteooRuleBase kbase) {
         this.kbase = kbase;
-        this.name = DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":id="+kbase.getId());
+        this.name = DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":type="+kbase.getId());
     }
     
     public ObjectName getName() {
@@ -84,12 +84,12 @@ public class KnowledgeBaseMonitoring
         for( EntryPointNode epn : kbase.getRete().getEntryPointNodes().values() ) {
             for( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
                 ObjectTypeNodeMonitor otnm = new ObjectTypeNodeMonitor( otn );
-                ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",type=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType="+((ClassObjectType)otn.getObjectType()).getClassName() );
+                ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType="+((ClassObjectType)otn.getObjectType()).getClassName() );
                 DroolsManagementAgent.getInstance().registerMBean( kbase, otnm, name );
             }
         }
         KBaseConfigurationMonitor kbcm = new KBaseConfigurationMonitor( kbase.getConfiguration() );
-        ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",type=Configuration" );
+        ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=Configuration" );
         DroolsManagementAgent.getInstance().registerMBean( kbase, kbcm, name );
     }
 

@@ -19,7 +19,6 @@ package org.drools.event;
 import java.util.EventListener;
 
 import org.drools.WorkingMemory;
-import org.drools.event.rule.ActivationCancelledCause;
 
 public interface AgendaEventListener
     extends
