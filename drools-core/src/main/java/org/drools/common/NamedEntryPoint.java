@@ -9,8 +9,10 @@ import java.util.Collection;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.FactException;
+import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
+import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
@@ -19,8 +21,6 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -517,24 +517,28 @@ public class NamedEntryPoint
         return this.objectStore.getObjectForHandle( (InternalFactHandle) factHandle );
     }    
     
+    @SuppressWarnings("unchecked")
     public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
+    @SuppressWarnings("unchecked")
     public Collection< Object > getObjects() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
+    @SuppressWarnings("unchecked")
     public Collection< Object > getObjects(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
@@ -543,6 +547,10 @@ public class NamedEntryPoint
 
     public String getEntryPointId() {
         return this.entryPoint.getEntryPointId();
+    }
+
+    public long getFactCount() {
+        return this.objectStore.size();
     }    
 
 }

@@ -2,7 +2,6 @@ package org.drools.common;
 
 import java.util.Iterator;
 
-import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 
 public interface ObjectStore {
