@@ -133,4 +133,12 @@ public interface WorkingMemoryEntryPoint {
      * @return
      */
     <T extends FactHandle> Collection< T > getFactHandles(ObjectFilter filter);    
+    
+    /**
+     * Returns the total number of facts currently in this entry point
+     * 
+     * @return
+     */
+    public long getFactCount();
+    
 }
