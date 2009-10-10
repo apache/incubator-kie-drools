@@ -16,12 +16,42 @@
  */
 package org.drools.management;
 
+import java.util.Map;
+
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.AttributeNotFoundException;
+import javax.management.DynamicMBean;
+import javax.management.InvalidAttributeValueException;
+import javax.management.MBeanException;
+import javax.management.MBeanInfo;
+import javax.management.MBeanNotificationInfo;
+import javax.management.MBeanOperationInfo;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.management.RuntimeOperationsException;
+import javax.management.openmbean.ArrayType;
+import javax.management.openmbean.CompositeData;
+import javax.management.openmbean.CompositeDataSupport;
+import javax.management.openmbean.CompositeType;
+import javax.management.openmbean.OpenDataException;
+import javax.management.openmbean.OpenMBeanAttributeInfoSupport;
+import javax.management.openmbean.OpenMBeanConstructorInfoSupport;
+import javax.management.openmbean.OpenMBeanInfoSupport;
+import javax.management.openmbean.OpenMBeanOperationInfoSupport;
+import javax.management.openmbean.OpenMBeanParameterInfo;
+import javax.management.openmbean.OpenMBeanParameterInfoSupport;
+import javax.management.openmbean.OpenType;
+import javax.management.openmbean.SimpleType;
+import javax.management.openmbean.TabularData;
+import javax.management.openmbean.TabularDataSupport;
+import javax.management.openmbean.TabularType;
 
 import org.drools.base.ClassObjectType;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.rule.Package;
 
 /**
  * An implementation for the KnowledgeBaseMBean
@@ -30,18 +60,127 @@ import org.drools.reteoo.ReteooRuleBase;
  */
 public class KnowledgeBaseMonitoring
     implements
-    KnowledgeBaseMonitoringMBean {
+    DynamicMBean {
 
-    private static final String KBASE_PREFIX = "org.drools.kbases";
-    
-    private ReteooRuleBase kbase;
-    private ObjectName name;
-    
+    private static final String ATTR_PACKAGES = "Packages";
+    private static final String ATTR_GLOBALS = "Globals";
+    private static final String ATTR_SESSION_COUNT = "SessionCount";
+    private static final String ATTR_ID = "Id";
+
+    private static final String OP_STOP_INTERNAL_MBEANS = "stopInternalMBeans";
+    private static final String OP_START_INTERNAL_MBEANS = "startInternalMBeans";
+
+    private static final String  KBASE_PREFIX    = "org.drools.kbases";
+
+    // ************************************************************************************************
+    // MBean attributes
+    //
+    private ReteooRuleBase       kbase;
+    private ObjectName           name;
+
+    private OpenMBeanInfoSupport info;
+
+    // ************************************************************************************************
+    // Define and instantiate all info related to the globals table
+    //
+    private static String[]      globalsColNames = {"name", "class"};
+    private static String[]      globalsColDescr = {"Global identifier", "Fully qualified class name"};
+    private static OpenType[]    globalsColTypes = {SimpleType.STRING, SimpleType.STRING};
+    private static CompositeType globalsType;
+    private static String[]      index           = {"name"};
+    private static TabularType   globalsTableType;
+
+    static {
+        try {
+            globalsType = new CompositeType( "globalsType",
+                                             "Globals row type",
+                                             globalsColNames,
+                                             globalsColDescr,
+                                             globalsColTypes );
+            globalsTableType = new TabularType( "globalsTableType",
+                                                "List of globals",
+                                                globalsType,
+                                                index );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    // ************************************************************************************************
+
+    // Constructor
     public KnowledgeBaseMonitoring(ReteooRuleBase kbase) {
         this.kbase = kbase;
-        this.name = DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":type="+kbase.getId());
+        this.name = DroolsManagementAgent.createObjectName( KBASE_PREFIX + ":type=" + kbase.getId() );
+
+        initOpenMBeanInfo();
     }
-    
+
+    /**
+     *  Initialize the open mbean metadata
+     */
+    private void initOpenMBeanInfo() {
+        OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[4];
+        OpenMBeanConstructorInfoSupport[] constructors = new OpenMBeanConstructorInfoSupport[1];
+        OpenMBeanOperationInfoSupport[] operations = new OpenMBeanOperationInfoSupport[2];
+        MBeanNotificationInfo[] notifications = new MBeanNotificationInfo[0];
+
+        try {
+            // Define the attributes 
+            attributes[0] = new OpenMBeanAttributeInfoSupport( ATTR_ID,
+                                                               "Knowledge Base Id",
+                                                               SimpleType.STRING,
+                                                               true,
+                                                               false,
+                                                               false );
+            attributes[1] = new OpenMBeanAttributeInfoSupport( ATTR_SESSION_COUNT,
+                                                               "Number of created sessions for this Knowledge Base",
+                                                               SimpleType.LONG,
+                                                               true,
+                                                               false,
+                                                               false );
+            attributes[2] = new OpenMBeanAttributeInfoSupport( ATTR_GLOBALS,
+                                                               "List of globals",
+                                                               globalsTableType,
+                                                               true,
+                                                               false,
+                                                               false );
+            attributes[3] = new OpenMBeanAttributeInfoSupport( ATTR_PACKAGES,
+                                                               "List of Packages",
+                                                               new ArrayType( 1,
+                                                                              SimpleType.STRING ),
+                                                               true,
+                                                               false,
+                                                               false );
+            //No arg constructor                
+            constructors[0] = new OpenMBeanConstructorInfoSupport( "KnowledgeBaseMonitoringMXBean",
+                                                                   "Constructs a KnowledgeBaseMonitoringMXBean instance.",
+                                                                   new OpenMBeanParameterInfoSupport[0] );
+            //Operations 
+            OpenMBeanParameterInfo[] params = new OpenMBeanParameterInfoSupport[0];
+            operations[0] = new OpenMBeanOperationInfoSupport( OP_START_INTERNAL_MBEANS,
+                                                               "Creates, registers and starts all the dependent MBeans that allow monitor all the details in this KnowledgeBase.",
+                                                               params,
+                                                               SimpleType.VOID,
+                                                               MBeanOperationInfo.INFO );
+            operations[1] = new OpenMBeanOperationInfoSupport( OP_STOP_INTERNAL_MBEANS,
+                                                               "Stops and disposes all the dependent MBeans that allow monitor all the details in this KnowledgeBase.",
+                                                               params,
+                                                               SimpleType.VOID,
+                                                               MBeanOperationInfo.INFO );
+
+            //Build the info 
+            info = new OpenMBeanInfoSupport( this.getClass().getName(),
+                                             "Knowledge Base Monitor MXBean",
+                                             attributes,
+                                             constructors,
+                                             operations,
+                                             notifications );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
     public ObjectName getName() {
         return name;
     }
@@ -49,8 +188,17 @@ public class KnowledgeBaseMonitoring
     /* (non-Javadoc)
      * @see org.drools.management.KnowledgeBaseMBean#getGlobals()
      */
-    public String getGlobals() {
-        return kbase.getGlobals().toString();
+    @SuppressWarnings("unchecked")
+    public TabularData getGlobals() throws OpenDataException {
+        TabularDataSupport globalsTable = new TabularDataSupport( globalsTableType );
+        for ( Map.Entry<String, Class< ? >> global : ((Map<String, Class< ? >>) kbase.getGlobals()).entrySet() ) {
+            Object[] itemValues = {global.getKey(), global.getValue().getName()};
+            CompositeData result = new CompositeDataSupport( globalsType,
+                                                             globalsColNames,
+                                                             itemValues );
+            globalsTable.put( result );
+        }
+        return globalsTable;
     }
 
     /* (non-Javadoc)
@@ -63,8 +211,8 @@ public class KnowledgeBaseMonitoring
     /* (non-Javadoc)
      * @see org.drools.management.KnowledgeBaseMBean#getPackages()
      */
-    public String getPackages() {
-        return kbase.getPackagesMap().keySet().toString();
+    public String[] getPackages() {
+        return kbase.getPackagesMap().keySet().toArray( new String[0] );
     }
 
     /* (non-Javadoc)
@@ -73,28 +221,95 @@ public class KnowledgeBaseMonitoring
     public long getSessionCount() {
         return kbase.getWorkingMemoryCounter();
     }
-    
-    public String getEntryPoints() {
-        // the dependent mbeans are created here in order to delay their creating 
-        // until the this kbase is actually inspected 
-        return kbase.getRete().getEntryPointNodes().keySet().toString();
-    }
 
     public void startInternalMBeans() {
-        for( EntryPointNode epn : kbase.getRete().getEntryPointNodes().values() ) {
-            for( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
+        for ( EntryPointNode epn : kbase.getRete().getEntryPointNodes().values() ) {
+            for ( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
                 ObjectTypeNodeMonitor otnm = new ObjectTypeNodeMonitor( otn );
-                ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType="+((ClassObjectType)otn.getObjectType()).getClassName() );
-                DroolsManagementAgent.getInstance().registerMBean( kbase, otnm, name );
+                ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType=" + ((ClassObjectType) otn.getObjectType()).getClassName() );
+                DroolsManagementAgent.getInstance().registerMBean( kbase,
+                                                                   otnm,
+                                                                   name );
             }
         }
         KBaseConfigurationMonitor kbcm = new KBaseConfigurationMonitor( kbase.getConfiguration() );
         ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=Configuration" );
-        DroolsManagementAgent.getInstance().registerMBean( kbase, kbcm, name );
+        DroolsManagementAgent.getInstance().registerMBean( kbase,
+                                                           kbcm,
+                                                           name );
     }
 
     public void stopInternalMBeans() {
         DroolsManagementAgent.getInstance().unregisterDependentsMBeansFromOwner( kbase );
     }
-    
+
+    public Object getAttribute(String attributeName) throws AttributeNotFoundException,
+                                                    MBeanException,
+                                                    ReflectionException {
+        if ( attributeName == null ) {
+            throw new RuntimeOperationsException( new IllegalArgumentException( "attributeName cannot be null" ),
+                                                  "Cannot invoke a getter of " + getClass().getName() );
+        } else if ( attributeName.equals( ATTR_ID ) ) {
+            return getId();
+        } else if ( attributeName.equals( ATTR_SESSION_COUNT ) ) {
+            return Long.valueOf( getSessionCount() );
+        } else if ( attributeName.equals( ATTR_GLOBALS ) ) {
+            try {
+                return getGlobals();
+            } catch ( OpenDataException e ) {
+                throw new RuntimeOperationsException( new RuntimeException( "Error retrieving globals list",
+                                                                            e ),
+                                                      "Error retrieving globals list " + e.getMessage() );
+            }
+        } else if ( attributeName.equals( ATTR_PACKAGES ) ) {
+            return getPackages();
+        }
+        throw new AttributeNotFoundException( "Cannot find " + attributeName + " attribute " );
+    }
+
+    public AttributeList getAttributes(String[] attributeNames) {
+        AttributeList resultList = new AttributeList();
+        if ( attributeNames.length == 0 ) return resultList;
+        for ( int i = 0; i < attributeNames.length; i++ ) {
+            try {
+                Object value = getAttribute( attributeNames[i] );
+                resultList.add( new Attribute( attributeNames[i],
+                                               value ) );
+            } catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+        return (resultList);
+    }
+
+    public MBeanInfo getMBeanInfo() {
+        return info;
+    }
+
+    public Object invoke(String operationName,
+                         Object[] params,
+                         String[] signature) throws MBeanException,
+                                            ReflectionException {
+        if ( operationName.equals( OP_START_INTERNAL_MBEANS ) ) {
+             startInternalMBeans();
+        } else if ( operationName.equals( OP_STOP_INTERNAL_MBEANS ) ) {
+            stopInternalMBeans();
+        } else {
+            throw new ReflectionException( new NoSuchMethodException( operationName ),
+                                           "Cannot find the operation " + operationName );
+        }
+        return null;
+    }
+
+    public void setAttribute(Attribute attribute) throws AttributeNotFoundException,
+                                                 InvalidAttributeValueException,
+                                                 MBeanException,
+                                                 ReflectionException {
+        throw new AttributeNotFoundException( "No attribute can be set in this MBean" );
+    }
+
+    public AttributeList setAttributes(AttributeList attributes) {
+        return new AttributeList();
+    }
+
 }
