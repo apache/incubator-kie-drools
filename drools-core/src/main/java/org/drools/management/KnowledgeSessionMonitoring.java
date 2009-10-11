@@ -258,7 +258,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
                 this.activationsCreated = new AtomicLong(0);
                 this.activationsCancelled = new AtomicLong(0);
                 this.firingTime = new AtomicLong(0);
-                this.lastReset = new AtomicReference(new Date());
+                this.lastReset = new AtomicReference<Date>(new Date());
             }
             
             public void startFireClock() {
