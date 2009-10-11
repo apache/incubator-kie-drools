@@ -1283,7 +1283,7 @@ public abstract class AbstractWorkingMemory
                 handle = this.objectStore.reconnect( handle );
             }
 
-            if ( handle.getId() == -1 ) {
+            if ( handle.getId() == -1 || ( handle.isEvent() && ((EventFactHandle)handle).isExpired() ) ) {
                 // the handle is invalid, most likely already retracted, so
                 // return
                 return;
@@ -1352,6 +1352,12 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
+
+            if ( handle.getId() == -1 || ( handle.isEvent() && ((EventFactHandle)handle).isExpired() ) ) {
+                // the handle is invalid, most likely already retracted, so
+                // return
+                return;
+            }
 
             // the handle might have been disconnected, so reconnect if it has
             if ( factHandle instanceof DisconnectedFactHandle ) {
@@ -1460,7 +1466,7 @@ public abstract class AbstractWorkingMemory
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = handle.getObject();
 
-            if ( handle.getId() == -1 || object == null ) {
+            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle)handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so
                 // return
                 // and we cannot assert a null object
