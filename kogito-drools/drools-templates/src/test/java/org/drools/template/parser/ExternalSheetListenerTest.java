@@ -456,6 +456,17 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     return null;
                 }
+
+                public String getEntryPointId() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public long getFactCount() {
+                    // TODO Auto-generated method stub
+                    return 0;
+                }
+
 			};
 		}
 	}
