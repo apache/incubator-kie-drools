@@ -3,14 +3,11 @@ package org.drools.vsm;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.mina.core.future.WriteFuture;
 import org.drools.KnowledgeBase;
 import org.drools.command.Command;
 import org.drools.command.ExecuteCommand;
-import org.drools.command.KnowledgeBaseAddKnowledgePackagesCommand;
 import org.drools.command.KnowledgeContextResolveFromContextCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
-import org.drools.definition.KnowledgePackage;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
@@ -354,6 +351,11 @@ public class StatefulKnowledgeSessionClient
     public String getEntryPointId() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public long getFactCount() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

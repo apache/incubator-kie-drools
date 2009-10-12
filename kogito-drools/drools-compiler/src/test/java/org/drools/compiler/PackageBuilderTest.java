@@ -1392,6 +1392,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
+        final TypeDeclarationDescr typeDeclDescr = new TypeDeclarationDescr(StockTick.class.getName());
+        typeDeclDescr.addMetaAttribute( "role", "event" );
+        packageDescr.addTypeDeclaration( typeDeclDescr );
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
 
