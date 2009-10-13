@@ -33,6 +33,10 @@ public class SomeFact {
 
     private List<String> factListString = new ArrayList<String>();
 
+
+
+    private EnumClass anEnum;
+
     public int getAge() {
         return age;
     }
@@ -143,5 +147,11 @@ public class SomeFact {
     public void setFactList(List<SomeFact> factList) {
         this.factList = factList;
     }
+    public EnumClass getAnEnum() {
+        return anEnum;
+    }
 
+    public void setAnEnum(EnumClass anEnum) {
+        this.anEnum = anEnum;
+    }
 }

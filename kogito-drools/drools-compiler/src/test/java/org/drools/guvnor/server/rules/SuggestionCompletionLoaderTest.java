@@ -114,7 +114,20 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 	    assertEquals("bigDecimal", fields[2]);
 
     }
+    public void testEnumFields() throws Exception {
 
+	    SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+	    SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact", new ArrayList(), new ArrayList() );
+	    assertNotNull(eng);
+        assertNotNull(eng.dataEnumLists);
+        assertEquals(eng.dataEnumLists.get("SomeFact.anEnum").length,3);
+        String a[] = eng.dataEnumLists.get("SomeFact.anEnum") ;
+        assertEquals(a[0],"0="+EnumClass.v1);
+        assertEquals(a[1],"1="+EnumClass.v2);
+        assertEquals(a[2],"2="+EnumClass.v3);
+
+
+    }
     public void testSortOrderOfFacts() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact\n import org.drools.Person", new ArrayList(), new ArrayList() );

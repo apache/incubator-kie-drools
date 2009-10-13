@@ -181,15 +181,37 @@ public class SuggestionCompletionEngineBuilder {
                 Type type = field.getGenericType();
                 if (type instanceof ParameterizedType) {
                     ParameterizedType pt = (ParameterizedType) type;
-                    Type goodType=null;
+                    Type goodType = null;
                     for (Type t : pt.getActualTypeArguments()) {
                         goodType = t;
                     }
                     int index = goodType.toString().lastIndexOf(".");
-                    String className = goodType.toString().substring(index+1);
-                    this.instance.fieldParametersType.put(fieldName,className);
-                  }
+                    String className = goodType.toString().substring(index + 1);
+                    this.instance.fieldParametersType.put(fieldName, className);
+
+                }
+
+                Class<?> fieldClass = field.getType();
+                if(fieldClass.isEnum()) {
+                    Field[] flds = fieldClass.getDeclaredFields();
+                    List<String> listEnum = new ArrayList<String>();
+                    int i=0;
+                    for (Field f : flds) {
+                        if(f.isEnumConstant()) {
+                            listEnum.add(i+ "="+f.getName());
+                            i++;
+                        }
+                    }
+                    String a[] = new String[listEnum.size()];
+                    i = 0;
+                    for (String value : listEnum) {
+                        a[i] = value;
+                        i++;
+                    }
+                    this.instance.dataEnumLists.put(fieldName, a);
+                }
             }
+
         }
         this.instance.globalTypes = this.globalTypes;
         this.instance.actionDSLSentences = makeArray(this.actionDSLSentences);
