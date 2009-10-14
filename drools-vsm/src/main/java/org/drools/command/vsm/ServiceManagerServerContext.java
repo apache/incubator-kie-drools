@@ -2,21 +2,21 @@ package org.drools.command.vsm;
 
 import org.drools.command.Context;
 import org.drools.command.ContextManager;
-import org.drools.vsm.ServiceManagerServer;
+import org.drools.vsm.ServiceManagerData;
 
 public class ServiceManagerServerContext
     implements
     Context {
-    private Context              context;
-    private ServiceManagerServer server;
+    private Context            context;
+    private ServiceManagerData data;
 
     public ServiceManagerServerContext(Context context,
-                                       ServiceManagerServer server) {
-        this.server = server;
+                                       ServiceManagerData data) {
+        this.data = data;
     }
 
-    public ServiceManagerServer getServiceManager() {
-        return server;
+    public ServiceManagerData getServiceManagerData() {
+        return this.data;
     }
 
     public ContextManager getContextManager() {

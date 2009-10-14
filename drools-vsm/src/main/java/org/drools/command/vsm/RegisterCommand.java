@@ -1,19 +1,8 @@
 package org.drools.command.vsm;
 
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
 import org.drools.command.Context;
-import org.drools.command.ExecuteCommand;
 import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.concurrent.CommandExecutor;
-import org.drools.io.Resource;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.vsm.ServiceManager;
-import org.drools.vsm.ServiceManagerClient;
-import org.drools.vsm.ServiceManagerServer;
+import org.drools.vsm.ServiceManagerData;
 
 public class RegisterCommand
     implements
@@ -32,10 +21,10 @@ public class RegisterCommand
     }
 
     public Void execute(Context context) {
-        ServiceManagerServer server = (ServiceManagerServer) context.get( ServiceManagerServer.SERVICE_MANAGER );
+        ServiceManagerData data = (ServiceManagerData) context.get( ServiceManagerData.SERVICE_MANAGER_DATA );
 
-        server.getRoot().set( identifier,
-                              type + ":" + instanceId );
+        data.getRoot().set( identifier,
+                            type + ":" + instanceId );
 
         return null;
     }

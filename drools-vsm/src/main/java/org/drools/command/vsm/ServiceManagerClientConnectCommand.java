@@ -1,27 +1,34 @@
 package org.drools.command.vsm;
 
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.io.Resource;
-import org.drools.vsm.ServiceManager;
-import org.drools.vsm.ServiceManagerServer;
+import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.vsm.ServiceManagerData;
 
 public class ServiceManagerClientConnectCommand
     implements
     GenericCommand<Integer> {
-
-    public ServiceManagerClientConnectCommand() {
-    }
- 
     
+    private String outIdentifier;
+
+    
+
+    public ServiceManagerClientConnectCommand(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
+
+
     public Integer execute(Context context) {
-        ServiceManagerServer server = ( ServiceManagerServer ) ((ServiceManagerServerContext)context).getServiceManager();
-        return server.getSessionIdCounter().getAndIncrement();
+        ServiceManagerData data = (ServiceManagerData) context.get( ServiceManagerData.SERVICE_MANAGER_DATA );
+        
+        Integer sessionId = data.getSessionIdCounter().getAndIncrement();
+        if ( this.outIdentifier != null ) {
+            ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, sessionId );
+        } 
+        
+        return sessionId;
     }
 
 }
