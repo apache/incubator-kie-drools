@@ -9,15 +9,22 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.vsm.ServiceManager;
 
 
 public class BatchExecutionImpl implements GenericCommand<Void> {
 	private List<GenericCommand> commands;
+	
+	private String lookup;
 
 	public BatchExecutionImpl(List<GenericCommand> commands) {
-        super();
         this.commands = commands;
     }
+	
+    public BatchExecutionImpl(List<GenericCommand> commands, String lookup) {
+        this.commands = commands;
+        this.lookup = lookup;
+    }	
 
     public List<GenericCommand> getCommands() {
         return commands;
