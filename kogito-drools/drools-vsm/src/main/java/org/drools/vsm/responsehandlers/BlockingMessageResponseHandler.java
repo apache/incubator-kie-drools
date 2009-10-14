@@ -4,26 +4,26 @@
 package org.drools.vsm.responsehandlers;
 
 import org.drools.vsm.Message;
-import org.drools.vsm.BaseMinaHandler.MessageResponseHandler;
+import org.drools.vsm.MessageResponseHandler;
 
-public class BlockingMessageResponseHandler extends AbstractBlockingResponseHandler implements MessageResponseHandler {
-    private static final int ATTACHMENT_ID_WAIT_TIME = 10000;
-    private static final int CONTENT_ID_WAIT_TIME = 3000;
+public class BlockingMessageResponseHandler extends AbstractBlockingResponseHandler
+    implements
+    MessageResponseHandler {
+    private static final int ATTACHMENT_ID_WAIT_TIME = 100000;
+    private static final int CONTENT_ID_WAIT_TIME    = 500000;
 
     private volatile Message message;
 
     public synchronized void receive(Message message) {
         this.message = message;
-        setDone(true);
+        setDone( true );
     }
 
-    public  Message getMessage() {
-        // note that this method doesn't need to be synced because if waitTillDone returns true,
-        // it means attachmentId is available
-        boolean done = waitTillDone(ATTACHMENT_ID_WAIT_TIME);
+    public Message getMessage() {
+        boolean done = waitTillDone( CONTENT_ID_WAIT_TIME );
 
-        if (!done) {
-            throw new RuntimeException("Timeout : unable to retrieve Object Id");
+        if ( !done ) {
+            throw new RuntimeException( "Timeout : unable to retrieve Object Id" );
         }
 
         return this.message;
