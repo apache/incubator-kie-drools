@@ -3,20 +3,17 @@ package org.drools.vsm;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.drools.command.Command;
-
 public class Message
     implements
     Serializable {
-    private int                  sessionId;
-    private int                  responseId;
-    private boolean              async;
-    private Object               payload;
+    private int     sessionId;
+    private int     responseId;
+    private boolean async;
+    private Object  payload;
 
     public Message(int sessionId,
                    int responseId,
                    boolean async,
-                   Map<String, Integer> contextVars,                   
                    Object payload) {
         this.sessionId = sessionId;
         this.async = async;
@@ -39,8 +36,6 @@ public class Message
     public int getResponseId() {
         return responseId;
     }
-    
-    
 
     public boolean isAsync() {
         return async;
