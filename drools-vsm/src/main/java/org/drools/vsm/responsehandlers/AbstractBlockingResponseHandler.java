@@ -20,16 +20,16 @@ public abstract class AbstractBlockingResponseHandler extends AbstractBaseRespon
      */
     public synchronized boolean waitTillDone(long time) {
 
-        if (!isDone()) {
+        if ( !isDone() ) {
             try {
-                wait(time);
-            } catch (InterruptedException e) {
+                wait( time );
+            } catch ( InterruptedException e ) {
                 // swallow and return state of done
             }
         }
 
-        if(hasError()) {            
-            throw createSideException(getError());
+        if ( hasError() ) {
+            throw createSideException( getError() );
         }
 
         return isDone();

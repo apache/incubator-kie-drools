@@ -1,8 +1,8 @@
 package org.drools.vsm.responsehandlers;
 
-import org.drools.vsm.BaseMinaHandler;
-
 import java.lang.reflect.Constructor;
+
+import org.drools.vsm.MessageResponseHandler;
 
 /**
  * Abstract base class for client ResponseHandlers. Provides synchonized access to <field>done</field> which represents
@@ -15,7 +15,9 @@ import java.lang.reflect.Constructor;
  *
  * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
-public abstract class AbstractBaseResponseHandler implements BaseMinaHandler.ResponseHandler {
+public abstract class AbstractBaseResponseHandler
+    implements
+    MessageResponseHandler {
     private volatile boolean done;
     private RuntimeException error;
 
@@ -53,13 +55,13 @@ public abstract class AbstractBaseResponseHandler implements BaseMinaHandler.Res
         RuntimeException clientSideException;
 
         try {
-            Constructor<? extends RuntimeException> constructor = serverSideException.getClass().getConstructor(String.class);
+            Constructor< ? extends RuntimeException> constructor = serverSideException.getClass().getConstructor( String.class );
 
-            clientSideException = constructor.newInstance(
-        		"Server-side Exception: " + serverSideException.getMessage());
-        } catch (Exception e) {
+            clientSideException = constructor.newInstance( "Server-side Exception: " + serverSideException.getMessage() );
+        } catch ( Exception e ) {
             // this should never happen - if it does, it is a programming error
-            throw new RuntimeException("Could not create client side exception", e);
+            throw new RuntimeException( "Could not create client side exception",
+                                        e );
         }
 
         return clientSideException;
