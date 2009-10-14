@@ -3,18 +3,19 @@ package org.drools.vsm;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class CollectionClient<T> implements Collection {
+public class CollectionClient<T>
+    implements
+    Collection {
     private String parentInstanceId;
-    
+
     public CollectionClient(String parentInstanceId) {
         this.parentInstanceId = parentInstanceId;
     }
-    
+
     public String getParentInstanceId() {
         return this.parentInstanceId;
     }
-    
-    
+
     public boolean add(Object e) {
         // TODO Auto-generated method stub
         return false;
@@ -27,7 +28,7 @@ public class CollectionClient<T> implements Collection {
 
     public void clear() {
         // TODO Auto-generated method stub
-        
+
     }
 
     public boolean contains(Object o) {
