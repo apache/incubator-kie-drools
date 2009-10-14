@@ -29,6 +29,10 @@ public class BasePipelineContext
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
+    
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
     public Map<String, Object> getProperties() {
         return properties;
