@@ -111,7 +111,8 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
 	    assertEquals("age", fields[0]);
 	    assertEquals("alive", fields[1]);
-	    assertEquals("bigDecimal", fields[2]);
+        assertEquals("anEnum", fields[2]);
+	    assertEquals("bigDecimal", fields[3]);
 
     }
     public void testEnumFields() throws Exception {
