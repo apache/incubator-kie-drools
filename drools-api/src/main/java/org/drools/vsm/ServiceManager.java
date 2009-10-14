@@ -9,7 +9,7 @@ import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 
-public interface ServiceManager {
+public interface ServiceManager extends CommandExecutor {
     KnowledgeBuilderProvider getKnowledgeBuilderFactory();
 
     KnowledgeBaseProvider getKnowledgeBaseFactory();
