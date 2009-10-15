@@ -27,6 +27,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
+import org.drools.reteoo.ForallNotNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
@@ -36,6 +37,7 @@ import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Behavior;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
+import org.drools.rule.GroupElement.Type;
 
 /**
  * @author etirelli
@@ -45,7 +47,7 @@ public class GroupElementBuilder
     implements
     ReteooComponentBuilder {
 
-    private final Map geBuilders = new HashMap();
+    private final Map<Type, ReteooComponentBuilder> geBuilders = new HashMap<Type, ReteooComponentBuilder>();
 
     public GroupElementBuilder() {
         this.geBuilders.put( GroupElement.AND,
@@ -53,6 +55,8 @@ public class GroupElementBuilder
         this.geBuilders.put( GroupElement.OR,
                              new OrBuilder() );
         this.geBuilders.put( GroupElement.NOT,
+                             new NotBuilder() );
+        this.geBuilders.put( GroupElement.FORALL_NOT,
                              new NotBuilder() );
         this.geBuilders.put( GroupElement.EXISTS,
                              new ExistsBuilder() );
@@ -66,7 +70,7 @@ public class GroupElementBuilder
                       final RuleConditionElement rce) {
         final GroupElement ge = (GroupElement) rce;
 
-        final ReteooComponentBuilder builder = (ReteooComponentBuilder) this.geBuilders.get( ge.getType() );
+        final ReteooComponentBuilder builder = this.geBuilders.get( ge.getType() );
         
         context.push( ge );
 
@@ -84,7 +88,7 @@ public class GroupElementBuilder
                                           final RuleConditionElement rce) {
         final GroupElement ge = (GroupElement) rce;
 
-        final ReteooComponentBuilder builder = (ReteooComponentBuilder) this.geBuilders.get( ge.getType() );
+        final ReteooComponentBuilder builder = this.geBuilders.get( ge.getType() );
 
         return builder.requiresLeftActivation( utils,
                                                rce );
@@ -243,7 +247,7 @@ public class GroupElementBuilder
 
                 // create a tuple start equals constraint and set it in the context
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List predicates = new ArrayList();
+                final List<TupleStartEqualsConstraint> predicates = new ArrayList<TupleStartEqualsConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
 
@@ -257,13 +261,25 @@ public class GroupElementBuilder
             // then attach the NOT node. It will work both as a simple not node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
+            NotNode node = null;
+            if( GroupElement.FORALL_NOT.equals( not.getType() ) ) {
+                node = new ForallNotNode( context.getNextId(),
+                             context.getTupleSource(),
+                             context.getObjectSource(),
+                             betaConstraints,
+                             behaviors,
+                             context,
+                             not.getForallBaseObjectType() );
+            } else {
+                node = new NotNode( context.getNextId(),
+                                    context.getTupleSource(),
+                                    context.getObjectSource(),
+                                    betaConstraints,
+                                    behaviors,
+                                    context );
+            }
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                        new NotNode( context.getNextId(),
-                                                                                     context.getTupleSource(),
-                                                                                     context.getObjectSource(),
-                                                                                     betaConstraints,
-                                                                                     behaviors,
-                                                                                     context ) ) );
+                                                                        node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
@@ -323,7 +339,7 @@ public class GroupElementBuilder
 
                 // create a tuple start equals constraint and set it in the context
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List predicates = new ArrayList();
+                final List<TupleStartEqualsConstraint> predicates = new ArrayList<TupleStartEqualsConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
 

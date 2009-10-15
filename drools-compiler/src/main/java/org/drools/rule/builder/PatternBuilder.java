@@ -210,14 +210,22 @@ public class PatternBuilder
         }
 
         for ( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
-            if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getType() ) ) {
-                SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
-                SlidingTimeWindow window = new SlidingTimeWindow( swd.getLength() );
-                pattern.addBehavior( window );
-            } else if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getType() ) ) {
-                SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
-                SlidingLengthWindow window = new SlidingLengthWindow( (int) swd.getLength() );
-                pattern.addBehavior( window );
+            if( pattern.getObjectType().isEvent() ) {
+                if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getType() ) ) {
+                    SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
+                    SlidingTimeWindow window = new SlidingTimeWindow( swd.getLength() );
+                    pattern.addBehavior( window );
+                } else if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getType() ) ) {
+                    SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
+                    SlidingLengthWindow window = new SlidingLengthWindow( (int) swd.getLength() );
+                    pattern.addBehavior( window );
+                }
+            } else {
+                // Some behaviors can only be assigned to patterns declared as events
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              patternDescr,
+                                                              null,
+                                                              "A Sliding Window behavior can only be assigned to patterns declared with @role( event ). The pattern '" + pattern.getObjectType() + "' in the rule '" + context.getRule().getName() + "' is not declared as an Event." ) );
             }
         }
 
