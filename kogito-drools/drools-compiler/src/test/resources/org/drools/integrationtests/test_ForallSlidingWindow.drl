@@ -1,0 +1,14 @@
+package org.drools;
+
+global java.util.List results;
+
+declare StockTick
+    @role( event )
+end
+
+rule "test nested CEs"	
+	when
+	    forall( StockTick( company == "RHT" ) over window:time( 30s ) )
+	then 
+		results.add("OK");		
+end

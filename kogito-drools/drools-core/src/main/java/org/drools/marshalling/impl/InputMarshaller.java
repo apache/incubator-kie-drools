@@ -473,7 +473,8 @@ public class InputMarshaller {
                 }
                 break;
             }
-            case NodeTypeEnums.NotNode : {
+            case NodeTypeEnums.NotNode : 
+            case NodeTypeEnums.ForallNotNode : {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 int type = stream.readShort();
                 if ( type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED ) {

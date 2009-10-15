@@ -177,15 +177,32 @@ public class NotNode extends BetaNode {
                 // this is now blocked so remove from memory
                 memory.getLeftTupleMemory().remove( leftTuple );
 
-                this.sink.propagateRetractLeftTuple( leftTuple,
-                                                     context,
-                                                     workingMemory );
+                // subclasses like ForallNotNode might override this propagation
+                propagateRetractLeftTuple( context,
+                                           workingMemory,
+                                           leftTuple );
             }
 
             leftTuple = temp;
         }
 
         this.constraints.resetFactHandle( memory.getContext() );
+    }
+
+    /**
+     * This is a hook method so that subclasses (like ForallNotNode) can 
+     * override the default behaviour.
+     * 
+     * @param context
+     * @param workingMemory
+     * @param leftTuple
+     */
+    protected void propagateRetractLeftTuple(final PropagationContext context,
+                                             final InternalWorkingMemory workingMemory,
+                                             LeftTuple leftTuple) {
+        this.sink.propagateRetractLeftTuple( leftTuple,
+                                             context,
+                                             workingMemory );
     }
 
     /**
@@ -243,15 +260,32 @@ public class NotNode extends BetaNode {
                 // was previous blocked and not in memory, so add
                 memory.getLeftTupleMemory().add( leftTuple );
 
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    context,
-                                                    workingMemory,
-                                                    this.tupleMemoryEnabled );
+                // subclasses like ForallNotNode might override this propagation
+                propagateAssertLeftTuple( context,
+                                          workingMemory,
+                                          leftTuple );
             }
 
             leftTuple = temp;
         }
         this.constraints.resetTuple( memory.getContext() );
+    }
+
+    /**
+     * This is a hook method so that subclasses (like ForallNotNode) can 
+     * override the default behaviour.
+     * 
+     * @param context
+     * @param workingMemory
+     * @param leftTuple
+     */
+    protected void propagateAssertLeftTuple(final PropagationContext context,
+                                            final InternalWorkingMemory workingMemory,
+                                            LeftTuple leftTuple) {
+        this.sink.propagateAssertLeftTuple( leftTuple,
+                                            context,
+                                            workingMemory,
+                                            this.tupleMemoryEnabled );
     }
 
     /**
@@ -309,6 +343,6 @@ public class NotNode extends BetaNode {
             source = source.source;
         }
 
-        return "[NotNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
+        return "[" + getClass().getSimpleName() + "(" + this.getId() + ") - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
 }

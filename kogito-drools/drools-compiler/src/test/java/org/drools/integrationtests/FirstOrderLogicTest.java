@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -13,8 +14,10 @@ import junit.framework.TestCase;
 import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.Cheesery;
+import org.drools.ClockType;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
@@ -26,6 +29,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.SpecialString;
 import org.drools.State;
 import org.drools.StatefulSession;
+import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -33,11 +37,15 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.time.SessionPseudoClock;
 
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -76,7 +84,7 @@ public class FirstOrderLogicTest extends TestCase {
                                150 ) );
         wm = SerializationHelper.getSerialisedStatefulSession( wm );
         results = (List) wm.getGlobal( "results" );
-        
+
         wm.insert( new Cheese( "provolone",
                                20 ) );
         wm.insert( new Person( "Bob",
@@ -90,7 +98,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         wm = SerializationHelper.getSerialisedStatefulSession( wm );
         results = (List) wm.getGlobal( "results" );
-        
+
         Assert.assertEquals( 1,
                              results.size() );
         Assert.assertEquals( 3,
@@ -106,7 +114,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         List results = new ArrayList();
@@ -115,12 +123,12 @@ public class FirstOrderLogicTest extends TestCase {
 
         workingMemory = SerializationHelper.getSerialisedStatefulSession( workingMemory );
         results = (List) workingMemory.getGlobal( "results" );
-        
+
         workingMemory.insert( new Cheese( "stilton",
                                           10 ) );
         workingMemory = SerializationHelper.getSerialisedStatefulSession( workingMemory );
         results = (List) workingMemory.getGlobal( "results" );
-        
+
         workingMemory.insert( new Cheese( "brie",
                                           15 ) );
 
@@ -128,7 +136,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         workingMemory = SerializationHelper.getSerialisedStatefulSession( workingMemory );
         results = (List) workingMemory.getGlobal( "results" );
-        
+
         assertEquals( 1,
                       results.size() );
 
@@ -178,7 +186,7 @@ public class FirstOrderLogicTest extends TestCase {
         cheese[index].setPrice( 9 );
         wm.update( cheeseHandles[index],
                    cheese[index] );
-        
+
         wm.fireAllRules();
 
         Assert.assertEquals( ++fireCount,
@@ -222,14 +230,14 @@ public class FirstOrderLogicTest extends TestCase {
                                10 ) );
         wm = SerializationHelper.getSerialisedStatefulSession( wm );
         results = (List) wm.getGlobal( "results" );
-        
+
         wm.fireAllRules();
 
         Assert.assertEquals( 1,
                              results.size() );
         Assert.assertEquals( 1,
                              ((Collection) results.get( 0 )).size() );
-        
+
         wm.insert( new Cheese( "stilton",
                                7 ) );
         wm.insert( new Cheese( "stilton",
@@ -238,7 +246,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         wm = SerializationHelper.getSerialisedStatefulSession( wm );
         results = (List) wm.getGlobal( "results" );
-        
+
         Assert.assertEquals( 1,
                              results.size() );
         Assert.assertEquals( 1,
@@ -254,7 +262,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -321,7 +329,7 @@ public class FirstOrderLogicTest extends TestCase {
                       builder.getErrors().getErrors().length );
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -359,7 +367,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -398,7 +406,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -442,7 +450,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -479,7 +487,7 @@ public class FirstOrderLogicTest extends TestCase {
         config.setRemoveIdentities( true );
         RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -529,7 +537,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List results = new ArrayList();
@@ -646,7 +654,7 @@ public class FirstOrderLogicTest extends TestCase {
         // add the package to a rulebase
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         // load up the rulebase
         return ruleBase;
     }
@@ -658,7 +666,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -703,13 +711,10 @@ public class FirstOrderLogicTest extends TestCase {
         assertEquals( 2,
                       list.size() );
 
-        //        TODO: in the future, we need to fix the following test case
-        //        // no cheese anymore, so should not fire again 
-        //        workingMemory.retract( stilton2 );
-        //        workingMemory.fireAllRules();
-        //        assertEquals( 2,
-        //                      list.size() );
-        //        
+        workingMemory.retract( stilton2 );
+        workingMemory.fireAllRules();
+        assertEquals( 2,
+                      list.size() );
 
     }
 
@@ -757,7 +762,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
 
         List list1 = new ArrayList();
@@ -822,7 +827,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -861,7 +866,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -894,7 +899,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -952,7 +957,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1010,24 +1015,31 @@ public class FirstOrderLogicTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
                                  list );
-        
-        workingMemory.insert( new Cheese( "stilton", 10 ) );
-        workingMemory.insert( new Cheese( "brie", 10 ) );
-        workingMemory.insert( new Cheese( "brie", 10 ) );
-        workingMemory.insert( new Order( 1, "bob" ) );
-        workingMemory.insert( new Person( "bob", "stilton", 10 ) );
-        workingMemory.insert( new Person( "mark", "stilton" ) );
-        
+
+        workingMemory.insert( new Cheese( "stilton",
+                                          10 ) );
+        workingMemory.insert( new Cheese( "brie",
+                                          10 ) );
+        workingMemory.insert( new Cheese( "brie",
+                                          10 ) );
+        workingMemory.insert( new Order( 1,
+                                         "bob" ) );
+        workingMemory.insert( new Person( "bob",
+                                          "stilton",
+                                          10 ) );
+        workingMemory.insert( new Person( "mark",
+                                          "stilton" ) );
+
         workingMemory.fireAllRules();
-        
+
         //assertEquals( 1, list.size() );
-        
+
     }
 
     public void testCollectResultBetaConstraint() throws Exception {
@@ -1045,22 +1057,22 @@ public class FirstOrderLogicTest extends TestCase {
         wm.insert( new Double( 10 ) );
         wm.insert( new Integer( 2 ) );
 
-//        ruleBase = SerializationHelper.serializeObject( ruleBase );
-//        wm = serializeWorkingMemory( ruleBase,
-//                                     wm );
-//        results = (List) wm.getGlobal( "results" );
+        //        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        //        wm = serializeWorkingMemory( ruleBase,
+        //                                     wm );
+        //        results = (List) wm.getGlobal( "results" );
 
         wm.fireAllRules();
 
         Assert.assertEquals( 0,
                              results.size() );
-        
-        wm.insert( new Double(15) );
+
+        wm.insert( new Double( 15 ) );
         wm.fireAllRules();
-        
+
         Assert.assertEquals( 2,
                              results.size() );
-        
+
         Assert.assertEquals( "collect",
                              results.get( 0 ) );
         Assert.assertEquals( "accumulate",
@@ -1071,12 +1083,12 @@ public class FirstOrderLogicTest extends TestCase {
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_FromWithOr.drl" ) ),
                      ResourceType.DRL );
-        
-        if( builder.hasErrors() ) {
+
+        if ( builder.hasErrors() ) {
             System.out.println( builder.getErrors() );
         }
         assertFalse( builder.hasErrors() );
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
 
@@ -1084,26 +1096,127 @@ public class FirstOrderLogicTest extends TestCase {
 
         final List<Address> results = new ArrayList<Address>();
         session.setGlobal( "results",
-                                 results );
+                           results );
 
         Address a1 = new Address();
-        a1.setZipCode("12345");
+        a1.setZipCode( "12345" );
         Address a2 = new Address();
-        a2.setZipCode("54321");
+        a2.setZipCode( "54321" );
         Address a3 = new Address();
-        a3.setZipCode("99999");
-        
+        a3.setZipCode( "99999" );
+
         Person p = new Person();
-        p.addAddress(a1);
-        p.addAddress(a2);
-        p.addAddress(a3);
-        
-        session.insert( p);
-        session.fireAllRules();   
-        
-        assertEquals( 2, results.size() );
+        p.addAddress( a1 );
+        p.addAddress( a2 );
+        p.addAddress( a3 );
+
+        session.insert( p );
+        session.fireAllRules();
+
+        assertEquals( 2,
+                      results.size() );
         assertTrue( results.contains( a1 ) );
         assertTrue( results.contains( a2 ) );
+
+    }
+
+    public void testForallWithSlidingWindow() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ForallSlidingWindow.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf,
+                                                                                     null );
+        final SessionPseudoClock clock = ksession.getSessionClock();
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results",
+                            results );
+
+        // advance time... no events, so forall should fire
+        clock.advanceTime( 60,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+
+        int seq = 1;
+        // advance time... there are matching events now, but forall still not fire
+        ksession.insert( new StockTick( seq++,
+                                        "RHT",
+                                        10,
+                                        clock.getCurrentTime() ) ); // 60
+        clock.advanceTime( 5,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+        ksession.insert( new StockTick( seq++,
+                                        "RHT",
+                                        10,
+                                        clock.getCurrentTime() ) ); // 65
+        clock.advanceTime( 5,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+
+        // advance time... there are non-matching events now, so forall de-activates
+        ksession.insert( new StockTick( seq++,
+                                        "IBM",
+                                        10,
+                                        clock.getCurrentTime() ) ); // 70
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+
+        // advance time... there are non-matching events now, so forall is still deactivated
+        ksession.insert( new StockTick( seq++,
+                                        "RHT",
+                                        10,
+                                        clock.getCurrentTime() ) ); // 80
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+
+        // advance time... non-matching event expires now, so forall should fire
+        ksession.insert( new StockTick( seq++,
+                                        "RHT",
+                                        10,
+                                        clock.getCurrentTime() ) ); // 90
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+
+        // advance time... forall still matches and should not fire
+        ksession.insert( new StockTick( seq++,
+                                        "RHT",
+                                        10,
+                                        clock.getCurrentTime() ) ); // 100
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+
+        // advance time... forall still matches and should not fire
+        clock.advanceTime( 60,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
 
     }
 

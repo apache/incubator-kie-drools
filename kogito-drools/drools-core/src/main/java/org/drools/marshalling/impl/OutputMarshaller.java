@@ -449,7 +449,8 @@ public class OutputMarshaller {
                 stream.writeShort( PersisterEnums.END );
                 break;
             }
-            case NodeTypeEnums.NotNode : {
+            case NodeTypeEnums.NotNode : 
+            case NodeTypeEnums.ForallNotNode : {
                 if ( leftTuple.getBlocker() == null ) {
                     // is not blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );

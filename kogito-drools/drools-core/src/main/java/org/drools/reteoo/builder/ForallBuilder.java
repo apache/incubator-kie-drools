@@ -16,8 +16,17 @@
 
 package org.drools.reteoo.builder;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.drools.common.BetaConstraints;
+import org.drools.common.TupleStartEqualsConstraint;
+import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.NotNode;
+import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.rule.Behavior;
 import org.drools.rule.Forall;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
@@ -48,7 +57,8 @@ public class ForallBuilder
         final GroupElement and = GroupElementFactory.newAndInstance();
         and.addChild( forall.getBasePattern() );
 
-        final GroupElement not2 = GroupElementFactory.newNotInstance();
+        final GroupElement not2 = GroupElementFactory.newForallNotInstance();
+        not2.setForallBaseObjectType( forall.getBasePattern().getObjectType() );
         if ( forall.getRemainingPatterns().size() == 1 ) {
             not2.addChild( (Pattern) forall.getRemainingPatterns().get( 0 ) );
             and.addChild( not2 );
@@ -71,6 +81,7 @@ public class ForallBuilder
         builder.build( context,
                        utils,
                        not );
+
     }
 
     /**
