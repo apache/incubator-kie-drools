@@ -29,30 +29,6 @@ public class GenericMessageHandlerImpl implements GenericMessageHandler {
                                 Message msg) throws Exception {
         systemEventListener.debug( "Message receieved : " + msg );
 
-//        try {
-//            // establish session
-//            if ( msg.getSessionId() == -1 ) {
-//                GenericCommand cmd = (GenericCommand) msg.getPayload();
-//                Context ctx = new ServiceManagerServerContext( null,
-//                                                               data );
-//                int sessionId = (Integer) cmd.execute( ctx );
-//                session.write( new Message( sessionId,
-//                                            msg.getResponseId(),
-//                                            false,
-//                                            sessionId ) );
-//                return;
-//            }
-//        } catch ( RuntimeException e ) {
-//            systemEventListener.exception( e.getMessage(),
-//                                           e );
-//            // new Message(msg.getSessionId(), msg.getResponseId(), e);
-//            // List<Object> list = new ArrayList<Object>(1);
-//            // list.add(e);
-//            // Command resultsCmnd = new Command(cmd.getId(), response, list);
-//            // session.write(resultsCmnd);
-//        } finally {
-//
-//        }
 
         // we always need to process a List, for genericity, but don't force a List on the payload
         List<GenericCommand> commands;
