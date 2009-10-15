@@ -10,7 +10,7 @@ public class BlockingMessageResponseHandler extends AbstractBlockingResponseHand
     implements
     MessageResponseHandler {
     private static final int ATTACHMENT_ID_WAIT_TIME = 100000;
-    private static final int CONTENT_ID_WAIT_TIME    = 500000;
+    private static final int CONTENT_ID_WAIT_TIME    = 50000;
 
     private volatile Message message;
 

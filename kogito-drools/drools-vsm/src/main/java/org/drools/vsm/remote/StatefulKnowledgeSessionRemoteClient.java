@@ -347,4 +347,14 @@ public class StatefulKnowledgeSessionRemoteClient
 
     }
 
+    public String getEntryPointId() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public long getFactCount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

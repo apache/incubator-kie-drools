@@ -29,7 +29,7 @@ public class KnowledgeBaseProviderRemoteClient
     }
 
     public KnowledgeBase newKnowledgeBase() {
-        return newKnowledgeBase( null );
+        return newKnowledgeBase( ( KnowledgeBaseConfiguration ) null );
     }
 
     public KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
@@ -85,6 +85,17 @@ public class KnowledgeBaseProviderRemoteClient
     }
 
     public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public KnowledgeBase newKnowledgeBase(String kbaseId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public KnowledgeBase newKnowledgeBase(String kbaseId,
+                                          KnowledgeBaseConfiguration conf) {
         // TODO Auto-generated method stub
         return null;
     }
