@@ -381,10 +381,16 @@ public class KnowledgeAgentImpl
 
                 for ( Resource resource : this.resources.keySet() ) {
                     if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
+                        // .pks are handled as a special case.                        
+                        if ( ((InternalResource) resource).getConfiguration() == null ) {
+                            kbuilder.add( resource,
+                                          ((InternalResource) resource).getResourceType() );                            
+                        } else {
+                            kbuilder.add( resource,
+                                          ((InternalResource) resource).getResourceType(),
+                                          ((InternalResource) resource).getConfiguration() );                             
+                        }
                         this.listener.debug( "KnowledgeAgent building resource=" + resource );
-                        // .pks are handled as a special case.
-                        kbuilder.add( resource,
-                                      ((InternalResource) resource).getResourceType() );
                     }
                 }
 
