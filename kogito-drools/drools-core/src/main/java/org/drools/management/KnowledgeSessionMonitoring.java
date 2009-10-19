@@ -35,7 +35,15 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.RuleFlowCompletedEvent;
+import org.drools.event.RuleFlowEventListener;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.RuleFlowNodeTriggeredEvent;
+import org.drools.event.RuleFlowStartedEvent;
 import org.drools.management.KnowledgeSessionMonitoring.AgendaStats.AgendaStatsData;
+import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessInstanceStatsData;
+import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessStatsData;
 
 /**
  * An MBean to monitor a given knowledge session
@@ -52,17 +60,21 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
     private InternalRuleBase kbase;
     private ObjectName name;
     public AgendaStats agendaStats;
+    public ProcessStats processStats;
     
     public KnowledgeSessionMonitoring(InternalWorkingMemory ksession) {
         this.ksession = ksession;
         this.kbase = (InternalRuleBase) ksession.getRuleBase();
         this.name = DroolsManagementAgent.createObjectName(KSESSION_PREFIX + ":type="+kbase.getId()+",group=Sessions,sessionId=Session-"+ksession.getId());
         this.agendaStats = new AgendaStats();
+        this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
+        this.ksession.addEventListener( processStats );
     }
     
     public void dispose() {
         this.ksession.removeEventListener( agendaStats );
+        this.ksession.removeEventListener( processStats );
     }
     
     /* (non-Javadoc)
@@ -70,6 +82,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
      */
     public void reset() {
         this.agendaStats.reset();
+        this.processStats.reset();
     }
 
     public InternalWorkingMemory getKsession() {
@@ -282,6 +295,217 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
                        " activationsFired="+this.activationsFired.get()+" firingTime="+(firingTime.get()/NANO_TO_MILLISEC)+"ms";
             }
         }    
+    }
+    
+    public long getTotalProcessInstancesStarted() {
+        return this.processStats.getConsolidatedStats().processInstancesStarted.get();
+    }
+    
+    public long getTotalProcessInstancesCompleted() {
+        return this.processStats.getConsolidatedStats().processInstancesCompleted.get();
+    }
+    
+    public String getStatsForProcess( String processId ) {
+        ProcessStatsData data = this.processStats.getProcessStats( processId );
+        String result = data == null ? "processInstancesStarted=0 processInstancesCompleted=0 processNodesTriggered=0" : data.toString();
+        return result;
+    }
+    
+    public Map<String,String> getStatsByProcess() {
+        Map<String, String> result = new HashMap<String, String>();
+        for( Map.Entry<String, ProcessStatsData> entry : this.processStats.getProcessStats().entrySet() ) {
+            result.put( entry.getKey(), entry.getValue().toString() );
+        }
+        return result;
+    }
+    
+    public String getStatsForProcessInstance( long processInstanceId ) {
+        ProcessInstanceStatsData data = this.processStats.getProcessInstanceStats( processInstanceId );
+        String result = data == null ? "Process instance not found" : data.toString();
+        return result;
+    }
+    
+    public Map<Long,String> getStatsByProcessInstance() {
+        Map<Long, String> result = new HashMap<Long, String>();
+        for( Map.Entry<Long, ProcessInstanceStatsData> entry : this.processStats.getProcessInstanceStats().entrySet() ) {
+            result.put( entry.getKey(), entry.getValue().toString() );
+        }
+        return result;
+    }
+    
+    public static class ProcessStats implements RuleFlowEventListener {
+        
+        private GlobalProcessStatsData consolidated = new GlobalProcessStatsData();
+        private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<String, ProcessStatsData>();
+        private ConcurrentHashMap<Long, ProcessInstanceStatsData> processInstanceStats = new ConcurrentHashMap<Long, ProcessInstanceStatsData>();
+
+        public GlobalProcessStatsData getConsolidatedStats() {
+            return this.consolidated;
+        }
+        
+        public Map<String, ProcessStatsData> getProcessStats() {
+            return this.processStats;
+        }
+        
+        public ProcessStatsData getProcessStats(String processId) { 
+            return this.processStats.get(processId);
+        }
+        
+        public Map<Long, ProcessInstanceStatsData> getProcessInstanceStats() {
+            return this.processInstanceStats;
+        }
+        
+        public ProcessInstanceStatsData getProcessInstanceStats(Long processInstanceId) { 
+            return this.processInstanceStats.get(processInstanceId);
+        }
+        
+        public void reset() {
+            this.consolidated.reset();
+            this.processStats.clear();
+            this.processInstanceStats.clear();
+        }
+        
+        private ProcessStatsData getProcessStatsInstance(String processId) {
+        	ProcessStatsData data = this.processStats.get(processId);
+            if (data == null) {
+                data = new ProcessStatsData();
+                this.processStats.put(processId, data);
+            }
+            return data;
+        }
+
+        private ProcessInstanceStatsData getProcessInstanceStatsInstance(Long processInstanceId) {
+        	ProcessInstanceStatsData data = this.processInstanceStats.get(processInstanceId);
+            if (data == null) {
+                data = new ProcessInstanceStatsData();
+                this.processInstanceStats.put(processInstanceId, data);
+            }
+            return data;
+        }
+
+        public void afterRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+            this.consolidated.processInstancesStarted.incrementAndGet();
+            ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
+            data.processInstancesStarted.incrementAndGet();
+            ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
+            dataI.processStarted = new Date();
+		}
+
+		public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+            this.consolidated.processInstancesCompleted.incrementAndGet();
+            ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
+            data.processInstancesCompleted.incrementAndGet();
+            ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
+            dataI.processCompleted = new Date();
+		}
+
+		public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+            ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
+            data.processNodesTriggered.incrementAndGet();
+            ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
+            dataI.processNodesTriggered++;
+		}
+
+		public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,	WorkingMemory workingMemory) {
+		}
+
+		public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}
+
+		public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}
+
+		public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}
+
+		public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}
+
+		public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}
+
+		public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}
+
+		public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}
+
+		public void beforeRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+			// Do nothing
+		}    
+
+        public static class GlobalProcessStatsData {
+        	
+            public AtomicLong processInstancesStarted;
+            public AtomicLong processInstancesCompleted;
+            public AtomicReference<Date> lastReset;
+            
+            public GlobalProcessStatsData() {
+                this.processInstancesStarted = new AtomicLong(0);
+                this.processInstancesCompleted = new AtomicLong(0);
+                this.lastReset = new AtomicReference<Date>(new Date());
+            }
+            
+            public void reset() {
+                this.processInstancesStarted.set( 0 );
+                this.processInstancesCompleted.set( 0 );
+                this.lastReset.set( new Date() );
+            }
+            
+            public String toString() {
+				return "processInstancesStarted=" + processInstancesStarted.get()
+					+ " processInstancesCompleted=" + processInstancesCompleted.get();
+            }
+        }
+
+        public static class ProcessStatsData extends GlobalProcessStatsData {
+        	
+            public AtomicLong processNodesTriggered;
+            
+            public ProcessStatsData() {
+                this.processNodesTriggered = new AtomicLong(0);
+            }
+            
+            public void reset() {
+            	super.reset();
+                this.processNodesTriggered.set( 0 );
+            }
+            
+            public String toString() {
+				return super.toString() + " processNodesTriggered=" + processNodesTriggered.get();
+            }
+        }
+
+        public static class ProcessInstanceStatsData {
+        	
+        	// no need for synch, because one process instance cannot be executed concurrently 
+            public Date processStarted;
+            public Date processCompleted;
+            public long processNodesTriggered;
+            
+            public ProcessInstanceStatsData() {
+                this.processNodesTriggered = 0;
+            }
+            
+            public void reset() {
+            	 this.processNodesTriggered = 0;
+            }
+            
+            public String toString() {
+				return
+					(processStarted != null ? "processStarted=" + processStarted + " ": "") +
+					(processCompleted != null ? "processCompleted=" + processCompleted + " ": "") +
+					"processNodesTriggered=" + processNodesTriggered;
+            }
+        }
+        
     }
     
 }
