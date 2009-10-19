@@ -103,4 +103,15 @@ public interface KnowledgeSessionMonitoringMBean {
     
     public Map<String,String> getStatsByRule();    
 
+    public long getTotalProcessInstancesStarted();
+    
+    public long getTotalProcessInstancesCompleted();
+    
+    public String getStatsForProcess(String processId);
+    
+    public Map<String,String> getStatsByProcess();
+    
+    public String getStatsForProcessInstance(long processInstanceId);
+    
+    public Map<Long,String> getStatsByProcessInstance();
 }
