@@ -478,6 +478,46 @@ public class FirstOrderLogicTest extends TestCase {
                       list.size() );
     }
 
+    public void testForall2() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_Forall2.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "results",
+                            list );
+
+        final State state = new State( "SP" );
+        ksession.insert( state );
+
+        final Person bob = new Person( "Bob" );
+        bob.setStatus( state.getState() );
+        bob.setAlive( true );
+        ksession.insert( bob );
+
+        ksession.fireAllRules();
+
+        assertEquals( 0,
+                      list.size() );
+
+        final State qc = new State( "QC" );
+        ksession.insert( qc );
+        final Person john = new Person( "John" );
+        john.setStatus( qc.getState() );
+        john.setAlive( false );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+    }
+
     public void testRemoveIdentitiesSubNetwork() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_removeIdentitiesSubNetwork.drl" ) ) );
