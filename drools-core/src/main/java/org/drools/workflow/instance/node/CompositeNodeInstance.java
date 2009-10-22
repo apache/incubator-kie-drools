@@ -36,7 +36,6 @@ import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
-import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -152,7 +151,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     public Collection<org.drools.runtime.process.NodeInstance> getNodeInstances() {
-        return new ArrayList(getNodeInstances(false));
+        return new ArrayList<org.drools.runtime.process.NodeInstance>(getNodeInstances(false));
     }
     
     public Collection<NodeInstance> getNodeInstances(boolean recursive) {
@@ -276,8 +275,17 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	}
 
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
-		throw new IllegalArgumentException(
-			"Completing a node instance that has no outgoing connection not supported.");
+	    if (nodeInstance instanceof EndNodeInstance) {
+            if (((org.drools.workflow.core.WorkflowProcess) getProcessInstance().getProcess()).isAutoComplete()) {
+                if (nodeInstances.isEmpty()) {
+                    triggerCompleted(
+                        org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                }
+            }
+	    } else {
+    		throw new IllegalArgumentException(
+    			"Completing a node instance that has no outgoing connection not supported.");
+	    }
 	}
 
 }

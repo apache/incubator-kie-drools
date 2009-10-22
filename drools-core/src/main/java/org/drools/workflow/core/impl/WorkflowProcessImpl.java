@@ -29,6 +29,8 @@ import org.drools.workflow.core.WorkflowProcess;
 public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess, org.drools.workflow.core.NodeContainer {
 
     private static final long serialVersionUID = 400L;
+    
+    private boolean autoComplete = false;
 
     private org.drools.workflow.core.NodeContainer nodeContainer;
     public WorkflowProcessImpl() {
@@ -59,6 +61,14 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     public void addNode(final Node node) {
         nodeContainer.addNode(node);
         ((org.drools.workflow.core.Node) node).setNodeContainer(this);
+    }
+    
+    public boolean isAutoComplete() {
+        return autoComplete;
+    }
+    
+    public void setAutoComplete(boolean autoComplete) {
+        this.autoComplete = autoComplete;
     }
 
 }

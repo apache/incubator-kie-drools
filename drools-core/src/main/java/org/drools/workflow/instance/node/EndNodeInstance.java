@@ -57,6 +57,9 @@ public class EndNodeInstance extends NodeInstanceImpl {
             if (!hidden) {
                 ((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
             }
+        } else {
+            ((NodeInstanceContainer) getNodeInstanceContainer())
+                .nodeInstanceCompleted(this, null);
         }
     }
 

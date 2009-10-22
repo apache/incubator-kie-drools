@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.drools.Agenda;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -42,10 +41,11 @@ import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.WorkflowProcessInstance;
-import org.drools.workflow.instance.node.StateBasedNodeInstance;
+import org.drools.workflow.instance.node.EndNodeInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.drools.workflow.instance.node.EventNodeInstance;
 import org.drools.workflow.instance.node.EventNodeInstanceInterface;
+import org.drools.workflow.instance.node.StateBasedNodeInstance;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -81,7 +81,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public Collection<org.drools.runtime.process.NodeInstance> getNodeInstances() {
-		return new ArrayList(getNodeInstances(false));
+		return new ArrayList<org.drools.runtime.process.NodeInstance>(getNodeInstances(false));
 	}
 
 	public Collection<NodeInstance> getNodeInstances(boolean recursive) {
@@ -336,8 +336,16 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 	
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
-		throw new IllegalArgumentException(
-			"Completing a node instance that has no outgoing connection not suppoerted.");
+        if (nodeInstance instanceof EndNodeInstance) {
+            if (((org.drools.workflow.core.WorkflowProcess) getProcess()).isAutoComplete()) {
+                if (nodeInstances.isEmpty()) {
+                    setState(ProcessInstance.STATE_COMPLETED);
+                }
+            }
+        } else {
+    		throw new IllegalArgumentException(
+    			"Completing a node instance that has no outgoing connection not suppoerted.");
+        }
 	}
 
 }

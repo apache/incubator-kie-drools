@@ -80,4 +80,12 @@ public interface WorkflowProcess extends org.drools.definition.process.WorkflowP
      */
     String[] getGlobalNames();
     
+    /**
+     * Returns whether this process will automatically complete if it
+     * contains no active node instances anymore
+     * 
+     * @return  the names of the globals of this RuleFlow process
+     */
+    boolean isAutoComplete();
+    
 }
