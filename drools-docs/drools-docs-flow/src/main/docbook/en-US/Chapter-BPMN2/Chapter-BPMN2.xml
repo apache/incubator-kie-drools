@@ -19,24 +19,29 @@
         <listitem>Events
           <itemizedlist>
             <listitem>Start Event (None)</listitem>
-            <listitem>End Event (Terminate)</listitem>
-            <listitem>Intermediate Event (Signal)</listitem>
+            <listitem>End Event (Terminate, None, Error)</listitem>
+            <listitem>Intermediate Event (Signal, Timer)</listitem>
           </itemizedlist>
         </listitem>
         <listitem>Activities
           <itemizedlist>
             <listitem>Script Task (Java or MVEL expression language)</listitem>
+            <listitem>Task</listitem>
             <listitem>Service Task</listitem>
             <listitem>User Task</listitem>
             <listitem>Business Rule Task</listitem>
+            <listitem>Manual Task</listitem>
+            <listitem>Send Task</listitem>
+            <listitem>Receive Task</listitem>
             <listitem>Reusable Sub-Process (Call Activity)</listitem>
+            <listitem>Embedded Sub-Process</listitem>
           </itemizedlist>
         </listitem>
         <listitem>Gateways
           <itemizedlist>
             <listitem>Diverging
               <itemizedlist>
-                <listitem>Exclusive</listitem>
+                <listitem>Exclusive (Java, MVEL or XPath expression language)</listitem>
                 <listitem>Parallel</listitem>
               </itemizedlist>
             </listitem>
@@ -48,6 +53,7 @@
             </listitem>
           </itemizedlist>
         </listitem>
+        <listitem>Lanes</listitem>
       </itemizedlist>
     </listitem>
     <listitem><emphasis>Data</emphasis>
@@ -420,7 +426,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry>Swimlanes</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -518,7 +524,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry> - terminate</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -875,13 +881,20 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry>10. Timer Node</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
       <tbody>
         <row>
-          <entry> - delay, period</entry>
+          <entry> - delay</entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry> - period</entry>
           <entry></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
@@ -917,7 +930,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry>12. Composite Node</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -1057,21 +1070,21 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry>15. Fault Node</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry> - fault name</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry> - fault data</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
