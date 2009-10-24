@@ -11,8 +11,8 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.TextConsequence;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Redundancy;
 
 public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
@@ -49,7 +49,7 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		data.add(r1);
 		data.add(r2);
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
@@ -72,7 +72,7 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Patterns with restrictions"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("PatternRedundancyTest.drl"), result
 				.getVerifierData());
@@ -121,7 +121,7 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Patterns without restrictions"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("PatternRedundancyTest.drl"), result
 				.getVerifierData());

@@ -4,35 +4,28 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierFromDescr extends VerifierComponent {
+public class VerifierFromDescr extends RuleComponent {
 
-	private static int index = 0;
+    private VerifierComponentType dataSourceType;
+    private String                dataSourceGuid;
 
-	private VerifierComponentType dataSourceType;
-	private int dataSourceId;
+    public String getDataSourceGuid() {
+        return dataSourceGuid;
+    }
 
-	public VerifierFromDescr() {
-		super(index++);
-	}
+    public void setDataSourceGuid(String guid) {
+        this.dataSourceGuid = guid;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.FROM;
-	}
+    public VerifierComponentType getDataSourceType() {
+        return dataSourceType;
+    }
 
-	public int getDataSourceId() {
-		return dataSourceId;
-	}
+    public void setDataSourceType(VerifierComponentType dataSourceType) {
+        this.dataSourceType = dataSourceType;
+    }
 
-	public void setDataSourceId(int dataSourceId) {
-		this.dataSourceId = dataSourceId;
-	}
-
-	public VerifierComponentType getDataSourceType() {
-		return dataSourceType;
-	}
-
-	public void setDataSourceType(VerifierComponentType dataSourceType) {
-		this.dataSourceType = dataSourceType;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.FROM;
+    }
 }

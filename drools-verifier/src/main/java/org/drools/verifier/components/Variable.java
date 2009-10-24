@@ -4,70 +4,55 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class Variable extends VerifierComponent {
+public class Variable extends RuleComponent {
 
-	private static int index;
+    private String objectTypeGuid;
+    private String objectTypeType;
+    private String objectTypeName;
 
-	private int ruleId;
-	private VerifierComponentType objectType;
-	private int objectId;
-	private String objectName;
-	private String name;
+    public String getObjectTypeName() {
+        return objectTypeName;
+    }
 
-	public Variable() {
-		super(index++);
-	}
+    public void setObjectTypeName(String objectTypeName) {
+        this.objectTypeName = objectTypeName;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.VARIABLE;
-	}
+    private String name;
 
-	public int getRuleId() {
-		return ruleId;
-	}
+    public String getObjectTypeGuid() {
+        return objectTypeGuid;
+    }
 
-	public void setRuleId(int ruleId) {
-		this.ruleId = ruleId;
-	}
+    public void setObjectTypeGuid(String guid) {
+        this.objectTypeGuid = guid;
+    }
 
-	public int getObjectId() {
-		return objectId;
-	}
+    public void setObjectTypeType(String type) {
+        // VerifierComponentType.OBJECT_TYPE dominates VerifierComponentType.FIELD.
+        if ( this.objectTypeType == null || !VerifierComponentType.OBJECT_TYPE.getType().equals( this.objectTypeType ) ) {
+            this.objectTypeType = type;
+        }
+    }
 
-	public void setObjectId(int variableId) {
-		this.objectId = variableId;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public VerifierComponentType getObjectType() {
-		return objectType;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setObjectType(VerifierComponentType type) {
-		// VerifierComponentType.CLASS dominates VerifierComponentType.FIELD.
-		if (objectType == null || objectType != VerifierComponentType.CLASS) {
-			this.objectType = type;
-		}
-	}
+    public String getObjectTypeType() {
+        return objectTypeType;
+    }
 
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String toString() {
+        return "Variable name: " + name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getObjectName() {
-		return objectName;
-	}
-
-	public void setObjectName(String objectName) {
-		this.objectName = objectName;
-	}
-
-	@Override
-	public String toString() {
-		return "Variable name: " + name;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.VARIABLE;
+    }
 }

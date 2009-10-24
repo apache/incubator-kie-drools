@@ -8,7 +8,7 @@ public class Subsumption implements Cause {
 
 	private static int index = 0;
 
-	private final int id = index++;
+	private final String guid = String.valueOf( index++ );
 
 	private final Cause left;
 	private final Cause right;
@@ -18,8 +18,8 @@ public class Subsumption implements Cause {
 		this.right = right;
 	}
 
-	public int getId() {
-		return id;
+	public String getGuid() {
+		return guid;
 	}
 
 	public CauseType getCauseType() {

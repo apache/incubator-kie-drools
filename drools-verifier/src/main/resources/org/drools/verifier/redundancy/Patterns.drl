@@ -16,11 +16,11 @@ rule "Find redundant Patterns with restrictions"
 		# Check that Patterns $left and $right have redundant fields.
 		$left :Pattern()
 		$right :Pattern(
-			id != $left.id,
-	  		objectTypeId == $left.objectTypeId,
+			guid not matches $left.guid,
+	  		objectTypeGuid matches $left.objectTypeGuid,
 	  		# TODO: In some cases the source might be redundant with different sources.
 	 		sourceType == $left.sourceType,
-	  		sourceId == $left.sourceId,
+	  		sourceGuid == $left.sourceGuid,
 	  		patternNot == $left.patternNot,
 	  		patternExists == $left.patternExists,
 	  		patternForall == $left.patternForall
@@ -29,8 +29,8 @@ rule "Find redundant Patterns with restrictions"
 		# Has possibilities, if the there is no possibilities,
 		# then the Redundancy type is STRONG.
 		# Because these patterns have no restrictions.
-		exists PatternPossibility( patternId == $left.id )
-		exists PatternPossibility( patternId == $right.id )
+		exists SubPattern( patternGuid matches $left.guid )
+		exists SubPattern( patternGuid matches $right.guid )
 
 		# Check that there is not already a pair with these values.
 		not Redundancy(
@@ -55,19 +55,19 @@ rule "Find redundant Patterns without restrictions"
 		# Check that Patterns $left and $right have redundant fields.
 		$left :Pattern()
 		$right :Pattern(
-			id != $left.id,
-	  		objectTypeId == $left.objectTypeId,
+			guid not matches $left.guid,
+	  		objectTypeGuid == $left.objectTypeGuid,
 	  		# TODO: In some cases the source might be redundant with different sources.
 	 		sourceType == $left.sourceType,
-	  		sourceId == $left.sourceId,
+	  		sourceGuid == $left.sourceGuid,
 	  		patternNot == $left.patternNot,
 	  		patternExists == $left.patternExists,
 	  		patternForall == $left.patternForall
 		)
 
 		# Not possibilities
-		not PatternPossibility( patternId == $left.id )
-		not PatternPossibility( patternId == $right.id )
+		not SubPattern( patternGuid matches $left.guid )
+		not SubPattern( patternGuid matches $right.guid )
 
 		# Check that there is not already a pair with these values.
 		not Redundancy(

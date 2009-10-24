@@ -4,7 +4,7 @@ package org.drools.verifier.rangeChecks.reports;
 #list any import classes here.
 import org.drools.verifier.components.Field;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
@@ -12,7 +12,7 @@ import org.drools.verifier.report.components.MessageType;
 import java.util.ArrayList;
 
 #declare any global variables here
-global VerifierResult result
+global VerifierReport result
 
 
 #

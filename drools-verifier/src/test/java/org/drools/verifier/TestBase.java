@@ -16,7 +16,8 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.verifier.dao.VerifierData;
+import org.drools.verifier.data.VerifierData;
+import org.drools.verifier.misc.PackageDescrVisitor;
 import org.drools.verifier.report.components.Cause;
 
 /**
@@ -108,7 +109,7 @@ abstract public class TestBase extends TestCase {
         Reader drlReader = new InputStreamReader( stream );
         PackageDescr descr = new DrlParser().parse( drlReader );
 
-        PackageDescrFlattener ruleFlattener = new PackageDescrFlattener();
+        PackageDescrVisitor ruleFlattener = new PackageDescrVisitor();
 
         ruleFlattener.addPackageDescrToData( descr,
                                              data );

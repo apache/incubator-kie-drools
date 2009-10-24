@@ -27,7 +27,7 @@ rule "Find subsumptant restrictions, greater than"
 
 		# Covered x > 100
 		$higher :LiteralRestriction( 
-			fieldId == $lower.fieldId,
+			fieldGuid matches $lower.fieldGuid,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL)
 		)
 		
@@ -54,7 +54,7 @@ rule "Find subsumptant restrictions, less than"
 
 		# Covered x < 100
 		$lower :LiteralRestriction( 
-			fieldId == $higher.fieldId,
+			fieldGuid matches $higher.fieldGuid,
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL)
 		)
 		

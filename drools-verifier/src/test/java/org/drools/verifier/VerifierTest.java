@@ -1,51 +1,40 @@
 package org.drools.verifier;
 
-import java.io.InputStreamReader;
-
 import junit.framework.TestCase;
 
-import org.drools.RuleBase;
-import org.drools.compiler.DrlParser;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.builder.ResourceType;
+import org.drools.io.impl.ClassPathResource;
+import org.drools.verifier.builder.VerifierBuilder;
+import org.drools.verifier.builder.VerifierBuilderFactory;
+import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessageBase;
 
 public class VerifierTest extends TestCase {
 
-    public void testAnalyzer() throws Exception {
-        Verifier anal = new Verifier();
+    public void testVerifier() {
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
-        DrlParser p = new DrlParser();
-        InputStreamReader reader = new InputStreamReader( this.getClass().getResourceAsStream( "Misc3.drl" ) );
-        PackageDescr pkg = p.parse( reader );
-        assertFalse( p.hasErrors() );
-
-        anal.addPackageDescr( pkg );
-        assertTrue( "Firing verifier failed.",
-                    anal.fireAnalysis() );
-
-        VerifierResult result = anal.getResult();
-        assertNotNull( result );
+        // Check that the builder works.
+        assertFalse( vBuilder.hasErrors() );
         assertEquals( 0,
-                      result.getBySeverity( Severity.ERROR ).size() );
-        assertEquals( 10,
-                      result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 16,
-                      result.getBySeverity( Severity.NOTE ).size() );
+                      vBuilder.getErrors().size() );
 
-        //check it again
-        anal = new Verifier();
+        Verifier verifier = vBuilder.newVerifier();
 
-        p = new DrlParser();
-        reader = new InputStreamReader( this.getClass().getResourceAsStream( "Misc3.drl" ) );
-        pkg = p.parse( reader );
-        assertFalse( p.hasErrors() );
+        verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
+                                                              Verifier.class ),
+                                       ResourceType.DRL );
 
-        anal.addPackageDescr( pkg );
-        assertTrue( "Firing verifier failed.",
-                    anal.fireAnalysis() );
+        assertFalse( verifier.hasErrors() );
+        assertEquals( 0,
+                      verifier.getErrors().size() );
 
-        result = anal.getResult();
+        boolean works = verifier.fireAnalysis();
+
+        assertTrue( works );
+
+        VerifierReport result = verifier.getResult();
         assertNotNull( result );
         assertEquals( 0,
                       result.getBySeverity( Severity.ERROR ).size() );
@@ -56,32 +45,47 @@ public class VerifierTest extends TestCase {
 
     }
 
-    public void testCacheKnowledgeBase() throws Exception {
-        Verifier anal = new Verifier();
-        DrlParser p = new DrlParser();
-        InputStreamReader reader = new InputStreamReader( this.getClass().getResourceAsStream( "Misc3.drl" ) );
-        PackageDescr pkg = p.parse( reader );
-        assertFalse( p.hasErrors() );
+    public void testCustomRule() {
 
-        anal.addPackageDescr( pkg );
-        anal.fireAnalysis();
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
-        RuleBase original = Verifier.verifierKnowledgeBase;
+        VerifierConfiguration vConfiguration = vBuilder.newVerifierConfiguration();
 
-        Verifier anal2 = new Verifier();
+        // Check that the builder works.
+        assertFalse( vBuilder.hasErrors() );
+        assertEquals( 0,
+                      vBuilder.getErrors().size() );
 
-        assertSame( original,
-                    Verifier.verifierKnowledgeBase );
+        vConfiguration.getVerifyingResources().put( new ClassPathResource( "FindPatterns.drl",
+                                                                           Verifier.class ),
+                                                    ResourceType.DRL );
 
-        try {
-            anal2.reloadAnalysisKnowledgeBase();
-        } catch ( Exception e ) {
-            fail( "Couldn't reload the knowledge base." );
+        Verifier verifier = vBuilder.newVerifier( vConfiguration );
+
+        verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
+                                                              Verifier.class ),
+                                       ResourceType.DRL );
+
+        assertFalse( verifier.hasErrors() );
+        assertEquals( 0,
+                      verifier.getErrors().size() );
+
+        boolean works = verifier.fireAnalysis();
+
+        assertTrue( works );
+
+        VerifierReport result = verifier.getResult();
+        assertNotNull( result );
+        assertEquals( 0,
+                      result.getBySeverity( Severity.ERROR ).size() );
+        assertEquals( 0,
+                      result.getBySeverity( Severity.WARNING ).size() );
+        assertEquals( 6,
+                      result.getBySeverity( Severity.NOTE ).size() );
+
+        for ( VerifierMessageBase m : result.getBySeverity( Severity.NOTE ) ) {
+            assertEquals( "This pattern was found.",
+                          m.getMessage() );
         }
-
-        assertNotSame( original,
-                       Verifier.verifierKnowledgeBase );
-
     }
-
 }

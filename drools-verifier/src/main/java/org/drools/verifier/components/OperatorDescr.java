@@ -6,43 +6,42 @@ import java.io.Serializable;
  * 
  * @author Toni Rikkola
  */
-public class OperatorDescr extends VerifierComponent implements Serializable {
-	private static final long serialVersionUID = 8393994152436331910L;
+public class OperatorDescr extends PatternComponent
+    implements
+    Serializable {
+    private static final long serialVersionUID = 8393994152436331910L;
 
-	private static int index = 0;
+    public static class Type {
+        public static final Type AND = new Type( "AND" );
+        public static final Type OR  = new Type( "OR" );
 
-	public static class Type {
-		public static final Type AND = new Type(0);
-		public static final Type OR = new Type(1);
+        protected final String   type;
 
-		private final int index;
+        private Type(String t) {
+            type = t;
+        }
 
-		private Type(int i) {
-			index = i;
-		}
-	};
+    };
 
-	private Type type;
+    private Type type;
 
-	public OperatorDescr() {
-		super(index++);
-	}
+    public OperatorDescr() {
+    }
 
-	public OperatorDescr(Type operatorType) {
-		super(index++);
-		this.type = operatorType;
-	}
+    public OperatorDescr(Type operatorType) {
+        this.type = operatorType;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.OPERATOR;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public void setType(Type type) {
+        this.type = type;
+    }
 
-	public void setType(Type type) {
-		this.type = type;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.OPERATOR;
+    }
+
 }

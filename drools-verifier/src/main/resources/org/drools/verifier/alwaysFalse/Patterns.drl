@@ -7,7 +7,7 @@
 package org.drools.verifier.alwaysFalse
 #list any import classes here.
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.VerifierRule;
 
 import org.drools.verifier.report.components.Severity;
@@ -15,9 +15,9 @@ import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Incompatibility;
 import org.drools.verifier.report.components.VerifierMessage;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
-global VerifierResult result;
+global VerifierReport result;
 
 #
 # Finds patterns that are always false.
@@ -38,12 +38,12 @@ rule "Pattern that is always false"
 		$p :Pattern()
 		
 		# Check that there is at least one pattern possibility.
-		exists PatternPossibility( patternId == $p.id )
+		exists SubPattern( patternGuid == $p.guid )
 		
 		# All the pattern possibilities for pattern need to be in conflict
 		forall( 
-			$pp :PatternPossibility(
-				patternId == $p.id
+			$pp :SubPattern(
+				patternGuid matches $p.guid
 			)
 			
 			Incompatibility( 
@@ -52,7 +52,7 @@ rule "Pattern that is always false"
 			)
 		)
 		
-		$r :VerifierRule( id == $p.ruleId )
+		$r :VerifierRule( guid == $p.ruleGuid )
 	then 
 		# Report an error
 		result.add( new VerifierMessage(

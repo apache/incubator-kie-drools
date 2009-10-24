@@ -3,13 +3,13 @@ package org.drools.verifier.incompatibility
 
 #list any import classes here.
 import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.SubPattern;
 
 import org.drools.verifier.report.components.Incompatibility;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
-global VerifierResult result;
+global VerifierReport result;
 
 #
 # Pattern possibilities are incompatible if any of the restrictions are incompatible.
@@ -30,11 +30,11 @@ rule "Incompatible Patterns"
 	when
 		$incompatibility :Incompatibility()
 		
-		$pp1 :PatternPossibility(
+		$pp1 :SubPattern(
 			items contains $incompatibility.left
 		)
 		
-		$pp2 :PatternPossibility(
+		$pp2 :SubPattern(
 			items contains $incompatibility.right
 		)
 		

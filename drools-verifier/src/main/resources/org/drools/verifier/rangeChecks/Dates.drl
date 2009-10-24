@@ -5,17 +5,16 @@ package org.drools.verifier.rangeChecks.dates;
 import org.drools.base.evaluators.Operator;
 
 import org.drools.verifier.components.*;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Gap;
 
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.drools.verifier.dao.VerifierResult;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 function boolean checkDates(Date d1, Date d2, boolean up) {
 		Calendar c1 = new GregorianCalendar();
@@ -41,13 +40,13 @@ rule "Range check for dates, if smaller than or equal is missing"
 		
 		# Foo( bar > "27-Oct-2007" )
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			operator == Operator.GREATER
 		)
 		
 		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( dateValue.equals($r.getDateValue()) ) 
@@ -72,13 +71,13 @@ rule "Range check for dates, if greater than or equal is missing"
 		
 		# Foo( bar > "27-Oct-2007" )
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			operator == Operator.LESS
 		)
 		
 		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( dateValue.equals($r.getDateValue()) ) 
@@ -104,13 +103,13 @@ rule "Range check for dates, equal and greater than"
 
 		# Foo( bar == "27-Oct-2007" ) 
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
 		)
 
 		# Check if Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( dateValue.equals($r.getDateValue()) ) 
@@ -118,7 +117,7 @@ rule "Range check for dates, equal and greater than"
 		
 		# Check if Foo( bar == "28-Oct-2007" || >= "28-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( checkDates( dateValue, $r.getDateValue(), true ) ) 
@@ -144,13 +143,13 @@ rule "Range check for dates, equal and smaller than"
 
 		# Foo( bar == "27-Oct-2007" ) 
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
 		)
 
 		# Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( dateValue.equals($r.getDateValue()) ) 
@@ -158,7 +157,7 @@ rule "Range check for dates, equal and smaller than"
 		
 		# Check if Foo( bar == "26-Oct-2007" || <= "26-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( checkDates( dateValue, $r.getDateValue(), false ) )

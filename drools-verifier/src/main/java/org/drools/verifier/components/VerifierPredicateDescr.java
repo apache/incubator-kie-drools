@@ -7,45 +7,39 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class VerifierPredicateDescr extends VerifierComponent implements
-		Cause {
+public class VerifierPredicateDescr extends RuleComponent
+    implements
+    Cause {
 
-	private static int index = 0;
+    private String content;
+    private String classMethodName;
 
-	private String content;
-	private String classMethodName;
+    public CauseType getCauseType() {
+        return CauseType.PREDICATE;
+    }
 
-	public VerifierPredicateDescr() {
-		super(index++);
-	}
+    public String getClassMethodName() {
+        return classMethodName;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.PREDICATE;
-	}
+    public void setClassMethodName(String classMethodName) {
+        this.classMethodName = classMethodName;
+    }
 
-	public CauseType getCauseType() {
-		return CauseType.PREDICATE;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public String getClassMethodName() {
-		return classMethodName;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public void setClassMethodName(String classMethodName) {
-		this.classMethodName = classMethodName;
-	}
+    @Override
+    public String toString() {
+        return "Predicate id: " + getGuid() + " content: " + content;
+    }
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	@Override
-	public String toString() {
-		return "Predicate id: " + id + " content: " + content;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.PREDICATE;
+    }
 }

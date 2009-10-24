@@ -3,8 +3,8 @@ package org.drools.verifier.subsumption.patterns
 
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternPossibility;
-import org.drools.verifier.components.RulePossibility;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.SubRule;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
 import org.drools.verifier.report.components.CauseType;
@@ -33,11 +33,11 @@ rule "Find subsumptant pattern possibilities"
 		)
 
 		# Find two PatternPossibilities.
-		$pp1 :PatternPossibility(
-			eval( patternId == $redundancy.getLeft().getId() )
+		$pp1 :SubPattern(
+			eval( patternGuid.equals( $redundancy.getLeft().getGuid() ) )
 		)
-		$pp2 :PatternPossibility(
-			eval( patternId == $redundancy.getRight().getId() )
+		$pp2 :SubPattern(
+			eval( patternGuid.equals( $redundancy.getRight().getGuid() ) )
 		)		
 		
 		# For every restriction in $pp1 there is a redundancy to restriction in $pp2.
@@ -100,16 +100,16 @@ rule "Find subsumptant rule possibilities"
 		)
 
 		# Find two RulePossibilities.
-		$rp1 :RulePossibility(
-			eval( ruleId == $redundancy.getLeft().getId() )
+		$rp1 :SubRule(
+			eval( ruleGuid.equals( $redundancy.getLeft().getGuid() ) )
 		)
-		$rp2 :RulePossibility(
-			eval( ruleId == $redundancy.getRight().getId() )
+		$rp2 :SubRule(
+			eval( ruleGuid.equals( $redundancy.getRight().getGuid() ) )
 		)
 		
-		# For every PatternPossibility in $rp1 there is a redundancy to PatternPossibility in $rp2.
+		# For every SubPattern in $rp1 there is a redundancy to SubPattern in $rp2.
 		forall(
-			$pp :PatternPossibility(
+			$pp :SubPattern(
 				this memberOf $rp1.items
 			)
 
@@ -119,14 +119,14 @@ rule "Find subsumptant rule possibilities"
 			)
 		)
 		
-		# There is no PatternPossibility on $rp2 that has no redundancy in $rp1 
-		# and has a lower order number than an existing PatternPossibility from $rp2 to $rp1.
+		# There is no SubPattern on $rp2 that has no redundancy in $rp1 
+		# and has a lower order number than an existing SubPattern from $rp2 to $rp1.
 		not(
-				$pp1 :PatternPossibility(
+				$pp1 :SubPattern(
 					this memberOf $rp2.items
 				)
 			and
-				$pp2 :PatternPossibility(
+				$pp2 :SubPattern(
 					this memberOf $rp2.items,
 					orderNumber > $pp1.orderNumber
 				)

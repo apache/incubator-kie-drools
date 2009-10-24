@@ -2,7 +2,7 @@
 package org.drools.verifier.redundancy
 
 #list any import classes here.
-global VerifierResult result;
+global VerifierReport result;
 
 
 
@@ -10,8 +10,8 @@ global VerifierResult result;
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.drools.verifier.components.RulePossibility;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
 import org.drools.verifier.report.components.VerifierMessage;
@@ -45,14 +45,14 @@ rule "Find redundant rule possibilities from different rules"
 		)
 
 		# Check that redundant possibilities are from redundant rules
-		exists RulePossibility(
+		exists SubRule(
 			this == $rulePossibilityRedundancy.left,
-			eval( ruleId == $ruleRedundancy.getLeft().getId() )
+			eval( ruleGuid.equals( $ruleRedundancy.getLeft().getGuid() ) )
 		)
 
-		exists RulePossibility(
+		exists SubRule(
 			this == $rulePossibilityRedundancy.right,
-			eval( ruleId == $ruleRedundancy.getRight().getId() )
+			eval( ruleGuid.equals( $ruleRedundancy.getRight().getGuid() ) )
 		)
 
 		# Check that the possibilties are redundant to each other.
@@ -104,17 +104,17 @@ rule "Find subsumptant rule possibilities from different rules"
 		)
 
 		# Check that redundant possibilities are from redundant rules
-		exists RulePossibility(
+		exists SubRule(
 			this == $rulePossibilityRedundancy.left,
-			eval( ruleId == $ruleRedundancy.getLeft().getId() )
+			eval( ruleGuid.equals( $ruleRedundancy.getLeft().getGuid() ) )
 		)
 
-		exists RulePossibility(
+		exists SubRule(
 			this == $rulePossibilityRedundancy.right,
-			eval( ruleId == $ruleRedundancy.getRight().getId() )
+			eval( ruleGuid.equals( $ruleRedundancy.getRight().getGuid() ) )
 		)
 
-		# Check that the left side is redundant to right, but the right side is not redudant to left.
+		# Check that the left side is redundant to right, but the right side is not redundant to left.
 		not Redundancy(
 			left.causeType == CauseType.RULE_POSSIBILITY,
 			left == $rulePossibilityRedundancy.right,

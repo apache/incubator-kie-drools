@@ -3,9 +3,9 @@ package org.drools.verifier;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 
-import org.drools.verifier.components.PatternPossibility;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class PatternSolverDRLTest extends TestBase {
 		rule.append("       order.setOrderDiscount( 6.0 ); ");
 		rule.append("end");
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(
 				new ByteArrayInputStream(rule.toString().getBytes()), result
 						.getVerifierData());
@@ -36,8 +36,8 @@ public class PatternSolverDRLTest extends TestBase {
 		// Check that there is three pattern possibilities and that they contain
 		// the right amount of items.
 		for (Object o : testData) {
-			if (o instanceof PatternPossibility) {
-				PatternPossibility pp = (PatternPossibility) o;
+			if (o instanceof SubPattern) {
+				SubPattern pp = (SubPattern) o;
 				if (pp.getItems().size() == 2) {
 
 					patternCount++;

@@ -7,10 +7,10 @@ import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.PatternPossibility;
-import org.drools.verifier.components.RulePossibility;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
 import org.drools.verifier.report.components.Severity;
@@ -34,7 +34,7 @@ public class NotesTest extends TestBase {
 		Redundancy redundancy = new Redundancy(
 				RedundancyType.STRONG, left, right);
 
-		PatternPossibility possibility = new PatternPossibility();
+		SubPattern possibility = new SubPattern();
 		possibility.add(left);
 		possibility.add(right);
 
@@ -43,7 +43,7 @@ public class NotesTest extends TestBase {
 		objects.add(redundancy);
 		objects.add(possibility);
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);
@@ -68,14 +68,14 @@ public class NotesTest extends TestBase {
 						"Find redundant pattern possibilities from rule possibilities"));
 
 		Collection<Object> objects = new ArrayList<Object>();
-		PatternPossibility left = new PatternPossibility();
+		SubPattern left = new SubPattern();
 
-		PatternPossibility right = new PatternPossibility();
+		SubPattern right = new SubPattern();
 
 		Redundancy redundancy = new Redundancy(
 				RedundancyType.STRONG, left, right);
 
-		RulePossibility possibility = new RulePossibility();
+		SubRule possibility = new SubRule();
 		possibility.add(left);
 		possibility.add(right);
 
@@ -84,7 +84,7 @@ public class NotesTest extends TestBase {
 		objects.add(redundancy);
 		objects.add(possibility);
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);

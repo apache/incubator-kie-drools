@@ -7,16 +7,16 @@
 package org.drools.verifier.alwaysFalse
 #list any import classes here.
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.components.RulePossibility;
+import org.drools.verifier.components.SubRule;
 
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Incompatibility;
 import org.drools.verifier.report.components.VerifierMessage;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
-global VerifierResult result;
+global VerifierReport result;
 
 #
 # Finds rules that are always false.
@@ -35,8 +35,8 @@ rule "Rule that is always false"
 		
 		# All the rule possibilities for rule need to be in conflict
 		forall( 
-			$rp :RulePossibility(
-				ruleId == $r.id
+			$rp :SubRule(
+				ruleGuid matches $r.guid
 			)
 			
 			Incompatibility( 

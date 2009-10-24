@@ -12,12 +12,12 @@ import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
 
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 #
 # Informs that there are inequalities, but not equality being catered for.
@@ -37,7 +37,7 @@ rule "Missing restriction in LiteralRestrictions"
 				)
 			and
 				not LiteralRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == Operator.NOT_EQUAL,
 					patternIsNot == $r.patternIsNot,
 					valueAsString matches $r.valueAsString
@@ -48,7 +48,7 @@ rule "Missing restriction in LiteralRestrictions"
 				)
 			and
 				not LiteralRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == Operator.EQUAL,
 					patternIsNot == $r.patternIsNot,
 					valueAsString matches $r.valueAsString
@@ -63,7 +63,7 @@ rule "Missing restriction in LiteralRestrictions"
 				)
 			and
 				not LiteralRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
 					patternIsNot == $r.patternIsNot,
 					valueAsString matches $r.valueAsString
@@ -75,7 +75,7 @@ rule "Missing restriction in LiteralRestrictions"
 				)
 			and
 				not LiteralRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == MatchesEvaluatorsDefinition.MATCHES,
 					patternIsNot == $r.patternIsNot,
 					valueAsString matches $r.valueAsString
@@ -111,11 +111,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == Operator.NOT_EQUAL,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
 				$r :VariableRestriction(
@@ -123,11 +123,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == Operator.EQUAL,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		#
 		# matches and not matches
@@ -138,11 +138,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
 				$r :VariableRestriction(
@@ -150,11 +150,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == MatchesEvaluatorsDefinition.MATCHES,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		#
 		# memberof and not memberof
@@ -165,11 +165,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == SetEvaluatorsDefinition.NOT_MEMBEROF,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
 				$r :VariableRestriction(
@@ -177,11 +177,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == SetEvaluatorsDefinition.MEMBEROF,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		#
 		# contains and not contains
@@ -192,11 +192,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == SetEvaluatorsDefinition.NOT_CONTAINS,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
 				$r :VariableRestriction(
@@ -204,11 +204,11 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldId == $r.fieldId,
+					fieldGuid matches $r.fieldGuid,
 					operator == SetEvaluatorsDefinition.CONTAINS,
 					patternIsNot == $r.patternIsNot,
-					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType
+					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		)
 	then

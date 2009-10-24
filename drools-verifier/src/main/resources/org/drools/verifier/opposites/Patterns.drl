@@ -3,14 +3,14 @@ package org.drools.verifier.opposites
 
 #list any import classes here.
 import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.SubPattern;
 
 import org.drools.verifier.report.components.Opposites;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 
 #
@@ -34,11 +34,11 @@ rule "Opposite Patterns"
 	when
 		$opposites :Opposites()
 		
-		$pp1 :PatternPossibility(
+		$pp1 :SubPattern(
 			items contains $opposites.left
 		)
 		
-		$pp2 :PatternPossibility(
+		$pp2 :SubPattern(
 			items contains $opposites.right
 		)
 		

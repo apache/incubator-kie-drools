@@ -9,16 +9,16 @@ import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.VerifierEvalDescr;
-import org.drools.verifier.components.VerifierComponent;
+import org.drools.verifier.components.RuleComponent;
+import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.dao.VerifierResult;
-
+import org.drools.verifier.data.VerifierReport;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 
 
@@ -37,20 +37,22 @@ rule "Optimise evals inside pattern"
 		$operator :OperatorDescr()
 
 		$eval :VerifierEvalDescr(
-			parent == $operator
+			parentGuid matches $operator.guid,
+			parentType == $operator.verifierComponentType
 		)
 
-		# Any other VerifierComponent that is not predicate or operator
-		$other :VerifierComponent(
-			parent == $operator,
+		# Any other RuleComponent that is not predicate or operator
+		$other :RuleComponent(
+			parentGuid matches $operator.guid,
+			parentType == $operator.verifierComponentType,
 			orderNumber > $eval.orderNumber,
-			( componentType != VerifierComponentType.OPERATOR && != VerifierComponentType.EVAL )
+			( verifierComponentType != VerifierComponentType.OPERATOR && != VerifierComponentType.EVAL )
 		)
 
 		$rule :VerifierRule(
-			id == $eval.ruleId
+			guid matches $eval.ruleGuid
 		)
-	then
+	then	
 		Collection list = new ArrayList();
 		list.add( $eval );
 		list.add( $other );

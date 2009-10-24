@@ -1,19 +1,21 @@
 package org.drools.verifier;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.drools.compiler.DrlParser;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
+import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.VerifierReportWriter;
+import org.drools.verifier.report.VerifierReportWriterFactory;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
@@ -25,121 +27,107 @@ import org.drools.verifier.report.components.VerifierRangeCheckMessage;
  */
 class VerifierTestStandalone {
 
-	public static final void main(String[] args) {
-		try {
+    public static final void main(String[] args) {
+        try {
 
-			Collection<String> fileNames = new ArrayList<String>();
+            Collection<String> fileNames = new ArrayList<String>();
 
-			// Test data
-			// fileNames.add("MissingRangesForDates.drl");
-			// fileNames.add("MissingRangesForDoubles.drl");
-			// fileNames.add("MissingRangesForInts.drl");
-			// fileNames.add("MissingRangesForVariables.drl");
-			// fileNames.add("Misc.drl");
-			// fileNames.add("Misc2.drl");
-			// fileNames.add("Misc3.drl");
-			fileNames.add("Enums.drl");
-			// fileNames.add("ConsequenceTest.drl");
-			// fileNames.add("optimisation/OptimisationRestrictionOrderTest.drl");
-			// fileNames.add("optimisation/OptimisationPatternOrderTest.drl");
+            // Test data
+            // fileNames.add("MissingRangesForDates.drl");
+            // fileNames.add("MissingRangesForDoubles.drl");
+            // fileNames.add("MissingRangesForInts.drl");
+            // fileNames.add("MissingRangesForVariables.drl");
+            // fileNames.add("Misc.drl");
+            // fileNames.add("Misc2.drl");
+            // fileNames.add("Misc3.drl");
+            fileNames.add( "Enums.drl" );
+            // fileNames.add("ConsequenceTest.drl");
+            // fileNames.add("optimisation/OptimisationRestrictionOrderTest.drl");
+            // fileNames.add("optimisation/OptimisationPatternOrderTest.drl");
 
-			DrlParser parser = new DrlParser();
-			Verifier a = new Verifier();
+            Verifier verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
 
-			for (String s : fileNames) {
-				PackageDescr descr = parser.parse(new InputStreamReader(
-						Verifier.class.getResourceAsStream(s)));
-				a.addPackageDescr(descr);
-			}
+            for ( String s : fileNames ) {
+                verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( s,
+                                                                              Verifier.class ),
+                                        ResourceType.DRL );
+            }
 
-			a.fireAnalysis();
-			// System.out.print(a.getResultAsPlainText());
-			// System.out.print(a.getResultAsXML());
-			// a.writeComponentsHTML("/stash/");
-			// a.writeComponentsHTML("/Users/michaelneale/foo.html");
-			a.writeComponentsHTML("/home/trikkola/");
-			// a.writeComponentsHTML("c:/");
+            verifier.fireAnalysis();
+            // System.out.print(a.getResultAsPlainText());
+            // System.out.print(a.getResultAsXML());
+            // a.writeComponentsHTML("/stash/");
+            // a.writeComponentsHTML("/Users/michaelneale/foo.html");
+            //			a.writeComponentsHTML("/home/trikkola/");
+            // a.writeComponentsHTML("c:/");
 
-			VerifierResult result = a.getResult();
-			Collection<VerifierMessageBase> msgs = result
-					.getBySeverity(Severity.ERROR);
+            VerifierReport result = verifier.getResult();
 
-			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
-				System.out.println("ERR: " + msg.getMessage());
-			}
+            VerifierReportWriter reportwriter = VerifierReportWriterFactory.newHTMLReportWriter();
+            FileOutputStream out = new FileOutputStream( "/Users/rikkola/Desktop/testReport.zip" );
 
-			msgs = result.getBySeverity(Severity.WARNING);
-			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
-				System.out.println("WARN (" + msg.getClass().getSimpleName()
-						+ "): " + msg.getMessage());
-				System.out.println("\t FAULT: ["
-						+ msg.getClass().getSimpleName() + "] "
-						+ msg.getFaulty());
-				if (msg instanceof VerifierMessage) {
-					System.out.println("\t CAUSES (message):");
-					VerifierMessage amsg = (VerifierMessage) msg;
-					for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
-							.hasNext();) {
-						Cause c = (Cause) iterator2.next();
-						System.out.println("\t\t ["
-								+ c.getClass().getSimpleName() + "]" + c);
+            reportwriter.writeReport( out,
+                                      result );
 
-					}
+            Collection<VerifierMessageBase> msgs = result.getBySeverity( Severity.ERROR );
 
-				} else if (msg instanceof VerifierRangeCheckMessage) {
-					System.out.println("\t CAUSES (range):");
-					VerifierRangeCheckMessage amsg = (VerifierRangeCheckMessage) msg;
-					for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
-							.hasNext();) {
-						Cause c = (Cause) iterator2.next();
-						System.out.println("\t\t" + c);
+            for ( Iterator iterator = msgs.iterator(); iterator.hasNext(); ) {
+                VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
+                System.out.println( "ERR: " + msg.getMessage() );
+            }
 
-					}
+            msgs = result.getBySeverity( Severity.WARNING );
+            for ( Iterator iterator = msgs.iterator(); iterator.hasNext(); ) {
+                VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
+                System.out.println( "WARN (" + msg.getClass().getSimpleName() + "): " + msg.getMessage() );
+                System.out.println( "\t FAULT: [" + msg.getClass().getSimpleName() + "] " + msg.getFaulty() );
+                if ( msg instanceof VerifierMessage ) {
+                    System.out.println( "\t CAUSES (message):" );
+                    VerifierMessage amsg = (VerifierMessage) msg;
+                    for ( Iterator iterator2 = amsg.getCauses().iterator(); iterator2.hasNext(); ) {
+                        Cause c = (Cause) iterator2.next();
+                        System.out.println( "\t\t [" + c.getClass().getSimpleName() + "]" + c );
 
-				}
-			}
+                    }
 
-			msgs = result.getBySeverity(Severity.NOTE);
-			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
-				System.out.println("NOTE: " + msg.getMessage());
-				System.out.println("\t" + msg.getFaulty());
-			}
+                } else if ( msg instanceof VerifierRangeCheckMessage ) {
+                    System.out.println( "\t CAUSES (range):" );
+                    VerifierRangeCheckMessage amsg = (VerifierRangeCheckMessage) msg;
+                    for ( Iterator iterator2 = amsg.getCauses().iterator(); iterator2.hasNext(); ) {
+                        Cause c = (Cause) iterator2.next();
+                        System.out.println( "\t\t" + c );
 
-			Collection<ObjectType> classes = result.getVerifierData()
-					.getAllObjectTypes();
-			for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
-				ObjectType c = (ObjectType) iterator.next();
+                    }
 
-				Collection<VerifierRule> cr = result.getVerifierData()
-						.getRulesByObjectTypeId(c.getId());
-				System.err.println("Class rules:" + cr);
-				Set<Field> flds = c.getFields();
-				for (Iterator iterator2 = flds.iterator(); iterator2.hasNext();) {
-					Field f = (Field) iterator2.next();
-					cr = result.getVerifierData().getRulesByFieldId(f.getId());
-					System.err.println("Field rules: " + cr);
+                }
+            }
 
-				}
-			}
+            msgs = result.getBySeverity( Severity.NOTE );
+            for ( Iterator iterator = msgs.iterator(); iterator.hasNext(); ) {
+                VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
+                System.out.println( "NOTE: " + msg.getMessage() );
+                System.out.println( "\t" + msg.getFaulty() );
+            }
 
-			// System.err.println(a.getResultAsPlainText());
-			// System.out.println(result.toString());
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
+            Collection<ObjectType> classes = result.getVerifierData().getAll( VerifierComponentType.OBJECT_TYPE );
+            for ( Iterator iterator = classes.iterator(); iterator.hasNext(); ) {
+                ObjectType c = (ObjectType) iterator.next();
 
-	private static void writeToFile(String fileName, String text) {
-		try {
-			FileWriter fstream = new FileWriter(fileName);
-			BufferedWriter out = new BufferedWriter(fstream);
-			out.write(text);
-			out.close();
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-	}
+                Collection<VerifierRule> cr = result.getVerifierData().getRulesByObjectTypeId( c.getGuid() );
+                System.err.println( "Class rules:" + cr );
+                Set<Field> flds = c.getFields();
+                for ( Iterator iterator2 = flds.iterator(); iterator2.hasNext(); ) {
+                    Field f = (Field) iterator2.next();
+                    cr = result.getVerifierData().getRulesByFieldId( f.getGuid() );
+                    System.err.println( "Field rules: " + cr );
+
+                }
+            }
+
+            // System.err.println(a.getResultAsPlainText());
+            // System.out.println(result.toString());
+        } catch ( Throwable t ) {
+            t.printStackTrace();
+        }
+    }
 }

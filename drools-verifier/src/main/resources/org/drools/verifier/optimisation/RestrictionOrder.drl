@@ -8,20 +8,23 @@ import java.util.ArrayList;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.VerifierPredicateDescr;
-import org.drools.verifier.components.VerifierComponent;
+import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.RuleComponent;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 
 # Informs that rule would be more effective if the less expensive
@@ -33,84 +36,51 @@ global VerifierResult result;
 #
 rule "Optimise restrictions inside operator"
 	when
-		$operator :OperatorDescr()
 
+		$sp : SubPattern()
+	
 		(
 				$r1 :Restriction(
-					parent.parent == $operator,
 					( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES )
-				)
-			and
-				# There is no reason to check if there is a less expensive constraint
-				# if this one has a restriction that is more expensive.
-				not Restriction(
-					parent == $r1.parent,
-					( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
+				) from $sp.items
 			and
 				$r2 :Restriction(
-					parent.parent == $operator,
-					parent.orderNumber < $r1.parent.orderNumber,
+					guid != $r1.guid,
 					( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
-			and
-				# The other restriction should not have any less expensive restrictions.
-				not Restriction(
-					parent == $r2.parent,
-					( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES )
-				)
+				) from $sp.items
 		) or (
 				$r1 :Restriction(
-					parent.parent == $operator,
 					( operator == Operator.GREATER || == Operator.LESS )
-				)
-			and
-				# There is no reason to check if there is a less expensive constraint
-				# if this one has a restriction that is more expensive.
-				not Restriction(
-					parent == $r1.parent,
-					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
+				) from $sp.items
 			and
 				$r2 :Restriction(
-					parent.parent == $operator,
-					parent.orderNumber < $r1.parent.orderNumber,
+					guid != $r1.guid,
 					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
-			and
-				# The other restriction should not have any less expensive restrictions.
-				not Restriction(
-					parent == $r2.parent,
-					( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES || == Operator.GREATER || == Operator.LESS )
-				)
+				) from $sp.items
 		) or (
 				$r1 :Restriction(
-					parent.parent == $operator,
 					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
-				)
-			and
-				# There is no reason to check if there is a less expensive constraint
-				# if this one has a restriction that is more expensive.
-				not Restriction(
-					parent == $r1.parent,
-					( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
+				) from $sp.items
 			and
 				$r2 :Restriction(
-					parent.parent == $operator,
-					parent.orderNumber < $r1.parent.orderNumber,
+					guid != $r1.guid,
 					( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
-			and
-				# The other restriction should not have any less expensive restrictions.
-				not Restriction(
-					parent == $r2.parent,
-					( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES || == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
-				)
+				) from $sp.items
+		)
+		
+		$c :Constraint(
+			guid matches $r1.parentGuid,
+			verifierComponentType == $r1.parentType
+		)
+		
+		Constraint(
+			guid matches $r2.parentGuid,
+			orderNumber < $c.orderNumber,
+			verifierComponentType == $r2.parentType
 		)
 
 		$pattern :Pattern(
-			id == $r1.patternId
+			guid == $sp.patternGuid
 		)
 	then
 		Collection list = new ArrayList();
@@ -128,6 +98,7 @@ rule "Optimise restrictions inside operator"
 								list ) );
 end
 
+
 # Informs that rule would be more effective if the less expensive
 # component was on the left side.
 #
@@ -143,7 +114,8 @@ rule "Optimise restrictions inside constraint"
 				)
 			and
 				$r2 :Restriction(
-					parent == $r1.parent,
+					parentGuid == $r1.parentGuid,
+					parentType == $r1.parentType,
 					orderNumber < $r1.orderNumber,
 					( operator 	== Operator.GREATER || 
 								== Operator.LESS || 
@@ -159,7 +131,8 @@ rule "Optimise restrictions inside constraint"
 				)
 			and
 				$r2 :Restriction(
-					parent == $r1.parent,
+					parentGuid == $r1.parentGuid,
+					parentType == $r1.parentType,
 					orderNumber < $r1.orderNumber,
 					( operator 	== Operator.GREATER_OR_EQUAL || 
 								== Operator.LESS_OR_EQUAL || 
@@ -173,14 +146,15 @@ rule "Optimise restrictions inside constraint"
 				)
 			and
 				$r2 :Restriction(
-					parent == $r1.parent,
+					parentGuid == $r1.parentGuid,
+					parentType == $r1.parentType,
 					orderNumber < $r1.orderNumber,
 					( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
 				)
 		)
 
 		$pattern :Pattern(
-			id == $r1.patternId
+			guid == $r1.patternGuid
 		)
 	then
 		Collection list = new ArrayList();
@@ -209,18 +183,20 @@ rule "Optimise predicates inside operator"
 		$operator :OperatorDescr()
 
 		$predicate :VerifierPredicateDescr(
-			parent == $operator
+			parentGuid matches $operator.guid,
+			parentType == $operator.verifierComponentType
 		)
 
 		# Any other VerifierComponent that is not predicate or operator
-		$other :VerifierComponent(
-			parent == $operator,
+		$other :RuleComponent(
+			parentGuid matches $operator.guid,
+			parentType == $operator.verifierComponentType,
 			orderNumber > $predicate.orderNumber,
-			( componentType != VerifierComponentType.OPERATOR && != VerifierComponentType.PREDICATE )
+			( verifierComponentType != VerifierComponentType.OPERATOR && != VerifierComponentType.PREDICATE )
 		)
 
 		$rule :VerifierRule(
-			id == $predicate.ruleId
+			guid == $predicate.ruleGuid
 		)
 	then
 		Collection list = new ArrayList();

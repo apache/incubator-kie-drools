@@ -14,12 +14,12 @@ import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Opposites;
 import org.drools.verifier.report.components.MissingRange;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
 import org.drools.base.evaluators.Operator;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 #
 # If two LiteralRestrictions are in conflict.
@@ -36,9 +36,9 @@ rule "Opposite LiteralRestrictions"
 		)
 
 		$right :LiteralRestriction(
-			fieldId == $left.fieldId,
+			fieldGuid matches $left.fieldGuid,
 			valueType == $left.valueType,
-			id != $left.id,
+			guid not matches $left.guid,
 			# Operator needs to be reversed to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $left.getOperator() ))
 		)
@@ -72,10 +72,10 @@ rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldId == $left.fieldId,
+			fieldGuid matches $left.fieldGuid,
 			valueType == $left.valueType,
 			operator == Operator.LESS,
-			id != $left.id
+			guid not matches $left.guid
 		)
 		
 		eval( $left.compareValues( $right ) == 0 )
@@ -107,10 +107,10 @@ rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldId == $left.fieldId,
+			fieldGuid matches $left.fieldGuid,
 			valueType == $left.valueType,
 			operator == Operator.LESS_OR_EQUAL,
-			id != $left.id
+			guid not matches $left.guid
 		)
 		
 		eval( $left.compareValues( $right ) == 0 )
@@ -144,10 +144,10 @@ rule "Opposite LiteralRestrictions with ranges, less - greater for ints and date
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldId == $left.fieldId,
+			fieldGuid matches $left.fieldGuid,
 			valueType == $left.valueType,
 			operator == Operator.GREATER,
-			id != $left.id
+			guid not matches $left.guid
 		)
 		
 		eval( $left.compareValues( $right ) == 1 )
@@ -180,10 +180,10 @@ rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldId == $left.fieldId,
+			fieldGuid matches $left.fieldGuid,
 			valueType == $left.valueType,
 			operator == Operator.LESS_OR_EQUAL,
-			id != $left.id
+			guid not matches $left.guid
 		)
 		
 		eval( $left.compareValues( $right ) == 1 )
@@ -212,10 +212,10 @@ rule "Opposite VariableRestrictions"
 		$r1 :VariableRestriction()
 
 		$r2 :VariableRestriction(
-			fieldId == $r1.fieldId,
-			id != $r1.id,
-			variable.objectId == $r1.variable.objectId,
-			variable.objectType == $r1.variable.objectType,
+			fieldGuid matches $r1.fieldGuid,
+			guid not matches $r1.guid,
+			variable.objectTypeGuid matches $r1.variable.objectTypeGuid,
+			variable.objectTypeType == $r1.variable.objectTypeType,
 			# Operator needs to be reverse to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
 		)

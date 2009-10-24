@@ -9,13 +9,13 @@ import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.FindMissingNumber;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 #
 # If all pattern ranges are not checked for a field.
@@ -44,7 +44,7 @@ rule "Range check for number patterns"
 			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
 				from collect(
 					LiteralRestriction( 
-						fieldId == $f.id, 
+						fieldId == $f.guid, 
 						patternIsNot == true, 
 						operator == Operator.EQUAL
 					)
@@ -75,7 +75,7 @@ rule "Range check for number patterns, !="
 			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
 				from collect(
 					LiteralRestriction( 
-						fieldId == $f.id, 
+						fieldId == $f.guid, 
 						patternIsNot == false, 
 						operator == Operator.NOT_EQUAL
 					)
@@ -85,7 +85,7 @@ rule "Range check for number patterns, !="
 			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
 				from collect(
 					LiteralRestriction( 
-						fieldId == $f.id, 
+						fieldId == $f.guid, 
 						patternIsNot == true, 
 						operator == Operator.NOT_EQUAL
 					)

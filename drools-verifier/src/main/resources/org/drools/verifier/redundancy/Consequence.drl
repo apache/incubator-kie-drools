@@ -18,7 +18,7 @@ rule "Find redundant TextConsequences"
 		# Check that VerifierRule $left and $right have redundant fields.
 		$left :TextConsequence()
 		$right :TextConsequence(
-			id != $left.id,
+			guid not matches $left.guid,
 			text == $left.text
 		)
 
