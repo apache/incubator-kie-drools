@@ -5,7 +5,7 @@ package org.drools.verifier.overlaps.restrictions
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Field.FieldType;
@@ -17,7 +17,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 #
 # Fires when two restrictions are overlapping.
@@ -36,19 +36,19 @@ rule "Find overlapping restrictions"
 		# There is subsumption between two restrictions
 		$subsumption :Subsumption(
 			left.causeType == CauseType.RESTRICTION,
-			$leftId :left.id,
-			$rightId :right.id
+			$leftGuid :left.guid,
+			$rightGuid :right.guid
 		)
 		
 		$left :LiteralRestriction(
-			id == $leftId
+			guid matches $leftGuid
 		)
 		$right :LiteralRestriction(
-			id == $rightId
+			guid matches $rightGuid
 		)
 		# There is no restriction between these two restrictions.
 		not	$center :LiteralRestriction(
-				fieldId == $left.fieldId,
+				fieldGuid matches $left.fieldGuid,
 				eval( $center.compareValues( $left ) == 1 ),
 				eval( $center.compareValues( $right ) == -1 )
 		)

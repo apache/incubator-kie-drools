@@ -1,0 +1,25 @@
+package org.test.findPatterns
+
+import org.drools.verifier.components.Pattern;
+
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
+
+import org.drools.verifier.data.VerifierReport;
+
+global VerifierReport result;
+
+
+
+rule "Find patterns"
+	when
+		$p :Pattern( )
+	then
+		result.add( new VerifierMessage(
+							Severity.NOTE,
+							MessageType.NOT_SPECIFIED,
+							$p,
+							"This pattern was found." ) );
+
+end

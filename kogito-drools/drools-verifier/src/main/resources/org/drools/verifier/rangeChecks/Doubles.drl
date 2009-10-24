@@ -7,10 +7,10 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Gap;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 
 # If all ranges are not checked for a field.
@@ -26,13 +26,13 @@ rule "Range check for doubles, if smaller than or equal is missing"
 		
 		# Foo( bar > 42 )
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			operator == Operator.GREATER
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			doubleValue == $r.doubleValue 
@@ -57,13 +57,13 @@ rule "Range check for doubles, if greater than or equal is missing"
 		
 		# Foo( bar > 42 )
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			operator == Operator.LESS
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			doubleValue == $r.doubleValue 
@@ -89,13 +89,13 @@ rule "Range check for doubles, equal and greater than"
 
 		# Foo( bar == 42 ) 
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
 		)
 
 		# Check if Foo( bar > 42 || >= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			doubleValue == $r.doubleValue 
@@ -121,13 +121,13 @@ rule "Range check for doubles, equal and smaller than"
 
 		# Foo( bar == 42 ) 
 		$r :LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
 		)
 
 		# Check if Foo( bar < 42 || <= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldId == $f.id, 
+			fieldGuid matches $f.guid, 
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			doubleValue == $r.doubleValue 

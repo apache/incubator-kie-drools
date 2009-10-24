@@ -3,7 +3,7 @@ package org.drools.verifier.report;
 import java.util.Collection;
 
 import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.Severity;
@@ -18,10 +18,10 @@ import com.thoughtworks.xstream.XStream;
  */
 public class ReportModeller {
 
-	public static String writeXML(VerifierResult result) {
+	public static String writeXML(VerifierReport result) {
 		XStream xstream = new XStream();
 
-		xstream.alias("result", VerifierResult.class);
+		xstream.alias("result", VerifierReport.class);
 		xstream.alias("message", VerifierMessage.class);
 
 		xstream.alias("Gap", Gap.class);
@@ -34,7 +34,7 @@ public class ReportModeller {
 		return "<?xml version=\"1.0\"?>\n" + xstream.toXML(result);
 	}
 
-	public static String writePlainText(VerifierResult result) {
+	public static String writePlainText(VerifierReport result) {
 
 		StringBuffer str = new StringBuffer();
 

@@ -13,10 +13,10 @@ rule "Find redundant VariableRestriction"
 		# Check that Restrictions $left and $right have redundant fields.
 		$left :VariableRestriction()
 		$right :VariableRestriction(
-			id != $left.id,
+			guid not matches $left.guid,
 			operator == $left.operator,
-			variable.objectType == $left.variable.objectType,
-			variable.objectId == $left.variable.objectId
+			variable.objectTypeType == $left.variable.objectTypeType,
+			variable.objectTypeGuid matches $left.variable.objectTypeGuid
 		)
 		# Check that there is not already a pair with these values.
 		not Redundancy(
@@ -41,7 +41,7 @@ rule "Find redundant LiteralRestriction"
 		and
 		(
 				$right :LiteralRestriction(
-					id != $left.id,
+					guid not matches $left.guid,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.BOOLEAN,
@@ -49,7 +49,7 @@ rule "Find redundant LiteralRestriction"
 				)
 			or
 				$right :LiteralRestriction(
-					id != $left.id,
+					guid not matches $left.guid,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.STRING,
@@ -57,7 +57,7 @@ rule "Find redundant LiteralRestriction"
 				)
 			or
 				$right :LiteralRestriction(
-					id != $left.id,
+					guid not matches $left.guid,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.INT,
@@ -65,7 +65,7 @@ rule "Find redundant LiteralRestriction"
 				)
 			or
 				$right :LiteralRestriction(
-					id != $left.id,
+					guid not matches $left.guid,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.DOUBLE,
@@ -73,7 +73,7 @@ rule "Find redundant LiteralRestriction"
 				)
 			or
 				$right :LiteralRestriction(
-					id != $left.id,
+					guid not matches $left.guid,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.DATE,
@@ -82,22 +82,22 @@ rule "Find redundant LiteralRestriction"
 			or
 			(
 				$right :LiteralRestriction(
-					id != $left.id,
+					guid not matches $left.guid,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.VARIABLE
 				)
 				and
 					$v :Variable(
-						objectType == VerifierComponentType.FIELD,
-						objectId == $left.id
+						objectTypeType == VerifierComponentType.FIELD,
+						objectTypeGuid matches $left.guid
 					)
 				and
 					Variable(
-						objectType == VerifierComponentType.FIELD,
-						objectId == $right.id,
-						objectName == $v.objectName,
-						name == $v.name
+						objectTypeType == VerifierComponentType.FIELD,
+						objectTypeGuid matches $right.guid,
+						objectTypeName == $v.objectTypeName,
+						name matches $v.name
 					)
 			)
 		)

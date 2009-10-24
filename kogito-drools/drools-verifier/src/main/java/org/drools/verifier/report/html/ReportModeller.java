@@ -1,71 +1,79 @@
 package org.drools.verifier.report.html;
 
-import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.mvel2.templates.TemplateRuntime;
 
-
 abstract class ReportModeller {
 
-	protected static String formPage(String sourceFolder, String content) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		String myTemplate = VerifierMessagesVisitor.readFile("frame.htm");
+    protected ZipOutputStream zout;
 
-		map.put("cssStyle", ReportVisitor.createStyleTag(sourceFolder + "/"
-				+ UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_BASIC));
-		map.put("sourceFolder", sourceFolder);
-		map.put("header", ReportVisitor.processHeader(sourceFolder));
-		map.put("content", content);
+    protected String formPage(String sourceFolder,
+                              String content) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        String myTemplate = VerifierMessagesVisitor.readFile( "frame.htm" );
 
-		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
-	}
+        map.put( "cssStyle",
+                 ReportVisitor.createStyleTag( sourceFolder + "/" + UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_BASIC ) );
+        map.put( "sourceFolder",
+                 sourceFolder );
+        map.put( "header",
+                 ReportVisitor.processHeader( sourceFolder ) );
+        map.put( "content",
+                 content );
 
-	public static void copyFile(String destination, String filename)
-			throws IOException {
+        return String.valueOf( TemplateRuntime.eval( myTemplate,
+                                                     map ) );
+    }
 
-		File source = new File(ComponentsReportModeller.class.getResource(
-				filename).getFile());
-		File dest = new File(destination + File.separator + filename);
+    public void copyFile(String destination,
+                         String filename) throws IOException {
+        zout.putNextEntry( new JarEntry( destination + File.separator + filename ) );
 
-		if (!dest.exists()) {
-			dest.createNewFile();
-		}
-		InputStream in = null;
-		OutputStream out = null;
-		try {
-			in = new FileInputStream(source);
-			out = new FileOutputStream(dest);
+        File source = new File( HTMLReportWriter.class.getResource( filename ).getFile() );
+        InputStream in = new FileInputStream( source );
 
-			// Transfer bytes from in to out
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-		} finally {
-			in.close();
-			out.close();
-		}
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ( (len = in.read( buf )) > 0 ) {
+            zout.write( buf,
+                        0,
+                        len );
+        }
+        in.close();
+        zout.closeEntry();
+    }
 
-	}
+    protected void writeToFile(String fileName,
+                               String text) throws IOException {
+        zout.putNextEntry( new JarEntry( fileName ) );
 
-	protected static void writeToFile(String fileName, String text) {
-		try {
-			FileWriter fstream = new FileWriter(fileName);
-			BufferedWriter out = new BufferedWriter(fstream);
-			out.write(text);
-			out.close();
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-	}
+        ByteArrayInputStream i = new ByteArrayInputStream( text.getBytes() );
+
+        int len = 0;
+        byte[] copyBuf = new byte[1024];
+        while ( len != -1 ) {
+
+            len = i.read( copyBuf,
+                          0,
+                          copyBuf.length );
+            if ( len > 0 ) {
+                zout.write( copyBuf,
+                            0,
+                            len );
+            }
+        }
+
+        i.close();
+        zout.closeEntry();
+    }
 }

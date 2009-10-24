@@ -1,111 +1,103 @@
 package org.drools.verifier.components;
 
-
 /**
  * 
  * @author Toni Rikkola
  */
-public class VerifierAccumulateDescr extends VerifierComponent {
+public class VerifierAccumulateDescr extends PatternComponent {
 
-	private static int index = 0;
+    private String   inputPatternGuid;
+    private String   initCode;
+    private String   actionCode;
+    private String   reverseCode;
+    private String   resultCode;
+    private String[] declarations;
+    private String   className;
+    private boolean  externalFunction = false;
+    private String   functionIdentifier;
+    private String   expression;
 
-	private int inputPatternId;
-	private String initCode;
-	private String actionCode;
-	private String reverseCode;
-	private String resultCode;
-	private String[] declarations;
-	private String className;
-	private boolean externalFunction = false;
-	private String functionIdentifier;
-	private String expression;
+    public String getActionCode() {
+        return actionCode;
+    }
 
-	public VerifierAccumulateDescr() {
-		super(index++);
-	}
+    public void setActionCode(String actionCode) {
+        this.actionCode = actionCode;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.ACCUMULATE;
-	}
+    public String getClassName() {
+        return className;
+    }
 
-	public String getActionCode() {
-		return actionCode;
-	}
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
-	public void setActionCode(String actionCode) {
-		this.actionCode = actionCode;
-	}
+    public String[] getDeclarations() {
+        return declarations;
+    }
 
-	public String getClassName() {
-		return className;
-	}
+    public void setDeclarations(String[] declarations) {
+        this.declarations = declarations;
+    }
 
-	public void setClassName(String className) {
-		this.className = className;
-	}
+    public String getExpression() {
+        return expression;
+    }
 
-	public String[] getDeclarations() {
-		return declarations;
-	}
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
 
-	public void setDeclarations(String[] declarations) {
-		this.declarations = declarations;
-	}
+    public boolean isExternalFunction() {
+        return externalFunction;
+    }
 
-	public String getExpression() {
-		return expression;
-	}
+    public void setExternalFunction(boolean externalFunction) {
+        this.externalFunction = externalFunction;
+    }
 
-	public void setExpression(String expression) {
-		this.expression = expression;
-	}
+    public String getFunctionIdentifier() {
+        return functionIdentifier;
+    }
 
-	public boolean isExternalFunction() {
-		return externalFunction;
-	}
+    public void setFunctionIdentifier(String functionIdentifier) {
+        this.functionIdentifier = functionIdentifier;
+    }
 
-	public void setExternalFunction(boolean externalFunction) {
-		this.externalFunction = externalFunction;
-	}
+    public String getInitCode() {
+        return initCode;
+    }
 
-	public String getFunctionIdentifier() {
-		return functionIdentifier;
-	}
+    public void setInitCode(String initCode) {
+        this.initCode = initCode;
+    }
 
-	public void setFunctionIdentifier(String functionIdentifier) {
-		this.functionIdentifier = functionIdentifier;
-	}
+    public String getInputPatternGuid() {
+        return inputPatternGuid;
+    }
 
-	public String getInitCode() {
-		return initCode;
-	}
+    public void setInputPatternGuid(String inputPatternGuid) {
+        this.inputPatternGuid = inputPatternGuid;
+    }
 
-	public void setInitCode(String initCode) {
-		this.initCode = initCode;
-	}
+    public String getResultCode() {
+        return resultCode;
+    }
 
-	public int getInputPatternId() {
-		return inputPatternId;
-	}
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
+    }
 
-	public void setInputPatternId(int inputPatternId) {
-		this.inputPatternId = inputPatternId;
-	}
+    public String getReverseCode() {
+        return reverseCode;
+    }
 
-	public String getResultCode() {
-		return resultCode;
-	}
+    public void setReverseCode(String reverseCode) {
+        this.reverseCode = reverseCode;
+    }
 
-	public void setResultCode(String resultCode) {
-		this.resultCode = resultCode;
-	}
-
-	public String getReverseCode() {
-		return reverseCode;
-	}
-
-	public void setReverseCode(String reverseCode) {
-		this.reverseCode = reverseCode;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.ACCUMULATE;
+    }
 }

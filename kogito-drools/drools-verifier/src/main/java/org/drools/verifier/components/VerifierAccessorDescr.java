@@ -4,16 +4,9 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierAccessorDescr extends VerifierComponent {
+public class VerifierAccessorDescr extends PatternComponent {
 
-	private static int index = 0;
-
-	public VerifierAccessorDescr() {
-		super(index++);
-	}
-
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.ACCESSOR;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.ACCESSOR;
+    }
 }

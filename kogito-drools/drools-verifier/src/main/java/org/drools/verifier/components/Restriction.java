@@ -8,95 +8,72 @@ import org.drools.verifier.report.components.CauseType;
  * 
  * @author Toni Rikkola
  */
-public abstract class Restriction extends VerifierComponent implements Cause {
+public abstract class Restriction extends PatternComponent
+    implements
+    Cause {
 
-	public static class RestrictionType {
-		public static final RestrictionType LITERAL = new RestrictionType(0);
-		public static final RestrictionType VARIABLE = new RestrictionType(1);
-		public static final RestrictionType QUALIFIED_IDENTIFIER = new RestrictionType(
-				2);
-		public static final RestrictionType RETURN_VALUE_RESTRICTION = new RestrictionType(
-				3);
-		public static final RestrictionType ENUM = new RestrictionType(4);
+    public static class RestrictionType {
+        public static final RestrictionType LITERAL                  = new RestrictionType( "LITERAL" );
+        public static final RestrictionType VARIABLE                 = new RestrictionType( "VARIABLE" );
+        public static final RestrictionType QUALIFIED_IDENTIFIER     = new RestrictionType( "QUALIFIED_IDENTIFIER" );
+        public static final RestrictionType RETURN_VALUE_RESTRICTION = new RestrictionType( "RETURN_VALUE_RESTRICTION" );
+        public static final RestrictionType ENUM                     = new RestrictionType( "ENUM" );
 
-		private final int index;
+        protected final String              type;
 
-		private RestrictionType(int i) {
-			index = i;
-		}
-	}
+        private RestrictionType(String t) {
+            type = t;
+        }
+    }
 
-	private static int index = 0;
+    private boolean    patternIsNot;
+    private String     constraintGuid;
 
-	private int patternId;
-	private boolean patternIsNot;
-	private int constraintId;
+    // Id of the field that this restriction is related to.
+    private String     fieldGuid;
 
-	// Id of the field that this restriction is related to.
-	private int fieldId;
+    protected Operator operator;
 
-	protected Operator operator;
+    public CauseType getCauseType() {
+        return CauseType.RESTRICTION;
+    }
 
-	public Restriction() {
-		super(index++);
-	}
+    public abstract RestrictionType getRestrictionType();
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.RESTRICTION;
-	}
+    @Override
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.RESTRICTION;
+    }
 
-	public CauseType getCauseType() {
-		return CauseType.RESTRICTION;
-	}
+    public Operator getOperator() {
+        return operator;
+    }
 
-	public abstract RestrictionType getRestrictionType();
+    public void setOperator(Operator operator) {
+        this.operator = operator;
+    }
 
-	public Operator getOperator() {
-		return operator;
-	}
+    public String getConstraintGuid() {
+        return constraintGuid;
+    }
 
-	public void setOperator(Operator operator) {
-		this.operator = operator;
-	}
+    public void setConstraintGuid(String constraintGuid) {
+        this.constraintGuid = constraintGuid;
+    }
 
-	public int getConstraintId() {
-		return constraintId;
-	}
+    public String getFieldGuid() {
+        return fieldGuid;
+    }
 
-	public void setConstraintId(int constraintId) {
-		this.constraintId = constraintId;
-	}
+    public void setFieldGuid(String guid) {
+        this.fieldGuid = guid;
+    }
 
-	public int getRuleId() {
-		return ruleId;
-	}
+    public boolean isPatternIsNot() {
+        return patternIsNot;
+    }
 
-	public void setRuleId(int ruleId) {
-		this.ruleId = ruleId;
-	}
-
-	public int getPatternId() {
-		return patternId;
-	}
-
-	public void setPatternId(int patternId) {
-		this.patternId = patternId;
-	}
-
-	public int getFieldId() {
-		return fieldId;
-	}
-
-	public void setFieldId(int fieldId) {
-		this.fieldId = fieldId;
-	}
-
-	public boolean isPatternIsNot() {
-		return patternIsNot;
-	}
-
-	public void setPatternIsNot(boolean patternIsNot) {
-		this.patternIsNot = patternIsNot;
-	}
+    public void setPatternIsNot(boolean patternIsNot) {
+        this.patternIsNot = patternIsNot;
+    }
 }

@@ -8,8 +8,8 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
 
 /**
@@ -27,7 +27,7 @@ public class RangeCheckDoublesTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for doubles, if smaller than or equal is missing"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
 				.getVerifierData());
@@ -66,7 +66,7 @@ public class RangeCheckDoublesTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for doubles, if greater than or equal is missing"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
 				.getVerifierData());
@@ -104,7 +104,7 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and greater than"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
 				.getVerifierData());
@@ -144,7 +144,7 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and smaller than"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
 				.getVerifierData());

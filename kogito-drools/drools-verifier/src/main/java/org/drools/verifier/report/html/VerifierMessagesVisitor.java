@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.verifier.dao.VerifierData;
+import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;

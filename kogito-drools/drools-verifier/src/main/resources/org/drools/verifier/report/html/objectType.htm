@@ -9,7 +9,7 @@
 		@if{objectType.fields != null && !objectType.fields.empty}
 			<ul>
 				@foreach{field:objectType.fields}
-				<li>@{field.fieldType}&nbsp;<a href="@{sourceFolder}/@{fieldFolder}/@{field.id}.htm">@{field.name}</a></li>
+				<li>@{field.fieldType}&nbsp;<a href="@{sourceFolder}/@{fieldFolder}/@{field.guid}.htm">@{field.name}</a></li>
 				@end{}
 			</ul>
 		@else{}
@@ -22,7 +22,7 @@
 		Rules that use this component:
 		<ul>
 			@foreach{rule:rules}
-			<li><a href="@{sourceFolder}/@{ruleFolder}/@{rule.id}.htm">@{rule.ruleName}</a></li>
+			<li><a href="@{sourceFolder}/@{ruleFolder}/@{rule.guid}.htm">@{rule.ruleName}</a></li>
 			@end{}
 		</ul>
 	</div>

@@ -35,27 +35,27 @@ rule "Find pattern possibility redundancy"
 
 		# Find two PatternPossibilities.
 		(
-				$pp1 :PatternPossibility(
-					eval( patternId == $redundancy.getLeft().getId() )
+				$pp1 :SubPattern(
+					eval( patternGuid.equals( $redundancy.getLeft().getGuid() ) )
 				)
 			and
-				$pp2 :PatternPossibility(
-					eval( patternId == $redundancy.getRight().getId() )
+				$pp2 :SubPattern(
+					eval( patternGuid.equals( $redundancy.getRight().getGuid() ) )
 				)
 		) or (
-				$pp1 :PatternPossibility(
-					eval( patternId == $redundancy.getRight().getId() )
+				$pp1 :SubPattern(
+					eval( patternGuid.equals( $redundancy.getRight().getGuid() ) )
 				)
 			and
-				$pp2 :PatternPossibility(
-					eval( patternId == $redundancy.getLeft().getId() )
+				$pp2 :SubPattern(
+					eval( patternGuid.equals( $redundancy.getLeft().getGuid() ) )
 				)
 		)
 
 		# For every restriction in $pp1 there is a redundancy to $pp2.
 		forall(
 			$r :Restriction(
-				patternId == $pp1.patternId,
+				patternGuid matches $pp1.patternGuid,
 				this memberOf $pp1.items
 			)
 
@@ -75,7 +75,7 @@ rule "Find pattern possibility redundancy"
 		# For every restriction in $pp2 there is a redundancy to $pp1.
 		forall(
 			$r :Restriction(
-				patternId == $pp2.patternId,
+				patternGuid matches $pp2.patternGuid,
 				this memberOf $pp2.items
 			)
 
@@ -121,17 +121,17 @@ rule "Find rule possibility redundancy"
 		)
 
 		# Find two RulePossibilities.
-		$rp1 :RulePossibility(
-			eval( ruleId == $redundancy.getLeft().getId() )
+		$rp1 :SubRule(
+			eval( ruleGuid.equals( $redundancy.getLeft().getGuid() ) )
 		)
-		$rp2 :RulePossibility(
-			eval( ruleId == $redundancy.getRight().getId() )
+		$rp2 :SubRule(
+			eval( ruleGuid.equals( $redundancy.getRight().getGuid() ) )
 		)
 
 		# For every pattern possibility in $rp1 there is a redundant pattern possibility in $rp2.
 		forall(
-			$pp :PatternPossibility(
-				ruleId == $rp1.ruleId,
+			$pp :SubPattern(
+				ruleGuid matches $rp1.ruleGuid,
 				this memberOf $rp1.items
 			)
 
@@ -145,8 +145,8 @@ rule "Find rule possibility redundancy"
 
 		# For every pattern possibility in $rp2 there is a redundant pattern possibility in $rp1.
 		forall(
-			$pp :PatternPossibility(
-				ruleId == $rp2.ruleId,
+			$pp :SubPattern(
+				ruleGuid matches $rp2.ruleGuid,
 				this memberOf $rp2.items
 			)
 

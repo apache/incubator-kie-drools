@@ -4,35 +4,28 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierFunctionCallDescr extends VerifierComponent {
+public class VerifierFunctionCallDescr extends RuleComponent {
 
-	private static int index = 0;
+    private String name;
+    private String arguments;
 
-	private String name;
-	private String arguments;
+    public String getArguments() {
+        return arguments;
+    }
 
-	public VerifierFunctionCallDescr() {
-		super(index++);
-	}
+    public void setArguments(String arguments) {
+        this.arguments = arguments;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.FUNCTION_CALL;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getArguments() {
-		return arguments;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setArguments(String arguments) {
-		this.arguments = arguments;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.FUNCTION_CALL;
+    }
 }

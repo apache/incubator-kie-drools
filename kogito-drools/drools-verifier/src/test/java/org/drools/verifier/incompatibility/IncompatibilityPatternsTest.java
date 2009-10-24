@@ -10,7 +10,7 @@ import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
@@ -30,8 +30,8 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
 		/*
 		 * Working pair
 		 */
-		PatternPossibility pp1 = new PatternPossibility();
-		PatternPossibility pp2 = new PatternPossibility();
+		SubPattern pp1 = new SubPattern();
+		SubPattern pp2 = new SubPattern();
 
 		Restriction r1 = new LiteralRestriction();
 		pp1.add(r1);
@@ -51,8 +51,8 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
 		/*
 		 * Another working pair.
 		 */
-		PatternPossibility pp3 = new PatternPossibility();
-		PatternPossibility pp4 = new PatternPossibility();
+		SubPattern pp3 = new SubPattern();
+		SubPattern pp4 = new SubPattern();
 
 		Restriction r5 = new LiteralRestriction();
 		pp3.add(r5);

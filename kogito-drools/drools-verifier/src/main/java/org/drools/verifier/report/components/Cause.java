@@ -6,8 +6,7 @@ package org.drools.verifier.report.components;
  */
 public interface Cause {
 
-
-	public int getId();
-
-	public CauseType getCauseType();
+    public String getGuid();
+    
+    public CauseType getCauseType();
 }

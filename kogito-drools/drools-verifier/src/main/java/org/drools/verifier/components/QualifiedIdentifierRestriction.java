@@ -1,52 +1,51 @@
 package org.drools.verifier.components;
 
-
 /**
  * 
  * @author Toni Rikkola
  */
-public class QualifiedIdentifierRestriction extends Restriction  {
+public class QualifiedIdentifierRestriction extends Restriction {
 
-	private int variableId;
-	private String variableName;
-	private String variablePath;
+    private String variableGuid;
+    private String variableName;
+    private String variablePath;
 
-	@Override
-	public RestrictionType getRestrictionType() {
-		return RestrictionType.QUALIFIED_IDENTIFIER;
-	}
+    @Override
+    public RestrictionType getRestrictionType() {
+        return RestrictionType.QUALIFIED_IDENTIFIER;
+    }
 
-	public String getValueAsString() {
-		return variablePath + "." + variableName;
-	}
+    public String getValueAsString() {
+        return variablePath + "." + variableName;
+    }
 
-	public int getVariableId() {
-		return variableId;
-	}
+    public String getVariableGuid() {
+        return variableGuid;
+    }
 
-	public void setVariableId(int variableId) {
-		this.variableId = variableId;
-	}
+    public void setVariableGuid(String variableGuid) {
+        this.variableGuid = variableGuid;
+    }
 
-	public String getVariableName() {
-		return variableName;
-	}
+    public String getVariableName() {
+        return variableName;
+    }
 
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
-	}
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
+    }
 
-	public String getVariablePath() {
-		return variablePath;
-	}
+    public String getVariablePath() {
+        return variablePath;
+    }
 
-	public void setVariablePath(String variablePath) {
-		this.variablePath = variablePath;
-	}
+    public void setVariablePath(String variablePath) {
+        this.variablePath = variablePath;
+    }
 
-	@Override
-	public String toString() {
-		return "QualifiedIdentifierRestriction name: " + variableName
-				+ variablePath;
-	}
+    @Override
+    public String toString() {
+        return "QualifiedIdentifierRestriction name: " + variableName + variablePath;
+    }
+
 }

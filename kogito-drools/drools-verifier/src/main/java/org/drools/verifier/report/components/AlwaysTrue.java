@@ -10,7 +10,7 @@ public class AlwaysTrue implements Cause {
 
 	private static int index = 0;
 
-	private final int id = index++;
+	private final String guid = String.valueOf( index++ );
 
 	private final Cause cause;
 
@@ -27,8 +27,8 @@ public class AlwaysTrue implements Cause {
 		return CauseType.ALWAYS_TRUE;
 	}
 
-	public int getId() {
-		return id;
+	public String getGuid() {
+		return guid;
 	}
 
 	public Cause getCause() {

@@ -4,35 +4,28 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierCollectDescr extends VerifierComponent {
+public class VerifierCollectDescr extends RuleComponent {
 
-	private static int index = 0;
+    private String insidePatternGuid;
+    private String classMethodName;
 
-	private int insidePatternId;
-	private String classMethodName;
+    public String getInsidePatternGuid() {
+        return insidePatternGuid;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.COLLECT;
-	}
+    public void setInsidePatternGuid(String guid) {
+        this.insidePatternGuid = guid;
+    }
 
-	public int getInsidePatternId() {
-		return insidePatternId;
-	}
+    public String getClassMethodName() {
+        return classMethodName;
+    }
 
-	public void setInsidePatternId(int insidePatternId) {
-		this.insidePatternId = insidePatternId;
-	}
+    public void setClassMethodName(String classMethodName) {
+        this.classMethodName = classMethodName;
+    }
 
-	public String getClassMethodName() {
-		return classMethodName;
-	}
-
-	public void setClassMethodName(String classMethodName) {
-		this.classMethodName = classMethodName;
-	}
-
-	public VerifierCollectDescr() {
-		super(index++);
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.COLLECT;
+    }
 }

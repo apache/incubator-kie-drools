@@ -9,8 +9,8 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
@@ -30,7 +30,7 @@ public class ConsequenceTest extends TestBase {
 
         session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "No action - possibly commented out" ) );
 
-        VerifierResult result = VerifierResultFactory.createVerifierResult();
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
 
         Collection< ? extends Object> testData = getTestData( this.getClass().getResourceAsStream( "ConsequenceTest.drl" ),
                                                               result.getVerifierData() );

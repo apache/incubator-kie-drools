@@ -16,7 +16,7 @@ rule "Find equivalent Rules"
 		# Check that VerifierRule $left and $right have redundant fields.
 		$left :VerifierRule()
 		$right :VerifierRule( 
-			id != $left.id, 
+			guid not matches $left.guid, 
 			ruleAgendaGroup == $left.ruleAgendaGroup
 		)
 		

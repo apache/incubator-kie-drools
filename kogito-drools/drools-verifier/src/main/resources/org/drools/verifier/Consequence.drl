@@ -5,12 +5,12 @@ package org.drools.verifier.consequence
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.TextConsequence;
 import org.drools.verifier.report.components.VerifierMessage;
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 
 #declare any global variables here
-global VerifierResult result;
+global VerifierReport result;
 
 
 rule "No action - possibly commented out"
@@ -18,7 +18,7 @@ rule "No action - possibly commented out"
 		$c :TextConsequence( ( text == null || matches "" ) )
 
 		$r :VerifierRule(
-			id == $c.ruleId
+			guid matches $c.ruleGuid
 		)
 	then
 		result.add( new VerifierMessage(

@@ -7,44 +7,39 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class VerifierEvalDescr extends VerifierComponent implements Cause {
+public class VerifierEvalDescr extends RuleComponent
+    implements
+    Cause {
 
-	private static int index = 0;
+    private String content;
+    private String classMethodName;
 
-	private String content;
-	private String classMethodName;
+    public CauseType getCauseType() {
+        return CauseType.EVAL;
+    }
 
-	public VerifierEvalDescr() {
-		super(index++);
-	}
+    public String getClassMethodName() {
+        return classMethodName;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.EVAL;
-	}
+    public void setClassMethodName(String classMethodName) {
+        this.classMethodName = classMethodName;
+    }
 
-	public CauseType getCauseType() {
-		return CauseType.EVAL;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public String getClassMethodName() {
-		return classMethodName;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public void setClassMethodName(String classMethodName) {
-		this.classMethodName = classMethodName;
-	}
+    @Override
+    public String toString() {
+        return "Eval, content: " + content;
+    }
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	@Override
-	public String toString() {
-		return "Eval, content: " + content;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.EVAL;
+    }
 }

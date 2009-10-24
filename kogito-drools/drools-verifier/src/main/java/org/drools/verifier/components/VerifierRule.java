@@ -7,73 +7,67 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class VerifierRule extends VerifierComponent implements Cause {
+public class VerifierRule extends RuleComponent
+    implements
+    Cause {
 
-	private static int index = 0;
+    private String      ruleSalience;
+    private String      ruleAgendaGroup;
+    private Consequence consequence;
+    private int         lineNumber;
 
-	private String ruleSalience;
-	private String ruleAgendaGroup;
-	private Consequence consequence;
-	private int lineNumber;
+    private int         packageId;
 
-	private int packageId;
+    public CauseType getCauseType() {
+        return CauseType.RULE;
+    }
 
-	public VerifierRule() {
-		super(index++);
-		ruleId = index;
-	}
+    public String getRuleAgendaGroup() {
+        return ruleAgendaGroup;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.RULE;
-	}
+    public void setRuleAgendaGroup(String agendaGroup) {
+        this.ruleAgendaGroup = agendaGroup;
+    }
 
-	public CauseType getCauseType() {
-		return CauseType.RULE;
-	}
+    public String getRuleSalience() {
+        return ruleSalience;
+    }
 
-	public String getRuleAgendaGroup() {
-		return ruleAgendaGroup;
-	}
+    public void setRuleSalience(String salience) {
+        this.ruleSalience = salience;
+    }
 
-	public void setRuleAgendaGroup(String agendaGroup) {
-		this.ruleAgendaGroup = agendaGroup;
-	}
+    public Consequence getConsequence() {
+        return consequence;
+    }
 
-	public String getRuleSalience() {
-		return ruleSalience;
-	}
+    public void setConsequence(Consequence consequence) {
+        this.consequence = consequence;
+    }
 
-	public void setRuleSalience(String salience) {
-		this.ruleSalience = salience;
-	}
+    public int getLineNumber() {
+        return lineNumber;
+    }
 
-	public Consequence getConsequence() {
-		return consequence;
-	}
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
 
-	public void setConsequence(Consequence consequence) {
-		this.consequence = consequence;
-	}
+    @Override
+    public String toString() {
+        return "Rule '" + getRuleName() + "'";
+    }
 
-	public int getLineNumber() {
-		return lineNumber;
-	}
+    public int getPackageId() {
+        return packageId;
+    }
 
-	public void setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
-	}
+    public void setPackageId(int packageId) {
+        this.packageId = packageId;
+    }
 
-	@Override
-	public String toString() {
-		return "Rule '" + ruleName + "'";
-	}
-
-	public int getPackageId() {
-		return packageId;
-	}
-
-	public void setPackageId(int packageId) {
-		this.packageId = packageId;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.RULE;
+    }
 }

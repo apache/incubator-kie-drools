@@ -7,41 +7,34 @@ import java.util.Set;
  * 
  * @author Toni Rikkola
  */
-public class RulePackage extends VerifierComponent {
+public class RulePackage extends PackageComponent {
 
-	private static int index = 0;
+    private int               offset = 0;
+    private String            name;
+    private Set<VerifierRule> rules  = new HashSet<VerifierRule>();
 
-	private int offset = 0;
-	private String name;
-	private Set<VerifierRule> rules = new HashSet<VerifierRule>();
-
-	public RulePackage() {
-		super(index++);
-	}
-
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.RULE_PACKAGE;
-	}
-	
-	public int getOffset(){ 
-	    offset++;
+    public int getOffset() {
+        offset++;
         return offset % 2;
-	}	
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Set<VerifierRule> getRules() {
-		return rules;
-	}
+    public Set<VerifierRule> getRules() {
+        return rules;
+    }
 
-	public void setRules(Set<VerifierRule> rules) {
-		this.rules = rules;
-	}
+    public void setRules(Set<VerifierRule> rules) {
+        this.rules = rules;
+    }
+
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.RULE_PACKAGE;
+    }
 }

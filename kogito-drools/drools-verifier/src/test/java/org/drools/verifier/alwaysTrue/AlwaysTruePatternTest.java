@@ -10,12 +10,12 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.AlwaysTrue;
 import org.drools.verifier.report.components.Opposites;
 import org.drools.verifier.report.components.Severity;
@@ -34,7 +34,7 @@ public class AlwaysTruePatternTest extends TestBase {
 
         session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Pattern possibility that is always true" ) );
 
-        VerifierResult result = VerifierResultFactory.createVerifierResult();
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
 
         session.setGlobal( "result",
@@ -47,8 +47,8 @@ public class AlwaysTruePatternTest extends TestBase {
         Restriction r2 = new LiteralRestriction();
         Opposites o1 = new Opposites( r1,
                                       r2 );
-        PatternPossibility pp1 = new PatternPossibility();
-        pp1.setPatternId( pattern1.getId() );
+        SubPattern pp1 = new SubPattern();
+        pp1.setPatternGuid( pattern1.getGuid() );
         pp1.add( r1 );
         pp1.add( r2 );
 
@@ -56,8 +56,8 @@ public class AlwaysTruePatternTest extends TestBase {
         Restriction r4 = new VariableRestriction();
         Opposites o2 = new Opposites( r1,
                                       r2 );
-        PatternPossibility pp2 = new PatternPossibility();
-        pp2.setPatternId( pattern1.getId() );
+        SubPattern pp2 = new SubPattern();
+        pp2.setPatternGuid( pattern1.getGuid() );
         pp2.add( r1 );
         pp2.add( r2 );
 
@@ -66,8 +66,8 @@ public class AlwaysTruePatternTest extends TestBase {
 
         Restriction r5 = new LiteralRestriction();
         Restriction r6 = new LiteralRestriction();
-        PatternPossibility pp3 = new PatternPossibility();
-        pp3.setPatternId( pattern2.getId() );
+        SubPattern pp3 = new SubPattern();
+        pp3.setPatternGuid( pattern2.getGuid() );
         pp3.add( r5 );
         pp3.add( r6 );
 
@@ -75,8 +75,8 @@ public class AlwaysTruePatternTest extends TestBase {
         Restriction r8 = new VariableRestriction();
         Opposites o4 = new Opposites( r7,
                                       r8 );
-        PatternPossibility pp4 = new PatternPossibility();
-        pp4.setPatternId( pattern2.getId() );
+        SubPattern pp4 = new SubPattern();
+        pp4.setPatternGuid( pattern2.getGuid() );
         pp4.add( r7 );
         pp4.add( r8 );
 
@@ -136,7 +136,7 @@ public class AlwaysTruePatternTest extends TestBase {
 
         session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Pattern that is always true" ) );
 
-        VerifierResult result = VerifierResultFactory.createVerifierResult();
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
 
         session.setGlobal( "result",
@@ -146,25 +146,25 @@ public class AlwaysTruePatternTest extends TestBase {
 
         // This pattern is always true.
         Pattern pattern1 = new Pattern();
-        pattern1.setRuleId( rule1.getId() );
+        pattern1.setRuleGuid( rule1.getGuid() );
 
-        PatternPossibility pp1 = new PatternPossibility();
-        pp1.setPatternId( pattern1.getId() );
+        SubPattern pp1 = new SubPattern();
+        pp1.setPatternGuid( pattern1.getGuid() );
         AlwaysTrue alwaysTrue1 = new AlwaysTrue( pp1 );
 
-        PatternPossibility pp2 = new PatternPossibility();
-        pp2.setPatternId( pattern1.getId() );
+        SubPattern pp2 = new SubPattern();
+        pp2.setPatternGuid( pattern1.getGuid() );
         AlwaysTrue alwaysTrue2 = new AlwaysTrue( pp2 );
 
         // This pattern is okay.
         Pattern pattern2 = new Pattern();
-        pattern2.setRuleId( rule1.getId() );
+        pattern2.setRuleGuid( rule1.getGuid() );
 
-        PatternPossibility pp3 = new PatternPossibility();
-        pp3.setPatternId( pattern2.getId() );
+        SubPattern pp3 = new SubPattern();
+        pp3.setPatternGuid( pattern2.getGuid() );
 
-        PatternPossibility pp4 = new PatternPossibility();
-        pp4.setPatternId( pattern2.getId() );
+        SubPattern pp4 = new SubPattern();
+        pp4.setPatternGuid( pattern2.getGuid() );
         AlwaysTrue alwaysTrue4 = new AlwaysTrue( pp4 );
 
         data.add( rule1 );

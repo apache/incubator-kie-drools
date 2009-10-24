@@ -8,8 +8,8 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 
 public class RedundantRestrictionsTest extends RedundancyTestBase {
 
@@ -20,7 +20,7 @@ public class RedundantRestrictionsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant LiteralRestriction"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("RedundancyLiteralRestrictionTest.drl"),
 				result.getVerifierData());
@@ -57,7 +57,7 @@ public class RedundantRestrictionsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant VariableRestriction"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("SubsumptionVariableRestrictionTest.drl"),
 				result.getVerifierData());

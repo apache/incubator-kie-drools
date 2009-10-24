@@ -7,101 +7,88 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class Pattern extends VerifierComponent implements Cause {
+public class Pattern extends PatternComponent
+    implements
+    Cause {
 
-	private static final long serialVersionUID = 5852308145251025423L;
+    private static final long     serialVersionUID = 5852308145251025423L;
 
-	private static int index = 0;
+    private String                objectTypeGuid;
+    private String                name;
+    private VerifierComponentType sourceType       = VerifierComponentType.UNKNOWN;
+    private String                sourceGuid;
 
-	private int ruleId;
-	private int objectTypeId;
-	private String name;
-	private VerifierComponentType sourceType = VerifierComponentType.NOTHING;
-	private int sourceId = -1;
+    private boolean               isPatternNot     = false;
+    private boolean               isPatternExists  = false;
+    private boolean               isPatternForall  = false;
 
-	private boolean isPatternNot = false;
-	private boolean isPatternExists = false;
-	private boolean isPatternForall = false;
+    public CauseType getCauseType() {
+        return CauseType.PATTERN;
+    }
 
-	public Pattern() {
-		super(index++);
-	}
+    public boolean isPatternNot() {
+        return isPatternNot;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.PATTERN;
-	}
+    public void setPatternNot(boolean isNot) {
+        this.isPatternNot = isNot;
+    }
 
-	public CauseType getCauseType() {
-		return CauseType.PATTERN;
-	}
+    public boolean isPatternExists() {
+        return isPatternExists;
+    }
 
-	public boolean isPatternNot() {
-		return isPatternNot;
-	}
+    public void setPatternExists(boolean isExists) {
+        this.isPatternExists = isExists;
+    }
 
-	public void setPatternNot(boolean isNot) {
-		this.isPatternNot = isNot;
-	}
+    public String getObjectTypeGuid() {
+        return objectTypeGuid;
+    }
 
-	public int getRuleId() {
-		return ruleId;
-	}
+    public void setObjectTypeGuid(String guid) {
+        this.objectTypeGuid = guid;
+    }
 
-	public void setRuleId(int ruleId) {
-		this.ruleId = ruleId;
-	}
+    public boolean isPatternForall() {
+        return isPatternForall;
+    }
 
-	public boolean isPatternExists() {
-		return isPatternExists;
-	}
+    public void setPatternForall(boolean isForall) {
+        this.isPatternForall = isForall;
+    }
 
-	public void setPatternExists(boolean isExists) {
-		this.isPatternExists = isExists;
-	}
+    public String getSourceGuid() {
+        return sourceGuid;
+    }
 
-	public int getObjectTypeId() {
-		return objectTypeId;
-	}
+    public void setSourceGuid(String sourceGuid) {
+        this.sourceGuid = sourceGuid;
+    }
 
-	public void setClassId(int classId) {
-		this.objectTypeId = classId;
-	}
+    public VerifierComponentType getSourceType() {
+        return sourceType;
+    }
 
-	public boolean isPatternForall() {
-		return isPatternForall;
-	}
+    public void setSourceType(VerifierComponentType sourceType) {
+        this.sourceType = sourceType;
+    }
 
-	public void setPatternForall(boolean isForall) {
-		this.isPatternForall = isForall;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getSourceId() {
-		return sourceId;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setSourceId(int sourceId) {
-		this.sourceId = sourceId;
-	}
+    @Override
+    public String toString() {
+        return "Pattern, name: " + name;
+    }
 
-	public VerifierComponentType getSourceType() {
-		return sourceType;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.PATTERN;
+    }
 
-	public void setSourceType(VerifierComponentType sourceType) {
-		this.sourceType = sourceType;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String toString() {
-		return "Pattern, name: " + name;
-	}
 }

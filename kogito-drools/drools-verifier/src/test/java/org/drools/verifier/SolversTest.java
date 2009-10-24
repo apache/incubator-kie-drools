@@ -9,11 +9,12 @@ import junit.framework.TestCase;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.RulePossibility;
+import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.report.components.Cause;
+import org.drools.verifier.solver.Solvers;
 
 /**
  * 
@@ -69,7 +70,7 @@ public class SolversTest extends TestCase {
 
 		solvers.endRuleSolver();
 
-		List<RulePossibility> list = solvers.getRulePossibilities();
+		List<SubRule> list = solvers.getRulePossibilities();
 		assertEquals(1, list.size());
 		assertEquals(2, list.get(0).getItems().size());
 
@@ -82,8 +83,8 @@ public class SolversTest extends TestCase {
 		result2.add(r4);
 
 		Object[] possibilies = list.get(0).getItems().toArray();
-		PatternPossibility p1 = (PatternPossibility) possibilies[0];
-		PatternPossibility p2 = (PatternPossibility) possibilies[1];
+		SubPattern p1 = (SubPattern) possibilies[0];
+		SubPattern p2 = (SubPattern) possibilies[1];
 
 		/*
 		 * Order may change but it doesn't matter.
@@ -125,7 +126,7 @@ public class SolversTest extends TestCase {
 		solvers.endPatternSolver();
 		solvers.endRuleSolver();
 
-		List<RulePossibility> list = solvers.getRulePossibilities();
+		List<SubRule> list = solvers.getRulePossibilities();
 		assertEquals(1, list.size());
 		assertEquals(1, list.get(0).getItems().size());
 
@@ -135,7 +136,7 @@ public class SolversTest extends TestCase {
 
 		Set<Cause> set = list.get(0).getItems();
 		for (Cause cause : set) {
-			PatternPossibility possibility = (PatternPossibility) cause;
+			SubPattern possibility = (SubPattern) cause;
 			assertTrue(possibility.getItems().containsAll(result));
 		}
 	}

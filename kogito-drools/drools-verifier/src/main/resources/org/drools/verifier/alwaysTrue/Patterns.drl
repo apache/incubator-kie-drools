@@ -9,7 +9,7 @@ package org.drools.verifier.alwaysTrue
 
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.VerifierRule;
 
 import org.drools.verifier.report.components.AlwaysTrue;
@@ -18,9 +18,9 @@ import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 
-import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.data.VerifierReport;
 
-global VerifierResult result;
+global VerifierReport result;
 
 
 
@@ -28,7 +28,7 @@ rule "Pattern possibility that is always true"
 	when
 		a :Restriction()
 		b :Restriction()
-		$pp :PatternPossibility()
+		$pp :SubPattern()
 		
 		Opposites(
 			(
@@ -53,8 +53,8 @@ rule "Pattern possibility that is always true"
 	when
 		$p :Pattern()
 		
-		$pp :PatternPossibility(
-			patternId == $p.id
+		$pp :SubPattern(
+			patternGuid matches $p.guid
 		)
 
 		# For each restriction in pattern possibility 
@@ -96,13 +96,13 @@ rule "Pattern that is always true"
 		$p :Pattern()
 
 		# Only report the ones that have restrictions.
-		exists PatternPossibility( patternId == $p.id )
+		exists SubPattern( patternGuid == $p.guid )
 		
 		# For each restriction in each pattern possibility for current pattern, 
 		# there needs to be an opposite.
 		forall(
-			$pp :PatternPossibility(
-				patternId == $p.id
+			$pp :SubPattern(
+				patternGuid matches $p.guid
 			)
 			
 			AlwaysTrue(
@@ -110,7 +110,7 @@ rule "Pattern that is always true"
 			)
 		)
 		
-		$r :VerifierRule( id == $p.ruleId )
+		$r :VerifierRule( guid matches $p.ruleGuid )
 	then 
 		result.add( new VerifierMessage(
 								Severity.NOTE,

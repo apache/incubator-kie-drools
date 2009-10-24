@@ -9,8 +9,8 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.VariableRestriction;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
@@ -25,7 +25,7 @@ public class MissingEqualityTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Missing restriction in LiteralRestrictions"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingEqualityTest.drl"), result
 				.getVerifierData());
@@ -65,7 +65,7 @@ public class MissingEqualityTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Missing restriction in VariableRestrictions"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingEqualityTest.drl"), result
 				.getVerifierData());

@@ -9,8 +9,8 @@ import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
@@ -22,14 +22,14 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class IncoherentPatternsTest extends TestBase {
 
-	public void testIncoherentPatternsInRulePossibility() throws Exception {
+	public void testIncoherentPatternsInSubRule() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent Patterns in rule possibility"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());
@@ -62,7 +62,7 @@ public class IncoherentPatternsTest extends TestBase {
 		}
 	}
 
-	public void testIncoherentPatternsInRulePossibilityVariables()
+	public void testIncoherentPatternsInSubRuleVariables()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
@@ -70,7 +70,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent Patterns in rule possibility, variables"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());
@@ -104,7 +104,7 @@ public class IncoherentPatternsTest extends TestBase {
 		}
 	}
 
-	public void testIncoherentPatternsInRulePossibilityRangesLess()
+	public void testIncoherentPatternsInSubRuleRangesLess()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
@@ -113,7 +113,7 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with lesser value"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());
@@ -145,7 +145,7 @@ public class IncoherentPatternsTest extends TestBase {
 		}
 	}
 
-	public void testIncoherentPatternsInRulePossibilityRangesGreater()
+	public void testIncoherentPatternsInSubRuleRangesGreater()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
@@ -154,7 +154,7 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with greater value"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());
@@ -186,7 +186,7 @@ public class IncoherentPatternsTest extends TestBase {
 		}
 	}
 
-	public void testIncoherentPatternsInRulePossibilityRangesEqualOrUnequal()
+	public void testIncoherentPatternsInSubRuleRangesEqualOrUnequal()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
@@ -195,7 +195,7 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal value"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());
@@ -227,7 +227,7 @@ public class IncoherentPatternsTest extends TestBase {
 		}
 	}
 
-	public void testIncoherentPatternsInRulePossibilityRangesEqualOrUnequalVariables()
+	public void testIncoherentPatternsInSubRuleRangesEqualOrUnequalVariables()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
@@ -236,7 +236,7 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal variables"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());
@@ -267,7 +267,7 @@ public class IncoherentPatternsTest extends TestBase {
 		}
 	}
 
-	public void testIncoherentPatternsInRulePossibilityRangesEqualValue()
+	public void testIncoherentPatternsInSubRuleRangesEqualValue()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
@@ -276,7 +276,7 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal value"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());
@@ -307,7 +307,7 @@ public class IncoherentPatternsTest extends TestBase {
 		}
 	}
 
-	public void testIncoherentPatternsInRulePossibilityRangesEqualVariable()
+	public void testIncoherentPatternsInSubRuleRangesEqualVariable()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
@@ -316,7 +316,7 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal variable"));
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("PatternsTest.drl"), result
 				.getVerifierData());

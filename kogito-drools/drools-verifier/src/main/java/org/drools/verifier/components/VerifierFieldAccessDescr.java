@@ -4,35 +4,28 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierFieldAccessDescr extends VerifierComponent {
+public class VerifierFieldAccessDescr extends RuleComponent {
 
-	private static int index = 0;
+    private String fieldName;
+    private String argument;
 
-	private String fieldName;
-	private String argument;
+    public String getArgument() {
+        return argument;
+    }
 
-	public VerifierFieldAccessDescr() {
-		super(index++);
-	}
+    public void setArgument(String argument) {
+        this.argument = argument;
+    }
 
-	@Override
-	public VerifierComponentType getComponentType() {
-		return VerifierComponentType.FIELD_ACCESSOR;
-	}
+    public String getFieldName() {
+        return fieldName;
+    }
 
-	public String getArgument() {
-		return argument;
-	}
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-	public void setArgument(String argument) {
-		this.argument = argument;
-	}
-
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.FIELD_ACCESSOR;
+    }
 }

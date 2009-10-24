@@ -10,8 +10,8 @@ import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.redundancy.RedundancyTestBase;
 import org.drools.verifier.report.components.Redundancy;
 
@@ -40,7 +40,7 @@ public class EquivalentRulesTest extends RedundancyTestBase {
 		data.add(rule2);
 		data.add(r1);
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+		VerifierReport result = VerifierReportFactory.newVerifierReport();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);

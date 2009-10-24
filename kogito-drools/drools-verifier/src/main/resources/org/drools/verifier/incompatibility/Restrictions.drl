@@ -24,10 +24,10 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 
 		$r2 :LiteralRestriction(
 			restrictionType == $r1.restrictionType,
-			fieldId == $r1.fieldId,
+			fieldGuid matches $r1.fieldGuid,
 			valueType == $r1.valueType,
 			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
-			id != $r1.id
+			guid not matches $r1.guid
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
@@ -49,10 +49,10 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 
 		$r2 :LiteralRestriction(
 			restrictionType == $r1.restrictionType,
-			fieldId == $r1.fieldId,
+			fieldGuid matches $r1.fieldGuid,
 			valueType == $r1.valueType,
 			operator == Operator.EQUAL,
-			id != $r1.id
+			guid not matches $r1.guid
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
@@ -74,10 +74,10 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 
 		$r2 :LiteralRestriction(
 			restrictionType == $r1.restrictionType,
-			fieldId == $r1.fieldId,
+			fieldGuid matches $r1.fieldGuid,
 			valueType == $r1.valueType,
 			operator == Operator.GREATER,
-			id != $r1.id
+			guid not matches $r1.guid
 		)
 
 		eval( $r1.compareValues( $r2 ) == 0 )
@@ -98,11 +98,11 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 		)
 
 		$r2 :VariableRestriction(
-			fieldId == $r1.fieldId,
+			fieldGuid matches $r1.fieldGuid,
 			operator == Operator.GREATER,
-			variable.objectId == $r1.variable.objectId,
-			variable.objectType == $r1.variable.objectType,
-			id != $r1.id
+			variable.objectTypeGuid == $r1.variable.objectTypeGuid,
+			variable.objectTypeType == $r1.variable.objectTypeType,
+			guid not matches $r1.guid
 		)
 	then
 		insert( new Incompatibility( $r1, $r2 ) );
