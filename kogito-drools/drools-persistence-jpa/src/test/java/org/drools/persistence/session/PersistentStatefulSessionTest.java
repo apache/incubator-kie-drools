@@ -372,6 +372,54 @@ public class PersistentStatefulSessionTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    public void testPersistenceEvents() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ClassPathResource( "EventsProcess.rf" ),
+                      ResourceType.DRF );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                 emf );
+
+        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        int id = ksession.getId();
+        
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        System.out.println( "Started process instance " + processInstance.getId() );
+
+        TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull( workItem );
+
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        processInstance = ksession.getProcessInstance( processInstance.getId() );
+        assertNotNull( processInstance );
+
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        ksession.getWorkItemManager().completeWorkItem( workItem.getId(), null );
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        processInstance = ksession.getProcessInstance( processInstance.getId() );
+        assertNotNull( processInstance );
+
+        ksession.signalEvent("MyEvent1", null, processInstance.getId());
+
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        processInstance = ksession.getProcessInstance( processInstance.getId() );
+        assertNotNull( processInstance );
+
+        ksession.signalEvent("MyEvent2", null, processInstance.getId());
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        processInstance = ksession.getProcessInstance( processInstance.getId() );
+        assertNull( processInstance );
+    }
+    
     public void testProcessListener() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ClassPathResource( "WorkItemsProcess.rf" ),

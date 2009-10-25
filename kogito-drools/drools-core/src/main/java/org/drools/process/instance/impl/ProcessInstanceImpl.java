@@ -47,7 +47,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private int state = STATE_PENDING;
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
-    private InternalWorkingMemory workingMemory;
+    private transient InternalWorkingMemory workingMemory;
 
     public void setId(final long id) {
         this.id = id;
