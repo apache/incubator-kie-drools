@@ -288,6 +288,12 @@ public class ClassFieldAccessorStore
                             }
                             lookupEntry.addAccessorTarget( target );
                         }
+                        if (lookupEntry.getClassFieldReader() != null) {
+                            wire(((FieldLookupEntry)entry.getValue()).getClassFieldReader());
+                        }
+                        if (lookupEntry.getClassFieldWriter() != null) {
+                            wire(((FieldLookupEntry)entry.getValue()).getClassFieldWriter());
+                        }                        
                     }
                     break;
                 }
