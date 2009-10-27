@@ -295,6 +295,13 @@ public class StatefulKnowledgeSessionImpl
                                                      event );
     }
 
+    public void signalEvent(String type,
+                            Object event,
+                            long processInstanceId) {
+        this.session.getProcessInstance(processInstanceId).signalEvent( type,
+                                                                        event );
+    }
+
     public void setGlobal(String identifier,
                           Object object) {
         this.session.setGlobal( identifier,
