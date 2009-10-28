@@ -18,14 +18,11 @@
 package org.drools.vsm.rio.service;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
-import org.drools.command.FinishedCommand;
-import org.drools.command.impl.ContextImpl;
-import org.drools.command.impl.GenericCommand;
-import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.vsm.BlockingGenericIoWriter;
 import org.drools.vsm.GenericMessageHandler;
 import org.drools.vsm.GenericMessageHandlerImpl;
@@ -51,7 +48,7 @@ public class SessionServiceImpl implements SessionService{
     }
 
 
-    public Message write(Message msg) throws RemoteException {   
+    public Message rioWrite(Message msg) throws RemoteException {   
         BlockingGenericIoWriter blockingWriter = new BlockingGenericIoWriter();
         try {
             handler.messageReceived( blockingWriter, msg );
@@ -64,6 +61,15 @@ public class SessionServiceImpl implements SessionService{
     
     public GenericMessageHandler getGenericMessageHandler() {
         return this.handler;
+    }
+
+
+    public void write(Message message) {
+        try {
+            rioWrite(message);
+        } catch (RemoteException ex) {
+            Logger.getLogger(SessionServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 
