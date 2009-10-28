@@ -9,11 +9,13 @@ import org.drools.SystemEventListener;
 import org.drools.vsm.GenericMessageHandler;
 import org.drools.vsm.Message;
 import org.drools.vsm.MessageResponseHandler;
+import org.drools.vsm.mina.ClientGenericMessageReceiverImpl;
 
 public class RioIoHandler  {
     protected Map<Integer, MessageResponseHandler> responseHandlers;
-
-    private GenericMessageHandler                  handler;
+    
+    private ClientGenericMessageReceiverImpl clientMessageReceiver;
+    
 
     /**
      * Listener used for logging
@@ -29,15 +31,14 @@ public class RioIoHandler  {
     public RioIoHandler(SystemEventListener systemEventListener,
                          GenericMessageHandler handler) {
         this.systemEventListener = systemEventListener;
-        this.responseHandlers = new ConcurrentHashMap<Integer, MessageResponseHandler>();
-        this.handler = handler;
+        this.clientMessageReceiver = new ClientGenericMessageReceiverImpl( handler,
+                                                                           systemEventListener );
 
     }
 
     public void addResponseHandler(int id,
                                    MessageResponseHandler responseHandler) {
-        this.responseHandlers.put( id,
-                                   responseHandler );
+        this.clientMessageReceiver.addResponseHandler( id, responseHandler );
     }
 
     
@@ -45,23 +46,7 @@ public class RioIoHandler  {
     public void messageReceived(SessionService sessionService, Object object) throws Exception {
         Message msg = (Message) object;
 
-        systemEventListener.debug( "Message receieved : " + msg );
-
-        MessageResponseHandler responseHandler = (MessageResponseHandler) responseHandlers.remove( msg.getResponseId() );
-
-        if ( responseHandler != null ) {
-            Object payload = msg.getPayload();
-            if ( payload != null && payload instanceof RuntimeException ) {
-                responseHandler.setError( (RuntimeException) payload );
-            } else {
-                responseHandler.receive( msg );
-            }
-        } else if ( handler != null ) {
-            this.handler.messageReceived( new RioIoWriter( sessionService ),
-                                          (Message) object );
-        } else {
-            throw new RuntimeException( "Unable to process Message" );
-        }
+        this.clientMessageReceiver.messageReceived( new RioIoWriter( sessionService ), msg );
     }
 
    
