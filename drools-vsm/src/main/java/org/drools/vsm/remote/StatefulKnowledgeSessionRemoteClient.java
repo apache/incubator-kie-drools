@@ -357,4 +357,11 @@ public class StatefulKnowledgeSessionRemoteClient
         return 0;
     }
 
+    public void signalEvent(String type,
+                            Object event,
+                            long processInstanceId) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
