@@ -57,7 +57,67 @@
     		<groupId>org.slf4j</groupId>
     		<artifactId>slf4j-api</artifactId>
     		<version>1.5.2</version>
-    	</dependency>          	         
-      </dependencies>              
+    	</dependency>
+
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio</artifactId>
+            <version>4.0-M3-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>cybernode</artifactId>
+            <version>4.0-M3-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>monitor</artifactId>
+            <version>4.0-M3-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>boot</artifactId>
+            <version>4.0-M3-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.rioproject.tools</groupId>
+            <artifactId>cli</artifactId>
+            <version>4.0-M3-SNAPSHOT</version>
+        </dependency>
+
+
+      </dependencies>
+       <repositories>
+        <repository>
+            <id>rio</id>
+            <url>http://www.rio-project.org/maven2</url>
+        </repository>
+        <repository>
+            <id>elastic-grid</id>
+            <url>http://maven.elastic-grid.com</url>
+        </repository>
+        <repository>
+            <id>jboss-snapshots</id>
+            <url>http://snapshots.jboss.org/maven2</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>rio</id>
+            <url>http://www.rio-project.org/maven2</url>
+        </pluginRepository>
+
+        <pluginRepository>
+
+            <id>elastic-grid</id>
+            <url>http://maven.elastic-grid.com</url>
+
+        </pluginRepository>
+    </pluginRepositories>
                   
 </project>

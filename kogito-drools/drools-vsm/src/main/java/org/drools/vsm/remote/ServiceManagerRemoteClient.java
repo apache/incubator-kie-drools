@@ -39,7 +39,7 @@ public class ServiceManagerRemoteClient
         this.client = client;
         this.counter = new AtomicInteger();
     }
-
+   
     private int sessionId = -1;
 
     public boolean connect() {
