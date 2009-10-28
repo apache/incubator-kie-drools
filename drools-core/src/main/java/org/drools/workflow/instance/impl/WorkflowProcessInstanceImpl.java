@@ -167,6 +167,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return variableScopeInstance.getVariable(name);
 	}
+	
+	public void setVariable(String name, Object value) {
+		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+			getContextInstance(VariableScope.VARIABLE_SCOPE);
+		if (variableScopeInstance == null) {
+			throw new IllegalArgumentException("No variable scope found.");
+		}
+		variableScopeInstance.setVariable(name, value);
+	}
 
 	public void setState(final int state) {
 		super.setState(state);
