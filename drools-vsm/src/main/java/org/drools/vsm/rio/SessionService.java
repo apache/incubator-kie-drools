@@ -5,15 +5,18 @@
 package org.drools.vsm.rio;
 
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.drools.vsm.GenericIoWriter;
 import org.drools.vsm.Message;
 
 /**
  *
  * @author salaboy
  */
-public interface SessionService {
+public interface SessionService extends GenericIoWriter {
 
-    public Message write(Message msg) throws RemoteException;
-    
+    public Message rioWrite(Message msg) throws RemoteException;    
     
 }

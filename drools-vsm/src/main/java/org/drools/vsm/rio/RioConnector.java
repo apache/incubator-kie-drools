@@ -113,9 +113,9 @@ public class RioConnector
         if ( sessionService != null ) {
             try {
                 
-                Message returnMessage = this.sessionService.write( msg );
+                Message returnMessage = this.sessionService.rioWrite( msg );
                 
-                ioHandler.messageReceived( new RioIoWriter(sessionService) ,
+                ioHandler.messageReceived( sessionService ,
                                            returnMessage );
                 
             } catch ( RemoteException ex ) {
