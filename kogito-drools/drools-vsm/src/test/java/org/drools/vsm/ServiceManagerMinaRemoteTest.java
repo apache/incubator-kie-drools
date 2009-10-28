@@ -24,7 +24,7 @@ public class ServiceManagerMinaRemoteTest extends ServiceManagerTestBase {
         SocketAcceptor acceptor = new NioSocketAcceptor();
         acceptor.setHandler( new MinaIoHandler( SystemEventListenerFactory.getSystemEventListener(),
                                                 new GenericMessageHandlerImpl( serverData,
-                                                                           SystemEventListenerFactory.getSystemEventListener() ) ) );
+                                                                               SystemEventListenerFactory.getSystemEventListener() ) ) );
         this.server = new MinaAcceptor( acceptor,
                                         address );
         this.server.start();
