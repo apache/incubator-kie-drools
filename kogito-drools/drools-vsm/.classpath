@@ -5,22 +5,34 @@
   <classpathentry kind="src" path="src/test/resources" output="target/test-classes" including="**" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant/1.7.1/ant-1.7.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant-launcher/1.7.1/ant-launcher-1.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.1.1/antlr-runtime-3.1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rioproject/boot/4.0-M3-SNAPSHOT/boot-4.0-M3-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rioproject/tools/cli/4.0-M3-SNAPSHOT/cli-4.0-M3-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.4.2.v_883_R34x/core-3.4.2.v_883_R34x.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rioproject/cybernode/4.0-M3-SNAPSHOT/cybernode-4.0-M3-SNAPSHOT.jar"/>
   <classpathentry kind="src" path="/drools-api"/>
   <classpathentry kind="src" path="/drools-compiler"/>
   <classpathentry kind="src" path="/drools-core"/>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/groovy/groovy-all/1.6.2/groovy-all-1.6.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jline/jline/0.9.94/jline-0.9.94.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock-legacy/2.5.1/jmock-legacy-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/joda-time/joda-time/1.6/joda-time-1.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/jini/jsk-lib/2.1/jsk-lib-2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/jini/jsk-platform/2.1/jsk-platform-2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-M6/mina-core-2.0.0-M6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rioproject/monitor/4.0-M3-SNAPSHOT/monitor-4.0-M3-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12/mvel2-2.0.12.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rioproject/rio/4.0-M3-SNAPSHOT/rio-4.0-M3-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.2/slf4j-api-1.5.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.2/slf4j-jdk14-1.5.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/jini/tools/2.1/tools-2.1.jar"/>
 </classpath>

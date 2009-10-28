@@ -28,6 +28,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.vsm.GenericIoWriter;
 import org.drools.vsm.GenericMessageHandler;
+import org.drools.vsm.GenericMessageHandlerImpl;
 import org.drools.vsm.Message;
 import org.drools.vsm.ServiceManagerData;
 import org.drools.vsm.rio.SessionService;
@@ -36,26 +37,21 @@ import org.drools.vsm.rio.SessionService;
  *
  * @author salaboy
  */
-public class SessionServiceImpl implements SessionService{
-    private SystemEventListener systemEventListener;
+public class SessionServiceImpl implements SessionService{   
+    private GenericMessageHandler handler;
 
-    private ServiceManagerData  data;
-
-    public SessionServiceImpl() {
-        this.systemEventListener = SystemEventListenerFactory.getSystemEventListener();
-        this.data = new ServiceManagerData();
+    public SessionServiceImpl() {        
+        handler = new GenericMessageHandlerImpl(new ServiceManagerData(), SystemEventListenerFactory.getSystemEventListener());
     }
     
     
     public SessionServiceImpl(ServiceManagerData data,
                                  SystemEventListener systemEventListener) {
-        this.systemEventListener = systemEventListener;
-        this.data = data;
+        handler = new GenericMessageHandlerImpl( data, systemEventListener );
     }
 
 
-    public Message write(Message msg) throws RemoteException {
-        GenericMessageHandler handler = null;       
+    public Message write(Message msg) throws RemoteException {   
         BlockingGenericIoWriter blockingWriter = new BlockingGenericIoWriter();
         try {
             handler.messageReceived( blockingWriter, msg );

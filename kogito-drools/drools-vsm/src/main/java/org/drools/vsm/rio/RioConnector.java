@@ -108,10 +108,7 @@ public class RioConnector
     public void write(Message msg) {
         if (sessionService != null) {
             try {
-
                 ioHandler.messageReceived(sessionService, this.sessionService.write(msg));
-
-
             } catch (RemoteException ex) {
                 Logger.getLogger(RioConnector.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
