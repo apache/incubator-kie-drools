@@ -26,6 +26,8 @@ import org.drools.command.FinishedCommand;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.vsm.GenericIoWriter;
+import org.drools.vsm.GenericMessageHandler;
 import org.drools.vsm.Message;
 import org.drools.vsm.ServiceManagerData;
 import org.drools.vsm.rio.SessionService;
@@ -53,44 +55,29 @@ public class SessionServiceImpl implements SessionService{
 
 
     public Message write(Message msg) throws RemoteException {
-        systemEventListener.debug( "Message receieved : " + msg );
-
-
-        // we always need to process a List, for genericity, but don't force a List on the payload
-        List<GenericCommand> commands;
-        if ( msg.getPayload() instanceof List ) {
-            commands = (List<GenericCommand>) msg.getPayload();
-        } else {
-            commands = new ArrayList<GenericCommand>();
-            commands.add( (GenericCommand) msg.getPayload() );
+        GenericMessageHandler handler = null;       
+        BlockingGenericIoWriter blockingWriter = new BlockingGenericIoWriter();
+        try {
+            handler.messageReceived( blockingWriter, msg );
+        } catch ( Exception e ) {
+            throw new RemoteException( e.getMessage() );
         }
+        
+        return blockingWriter.getMessage();
+    }
+    
+    private static class BlockingGenericIoWriter implements GenericIoWriter {
+        
+        private Message msg;
 
-        // Setup the evaluation context
-        ContextImpl localSessionContext = new ContextImpl( "session_" + msg.getSessionId(),
-                                                           this.data.getContextManager(),
-                                                           this.data.getTemp() );
-        ExecutionResultImpl localKresults = new ExecutionResultImpl();
-        localSessionContext.set( "kresults_" + msg.getSessionId(),
-                                 localKresults );
-
-        for ( GenericCommand cmd : commands ) {
-            // evaluate the commands
-            cmd.execute( localSessionContext );
+        public void write(Message message) {
+            this.msg = message;
         }
-
-        if ( !msg.isAsync() && localKresults.getIdentifiers().isEmpty() ) {
-            // if it's not an async invocation and their are no results, just send a simple notification message
-            return  new Message( msg.getSessionId(),
-                                        msg.getResponseId(),
-                                        msg.isAsync(),
-                                        new FinishedCommand() );
-        } else {
-            // return the payload
-            return  new Message( msg.getSessionId(),
-                                        msg.getResponseId(),
-                                        msg.isAsync(),
-                                        localKresults ) ;
+        
+        public Message getMessage() {
+            return this.msg;
         }
+        
     }
 
 }
