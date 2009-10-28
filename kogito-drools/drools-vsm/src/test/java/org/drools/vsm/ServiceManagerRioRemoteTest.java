@@ -13,10 +13,7 @@ public class ServiceManagerRioRemoteTest extends ServiceManagerTestBase {
         
 
         ServiceManagerData serverData = new ServiceManagerData();
-
-       
-
-
+        
         //setup Server
         RioServer rioServer = new RioServer();
         rioServer.start();
