@@ -13,7 +13,9 @@ import org.drools.vsm.GenericMessageHandler;
 import org.drools.vsm.Message;
 import org.drools.vsm.MessageResponseHandler;
 
-public class ClientGenericMessageReceiverImpl implements ClientGenericMessageReceiver {
+public class ClientGenericMessageReceiverImpl
+    implements
+    ClientGenericMessageReceiver {
     protected Map<Integer, MessageResponseHandler> responseHandlers;
 
     private GenericMessageHandler                  handler;
@@ -21,7 +23,7 @@ public class ClientGenericMessageReceiverImpl implements ClientGenericMessageRec
     private final SystemEventListener              systemEventListener;
 
     public ClientGenericMessageReceiverImpl(GenericMessageHandler handler,
-                                     SystemEventListener systemEventListener) {
+                                            SystemEventListener systemEventListener) {
         this.handler = handler;
         this.responseHandlers = new ConcurrentHashMap<Integer, MessageResponseHandler>();;
         this.systemEventListener = systemEventListener;

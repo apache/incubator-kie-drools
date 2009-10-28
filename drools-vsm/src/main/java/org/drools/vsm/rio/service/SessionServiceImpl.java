@@ -26,7 +26,7 @@ import org.drools.command.FinishedCommand;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.vsm.GenericIoWriter;
+import org.drools.vsm.BlockingGenericIoWriter;
 import org.drools.vsm.GenericMessageHandler;
 import org.drools.vsm.GenericMessageHandlerImpl;
 import org.drools.vsm.Message;
@@ -46,7 +46,7 @@ public class SessionServiceImpl implements SessionService{
     
     
     public SessionServiceImpl(ServiceManagerData data,
-                                 SystemEventListener systemEventListener) {
+                              SystemEventListener systemEventListener) {
         handler = new GenericMessageHandlerImpl( data, systemEventListener );
     }
 
@@ -62,18 +62,9 @@ public class SessionServiceImpl implements SessionService{
         return blockingWriter.getMessage();
     }
     
-    private static class BlockingGenericIoWriter implements GenericIoWriter {
-        
-        private Message msg;
-
-        public void write(Message message) {
-            this.msg = message;
-        }
-        
-        public Message getMessage() {
-            return this.msg;
-        }
-        
+    public GenericMessageHandler getGenericMessageHandler() {
+        return this.handler;
     }
+    
 
 }
