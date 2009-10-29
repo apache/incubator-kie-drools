@@ -1,14 +1,13 @@
 package org.drools.vsm;
 
-public interface GenericConnector {
+public interface GenericConnector extends GenericIoWriter {
 
     boolean connect();
 
     void disconnect();
 
-    void addResponseHandler(int id,
-                            MessageResponseHandler responseHandler);
-
-    void write(Message msg);
+    Message write(Message msg);
+    
+    //void write(Message msg);
 
 }

@@ -67,16 +67,8 @@ public class StatefulKnowledgeSessionRemoteClient
                                                                                   null,
                                                                                   instanceId,
                                                                                   kresultsId ) );
-
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            serviceManager.client.addResponseHandler( msg.getResponseId(),
-                                                      handler );
-
-            serviceManager.client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
+            Object object = serviceManager.client.write( msg ).getPayload();
 
             if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
@@ -123,17 +115,8 @@ public class StatefulKnowledgeSessionRemoteClient
                                                                                   instanceId,
                                                                                   kresultsId ) );
 
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            serviceManager.client.addResponseHandler( msg.getResponseId(),
-                                                      handler );
-
-            serviceManager.client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
-
-            if ( object == null ) {
+            Object object = serviceManager.client.write( msg ).getPayload();if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
             }
 

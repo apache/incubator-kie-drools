@@ -17,6 +17,6 @@ import org.drools.vsm.Message;
  */
 public interface SessionService extends GenericIoWriter {
 
-    public Message rioWrite(Message msg) throws RemoteException;    
+    public Message write(Message msg) throws RemoteException;    
     
 }

@@ -51,15 +51,8 @@ public class KnowledgeBuilderRemoteClient
                                                                                   null,
                                                                                   null ) );
 
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            serviceManager.client.addResponseHandler( msg.getResponseId(),
-                                                      handler );
-
-            serviceManager.client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
+            Object object = serviceManager.client.write( msg ).getPayload();
 
             if ( !(object instanceof FinishedCommand) ) {
                 throw new RuntimeException( "Response was not correctly ended" );
@@ -85,25 +78,20 @@ public class KnowledgeBuilderRemoteClient
                                                                                   null,
                                                                                   kresultsId ) );
 
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            serviceManager.client.addResponseHandler( msg.getResponseId(),
-                                                      handler );
-
-            serviceManager.client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
+            Object object = serviceManager.client.write( msg ).getPayload();
 
             if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
             }
 
-            return (KnowledgeBuilderErrors) ((ExecutionResults) object).getValue( commandId );
+            return (KnowledgeBuilderErrors) ((ExecutionResults) object).getValue( commandId );            
+
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to execute message",
                                         e );
         }
+        
     }
 
     public Collection<KnowledgePackage> getKnowledgePackages() {
@@ -123,27 +111,22 @@ public class KnowledgeBuilderRemoteClient
                                                                                   null,
                                                                                   kresultsId ) );
 
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            serviceManager.client.addResponseHandler( msg.getResponseId(),
-                                                      handler );
-
-            serviceManager.client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
+            Object object = serviceManager.client.write( msg ).getPayload();
 
             if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
             }
 
-            System.out.println( "object" + object );
-
             return (Boolean) ((ExecutionResults) object).getValue( commandId );
+
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to execute message",
                                         e );
         }
+        
+        
+        
     }
 
 }

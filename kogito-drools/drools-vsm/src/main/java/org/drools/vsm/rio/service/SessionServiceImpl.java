@@ -27,6 +27,7 @@ import org.drools.vsm.BlockingGenericIoWriter;
 import org.drools.vsm.GenericMessageHandler;
 import org.drools.vsm.GenericMessageHandlerImpl;
 import org.drools.vsm.Message;
+import org.drools.vsm.MessageResponseHandler;
 import org.drools.vsm.ServiceManagerData;
 import org.drools.vsm.rio.SessionService;
 
@@ -48,7 +49,7 @@ public class SessionServiceImpl implements SessionService{
     }
 
 
-    public Message rioWrite(Message msg) throws RemoteException {   
+    public Message write(Message msg) throws RemoteException {   
         BlockingGenericIoWriter blockingWriter = new BlockingGenericIoWriter();
         try {
             handler.messageReceived( blockingWriter, msg );
@@ -64,12 +65,9 @@ public class SessionServiceImpl implements SessionService{
     }
 
 
-    public void write(Message message) {
-        try {
-            rioWrite(message);
-        } catch (RemoteException ex) {
-            Logger.getLogger(SessionServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void write(Message msg,
+                      MessageResponseHandler responseHandler) {
+        throw new UnsupportedOperationException();
     }
     
 

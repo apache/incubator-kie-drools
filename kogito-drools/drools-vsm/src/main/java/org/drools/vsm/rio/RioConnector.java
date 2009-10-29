@@ -109,15 +109,15 @@ public class RioConnector
         //I don't need to be disconected
     }
 
-    public void write(Message msg) {
+    public Message write(Message msg) {
         if ( sessionService != null ) {
             try {
-                
-                Message returnMessage = this.sessionService.rioWrite( msg );
-                
-                ioHandler.messageReceived( sessionService ,
-                                           returnMessage );
-                
+
+                Message returnMessage = this.sessionService.write( msg );
+                return returnMessage;
+                //                ioHandler.messageReceived( sessionService ,
+                //                                           returnMessage );
+
             } catch ( RemoteException ex ) {
                 Logger.getLogger( RioConnector.class.getName() ).log( Level.SEVERE,
                                                                       null,
@@ -128,15 +128,13 @@ public class RioConnector
                                                                       ex );
             }
         }
+        throw new IllegalStateException( "sessionService should not be null" );
     }
+    
+    public void write(Message msg,
+                      MessageResponseHandler responseHandler) {
+        throw new UnsupportedOperationException();
+    }   
+    
 
-    public void addResponseHandler(int id,
-                                   MessageResponseHandler responseHandler) {
-        ioHandler.addResponseHandler( id,
-                                      responseHandler );
-    }
-
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
-    }
 }
