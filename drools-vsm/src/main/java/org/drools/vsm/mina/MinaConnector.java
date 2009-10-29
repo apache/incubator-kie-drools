@@ -13,6 +13,7 @@ import org.drools.vsm.GenericConnector;
 import org.drools.vsm.GenericIoWriter;
 import org.drools.vsm.Message;
 import org.drools.vsm.MessageResponseHandler;
+import org.drools.vsm.responsehandlers.BlockingMessageResponseHandler;
 
 public class MinaConnector
     implements
@@ -77,13 +78,35 @@ public class MinaConnector
         }
     }
 
-    public void addResponseHandler(int id,
-                                   MessageResponseHandler responseHandler) {
+    private void addResponseHandler(int id,
+                                    MessageResponseHandler responseHandler) {
         ((MinaIoHandler) this.connector.getHandler()).addResponseHandler( id,
                                                                           responseHandler );
     }
 
-    public void write(Message msg) {
+    public void write(Message msg,
+                      MessageResponseHandler responseHandler) {
+        if ( responseHandler != null ) {
+            addResponseHandler( msg.getResponseId(),
+                                responseHandler );
+        }
         this.session.write( msg );
+    }
+
+    public Message write(Message msg) {
+        BlockingMessageResponseHandler responseHandler = new BlockingMessageResponseHandler();
+
+        if ( responseHandler != null ) {
+            addResponseHandler( msg.getResponseId(),
+                                responseHandler );
+        }
+        this.session.write( msg );
+
+        Message returnMessage = responseHandler.getMessage();
+        if ( responseHandler.getError() != null ) {
+            throw responseHandler.getError();
+        }
+
+        return returnMessage;
     }
 }

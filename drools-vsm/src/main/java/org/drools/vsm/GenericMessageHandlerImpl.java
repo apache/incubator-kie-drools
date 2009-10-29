@@ -57,13 +57,13 @@ public class GenericMessageHandlerImpl implements GenericMessageHandler {
             session.write( new Message( msg.getSessionId(),
                                         msg.getResponseId(),
                                         msg.isAsync(),
-                                        new FinishedCommand() ) );
+                                        new FinishedCommand() ), null );
         } else {
             // return the payload
             session.write( new Message( msg.getSessionId(),
                                         msg.getResponseId(),
                                         msg.isAsync(),
-                                        localKresults ) );
+                                        localKresults ), null );
         }
     }
 }

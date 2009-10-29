@@ -41,15 +41,8 @@ public class KnowledgeBuilderProviderRemoteClient
                                                            localId,
                                                            new NewKnowledgeBuilderCommand( null ) ) );
 
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            serviceManager.client.addResponseHandler( msg.getResponseId(),
-                                                      handler );
-
-            serviceManager.client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
+            Object object = serviceManager.client.write( msg ).getPayload();
 
             if ( !(object instanceof FinishedCommand) ) {
                 throw new RuntimeException( "Response was not correctly ended" );

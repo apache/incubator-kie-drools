@@ -15,5 +15,14 @@ public class BlockingGenericIoWriter implements GenericIoWriter {
     public Message getMessage() {
         return this.msg;
     }
+
+    public void write(Message msg,
+                      MessageResponseHandler responseHandler) {
+        if ( responseHandler == null ) {
+            this.msg = msg;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
     
 }

@@ -58,15 +58,8 @@ public class ServiceManagerRemoteClient
                                                                                       null,
                                                                                       kresultsId ) );
 
-            BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
             try {
-                client.addResponseHandler( msg.getResponseId(),
-                                           handler );
-
-                client.write( msg );
-
-                Object object = handler.getMessage().getPayload();
+                Object object = client.write( msg ).getPayload();
 
                 if ( object == null ) {
                     throw new RuntimeException( "Response was not correctly received" );
@@ -139,15 +132,8 @@ public class ServiceManagerRemoteClient
                                                                                   null,
                                                                                   null ) );
 
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            client.addResponseHandler( msg.getResponseId(),
-                                       handler );
-
-            client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
+            Object object = client.write( msg ).getPayload();
 
             if ( !(object instanceof FinishedCommand) ) {
                 throw new RuntimeException( "Response was not correctly ended" );
@@ -172,15 +158,8 @@ public class ServiceManagerRemoteClient
                                                                                   null,
                                                                                   kresultsId ) );
 
-        BlockingMessageResponseHandler handler = new BlockingMessageResponseHandler();
-
         try {
-            client.addResponseHandler( msg.getResponseId(),
-                                       handler );
-
-            client.write( msg );
-
-            Object object = handler.getMessage().getPayload();
+            Object object = client.write( msg ).getPayload();
 
             if ( object == null ) {
                 throw new RuntimeException( "Response was not correctly received" );
