@@ -3,18 +3,12 @@ package org.drools.workflow.instance.node;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
+import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Connection;
-import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaEventListener;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Declaration;
 import org.drools.runtime.process.EventListener;
@@ -26,7 +20,7 @@ import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.instance.NodeInstanceContainer;
 
-public class StateNodeInstance extends CompositeContextNodeInstance implements EventListener, AgendaEventListener {
+public class StateNodeInstance extends CompositeContextNodeInstance implements EventListener {
 
 	private static final long serialVersionUID = 4L;
 
@@ -91,6 +85,10 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
 					}
 				}
 			}
+		} else if (getActivationEventType().equals(type)) {
+			if (event instanceof ActivationCreatedEvent) {
+				activationCreated((ActivationCreatedEvent) event);
+			}
 		} else {
 			super.signalEvent(type, event);
 		}
@@ -101,7 +99,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
 	}
 
     private void addActivationListener() {
-    	((ProcessInstance) getProcessInstance()).getWorkingMemory().addEventListener(this);
+    	getProcessInstance().addEventListener(getActivationEventType(), this, true);
     }
 
     public void addEventListeners() {
@@ -113,11 +111,16 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().removeEventListener("signal", this, false);
-        ((ProcessInstance) getProcessInstance()).getWorkingMemory().removeEventListener(this);
+        getProcessInstance().removeEventListener(getActivationEventType(), this, true);
     }
 
     public String[] getEventTypes() {
-    	return new String[] { "signal" };
+    	return new String[] { "signal", getActivationEventType() };
+    }
+    
+    private String getActivationEventType() {
+    	return "RuleFlowStateNode-" + getProcessInstance().getProcessId()
+    		+ "-" + getStateNode().getUniqueId();
     }
     
     private boolean checkProcessInstance(Activation activation) {
@@ -136,62 +139,26 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
         return true;
     }
     
-    public void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
-        // check whether this activation is from the DROOLS_SYSTEM agenda group
-        String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
-        if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
-            // new activations of the rule associate with a milestone node
-            // trigger node instances of that milestone node
-            String ruleName = event.getActivation().getRule().getName();
-            String constraintNameStart = "RuleFlowStateNode-"
-            	+ getProcessInstance().getProcessId() + "-" + getNode().getId();
-            if (ruleName.startsWith(constraintNameStart)) {
-                Connection selected = null;
-                int priority = Integer.MAX_VALUE;
-	            for (Connection connection: getNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
-	                Constraint constraint = getStateNode().getConstraint(connection);
-	                if (constraint != null && constraint.getPriority() < priority) {
-			            String constraintName =  constraintNameStart + "-"
-			            	+ connection.getTo().getId() + "-" + connection.getToType();
-			            if (constraintName.equals(ruleName) && checkProcessInstance(event.getActivation())) {
-			            	selected = connection;
-			            	priority = constraint.getPriority();
-			            }
-	                }
-	            }
-	            if (selected != null) {
-	            	synchronized(getProcessInstance()) {
-		            	removeEventListeners();
-		            	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
-		                triggerConnection(selected);
-	            	}
+    public void activationCreated(ActivationCreatedEvent event) {
+        Connection selected = null;
+        for (Connection connection: getNode().getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
+            Constraint constraint = getStateNode().getConstraint(connection);
+            if (constraint != null) {
+	            String constraintName =  getActivationEventType() + "-"
+	            	+ connection.getTo().getId() + "-" + connection.getToType();
+	            if (constraintName.equals(event.getActivation().getRule().getName()) && checkProcessInstance(event.getActivation())) {
+	            	selected = connection;
 	            }
             }
         }
-    }
-
-    public void afterActivationFired(AfterActivationFiredEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void agendaGroupPushed(AgendaGroupPushedEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void beforeActivationFired(BeforeActivationFiredEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
+        if (selected != null) {
+    		if ( !((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).getActionQueue().isEmpty() ) {
+    			((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).executeQueuedActions();
+            }
+        	removeEventListeners();
+        	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+            triggerConnection(selected);
+        }
     }
 
 }

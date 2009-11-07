@@ -253,24 +253,23 @@ public class RuleFlowGroupImpl
         return this.name.hashCode();
     }
 
-    public static class DeactivateCallback
-        implements
-        WorkingMemoryAction {
-        private static final long     serialVersionUID = 400L;
+    public static class DeactivateCallback implements WorkingMemoryAction {
+    	
+        private static final long serialVersionUID = 400L;
+        
         private InternalRuleFlowGroup ruleFlowGroup;
-
-        public DeactivateCallback() {
-        }
 
         public DeactivateCallback(InternalRuleFlowGroup ruleFlowGroup) {
             this.ruleFlowGroup = ruleFlowGroup;
         }
 
         public DeactivateCallback(MarshallerReaderContext context) throws IOException {
-
+        	this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup(context.readUTF());
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
+        	context.writeInt( WorkingMemoryAction.DeactivateCallback );
+        	context.writeUTF(ruleFlowGroup.getName());
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -279,14 +278,14 @@ public class RuleFlowGroupImpl
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( ruleFlowGroup );
+            out.writeObject(ruleFlowGroup);
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
             // check whether ruleflow group is still empty first
-            if ( this.ruleFlowGroup.isEmpty() ) {
+            if (this.ruleFlowGroup.isEmpty()) {
                 // deactivate ruleflow group
-                this.ruleFlowGroup.setActive( false );
+                this.ruleFlowGroup.setActive(false);
             }
         }
     }

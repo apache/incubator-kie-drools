@@ -95,7 +95,9 @@ public class JPAProcessInstanceManager
     
     public void clearProcessInstances() {
     	if (processInstances != null) {
-    		processInstances.clear();
+    		for (ProcessInstance processInstance: new ArrayList<ProcessInstance>(processInstances.values())) {
+    			((ProcessInstanceImpl) processInstance).disconnect();
+    		}
     	}
     }
 

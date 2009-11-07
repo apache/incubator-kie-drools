@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
+import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -111,6 +112,9 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
             String ruleName = event.getActivation().getRule().getName();
             String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getNodeId();
             if (milestoneName.equals(ruleName) && checkProcessInstance(event.getActivation())) {
+        		if ( !((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).getActionQueue().isEmpty() ) {
+        			((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).executeQueuedActions();
+                }
             	synchronized(getProcessInstance()) {
 	                removeEventListeners();
 	                triggerCompleted();

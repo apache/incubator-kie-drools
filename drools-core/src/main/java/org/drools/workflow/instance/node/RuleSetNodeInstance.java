@@ -16,9 +16,8 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
-import org.drools.common.InternalAgenda;
-import org.drools.common.RuleFlowGroupListener;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.RuleSetNode;
 
@@ -27,18 +26,15 @@ import org.drools.workflow.core.node.RuleSetNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleSetNodeInstance extends StateBasedNodeInstance
-    implements
-    RuleFlowGroupListener {
+public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener {
 
-    private static final long               serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
     protected RuleSetNode getRuleSetNode() {
         return (RuleSetNode) getNode();
     }
 
-    public void internalTrigger(final NodeInstance from,
-                                String type) {
+    public void internalTrigger(final NodeInstance from, String type) {
         if ( !org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
@@ -51,15 +47,17 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance
         addRuleSetListener();
     }
     
+    private String getRuleSetEventType() {
+    	return "RuleFlowGroup_" + getRuleSetNode().getRuleFlowGroup();
+    }
+    
     private void addRuleSetListener() {
-        ((InternalAgenda) ((ProcessInstance) getProcessInstance()).getWorkingMemory().getAgenda()).addRuleFlowGroupListener( getRuleSetNode().getRuleFlowGroup(),
-                                                                                                         this );
+    	getProcessInstance().addEventListener(getRuleSetEventType(), this, true);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((InternalAgenda) ((ProcessInstance) getProcessInstance()).getWorkingMemory().getAgenda()).removeRuleFlowGroupListener( getRuleSetNode().getRuleFlowGroup(),
-                                                                                                         this );
+    	getProcessInstance().removeEventListener(getRuleSetEventType(), this, true);
     }
 
     public void cancel() {
@@ -67,8 +65,8 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance
         ((ProcessInstance) getProcessInstance()).getAgenda().deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
     }
 
-    public void ruleFlowGroupDeactivated() {
-    	synchronized (getProcessInstance()) {
+	public void signalEvent(String type, Object event) {
+		if (getRuleSetEventType().equals(type)) {
             removeEventListeners();
             triggerCompleted();
 		}

@@ -8,6 +8,7 @@ import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
 import org.drools.process.instance.event.DefaultSignalManager.SignalProcessInstanceAction;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
+import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
@@ -25,7 +26,9 @@ public class PersisterHelper {
             case WorkingMemoryAction.LogicalRetractCallback : {
                 return new LogicalRetractCallback(context);
             }
-            
+            case WorkingMemoryAction.WorkingMemoryReteExpireAction : {
+                return new WorkingMemoryReteExpireAction(context);
+            }
             case WorkingMemoryAction.SignalProcessInstanceAction : {
                 return new SignalProcessInstanceAction(context);
             }

@@ -379,6 +379,7 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
         }
 
         public void write( MarshallerWriteContext context ) throws IOException {
+        	context.writeInt( WorkingMemoryAction.PropagateAction );
             context.write( node.getId() );
         }
 
