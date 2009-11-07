@@ -309,9 +309,11 @@ public class ProcessInstanceInfo {
 			if (nodeInstance instanceof ContextInstanceContainer) {
 				List<ContextInstance> variableScopeInstances = ((ContextInstanceContainer) nodeInstance)
 						.getContextInstances(VariableScope.VARIABLE_SCOPE);
-				for (ContextInstance contextInstance : variableScopeInstances) {
-					VariableScopeInstance variableScopeInstance = (VariableScopeInstance) contextInstance;
-					persist(variableScopeInstance.getVariables(), prefix, newVariables);
+				if (variableScopeInstances != null) {
+					for (ContextInstance contextInstance : variableScopeInstances) {
+						VariableScopeInstance variableScopeInstance = (VariableScopeInstance) contextInstance;
+						persist(variableScopeInstance.getVariables(), prefix, newVariables);
+					}
 				}
 			}
 			if (nodeInstance instanceof NodeInstanceContainer) {

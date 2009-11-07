@@ -32,6 +32,7 @@ import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
@@ -160,6 +161,23 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 	
 	public Object getVariable(String name) {
+		// for disconnected process instances, try going through the variable scope instances
+		// (as the default variable scope cannot be retrieved as the link to the process could
+		// be null and the associated working memory is no longer accessible)
+		if (getWorkingMemory() == null) {
+			List<ContextInstance> variableScopeInstances = 
+				getContextInstances(VariableScope.VARIABLE_SCOPE);
+			if (variableScopeInstances != null && variableScopeInstances.size() == 1) {
+				for (ContextInstance contextInstance: variableScopeInstances) {
+					Object value = ((VariableScopeInstance) contextInstance).getVariable(name);
+					if (value != null) {
+						return value;
+					}
+				}
+			}
+			return null;
+		}
+		// else retrieve the variable scope
 		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 			getContextInstance(VariableScope.VARIABLE_SCOPE);
 		if (variableScopeInstance == null) {

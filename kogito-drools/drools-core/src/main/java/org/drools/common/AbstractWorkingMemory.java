@@ -54,11 +54,15 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.ExternalExecutorService;
 import org.drools.definition.process.Process;
+import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
+import org.drools.event.DefaultAgendaEventListener;
+import org.drools.event.DefaultRuleFlowEventListener;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.management.DroolsManagementAgent;
@@ -340,6 +344,8 @@ public abstract class AbstractWorkingMemory
         this.lastIdleTimestamp = new AtomicLong( -1 );
         
         initManagementBeans();
+        
+        initProcessActivationListener();
     }
 
     private void initManagementBeans() {
@@ -1680,6 +1686,31 @@ public abstract class AbstractWorkingMemory
         public void propagate() {
 
         }
+    }
+    
+    private void initProcessActivationListener() {
+    	addEventListener(new DefaultAgendaEventListener() {
+    	    public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
+		        String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
+		        if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
+		            // new activations of the rule associate with a state node
+		            // signal process instances of that state node
+		            String ruleName = event.getActivation().getRule().getName();
+		            if (ruleName.startsWith("RuleFlowStateNode-")) {
+		            	int index = ruleName.indexOf("-", 18);
+		            	index = ruleName.indexOf("-", index + 1);
+		            	String eventType = ruleName.substring(0, index);
+		            	signalManager.signalEvent(eventType, event);
+		            }
+	            }
+            }
+    	});
+    	addEventListener(new DefaultRuleFlowEventListener() {
+    	    public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
+                    final WorkingMemory workingMemory) {
+    	    	signalManager.signalEvent("RuleFlowGroup_" + event.getRuleFlowGroup().getName(), null);
+            }
+    	});
     }
 
     public ProcessInstance startProcess(final String processId) {

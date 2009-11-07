@@ -163,6 +163,18 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 stream.writeLong(key);
                 stream.writeInt(triggers.get(key));
             }
+        } else if (nodeInstance instanceof StateNodeInstance) {
+            stream.writeShort(PersisterEnums.STATE_NODE_INSTANCE);
+            List<Long> timerInstances =
+                    ((StateNodeInstance) nodeInstance).getTimerInstances();
+            if (timerInstances != null) {
+                stream.writeInt(timerInstances.size());
+                for (Long id : timerInstances) {
+                    stream.writeLong(id);
+                }
+            } else {
+                stream.writeInt(0);
+            }
         } else if (nodeInstance instanceof CompositeContextNodeInstance) {
             stream.writeShort(PersisterEnums.COMPOSITE_NODE_INSTANCE);
             CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
@@ -177,20 +189,23 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 stream.writeInt(0);
             }
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance) compositeNodeInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-            Map<String, Object> variables = variableScopeInstance.getVariables();
-            List<String> keys = new ArrayList<String>(variables.keySet());
-            Collections.sort(keys,
-                    new Comparator<String>() {
-
-                        public int compare(String o1,
-                                String o2) {
-                            return o1.compareTo(o2);
-                        }
-                    });
-            stream.writeInt(keys.size());
-            for (String key : keys) {
-                stream.writeUTF(key);
-                stream.writeObject(variables.get(key));
+            if (variableScopeInstance == null) {
+            	stream.writeInt(0);
+            } else {
+	            Map<String, Object> variables = variableScopeInstance.getVariables();
+	            List<String> keys = new ArrayList<String>(variables.keySet());
+	            Collections.sort(keys,
+	                    new Comparator<String>() {
+	                        public int compare(String o1,
+	                                String o2) {
+	                            return o1.compareTo(o2);
+	                        }
+	                    });
+	            stream.writeInt(keys.size());
+	            for (String key : keys) {
+	                stream.writeUTF(key);
+	                stream.writeObject(variables.get(key));
+	            }
             }
             List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(compositeNodeInstance.getNodeInstances());
             Collections.sort(nodeInstances,
@@ -227,18 +242,6 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 }
             }
             stream.writeShort(PersisterEnums.END);
-        } else if (nodeInstance instanceof StateNodeInstance) {
-            stream.writeShort(PersisterEnums.STATE_NODE_INSTANCE);
-            List<Long> timerInstances =
-                    ((StateNodeInstance) nodeInstance).getTimerInstances();
-            if (timerInstances != null) {
-                stream.writeInt(timerInstances.size());
-                for (Long id : timerInstances) {
-                    stream.writeLong(id);
-                }
-            } else {
-                stream.writeInt(0);
-            }
         } else {
             throw new IllegalArgumentException("Unknown node instance type: " + nodeInstance);
         }
