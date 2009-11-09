@@ -365,7 +365,7 @@ class LogicTransformer {
         Transformation {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
-            if ( (!(parent.getChildren().get( 0 ) instanceof GroupElement)) && (((GroupElement) parent.getChildren().get( 0 )).isExists()) ) {
+            if ( (!(parent.getChildren().get( 0 ) instanceof GroupElement)) || (!((GroupElement) parent.getChildren().get( 0 )).isOr()) ) {
                 throw new RuntimeException( "ExistOrTransformation expected 'OR' but instead found '" + parent.getChildren().get( 0 ).getClass().getName() + "'" );
             }
 
@@ -412,7 +412,7 @@ class LogicTransformer {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
 
-            if ( (!(parent.getChildren().get( 0 ) instanceof GroupElement)) && (((GroupElement) parent.getChildren().get( 0 )).isOr()) ) {
+            if ( (!(parent.getChildren().get( 0 ) instanceof GroupElement)) || (!((GroupElement) parent.getChildren().get( 0 )).isOr()) ) {
                 throw new RuntimeException( "NotOrTransformation expected 'OR' but instead found '" + parent.getChildren().get( 0 ).getClass().getName() + "'" );
             }
 

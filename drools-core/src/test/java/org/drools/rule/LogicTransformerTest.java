@@ -299,6 +299,75 @@ public class LogicTransformerTest extends DroolsTestCase {
     }
 
     /**
+     * Exists inside a not is redundant and should be eliminated
+     *
+     * (Not (exists (A) ) )
+     *
+     * <pre>
+     *             Not
+     *              |
+     *            Exists
+     *              |
+     *             And
+     *             / \
+     *            a   b
+     * </pre>
+     *
+     * Should become:
+     *
+     * <pre>
+     *             Not
+     *              |   
+     *             And
+     *             / \
+     *            a   b   
+     * </pre>
+     *
+     *
+     */
+    public void testNotExistsTransformation() throws InvalidPatternException {
+        final ObjectType type = new ClassObjectType( String.class );
+        final Pattern a = new Pattern( 0,
+                                       type,
+                                       "a" );
+        final Pattern b = new Pattern( 1,
+                                       type,
+                                       "b" );
+
+        final GroupElement not = GroupElementFactory.newNotInstance();
+        final GroupElement exists = GroupElementFactory.newExistsInstance();
+        final GroupElement and = GroupElementFactory.newAndInstance();
+        not.addChild( exists );
+        exists.addChild( and );
+        and.addChild( a );
+        and.addChild( b );
+
+        GroupElement[] transformed = LogicTransformer.getInstance().transform( not );
+        GroupElement wrapper = transformed[0]; 
+        GroupElement notR = (GroupElement) wrapper.getChildren().get( 0 );
+
+        assertTrue( notR.isNot() );
+        assertEquals( 1,
+                      notR.getChildren().size() );
+
+        assertTrue( notR.getChildren().get( 0 ) instanceof GroupElement );
+        GroupElement andR = (GroupElement) notR.getChildren().get( 0 );
+        assertTrue( andR.isAnd() );
+        
+        assertEquals( 2,
+                      andR.getChildren().size() );
+        assertTrue( andR.getChildren().get( 0 ) instanceof Pattern );
+        assertTrue( andR.getChildren().get( 1 ) instanceof Pattern );
+        final Pattern a1 = (Pattern) andR.getChildren().get( 0 );
+        final Pattern b1 = (Pattern) andR.getChildren().get( 1 );
+
+        assertEquals( a,
+                      a1 );
+        assertEquals( b,
+                      b1 );
+    }
+
+    /**
      * This data structure is now valid (Exists (OR (A B) ) )
      *
      * <pre>
