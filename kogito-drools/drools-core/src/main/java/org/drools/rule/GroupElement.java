@@ -154,6 +154,25 @@ public class GroupElement extends ConditionalElement
                 this.children.addAll( group.getChildren() );
             }
         }
+        
+        // if after packing, this is a NOT GE with an EXISTS child
+        // or this is an EXISTS GE with a NOT child, eliminate the redundant 
+        // child and make this a NOT GE
+        if ( this.isNot() && this.children.size() == 1 && this.getChildren().get( 0 ) instanceof GroupElement ) {
+            final GroupElement child = (GroupElement) this.getChildren().get( 0 );
+            if ( child.isExists() ) {
+                this.children.clear();
+                this.children.addAll( child.getChildren() );
+            }
+        }
+        if ( this.isExists() && this.children.size() == 1 && this.getChildren().get( 0 ) instanceof GroupElement ) {
+            final GroupElement child = (GroupElement) this.getChildren().get( 0 );
+            if ( child.isNot() ) {
+                this.setType( NOT );
+                this.children.clear();
+                this.children.addAll( child.getChildren() );
+            }
+        }
 
     }
 
@@ -336,12 +355,11 @@ public class GroupElement extends ConditionalElement
      */
     public static enum Type {
 
-        AND(
-                false), OR(
-                false), NOT(
-                true), EXISTS(
-                true), FORALL_NOT(
-                true);
+        AND(false), 
+        OR(false), 
+        NOT(true), 
+        EXISTS(true), 
+        FORALL_NOT(true);
 
         private final boolean scopeDelimiter;
 
