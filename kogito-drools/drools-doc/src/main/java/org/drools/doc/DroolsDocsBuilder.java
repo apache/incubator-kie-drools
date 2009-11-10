@@ -7,6 +7,7 @@ import java.util.Date;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
@@ -67,13 +68,13 @@ public class DroolsDocsBuilder {
             document.newPage();
 
             // List index of the rules            
-            document.add( new Phrase( "Contents" ) );
+            document.add( new Phrase( "Table of Contents" ) );
             document.add( DroolsDocsComponentFactory.createContents( packageData.rules ) );
 
             document.newPage();
 
             for ( DrlRuleData ruleData : packageData.rules ) {
-                DroolsDocsComponentFactory.createRulePage( document,
+                DroolsDocsComponentFactory.newRulePage( document,
                                                            packageData.packageName,
                                                            ruleData );
             }

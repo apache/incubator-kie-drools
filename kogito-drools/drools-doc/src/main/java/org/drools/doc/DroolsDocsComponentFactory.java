@@ -48,25 +48,33 @@ public class DroolsDocsComponentFactory {
     static final Font           HEADER_FOOTER_TEXT = FontFactory.getFont( FontFactory.TIMES,
                                                                           8 );
 
-    public static Table createDescription(String description) throws DocumentException {
-        Table table = createEmptyTable();
+    public static Table newDescription(String description) throws DocumentException {
+        if ( description == null || "".equals( description ) ) {
+            description = " - ";
+        }
 
-        Cell headerCell = newEmptyHeaderCell( "Description" );
+        Table table = newTable();
+
+        Cell headerCell = newHeaderCell( "Description",
+                                         CATEGORIES_TEXT );
         table.addCell( headerCell );
 
-        table.addCell( newEmptyCell( INDENT + description ) );
+        table.addCell( newCell( description ) );
 
         return table;
     }
 
-    private static Table createEmptyTable() throws BadElementException {
+    private static Table newTable() throws BadElementException {
         Table table = new Table( 1 );
+
         table.setBorderWidthTop( 1 );
         table.setBorderWidthLeft( 1 );
         table.setBorderWidthRight( 1 );
         table.setBorderWidthBottom( 0 );
+        table.setWidth( 100 );
         table.setPadding( 3 );
         table.setAlignment( Table.ALIGN_LEFT );
+
         return table;
     }
 
@@ -74,63 +82,57 @@ public class DroolsDocsComponentFactory {
                                         Map<String, java.util.List<String>> other) throws DocumentException {
 
         for ( String key : other.keySet() ) {
-            document.add( createTable( key,
-                                       other.get( key ) ) );
+            document.add( newTable( key,
+                                    other.get( key ) ) );
         }
     }
 
-    public static Table createRuleTable(DrlRuleData drl) throws BadElementException,
-                                                        DocumentException {
-        Table table = createEmptyTable();
+    public static Table newRuleTable(DrlRuleData drl) throws BadElementException,
+                                                     DocumentException {
+        Table table = newTable();
 
-        Cell headerCell = newEmptyWhenThenCell( "Attributes" );
+        Cell headerCell = newHeaderCell( "Attributes",
+                                         CATEGORIES_TEXT );
         table.addCell( headerCell );
 
         for ( String s : drl.header ) {
-            table.addCell( newEmptyCell( INDENT + s.trim() ) );
+            table.addCell( newCell( INDENT + s.trim() ) );
         }
 
-        table.addCell( newEmptyWhenThenCell( INDENT + "WHEN" ) );
+        table.addCell( newHeaderCell( INDENT + "WHEN",
+                                      BODY_TEXT ) );
         for ( String s : drl.lhs ) {
-            table.addCell( newEmptyCell( INDENT + INDENT + s.trim() ) );
+            table.addCell( newCell( INDENT + INDENT + s.trim() ) );
         }
 
-        table.addCell( newEmptyWhenThenCell( INDENT + "THEN" ) );
+        table.addCell( newHeaderCell( INDENT + "THEN",
+                                      BODY_TEXT ) );
         for ( String s : drl.rhs ) {
-            table.addCell( newEmptyCell( INDENT + INDENT + s.trim() ) );
+            table.addCell( newCell( INDENT + INDENT + s.trim() ) );
         }
-        //        table.addCell( newEmptyWhenThenCell( "END" ) );
+        // table.addCell( newEmptyWhenThenCell( "END" ) );
 
         return table;
     }
 
-    public static Table createTable(final String topic,
-                                    Collection<String> items) throws BadElementException,
-                                                             DocumentException {
-        Table metadata = createEmptyTable();
+    public static Table newTable(final String topic,
+                                 Collection<String> items) throws BadElementException,
+                                                          DocumentException {
+        Table table = newTable();
 
-        Cell headerCell = newEmptyHeaderCell( topic );
-        metadata.addCell( headerCell );
+        Cell headerCell = newHeaderCell( topic,
+                                         CATEGORIES_TEXT );
+        table.addCell( headerCell );
 
-        for ( String s : items ) {
-            metadata.addCell( newEmptyCell( s ) );
+        if ( items.isEmpty() ) {
+            table.addCell( newCell( " - " ) );
+        } else {
+            for ( String s : items ) {
+                table.addCell( newCell( s ) );
+            }
         }
 
-        return metadata;
-    }
-
-    public static Table createMetaDataTable(Collection<String> metadatas) throws BadElementException,
-                                                                         DocumentException {
-        Table metadata = createEmptyTable();
-
-        Cell headerCell = newEmptyHeaderCell( "META DATA" );
-        metadata.addCell( headerCell );
-
-        for ( String s : metadatas ) {
-            metadata.addCell( newEmptyCell( INDENT + s ) );
-        }
-
-        return metadata;
+        return table;
     }
 
     public static List createContents(java.util.List<DrlRuleData> rules) {
@@ -138,38 +140,32 @@ public class DroolsDocsComponentFactory {
 
         for ( DrlRuleData drlRuleData : rules ) {
             Chunk chunk = new Chunk( drlRuleData.ruleName );
-            //                chunk.setLocalGoto( item.getName() );
+            // chunk.setLocalGoto( item.getName() );
             ListItem listItem = new ListItem( chunk );
             index.add( listItem );
         }
+
         return index;
     }
 
-    private static Cell newEmptyWhenThenCell(String text) throws BadElementException {
+    private static Cell newHeaderCell(String text,
+                                      Font font) throws BadElementException {
         Cell c = new Cell( new Phrase( text,
-                                       BODY_TEXT ) );
+                                       font ) );
         c.setBackgroundColor( Color.decode( "#CCCCFF" ) );
         c.setLeading( 10 );
         c.setBorder( 1 );
+
         return c;
     }
 
-    private static Cell newEmptyHeaderCell(String text) throws BadElementException {
-        Cell c = new Cell( new Phrase( text,
-                                       CATEGORIES_TEXT ) );
-        c.setBackgroundColor( Color.decode( "#CCCCFF" ) );
-        c.setLeading( 10 );
-        c.setBorder( 0 );
-        c.setBorderWidthBottom( 1 );
-        return c;
-    }
-
-    private static Cell newEmptyCell(String text) throws BadElementException {
+    private static Cell newCell(String text) throws BadElementException {
         Cell c = new Cell( new Phrase( text,
                                        BODY_TEXT ) );
         c.setLeading( 10 );
         c.setBorder( 0 );
         c.setBorderWidthBottom( 1 );
+
         return c;
     }
 
@@ -183,9 +179,9 @@ public class DroolsDocsComponentFactory {
         return footer;
     }
 
-    public static void createRulePage(Document document,
-                                      String packageName,
-                                      DrlRuleData drlData) throws DocumentException {
+    public static void newRulePage(Document document,
+                                   String packageName,
+                                   DrlRuleData drlData) throws DocumentException {
 
         document.add( new Paragraph( packageName,
                                      PACKAGE_NAME ) );
@@ -205,13 +201,14 @@ public class DroolsDocsComponentFactory {
         }
 
         // Description
-        document.add( createDescription( drlData.description ) );
+        document.add( newDescription( drlData.description ) );
 
         // DRL
-        document.add( createRuleTable( drlData ) );
+        document.add( newRuleTable( drlData ) );
 
         // Meta data
-        document.add( createMetaDataTable( drlData.metadata ) );
+        document.add( newTable( "Meta Data",
+                                drlData.metadata ) );
 
         // Other
         createOtherItems( document,
@@ -233,12 +230,12 @@ public class DroolsDocsComponentFactory {
         date.setAlignment( Element.ALIGN_CENTER );
         document.add( date );
 
-        document.add( new Paragraph( "\n\n\n\n\nDescription: " + packageData.description,
+        document.add( new Paragraph( "\n\n\n\n\n" + packageData.description,
                                      BODY_TEXT ) );
-        document.add( createTable( "Metadata: ",
-                                   packageData.metadata ) );
-        document.add( createTable( "Globals: ",
-                                   packageData.globals ) );
+        document.add( newTable( "Meta Data ",
+                                packageData.metadata ) );
+        document.add( newTable( "Globals ",
+                                packageData.globals ) );
         createOtherItems( document,
                           packageData.otherInformation );
     }
