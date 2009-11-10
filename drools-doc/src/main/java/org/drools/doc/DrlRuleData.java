@@ -2,7 +2,6 @@ package org.drools.doc;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,19 +61,19 @@ public class DrlRuleData {
 
         while ( m.find() ) {
 
-            //            System.out.println( "1 " + m.group( 1 ) );
-            //            System.out.println( "2 " + m.group( 2 ) );
-            //            System.out.println( "3 " + m.group( 3 ) );
-            //            System.out.println( "4 " + m.group( 4 ) );
-            //            System.out.println( "5 " + m.group( 5 ) );
-            //            System.out.println( "6 " + m.group( 6 ) );
-            //            System.out.println( "7 " + m.group( 7 ) );
+            // System.out.println( "1 " + m.group( 1 ) );
+            // System.out.println( "2 " + m.group( 2 ) );
+            // System.out.println( "3 " + m.group( 3 ) );
+            // System.out.println( "4 " + m.group( 4 ) );
+            // System.out.println( "5 " + m.group( 5 ) );
+            // System.out.println( "6 " + m.group( 6 ) );
+            // System.out.println( "7 " + m.group( 7 ) );
 
             Comment comment = processComment( m.group( 1 ) );
 
             String ruleName = m.group( 2 );
 
-            ruleName = ruleName.substring( ruleName.indexOf( "rule" ) + "rule".length() ).trim();
+            ruleName = trimRuleName( ruleName );
 
             list.add( new DrlRuleData( ruleName,
                                        m.group( 3 ),
@@ -88,6 +87,21 @@ public class DrlRuleData {
         return list;
     }
 
+    private static String trimRuleName(String ruleName) {
+        ruleName = ruleName.substring( ruleName.indexOf( "rule" ) + "rule".length() ).trim();
+
+        if ( ruleName.indexOf( "\"" ) == 0 ) {
+            ruleName = ruleName.substring( 1 );
+        }
+
+        if ( ruleName.lastIndexOf( "\"" ) == (ruleName.length() - 1) ) {
+            ruleName = ruleName.substring( 0,
+                                           ruleName.length() - 1 );
+        }
+
+        return ruleName;
+    }
+
     static Comment processComment(String text) {
         Comment comment = new Comment();
 
@@ -98,8 +112,34 @@ public class DrlRuleData {
             return comment;
         }
 
-        comment.description = text.replaceAll( "#",
-                                               "" ).trim();
+        // Sometimes the first rule in a file gets the package imports and
+        // comments included.
+        // Checking for that and fixing the description if this did happen.
+
+        StringBuilder description = new StringBuilder();
+        String[] commentLines = text.split( "\n" );
+        for ( int i = 0; i < commentLines.length; i++ ) {
+            String line = commentLines[i].trim();
+
+            if ( line.startsWith( "#" ) ) {
+                while ( line.startsWith( "#" ) ) {
+                    line = line.substring( 1 );
+                }
+
+                line = line.trim();
+
+                if ( !line.startsWith( "@" ) ) {
+                    description.append( line );
+                    description.append( "\n" );
+                }
+            } else {
+                description.delete( 0,
+                                    description.length() );
+            }
+
+        }
+        comment.description = description.toString();
+
         comment.metadata = findMetaData( text );
 
         return comment;
