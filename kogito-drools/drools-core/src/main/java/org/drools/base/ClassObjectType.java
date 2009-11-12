@@ -83,14 +83,6 @@ public class ClassObjectType
         this.valueType = ValueType.determineValueType( objectTypeClass );
     }
 
-    public ClassObjectType(final String className,
-                           final boolean isEvent) {
-        this.isEvent = isEvent;
-        this.clsName = this.cls.getName();
-        //        if (objectTypeClass != null)
-        //
-        //            this.valueType = ValueType.determineValueType( objectTypeClass );        
-    }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
