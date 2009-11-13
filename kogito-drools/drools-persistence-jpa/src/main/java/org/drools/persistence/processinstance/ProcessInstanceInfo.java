@@ -195,8 +195,14 @@ public class ProcessInstanceInfo {
 			for (NodeInstance nodeInstance : nodeInstances) {
 				if (nodeInstance.getId() == nodeInstanceId) {
 					parentIds.remove(0);
+					if (!(nodeInstance instanceof NodeInstanceContainer)) {
+						throw new IllegalArgumentException(
+							"Restoring variable " + variableName + 
+							" but node found is not a node instance container:" +
+							nodeInstance);
+					}
 					restoreVariable(variableInfo, parentIds, variableName,
-						(CompositeContextNodeInstance) nodeInstance);
+						(NodeInstanceContainer) nodeInstance);
 				}
 				return;
 			}
