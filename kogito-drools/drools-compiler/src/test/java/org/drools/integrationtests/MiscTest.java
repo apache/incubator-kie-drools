@@ -137,6 +137,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.InvalidRulePackage;
@@ -144,6 +145,7 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
@@ -5116,6 +5118,51 @@ public class MiscTest extends TestCase {
         public String aValue = "";
 
     }
+    
+    public void testRuleRemovalWithJoinedRootPattern() {
+        String str = "";
+        str += "package org.drools \n";
+        str += "rule rule1 \n";
+        str += "when \n";
+        str += "  String() \n";
+        str += "  Person() \n";
+        str += "then \n";
+        str += "end  \n";
+        
+        str += "rule rule2 \n";
+        str += "when \n";
+        str += "  String() \n";
+        str += "  Cheese() \n";
+        str += "then \n";
+        str += "end  \n";
+       
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        DefaultFactHandle handle = ( DefaultFactHandle ) ksession.insert( "hello" );
+        LeftTuple leftTuple = handle.getLeftTuple();
+        assertNotNull( leftTuple );
+        assertNotNull( leftTuple.getLeftParentNext() );
+        
+        kbase.removeRule( "org.drools", "rule2" );
+        
+        leftTuple = handle.getLeftTuple();
+        assertNotNull( leftTuple );
+        assertNull( leftTuple.getLeftParentNext() );        
+
+    }    
 
     // JBRULES-1808
     public void testKnowledgeHelperFixerInStrings() {
@@ -6835,6 +6882,55 @@ public class MiscTest extends TestCase {
         assertFalse( "T1 should have finished",
                      aliveT1 );
     }
+    
+    public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
+        String rule1 = "package org.drools\n";
+        rule1 += "global java.util.List list\n";
+        rule1 += "rule testFireUntilHalt\n";
+        rule1 += "when\n";
+        rule1 += "       Cheese()\n";
+        rule1 += "  $p : Person() from entry-point \"testep\"\n";
+        rule1 += "then \n";
+        rule1 += "  list.add( $p ) ;\n";
+        rule1 += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        ep.insert( new Cheese("cheddar") );
+        ksession.fireAllRules();
+        
+        Runnable fireUntilHalt = new Runnable() {
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        };
+        
+        Thread t1 = new Thread( fireUntilHalt );
+        t1.start();
+        
+        Thread.currentThread().sleep( 500 );
+        ep.insert( new Person("darth") );
+        Thread.currentThread().sleep( 500 );
+        ksession.halt();
+        t1.stop();
+        assertEquals( 1, list.size() ); 
+    }    
 
     public void testDroolsQueryCleanup() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
