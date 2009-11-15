@@ -47,6 +47,10 @@ public class ConcurrentRightTupleList
     public RightTuple getFirst(LeftTuple leftTuple) {
         return this.first.get();
     }
+    
+    public RightTuple getFirst(RightTuple rightTuple) {
+        return this.first.get();
+    }     
 
     public RightTuple getLast(LeftTuple leftTuple) {
         return this.last.get();

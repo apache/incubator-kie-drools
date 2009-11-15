@@ -201,7 +201,7 @@ public class MemoryVisitor extends ReflectiveVisitor
 
     private void checkRightTupleList(final RightTupleList memory) {
         int count = 0;
-        for ( RightTuple rightTuple = memory.getFirst( null ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        for ( RightTuple rightTuple = memory.getFirst( ( RightTuple ) null ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
                     count++;
         }
 

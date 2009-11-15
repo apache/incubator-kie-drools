@@ -197,7 +197,7 @@ public class ReteDslTestEngine {
                     
                     InternalFactHandle first = ( InternalFactHandle ) expectedFactHandles.get( 0 );
                     List<RightTuple> actualRightTuples = new ArrayList();
-                    for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( first.getFirstRightTuple() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                    for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( first.getRightTuple() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
                         actualRightTuples.add( rightTuple );
                     }
                     

@@ -57,6 +57,10 @@ public class RightTupleList
     public RightTuple getFirst(LeftTuple leftTuple) {
         return this.first;
     }
+    
+    public RightTuple getFirst(RightTuple leftTuple) {
+        return this.first;
+    }     
 
     public RightTuple getLast(LeftTuple leftTuple) {
         return this.last;

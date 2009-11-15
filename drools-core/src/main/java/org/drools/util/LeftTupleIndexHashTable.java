@@ -93,11 +93,20 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     public LeftTuple getFirst(final RightTuple rightTuple) {
         LeftTupleList bucket = get( rightTuple );
         if ( bucket != null ) {
-            return bucket.getFirst( null );
+            return bucket.getFirst( ( LeftTuple ) null );
         } else {
             return null;
         }
     }
+    
+    public LeftTuple getFirst(final LeftTuple leftTuple) {
+        final LeftTupleList bucket = getOrCreate( leftTuple );
+        if ( bucket != null ) {
+            return bucket.getFirst( ( LeftTuple ) null );
+        } else {
+            return null;
+        }        
+    }    
 
     public boolean isIndexed() {
         return true;
@@ -172,7 +181,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         for ( int i = 0; i < this.table.length; i++ ) {
             LeftTupleList bucket = (LeftTupleList) this.table[i];
             while ( bucket != null ) {
-                LeftTuple entry = (LeftTuple) bucket.getFirst( null );
+                LeftTuple entry = (LeftTuple) bucket.getFirst( ( LeftTuple ) null );
                 while ( entry != null ) {
                     result[index++] = entry;
                     entry = (LeftTuple) entry.getNext();
