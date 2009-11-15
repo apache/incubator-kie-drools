@@ -1,38 +1,49 @@
+// setup the nodes
 ObjectTypeNode
-    otn1, java.lang.Integer
+   otn1, java.lang.Integer
 LeftInputAdapterNode
-    lian0, otn1
+   lian0, otn1
 ObjectTypeNode
-    otn2, java.lang.Integer
+   otn2, java.lang.Integer
 ObjectTypeNode
-    otn3, java.lang.Integer        
+   otn3, java.lang.Integer       
+
+// creating a binding to be used in the JoinNode creation
 Binding
-     p1, 0, java.lang.Integer, intValue
+    p1, 0, java.lang.Integer, intValue
+
 JoinNode
-    join1, lian0, otn2
-    intValue, !=, p1
+   join1, lian0, otn2
+   intValue, !=, p1
 JoinNode
-    join2, join1, otn3
-    intValue, !=, p1        
+   join2, join1, otn3
+   intValue, !=, p1
+
+//insert some facts, this returns and stores an array called "h"      
 Facts
-    0, 1, 2, 3, 4
+   0, 1, 2, 3, 4
+
+// h\d+ is used for compactness (not too many brackets) but is internally rewritten
+// as h[\d+] and evaluated with MVEL against a "h"
 assert
-    otn1 [h1, h3]        
-    otn2 [h0, h2]
-    otn3 [h4]        
+   otn1 [h1, h3]       
+   otn2 [h0, h2]
+   otn3 [h4] 
+
+// we can now test some memories, memory order is deterministic     
 join1
-    leftMemory [[h1], [h3]]
-    rightMemory [h0, h2]
+   leftMemory [[h1], [h3]] // matches with only one fact
+   rightMemory [h0, h2]
 join2
-    leftMemory [[h1, h0], [h3, h0],
-                [h1, h2], [h3, h2]]
-    rightMemory [h4]        
+   leftMemory [[h1, h0], [h3, h0],
+               [h1, h2], [h3, h2]] // matches with two chained facts
+   rightMemory [h4]       
 retract
-    otn1 [h1]        
-    otn2 [h2]; 
+   otn1 [h1]       
+   otn2 [h2]
 join1
-    leftMemory [ [h3] ]
-    rightMemory [h0]      
+   leftMemory [ [h3] ]
+   rightMemory [h0]     
 join2
-    leftMemory  [[h3, h0]]
-    rightMemory [h4]  
+   leftMemory  [[h3, h0]]
+   rightMemory [h4] 

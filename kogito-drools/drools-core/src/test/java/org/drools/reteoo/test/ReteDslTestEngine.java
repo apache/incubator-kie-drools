@@ -322,6 +322,7 @@ public class ReteDslTestEngine {
 
             for ( String line : lines ) {
                 if ( StringUtils.isEmpty( line ) ) {
+                    lineCount++;
                     continue;
                 }
 
