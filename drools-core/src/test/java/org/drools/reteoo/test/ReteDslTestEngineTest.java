@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -560,6 +561,17 @@ public class ReteDslTestEngineTest extends TestCase {
         assertEquals( 1,
                       memory.getLeftTupleMemory().size() );
     }
+    
+    public void testDslEndToEnd() {
+        InputStream stream = getClass().getResourceAsStream( "JoinNode.data" );
+        assertNotNull( stream );
+        DslStep[] steps = (DslStep[]) ReteDslTestEngine.buildDslCommands( new InputStreamReader( stream ) ).toArray( new DslStep[0] );
+        assertEquals( 14,
+                      steps.length );
+
+        ReteDslTestEngine tester = new ReteDslTestEngine();
+        Map<String, Object> map = tester.run( Arrays.asList( steps ) );         
+    }    
 
     private void print(DslStep[] steps) {
         for ( DslStep command : steps ) {
