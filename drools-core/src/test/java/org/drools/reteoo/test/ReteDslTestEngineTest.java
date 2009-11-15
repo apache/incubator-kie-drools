@@ -119,57 +119,124 @@ public class ReteDslTestEngineTest extends TestCase {
     public void testDslCommandBuilder() {
         InputStream stream = getClass().getResourceAsStream( "JoinNode.data" );
         assertNotNull( stream );
-        DslStep[] step = (DslStep[]) ReteDslTestEngine.buildDslCommands( new InputStreamReader( stream ) ).toArray( new DslStep[0] );
-        //        assertEquals( 10, cmds.length );
+        DslStep[] steps = (DslStep[]) ReteDslTestEngine.buildDslCommands( new InputStreamReader( stream ) ).toArray( new DslStep[0] );
+        assertEquals( 14,
+                      steps.length );
 
-        //        assertEquals( 1, step[0].getLine() );
-        //        assertEquals( "LeftInputAdapter", step[0].getName() );
-        //        assertEquals( "node0", step[0].getCommands().get( 0 ) );
-        //        
-        //        assertEquals( 3, step[1].getLine() );
-        //        assertEquals( "JoinNode", step[1].getName() );
-        //        assertEquals( "node0, node1, ==", step[1].getCommands().get( 0 ) ); 
-        //        
-        //        assertEquals( 5, step[2].getLine() );
-        //        assertEquals( "JoinNode", step[2].getName() );
-        //        assertEquals( "node1, node2, ==", step[2].getCommands().get( 0 ) );  
-        //        
-        //        assertEquals( 7, step[3].getLine() );
-        //        assertEquals( "Facts", step[3].getName() );
-        //        assertEquals( "0, 0, 0, 0", step[3].getCommands().get( 0 ) );  
-        //        
-        //        assertEquals( 9, step[4].getLine() );
-        //        assertEquals( "node1", step[4].getName() );
-        //        assertEquals( "assertObject, h0", step[4].getCommands().get( 0 ) );
-        //        assertEquals( "assertLeftTuple, h1, h2", step[4].getCommands().get( 1 ) );          
-        //        assertEquals( "assertObject, h3, h4", step[4].getCommands().get( 2 ) );          
-        //        assertEquals( "leftMemory, 2,[ [h1], [h2] ]", step[4].getCommands().get( 3 ) );          
-        //        assertEquals( "rightMemory, 3, [ [h0], [h3], [h4] ]", step[4].getCommands().get( 4 ) );          
-        //        
-        //        assertEquals( 15, step[5].getLine() );
-        //        assertEquals( "node2", step[5].getName() );
-        //        assertEquals( "leftMemory, 6, [ [h0, h1], [h0, h2],[h3, h1], [h3, h2],[h4, h1], [h4, h2] ]", step[5].getCommands().get( 0 ) );
-        //        assertEquals( "rightMemory, 0, []", step[5].getCommands().get( 1 ) );
-        //     
-        //        assertEquals( 20, step[6].getLine() );
-        //        assertEquals( "node1", step[6].getName() );
-        //        assertEquals( "retractRightTuple, h0", step[6].getCommands().get( 0 ) );
-        //        assertEquals( "leftMemory, 2, [ [h1], [h2] ]", step[6].getCommands().get( 1 ) );          
-        //        assertEquals( "rightMemory, 2, [ [h3], [h4] ]", step[6].getCommands().get( 2 ) );
-        //        
-        //        assertEquals( 24, step[7].getLine() );
-        //        assertEquals( "node2", step[7].getName() );
-        //        assertEquals( "leftMemory, 4, [ [h3, h1], [h3, h2], [h4, h1], [h4, h2] ]", step[7].getCommands().get( 0 ) );
-        //        
-        //        assertEquals( 26, step[8].getLine() );
-        //        assertEquals( "node1", step[8].getName() );
-        //        assertEquals( "retractLeftTuple, h2", step[8].getCommands().get( 0 ) );
-        //        assertEquals( "leftMemory, 1, [ [h1] ]", step[8].getCommands().get( 1 ) );          
-        //        assertEquals( "rightMemory, 2, [ [h3], [h4] ]", step[8].getCommands().get( 2 ) );        
-        //
-        //        assertEquals( 30, step[9].getLine() );
-        //        assertEquals( "node2", step[9].getName() );
-        //        assertEquals( "leftMemory, 4, [ [h3, h1], [h4, h1] ]", step[9].getCommands().get( 0 ) );        
+        assertEquals( 2,
+                      steps[0].getLine() );
+        assertEquals( "ObjectTypeNode",
+                      steps[0].getName() );
+        assertEquals( "otn1, java.lang.Integer",
+                      steps[0].getCommands().get( 0 ) );
+
+        assertEquals( 4,
+                      steps[1].getLine() );
+        assertEquals( "LeftInputAdapterNode",
+                      steps[1].getName() );
+        assertEquals( "lian0, otn1",
+                      steps[1].getCommands().get( 0 ) );
+
+        assertEquals( 6,
+                      steps[2].getLine() );
+        assertEquals( "ObjectTypeNode",
+                      steps[2].getName() );
+        assertEquals( "otn2, java.lang.Integer",
+                      steps[2].getCommands().get( 0 ) );
+        assertEquals( 8,
+                      steps[3].getLine() );
+        assertEquals( "ObjectTypeNode",
+                      steps[3].getName() );
+        assertEquals( "otn3, java.lang.Integer",
+                      steps[3].getCommands().get( 0 ) );
+
+        assertEquals( 12,
+                      steps[4].getLine() );
+        assertEquals( "Binding",
+                      steps[4].getName() );
+        assertEquals( "p1, 0, java.lang.Integer, intValue",
+                      steps[4].getCommands().get( 0 ) );
+
+        assertEquals( 15,
+                      steps[5].getLine() );
+        assertEquals( "JoinNode",
+                      steps[5].getName() );
+        assertEquals( "join1, lian0, otn2",
+                      steps[5].getCommands().get( 0 ) );
+        assertEquals( "intValue, !=, p1",
+                      steps[5].getCommands().get( 1 ) );
+
+        assertEquals( 18,
+                      steps[6].getLine() );
+        assertEquals( "JoinNode",
+                      steps[6].getName() );
+        assertEquals( "join2, join1, otn3",
+                      steps[6].getCommands().get( 0 ) );
+        assertEquals( "intValue, !=, p1",
+                      steps[6].getCommands().get( 1 ) );
+
+        assertEquals( 23,
+                      steps[7].getLine() );
+        assertEquals( "Facts",
+                      steps[7].getName() );
+        assertEquals( "0, 1, 2, 3, 4",
+                      steps[7].getCommands().get( 0 ) );
+
+        assertEquals( 28,
+                      steps[8].getLine() );
+        assertEquals( "assert",
+                      steps[8].getName() );
+        assertEquals( "otn1 [h1, h3]",
+                      steps[8].getCommands().get( 0 ) );   
+        assertEquals( "otn2 [h0, h2]",
+                      steps[8].getCommands().get( 1 ) ); 
+        assertEquals( "otn3 [h4]",
+                      steps[8].getCommands().get( 2 ) );
+
+        assertEquals( 34,
+                      steps[9].getLine() );
+        assertEquals( "join1",
+                      steps[9].getName() );
+        assertEquals( "leftMemory [[h1], [h3]]",
+                      steps[9].getCommands().get( 0 ) );   
+        assertEquals( "rightMemory [h0, h2]",
+                      steps[9].getCommands().get( 1 ) );              
+        
+        assertEquals( 37,
+                      steps[10].getLine() );
+        assertEquals( "join2",
+                      steps[10].getName() );
+        assertEquals( "leftMemory [[h1, h0], [h3, h0],[h1, h2], [h3, h2]]",
+                      steps[10].getCommands().get( 0 ) );   
+        assertEquals( "rightMemory [h4]",
+                      steps[10].getCommands().get( 1 ) );       
+ 
+        assertEquals( 41,
+                      steps[11].getLine() );
+        assertEquals( "retract",
+                      steps[11].getName() );
+        assertEquals( "otn1 [h1]",
+                      steps[11].getCommands().get( 0 ) );   
+        assertEquals( "otn2 [h2]",
+                      steps[11].getCommands().get( 1 ) );        
+        
+        assertEquals( 44,
+                      steps[12].getLine() );
+        assertEquals( "join1",
+                      steps[12].getName() );
+        assertEquals( "leftMemory [ [h3] ]",
+                      steps[12].getCommands().get( 0 ) );   
+        assertEquals( "rightMemory [h0]",
+                      steps[12].getCommands().get( 1 ) );         
+        
+        assertEquals( 47,
+                      steps[13].getLine() );
+        assertEquals( "join2",
+                      steps[13].getName() );
+        assertEquals( "leftMemory  [[h3, h0]]",
+                      steps[13].getCommands().get( 0 ) );   
+        assertEquals( "rightMemory [h4]",
+                      steps[13].getCommands().get( 1 ) );                  
     }
 
     public void testObjectTypeNodeStep() {
@@ -268,7 +335,7 @@ public class ReteDslTestEngineTest extends TestCase {
 
         // assert tuple, should add left memory should be 2
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
-                                                            0);
+                                                            0 );
         final LeftTuple tuple1 = new LeftTuple( f1,
                                                 join1,
                                                 true );
@@ -284,7 +351,7 @@ public class ReteDslTestEngineTest extends TestCase {
         assertEquals( tuple1,
                       leftTuple.getNext() );
     }
-    
+
     public void testFactsStep() {
         String str = "Facts\n";
         str += "    1, 2, 'hello'\n";
@@ -297,19 +364,25 @@ public class ReteDslTestEngineTest extends TestCase {
 
         WorkingMemory wm = (WorkingMemory) map.get( "WorkingMemory" );
         List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );
-        
+
         assertNotNull( wm );
         assertNotNull( handles );
-        
-        assertEquals( 5, handles.size() );
-        
-        assertEquals( 1, handles.get( 0 ).getObject() );
-        assertEquals( 2, handles.get( 1 ).getObject() );
-        assertEquals( "hello", handles.get( 2 ).getObject() );
-        assertEquals( "good bye", handles.get( 3 ).getObject() );
-        assertEquals( new ArrayList<FactHandle>(), handles.get( 4 ).getObject() );
-    }    
-    
+
+        assertEquals( 5,
+                      handles.size() );
+
+        assertEquals( 1,
+                      handles.get( 0 ).getObject() );
+        assertEquals( 2,
+                      handles.get( 1 ).getObject() );
+        assertEquals( "hello",
+                      handles.get( 2 ).getObject() );
+        assertEquals( "good bye",
+                      handles.get( 3 ).getObject() );
+        assertEquals( new ArrayList<FactHandle>(),
+                      handles.get( 4 ).getObject() );
+    }
+
     public void testBetaNodeAssertOperations() {
         String str = "ObjectTypeNode\n";
         str += "    otn1, java.lang.Integer\n";
@@ -327,26 +400,25 @@ public class ReteDslTestEngineTest extends TestCase {
         str += "assert\n";
         str += "    otn2 [h0, h2]\n";
         str += "    otn1 [h1, h3]\n";
-        
-        
+
         List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
         ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );
-        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );       
-        
+        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );
+
         JoinNode join1 = (JoinNode) map.get( "join1" );
-        
+
         BetaMemory memory = (BetaMemory) wm.getNodeMemory( join1 );
         assertEquals( 2,
                       memory.getRightTupleMemory().size() );
-        
+
         assertEquals( 2,
-                      memory.getLeftTupleMemory().size() );        
+                      memory.getLeftTupleMemory().size() );
     }
-    
+
     public void testBetaNodeRetractOperations() {
         String str = "ObjectTypeNode\n";
         str += "    otn1, java.lang.Integer\n";
@@ -362,31 +434,30 @@ public class ReteDslTestEngineTest extends TestCase {
         str += "Facts\n";
         str += "    0, 1, 2, 3\n";
         str += "assert\n";
-        str += "    otn1 [h1, h3]\n";        
+        str += "    otn1 [h1, h3]\n";
         str += "    otn2 [h0, h2]\n";
         str += "retract\n";
-        str += "    otn1 [h1]\n";                
+        str += "    otn1 [h1]\n";
         str += "    otn2 [h2]\n";
-        
-        
+
         List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
         ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );
-        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );       
-        
+        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );
+
         JoinNode join1 = (JoinNode) map.get( "join1" );
-        
+
         BetaMemory memory = (BetaMemory) wm.getNodeMemory( join1 );
         assertEquals( 1,
                       memory.getRightTupleMemory().size() );
-        
+
         assertEquals( 1,
-                      memory.getLeftTupleMemory().size() );        
-    }    
-    
+                      memory.getLeftTupleMemory().size() );
+    }
+
     public void testBetaNodeSimpleMemoryChecks() {
         String str = "ObjectTypeNode\n";
         str += "    otn1, java.lang.Integer\n";
@@ -402,37 +473,36 @@ public class ReteDslTestEngineTest extends TestCase {
         str += "Facts\n";
         str += "    0, 1, 2, 3\n";
         str += "assert\n";
-        str += "    otn1 [h1, h3]\n";        
+        str += "    otn1 [h1, h3]\n";
         str += "    otn2 [h0, h2]\n";
         str += "join1\n";
         str += "    leftMemory [[h1], [h3]]\n";
         str += "    rightMemory [h0, h2]\n";
         str += "retract\n";
-        str += "    otn1 [h1]\n";        
-        str += "    otn2 [h2]\n";; 
+        str += "    otn1 [h1]\n";
+        str += "    otn2 [h2]\n";;
         str += "join1\n";
         str += "    leftMemory [ [h3] ]\n";
-        str += "    rightMemory [h0]\n";      
-        
-        
+        str += "    rightMemory [h0]\n";
+
         List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
         ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );
-        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );       
-        
+        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );
+
         JoinNode join1 = (JoinNode) map.get( "join1" );
-        
+
         BetaMemory memory = (BetaMemory) wm.getNodeMemory( join1 );
         assertEquals( 1,
                       memory.getRightTupleMemory().size() );
-        
+
         assertEquals( 1,
-                      memory.getLeftTupleMemory().size() );        
-    }     
-    
+                      memory.getLeftTupleMemory().size() );
+    }
+
     public void testBetaNodeChainedMemoryChecks() {
         String str = "ObjectTypeNode\n";
         str += "    otn1, java.lang.Integer\n";
@@ -441,7 +511,7 @@ public class ReteDslTestEngineTest extends TestCase {
         str += "ObjectTypeNode\n";
         str += "    otn2, java.lang.Integer\n";
         str += "ObjectTypeNode\n";
-        str += "    otn3, java.lang.Integer\n";        
+        str += "    otn3, java.lang.Integer\n";
         str += "Binding\n";
         str += "     p1, 0, java.lang.Integer, intValue\n";
         str += "JoinNode\n";
@@ -449,48 +519,47 @@ public class ReteDslTestEngineTest extends TestCase {
         str += "    intValue, !=, p1\n";
         str += "JoinNode\n";
         str += "    join2, join1, otn3\n";
-        str += "    intValue, !=, p1\n";        
+        str += "    intValue, !=, p1\n";
         str += "Facts\n";
         str += "    0, 1, 2, 3, 4\n";
         str += "assert\n";
-        str += "    otn1 [h1, h3]\n";        
+        str += "    otn1 [h1, h3]\n";
         str += "    otn2 [h0, h2]\n";
-        str += "    otn3 [h4]\n";        
+        str += "    otn3 [h4]\n";
         str += "join1\n";
         str += "    leftMemory [[h1], [h3]]\n";
         str += "    rightMemory [h0, h2]\n";
         str += "join2\n";
         str += "    leftMemory [[h1, h0], [h3, h0],\n";
         str += "                [h1, h2], [h3, h2]]\n";
-        str += "    rightMemory [h4]\n";        
+        str += "    rightMemory [h4]\n";
         str += "retract\n";
-        str += "    otn1 [h1]\n";        
-        str += "    otn2 [h2]\n";; 
+        str += "    otn1 [h1]\n";
+        str += "    otn2 [h2]\n";;
         str += "join1\n";
         str += "    leftMemory [ [h3] ]\n";
-        str += "    rightMemory [h0]\n";      
+        str += "    rightMemory [h0]\n";
         str += "join2\n";
         str += "    leftMemory  [[h3, h0]]\n";
-        str += "    rightMemory [h4]\n";         
-        
-        
+        str += "    rightMemory [h4]\n";
+
         List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
         ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );
-        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );       
-        
+        List<InternalFactHandle> handles = (List<InternalFactHandle>) map.get( "Handles" );
+
         JoinNode join1 = (JoinNode) map.get( "join1" );
-        
+
         BetaMemory memory = (BetaMemory) wm.getNodeMemory( join1 );
         assertEquals( 1,
                       memory.getRightTupleMemory().size() );
-        
+
         assertEquals( 1,
-                      memory.getLeftTupleMemory().size() );        
-    }       
+                      memory.getLeftTupleMemory().size() );
+    }
 
     private void print(DslStep[] steps) {
         for ( DslStep command : steps ) {
