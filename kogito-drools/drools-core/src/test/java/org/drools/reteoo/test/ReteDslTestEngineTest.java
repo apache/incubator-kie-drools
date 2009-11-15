@@ -587,6 +587,7 @@ public class ReteDslTestEngineTest extends TestCase {
         str += "    otn3 [h4]\n";
         str += "join1\n";
         str += "    leftMemory [[h1]]\n";
+        str += "    leftMemory [[h3]]\n";        
         str += "    rightMemory [h0, h2]\n";
         str += "join2\n";
         str += "    leftMemory [[h1, h0],\n";
