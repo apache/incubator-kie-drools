@@ -1,0 +1,38 @@
+ObjectTypeNode
+    otn1, java.lang.Integer
+LeftInputAdapterNode
+    lian0, otn1
+ObjectTypeNode
+    otn2, java.lang.Integer
+ObjectTypeNode
+    otn3, java.lang.Integer        
+Binding
+     p1, 0, java.lang.Integer, intValue
+JoinNode
+    join1, lian0, otn2
+    intValue, !=, p1
+JoinNode
+    join2, join1, otn3
+    intValue, !=, p1        
+Facts
+    0, 1, 2, 3, 4
+assert
+    otn1 [h1, h3]        
+    otn2 [h0, h2]
+    otn3 [h4]        
+join1
+    leftMemory [[h1], [h3]]
+    rightMemory [h0, h2]
+join2
+    leftMemory [[h1, h0], [h3, h0],
+                [h1, h2], [h3, h2]]
+    rightMemory [h4]        
+retract
+    otn1 [h1]        
+    otn2 [h2]; 
+join1
+    leftMemory [ [h3] ]
+    rightMemory [h0]      
+join2
+    leftMemory  [[h3, h0]]
+    rightMemory [h4]  
