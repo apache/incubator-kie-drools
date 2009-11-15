@@ -21,6 +21,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.base.evaluators.Operator;
 import org.drools.command.Context;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
@@ -84,7 +85,6 @@ public class ReteDslTestEngine {
         Map context = new HashMap();
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setCompositeKeyDepth( 0 );
 
         ReteooRuleBase rbase = new ReteooRuleBase( "ID",
                                                    conf );
@@ -141,8 +141,7 @@ public class ReteDslTestEngine {
             
             BetaMemory memory = (BetaMemory) wm.getNodeMemory( node );
             for ( String cmd : cmds ) {
-                if ( cmd.trim().startsWith( "leftMemory" ) ) {
-
+                if ( cmd.trim().startsWith( "leftMemory" ) ) {                    
                     int pos = cmd.indexOf( "[" );
                     String nodeName = cmd.substring( 0,
                                                      pos ).trim();
@@ -156,20 +155,31 @@ public class ReteDslTestEngine {
                                                   vars );                    
                     
                     LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
-                    LeftTuple[] leftTuples = (LeftTuple[]) leftMemory.toArray();
+
+                    List actualLeftTuples = null;
                     
-                    List actualLeftTuples = new ArrayList( leftTuples.length );
+                    // we always lookup from the first element, in case it's indexed
+                    List<InternalFactHandle> first = (List<InternalFactHandle>) expectedLeftTuples.get( 0 );
+                    LeftTuple firstTuple = new LeftTuple(first.get( 0 ), null, false);
+                    for ( int i = 1; i < first.size(); i++ ) {
+                        firstTuple = new LeftTuple(firstTuple, null, false);
+                    }
                     
+                    List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
+                    
+                    for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( firstTuple ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                        leftTuples.add( leftTuple );
+                    }
+                    actualLeftTuples = new ArrayList( leftTuples.size() );
                     for ( LeftTuple leftTuple : leftTuples ) {
                         List<InternalFactHandle> tupleHandles = Arrays.asList( leftTuple.toFactHandles() );
                         actualLeftTuples.add( tupleHandles );                        
-                    }
+                    }  
                     
                     if ( !expectedLeftTuples.equals( actualLeftTuples ) ) {
                         throw new AssertionError( "line " + step.getLine() + ": left Memory expected " + expectedLeftTuples + " actually " + actualLeftTuples);
                     }
-                        
-                    
+                                           
                 } else if ( cmd.trim().startsWith( "rightMemory" ) ) {
                     int pos = cmd.indexOf( "[" );
                     String nodeName = cmd.substring( 0,
@@ -183,8 +193,13 @@ public class ReteDslTestEngine {
                     List expectedFactHandles = (List) MVEL.eval( listString,
                                                   vars );                    
                     
-                    RightTupleMemory rightMemory = memory.getRightTupleMemory();   
-                    List<RightTuple> actualRightTuples = Arrays.asList( ( RightTuple[] ) rightMemory.toArray() );
+                    RightTupleMemory rightMemory = memory.getRightTupleMemory();  
+                    
+                    InternalFactHandle first = ( InternalFactHandle ) expectedFactHandles.get( 0 );
+                    List<RightTuple> actualRightTuples = new ArrayList();
+                    for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( first.getFirstRightTuple() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                        actualRightTuples.add( rightTuple );
+                    }
                     
                     if ( expectedFactHandles.size() != actualRightTuples.size() ) {
                         throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + actualRightTuples + " actually " + actualRightTuples);

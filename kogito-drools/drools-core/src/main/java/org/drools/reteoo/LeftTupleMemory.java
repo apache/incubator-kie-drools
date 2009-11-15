@@ -7,6 +7,8 @@ public interface LeftTupleMemory {
     public Iterator iterator();
 
     public LeftTuple getFirst(RightTuple rightTuple);
+    
+    public LeftTuple getFirst(LeftTuple leftTuple);
 
     public void add(LeftTuple tuple);
 
