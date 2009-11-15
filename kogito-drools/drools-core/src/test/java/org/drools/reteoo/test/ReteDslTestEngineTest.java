@@ -26,15 +26,15 @@ import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.reteoo.test.ReteTester.DslStep;
+import org.drools.reteoo.test.ReteDslTestEngine.DslStep;
 import org.drools.rule.Declaration;
 import org.drools.spi.PropagationContext;
 
 import junit.framework.TestCase;
 
-public class ReteTesterTest extends TestCase {
+public class ReteDslTestEngineTest extends TestCase {
     public void testIndentPos() {
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         assertEquals( 5,
                       tester.indentPos( "     asdfasdf" ) );
     }
@@ -43,7 +43,7 @@ public class ReteTesterTest extends TestCase {
         String str = "  line1\n";
         str += "   line2\n";
 
-        List<String> lines = ReteTester.chunkReader( new StringReader( str ) );
+        List<String> lines = ReteDslTestEngine.chunkReader( new StringReader( str ) );
         assertEquals( 2,
                       lines.size() );
 
@@ -59,7 +59,7 @@ public class ReteTesterTest extends TestCase {
         str += "   line2\n";
         str += "   line3 //some other comments\n";
 
-        List<String> lines = ReteTester.chunkReader( new StringReader( str ) );
+        List<String> lines = ReteDslTestEngine.chunkReader( new StringReader( str ) );
         assertEquals( 4,
                       lines.size() );
 
@@ -79,7 +79,7 @@ public class ReteTesterTest extends TestCase {
         str += "   line2\n";
         str += "   line3 //some other comments\n";
 
-        List<String> lines = ReteTester.chunkReader( new StringReader( str ) );
+        List<String> lines = ReteDslTestEngine.chunkReader( new StringReader( str ) );
         assertEquals( 4,
                       lines.size() );
 
@@ -100,7 +100,7 @@ public class ReteTesterTest extends TestCase {
         str += "   lin*/e3\n";
         str += "   line4 //some other comments\n";
 
-        List<String> lines = ReteTester.chunkReader( new StringReader( str ) );
+        List<String> lines = ReteDslTestEngine.chunkReader( new StringReader( str ) );
         assertEquals( 5,
                       lines.size() );
 
@@ -119,7 +119,7 @@ public class ReteTesterTest extends TestCase {
     public void testDslCommandBuilder() {
         InputStream stream = getClass().getResourceAsStream( "JoinNode.data" );
         assertNotNull( stream );
-        DslStep[] step = (DslStep[]) ReteTester.buildDslCommands( new InputStreamReader( stream ) ).toArray( new DslStep[0] );
+        DslStep[] step = (DslStep[]) ReteDslTestEngine.buildDslCommands( new InputStreamReader( stream ) ).toArray( new DslStep[0] );
         //        assertEquals( 10, cmds.length );
 
         //        assertEquals( 1, step[0].getLine() );
@@ -176,9 +176,9 @@ public class ReteTesterTest extends TestCase {
         String str = "ObjectTypeNode\n";
         str += "    otn1, java.lang.Integer";
 
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
         ObjectTypeNode otn1 = (ObjectTypeNode) map.get( "otn1" );
         assertNotNull( otn1 );
@@ -193,9 +193,9 @@ public class ReteTesterTest extends TestCase {
         str += "LeftInputAdapterNode\n";
         str += "    lian0, otn1";
 
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
         ObjectTypeNode otn1 = (ObjectTypeNode) map.get( "otn1" );
 
@@ -210,10 +210,10 @@ public class ReteTesterTest extends TestCase {
         String str = "Binding\n";
         str += "     p1, 0, java.lang.Integer, intValue\n";
 
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
         //print(steps);
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
         Declaration p1 = (Declaration) map.get( "p1" );
         assertNotNull( p1 );
@@ -232,9 +232,9 @@ public class ReteTesterTest extends TestCase {
         str += "    join1, lian0, otn2\n";
         str += "    intValue, ==, p1\n";
 
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         JoinNode join1 = (JoinNode) map.get( "join1" );
@@ -290,9 +290,9 @@ public class ReteTesterTest extends TestCase {
         str += "    1, 2, 'hello'\n";
         str += "    'good bye', new java.util.ArrayList()\n";
 
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         WorkingMemory wm = (WorkingMemory) map.get( "WorkingMemory" );
@@ -329,9 +329,9 @@ public class ReteTesterTest extends TestCase {
         str += "    otn1 [h1, h3]\n";
         
         
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );
@@ -369,9 +369,9 @@ public class ReteTesterTest extends TestCase {
         str += "    otn2 [h2]\n";
         
         
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );
@@ -415,9 +415,9 @@ public class ReteTesterTest extends TestCase {
         str += "    rightMemory [h0]\n";      
         
         
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );
@@ -474,9 +474,9 @@ public class ReteTesterTest extends TestCase {
         str += "    rightMemory [h4]\n";         
         
         
-        List<DslStep> steps = ReteTester.buildDslCommands( new StringReader( str ) );
+        List<DslStep> steps = ReteDslTestEngine.buildDslCommands( new StringReader( str ) );
 
-        ReteTester tester = new ReteTester();
+        ReteDslTestEngine tester = new ReteDslTestEngine();
         Map<String, Object> map = tester.run( steps );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) map.get( "WorkingMemory" );

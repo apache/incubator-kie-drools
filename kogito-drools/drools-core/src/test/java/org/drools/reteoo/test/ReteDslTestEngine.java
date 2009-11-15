@@ -57,12 +57,12 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.StringUtils;
 import org.mvel2.MVEL;
 
-public class ReteTester {
+public class ReteDslTestEngine {
 
     private ReteTesterHelper    reteTesterHelper;
     private Map<String, Object> steps;
 
-    public ReteTester() {
+    public ReteDslTestEngine() {
 
         this.reteTesterHelper = new ReteTesterHelper();
 
