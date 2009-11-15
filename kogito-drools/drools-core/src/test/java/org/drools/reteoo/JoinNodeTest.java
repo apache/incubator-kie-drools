@@ -219,7 +219,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
 
-        LeftTuple leftTuple = this.memory.getLeftTupleMemory().getFirst( null );
+        LeftTuple leftTuple = this.memory.getLeftTupleMemory().getFirst( (LeftTuple) null );
         assertEquals( tuple0,
                       leftTuple );
         assertEquals( tuple1,

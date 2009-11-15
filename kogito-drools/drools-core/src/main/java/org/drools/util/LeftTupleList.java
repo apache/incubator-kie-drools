@@ -43,6 +43,10 @@ public class LeftTupleList
         return this.first;
     }
     
+    public LeftTuple getFirst(LeftTuple leftTuple) {
+        return this.first;
+    }     
+    
     public LeftTuple getLast(RightTuple lastTuple) {
         return this.first;
     }    

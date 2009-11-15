@@ -91,6 +91,15 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             return null;
         }
     }
+    
+    public RightTuple getFirst(final RightTuple rightTuple) {
+        final RightTupleList bucket = getOrCreate( rightTuple.getFactHandle().getObject() );
+        if ( bucket != null ) {
+            return bucket.getFirst( ( RightTuple ) null );
+        } else {
+            return null;
+        }        
+    }      
 
     public RightTuple getLast(LeftTuple leftTuple) {
         RightTupleList bucket = get( leftTuple );
@@ -345,7 +354,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         for ( Entry entry : this.table ) {
             while ( entry != null ) {
                 RightTupleList bucket = (RightTupleList) entry;
-                for ( RightTuple rightTuple = bucket.getFirst( null ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                for ( RightTuple rightTuple = bucket.getFirst( ( RightTuple ) null ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
                     builder.append( rightTuple );
                 }
                 entry = entry.getNext();

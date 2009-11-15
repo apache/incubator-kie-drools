@@ -317,7 +317,7 @@ public class ConcurrentHashTable {
                 e.remove( rightTuple );
                 tupleCount--;
 
-                if ( e.getFirst( null ) == null ) {
+                if ( e.getFirst( ( RightTuple ) null ) == null ) {
                     // list is empty, so remove it
                     RightTupleList newFirst = (RightTupleList) e.getNext();
                     for ( RightTupleList p = first; p != e; p = (RightTupleList) p.getNext() ) {
