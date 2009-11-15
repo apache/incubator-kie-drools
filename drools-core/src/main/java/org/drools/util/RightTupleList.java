@@ -186,6 +186,19 @@ public class RightTupleList
         return this.hashCode == tupleHashCode && this.index.equal( this.first.getFactHandle().getObject(),
                                                                    tuple );
     }
+    
+    public RightTuple[] toArray() {
+        int size = size();
+        RightTuple[] tuples = new RightTuple[size];
+
+        RightTuple current = first;
+        for ( int i = 0; i < size; i++ ) {
+            tuples[i] = current;
+            current = (RightTuple) current.getNext();
+        }
+
+        return tuples;
+    }     
 
     public int hashCode() {
         return this.hashCode;
