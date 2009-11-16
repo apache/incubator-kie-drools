@@ -18,6 +18,10 @@ public class CellContents {
         return cellType;
     }
 
+    public void setCellType(CellType cellType) {
+        this.cellType = cellType;
+    }
+
     @Override
     public String toString() {
         return "CellType " + cellType;

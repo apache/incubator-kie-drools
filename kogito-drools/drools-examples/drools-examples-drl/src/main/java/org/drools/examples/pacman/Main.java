@@ -37,6 +37,9 @@ public class Main {
 
     public void initKsession() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "base.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );        
         kbuilder.add( ResourceFactory.newClassPathResource( "key-handlers.drl",
                                                             getClass() ),
                       ResourceType.DRL );
@@ -54,8 +57,12 @@ public class Main {
         this.ksession = kbase.newStatefulKnowledgeSession();
 
         this.pacMan = new PacMan();
-        this.pacMan.setSpeed( 1 );
+        this.pacMan.setSpeed( 2 );
         this.ksession.insert( this.pacMan );
+
+        Monster monster = new Monster();
+        monster.setSpeed( 7 );
+        //this.ksession.insert( monster );
 
         this.ksession.insert( new Score() );
 
@@ -63,16 +70,19 @@ public class Main {
                                                              "pacman.log",
                                                              3000 );
 
-        Location location = new Location( this.pacMan,
-                                          1,
-                                          1 );
-        this.ksession.insert( location );
+        Location pacLocation = new Location( this.pacMan,
+                                             1,
+                                             5 );
+
+        Location monLocation = new Location( monster,
+                                             9,
+                                             9 );
+
+        this.ksession.insert( pacLocation );
+        //this.ksession.insert( monLocation );
 
         Tick tick = new Tick( 0 );
         this.ksession.insert( tick );
-
-        // execute initialisation data and return
-        this.ksession.fireAllRules();
     }
 
     public void buildGrid() throws Exception {
@@ -88,11 +98,12 @@ public class Main {
 
         for ( int row = lines.size() - 1; row >= 0; row-- ) {
             line = lines.get( row );
+            int whiteCellCount = 0;
             for ( int col = 0; col < line.length(); col++ ) {
                 char c = line.charAt( col );
-
+                
                 Cell cell = new Cell( lines.size() - row - 1,
-                                      col );
+                                      col - whiteCellCount ); // use white spaces for layout, so need to correct
                 CellContents contents = null;
                 switch ( c ) {
                     case '*' : {
@@ -105,18 +116,30 @@ public class Main {
                                                      CellType.FOOD );
                         break;
                     }
+                    case '#' : {
+                        contents = new CellContents( cell,
+                                                     CellType.POWER_PILL );
+                        break;
+                    }                    
                     case '_' : {
                         contents = new CellContents( cell,
                                                      CellType.EMPTY );
+                        break;
+                    }
+                    case ' ' : {
+                        // ignore, just for spacing
+                        whiteCellCount++;
                         break;
                     }
                     default : {
                         throw new IllegalArgumentException( "'" + c + "' is an invalid cell type" );
                     }
                 }
-                System.out.println( cell + " : " + contents );
-                ksession.insert( cell );
-                ksession.insert( contents );
+                if ( contents != null ) {
+                    System.out.println( cell + " : " + contents );
+                    ksession.insert( cell );
+                    ksession.insert( contents );
+                }
             }
         }
     }
