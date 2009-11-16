@@ -15,7 +15,7 @@ end
  * The current Direction would move the Location into a WALL, so we can't move and need to retract the Direction,
  * so that no futher movement for is attempted
  */
-rule invalidDirection dialect "mvel" no-loop when
+rule invalidDirection dialect "mvel" when
     $l : Location( )
     $d : Direction( character == $l.character )
     $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
@@ -31,7 +31,7 @@ end
  * It does not set the new direction straight away, this is because we need movement to be intime
  * with the Tick increase, so we schedule the new Location instead.
  */
-rule validDirection dialect "mvel" no-loop when
+rule validDirection dialect "mvel" when
     $l : Location( )
     $d : Direction( character == $l.character )
     $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
@@ -45,7 +45,7 @@ end
 /**
  * When the Tick increases, update any Locations from inserted scheduled updates.
  */
-rule setNewDirection dialect "mvel" no-loop when
+rule setNewDirection dialect "mvel" when
     $s : ScheduledLocationUpdate()
     $l : Location( this == $s.location )
     Tick( tock == $s.tock )
