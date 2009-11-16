@@ -7,7 +7,7 @@ public class ConsequenceException extends RuntimeException {
 
     public ConsequenceException(final Throwable rootCause,
                                 final Rule rule) {
-        super( rootCause );
+        super( "rule: " + rule.getName() + "\n", rootCause );
         this.rule = rule;
     }
 
