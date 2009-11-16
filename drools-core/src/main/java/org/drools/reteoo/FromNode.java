@@ -128,8 +128,7 @@ public class FromNode extends LeftTupleSource
             final Object object = it.next();
 
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                                                  workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                                                        object ),
+                                                                                                  null, // set this to null, otherwise it uses the driver fact's entrypoint
                                                                                                   workingMemory );
 
             RightTuple rightTuple = new RightTuple( handle,
