@@ -1,68 +1,27 @@
 package org.drools.examples.pacman
 
 /**
- * This controls the flow of time in pacman, currently it's slow 500ms, to make it easy to visualise things as
- * they happen
- */
-rule increaseTick dialect "mvel" salience -1 duration 500 when
-    $t : Tick()
-then
-    modify( $t ) { tock +=  1 };
-    exitPoints["ConsoleExitPoint" ].insert( "tick " + $t.tock + "\n" );
-end
-
-/**
- * The current Direction would move the Location into a WALL, so we can't move and need to retract the Direction,
- * so that no futher movement for is attempted
- */
-rule invalidDirection dialect "mvel" when
-    $l : Location( )
-    $d : Direction( character == $l.character )
-    $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
-    $ct : CellContents( cell == $target, cellType == CellType.WALL )
-    Tick()        
-then
-    exitPoints["ConsoleExitPoint" ].insert( "retract " + $d + "\n" );
-    retract( $d );     
-end
-
-/**
- * Checks that the current Direction moves to a valid location, i.e. not a WALL.
- * It does not set the new direction straight away, this is because we need movement to be intime
- * with the Tick increase, so we schedule the new Location instead.
- */
-rule validDirection dialect "mvel" when
-    $l : Location( )
-    $d : Direction( character == $l.character )
-    $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
-    CellContents( cell == $target, cellType != CellType.WALL )
-    not ScheduledLocationUpdate( location == $l )    
-    $t : Tick()  
-then
-    insert( new ScheduledLocationUpdate($l, $l.row += $d.vertical, $l.col += $d.horizontal, $t.tock + 1) );
-end
-
-/**
- * When the Tick increases, update any Locations from inserted scheduled updates.
- */
-rule setNewDirection dialect "mvel" when
-    $s : ScheduledLocationUpdate()
-    $l : Location( this == $s.location )
-    Tick( tock == $s.tock )
-then
-   exitPoints["ConsoleExitPoint"].insert( "set new Location " + $l + "\n"  );
-   modify( $l ) { row = $s.row, col = $s.col };
-   retract( $s );
-end
-
-/**
- * When we move onto a FOOD cell, increase the score
+ * When we move onto a FOOD cell, increase the score by 1
  */
 rule eatFood dialect "mvel" no-loop when
     $l : Location( )
     $target : Cell( row == $l.row, col == $l.col)
-    CellContents( cell == $target, cellType == CellType.FOOD )
+    $contents : CellContents( cell == $target, cellType == CellType.FOOD )
     $s : Score()   
 then
+    modify( $contents ) { cellType = CellType.EMPTY };
     modify( $s ) { score += 1 };    
+end
+
+/**
+ * When we move onto a POWER_PILL cell, increase the score by 5
+ */
+rule eatPowerPill dialect "mvel" no-loop when
+    $l : Location( )
+    $target : Cell( row == $l.row, col == $l.col)
+    $contents : CellContents( cell == $target, cellType == CellType.POWER_PILL )
+    $s : Score()   
+then
+    modify( $contents ) { cellType = CellType.EMPTY };
+    modify( $s ) { score += 5 };    
 end

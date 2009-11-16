@@ -1,0 +1,78 @@
+package org.drools.examples.pacman
+
+/**
+ * This controls the flow of time in pacman, currently it's slow 500ms, to make it easy to visualise things as
+ * they happen
+ */
+rule increaseTick dialect "mvel" salience -1 duration 100 when
+    $t : Tick()
+then
+    modify( $t ) { tock +=  1 };
+    exitPoints["ConsoleExitPoint" ].insert( "tick " + $t.tock + "\n" );
+end
+
+/**
+ * The current Direction would move the Location into a WALL, so we can't move and need to retract the Direction,
+ * so that no futher movement for is attempted
+ */
+rule invalidDirection dialect "mvel" when
+    $l : Location( )
+    $d : Direction( character == $l.character )
+    $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
+    $ct : CellContents( cell == $target, cellType == CellType.WALL )
+    Tick()        
+then
+    exitPoints["ConsoleExitPoint" ].insert( "retract " + $d + "\n" );
+    retract( $d );     
+end
+
+/**
+ * Checks that the current Direction moves to a valid location, i.e. not a WALL.
+ * It does not set the new direction straight away, this is because we need movement to be intime
+ * with the Tick increase, so we schedule the new Location instead.
+ */
+rule validDirection dialect "mvel" when
+    $l : Location( )
+    $d : Direction( character == $l.character )
+    $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
+    CellContents( cell == $target, cellType != CellType.WALL )
+    not ScheduledLocationUpdate( location == $l )    
+     $t : Tick()  
+then
+    insert( new ScheduledLocationUpdate($l, $l.row += $d.vertical, $l.col += $d.horizontal, $t.tock + $l.character.speed ) );
+end
+
+/**
+ * When the Tick increases, update any Locations from inserted scheduled updates.
+ */
+rule setNewDirection dialect "mvel" when
+    $s : ScheduledLocationUpdate()
+    $l : Location( this == $s.location )
+    Tick( tock == $s.tock )
+then
+   exitPoints["ConsoleExitPoint"].insert( "set new Location " + $l + "\n"  );
+   modify( $l ) { row = $s.row, col = $s.col };
+   retract( $s );
+end
+
+/**
+ * When all the cells are empty stock the clock (retract the tick), as the level is now finishedW
+ */
+rule isLevelFinished dialect "mvel" when
+    forall ( $c : Cell()
+                  CellContents( cell == $c, cellType == CellType.EMPTY || == CellType.WALL ) )
+    $t : Tick()
+then
+    //
+    retract( $t );
+end
+
+rule finishGame  dialect "mvel" when
+    forall ( $c : Cell()
+                  CellContents( cell == $c, cellType == CellType.EMPTY || == CellType.WALL ) )
+    $s : Score()
+    not Tick()
+then
+    exitPoints["ConsoleExitPoint"].insert( "FINISHED!!!! score = " + $s.score + " \n" );
+    kcontext.knowledgeRuntime.halt();
+end
