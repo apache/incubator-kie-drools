@@ -40,11 +40,12 @@ function Direction createDirection(Character character, KeyEvent keyCode) {
  */
 rule keyListenerRuleNoDirection dialect "mvel" when
     $keyEvent : KeyEvent() from entry-point "KeyListener"
-    $l : Location()
-    $newD : Direction() from createDirection( $l.character, $keyEvent )
-    $target : Cell( row == ($l.row + $newD.vertical), col == ($l.col + $newD.horizontal) )
-    CellContents( cell == $target, cellType != CellType.WALL )    
-    not Direction( character == $l.character )
+    $char     : Character( name == "Pacman" )
+    $l        : Location( character == $char )
+    $newD     : Direction() from createDirection( $l.character, $keyEvent )
+    $target   : Cell( row == ($l.row + $newD.vertical), col == ($l.col + $newD.horizontal) )
+                CellContents( cell == $target, cellType != CellType.WALL )    
+            not Direction( character == $l.character )
 then
     exitPoints["ConsoleExitPoint" ].insert( "insert " + $newD + "\n" );
     retract( $keyEvent );    
@@ -57,11 +58,12 @@ end
  */
 rule keyListenerRule dialect "mvel" when
     $keyEvent : KeyEvent() from entry-point "KeyListener"
-    $l : Location()
-    $newD : Direction() from createDirection( $l.character, $keyEvent )
-    $target : Cell( row == ($l.row + $newD.vertical), col == ($l.col + $newD.horizontal) )
-    CellContents( cell == $target, cellType != CellType.WALL )    
-    $oldD : Direction( character == $l.character )
+    $char     : Character( name == "Pacman" )
+    $l        : Location( character == $char )
+    $newD     : Direction() from createDirection( $l.character, $keyEvent )
+    $target   : Cell( row == ($l.row + $newD.vertical), col == ($l.col + $newD.horizontal) )
+                CellContents( cell == $target, cellType != CellType.WALL )    
+    $oldD     : Direction( character == $l.character )
 then
     exitPoints["ConsoleExitPoint" ].insert( "insert " + $newD + "\n" );
     retract( $keyEvent );
