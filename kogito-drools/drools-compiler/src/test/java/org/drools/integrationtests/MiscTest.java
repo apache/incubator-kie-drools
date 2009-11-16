@@ -6912,7 +6912,7 @@ public class MiscTest extends TestCase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
-        ep.insert( new Cheese("cheddar") );
+        ksession.insert( new Cheese("cheddar") );
         ksession.fireAllRules();
         
         Runnable fireUntilHalt = new Runnable() {
