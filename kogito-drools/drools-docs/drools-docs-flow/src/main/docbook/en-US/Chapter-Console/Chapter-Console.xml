@@ -169,7 +169,7 @@ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=256m"</programlisting>
     synchronization), check out the Guvnor documentation.  After deploying Guvnor to your
     application server, navigate to the following URL to open up Guvnor (replace the host 
     and/or port depending on how the application server is configured):
-    <ulink url="http://localhost:8080/gwt-console">http://localhost:8080/gwt-console</ulink></para>
+    <ulink url="http://localhost:8080/drools-guvnor">http://localhost:8080/drools-guvnor</ulink></para>
 
     <para>The following screenshot shows an example where the "default" package contains one
     "Evaluation" process.  After adding the necessary process definitions, make sure to build
