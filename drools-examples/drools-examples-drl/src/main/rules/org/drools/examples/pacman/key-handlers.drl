@@ -1,0 +1,79 @@
+package org.drools.examples.pacman
+
+import java.awt.event.KeyEvent;
+	
+
+/**
+ * Create a Direction for a character, based on a given keyCode. Return null
+ * if the keyCode does not map to an arrow key.
+ */	
+function Direction createDirection(Character character, KeyEvent keyCode) {
+    DirectionEnum directionEnum;
+    switch ( keyCode.getKeyCode() ) {    
+        case 38 : { // UP
+            directionEnum = DirectionEnum.UP;
+            break;   
+        }
+        case 40 : { // DOWN
+        	directionEnum = DirectionEnum.DOWN;
+            break;
+        }
+        case 37 : { // LEFT
+        directionEnum = DirectionEnum.LEFT;
+            break;
+        }
+        case 39 : { // RIGHT
+        	directionEnum = DirectionEnum.RIGHT;
+            break;
+        }
+        default: {                
+        	return null;
+        }
+    }
+    return Direction.newDirection( character, directionEnum );
+}
+
+/**
+ * This is relevant to game initialisation. No direction exists yet. When a keypress (release)
+ * is detected it creates derived possible Direction and validates it. If it's valid
+ * then insert it.
+ */
+rule keyListenerRuleNoDirection dialect "mvel"  no-loop when
+    $keyEvent : KeyEvent() from entry-point "KeyListener"
+    $l : Location()
+    $newD : Direction() from createDirection( $l.character, $keyEvent )
+    $target : Cell( row == ($l.row + $newD.vertical), col == ($l.col + $newD.horizontal) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    not Direction( character == $l.character )
+then
+    exitPoints["ConsoleExitPoint" ].insert( "insert " + $newD + "\n" );
+    retract( $keyEvent );    
+    insert( $newD );
+end
+
+/**
+ * Detects a new keypress (release). Creates derived possible Direction and validates it.
+ * If the Direction is valid, delete the old Direction and replace with the new one.
+ */
+rule keyListenerRule dialect "mvel" no-loop when
+    $keyEvent : KeyEvent() from entry-point "KeyListener"
+    $l : Location()
+    $newD : Direction() from createDirection( $l.character, $keyEvent )
+    $target : Cell( row == ($l.row + $newD.vertical), col == ($l.col + $newD.horizontal) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    $oldD : Direction( character == $l.character )
+then
+    exitPoints["ConsoleExitPoint" ].insert( "insert " + $newD + "\n" );
+    retract( $keyEvent );
+    retract( $oldD );
+    insert( $newD );
+end
+
+/**
+ * This rule is needed to stop events building up, so if they don't match and fire, retract anyway
+ */
+rule keyListenerRuleRetractEvent dialect "mvel" salience -5 when
+    $keyEvent : KeyEvent() from entry-point "KeyListener"
+then
+    retract( $keyEvent );
+end
