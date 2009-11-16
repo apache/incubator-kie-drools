@@ -6931,6 +6931,50 @@ public class MiscTest extends TestCase {
         t1.stop();
         assertEquals( 1, list.size() ); 
     }    
+    
+    public void testNetworkBuildErrorAcrossEntryPointsAndFroms() throws Exception {
+        String rule1 = "package org.drools\n";
+        rule1 += "global java.util.List list\n";
+        rule1 += "rule rule1\n";
+        rule1 += "when\n";
+        rule1 += "         Cheese() from entry-point \"testep\"\n";        
+        rule1 += "    $p : Person() from list\n";
+        rule1 += "then \n";
+        rule1 += "  list.add( \"rule1\" ) ;\n";
+        rule1 += "  insert( $p );\n";
+        rule1 += "end\n";
+        rule1 += "rule rule2\n";
+        rule1 += "when\n";
+        rule1 += "  $p : Person() \n";
+        rule1 += "then \n";
+        rule1 += "  list.add( \"rule2\" ) ;\n";
+        rule1 += "end\n";        
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        list.add( new Person( "darth") );
+        ep.insert( new Cheese("cheddar") );        
+
+        
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() ); 
+    }        
 
     public void testDroolsQueryCleanup() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
