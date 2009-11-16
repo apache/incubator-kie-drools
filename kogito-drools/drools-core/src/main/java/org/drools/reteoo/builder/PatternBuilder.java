@@ -340,7 +340,6 @@ public class PatternBuilder
      */
     public boolean requiresLeftActivation(final BuildUtils utils,
                                           final RuleConditionElement rce) {
-        PatternSource source = ((Pattern) rce).getSource();
-        return  source != null && !(source instanceof EntryPoint);
+        return  ((Pattern) rce).getSource() != null;
     }
 }
