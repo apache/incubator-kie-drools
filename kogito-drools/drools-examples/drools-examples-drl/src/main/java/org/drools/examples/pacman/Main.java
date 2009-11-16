@@ -46,6 +46,9 @@ public class Main {
         kbuilder.add( ResourceFactory.newClassPathResource( "pacman.drl",
                                                             getClass() ),
                       ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "monster.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );        
 
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );
@@ -57,12 +60,12 @@ public class Main {
         this.ksession = kbase.newStatefulKnowledgeSession();
 
         this.pacMan = new PacMan();
-        this.pacMan.setSpeed( 2 );
+        this.pacMan.setSpeed( 5 );
         this.ksession.insert( this.pacMan );
 
         Monster monster = new Monster();
-        monster.setSpeed( 7 );
-        //this.ksession.insert( monster );
+        monster.setSpeed( 3 );
+        this.ksession.insert( monster );
 
         this.ksession.insert( new Score() );
 
@@ -75,11 +78,11 @@ public class Main {
                                              5 );
 
         Location monLocation = new Location( monster,
-                                             9,
-                                             9 );
+                                             10,
+                                             5 );
 
         this.ksession.insert( pacLocation );
-        //this.ksession.insert( monLocation );
+        this.ksession.insert( monLocation );
 
         Tick tick = new Tick( 0 );
         this.ksession.insert( tick );
