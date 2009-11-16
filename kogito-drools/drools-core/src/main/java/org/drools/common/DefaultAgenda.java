@@ -1099,13 +1099,15 @@ public class DefaultAgenda
         fireUntilHalt( null );
     }
 
+    private AtomicBoolean missedNotifyAll = new AtomicBoolean(false);
+    
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
             boolean fired = fireNextItem( agendaFilter );
             fired = fired || !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
             this.workingMemory.executeQueuedActions();
-            if ( !fired ) {
+            if ( !fired && !missedNotifyAll.get()) {
                 try {
                     synchronized ( this.halt ) {
                         this.halt.wait();
@@ -1113,6 +1115,7 @@ public class DefaultAgenda
                 } catch ( InterruptedException e ) {
                     this.halt.set( true );
                 }
+                this.missedNotifyAll.set( false );
             } else {
                 this.workingMemory.executeQueuedActions();
             }
@@ -1145,6 +1148,7 @@ public class DefaultAgenda
 
     public void notifyHalt() {
         synchronized ( this.halt ) {
+            this.missedNotifyAll.set( true );
             this.halt.notifyAll();
         }
     }
