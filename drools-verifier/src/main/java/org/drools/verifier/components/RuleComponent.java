@@ -11,6 +11,14 @@ public abstract class RuleComponent extends PackageComponent
     private String                parentGuid;
     private int                   orderNumber;
 
+    /**
+     * 
+     * @return Rule package name + rule name.
+     */
+    public String getFullRulePath() {
+        return getPackageName() + "." + getRuleName();
+    }
+
     public String getRuleName() {
         return ruleName;
     }
