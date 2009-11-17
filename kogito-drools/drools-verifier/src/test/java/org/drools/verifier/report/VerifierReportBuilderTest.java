@@ -1,88 +1,62 @@
 package org.drools.verifier.report;
 
-import java.util.Collection;
-
-import org.drools.verifier.data.VerifierData;
-import org.drools.verifier.data.VerifierReport;
-import org.drools.verifier.report.components.Gap;
-import org.drools.verifier.report.components.MissingNumberPattern;
-import org.drools.verifier.report.components.RangeCheckCause;
-import org.drools.verifier.report.components.Severity;
-import org.drools.verifier.report.components.VerifierMessageBase;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.drools.builder.ResourceType;
+import org.drools.io.impl.ClassPathResource;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.builder.VerifierBuilder;
+import org.drools.verifier.builder.VerifierBuilderFactory;
+
 public class VerifierReportBuilderTest extends TestCase {
 
-    public void testHtmlReportTest() {
+    public void testHtmlReportTest() throws IOException {
 
         // Create report
-        VerifierReport vReport = new VerifierReportMock();
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
+        Verifier verifier = vBuilder.newVerifier();
+
+        verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
+                                                              Verifier.class ),
+                                       ResourceType.DRL );
+        VerifierReportWriter writer = VerifierReportWriterFactory.newHTMLReportWriter();
 
         // Write to disk
+        FileOutputStream out = new FileOutputStream( "testReport.zip" );
+
+        writer.writeReport( out,
+                            verifier.getResult() );
+
         // Check the files on disk
-        // done
-        assertTrue(true);
-    }
+        File file = new File( "testReport.zip" );
+        assertNotNull( file );
+        assertTrue( file.exists() );
 
-}
-class VerifierReportMock
-    implements
-    VerifierReport {
+        // TODO: Check the file content
+        
+        // Remove the test file
+        file.delete();
 
-    public void add(Gap gap) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void add(MissingNumberPattern missingNumberPattern) {
-        // TODO Auto-generated method stub
+        assertFalse( file.exists() );
 
     }
 
-    public void add(VerifierMessageBase note) {
-        // TODO Auto-generated method stub
-
+    public void testPlainTextReportTest() throws IOException {
+        //TODO:
+        assertTrue( true );
     }
 
-    public Collection<VerifierMessageBase> getBySeverity(Severity severity) {
-        // TODO Auto-generated method stub
-        return null;
+    public void testXMLReportTest() throws IOException {
+        //TODO:
+        assertTrue( true );
     }
 
-    public Collection<Gap> getGapsByFieldId(int fieldId) {
-        // TODO Auto-generated method stub
-        return null;
+    public void testPDFReportTest() throws IOException {
+        //TODO:
+        assertTrue( true );
     }
-
-    public Collection<RangeCheckCause> getRangeCheckCauses() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(int id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public VerifierData getVerifierData(VerifierData data) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public VerifierData getVerifierData() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void remove(Gap gap) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(String guid) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

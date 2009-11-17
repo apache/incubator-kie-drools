@@ -88,4 +88,5 @@ public class VerifierTest extends TestCase {
                           m.getMessage() );
         }
     }
+
 }

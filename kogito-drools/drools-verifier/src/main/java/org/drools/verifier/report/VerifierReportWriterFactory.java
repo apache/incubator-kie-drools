@@ -19,8 +19,7 @@ public class VerifierReportWriterFactory {
      * @return Analysis results as plain text.
      */
     public static VerifierReportWriter newPlainTextReportWriter() {
-        return null;
-        //        return ReportModeller.writePlainText( result );
+        return new PlainTextReportWriter();
     }
 
     /**
@@ -29,7 +28,6 @@ public class VerifierReportWriterFactory {
      * @return Analysis results as XML
      */
     public static VerifierReportWriter newXMLReportWriter() {
-        return null;
-        //        return ReportModeller.writeXML( result );
+        return new XMLReportWriter();
     }
 }
