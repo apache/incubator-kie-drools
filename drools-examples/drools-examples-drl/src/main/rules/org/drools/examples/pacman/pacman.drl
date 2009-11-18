@@ -3,7 +3,7 @@ package org.drools.examples.pacman
 /**
  * When we move onto a FOOD cell, increase the score by 1
  */
-rule eatFood dialect "mvel" no-loop when
+rule EatFood dialect "mvel" no-loop when
     $char : Character( name == "Pacman" )
     $l : Location( character == $char )
     $target : Cell( row == $l.row, col == $l.col)
@@ -17,7 +17,7 @@ end
 /**
  * When we move onto a POWER_PILL cell, increase the score by 5
  */
-rule eatPowerPill dialect "mvel" no-loop when
+rule EatPowerPill dialect "mvel" no-loop when
     $char : Character( name == "Pacman" )
     $l : Location( character == $char )
     $target : Cell( row == $l.row, col == $l.col)
@@ -28,7 +28,7 @@ then
     modify( $s ) { score += 5 };    
 end
 
-rule monsterCollision dialect "mvel" no-loop when
+rule MonsterCollision dialect "mvel" no-loop when
     $pac    : Character( name == "Pacman" )
     $pacLoc : Location( character == $pac )
     $mon    : Character( name == "Monster" )

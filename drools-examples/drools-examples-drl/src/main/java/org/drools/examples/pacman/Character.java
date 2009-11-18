@@ -23,6 +23,6 @@ public class Character {
    
     @Override
     public String toString() {
-        return "pacman speed = " + getSpeed();
+        return this.name + " speed = " + getSpeed();
     }
 }

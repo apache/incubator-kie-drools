@@ -4,25 +4,25 @@ package org.drools.examples.pacman
  * This controls the flow of time in pacman, currently it's slow 500ms, to make it easy to visualise things as
  * they happen
  */
-rule increaseTick dialect "mvel" salience -1 duration 100 when
+rule IncreaseTick dialect "mvel" salience -1 duration 100 when
     $t : Tick()
 then
     modify( $t ) { tock +=  1 };
-    exitPoints["ConsoleExitPoint" ].insert( "tick " + $t.tock + "\n" );
+    //exitPoints["ConsoleExitPoint" ].insert( "tick " + $t.tock + "\n" );
 end
 
 /**
  * The current Direction would move the Location into a WALL, so we can't move and need to retract the Direction,
  * so that no futher movement for is attempted
  */
-rule invalidDirection dialect "mvel" when
+rule InvalidDirection dialect "mvel" when
     $l : Location( )
     $d : Direction( character == $l.character )
     $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
     $ct : CellContents( cell == $target, cellType == CellType.WALL )
     Tick()        
 then
-    exitPoints["ConsoleExitPoint" ].insert( "retract " + $d + "\n" );
+    exitPoints["ConsoleExitPoint"].insert( "retract " + $d + "\n" );
     retract( $d );     
 end
 
@@ -31,7 +31,7 @@ end
  * It does not set the new direction straight away, this is because we need movement to be intime
  * with the Tick increase, so we schedule the new Location instead.
  */
-rule validDirection dialect "mvel" when
+rule ValidDirection dialect "mvel" when
     $l : Location( )
     $d : Direction( character == $l.character )
     $target : Cell( row == ($l.row + $d.vertical), col == ($l.col + $d.horizontal) )
@@ -45,7 +45,7 @@ end
 /**
  * When the Tick increases, update any Locations from inserted scheduled updates.
  */
-rule setNewDirection dialect "mvel" when
+rule SetNewDirection dialect "mvel" when
     $s : ScheduledLocationUpdate()
     $l : Location( this == $s.location )
     Tick( tock == $s.tock )
@@ -58,7 +58,7 @@ end
 /**
  * When all the cells are empty stock the clock (retract the tick), as the level is now finishedW
  */
-rule isLevelFinished dialect "mvel" when
+rule IsLevelFinished dialect "mvel" when
     not CellContents( cellType == CellType.FOOD )
     not CellContents( cellType == CellType.POWER_PILL ) 
     $t : Tick()
@@ -66,7 +66,7 @@ then
     retract( $t );
 end
 
-rule finishedCompleted  dialect "mvel" when
+rule FinishedCompleted  dialect "mvel" when
     not CellContents( cellType == CellType.FOOD )
     not CellContents( cellType == CellType.POWER_PILL )
     not Tick() 
@@ -76,7 +76,7 @@ then
     kcontext.knowledgeRuntime.halt();
 end
 
-rule finishedKilled  dialect "mvel" when
+rule FinishedKilled  dialect "mvel" when
     $pac    : Character( name == "Pacman" )
     $pacLoc : Location( character == $pac )
     $mon    : Character( name == "Monster" )
