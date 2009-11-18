@@ -1,2 +1,136 @@
 package org.drools.examples.pacman
 
+import java.lang.Math;
+
+
+rule determineDistance dialect "mvel" when
+    $pac    : Character( name == "Pacman" )
+    $pacLoc : Location( character == $pac )
+    $mon    : Character( name == "Monster" )
+    $monLoc : Location( character == $mon )
+    $t : Tick()  
+then
+    df = new DirectionDiff( $mon, $pac, $monLoc.col, $monLoc.row, $pacLoc.col - $monLoc.col, $pacLoc.row - $monLoc.row );
+    insert( df );
+end
+
+
+/** 
+ * Go Left, when no Direction has been initialised
+ */
+rule GoLeftNoExistingDirection dialect "mvel" salience (Math.abs( $df.colDiff )) when
+    $df   : DirectionDiff(colDiff < 0 )
+    $target : Cell(  row == $df.row, col == ($df.col - 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    not Direction( character == $df.fromChar )    
+then
+    retract( $df );
+    insert( new Direction($df.fromChar, Direction.LEFT, 0 ) );    
+end
+
+/** 
+ * Go Right, when no Direction has been initialised
+ */
+rule GoRightNoExistingDirection dialect "mvel"  salience (Math.abs( $df.colDiff ))  when
+    $df   : DirectionDiff(colDiff > 0 )
+    $target : Cell(  row == $df.row, col == ($df.col + 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    not Direction( character == $df.fromChar )     
+then
+    retract( $df );
+    insert( new Direction($df.fromChar, Direction.RIGHT, 0 ) );       
+end
+
+/** 
+ * Go Down, when no Direction has been initialised
+ */
+rule GoDownNoExistingDirection dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
+    $df   : DirectionDiff(rowDiff < 0 )
+    $target : Cell(  col == $df.col, row == ($df.row - 1) )
+    $contents : CellContents( cell == $target, cellType != CellType.WALL )    
+    not Direction( character == $df.fromChar )      
+then
+    retract( $df );
+    insert( new Direction($df.fromChar, 0,  Direction.DOWN ) );       
+end
+
+/** 
+ * Go Up, when no Direction has been initialised
+ */
+rule GoUpNoExistingDirection dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
+    $df   : DirectionDiff(rowDiff > 0 )
+    $target : Cell(  col == $df.col, row == ($df.row + 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    not Direction( character == $df.fromChar )      
+then
+    retract( $df );
+    insert( new Direction($df.fromChar, 0 Direction.UP ) );       
+end
+
+
+/** 
+ * Go Left
+ */
+rule GoLeft dialect "mvel" salience (Math.abs( $df.colDiff ))  when
+    $df   : DirectionDiff(colDiff < 0 )
+    $target : Cell(  row == $df.row, col == ($df.col - 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    $d : Direction( character == $df.fromChar, horizontal != Direction.LEFT)    
+then
+    retract( $d );
+    retract( $df );    
+    insert( new Direction($df.fromChar, Direction.LEFT, 0 ) );
+end
+
+/** 
+ * Go Right
+ */
+rule GoRight dialect "mvel"  salience (Math.abs( $df.colDiff ))  when
+    $df   : DirectionDiff(colDiff > 0 )
+    $target : Cell(  row == $df.row, col == ($df.col + 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    $d : Direction( character == $df.fromChar, horizontal != Direction.RIGHT)    
+then
+    retract( $d );
+    retract( $df ); 
+    insert( new Direction($df.fromChar, Direction.RIGHT, 0 ) );       
+end
+
+/** 
+ * Go Down
+ */
+rule GoDown dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
+    $df   : DirectionDiff(rowDiff < 0 )
+    $target : Cell(  col == $df.col, row == ($df.row - 1))
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    $d : Direction( character == $df.fromChar, vertical != Direction.DOWN)    
+then
+    retract( $d );
+    retract( $df ); 
+    insert( new Direction($df.fromChar, 0,  Direction.DOWN ) );
+end
+
+
+/** 
+ * Go Up
+ */
+rule GoUp dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
+    $df   : DirectionDiff(rowDiff > 0 )
+    $target : Cell(  col == $df.col, row == ($df.row + 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )    
+    $d : Direction( character == $df.fromChar, vertical != Direction.UP)    
+then
+    retract( $d );
+    retract( $df ); 
+    insert( new Direction($df.fromChar, 0 Direction.UP ) );  
+end
+
+/**
+ * If no suitable Direction is added, then retract the DirectionDiff, so it can start again
+ * on the next Tick
+ */
+rule RetractDirectionDiff salience -5 when
+    $df : DirectionDiff()
+then
+    retract($df);
+end

@@ -38,7 +38,7 @@ function Direction createDirection(Character character, KeyEvent keyCode) {
  * is detected it creates derived possible Direction and validates it. If it's valid
  * then insert it.
  */
-rule keyListenerRuleNoDirection dialect "mvel" when
+rule KeyListenerRuleNoDirection dialect "mvel" when
     $keyEvent : KeyEvent() from entry-point "KeyListener"
     $char     : Character( name == "Pacman" )
     $l        : Location( character == $char )
@@ -56,7 +56,7 @@ end
  * Detects a new keypress (release). Creates derived possible Direction and validates it.
  * If the Direction is valid, delete the old Direction and replace with the new one.
  */
-rule keyListenerRule dialect "mvel" when
+rule KeyListenerRule dialect "mvel" when
     $keyEvent : KeyEvent() from entry-point "KeyListener"
     $char     : Character( name == "Pacman" )
     $l        : Location( character == $char )
@@ -74,7 +74,7 @@ end
 /**
  * This rule is needed to stop events building up, so if they don't match and fire, retract anyway
  */
-rule keyListenerRuleRetractEvent dialect "mvel" salience -5 when
+rule KeyListenerRuleRetractEvent dialect "mvel" salience -5 when
     $keyEvent : KeyEvent() from entry-point "KeyListener"
 then
     retract( $keyEvent );
