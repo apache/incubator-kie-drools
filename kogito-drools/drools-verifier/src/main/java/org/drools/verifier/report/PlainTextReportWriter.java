@@ -17,7 +17,6 @@ public class PlainTextReportWriter
     implements
     VerifierReportWriter {
 
-    @Override
     public void writeReport(OutputStream out,
                             VerifierReport result) throws IOException {
 

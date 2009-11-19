@@ -20,7 +20,6 @@ public class XMLReportWriter
     implements
     VerifierReportWriter {
 
-    @Override
     public void writeReport(OutputStream out,
                             VerifierReport result) throws IOException {
         XStream xstream = new XStream();
