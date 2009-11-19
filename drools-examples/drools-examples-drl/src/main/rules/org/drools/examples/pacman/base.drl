@@ -39,7 +39,7 @@ rule ValidDirection dialect "mvel" when
     not ScheduledLocationUpdate( location == $l )    
      $t : Tick()  
 then
-    insert( new ScheduledLocationUpdate($l, $l.row += $d.vertical, $l.col += $d.horizontal, $t.tock + $l.character.speed ) );
+    insert( new ScheduledLocationUpdate($l.character, $l, $l.row += $d.vertical, $l.col += $d.horizontal, $t.tock + $l.character.speed ) );
 end
 
 /**
