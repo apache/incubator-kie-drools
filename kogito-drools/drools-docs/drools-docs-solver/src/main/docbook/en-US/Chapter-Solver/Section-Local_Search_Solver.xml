@@ -664,7 +664,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       <para>or</para>
 
       <programlisting>    &lt;termination&gt;
-        &lt;maximumHouresSpend&gt;1&lt;/maximumHouresSpend&gt;
+        &lt;maximumHoursSpend&gt;1&lt;/maximumHoursSpend&gt;
     &lt;/termination&gt;</programlisting>
 
       <para>Note that the time taken by a <literal>StartingSolutionInitializer</literal> also is taken into account by
