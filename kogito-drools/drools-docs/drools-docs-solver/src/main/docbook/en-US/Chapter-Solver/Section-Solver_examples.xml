@@ -719,7 +719,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>7</entry>
 
-              <entry>1.11000574474221096210367623e+1052</entry>
+              <entry>10^1564</entry>
 
               <entry>?</entry>
 
@@ -737,7 +737,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>49</entry>
 
-              <entry>2.86903028422562597982749122e+5761</entry>
+              <entry>10^2864</entry>
 
               <entry>?</entry>
 
@@ -755,7 +755,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>48</entry>
 
-              <entry>5.74648299136737635070728795e+5132</entry>
+              <entry>10^3023</entry>
 
               <entry>?</entry>
 
@@ -773,7 +773,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>1</entry>
 
-              <entry>1.44349601026818742275741580e+51</entry>
+              <entry>10^360</entry>
 
               <entry>?</entry>
 
@@ -791,7 +791,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>3</entry>
 
-              <entry></entry>
+              <entry>10^2138</entry>
 
               <entry>?</entry>
 
@@ -809,7 +809,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>8</entry>
 
-              <entry></entry>
+              <entry>10^509</entry>
 
               <entry>?</entry>
 
@@ -827,7 +827,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>28</entry>
 
-              <entry></entry>
+              <entry>10^3671</entry>
 
               <entry>?</entry>
 
@@ -845,7 +845,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>8</entry>
 
-              <entry></entry>
+              <entry>10^1678</entry>
 
               <entry>?</entry>
 
@@ -863,7 +863,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>r</entry>
 
-              <entry>(t ^ p) ^ r</entry>
+              <entry>(p * r) ^ e</entry>
 
               <entry>?</entry>
 
@@ -894,8 +894,8 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
       <para>Notice that we've split up the exam concept into an <literal>Exam</literal> class and a
       <literal>Topic</literal> class. The <literal>Exam</literal> instances change during solving, when they get another
-      period or room. The <literal>Topic</literal>, <literal>Period</literal> and <literal>Room</literal> instances
-      never change during solving.</para>
+      period or room property. The <literal>Topic</literal>, <literal>Period</literal> and <literal>Room</literal>
+      instances never change during solving.</para>
     </section>
   </section>
 
@@ -993,7 +993,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       </listitem>
     </itemizedlist>
 
-    <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this
-    webpage</link> and the test data comes from real world hospitals.</para>
+    <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this webpage</link> and the
+    test data comes from real world hospitals.</para>
   </section>
 </section>
