@@ -1,14 +1,8 @@
 package org.drools.guvnor.client.modeldriven.testing;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+
+import java.util.*;
 
 /**
  * This represents a test scenario.
@@ -143,6 +137,22 @@ public class Scenario
 
         Collections.reverse( fixtures );
     }
+    	/**
+	 *
+	 * @return A mapping of variable names to their fact type.
+	 */
+	public Map getFactTypes() {
+		Map m = new HashMap();
+        int p = this.fixtures.size();
+        for ( int i = 0; i < p; i++ ) {
+            Fixture f = (Fixture) fixtures.get( i );
+            if ( f instanceof FactData ) {
+                FactData fd = (FactData) f;
+                m.put( fd.name,fd );
+            }
+        }
+		return m;
+	}
 
     /**
      *
