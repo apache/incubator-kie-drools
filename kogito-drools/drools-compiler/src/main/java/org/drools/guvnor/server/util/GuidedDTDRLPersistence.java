@@ -85,6 +85,7 @@ public class GuidedDTDRLPersistence {
 						a = new LabelledAction();
 						a.boundName  = ac.boundName;
 						ActionInsertFact ins = new ActionInsertFact(ac.factType);
+						ins.setBoundName( ac.boundName );
 						a.action = ins;
 						actions.add(a);
 					}
