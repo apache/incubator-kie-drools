@@ -801,15 +801,11 @@ end
 
         <para>The code to run this is simple:</para>
 
-        <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-dtconf.setInputType( DecisionTableInputType.XLS );
-dtconf.setWorksheetName( "Tables_2" );
-kbuilder.add( ResourceFactory.newInputStreamResource( getSpreadsheetStream() ),
-              ResourceType.DTABLE,
-              dtconf );
-
-Collection&lt;KnowlegePackage&gt; kpkg = kbuilder.getKnowlegePackages();
+        <programlisting>//first we compile the spreadsheet with the template
+//to create a whole lot of rules.
+final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+//the data we are interested in starts at row 2, column 2 (e.g. B2)
+final String drl = converter.compile(getSpreadsheetStream(), getRulesStream(), 2, 2);
 </programlisting>
 
         <para>We create an ExternalSpreadsheetCompiler object and use it to
