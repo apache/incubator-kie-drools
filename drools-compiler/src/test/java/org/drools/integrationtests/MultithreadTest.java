@@ -19,14 +19,17 @@
 package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
+import org.drools.Cheese;
 import org.drools.Child;
 import org.drools.GrandParent;
 import org.drools.Order;
@@ -34,7 +37,12 @@ import org.drools.Parent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.StatelessSession;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.Package;
 
 /**
  * This is a test case for multi-thred issues
@@ -69,7 +77,7 @@ public class MultithreadTest extends TestCase {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultithreadRulebaseSharing.drl" ) ) );
             RuleBase ruleBase = RuleBaseFactory.newRuleBase();
             ruleBase.addPackage( builder.getPackage() );
-            ruleBase    = SerializationHelper.serializeObject(ruleBase);
+            ruleBase = SerializationHelper.serializeObject( ruleBase );
             final Thread[] t = new Thread[THREAD_COUNT];
             final RulebaseRunner[] r = new RulebaseRunner[THREAD_COUNT];
             for ( int i = 0; i < t.length; i++ ) {
@@ -202,7 +210,7 @@ public class MultithreadTest extends TestCase {
                         errorList.isEmpty() );
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "No exception should have been raised: "+e.getMessage());
+            fail( "No exception should have been raised: " + e.getMessage() );
         }
     }
 
@@ -214,45 +222,163 @@ public class MultithreadTest extends TestCase {
             final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
             ruleBase.addPackage( packageBuilder.getPackage() );
             final Vector errors = new Vector();
-            
+
             final Thread t[] = new Thread[THREAD_COUNT];
-            for(int j=0;j<10;j++)
-            {
-                for (int i = 0; i < t.length; i++) {
+            for ( int j = 0; j < 10; j++ ) {
+                for ( int i = 0; i < t.length; i++ ) {
                     t[i] = new Thread() {
                         public void run() {
                             try {
                                 final int ITERATIONS = 300;
                                 StatefulSession session = ruleBase.newStatefulSession();
                                 List results = new ArrayList();
-                                session.setGlobal( "results", results );
-                                for( int k = 0; k < ITERATIONS; k++ ) {
+                                session.setGlobal( "results",
+                                                   results );
+                                for ( int k = 0; k < ITERATIONS; k++ ) {
                                     session.insert( new Order() );
                                 }
                                 session.fireAllRules();
                                 session.dispose();
-                                if( results.size() != ITERATIONS ) {
-                                    errors.add( "Rules did not fired correctly. Expected: "+ITERATIONS+". Actual: "+results.size() );
+                                if ( results.size() != ITERATIONS ) {
+                                    errors.add( "Rules did not fired correctly. Expected: " + ITERATIONS + ". Actual: " + results.size() );
                                 }
-                            } catch( Exception ex ) {
+                            } catch ( Exception ex ) {
                                 ex.printStackTrace();
                                 errors.add( ex );
                             }
                         }
-                        
+
                     };
                     t[i].start();
                 }
-                for (int i = 0; i < t.length; i++) {
+                for ( int i = 0; i < t.length; i++ ) {
                     t[i].join();
                 }
             }
-            if( !errors.isEmpty() ) {
-                fail(" Errors occured during execution ");
+            if ( !errors.isEmpty() ) {
+                fail( " Errors occured during execution " );
             }
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "Should not raise exception" );
         }
     }
+
+    class Runner
+        implements
+        Runnable {
+        private final long             TIME_SPAN;
+        private final StatelessSession session;
+        private final AtomicInteger    count;
+
+        public Runner(long BASE_TIME,
+                      StatelessSession session,
+                      final AtomicInteger count) {
+            this.TIME_SPAN = BASE_TIME;
+            this.session = session;
+            this.count = count;
+        }
+
+        public void run() {
+            System.out.println( Thread.currentThread().getName() + " starting..." );
+            try {
+                count.incrementAndGet();
+                long time = System.currentTimeMillis();
+                while ( (System.currentTimeMillis() - time) < TIME_SPAN ) {
+                    //System.out.println( Thread.currentThread().getName() + ": added package at " + (System.currentTimeMillis() - time) );
+                    for ( int j = 0; j < 100; j++ ) {
+                        session.execute( getFacts() );
+                    }
+                    //System.out.println( Thread.currentThread().getName() + ": executed rules at " + (System.currentTimeMillis() - time) );
+                }
+            } catch ( Exception ex ) {
+                ex.printStackTrace();
+            }
+            if ( count.decrementAndGet() == 0 ) {
+                synchronized ( MultithreadTest.this ) {
+                    MultithreadTest.this.notifyAll();
+                }
+            }
+            System.out.println( Thread.currentThread().getName() + " exiting..." );
+        }
+
+        private Cheese[] getFacts() {
+            final int SIZE = 100;
+            Cheese[] facts = new Cheese[SIZE];
+
+            for ( int i = 0; i < facts.length; i++ ) {
+                facts[i] = new Cheese();
+                facts[i].setPrice( i );
+                facts[i].setOldPrice( i );
+            }
+            return facts;
+        }
+    }
+
+    public void testSharedPackagesThreadDeadLock() throws Exception {
+        final int THREADS = Integer.parseInt( System.getProperty( "test.threads",
+                                                                  "10" ) );
+        final long BASE_TIME = Integer.parseInt( System.getProperty( "test.time",
+                                                                     "15" ) ) * 1000;
+
+        final AtomicInteger count = new AtomicInteger( 0 );
+
+        final Package[] pkgs = buildPackages();
+        for ( int i = 0; i < THREADS; i++ ) {
+            RuleBase ruleBase = createRuleBase( pkgs );
+            StatelessSession session = createSession( ruleBase );
+            new Thread( new Runner( BASE_TIME,
+                                    session,
+                                    count ) ).start();
+        }
+        synchronized ( this ) {
+            wait();
+        }
+    }
+
+    private RuleBase createRuleBase(Package[] pkgs) {
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        for ( Package pkg : pkgs ) {
+            ruleBase.addPackage( pkg );
+        }
+        return ruleBase;
+    }
+
+    private StatelessSession createSession(RuleBase ruleBase) {
+        StatelessSession session = ruleBase.newStatelessSession();
+        return session;
+    }
+
+    private Package[] buildPackages() throws Exception {
+        final String KEY = "REPLACE";
+        final int SIZE = 100;
+        final Package[] pkgs = new Package[SIZE];
+        final String DRL = "package org.drools\n" + "    no-loop true\n" + "    dialect \"java\"\n" + "rule \"" + KEY + "\"\n" + "salience 1\n" + "when\n" + "    $fact:Cheese(price == " + KEY + ", oldPrice not in (11,5))\n" + // thread-lock
+                           "then\n" + "    //$fact.excludeProduct(" + KEY + ", 1, null, null);\n" + "end\n";
+        System.out.print( "Building " + pkgs.length + " packages" );
+        for ( int i = 0; i < pkgs.length; i++ ) {
+            pkgs[i] = getPackage( DRL.replaceAll( KEY,
+                                                  Integer.toString( i ) ) );
+            System.out.print( "." );
+        }
+        System.out.println();
+        return pkgs;
+    }
+
+    private static Package getPackage(String drl) throws Exception {
+        PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackageFromDrl( new StringReader( drl ) );
+        if ( pkgBuilder.hasErrors() ) {
+            StringBuilder sb = new StringBuilder();
+            for ( Object obj : pkgBuilder.getErrors() ) {
+                if ( sb.length() > 0 ) {
+                    sb.append( '\n' );
+                }
+                sb.append( obj );
+            }
+            throw new DroolsParserException( sb.toString() );
+        }
+        return pkgBuilder.getPackage();
+    }
+
 }
