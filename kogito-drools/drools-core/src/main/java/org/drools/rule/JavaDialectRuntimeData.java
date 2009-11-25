@@ -448,9 +448,9 @@ public class JavaDialectRuntimeData
             return cls;
         }
 
-        public synchronized Class loadClass(final String name,
+        public Class<?> loadClass(final String name,
                                             final boolean resolve) throws ClassNotFoundException {
-            Class cls = fastFindClass( name );
+            Class<?> cls = fastFindClass( name );
 
             if ( cls == null ) {
                 final ClassLoader parent = getParent();
@@ -468,7 +468,7 @@ public class JavaDialectRuntimeData
             return cls;
         }
 
-        protected Class findClass(final String name) throws ClassNotFoundException {
+        protected Class<?> findClass(final String name) throws ClassNotFoundException {
             return fastFindClass( name );
         }
 
