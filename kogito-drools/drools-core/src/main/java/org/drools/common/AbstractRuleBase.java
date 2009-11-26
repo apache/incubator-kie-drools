@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,16 +100,13 @@ abstract public class AbstractRuleBase
 
     private transient ObjectHashSet                    statefulSessions;
 
-    // indexed used to track invariant lock
-    private int                                        lastAquiredLock;
-
     // lock for entire rulebase, used for dynamic updates
     private final ReentrantReadWriteLock               lock                         = new ReentrantReadWriteLock();
 
     /**
      * This lock is used when adding to, or reading the <field>statefulSessions</field>
      */
-    private final ReentrantLock                        statefuleSessionLock         = new ReentrantLock();
+    private final ReentrantLock                        statefulSessionLock          = new ReentrantLock();
 
     private int                                        additionsSinceLock;
     private int                                        removalsSinceLock;
@@ -132,7 +128,7 @@ abstract public class AbstractRuleBase
     public synchronized int nextWorkingMemoryCounter() {
         return this.workingMemoryCounter++;
     }
-    
+
     public synchronized long getWorkingMemoryCounter() {
         return this.workingMemoryCounter;
     }
@@ -145,7 +141,7 @@ abstract public class AbstractRuleBase
     public AbstractRuleBase(final String id,
                             final RuleBaseConfiguration config,
                             final FactHandleFactory factHandleFactory) {
-        
+
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
         createRulebaseId( id );
@@ -168,15 +164,15 @@ abstract public class AbstractRuleBase
     }
 
     private void createRulebaseId(final String id) {
-        if( id != null ) {
+        if ( id != null ) {
             this.id = id;
         } else {
-            String key = ""; 
-            if( config.isMBeansEnabled() ) {
+            String key = "";
+            if ( config.isMBeansEnabled() ) {
                 DroolsManagementAgent agent = DroolsManagementAgent.getInstance();
                 key = String.valueOf( agent.getNextKnowledgeBaseId() );
             }
-            this.id = "default"+key;
+            this.id = "default" + key;
         }
     }
 
@@ -358,15 +354,15 @@ abstract public class AbstractRuleBase
     }
 
     public void disposeStatefulSession(final StatefulSession statefulSession) {
-        try {
-            statefuleSessionLock.lock();
+        statefulSessionLock.lock();
 
+        try {
             this.statefulSessions.remove( statefulSession );
             for ( Object listener : statefulSession.getRuleBaseUpdateListeners() ) {
                 this.removeEventListener( (RuleBaseEventListener) listener );
             }
         } finally {
-            statefuleSessionLock.unlock();
+            statefulSessionLock.unlock();
         }
     }
 
@@ -428,11 +424,11 @@ abstract public class AbstractRuleBase
         this.lock.writeLock().unlock();
         this.eventSupport.fireAfterRuleBaseUnlocked();
     }
-    
+
     public void readLock() {
         this.lock.readLock().lock();
     }
-    
+
     public void readUnlock() {
         this.lock.readLock().unlock();
     }
@@ -788,12 +784,12 @@ abstract public class AbstractRuleBase
     }
 
     public void addStatefulSession(final StatefulSession statefulSession) {
-        try {
-            statefuleSessionLock.lock();
+        statefulSessionLock.lock();
 
+        try {
             this.statefulSessions.add( statefulSession );
         } finally {
-            statefuleSessionLock.unlock();
+            statefulSessionLock.unlock();
         }
 
     }
@@ -803,31 +799,25 @@ abstract public class AbstractRuleBase
     }
 
     public StatefulSession[] getStatefulSessions() {
-        final StatefulSession[] copyOfSessions;
+        statefulSessionLock.lock();
         try {
-            statefuleSessionLock.lock();
-            copyOfSessions = new StatefulSession[this.statefulSessions.size()];
-
+            final StatefulSession[] copyOfSessions = new StatefulSession[this.statefulSessions.size()];
             this.statefulSessions.toArray( copyOfSessions );
+            return copyOfSessions;
         } finally {
-            statefuleSessionLock.unlock();
+            statefulSessionLock.unlock();
         }
-
-        return copyOfSessions;
     }
 
     public InternalWorkingMemory[] getWorkingMemories() {
-        final InternalWorkingMemory[] copyOfMemories;
+        statefulSessionLock.lock();
         try {
-            statefuleSessionLock.lock();
-            copyOfMemories = new InternalWorkingMemory[this.statefulSessions.size()];
-
+            final InternalWorkingMemory[] copyOfMemories = new InternalWorkingMemory[this.statefulSessions.size()];
             this.statefulSessions.toArray( copyOfMemories );
+            return copyOfMemories;
         } finally {
-            statefuleSessionLock.unlock();
+            statefulSessionLock.unlock();
         }
-
-        return copyOfMemories;
     }
 
     public RuleBaseConfiguration getConfiguration() {

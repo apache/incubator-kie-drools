@@ -106,35 +106,33 @@ import org.xml.sax.SAXException;
  */
 public class PackageBuilder {
 
-    //private DialectRegistry              dialectRegistry;
+    private Map<String, PackageRegistry>      pkgRegistryMap;
 
-    private Map<String, PackageRegistry>  pkgRegistryMap;
+    private List<DroolsError>                 results;
 
-    private List<DroolsError>             results;
+    private final PackageBuilderConfiguration configuration;
 
-    private PackageBuilderConfiguration   configuration;
-
-    public static final RuleBuilder       ruleBuilder = new RuleBuilder();
+    public static final RuleBuilder           ruleBuilder = new RuleBuilder();
 
     /**
      * Optional RuleBase for incremental live building
      */
-    private ReteooRuleBase                ruleBase;
+    private ReteooRuleBase                    ruleBase;
 
     /**
      * default dialect
      */
-    private final String                  defaultDialect;
+    private final String                      defaultDialect;
 
-    private CompositeClassLoader          rootClassLoader;
+    private CompositeClassLoader              rootClassLoader;
 
-    private Map<String, Class< ? >>       globals;
+    private Map<String, Class< ? >>           globals;
 
-    private Resource                      resource;
+    private Resource                          resource;
 
-    private List<DSLTokenizedMappingFile> dslFiles;
+    private List<DSLTokenizedMappingFile>     dslFiles;
 
-    private TimeIntervalParser            timeParser;
+    private TimeIntervalParser                timeParser;
 
     /**
      * Use this when package is starting from scratch.
@@ -173,60 +171,20 @@ public class PackageBuilder {
               configuration );
     }
 
-    //    /**
-    //     * This allows you to pass in a pre existing package, and a configuration
-    //     * (for instance to set the classloader).
-    //     * 
-    //     * @param pkg
-    //     *            A pre existing package (can be null if none exists)
-    //     * @param configuration
-    //     *            Optional configuration for this builder.
-    //     */
-    //    public PackageBuilder(final Package pkg,
-    //                          PackageBuilderConfiguration configuration) {
-    //        if ( configuration == null ) {
-    //            configuration = new PackageBuilderConfiguration();
-    //        }
-    //
-    //        this.configuration = configuration;
-    //        this.results = new ArrayList();
-    //        this.pkg = pkg;
-    //        this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
-    //
-    //        if ( this.pkg != null ) {
-    //            ClassLoader cl = this.pkg.getDialectRuntimeRegistry().getClassLoader();
-    //            this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ),
-    //                                                       cl );
-    //            // make an automatic import for the current package
-    //            this.typeResolver.addImport( this.pkg.getName() + ".*" );
-    //        } else {
-    //            // this.typeResolver = new ClassTypeResolver( new HashSet<String>(),
-    //            // this.configuration.getClassLoader() );
-    //        }
-    //
-    //        this.dialectRegistry = this.configuration.buildDialectRegistry();
-    //
-    //        this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
-    //
-    //        if ( this.pkg != null ) {
-    //            this.dialectRegistry.initAll( this );
-    //        }
-    //
-    //    }
-
     public PackageBuilder(Package pkg,
                           PackageBuilderConfiguration configuration) {
         if ( configuration == null ) {
-            configuration = new PackageBuilderConfiguration();
+            this.configuration = new PackageBuilderConfiguration();
+        } else {
+            this.configuration = configuration;
         }
-        this.configuration = configuration;
 
         this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
-        this.results = new ArrayList();
+        this.results = new ArrayList<DroolsError>();
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
                                                            pkg );
@@ -240,9 +198,10 @@ public class PackageBuilder {
     public PackageBuilder(RuleBase ruleBase,
                           PackageBuilderConfiguration configuration) {
         if ( configuration == null ) {
-            configuration = new PackageBuilderConfiguration();
+            this.configuration = new PackageBuilderConfiguration();
+        } else {
+            this.configuration = configuration;
         }
-        this.configuration = configuration;
 
         if ( ruleBase != null ) {
             this.rootClassLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
@@ -255,7 +214,7 @@ public class PackageBuilder {
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
-        this.results = new ArrayList();
+        this.results = new ArrayList<DroolsError>();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
@@ -522,11 +481,11 @@ public class PackageBuilder {
                 } else {
                     reader.setClassLoader( this.configuration.getClassLoader() );
                 }
-                ChangeSet chageSet = reader.read( resource.getReader() );
-                if ( chageSet == null ) {
+                ChangeSet changeSet = reader.read( resource.getReader() );
+                if ( changeSet == null ) {
                     // @TODO should log an error
                 }
-                for ( Resource nestedResource : chageSet.getResourcesAdded() ) {
+                for ( Resource nestedResource : changeSet.getResourcesAdded() ) {
                     InternalResource iNestedResourceResource = (InternalResource) nestedResource;
                     if ( iNestedResourceResource.isDirectory() ) {
                         this.resourceDirectories.add( iNestedResourceResource );
@@ -1267,7 +1226,7 @@ public class PackageBuilder {
      * compiling phase
      */
     public boolean hasErrors() {
-        return this.results.size() > 0;
+        return !this.results.isEmpty();
     }
 
     /**
@@ -1275,7 +1234,7 @@ public class PackageBuilder {
      *         the package.
      */
     public PackageBuilderErrors getErrors() {
-        return new PackageBuilderErrors( (DroolsError[]) this.results.toArray( new DroolsError[this.results.size()] ) );
+        return new PackageBuilderErrors( this.results.toArray( new DroolsError[this.results.size()] ) );
     }
 
     /**

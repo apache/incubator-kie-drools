@@ -109,6 +109,7 @@ public class EntryPointNode extends ObjectSource
     // Instance methods
     // ------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -182,8 +183,6 @@ public class EntryPointNode extends ObjectSource
                               final PropagationContext context,
                               final ObjectTypeConf objectTypeConf,
                               final InternalWorkingMemory workingMemory) {
-        final Object object = handle.getObject();
-
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {

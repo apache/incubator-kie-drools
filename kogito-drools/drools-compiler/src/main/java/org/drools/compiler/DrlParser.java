@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRInputStream;
@@ -49,12 +48,12 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
  */
 public class DrlParser {
 
-    private static final String  GENERIC_ERROR_MESSAGE = "Unknown error while parsing. This is a bug. Please contact the Development team.";
-    private final List           results               = new ArrayList();
-    private List<DroolsSentence> editorSentences       = null;
-    private Location             location              = new Location( Location.LOCATION_UNKNOWN );
-    private DescrBuilderTree     walker                = null;
-    private DRLLexer             lexer                 = null;
+    private static final String     GENERIC_ERROR_MESSAGE = "Unknown error while parsing. This is a bug. Please contact the Development team.";
+    private final List<DroolsError> results               = new ArrayList<DroolsError>();
+    private List<DroolsSentence>    editorSentences       = null;
+    private Location                location              = new Location( Location.LOCATION_UNKNOWN );
+    private DescrBuilderTree        walker                = null;
+    private DRLLexer                lexer                 = null;
 
     public DrlParser() {
     }
@@ -185,8 +184,7 @@ public class DrlParser {
         final String expanded = expander.expand( source );
         if ( expander.hasErrors() ) {
             String err = "";
-            for ( Iterator iter = expander.getErrors().iterator(); iter.hasNext(); ) {
-                ExpanderException ex = (ExpanderException) iter.next();
+            for ( ExpanderException ex : expander.getErrors() ) {
                 err = err + "\n Line:[" + ex.getLine() + "] " + ex.getMessage();
 
             }
@@ -195,12 +193,6 @@ public class DrlParser {
         return expanded;
     }
 
-    private StringBuilder getDRLText(final InputStream is) throws IOException {
-        
-        
-        return null;
-    }
-    
     private StringBuilder getDRLText(final Reader reader) throws IOException {
         final StringBuilder text = new StringBuilder();
 
@@ -219,13 +211,13 @@ public class DrlParser {
      * @return true if there were parser errors.
      */
     public boolean hasErrors() {
-        return this.results.size() > 0;
+        return !this.results.isEmpty();
     }
 
     /**
-     * @return a list of ParserError's.
+     * @return a list of errors found while parsing. DroolsError: either ParserError, or ExpanderException
      */
-    public List getErrors() {
+    public List<DroolsError> getErrors() {
         return this.results;
     }
 
@@ -274,15 +266,13 @@ public class DrlParser {
 
     /** Convert the antlr exceptions to drools parser exceptions */
     private void makeErrorList(final DRLParser parser) {
-        for ( final Iterator iter = lexer.getErrors().iterator(); iter.hasNext(); ) {
-            final DroolsParserException recogErr = (DroolsParserException) iter.next();
+        for ( final DroolsParserException recogErr : lexer.getErrors() ) {
             final ParserError err = new ParserError( recogErr.getMessage(),
                                                      recogErr.getLineNumber(),
                                                      recogErr.getColumn() );
             this.results.add( err );
         }
-        for ( final Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
-            final DroolsParserException recogErr = (DroolsParserException) iter.next();
+        for ( final DroolsParserException recogErr : parser.getErrors() ) {
             final ParserError err = new ParserError( recogErr.getMessage(),
                                                      recogErr.getLineNumber(),
                                                      recogErr.getColumn() );
