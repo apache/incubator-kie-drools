@@ -12,9 +12,13 @@ public class AssignObjectAsResult extends BaseEmitter
         super();
     }
 
+    public void assignResult(PipelineContext context, Object object) {
+        context.setResult(object);
+    }
+
     public void receive(Object object,
                         PipelineContext context) {
-        context.setResult( object );
+        assignResult( context , object);
 
         emit( object,
               context );
