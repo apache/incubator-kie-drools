@@ -103,7 +103,6 @@ public class BuildContext {
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
-        this.rule = rule;
 
         this.idGenerator = idGenerator;
 
@@ -225,7 +224,7 @@ public class BuildContext {
      */
     public InternalWorkingMemory[] getWorkingMemories() {
         if ( this.workingMemories == null ) {
-            this.workingMemories = (InternalWorkingMemory[]) this.rulebase.getWorkingMemories();
+            this.workingMemories = this.rulebase.getWorkingMemories();
         }
         return this.workingMemories;
     }
