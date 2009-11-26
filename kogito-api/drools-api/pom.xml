@@ -48,7 +48,7 @@
 	    </dependency>     
 	    
         <dependency>
-		  <groupId>jms</groupId>
+		  <groupId>javax.jms</groupId>
 		  <artifactId>jms</artifactId>
 		  <version>1.1</version>
           <scope>provided</scope>
