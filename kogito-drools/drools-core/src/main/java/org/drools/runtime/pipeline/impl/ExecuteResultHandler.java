@@ -8,17 +8,18 @@ public class ExecuteResultHandler extends BaseEmitter
     implements
     Action {
 
+    public void handleResult(PipelineContext context, Object object) {
+        context.getResultHandler().handleResult(context.getResult());
+        try {
+            context.getResultHandler().handleResult(context.getResult());
+        } catch (Exception e) {
+            handleException(this, object, e);
+        }
+    }
+
     public void receive(Object object,
                         PipelineContext context) {
-        context.getResultHandler().handleResult( context.getResult() );
-
-        try {
-            context.getResultHandler().handleResult( context.getResult() );
-        } catch ( Exception e ) {
-            handleException( this,
-                             object,
-                             e );
-        }
+        handleResult(context, object);
         emit( object,
               context );
     }

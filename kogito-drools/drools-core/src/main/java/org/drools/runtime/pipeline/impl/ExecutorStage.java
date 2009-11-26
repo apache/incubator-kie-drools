@@ -12,17 +12,21 @@ import org.drools.runtime.pipeline.PipelineContext;
 public class ExecutorStage extends BaseEmitter
     implements
     KnowledgeRuntimeCommand {
-
+    private ExecutionResults result = null;
     public void receive(Object object,
                         PipelineContext context) {
         BasePipelineContext kContext = (BasePipelineContext) context;
+        this.result = execute(object, kContext);
+        emit( result,
+              kContext );
+    }
+    public ExecutionResults execute(Object object, PipelineContext kContext){
+        
         if ( object instanceof Collection ) {
             object = CommandFactory.newBatchExecution( (List<Command>) object );
         }
-        ExecutionResults result = kContext.getCommandExecutor().execute( (Command) object );
-
-        emit( result,
-              kContext );
+         
+        return kContext.getCommandExecutor().execute( (Command) object );
     }
 
 }
