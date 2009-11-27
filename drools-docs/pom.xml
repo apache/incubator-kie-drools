@@ -66,7 +66,7 @@
 
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-docs-solver</artifactId>
+        <artifactId>drools-docs-planner</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -102,7 +102,7 @@
                 <module>drools-docs-flow</module>
                 <module>drools-docs-fusion</module>
                 <module>drools-docs-guvnor</module>
-                <!--module>drools-docs-solver</module-->
+                <!--module>drools-docs-planner</module-->
             </modules>
         </profile>             
         <profile>
@@ -118,7 +118,7 @@
                 <module>drools-docs-flow</module>
                 <module>drools-docs-fusion</module>
                 <module>drools-docs-guvnor</module>
-                <module>drools-docs-solver</module>
+                <module>drools-docs-planner</module>
             </modules>
        </profile>        
     </profiles>
