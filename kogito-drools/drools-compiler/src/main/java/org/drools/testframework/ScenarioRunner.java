@@ -10,6 +10,7 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.guvnor.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
 import org.drools.guvnor.client.modeldriven.testing.Expectation;
 import org.drools.guvnor.client.modeldriven.testing.FactData;
@@ -145,7 +146,9 @@ public class ScenarioRunner {
 				RetractFact f = (RetractFact)fx;
 				this.workingMemory.retract(this.factHandles.get(f.name));
 				this.populatedData.remove(f.name);
-			} else if (fx instanceof ExecutionTrace) {
+			} else if ( fx instanceof ActivateRuleFlowGroup ) {
+                workingMemory.getAgenda().activateRuleFlowGroup( ((ActivateRuleFlowGroup) fx).name );
+            } else if ( fx instanceof ExecutionTrace ) {
                 doPopulate(toPopulate);
 				ExecutionTrace executionTrace = (ExecutionTrace)fx;
 				//create the listener to trace rules

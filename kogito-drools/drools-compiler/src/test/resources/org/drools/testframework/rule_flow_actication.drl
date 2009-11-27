@@ -1,0 +1,19 @@
+package foo.bar
+
+
+declare Coolness
+  num: int
+  name: String
+end
+
+rule "rule1"
+	ruleflow-group "asdf"
+	when
+		c: Coolness(num == 42)
+	then
+		System.out.println("it worked");
+end
+
+
+
+
