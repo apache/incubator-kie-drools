@@ -128,9 +128,9 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
 [INFO]   Drools :: Guvnor
 [INFO]   Drools :: Microcontainer
 [INFO]   Drools :: Clips
-[INFO]   Drools :: Solver parent
-[INFO]   Drools :: Solver core
-[INFO]   Drools :: Solver examples
+[INFO]   Drools :: Planner parent
+[INFO]   Drools :: Planner core
+[INFO]   Drools :: Planner examples
 [INFO] Searching repository for plugin with prefix: 'assembly'.
 WAGON_VERSION: 1.0-beta-2
 [INFO] ------------------------------------------------------------------------
@@ -186,9 +186,9 @@ WAGON_VERSION: 1.0-beta-2
 [INFO] Drools :: Guvnor ...................................... SUCCESS [19.850s]
 [INFO] Drools :: Microcontainer .............................. SUCCESS [0.676s]
 [INFO] Drools :: Clips ....................................... SUCCESS [1.464s]
-[INFO] Drools :: Solver parent ............................... SUCCESS [0.527s]
-[INFO] Drools :: Solver core ................................. SUCCESS [2.209s]
-[INFO] Drools :: Solver examples ............................. SUCCESS [4.689s]
+[INFO] Drools :: Planner parent .............................. SUCCESS [0.527s]
+[INFO] Drools :: Planner core ................................ SUCCESS [2.209s]
+[INFO] Drools :: Planner examples ............................ SUCCESS [4.689s]
 [INFO] ------------------------------------------------------------------------
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESSFUL
