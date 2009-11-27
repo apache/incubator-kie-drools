@@ -19,10 +19,12 @@ import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.guvnor.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
 import org.drools.guvnor.client.modeldriven.testing.Expectation;
 import org.drools.guvnor.client.modeldriven.testing.FactData;
 import org.drools.guvnor.client.modeldriven.testing.FieldData;
+import org.drools.guvnor.client.modeldriven.testing.Fixture;
 import org.drools.guvnor.client.modeldriven.testing.RetractFact;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
 import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
@@ -33,19 +35,19 @@ import org.drools.rule.TimeMachine;
 import org.mvel2.MVEL;
 
 public class ScenarioRunnerTest extends RuleUnit {
-	
+
     static {
         try {
-			Class.forName( "org.drools.base.mvel.MVELCompilationUnit" );
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-    }   	
+            Class.forName( "org.drools.base.mvel.MVELCompilationUnit" );
+        } catch ( ClassNotFoundException e ) {
+            e.printStackTrace();
+        }
+    }
 
-	public void setUp() {
-		//needed when running stand alone to make sure the converters get loaded.
-		DroolsMVELFactory d = new DroolsMVELFactory();
-	}
+    public void setUp() {
+        //needed when running stand alone to make sure the converters get loaded.
+        DroolsMVELFactory d = new DroolsMVELFactory();
+    }
 
     public void testPopulateFactsWithInterfaces() throws Exception {
         Scenario sc = new Scenario();
@@ -54,10 +56,10 @@ public class ScenarioRunnerTest extends RuleUnit {
                                        new ArrayList(),
                                        false ) );
 
-       List globals = ls( new FactData( "List",
-                                       "ls",
-                                       new ArrayList(),
-                                       false ) );
+        List globals = ls( new FactData( "List",
+                                         "ls",
+                                         new ArrayList(),
+                                         false ) );
         sc.fixtures.addAll( facts );
         sc.globals.addAll( globals );
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
@@ -67,7 +69,6 @@ public class ScenarioRunnerTest extends RuleUnit {
         ScenarioRunner runner = new ScenarioRunner( sc,
                                                     resolver,
                                                     new MockWorkingMemory() );
-
 
     }
 
@@ -143,8 +144,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( runner.populatedData.containsKey( "c1" ) );
         assertTrue( runner.populatedData.containsKey( "p1" ) );
 
-        OuterFact o = (OuterFact) runner.populatedData.get("p1");
-        assertNotNull(o.getInnerFact());
+        OuterFact o = (OuterFact) runner.populatedData.get( "p1" );
+        assertNotNull( o.getInnerFact() );
 
     }
 
@@ -181,16 +182,17 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( runner.populatedData.containsKey( "c1" ) );
         assertTrue( runner.populatedData.containsKey( "p1" ) );
 
-        OuterFact o = (OuterFact) runner.populatedData.get("p1");
-        assertNotNull(o.getInnerFact());
+        OuterFact o = (OuterFact) runner.populatedData.get( "p1" );
+        assertNotNull( o.getInnerFact() );
 
     }
-
 
     public void testPopulateEmpty() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
-                                       "c1", new ArrayList(), false));
+                                       "c1",
+                                       new ArrayList(),
+                                       false ) );
         sc.fixtures.addAll( facts );
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
@@ -201,7 +203,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                                     new MockWorkingMemory() );
 
         assertTrue( runner.populatedData.containsKey( "c1" ) );
-        assertTrue(runner.populatedData.get("c1") instanceof Cheese);
+        assertTrue( runner.populatedData.get( "c1" ) instanceof Cheese );
     }
 
     public void testDateField() throws Exception {
@@ -233,8 +235,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( runner.populatedData.containsKey( "c1" ) );
         assertTrue( runner.populatedData.containsKey( "p1" ) );
 
-        Cheese c = (Cheese) runner.populatedData.get("c1");
-        assertNotNull(c.getUsedBy());
+        Cheese c = (Cheese) runner.populatedData.get( "c1" );
+        assertNotNull( c.getUsedBy() );
 
     }
 
@@ -401,47 +403,68 @@ public class ScenarioRunnerTest extends RuleUnit {
     }
 
     public void testVerifyAnonymousFacts() throws Exception {
-    	MockWorkingMemory wm = new MockWorkingMemory();
+        MockWorkingMemory wm = new MockWorkingMemory();
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
-                null,
-                wm );
+                                                    null,
+                                                    wm );
 
         Cheese c = new Cheese();
-        c.setPrice(42);
-        c.setType("stilton");
+        c.setPrice( 42 );
+        c.setType( "stilton" );
 
-        wm.facts.add(c);
+        wm.facts.add( c );
 
-        VerifyFact vf = new VerifyFact("Cheese", new ArrayList(), true);
-        vf.fieldValues.add(new VerifyField("price", "42", "=="));
-        vf.fieldValues.add(new VerifyField("type", "stilton", "=="));
+        VerifyFact vf = new VerifyFact( "Cheese",
+                                        new ArrayList(),
+                                        true );
+        vf.fieldValues.add( new VerifyField( "price",
+                                             "42",
+                                             "==" ) );
+        vf.fieldValues.add( new VerifyField( "type",
+                                             "stilton",
+                                             "==" ) );
 
-        runner.verify(vf);
+        runner.verify( vf );
 
-        assertTrue(vf.wasSuccessful());
+        assertTrue( vf.wasSuccessful() );
 
-        vf = new VerifyFact("Person", new ArrayList(), true);
-        vf.fieldValues.add(new VerifyField("age", "42", "=="));
+        vf = new VerifyFact( "Person",
+                             new ArrayList(),
+                             true );
+        vf.fieldValues.add( new VerifyField( "age",
+                                             "42",
+                                             "==" ) );
 
-        runner.verify(vf);
+        runner.verify( vf );
 
-        assertFalse(vf.wasSuccessful());
+        assertFalse( vf.wasSuccessful() );
 
-        vf = new VerifyFact("Cheese", new ArrayList(), true);
-        vf.fieldValues.add(new VerifyField("price", "43", "=="));
-        vf.fieldValues.add(new VerifyField("type", "stilton", "=="));
+        vf = new VerifyFact( "Cheese",
+                             new ArrayList(),
+                             true );
+        vf.fieldValues.add( new VerifyField( "price",
+                                             "43",
+                                             "==" ) );
+        vf.fieldValues.add( new VerifyField( "type",
+                                             "stilton",
+                                             "==" ) );
 
-        runner.verify(vf);
-        assertFalse(vf.wasSuccessful());
-        assertEquals(Boolean.FALSE, ((VerifyField)vf.fieldValues.get(0)).successResult);
+        runner.verify( vf );
+        assertFalse( vf.wasSuccessful() );
+        assertEquals( Boolean.FALSE,
+                      ((VerifyField) vf.fieldValues.get( 0 )).successResult );
 
+        vf = new VerifyFact( "Cell",
+                             new ArrayList(),
+                             true );
+        vf.fieldValues.add( new VerifyField( "value",
+                                             "43",
+                                             "==" ) );
 
-        vf = new VerifyFact("Cell", new ArrayList(), true);
-        vf.fieldValues.add(new VerifyField("value", "43", "=="));
-
-        runner.verify(vf);
-        assertFalse(vf.wasSuccessful());
-        assertEquals(Boolean.FALSE, ((VerifyField)vf.fieldValues.get(0)).successResult);
+        runner.verify( vf );
+        assertFalse( vf.wasSuccessful() );
+        assertEquals( Boolean.FALSE,
+                      ((VerifyField) vf.fieldValues.get( 0 )).successResult );
 
     }
 
@@ -694,7 +717,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                       c2.getType() );
 
     }
-    
+
     /**
      * Check if global list is empty.
      */
@@ -922,16 +945,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         Thread.sleep( 50 );
 
-
-
         assertTrue( (new Date()).after( sc.lastRunResult ) );
         assertTrue( executionTrace.executionTimeResult != null );
 
-        assertTrue(executionTrace.rulesFired.length > 0);
+        assertTrue( executionTrace.rulesFired.length > 0 );
 
     }
-    
-    
+
     public void testIntegrationInfiniteLoop() throws Exception {
 
         Scenario sc = new Scenario();
@@ -1001,7 +1021,6 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         assertEquals( sc.maxRuleFirings,
                       executionTrace.numberOfRulesFired.intValue() );
-        
 
     }
 
@@ -1033,28 +1052,26 @@ public class ScenarioRunnerTest extends RuleUnit {
 
                                         ) );
 
-
-
         assertions[1] = new VerifyRuleFired( "rule1",
                                              1,
                                              null );
 
         sc.fixtures.addAll( Arrays.asList( assertions ) );
 
-        WorkingMemory wm = getWorkingMemory( "test_rules3.drl" );        
+        WorkingMemory wm = getWorkingMemory( "test_rules3.drl" );
         ClassLoader cl = ((InternalRuleBase) wm.getRuleBase()).getRootClassLoader();
 
         HashSet<String> imports = new HashSet<String>();
-        imports.add("foo.bar.*");
+        imports.add( "foo.bar.*" );
 
         TypeResolver resolver = new ClassTypeResolver( imports,
                                                        cl );
 
-        Class cls = cl.loadClass("foo.bar.Coolness");
-        assertNotNull(cls);
+        Class cls = cl.loadClass( "foo.bar.Coolness" );
+        assertNotNull( cls );
 
         ClassLoader cl_ = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(cl);
+        Thread.currentThread().setContextClassLoader( cl );
 
         //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
         //including whatever CL has the generated beans...
@@ -1070,8 +1087,99 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         assertTrue( sc.wasSuccessful() );
 
-        Thread.currentThread().setContextClassLoader(cl_);
+        Thread.currentThread().setContextClassLoader( cl_ );
 
+    }
+
+    public void testRuleFlowGroupActivation() throws Exception {
+        Scenario sc = new Scenario();
+        Fixture[] given = new Fixture[]{new FactData( "Coolness",
+                                                      "c",
+                                                      ls( new FieldData( "num",
+                                                                         "42" ),
+                                                          new FieldData( "name",
+                                                                         "mic" ) ),
+                                                      false )
+
+        };
+        sc.fixtures.addAll( Arrays.asList( given ) );
+
+        ExecutionTrace executionTrace = new ExecutionTrace();
+
+        sc.rules.add( "rule1" );
+        sc.inclusive = true;
+        sc.fixtures.add( executionTrace );
+
+        Expectation[] assertions = new Expectation[2];
+
+        assertions[0] = new VerifyFact( "c",
+                                        ls( new VerifyField( "num",
+                                                             "42",
+                                                             "==" ) ) );
+
+        assertions[1] = new VerifyRuleFired( "rule1",
+                                             1,
+                                             null );
+
+        sc.fixtures.addAll( Arrays.asList( assertions ) );
+
+        WorkingMemory wm = getWorkingMemory( "rule_flow_actication.drl" );
+        ClassLoader cl = ((InternalRuleBase) wm.getRuleBase()).getRootClassLoader();
+
+        HashSet<String> imports = new HashSet<String>();
+        imports.add( "foo.bar.*" );
+
+        TypeResolver resolver = new ClassTypeResolver( imports,
+                                                       cl );
+
+        Class cls = cl.loadClass( "foo.bar.Coolness" );
+        assertNotNull( cls );
+
+        ClassLoader cl_ = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader( cl );
+
+        //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
+        //including whatever CL has the generated beans...
+        ScenarioRunner run = new ScenarioRunner( sc,
+                                                 resolver,
+                                                 (InternalWorkingMemory) wm );
+
+        assertEquals( 0,
+                      executionTrace.numberOfRulesFired.intValue() );
+
+        assertSame( run.scenario,
+                    sc );
+
+        assertFalse( sc.wasSuccessful() );
+
+
+        // Activate rule flow
+        sc.fixtures.clear();
+        given = new Fixture[]{new FactData( "Coolness",
+                                            "c",
+                                            ls( new FieldData( "num",
+                                                               "42" ),
+                                                new FieldData( "name",
+                                                               "mic" ) ),
+                                            false ), new ActivateRuleFlowGroup( "asdf" )
+
+        };
+        wm.clearAgenda();
+        sc.fixtures.addAll( Arrays.asList( given ) );
+        sc.fixtures.add( executionTrace );
+        run = new ScenarioRunner( sc,
+                                  resolver,
+                                  (InternalWorkingMemory) wm );
+
+        assertEquals( 1,
+                      executionTrace.numberOfRulesFired.intValue() );
+
+        assertSame( run.scenario,
+                    sc );
+
+        assertTrue( sc.wasSuccessful() );
+        
+        Thread.currentThread().setContextClassLoader( cl_ );
     }
 
     public void testIntgerationStateful() throws Exception {
@@ -1213,7 +1321,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     public void testIntegrationWithFailure() throws Exception {
         Scenario sc = new Scenario();
-        Expectation[] assertions = populateScenarioForFailure(sc);
+        Expectation[] assertions = populateScenarioForFailure( sc );
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
@@ -1250,20 +1358,21 @@ public class ScenarioRunnerTest extends RuleUnit {
     }
 
     public void testRunAsString() throws Exception {
-    	Scenario sc = new Scenario();
-    	populateScenarioForFailure(sc);
-    	String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
-    	WorkingMemory wm = getWorkingMemory( "test_rules2.drl" );
-    	ScenarioRunner runner = new ScenarioRunner(xml, wm.getRuleBase());
-    	assertFalse(runner.wasSuccess());
+        Scenario sc = new Scenario();
+        populateScenarioForFailure( sc );
+        String xml = ScenarioXMLPersistence.getInstance().marshal( sc );
+        WorkingMemory wm = getWorkingMemory( "test_rules2.drl" );
+        ScenarioRunner runner = new ScenarioRunner( xml,
+                                                    wm.getRuleBase() );
+        assertFalse( runner.wasSuccess() );
 
-    	String failures = runner.getReport();
-    	assertFalse("".equals(failures));
-    	System.err.println(failures);
+        String failures = runner.getReport();
+        assertFalse( "".equals( failures ) );
+        System.err.println( failures );
     }
 
-	private Expectation[] populateScenarioForFailure(Scenario sc) {
-		FactData[] facts = new FactData[]{new FactData( "Cheese",
+    private Expectation[] populateScenarioForFailure(Scenario sc) {
+        FactData[] facts = new FactData[]{new FactData( "Cheese",
                                                         "c1",
                                                         ls( new FieldData( "type",
                                                                            "cheddar" ),
@@ -1314,8 +1423,8 @@ public class ScenarioRunnerTest extends RuleUnit {
                                              null );
 
         sc.fixtures.addAll( Arrays.asList( assertions ) );
-		return assertions;
-	}
+        return assertions;
+    }
 
     private <T> List<T> ls(T... objects) {
         return Arrays.asList( objects );
