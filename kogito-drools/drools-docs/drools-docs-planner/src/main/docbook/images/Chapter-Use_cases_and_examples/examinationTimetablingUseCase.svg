@@ -604,7 +604,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.96875001"
      inkscape:cx="390.16179"
-     inkscape:cy="337.26606"
+     inkscape:cy="335.20154"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -638,7 +638,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -2541,7 +2541,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot6718"
-       style="font-size:24;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        transform="translate(-12.933594,197.35101)"><flowRegion
          id="flowRegion6720"><rect
            id="rect6722"
@@ -2551,7 +2551,7 @@
            y="305.01117"
            style="font-size:24px;text-align:start;text-anchor:start" /></flowRegion><flowPara
          id="flowPara6724">Examination</flowPara><flowPara
-         id="flowPara6730">Timetabling</flowPara></flowRoot>    <text
+         id="flowPara6730">timetabling</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="194.06451"
