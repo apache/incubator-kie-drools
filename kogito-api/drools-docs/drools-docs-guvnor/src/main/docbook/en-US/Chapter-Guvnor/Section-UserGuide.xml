@@ -1813,6 +1813,30 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
   </section>
 
   <section>
+    <title>Inbox and comments</title>
+    <para>
+      Built into the Guvnor are two useful features to helping manage changes: an Inbox, and a comments section. 
+      These features do not affect any execution or access to rules, but are purely for documentation and notification purposes, and are of course always optional to use. 
+    </para>
+    <section>
+      <title>Comments</title>
+      <para>
+	Below the documentation box of each artifact, is a "comments" section - simply, you can add a new comment. Administrators can clear all comments on a given artifact, but other users can only append comments. Each comment records what user made the comment, and when. Users who can't edit artifacts can still comment on them. 
+      </para>
+    </section>
+
+    <section>
+      <title>Inbox</title>
+      <para>
+	In the "browse" section of the application, there is an "Inbox" tree item, below this are 3 inboxes. 
+	"Incoming changes" contains changes to any artifacts that the current logged in user has edited in the past, or commented on. Simply editing or commenting on an artifact registers interest in it to be notified of changes the next time you log in."Recently opened" contains items that have been recently opened (simply opening an artifact will make it appear here, the last 100 recently opened items will appear here). 
+"Recently edited" contains the last 100 recently edited items (artifacts that the current user has made changes to).  
+
+      </para>
+    </section>
+  </section>
+
+  <section>
     <title>Eclipse Guvnor integration</title>
 
     <para>The Eclipse Guvnor tools (EGT) provide the ability to push/pull
