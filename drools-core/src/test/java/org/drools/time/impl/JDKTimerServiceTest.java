@@ -3,10 +3,14 @@ package org.drools.time.impl;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
@@ -50,7 +54,7 @@ public class JDKTimerServiceTest extends TestCase {
 		Thread.sleep( 1000 );
         timeService.shutdown();
 		assertEquals( 4, ctx.getList().size() );
-	}
+	}	
 	
 	public static class HelloWorldJob implements Job {
         public void execute(JobContext c) {
