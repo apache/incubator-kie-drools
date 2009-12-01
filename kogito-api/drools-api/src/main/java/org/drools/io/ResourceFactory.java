@@ -42,7 +42,7 @@ public class ResourceFactory {
      * 
      * @return
      */
-    public static ResourceChangeScanner getResourceChangeScannerService() {
+     public static ResourceChangeScanner getResourceChangeScannerService() {
         return getResourceProvider().getResourceChangeScannerService();
     }
 
