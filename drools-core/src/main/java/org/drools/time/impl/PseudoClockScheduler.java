@@ -163,8 +163,9 @@ public class PseudoClockScheduler
             queue.remove();
             
             // updates the trigger
-            Date date = item.getTrigger().nextFireTime();
-            if ( date != null ) {
+            item.getTrigger().nextFireTime();
+            
+            if ( item.getTrigger().hasNextFireTime() != null ) {
                 // reschedule for the next fire time, if one exists
                 queue.add( item );               
             }
