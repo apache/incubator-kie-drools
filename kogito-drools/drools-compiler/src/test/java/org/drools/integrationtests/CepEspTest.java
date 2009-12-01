@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +36,8 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.conf.EventProcessingOption;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
@@ -44,6 +48,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.drools.util.DroolsStreamUtils;
 
 public class CepEspTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -152,6 +157,70 @@ public class CepEspTest extends TestCase {
 
         assertEquals( 2,
                       ((List) session.getGlobal( "results" )).size() );
+
+    }
+
+    public void testPackageSerializationWithEvents() throws Exception {
+        // read in the source
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) ),
+                      ResourceType.DRL );
+
+        // get the package
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        assertEquals( 1,
+                      pkgs.size() );
+        KnowledgePackage kpkg = pkgs.iterator().next();
+
+        // serialize the package
+        Package internalPkg = ((KnowledgePackageImp)kpkg).pkg; // nasty trick for test purposes
+        byte[] serializedPkg = DroolsStreamUtils.streamOut( internalPkg );
+
+        // recreate the pkg using a new kbuilder
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add( ResourceFactory.newByteArrayResource( serializedPkg ),
+                       ResourceType.PKG );
+        assertFalse( kbuilder2.getErrors().toString(),
+                     kbuilder2.hasErrors() );
+
+        // create the kbase
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+
+        // create the session
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
+                                                                              null );
+
+        final List<StockTick> results = new ArrayList<StockTick>();
+
+        session.setGlobal( "results",
+                           results );
+
+        StockTick tick1 = new StockTick( 1,
+                                         "DROO",
+                                         50,
+                                         10000 );
+        StockTick tick2 = new StockTick( 2,
+                                         "ACME",
+                                         10,
+                                         10010 );
+
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+
+        assertNotNull( handle1 );
+        assertNotNull( handle2 );
+
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( tick2,
+                      results.get( 0 ) );
 
     }
 
@@ -1211,7 +1280,7 @@ public class CepEspTest extends TestCase {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
                                                                                null );
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(ksession);
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
         logger.setFileName( "audit" );
 
         List<Number> timeResults = new ArrayList<Number>();

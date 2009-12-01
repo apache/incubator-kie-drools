@@ -711,7 +711,7 @@ public class PackageBuilder {
                 // add type declarations
                 for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
                     lastType = type;
-                    type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
+                    type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
                 }
             }
         } catch ( ClassNotFoundException e ) {
