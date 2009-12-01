@@ -100,6 +100,19 @@ public class ResourceType implements Serializable {
         return resourceName != null && resourceName.endsWith( "."+defaultExtension );
     }
 
+    public String getDefaultExtension() {
+        return defaultExtension;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
     public String toString() {
         return "ResourceType = '" + this.description + "'";
     }
