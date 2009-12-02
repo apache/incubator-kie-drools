@@ -186,6 +186,33 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		return variableScopeInstance.getVariable(name);
 	}
 	
+	public Map<String, Object> getVariables() {
+        // for disconnected process instances, try going through the variable scope instances
+        // (as the default variable scope cannot be retrieved as the link to the process could
+        // be null and the associated working memory is no longer accessible)
+        if (getWorkingMemory() == null) {
+            List<ContextInstance> variableScopeInstances = 
+                getContextInstances(VariableScope.VARIABLE_SCOPE);
+            if (variableScopeInstances == null) {
+                return null;
+            }
+            Map<String, Object> result = new HashMap<String, Object>();
+            for (ContextInstance contextInstance: variableScopeInstances) {
+                Map<String, Object> variables = 
+                    ((VariableScopeInstance) contextInstance).getVariables();
+                result.putAll(variables);
+            }
+            return result;
+        }
+        // else retrieve the variable scope
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+            getContextInstance(VariableScope.VARIABLE_SCOPE);
+        if (variableScopeInstance == null) {
+            return null;
+        }
+        return variableScopeInstance.getVariables();
+	}
+	
 	public void setVariable(String name, Object value) {
 		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 			getContextInstance(VariableScope.VARIABLE_SCOPE);
