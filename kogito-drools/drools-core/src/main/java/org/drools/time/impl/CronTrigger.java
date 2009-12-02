@@ -18,7 +18,12 @@ public class CronTrigger implements Trigger {
     private Date previousFireTime = null;
     private transient TimeZone timeZone = null;   
     
+    
     public CronTrigger(long timestamp, Date startTime, Date endTime, String cronExpression) {
+        this( timestamp, startTime, endTime, determineCronExpression( cronExpression ));
+    }
+    
+    public CronTrigger(long timestamp, Date startTime, Date endTime, CronExpression cronExpression) {
         setCronExpression(cronExpression);
 
         if (startTime == null) {
@@ -30,7 +35,7 @@ public class CronTrigger implements Trigger {
         }
         setTimeZone(TimeZone.getDefault());        
         
-        this.nextFireTime = getFireTimeAfter(new Date(getStartTime().getTime() - 1000l));
+        this.nextFireTime = getFireTimeAfter(new Date(getStartTime().getTime() - 1000l));        
     }
     
     public Date getStartTime() {
@@ -172,14 +177,22 @@ public class CronTrigger implements Trigger {
     }
     
     public void setCronExpression(String cronExpression) {
-        try {
+        setCronExpression( determineCronExpression(cronExpression) );
+    }    
+    
+    public void setCronExpression(CronExpression cronExpression) {
         TimeZone origTz = getTimeZone();
-        this.cronEx = new CronExpression(cronExpression);
+        this.cronEx = cronExpression;
         this.cronEx.setTimeZone(origTz);
+    }  
+    
+    public static CronExpression determineCronExpression(String cronExpression) {
+        try {
+            return new CronExpression(cronExpression);
         } catch ( Exception e ) {
             throw new RuntimeException("Unable to parse cron expression '" + cronExpression + "'", e);
-        }
-    }    
+        }        
+    }
 
     public Date hasNextFireTime() {
         return this.nextFireTime;

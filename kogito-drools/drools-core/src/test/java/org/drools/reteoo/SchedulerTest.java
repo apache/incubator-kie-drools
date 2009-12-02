@@ -36,6 +36,7 @@ import org.drools.spi.Duration;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.time.impl.DurationTimer;
 
 /**
  * @author mproctor
@@ -83,19 +84,7 @@ public class SchedulerTest extends DroolsTestCase {
             }
         } );
 
-        /* 1/10th of a second */
-        final Duration duration = new Duration() {
-            /**
-             *
-             */
-            private static final long serialVersionUID = 400L;
-
-            public long getDuration(Tuple tuple) {
-                return 100;
-            }
-
-        };
-        rule.setDuration( duration );
+        rule.setTimer( new DurationTimer(100) );
 
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -135,20 +124,6 @@ public class SchedulerTest extends DroolsTestCase {
                                                             rule.getLhs(),
                                                             buildContext );
         final List data = new ArrayList();
-
-        /* 1/10th of a second */
-        final Duration duration = new Duration() {
-            /**
-             *
-             */
-            private static final long serialVersionUID = 400L;
-
-            public long getDuration(Tuple tuple) {
-                return 100;
-            }
-
-        };
-
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
@@ -193,7 +168,7 @@ public class SchedulerTest extends DroolsTestCase {
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
-        rule.setDuration( duration );
+        rule.setTimer( new DurationTimer(100) );
 
         node.assertLeftTuple( tuple1,
                           context1,
@@ -227,20 +202,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                             rule.getLhs(),
                                                             buildContext );
 
-        /* 1/10th of a second */
-        final Duration duration = new Duration() {
-            /**
-             *
-             */
-            private static final long serialVersionUID = 400L;
-
-            public long getDuration(Tuple tuple) {
-                return 100;
-            }
-
-        };
-
-        rule.setDuration( duration );
+        rule.setTimer( new DurationTimer(100) );
         rule.setNoLoop( true );
 
         // add consequence

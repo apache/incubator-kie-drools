@@ -48,6 +48,9 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.Duration;
 import org.drools.spi.ObjectType;
+import org.drools.time.impl.CompositeMaxDurationTimer;
+import org.drools.time.impl.DurationTimer;
+import org.drools.time.impl.Timer;
 
 /**
  * A builder for patterns
@@ -181,18 +184,32 @@ public class PatternBuilder
             Declaration target = constraint.getRequiredDeclarations()[0];
             if( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
                 long uplimit = ((VariableConstraint) constraint).getInterval().getUpperBound();
-                Duration dur = context.getRule().getDuration();
-                Duration newDur = new FixedDuration( uplimit ); 
-                if( dur instanceof CompositeMaxDuration ) {
-                    ((CompositeMaxDuration)dur).addDuration( newDur );
+                
+                Timer timer = context.getRule().getTimer();                
+                DurationTimer durationTimer = new DurationTimer(uplimit);                
+                
+                if ( timer instanceof CompositeMaxDurationTimer ) {
+                    // already a composite so just add
+                    ((CompositeMaxDurationTimer)timer).addDurationTimer( durationTimer );
                 } else {
-                    if( dur == null ) {
-                        dur = newDur;
+                    if ( timer == null ) {
+                        // no timer exists, so ok on it's own
+                        timer = durationTimer;
                     } else {
-                        dur = new CompositeMaxDuration( dur );
-                        ((CompositeMaxDuration)dur).addDuration( newDur );
+                        // timer exists so we need to make a composite
+                        timer = new CompositeMaxDurationTimer();
+                        if ( timer instanceof DurationTimer ) {
+                            // previous timer was a duration, so add another DurationTimer
+                            ((CompositeMaxDurationTimer)timer).addDurationTimer( ( DurationTimer ) timer );                            
+                        } else {
+                            // previous timer was not a duration, so set it as the delegate Timer.
+                            ((CompositeMaxDurationTimer)timer).setTimer( context.getRule().getTimer() );    
+                        }
+                        // now add the new durationTimer
+                        ((CompositeMaxDurationTimer)timer).addDurationTimer( durationTimer );
                     }
-                    context.getRule().setDuration( dur );
+                    // with the composite made, reset it on the Rule
+                    context.getRule().setTimer( timer );
                 }
             }
         }

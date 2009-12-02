@@ -50,6 +50,8 @@ import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.time.TimeUtils;
+import org.drools.time.impl.DurationTimer;
+import org.drools.time.impl.IntervalTimer;
 import org.drools.util.DateUtils;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -202,7 +204,7 @@ public class RuleBuilderTest extends TestCase {
                 oneOf( rule ).setRuleFlowGroup( "mygroup" );
                 oneOf( rule ).setLockOnActive( true );
                 oneOf( rule ).setEnabled( EnabledBoolean.ENABLED_FALSE );
-                oneOf( rule ).setDuration( 60 );
+                oneOf( rule ).setTimer( new IntervalTimer( null , null, TimeUtils.parseTimeString( "60" ), 0 ) );
                 oneOf( rule ).setDateEffective( effective );
                 oneOf( rule ).setDateExpires( expires );
             }
@@ -235,7 +237,7 @@ public class RuleBuilderTest extends TestCase {
                 allowing( context ).getRuleDescr(); will( returnValue( ruleDescr ) );
 
                 // expected values for the rule object
-                oneOf( rule ).setDuration( TimeUtils.parseTimeString( "1h30m" ) );
+                oneOf( rule ).setTimer( new IntervalTimer( null , null, TimeUtils.parseTimeString( "1h30m" ), 0 ) );
             }
         } );
 

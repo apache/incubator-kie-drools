@@ -38,6 +38,7 @@ import org.drools.spi.Enabled;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 import org.drools.spi.Wireable;
+import org.drools.time.impl.Timer;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
@@ -93,9 +94,9 @@ public class Rule
 
     /** Consequence. */
     private Consequence       consequence;
-
-    /** Truthness duration. */
-    private Duration          duration;
+    
+    /** Timer semantics that controls the firing of a rule */
+    private Timer             timer;
 
     /** Load order in Package */
     private long              loadOrder;
@@ -143,7 +144,7 @@ public class Rule
         } else {
             out.writeObject(this.consequence);   
         } 
-        out.writeObject(duration);
+        out.writeObject(timer);
         out.writeLong(loadOrder);
         out.writeBoolean(noLoop);
         out.writeBoolean(autoFocus);
@@ -173,7 +174,7 @@ public class Rule
         metaAttributes = (Map<String,String>)in.readObject();
         
         consequence = (Consequence)in.readObject();
-        duration = (Duration)in.readObject();
+        timer = (Timer)in.readObject();
         loadOrder   = in.readLong();
         noLoop = in.readBoolean();
         autoFocus = in.readBoolean();
@@ -255,45 +256,21 @@ public class Rule
     }
 
     /**
-     * Set the truthness duration. This causes a delay before the firing of the
-     * <code>Consequence</code> if the rule is still true at the end of the
-     * duration.
-     *
-     * <p>
-     * This is merely a convenience method for calling
-     * {@link #setDuration(Duration)}with a <code>FixedDuration</code>.
-     * </p>
-     *
-     * @see #setDuration(Duration)
-     * @see FixedDuration
-     *
-     * @param seconds -
-     *            The number of seconds the rule must hold true in order to
-     *            fire.
+     * Returns the Timer semantics for a rule. Timer based rules are not added directly to the Agenda
+     * instead they are scheduled for Agenda addition, based on the timer.
+     * @return
      */
-    public void setDuration(final long ms) {
-        this.duration = new FixedDuration( ms );
+    public Timer getTimer() {
+        return timer;
     }
 
     /**
-     * Set the truthness duration object. This causes a delay before the firing
-     * of the <code>Consequence</code> if the rule is still true at the end of
-     * the duration.
-     *
-     * @param duration
-     *            The truth duration object.
+     * Sets the timer semantics for a rule. Timer based rules are not added directly to the Agenda
+     * instead they are scheduled for Agenda addition, based on the timer.
+     * @param timer
      */
-    public void setDuration(final Duration duration) {
-        this.duration = duration;
-    }
-
-    /**
-     * Retrieve the truthness duration object.
-     *
-     * @return The truthness duration object.
-     */
-    public Duration getDuration() {
-        return this.duration;
+    public void setTimer(Timer timer) {
+        this.timer = timer;
     }
 
     /**

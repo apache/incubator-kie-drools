@@ -47,6 +47,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
+import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.util.DroolsStreamUtils;
 
@@ -984,7 +985,7 @@ public class CepEspTest extends TestCase {
 
         final Rule rule = ruleBase.getPackage( "org.drools" ).getRule( "Delaying Not" );
         assertEquals( 10000,
-                      rule.getDuration().getDuration( null ) );
+                      ((DurationTimer)rule.getTimer()).getDuration() );
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );

@@ -57,6 +57,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.spi.Salience;
+import org.drools.time.impl.DurationTimer;
 
 /**
  * @author mproctor
@@ -153,7 +154,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.getFocus().size() );
 
         rule1.setNoLoop( false );
-        rule2.setDuration( 5000 );
+        rule2.setTimer( new DurationTimer( 5000 ) );
 
         node1.assertLeftTuple( tuple,
                                context1,
