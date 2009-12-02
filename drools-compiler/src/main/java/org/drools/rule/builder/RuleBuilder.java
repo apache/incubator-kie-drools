@@ -16,6 +16,7 @@ package org.drools.rule.builder;
  * limitations under the License.
  */
 
+import java.text.ParseException;
 import java.util.Calendar;
 
 import org.drools.RuntimeDroolsException;
@@ -29,6 +30,10 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.spi.Salience;
 import org.drools.time.TimeUtils;
+import org.drools.time.impl.CronExpression;
+import org.drools.time.impl.CronTimer;
+import org.drools.time.impl.IntervalTimer;
+import org.drools.time.impl.Timer;
 import org.drools.util.DateUtils;
 
 /**
@@ -111,10 +116,7 @@ public class RuleBuilder {
                                                        true ) );
             } else if ( name.equals( "duration" ) ) {
                 String duration = attributeDescr.getValue();
-                if( duration.indexOf( '(' ) >=0 ) {
-                    duration = duration.substring( duration.indexOf( '(' )+1, duration.lastIndexOf( ')' ) );
-                }
-                rule.setDuration( TimeUtils.parseTimeString( duration ) );
+                buildTimer( rule, duration, context);
             } else if ( name.equals( "date-effective" ) ) {
                 final Calendar cal = Calendar.getInstance();
                 cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
@@ -179,6 +181,54 @@ public class RuleBuilder {
                 context.getDialect().getSalienceBuilder().build( context );
             }
         }
+    }
+    
+    private void buildTimer(Rule rule, String timerString, RuleBuildContext context) {
+        if( timerString.indexOf( '(' ) >=0 ) {
+            timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) );
+        }
+        
+        int colonPos = timerString.indexOf( ":" );
+        String protocol = null;
+        if ( colonPos == -1 ) {
+            // no protocol so assume interval semantics
+            protocol = "int";
+        } else {
+            protocol = timerString.substring( 0, colonPos );
+        }
+        
+        String body = timerString.substring( colonPos + 1 );
+        
+        Timer timer = null;
+        if ( "cron".equals( protocol ) ) {
+            try {
+                timer = new CronTimer( null, null, new CronExpression( body ) );
+            } catch ( ParseException e ) {
+                context.getErrors().add( "Unable to build set timer '" + timerString + "'");
+                return;
+            }            
+        } else if ( "int".equals( protocol ) ) {
+            String[] times = body.trim().split( "\\s" );
+            long delay = 0;
+            long period = 0;
+            if ( times.length == 1 ) {
+                // only defines a delay
+                delay = TimeUtils.parseTimeString( times[0] );                
+            } else if ( times.length == 2 ) {
+                // defines a delay and a period for intervals
+                delay = TimeUtils.parseTimeString( times[0] );                
+                period = TimeUtils.parseTimeString( times[1] );
+            } else {
+                context.getErrors().add( "Incorrect number of arguments for interval timer '" + timerString + "'");
+                return;
+            }
+            timer = new IntervalTimer(null, null, delay, period);
+            //rule.setDuration( TimeUtils.parseTimeString( duration ) );
+        } else {
+            context.getErrors().add( "Protocol for timer does not exist '" + timerString +"'");
+            return;
+        }
+        rule.setTimer( timer );
     }
 
 }

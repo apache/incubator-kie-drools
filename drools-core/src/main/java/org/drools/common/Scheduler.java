@@ -17,7 +17,6 @@ package org.drools.common;
  */
 
 import org.drools.Agenda;
-import org.drools.process.instance.timer.TimerManager.TimerTrigger;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -48,12 +47,11 @@ final class Scheduler {
      *            The working memory session.
      */
     public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda) {
-        DuractionJob job = new DuractionJob();        
-        DuractionJobContext ctx = new DuractionJobContext( item, agenda );
-        Trigger trigger = new PointInTimeTrigger( item.getRule().getDuration().getDuration( item.getTuple() ) +
-                                                       ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime());
+        Trigger trigger = item.getRule().getTimer().createTrigger( ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime() );
         
-        
+        ActivationTimerJob job = new ActivationTimerJob();        
+        ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );        
+                
         JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
         item.setJobHandle( jobHandle );
     }
@@ -62,30 +60,31 @@ final class Scheduler {
         ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().removeJob( item.getJobHandle() );
     }    
     
-    public static class DuractionJob implements Job {
+    public static class ActivationTimerJob implements Job {
         public void execute(JobContext ctx) {
-            InternalAgenda agenda = ( InternalAgenda ) ((DuractionJobContext)ctx).getAgenda();
-            ScheduledAgendaItem item  = ((DuractionJobContext)ctx).getScheduledAgendaItem();
+            InternalAgenda agenda = ( InternalAgenda ) ((ActivationTimerJobContext)ctx).getAgenda();
+            ScheduledAgendaItem item  = ((ActivationTimerJobContext)ctx).getScheduledAgendaItem();
             
             agenda.fireActivation( item );
-            agenda.getScheduledActivationsLinkedList().remove( item );
+            if ( ((ActivationTimerJobContext)ctx).getTrigger().hasNextFireTime() == null ) {
+                agenda.getScheduledActivationsLinkedList().remove( item );
+            }
             agenda.getWorkingMemory().fireAllRules();            
         }        
     }
     
-    public static class DuractionJobContext implements JobContext {
+    public static class ActivationTimerJobContext implements JobContext {
         private JobHandle jobHandle;
         private ScheduledAgendaItem scheduledAgendaItem;
-        private Agenda agenda;                
+        private Agenda agenda;          
+        private Trigger trigger;
         
-        public DuractionJobContext(ScheduledAgendaItem scheduledAgendaItem,
+        public ActivationTimerJobContext(Trigger trigger,
+                                         ScheduledAgendaItem scheduledAgendaItem,
                                    Agenda agenda) {
+            this.trigger = trigger;
             this.scheduledAgendaItem = scheduledAgendaItem;
             this.agenda = agenda;
-        }
-
-        public DuractionJobContext(ScheduledAgendaItem scheduledAgendaItem) {
-            this.scheduledAgendaItem = scheduledAgendaItem;
         }
         
         public Agenda getAgenda() {
@@ -102,6 +101,10 @@ final class Scheduler {
 
         public void setJobHandle(JobHandle jobHandle) {
             this.jobHandle = jobHandle;
+        } 
+        
+        public Trigger getTrigger() {
+            return trigger;
         }        
     }    
 }

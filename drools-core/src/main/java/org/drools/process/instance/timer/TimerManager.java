@@ -1,8 +1,5 @@
 package org.drools.process.instance.timer;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +11,7 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
-import org.drools.time.Trigger;
+import org.drools.time.impl.IntervalTrigger;
 
 /**
  * 
@@ -45,7 +42,7 @@ public class TimerManager {
 
         JobHandle jobHandle = this.timerService.scheduleJob( processJob,
                                                              ctx,
-                                                             new TimerTrigger( timerService.getCurrentTime(),
+                                                             new IntervalTrigger( timerService.getCurrentTime(),
                                                                                timer.getDelay(),
                                                                                timer.getPeriod() ) );
         timer.setJobHandle( jobHandle );
@@ -75,7 +72,7 @@ public class TimerManager {
 			}
 		}
 		JobHandle jobHandle = this.timerService.scheduleJob(
-			processJob, ctx, new TimerTrigger(timerService.getCurrentTime(),
+			processJob, ctx, new IntervalTrigger(timerService.getCurrentTime(),
                                               delay, 
                                               timer.getPeriod()));
 		timer.setJobHandle(jobHandle);
@@ -135,51 +132,6 @@ public class TimerManager {
             if (ctx.getTimer().getPeriod() == 0) {
             	TimerManager.this.timers.remove(ctx.getTimer().getId());
             }
-        }
-
-    }
-
-    public static class TimerTrigger
-        implements
-        Trigger {
-        private Date next;
-        private long period;
-
-        public TimerTrigger() {
-            
-        }
-        
-        public TimerTrigger(long currentTS,
-                            long delay,
-                            long period) {
-            this.next = new Date( currentTS + delay  );
-            this.period = period;
-        }
-
-        public Date hasNextFireTime() {
-            return next;
-        }
-        
-        public Date nextFireTime() {
-            Date date = next;
-            if ( this.period != 0 ) {
-                // repeated fires for the given period
-                // FIXME: this is not safe for serialization
-                next = new Date( next.getTime() + this.period );                
-            } else {
-                next = null;
-            }
-            return date;
-        }
-
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            this.next = (Date) in.readObject();
-            this.period = in.readLong();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( this.next );
-            out.writeLong( this.period );
         }
 
     }

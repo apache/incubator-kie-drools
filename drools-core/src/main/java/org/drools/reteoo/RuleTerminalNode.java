@@ -39,6 +39,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
+import org.drools.time.impl.Timer;
 import org.drools.util.Iterator;
 import org.drools.util.LeftTupleList;
 
@@ -200,10 +201,10 @@ public final class RuleTerminalNode extends BaseNode
         }
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        
+        final Timer timer = this.rule.getTimer();
 
-        final Duration dur = this.rule.getDuration();
-
-        if ( dur != null && dur.getDuration( tuple ) > 0 ) {
+        if ( timer != null ) {
             final ScheduledAgendaItem item = agenda.createScheduledAgendaItem( tuple,
                                                                                context,
                                                                                this.rule,
