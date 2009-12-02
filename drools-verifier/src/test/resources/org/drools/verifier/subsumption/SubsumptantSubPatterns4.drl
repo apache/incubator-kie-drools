@@ -1,0 +1,42 @@
+package com.sample
+
+import com.sample.DroolsTest.Message;
+
+rule "Test 1"
+	when
+			list :List()
+		    Foo()  from list.items
+	then
+		System.out.println( "Test" );
+end
+
+rule "Test 2"
+	when
+			list :List()
+		    Foo( 
+		    	a > 10 
+		    )  from list.items
+		    Foo( 
+		    	a > 100 
+		    )  from list.items
+	then
+		System.out.println( "Test" );
+end
+/*
+rule "Test 3"
+	when
+			list2 :List2()
+		    Foo( 
+		    	a > 10 
+		    )  from list2.items
+	then
+		System.out.println( "Test" );
+end
+*/
+
+rule "Test x"
+	when
+		    Bar()
+	then
+		System.out.println( "Test" );
+end

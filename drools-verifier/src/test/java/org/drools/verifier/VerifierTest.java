@@ -40,7 +40,7 @@ public class VerifierTest extends TestCase {
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 10,
                       result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 16,
+        assertEquals( 5,
                       result.getBySeverity( Severity.NOTE ).size() );
 
     }

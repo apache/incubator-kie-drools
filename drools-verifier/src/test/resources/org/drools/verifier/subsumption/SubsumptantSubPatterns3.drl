@@ -1,0 +1,35 @@
+package com.sample
+
+import com.sample.DroolsTest.Message;
+
+rule "Test 1"
+	when
+		    Foo( ) from entry-point "test"
+	then
+		System.out.println( "Test" );
+end
+
+rule "Test 2"
+	when
+		    Foo( 
+		    	a > 10, 
+		    	b == 2
+		    )  from entry-point "test"
+	then
+		System.out.println( "Test" );
+end
+
+rule "Test 3"
+	when
+		    Foo( ) 
+	then
+		System.out.println( "Test" );
+end
+
+
+rule "Test x"
+	when
+		    Bar()
+	then
+		System.out.println( "Test" );
+end

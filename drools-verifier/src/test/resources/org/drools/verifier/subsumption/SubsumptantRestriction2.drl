@@ -1,0 +1,25 @@
+package com.sample
+
+import com.sample.DroolsTest.Message;
+
+rule "Test 1"
+	when
+		    Foo( 
+		    	a < 10, 
+		    	a < 100,
+		    	b == 1
+		    )
+	then
+		System.out.println( "Test 1" );
+end
+
+rule "Test 2"
+	when
+		    Foo( 
+		    	a < 10, 
+		    	a < 10,
+		    	b == 2
+		    )
+	then
+		System.out.println( "Test 2" );
+end

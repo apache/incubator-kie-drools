@@ -33,17 +33,16 @@ rule "Find redundant restrictions from pattern possibilities"
 	salience -100
 	when
 		$r :Redundancy(
-			left.causeType == CauseType.RESTRICTION
+			items[0].causeType == CauseType.RESTRICTION
 		)
 
 		$pp :SubPattern(
-			items contains $r.left,
-			items contains $r.right
+			items contains $r.items[0],
+			items contains $r.items[1]
 		)
 	then
 		Collection causes = new ArrayList();
-		causes.add( $r.getLeft() );
-		causes.add( $r.getRight() );
+		causes.addAll( $r.getItems() );
 
 		result.add(new VerifierMessage(
 						Severity.NOTE, MessageType.REDUNDANCY,
@@ -60,17 +59,16 @@ rule "Find redundant pattern possibilities from rule possibilities"
 	salience -100
 	when
 		$r :Redundancy(
-			left.causeType == CauseType.PATTERN_POSSIBILITY
+			items[0].causeType == CauseType.SUB_PATTERN
 		)
 
 		SubRule(
-			items contains $r.left,
-			items contains $r.right
+			items contains $r.items[0],
+			items contains $r.items[1]
 		)
 	then
 		Collection causes = new ArrayList();
-		causes.add( $r.getLeft() );
-		causes.add( $r.getRight() );
+		causes.addAll( $r.getItems() );
 
 		result.add(new VerifierMessage(
 						Severity.NOTE, MessageType.REDUNDANCY,

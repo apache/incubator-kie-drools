@@ -1,39 +1,48 @@
 package org.drools.verifier.report.components;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Presents a redundancy between two Causes. The link between them can be WEAK
  * or STRONG.
  * 
- * WEAK redundancy is for example two VerifierRules, but not theyr's rule
+ * WEAK redundancy is for example two VerifierRules, but not their rule
  * possibilities. STRONG redundancy includes possibilities.
  * 
  * @author Toni Rikkola
  */
-public class Redundancy extends Subsumption implements Cause {
-	// By default the redundancy is weak.
-	private final RedundancyType type;
+public class Redundancy
+    implements
+    Cause {
 
-	public Redundancy(Cause left, Cause right) {
-		super(left, right);
-		type = RedundancyType.WEAK;
-	}
+    private static int        index = 0;
 
-	public Redundancy(RedundancyType type, Cause left, Cause right) {
-		super(left, right);
-		this.type = type;
-	}
+    private final String      guid  = String.valueOf( index++ );
 
-	public CauseType getCauseType() {
-		return CauseType.REDUNDANCY;
-	}
+    private final List<Cause> items = new ArrayList<Cause>( 2 );
 
-	public RedundancyType getType() {
-		return type;
-	}
+    public Redundancy(Cause first,
+                      Cause second) {
+        items.add( first );
+        items.add( second );
+    }
 
-	@Override
-	public String toString() {
-		return "Redundancy between: (" + getLeft() + ") and (" + getRight()
-				+ ").";
-	}
+    public String getGuid() {
+        return guid;
+    }
+
+    public CauseType getCauseType() {
+        return CauseType.REDUNDANCY;
+    }
+
+    public List<Cause> getItems() {
+        return items;
+    }
+
+    @Override
+    public String toString() {
+        return "Redundancy between: (" + items.get( 0 ) + ") and (" + items.get( 1 ) + ").";
+    }
 }

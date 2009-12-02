@@ -1,0 +1,32 @@
+package com.sample
+
+import com.sample.DroolsTest.Message;
+
+rule "Test 11"
+	when
+		    Foo( 
+		    	a > 10 
+		    )
+	then
+		System.out.println( "Test" );
+end
+
+rule "Test 22"
+	when
+		    Foo( 
+		    	a > 10, 
+		    	b == 2
+		    )
+	then
+		System.out.println( "Test" );
+end
+
+rule "Test 33"
+	when
+		    Bar( 
+		    	a > 10, 
+		    	b == 2
+		    )
+	then
+		System.out.println( "Test" );
+end

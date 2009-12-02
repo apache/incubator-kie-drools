@@ -8,6 +8,7 @@ import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierEntryPointDescr;
 import org.drools.verifier.components.VerifierRule;
 
 /**
@@ -42,5 +43,7 @@ public interface VerifierData {
     public Collection<Restriction> getRestrictionsByFieldGuid(String guid);
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName);
+
+    public VerifierEntryPointDescr getEntryPointByEntryId(String entryId);
 
 }

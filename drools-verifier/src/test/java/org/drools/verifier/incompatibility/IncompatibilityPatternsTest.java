@@ -87,7 +87,7 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
 		Map<Cause, Set<Cause>> map = createIncompatibilityMap(
-				CauseType.PATTERN_POSSIBILITY, sessionResult.iterateObjects());
+				CauseType.SUB_PATTERN, sessionResult.iterateObjects());
 
 		assertTrue((TestBase.causeMapContains(map, pp1, pp2) ^ TestBase
 				.causeMapContains(map, pp2, pp1)));

@@ -1,0 +1,11 @@
+package com.sample
+
+rule "Test"
+	when
+		    Person( 
+		    	name == "Toni",
+		    	name == "Toni" 
+		     )
+	then
+		System.out.println( "Test" );
+end

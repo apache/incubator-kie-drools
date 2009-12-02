@@ -4,7 +4,7 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierCollectDescr extends RuleComponent {
+public class VerifierCollectDescr extends Source {
 
     private String insidePatternGuid;
     private String classMethodName;

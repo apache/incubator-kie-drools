@@ -9,12 +9,18 @@ public interface Consequence
     public static class ConsequenceType {
         public static final ConsequenceType TEXT = new ConsequenceType( "TEXT" );
 
-        protected String                    type;
+        public String                       type;
 
         public ConsequenceType(String t) {
             type = t;
         }
+
+        public String toString() {
+            return type;
+        }
     }
+
+    public String getGuid();
 
     public ConsequenceType getConsequenceType();
 

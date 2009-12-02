@@ -11,14 +11,91 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.Consequence;
+
 import org.drools.verifier.data.VerifierReport;
+
 import org.drools.verifier.report.components.Redundancy;
-import org.drools.verifier.report.components.RedundancyType;
+import org.drools.verifier.report.components.Subsumption;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
+
+
+rule "Find redundant LHS"
+	when
+		# Check that VerifierRule $left and $right have redundant fields.
+		$left :VerifierRule()
+		
+		$right :VerifierRule( 
+			guid != $left.guid 
+		)
+		
+		
+		$leftSubRules : ArrayList() 
+			from collect( 
+				SubRule(
+					ruleGuid == $left.guid
+				)
+			)
+
+		$rightSubRules : ArrayList() 
+			from collect( 
+				SubRule(
+					ruleGuid == $right.guid
+				)
+			)
+		
+		forall (
+			$subRule :SubRule(
+			) from $leftSubRules 
+			
+			Subsumption(
+				left == $subRule,
+				right memberOf $rightSubRules
+			) 
+		)
+		forall (
+			$subRule :SubRule(
+			) from $rightSubRules 
+			
+			Subsumption(
+				left == $subRule,
+				right memberOf $leftSubRules
+			) 
+		)
+	then
+end
+
+rule "Find equivalent Rules" extends "Find redundant LHS"
+	when
+		
+		# RHS should not be redundant		
+		$leftConsequence : Consequence(
+			guid == $left.consequenceGuid,
+			consequenceType == $left.consequenceType
+		)
+		$rightConsequence : Consequence(
+			guid == $right.consequenceGuid,
+			consequenceType == $right.consequenceType
+		)
+		not Redundancy(
+			items contains $leftConsequence,
+			items contains $rightConsequence
+		)
+	then
+		Collection causes = new ArrayList();
+		causes.add( $left );
+		causes.add( $right );
+
+		result.add(new VerifierMessage(
+						Severity.WARNING, MessageType.EQUIVALANCE,
+						$left, "Rule is equivalent to rule " + $right.getRuleName() + ".", causes ) );
+end
+
 
 #
 # Dependencies:
@@ -33,51 +110,33 @@ import org.drools.verifier.report.components.MessageType;
 #		package org.drools.verifier.redundancy.possibilities
 #			rule "Find rule possibility redundancy"
 #
-rule "Find redundant rule possibilities from different rules"
-	salience -100
+rule "Find redundant rules" extends "Find redundant LHS"
 	when
-		$ruleRedundancy :Redundancy(
-			left.causeType == CauseType.RULE
+	
+		# RHS need to be redundant		
+		$leftConsequence : Consequence(
+			guid == $left.consequenceGuid,
+			consequenceType == $left.consequenceType
 		)
-
-		$rulePossibilityRedundancy :Redundancy(
-			left.causeType == CauseType.RULE_POSSIBILITY
+		$rightConsequence : Consequence(
+			guid == $right.consequenceGuid,
+			consequenceType == $right.consequenceType
 		)
-
-		# Check that redundant possibilities are from redundant rules
-		exists SubRule(
-			this == $rulePossibilityRedundancy.left,
-			eval( ruleGuid.equals( $ruleRedundancy.getLeft().getGuid() ) )
-		)
-
-		exists SubRule(
-			this == $rulePossibilityRedundancy.right,
-			eval( ruleGuid.equals( $ruleRedundancy.getRight().getGuid() ) )
-		)
-
-		# Check that the possibilties are redundant to each other.
 		exists Redundancy(
-			left.causeType == CauseType.RULE_POSSIBILITY,
-			left == $rulePossibilityRedundancy.right,
-			right == $rulePossibilityRedundancy.left
+			items contains $leftConsequence,
+			items contains $rightConsequence
 		)
 
 	then
 		Collection causes = new ArrayList();
-		causes.add( $rulePossibilityRedundancy.getLeft() );
-		causes.add( $rulePossibilityRedundancy.getRight() );
-
-		String message;
-		if( $ruleRedundancy.getType() == RedundancyType.WEAK ) {
-			message = "Rules are equivalent.";
-		} else {
-			message = "Rules are redundant.";
-		}
+		causes.add( $left );
+		causes.add( $right );
 
 		result.add(new VerifierMessage(
 						Severity.WARNING, MessageType.REDUNDANCY,
-						$rulePossibilityRedundancy, message, causes ) );
+						$left, "Rule is redundant to rule " + $right.getRuleName() + ".", causes ) );
 end
+
 
 #
 # Dependencies:
@@ -95,38 +154,24 @@ end
 rule "Find subsumptant rule possibilities from different rules"
 	salience -100
 	when
-		$ruleRedundancy :Redundancy(
-			left.causeType == CauseType.RULE
+		$subsumption:Subsumption(
+			left.causeType == CauseType.SUB_RULE
 		)
-
-		$rulePossibilityRedundancy :Redundancy(
-			left.causeType == CauseType.RULE_POSSIBILITY
-		)
-
-		# Check that redundant possibilities are from redundant rules
-		exists SubRule(
-			this == $rulePossibilityRedundancy.left,
-			eval( ruleGuid.equals( $ruleRedundancy.getLeft().getGuid() ) )
-		)
-
-		exists SubRule(
-			this == $rulePossibilityRedundancy.right,
-			eval( ruleGuid.equals( $ruleRedundancy.getRight().getGuid() ) )
-		)
-
-		# Check that the left side is redundant to right, but the right side is not redundant to left.
-		not Redundancy(
-			left.causeType == CauseType.RULE_POSSIBILITY,
-			left == $rulePossibilityRedundancy.right,
-			right == $rulePossibilityRedundancy.left
+		
+		# No redundacy
+		not Subsumption(
+			left.causeType == CauseType.SUB_RULE,
+			left == $subsumption.right,
+			right == $subsumption.left
 		)
 
 	then
 		Collection causes = new ArrayList();
-		causes.add( $rulePossibilityRedundancy.getLeft() );
-		causes.add( $rulePossibilityRedundancy.getRight() );
+		causes.add( $subsumption.getLeft() );
+		causes.add( $subsumption.getRight() );
 
 		result.add(new VerifierMessage(
-						Severity.WARNING, MessageType.REDUNDANCY,
-						$rulePossibilityRedundancy, "Rules are subsumptant.", causes ) );
+						Severity.WARNING, MessageType.SUBSUMPTION,
+						$subsumption, "Rules are subsumptant.", causes ) );
 end
+

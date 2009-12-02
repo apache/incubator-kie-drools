@@ -1,5 +1,9 @@
 package org.drools.verifier.components;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.verifier.components.Consequence.ConsequenceType;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
 
@@ -11,39 +15,40 @@ public class VerifierRule extends RuleComponent
     implements
     Cause {
 
-    private String      ruleSalience;
-    private String      ruleAgendaGroup;
-    private Consequence consequence;
-    private int         lineNumber;
+    private Map<String, String> attributes = new HashMap<String, String>();
 
-    private int         packageId;
+    private String              consequenceGuid;
+    private ConsequenceType     consequenceType;
+    private int                 lineNumber;
+
+    private int                 packageId;
 
     public CauseType getCauseType() {
         return CauseType.RULE;
     }
 
-    public String getRuleAgendaGroup() {
-        return ruleAgendaGroup;
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
-    public void setRuleAgendaGroup(String agendaGroup) {
-        this.ruleAgendaGroup = agendaGroup;
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
-    public String getRuleSalience() {
-        return ruleSalience;
+    public String getConsequenceGuid() {
+        return consequenceGuid;
     }
 
-    public void setRuleSalience(String salience) {
-        this.ruleSalience = salience;
+    public void setConsequenceGuid(String consequenceGuid) {
+        this.consequenceGuid = consequenceGuid;
     }
 
-    public Consequence getConsequence() {
-        return consequence;
+    public ConsequenceType getConsequenceType() {
+        return consequenceType;
     }
 
-    public void setConsequence(Consequence consequence) {
-        this.consequence = consequence;
+    public void setConsequenceType(ConsequenceType consequenceType) {
+        this.consequenceType = consequenceType;
     }
 
     public int getLineNumber() {

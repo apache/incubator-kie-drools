@@ -16,6 +16,7 @@ import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierEntryPointDescr;
 import org.drools.verifier.components.VerifierRule;
 
 /**
@@ -37,6 +38,7 @@ class VerifierDataMaps
     private DataTree<String, Pattern>                                  patternsByRuleName             = new DataTree<String, Pattern>();
     private DataTree<String, Restriction>                              restrictionsByFieldId          = new DataTree<String, Restriction>();
     private Map<String, Variable>                                      variablesByRuleAndVariableName = new TreeMap<String, Variable>();
+    private Map<String, VerifierEntryPointDescr>                       entryPointsByEntryId           = new TreeMap<String, VerifierEntryPointDescr>();
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
         Set<ObjectType> set = new HashSet<ObjectType>();
@@ -155,6 +157,10 @@ class VerifierDataMaps
             ObjectType objectType = (ObjectType) object;
             objectTypesByName.put( objectType.getName(),
                                    objectType );
+        } else if ( VerifierComponentType.ENTRY_POINT_DESCR.equals( object.getVerifierComponentType() ) ) {
+            VerifierEntryPointDescr entryPoint = (VerifierEntryPointDescr) object;
+            entryPointsByEntryId.put( entryPoint.getEntryId(),
+                                      entryPoint );
         }
 
         Map<String, VerifierComponent> map = all.get( object.getVerifierComponentType() );
@@ -181,4 +187,9 @@ class VerifierDataMaps
                                                String guid) {
         return all.get( type ).get( guid );
     }
+
+    public VerifierEntryPointDescr getEntryPointByEntryId(String entryId) {
+        return entryPointsByEntryId.get( entryId );
+    }
+
 }

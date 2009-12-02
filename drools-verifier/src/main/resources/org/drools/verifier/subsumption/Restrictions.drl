@@ -20,7 +20,7 @@ import org.drools.verifier.report.components.Subsumption;
 rule "Find subsumptant restrictions, greater than"
 	when
 		# Covered x > 10
-		$lower :LiteralRestriction(
+		$lower:LiteralRestriction(
 			( valueType == Field.FieldType.INT || == Field.FieldType.DOUBLE || == Field.FieldType.DATE ),
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
 		)
@@ -28,12 +28,29 @@ rule "Find subsumptant restrictions, greater than"
 		# Covered x > 100
 		$higher :LiteralRestriction( 
 			fieldGuid matches $lower.fieldGuid,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL)
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL )
 		)
 		
 		eval( $lower.compareValues( $higher ) == -1 )
 	then 
-		insert( new Subsumption( $lower, $higher ) );
+		insert( new Subsumption( $higher, $lower ) );
+end
+
+rule "Find subsumptant restrictions, equal"
+	when
+		# Covered x > 10
+		$left :LiteralRestriction( )
+
+		# Covered x > 10
+		$right :LiteralRestriction( 
+			guid != $left.guid,
+			fieldGuid matches $left.fieldGuid,
+			operator == $left.operator
+		)
+		
+		eval( $left.compareValues( $right ) == 0 )
+	then 
+		insert( new Subsumption( $left, $right ) );
 end
 
 #

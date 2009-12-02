@@ -1,0 +1,92 @@
+#created on: 7.9.2007
+package org.drools.verifier.equivalency.rules
+
+#list any import classes here.
+global VerifierReport result;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.drools.verifier.data.VerifierReport;
+
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.Consequence;
+import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.Subsumption;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.MessageType;
+
+#
+# Only checks for redundant rule specifications where consequences are not redundant, 
+# does not include actual pattern and restriction checks.
+#
+# Dependencies: None
+#
+rule "Find equivalent Rules"
+	when
+		# Check that VerifierRule $left and $right have redundant fields.
+		$left :VerifierRule()
+		
+		$right :VerifierRule( 
+			guid != $left.guid 
+		)
+		
+		
+		$leftSubRules : ArrayList() 
+			from collect( 
+				SubRule(
+					ruleGuid == $left.guid
+				)
+			)
+
+		$rightSubRules : ArrayList() 
+			from collect( 
+				SubRule(
+					ruleGuid == $right.guid
+				)
+			)
+		
+		forall (
+			$subRule :SubRule(
+			) from $leftSubRules 
+			
+			Subsumption(
+				left == $subRule,
+				right memberOf $rightSubRules
+			) 
+		)
+		forall (
+			$subRule :SubRule(
+			) from $rightSubRules 
+			
+			Subsumption(
+				left == $subRule,
+				right memberOf $leftSubRules
+			) 
+		)
+		
+		# RHS should not be redundant		
+		$leftConsequence : Consequence(
+			guid == $left.consequenceGuid,
+			consequenceType == $left.consequenceType
+		)
+		$rightConsequence : Consequence(
+			guid == $right.consequenceGuid,
+			consequenceType == $right.consequenceType
+		)
+		not Redundancy(
+			items contains $leftConsequence,
+			items contains $rightConsequence
+		)
+	then
+		Collection causes = new ArrayList();
+		causes.add( $left );
+		causes.add( $right );
+
+		result.add(new VerifierMessage(
+						Severity.WARNING, MessageType.EQUIVALANCE,
+						$left, "Rule is equivalent to rule " + $right.getRuleName() + " ", causes ) );
+end
+
