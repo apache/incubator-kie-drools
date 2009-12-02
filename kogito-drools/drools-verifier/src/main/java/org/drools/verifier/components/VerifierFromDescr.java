@@ -4,7 +4,7 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierFromDescr extends RuleComponent {
+public class VerifierFromDescr extends Source {
 
     private VerifierComponentType dataSourceType;
     private String                dataSourceGuid;

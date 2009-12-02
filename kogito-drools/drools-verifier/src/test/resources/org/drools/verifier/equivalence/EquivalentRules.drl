@@ -1,0 +1,19 @@
+package com.sample
+
+rule "Test 1"
+	when
+		    Person( 
+		    	name == "Toni" 
+		     )
+	then
+		System.out.println( "Test 1" );
+end
+
+rule "Test 2"
+	when
+		    Person( 
+		    	name == "Toni" 
+		     )
+	then
+		System.out.println( "Test 2" );
+end

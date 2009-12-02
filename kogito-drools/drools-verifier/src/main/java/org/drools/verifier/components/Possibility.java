@@ -12,7 +12,7 @@ public interface Possibility
     extends
     Cause {
 
-    public Set<Cause> getItems();
+    public Set<? extends RuleComponent> getItems();
 
     public int getAmountOfItems();
 }

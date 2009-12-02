@@ -1,58 +1,68 @@
 package org.drools.verifier.equivalence;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
-import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
-import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
-import org.drools.verifier.components.VerifierRule;
+import junit.framework.TestCase;
+
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
+import org.drools.runtime.ClassObjectFilter;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.VerifierError;
+import org.drools.verifier.builder.VerifierBuilder;
+import org.drools.verifier.builder.VerifierBuilderFactory;
+import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.data.VerifierReport;
-import org.drools.verifier.data.VerifierReportFactory;
-import org.drools.verifier.redundancy.RedundancyTestBase;
+import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.Subsumption;
+import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class EquivalentRulesTest extends RedundancyTestBase {
+/**
+ * 
+ * @author Toni Rikkola
+ *
+ */
+public class EquivalentRulesTest extends TestCase {
 
-	public void testRuleRedundancy() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Rules.drl"));
+    public void testVerifierLiteralRestrictionRedundancy() throws Exception {
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Find equivalent Rules"));
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
-		Collection<Object> data = new ArrayList<Object>();
+        Verifier verifier = vBuilder.newVerifier();
 
-		String ruleName1 = "Rule 1";
-		String ruleName2 = "Rule 2";
+        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "EquivalentRules.drl",
+                                                                             getClass() ),
+                                       ResourceType.DRL );
 
-		VerifierRule rule1 = new VerifierRule();
-		rule1.setRuleName(ruleName1);
-		VerifierRule rule2 = new VerifierRule();
-		rule2.setRuleName(ruleName2);
+        for ( VerifierError error : verifier.getErrors() ) {
+            System.out.println( error.getMessage() );
+        }
 
-		Redundancy r1 = new Redundancy(rule1, rule2);
+        assertFalse( verifier.hasErrors() );
 
-		data.add(rule1);
-		data.add(rule2);
-		data.add(r1);
+        boolean noProblems = verifier.fireAnalysis();
+        assertTrue( noProblems );
 
-		VerifierReport result = VerifierReportFactory.newVerifierReport();
-		session.setGlobal("result", result);
+        VerifierReport result = verifier.getResult();
 
-		StatelessSessionResult sessionResult = session.executeWithResults(data);
+        Collection<VerifierMessageBase> warnings = result.getBySeverity( Severity.WARNING );
 
-		Map<String, Set<String>> map = createRedundancyMap(sessionResult
-				.iterateObjects());
+        int counter = 0;
+        for ( VerifierMessageBase message : warnings ) {
+            //            System.out.println( message );
+            if ( message.getMessageType().equals( MessageType.EQUIVALANCE ) ) {
+                //                System.out.println( message );
+                counter++;
+            }
+        }
 
-		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2));
-		assertTrue(TestBase.mapContains(map, ruleName2, ruleName1));
+        // Has at least one item.
+        assertEquals( 2,
+                      counter );
 
-		if (!map.isEmpty()) {
-			fail("More equivalences than was expected.");
-		}
-	}
+        verifier.dispose();
+    }
+
 }

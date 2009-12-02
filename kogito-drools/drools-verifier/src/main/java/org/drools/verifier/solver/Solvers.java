@@ -18,11 +18,11 @@ import org.drools.verifier.data.VerifierComponent;
  */
 public class Solvers {
 
-    private RuleSolver               ruleSolver           = null;
-    private PatternSolver            patternSolver        = null;
+    private RuleSolver       ruleSolver        = null;
+    private PatternSolver    patternSolver     = null;
 
-    private List<SubPattern> patternPossibilities = new ArrayList<SubPattern>();
-    private List<SubRule>    rulePossibilities    = new ArrayList<SubRule>();
+    private List<SubPattern> subPatterns       = new ArrayList<SubPattern>();
+    private List<SubRule>    rulePossibilities = new ArrayList<SubRule>();
 
     public void startRuleSolver(VerifierRule rule) {
         ruleSolver = new RuleSolver( rule );
@@ -113,21 +113,35 @@ public class Solvers {
     }
 
     private void createPatternPossibilities() {
-        for ( Set<VerifierComponent> list : patternSolver.getPossibilityLists() ) {
-            SubPattern possibility = new SubPattern();
+        List<Set<VerifierComponent>> lists = patternSolver.getPossibilityLists();
+        if ( lists.size() == 0 ) {
+            SubPattern subPattern = newSubPattern();
 
-            possibility.setRuleGuid( ruleSolver.getRule().getGuid() );
-            possibility.setRuleName( ruleSolver.getRule().getRuleName() );
-            possibility.setRuleGuid( ruleSolver.getRule().getGuid() );
-            possibility.setPatternGuid( patternSolver.getPattern().getGuid() );
+            ruleSolver.add( subPattern );
+            subPatterns.add( subPattern );
+        } else {
 
-            for ( VerifierComponent descr : list ) {
-                possibility.add( (Restriction) descr );
+            for ( Set<VerifierComponent> list : lists ) {
+                SubPattern subPattern = newSubPattern();
+
+                for ( VerifierComponent descr : list ) {
+                    subPattern.add( (Restriction) descr );
+                }
+
+                ruleSolver.add( subPattern );
+                subPatterns.add( subPattern );
             }
-
-            ruleSolver.add( possibility );
-            patternPossibilities.add( possibility );
         }
+    }
+
+    private SubPattern newSubPattern() {
+        SubPattern subPattern = new SubPattern();
+
+        subPattern.setRuleGuid( ruleSolver.getRule().getGuid() );
+        subPattern.setRuleName( ruleSolver.getRule().getRuleName() );
+        subPattern.setRuleGuid( ruleSolver.getRule().getGuid() );
+        subPattern.setPatternGuid( patternSolver.getPattern().getGuid() );
+        return subPattern;
     }
 
     private void createRulePossibilities() {
@@ -148,11 +162,11 @@ public class Solvers {
     }
 
     public List<SubPattern> getPatternPossibilities() {
-        return patternPossibilities;
+        return subPatterns;
     }
 
     public void setPatternPossibilities(List<SubPattern> patternPossibilities) {
-        this.patternPossibilities = patternPossibilities;
+        this.subPatterns = patternPossibilities;
     }
 
     public List<SubRule> getRulePossibilities() {

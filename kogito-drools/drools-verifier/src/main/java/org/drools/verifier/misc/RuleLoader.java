@@ -54,10 +54,6 @@ public class RuleLoader {
         resources.put( ResourceFactory.newClassPathResource( "alwaysFalse/Patterns.drl",
                                                              Verifier.class ),
                        ResourceType.DRL );
-        // Equivalence
-        resources.put( ResourceFactory.newClassPathResource( "equivalence/Rules.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
         // Incoherence
         resources.put( ResourceFactory.newClassPathResource( "incoherence/Patterns.drl",
                                                              Verifier.class ),
@@ -98,6 +94,9 @@ public class RuleLoader {
         resources.put( ResourceFactory.newClassPathResource( "overlaps/Restrictions.drl",
                                                              Verifier.class ),
                        ResourceType.DRL );
+        resources.put( ResourceFactory.newClassPathResource( "overlaps/Restrictions.drl",
+                                                             Verifier.class ),
+                       ResourceType.DRL );
         // Range checks
         resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Clean.drl",
                                                              Verifier.class ),
@@ -111,28 +110,17 @@ public class RuleLoader {
         resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Integers.drl",
                                                              Verifier.class ),
                        ResourceType.DRL );
-        ResourceFactory.newClassPathResource( "rangeChecks/NumberPatterns.drl",
-                                              Verifier.class );
-        ResourceFactory.newClassPathResource( "rangeChecks/Variables.drl",
-                                              Verifier.class );
+//        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/NumberPatterns.drl",
+//                                                             Verifier.class ),
+//                       ResourceType.DRL );
+//        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Variables.drl",
+//                                                             Verifier.class ),
+//                       ResourceType.DRL );
         //         Redundancy
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Consequence.drl",
+        resources.put( ResourceFactory.newClassPathResource( "redundancy/Redundancy.drl",
                                                              Verifier.class ),
                        ResourceType.DRL );
         resources.put( ResourceFactory.newClassPathResource( "redundancy/Notes.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Patterns.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Possibilities.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Restrictions.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Rules.drl",
                                                              Verifier.class ),
                        ResourceType.DRL );
         resources.put( ResourceFactory.newClassPathResource( "redundancy/Warnings.drl",
@@ -143,10 +131,16 @@ public class RuleLoader {
                                                              Verifier.class ),
                        ResourceType.DRL );
         // Subsumption
-        resources.put( ResourceFactory.newClassPathResource( "subsumption/Possibilities.drl",
+        resources.put( ResourceFactory.newClassPathResource( "subsumption/Consequences.drl",
                                                              Verifier.class ),
                        ResourceType.DRL );
         resources.put( ResourceFactory.newClassPathResource( "subsumption/Restrictions.drl",
+                                                             Verifier.class ),
+                       ResourceType.DRL );
+        resources.put( ResourceFactory.newClassPathResource( "subsumption/SubPatterns.drl",
+                                                             Verifier.class ),
+                       ResourceType.DRL );
+        resources.put( ResourceFactory.newClassPathResource( "subsumption/SubRules.drl",
                                                              Verifier.class ),
                        ResourceType.DRL );
 

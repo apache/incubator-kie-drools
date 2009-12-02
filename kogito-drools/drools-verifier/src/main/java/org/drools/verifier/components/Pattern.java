@@ -15,7 +15,7 @@ public class Pattern extends PatternComponent
 
     private String                objectTypeGuid;
     private String                name;
-    private VerifierComponentType sourceType       = VerifierComponentType.UNKNOWN;
+    private VerifierComponentType sourceType;
     private String                sourceGuid;
 
     private boolean               isPatternNot     = false;

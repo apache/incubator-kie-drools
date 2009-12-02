@@ -1,5 +1,6 @@
 package org.drools.verifier.report.components;
 
+
 /**
  *
  * @author Toni Rikkola
@@ -7,6 +8,6 @@ package org.drools.verifier.report.components;
 public interface Cause {
 
     public String getGuid();
-    
+
     public CauseType getCauseType();
 }

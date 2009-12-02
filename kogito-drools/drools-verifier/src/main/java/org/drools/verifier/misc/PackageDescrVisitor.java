@@ -6,10 +6,12 @@ import org.drools.base.evaluators.Operator;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.DeclarativeInvokerDescr;
+import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldAccessDescr;
@@ -40,10 +42,11 @@ import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.QualifiedIdentifierRestriction;
 import org.drools.verifier.components.ReturnValueRestriction;
 import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.Source;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.TextConsequence;
 import org.drools.verifier.components.Variable;
@@ -52,6 +55,7 @@ import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierAccumulateDescr;
 import org.drools.verifier.components.VerifierCollectDescr;
 import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierEntryPointDescr;
 import org.drools.verifier.components.VerifierEvalDescr;
 import org.drools.verifier.components.VerifierFieldAccessDescr;
 import org.drools.verifier.components.VerifierFromDescr;
@@ -59,6 +63,7 @@ import org.drools.verifier.components.VerifierFunctionCallDescr;
 import org.drools.verifier.components.VerifierMethodAccessDescr;
 import org.drools.verifier.components.VerifierPredicateDescr;
 import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.WorkingMemory;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;
@@ -69,16 +74,18 @@ import org.drools.verifier.solver.Solvers;
  */
 public class PackageDescrVisitor {
 
-    private Solvers      solvers           = new Solvers();
+    private Solvers       solvers           = new Solvers();
 
-    private VerifierData data;
+    private VerifierData  data;
 
-    private RulePackage  currentPackage    = null;
-    private VerifierRule currentRule       = null;
-    private Pattern      currentPattern    = null;
-    private Constraint   currentConstraint = null;
-    private ObjectType   currentObjectType = null;
-    private Field        currentField      = null;
+    private RulePackage   currentPackage    = null;
+    private VerifierRule  currentRule       = null;
+    private Pattern       currentPattern    = null;
+    private Constraint    currentConstraint = null;
+    private ObjectType    currentObjectType = null;
+    private Field         currentField      = null;
+
+    private WorkingMemory workingMemory     = null;
 
     /**
      * Adds packageDescr to given VerifierData object
@@ -176,13 +183,16 @@ public class PackageDescrVisitor {
         }
     }
 
-    private VerifierComponent visit(PatternSourceDescr descr,
-                                    VerifierComponent parent) throws UnknownDescriptionException {
+    private Source visit(PatternSourceDescr descr,
+                         VerifierComponent parent) throws UnknownDescriptionException {
         if ( descr instanceof AccumulateDescr ) {
             return visit( (AccumulateDescr) descr,
                           parent );
         } else if ( descr instanceof CollectDescr ) {
             return visit( (CollectDescr) descr,
+                          parent );
+        } else if ( descr instanceof EntryPointDescr ) {
+            return visit( (EntryPointDescr) descr,
                           parent );
         } else if ( descr instanceof FromDescr ) {
             return visit( (FromDescr) descr,
@@ -196,16 +206,20 @@ public class PackageDescrVisitor {
                                     VerifierComponent parent) throws UnknownDescriptionException {
         if ( descr instanceof AccessorDescr ) {
             return visit( (AccessorDescr) descr,
-                          parent );
+                          parent,
+                          0 );
         } else if ( descr instanceof FieldAccessDescr ) {
             return visit( (FieldAccessDescr) descr,
-                          parent );
+                          parent,
+                          0 );
         } else if ( descr instanceof FunctionCallDescr ) {
             return visit( (FunctionCallDescr) descr,
-                          parent );
+                          parent,
+                          0 );
         } else if ( descr instanceof MethodAccessDescr ) {
             return visit( (MethodAccessDescr) descr,
-                          parent );
+                          parent,
+                          0 );
         } else {
             throw new UnknownDescriptionException( descr );
         }
@@ -348,14 +362,46 @@ public class PackageDescrVisitor {
                                     VerifierComponent parent) throws UnknownDescriptionException {
         VerifierFromDescr from = new VerifierFromDescr();
 
-        VerifierComponent ds = visit( descr.getDataSource(),
-                                      from );
+        VerifierComponent ds = null;
+
+        if ( descr.getDataSource() instanceof AccessorDescr ) {
+            ds = visit( (AccessorDescr) descr.getDataSource(),
+                        parent );
+        } else if ( descr.getDataSource() instanceof FieldAccessDescr ) {
+            ds = visit( (FieldAccessDescr) descr.getDataSource(),
+                        parent );
+        } else if ( descr.getDataSource() instanceof FunctionCallDescr ) {
+            ds = visit( (FunctionCallDescr) descr.getDataSource(),
+                        parent );
+        } else if ( descr.getDataSource() instanceof MethodAccessDescr ) {
+            ds = visit( (MethodAccessDescr) descr.getDataSource(),
+                        parent );
+        }
+
         from.setDataSourceGuid( ds.getGuid() );
         from.setDataSourceType( ds.getVerifierComponentType() );
         from.setParentGuid( parent.getGuid() );
         from.setParentType( parent.getVerifierComponentType() );
 
+        data.add( from );
+
         return from;
+    }
+
+    private VerifierEntryPointDescr visit(EntryPointDescr descr,
+                                          VerifierComponent parent) throws UnknownDescriptionException {
+        // Check if already exists
+        VerifierEntryPointDescr entryPoint = data.getEntryPointByEntryId( descr.getEntryId() );
+
+        if ( entryPoint == null ) {
+            entryPoint = new VerifierEntryPointDescr();
+
+            entryPoint.setEntryId( descr.getEntryId() );
+
+            data.add( entryPoint );
+        }
+
+        return entryPoint;
     }
 
     private VerifierAccumulateDescr visit(AccumulateDescr descr,
@@ -380,6 +426,8 @@ public class PackageDescrVisitor {
         accumulate.setParentGuid( parent.getGuid() );
         accumulate.setParentType( parent.getVerifierComponentType() );
 
+        data.add( accumulate );
+
         return accumulate;
     }
 
@@ -393,6 +441,8 @@ public class PackageDescrVisitor {
         collect.setParentGuid( parent.getGuid() );
         collect.setParentType( parent.getVerifierComponentType() );
 
+        data.add( collect );
+
         return collect;
     }
 
@@ -404,6 +454,9 @@ public class PackageDescrVisitor {
         accessor.setParentGuid( parent.getGuid() );
         accessor.setParentType( parent.getVerifierComponentType() );
         // TODO: I wonder what this descr does.
+
+        data.add( accessor );
+
         return accessor;
     }
 
@@ -422,6 +475,8 @@ public class PackageDescrVisitor {
         accessor.setParentGuid( parent.getGuid() );
         accessor.setParentType( parent.getVerifierComponentType() );
 
+        data.add( accessor );
+
         return accessor;
     }
 
@@ -439,6 +494,8 @@ public class PackageDescrVisitor {
         accessor.setOrderNumber( orderNumber );
         accessor.setParentGuid( parent.getGuid() );
         accessor.setParentType( parent.getVerifierComponentType() );
+
+        data.add( accessor );
 
         return accessor;
     }
@@ -466,9 +523,16 @@ public class PackageDescrVisitor {
         currentRule = rule;
 
         rule.setRuleName( descr.getName() );
-        rule.setRuleSalience( descr.getSalience() );
-        rule.setConsequence( visitConsequence( rule,
-                                               descr.getConsequence() ) );
+
+        for ( AttributeDescr attribute : descr.getAttributes().values() ) {
+            rule.getAttributes().put( attribute.getName(),
+                                      attribute.getValue() );
+        }
+
+        Consequence consequence = visitConsequence( rule,
+                                                    descr.getConsequence() );
+        rule.setConsequenceGuid( consequence.getGuid() );
+        rule.setConsequenceType( consequence.getConsequenceType() );
         rule.setLineNumber( descr.getLine() );
         rule.setPackageGuid( currentPackage.getGuid() );
         rule.setParentGuid( parent.getGuid() );
@@ -605,16 +669,21 @@ public class PackageDescrVisitor {
             data.add( variable );
         }
 
+        Source source;
         // visit source.
         if ( descr.getSource() != null ) {
-            VerifierComponent source = visit( descr.getSource(),
-                                              pattern );
-            pattern.setSourceGuid( source.getGuid() );
-            pattern.setSourceType( source.getVerifierComponentType() );
+            source = visit( descr.getSource(),
+                            pattern );
         } else {
-            pattern.setSourceGuid( null );
-            pattern.setSourceType( VerifierComponentType.UNKNOWN );
+            if ( workingMemory == null ) {
+                workingMemory = new WorkingMemory();
+                data.add( workingMemory );
+            }
+            source = workingMemory;
         }
+        pattern.setSourceGuid( source.getGuid() );
+        pattern.setSourceType( source.getVerifierComponentType() );
+
         solvers.startPatternSolver( pattern );
         visit( descr.getConstraint(),
                pattern,
@@ -916,11 +985,22 @@ public class PackageDescrVisitor {
 
     private void formPossibilities() {
 
-        for ( SubPattern possibility : solvers.getPatternPossibilities() ) {
-            data.add( possibility );
+        for ( SubPattern subPattern : solvers.getPatternPossibilities() ) {
+            Pattern pattern = data.getVerifierObject( VerifierComponentType.PATTERN,
+                                                      subPattern.getPatternGuid() );
+
+            subPattern.setPattern( pattern );
+
+            data.add( subPattern );
         }
-        for ( SubRule possibility : solvers.getRulePossibilities() ) {
-            data.add( possibility );
+
+        for ( SubRule subRule : solvers.getRulePossibilities() ) {
+            VerifierRule rule = data.getVerifierObject( VerifierComponentType.RULE,
+                                                        subRule.getRuleGuid() );
+
+            subRule.setRule( rule );
+
+            data.add( subRule );
         }
     }
 }

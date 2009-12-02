@@ -1,0 +1,121 @@
+#created on: 8.1.2008
+package org.drools.verifier.subsumption.patterns
+
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternComponent;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.Source;
+import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.Subsumption;
+import org.drools.verifier.report.components.CauseType;
+
+
+#declare any global variables here
+
+
+#
+# Fires when two pattern possibilities are subsumptant.
+# Creates a Subsumption object.
+#
+# Dependencies: Needs at least one rule.
+#
+#		package org.drools.verifier.redundancy.patterns
+#			rule "Find redundant Patterns with restrictions"
+#			rule "Find redundant Patterns without restrictions"
+#
+# Example 1: P( x == 10 ) and P( x == 10 && y == 20 )
+#
+rule "Find subsumptant sub patterns, subsumptant source"
+	when
+	
+		$subPattern1 :SubPattern()
+		$subPattern2 :SubPattern( 
+			guid != $subPattern1.guid,
+			objectTypeGuid == $subPattern1.objectTypeGuid,
+			# TODO: Check these. Should work with the idea of subsumption.
+			patternNot == $subPattern1.patternNot,
+			patternExists == $subPattern1.patternExists,
+			patternForall == $subPattern1.patternForall 
+		)
+		# Check if sources are equal or subsumptant 
+		$sourceSubsumption :Subsumption(
+			left.causeType == CauseType.SOURCE
+		)
+		Source(
+			guid == $subPattern1.sourceGuid,
+			verifierComponentType == $subPattern1.sourceType,
+			this == $sourceSubsumption.left
+		)	
+		Source(
+			guid == $subPattern2.sourceGuid,
+			verifierComponentType == $subPattern2.sourceType,
+			this == $sourceSubsumption.right
+		)
+		
+		# For every restriction in $subPattern1 there is a subsumption to a restriction in $subPattern2.
+		forall (
+			$leftPatternComponent :PatternComponent(
+			) from $subPattern1.items
+				
+			Subsumption(
+				left == $leftPatternComponent,
+				right memberOf $subPattern2.items
+			)
+		)
+#		not Subsumption(
+#				left memberOf $subPattern1.items,
+#				right not memberOf $subPattern2.items
+#		)
+	then
+		insert( new Subsumption( $subPattern1, $subPattern2 ) );
+end
+
+#
+# Fires when two pattern possibilities are subsumptant.
+# Creates a Subsumption object.
+#
+# Dependencies: Needs at least one rule.
+#
+#		package org.drools.verifier.redundancy.patterns
+#			rule "Find redundant Patterns with restrictions"
+#			rule "Find redundant Patterns without restrictions"
+#
+# Example 1: P( x == 10 ) and P( x == 10 && y == 20 )
+#
+rule "Find subsumptant sub patterns, same source"
+	when
+	
+		$subPattern1 :SubPattern()
+		$subPattern2 :SubPattern( 
+			guid != $subPattern1.guid,
+			objectTypeGuid == $subPattern1.objectTypeGuid,
+			# TODO: Check these. Should work with the idea of subsumption.
+			patternNot == $subPattern1.patternNot,
+			patternExists == $subPattern1.patternExists,
+			patternForall == $subPattern1.patternForall 
+		)
+		# Check if sources are equal or subsumptant #
+		Source(
+				guid == $subPattern1.sourceGuid && == $subPattern2.sourceGuid,
+				verifierComponentType == $subPattern1.sourceType && == $subPattern2.sourceType 
+		)	
+
+		# For every restriction in $subPattern1 there is a subsumption to a restriction in $subPattern2.
+		forall (
+			$leftPatternComponent :PatternComponent(
+			) from $subPattern1.items
+						
+			Subsumption(
+				left == $leftPatternComponent,
+				right memberOf $subPattern2.items
+			)
+		)
+#		not Subsumption(
+#				left memberOf $subPattern1.items,
+#				right not memberOf $subPattern2.items
+#		)
+	then
+		insert( new Subsumption( $subPattern1, $subPattern2 ) );
+end

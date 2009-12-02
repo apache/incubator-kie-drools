@@ -4,7 +4,7 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierAccumulateDescr extends PatternComponent {
+public class VerifierAccumulateDescr extends Source {
 
     private String   inputPatternGuid;
     private String   initCode;

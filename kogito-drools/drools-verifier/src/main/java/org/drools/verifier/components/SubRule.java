@@ -2,9 +2,10 @@ package org.drools.verifier.components;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import org.drools.verifier.report.components.Cause;
+import org.drools.verifier.components.Consequence.ConsequenceType;
 import org.drools.verifier.report.components.CauseType;
 
 /**
@@ -18,15 +19,17 @@ public class SubRule extends RuleComponent
     implements
     Serializable,
     Possibility {
-    private static final long serialVersionUID = 8871361928380977116L;
+    private static final long  serialVersionUID = 8871361928380977116L;
 
-    private Set<Cause>        items            = new HashSet<Cause>();
+    private Set<RuleComponent> items            = new HashSet<RuleComponent>();
+
+    private VerifierRule       rule;
 
     public CauseType getCauseType() {
-        return CauseType.RULE_POSSIBILITY;
+        return CauseType.SUB_RULE;
     }
 
-    public Set<Cause> getItems() {
+    public Set<RuleComponent> getItems() {
         return items;
     }
 
@@ -38,12 +41,32 @@ public class SubRule extends RuleComponent
         items.add( patternPossibility );
     }
 
+    public void setRule(VerifierRule rule) {
+        this.rule = rule;
+    }
+
+    public VerifierRule getRule() {
+        return rule;
+    }
+
+    public String getConsequenceGuid() {
+        return rule.getConsequenceGuid();
+    }
+
+    public ConsequenceType getConsequenceType() {
+        return rule.getConsequenceType();
+    }
+
+    public Map<String, String> getAttributes() {
+        return rule.getAttributes();
+    }
+
     @Override
     public String toString() {
         return "RulePossibility from rule: " + getRuleName() + ", amount of items:" + items.size();
     }
 
     public VerifierComponentType getVerifierComponentType() {
-        return VerifierComponentType.RULE_POSSIBILITY;
+        return VerifierComponentType.SUB_RULE;
     }
 }

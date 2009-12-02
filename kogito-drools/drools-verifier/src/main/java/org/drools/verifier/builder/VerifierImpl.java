@@ -27,12 +27,13 @@ import org.drools.verifier.misc.RuleLoader;
  * 
  * @author Toni Rikkola
  */
-class VerifierImpl
+public class VerifierImpl
     implements
     Verifier {
 
     private KnowledgeBase               verifierKnowledgeBase;
     private StatefulKnowledgeSession    ksession;
+
     private final VerifierConfiguration conf;
 
     private List<VerifierError>         errors = new ArrayList<VerifierError>();
@@ -45,6 +46,10 @@ class VerifierImpl
 
     public VerifierImpl() {
         this.conf = new DefaultVerifierConfiguration();
+    }
+
+    public StatefulKnowledgeSession getKnowledgeSession() {
+        return ksession;
     }
 
     /*
