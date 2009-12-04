@@ -17,7 +17,6 @@ import junit.framework.TestCase;
 import org.drools.Alarm;
 import org.drools.Cell;
 import org.drools.Cheese;
-import org.drools.ClockType;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -40,12 +39,10 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
-import org.drools.conf.Option;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.process.instance.ProcessInstance;
@@ -56,12 +53,7 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
-import org.drools.time.impl.CronTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
-import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJob;
-import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
-
-import sun.net.dns.ResolverConfiguration.Options;
 
 public class ExecutionFlowControlTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -941,9 +933,10 @@ public class ExecutionFlowControlTest extends TestCase {
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
         timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
         
@@ -1028,6 +1021,62 @@ public class ExecutionFlowControlTest extends TestCase {
         ksession.fireAllRules();        
         assertEquals( 2, list.size() );                   
     }        
+    
+    public void testCalendarNormalActivation() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  duration (cron:15 * * * * ?) ";
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+        
+        ksession.setGlobal( "list", list );
+  
+        ksession.fireAllRules();        
+        assertEquals( 0, list.size() ); 
+                
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();        
+        assertEquals( 0, list.size() ); 
+                 
+        timeService.advanceTime( 10, TimeUnit.SECONDS );            
+        ksession.fireAllRules();        
+        assertEquals( 1, list.size() ); 
+        
+        timeService.advanceTime( 30, TimeUnit.SECONDS );   
+        ksession.fireAllRules();        
+        assertEquals( 1, list.size() ); 
+        
+        timeService.advanceTime( 30, TimeUnit.SECONDS );  
+        ksession.fireAllRules();        
+        assertEquals( 2, list.size() );                   
+    }         
 
     public void testFireRuleAfterDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
