@@ -532,7 +532,7 @@ public class MVELDialect
         String[] pkgImports = new String[this.packageImports.size()];
         int i = 0;
         for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
-            pkgImports[i] = (String) it.next();
+            pkgImports[i++] = (String) it.next();
         }
 
         //String[] imports = new String[this.imports.size()];
