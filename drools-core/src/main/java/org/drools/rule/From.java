@@ -37,7 +37,7 @@ public class From extends ConditionalElement
     }
     
     public void wire(Object object) {
-        this.dataProvider = ( DataProvider ) dataProvider;
+        this.dataProvider = ( DataProvider ) object;
     }    
 
     public DataProvider getDataProvider() {
