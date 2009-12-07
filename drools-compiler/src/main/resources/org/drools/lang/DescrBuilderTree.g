@@ -195,7 +195,7 @@ rule_attribute returns [AttributeDescr attributeDescr]
 	:	(^(attrName=VK_SALIENCE (value=INT|value=VT_PAREN_CHUNK)) 
 	|	^(attrName=VK_NO_LOOP value=BOOL?)  
 	|	^(attrName=VK_AGENDA_GROUP value=STRING)  
-	|	^(attrName=VK_DURATION (value=INT|value=VT_PAREN_CHUNK))   
+	|	^(attrName=VK_TIMER (value=INT|value=VT_PAREN_CHUNK))   
 	|	^(attrName=VK_ACTIVATION_GROUP value=STRING) 
 	|	^(attrName=VK_AUTO_FOCUS value=BOOL?) 
 	|	^(attrName=VK_DATE_EFFECTIVE value=STRING) 

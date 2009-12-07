@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/lang/Tree2TestDRL.g 2009-05-01 12:52:49
+// $ANTLR 3.1.1 src/main/resources/org/drools/lang/Tree2TestDRL.g 2009-12-07 14:23:02
 
 	package org.drools.lang;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Tree2TestDRL extends TreeParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_DURATION", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "VK_OPERATOR", "VK_END", "VK_INIT", "SEMICOLON", "ID", "DOT", "DOT_STAR", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_TIMER", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "VK_OPERATOR", "VK_END", "VK_INIT", "SEMICOLON", "ID", "DOT", "DOT_STAR", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "VK_DURATION"
     };
     public static final int COMMA=87;
     public static final int VT_PATTERN_TYPE=39;
@@ -30,6 +30,7 @@ public class Tree2TestDRL extends TreeParser {
     public static final int VT_SLOT=15;
     public static final int VT_PACKAGE_ID=40;
     public static final int LEFT_SQUARE=110;
+    public static final int VK_TIMER=53;
     public static final int SH_STYLE_SINGLE_LINE_COMMENT=122;
     public static final int VT_DATA_TYPE=38;
     public static final int VT_FACT=6;
@@ -50,11 +51,11 @@ public class Tree2TestDRL extends TreeParser {
     public static final int STRING=85;
     public static final int VK_AND=72;
     public static final int VT_ACCESSOR_ELEMENT=37;
-    public static final int VK_GLOBAL=66;
     public static final int VT_ACCUMULATE_INIT_CLAUSE=27;
+    public static final int VK_GLOBAL=66;
     public static final int VK_REVERSE=76;
     public static final int VT_BEHAVIOR=21;
-    public static final int VK_DURATION=53;
+    public static final int VK_DURATION=127;
     public static final int VT_SQUARE_CHUNK=19;
     public static final int VK_FORALL=74;
     public static final int VT_PAREN_CHUNK=20;
@@ -194,7 +195,7 @@ public class Tree2TestDRL extends TreeParser {
                     int alt2=2;
                     int LA2_0 = input.LA(1);
 
-                    if ( (LA2_0==VT_FUNCTION_IMPORT||(LA2_0>=VK_DATE_EFFECTIVE && LA2_0<=VK_ENABLED)||LA2_0==VK_RULE||LA2_0==VK_IMPORT||(LA2_0>=VK_TEMPLATE && LA2_0<=VK_GLOBAL)) ) {
+                    if ( (LA2_0==VT_FUNCTION_IMPORT||(LA2_0>=VK_DATE_EFFECTIVE && LA2_0<=VK_RULEFLOW_GROUP)||(LA2_0>=VK_DIALECT && LA2_0<=VK_ENABLED)||LA2_0==VK_RULE||LA2_0==VK_IMPORT||(LA2_0>=VK_TEMPLATE && LA2_0<=VK_GLOBAL)||LA2_0==VK_DURATION) ) {
                         alt2=1;
                     }
 
@@ -339,10 +340,10 @@ public class Tree2TestDRL extends TreeParser {
             case VK_ACTIVATION_GROUP:
             case VK_AGENDA_GROUP:
             case VK_RULEFLOW_GROUP:
-            case VK_DURATION:
             case VK_DIALECT:
             case VK_SALIENCE:
             case VK_ENABLED:
+            case VK_DURATION:
                 {
                 alt4=1;
                 }
@@ -1432,7 +1433,7 @@ public class Tree2TestDRL extends TreeParser {
                 int alt21=2;
                 int LA21_0 = input.LA(1);
 
-                if ( ((LA21_0>=VK_DATE_EFFECTIVE && LA21_0<=VK_ENABLED)) ) {
+                if ( ((LA21_0>=VK_DATE_EFFECTIVE && LA21_0<=VK_RULEFLOW_GROUP)||(LA21_0>=VK_DIALECT && LA21_0<=VK_ENABLED)||LA21_0==VK_DURATION) ) {
                     alt21=1;
                 }
 
@@ -3674,8 +3675,8 @@ public class Tree2TestDRL extends TreeParser {
  
 
     public static final BitSet FOLLOW_VT_COMPILATION_UNIT_in_compilation_unit43 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_package_statement_in_compilation_unit45 = new BitSet(new long[]{0xD5FFE00000000028L,0x0000000000000007L});
-    public static final BitSet FOLLOW_statement_in_compilation_unit48 = new BitSet(new long[]{0xD5FFE00000000028L,0x0000000000000007L});
+    public static final BitSet FOLLOW_package_statement_in_compilation_unit45 = new BitSet(new long[]{0xD5DFE00000000028L,0x8000000000000007L});
+    public static final BitSet FOLLOW_statement_in_compilation_unit48 = new BitSet(new long[]{0xD5DFE00000000028L,0x8000000000000007L});
     public static final BitSet FOLLOW_VK_PACKAGE_in_package_statement63 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_package_id_in_package_statement65 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_PACKAGE_ID_in_package_id78 = new BitSet(new long[]{0x0000000000000004L});
@@ -3745,8 +3746,8 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_WHEN_in_when_part440 = new BitSet(new long[]{0x0000100000400000L});
     public static final BitSet FOLLOW_lhs_block_in_when_part442 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_VT_RULE_ATTRIBUTES_in_rule_attributes454 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_ATTRIBUTES_in_rule_attributes456 = new BitSet(new long[]{0x01FFE00000000000L});
-    public static final BitSet FOLLOW_rule_attribute_in_rule_attributes459 = new BitSet(new long[]{0x01FFE00000000008L});
+    public static final BitSet FOLLOW_VK_ATTRIBUTES_in_rule_attributes456 = new BitSet(new long[]{0x01DFE00000000000L,0x8000000000000000L});
+    public static final BitSet FOLLOW_rule_attribute_in_rule_attributes459 = new BitSet(new long[]{0x01DFE00000000008L,0x8000000000000000L});
     public static final BitSet FOLLOW_VK_SALIENCE_in_rule_attribute473 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_set_in_rule_attribute475 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_NO_LOOP_in_rule_attribute487 = new BitSet(new long[]{0x0000000000000004L});

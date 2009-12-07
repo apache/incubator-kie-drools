@@ -46,7 +46,7 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_DATE_EXPIRES
 					|| token.getType() == DRLLexer.VK_DECLARE
 					|| token.getType() == DRLLexer.VK_DIALECT
-					|| token.getType() == DRLLexer.VK_DURATION
+					|| token.getType() == DRLLexer.VK_TIMER
 					|| token.getType() == DRLLexer.VK_ENABLED
 					|| token.getType() == DRLLexer.VK_ENTRY_POINT
 					|| token.getType() == DRLLexer.VK_EXISTS

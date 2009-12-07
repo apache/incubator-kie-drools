@@ -64,7 +64,7 @@ tokens {
 	VK_ACTIVATION_GROUP;
 	VK_AGENDA_GROUP;
 	VK_RULEFLOW_GROUP;
-	VK_DURATION;
+	VK_TIMER;
 	VK_DIALECT;
 	VK_SALIENCE;
 	VK_ENABLED;
@@ -675,7 +675,8 @@ finally {
 			input.consume();
 		} else if (input.LA(2) == EOF && input.LA(1) == ID && 
 				(validateLT(1, DroolsSoftKeywords.DIALECT) || validateLT(1, DroolsSoftKeywords.ENABLED) ||
-				 validateLT(1, DroolsSoftKeywords.SALIENCE) || validateLT(1, DroolsSoftKeywords.DURATION))){
+				 validateLT(1, DroolsSoftKeywords.SALIENCE) || validateLT(1, DroolsSoftKeywords.DURATION) ||
+				 validateLT(1, DroolsSoftKeywords.TIMER))){
 			emit(input.LT(1), DroolsEditorType.KEYWORD);
 			emit(Location.LOCATION_RULE_HEADER_KEYWORD);
 			input.consume();
@@ -712,7 +713,7 @@ rule_attribute
 	:	salience 
 	|	no_loop
 	|	agenda_group  
-	|	duration  
+	|	timer  
 	|	activation_group 
 	|	auto_focus 
 	|	date_effective 
@@ -779,8 +780,8 @@ agenda_group
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
 	;
 
-duration
-	:	duration_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} 
+timer
+	:	(duration_key^|timer_key^) {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} 
 	    ( INT {	emit($INT, DroolsEditorType.NUMERIC_CONST );	}
 	    | paren_chunk
 	    )
@@ -1537,10 +1538,17 @@ entry_point_key
 		->	VK_ENTRY_POINT[$start, text]
 	;
 
+timer_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.TIMER))}?=>  id=ID
+	{	emit($id, DroolsEditorType.KEYWORD);	}
+		->	VK_TIMER[$id]
+	;
+
+// duration keyword is deprecated but still supported
 duration_key
 	:	{(validateIdentifierKey(DroolsSoftKeywords.DURATION))}?=>  id=ID
 	{	emit($id, DroolsEditorType.KEYWORD);	}
-		->	VK_DURATION[$id]
+		->	VK_TIMER[$id]
 	;
 
 package_key
