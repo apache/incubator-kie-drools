@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/semantics/java/parser/Java.g 2009-12-07 14:23:07
+// $ANTLR 3.1.1 src/main/resources/org/drools/semantics/java/parser/Java.g 2009-12-07 17:31:07
 
 	package org.drools.rule.builder.dialect.java.parser;
 	import java.util.Iterator;
