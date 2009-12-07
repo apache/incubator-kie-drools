@@ -38,7 +38,7 @@ public class VerifierTest extends TestCase {
         assertNotNull( result );
         assertEquals( 0,
                       result.getBySeverity( Severity.ERROR ).size() );
-        assertEquals( 10,
+        assertEquals( 6,
                       result.getBySeverity( Severity.WARNING ).size() );
         assertEquals( 5,
                       result.getBySeverity( Severity.NOTE ).size() );

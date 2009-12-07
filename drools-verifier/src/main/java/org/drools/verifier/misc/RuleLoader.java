@@ -43,106 +43,133 @@ public class RuleLoader {
         return kbuilder.getKnowledgePackages();
     }
 
+    private static String[] defaultList = new String[]{
+                                        //Missing consequence              
+            "Consequence.drl",
+            // Always false
+            "alwaysFalse/Patterns.drl",
+            // Incoherence
+            "incoherence/Patterns.drl", "incoherence/Restrictions.drl",
+            // Incompatibility
+            "incompatibility/Patterns.drl", "incompatibility/Restrictions.drl",
+            // Missing equality                                            
+            "missingEquality/MissingEquality.drl",
+            // Opposites
+            "opposites/Patterns.drl", "opposites/Restrictions.drl", "opposites/Rules.drl",
+            // Optimization
+            "optimisation/PatternOrder.drl",
+            // Overlaps
+            "overlaps/Restrictions.drl",
+            // Range checks
+            "rangeChecks/Clean.drl", "rangeChecks/Dates.drl", "rangeChecks/Doubles.drl", "rangeChecks/Integers.drl",
+            //         Redundancy
+            "redundancy/Redundancy.drl", "redundancy/Notes.drl", "redundancy/Warnings.drl",
+            // Subsumption
+            "subsumption/Consequences.drl", "subsumption/Restrictions.drl", "subsumption/SubPatterns.drl", "subsumption/SubRules.drl"};
+
     public static Map<Resource, ResourceType> basicRulesForFullKnowledgeBase() {
         Map<Resource, ResourceType> resources = new HashMap<Resource, ResourceType>();
 
-        // Missing consequence
-        resources.put( ResourceFactory.newClassPathResource( "Consequence.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Always false
-        resources.put( ResourceFactory.newClassPathResource( "alwaysFalse/Patterns.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Incoherence
-        resources.put( ResourceFactory.newClassPathResource( "incoherence/Patterns.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "incoherence/Restrictions.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Incompatibility
-        resources.put( ResourceFactory.newClassPathResource( "incompatibility/Patterns.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "incompatibility/Restrictions.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Missing equality
-        resources.put( ResourceFactory.newClassPathResource( "missingEquality/MissingEquality.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Opposites
-        resources.put( ResourceFactory.newClassPathResource( "opposites/Patterns.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "opposites/Restrictions.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "opposites/Rules.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Optimization
-        resources.put( ResourceFactory.newClassPathResource( "optimisation/PatternOrder.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // TODO: The DRL needs more work
-        //        resources.put( ResourceFactory.newClassPathResource( "optimisation/RestrictionOrder.drl",
+        for ( int i = 0; i < defaultList.length; i++ ) {
+            resources.put( ResourceFactory.newClassPathResource( defaultList[i],
+                                                                 Verifier.class ),
+                           ResourceType.DRL );
+        }
+
+        //        // Missing consequence
+        //        resources.put( ResourceFactory.newClassPathResource( "Consequence.drl",
         //                                                             Verifier.class ),
         //                       ResourceType.DRL );
-        // Overlaps
-        resources.put( ResourceFactory.newClassPathResource( "overlaps/Restrictions.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "overlaps/Restrictions.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Range checks
-        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Clean.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Dates.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Doubles.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Integers.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-//        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/NumberPatterns.drl",
-//                                                             Verifier.class ),
-//                       ResourceType.DRL );
-//        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Variables.drl",
-//                                                             Verifier.class ),
-//                       ResourceType.DRL );
-        //         Redundancy
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Redundancy.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Notes.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "redundancy/Warnings.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Reporting
-        resources.put( ResourceFactory.newClassPathResource( "reports/RangeCheckReports.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        // Subsumption
-        resources.put( ResourceFactory.newClassPathResource( "subsumption/Consequences.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "subsumption/Restrictions.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "subsumption/SubPatterns.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
-        resources.put( ResourceFactory.newClassPathResource( "subsumption/SubRules.drl",
-                                                             Verifier.class ),
-                       ResourceType.DRL );
+        //        // Always false
+        //        resources.put( ResourceFactory.newClassPathResource( "alwaysFalse/Patterns.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Incoherence
+        //        resources.put( ResourceFactory.newClassPathResource( "incoherence/Patterns.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "incoherence/Restrictions.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Incompatibility
+        //        resources.put( ResourceFactory.newClassPathResource( "incompatibility/Patterns.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "incompatibility/Restrictions.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Missing equality
+        //        resources.put( ResourceFactory.newClassPathResource( "missingEquality/MissingEquality.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Opposites
+        //        resources.put( ResourceFactory.newClassPathResource( "opposites/Patterns.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "opposites/Restrictions.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "opposites/Rules.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Optimization
+        //        resources.put( ResourceFactory.newClassPathResource( "optimisation/PatternOrder.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // TODO: The DRL needs more work
+        //        //        resources.put( ResourceFactory.newClassPathResource( "optimisation/RestrictionOrder.drl",
+        //        //                                                             Verifier.class ),
+        //        //                       ResourceType.DRL );
+        //        // Overlaps
+        //        resources.put( ResourceFactory.newClassPathResource( "overlaps/Restrictions.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Range checks
+        //        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Clean.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Dates.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Doubles.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Integers.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        //        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/NumberPatterns.drl",
+        //        //                                                             Verifier.class ),
+        //        //                       ResourceType.DRL );
+        //        //        resources.put( ResourceFactory.newClassPathResource( "rangeChecks/Variables.drl",
+        //        //                                                             Verifier.class ),
+        //        //                       ResourceType.DRL );
+        //        //         Redundancy
+        //        resources.put( ResourceFactory.newClassPathResource( "redundancy/Redundancy.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "redundancy/Notes.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "redundancy/Warnings.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Reporting
+        //        resources.put( ResourceFactory.newClassPathResource( "reports/RangeCheckReports.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        // Subsumption
+        //        resources.put( ResourceFactory.newClassPathResource( "subsumption/Consequences.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "subsumption/Restrictions.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "subsumption/SubPatterns.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
+        //        resources.put( ResourceFactory.newClassPathResource( "subsumption/SubRules.drl",
+        //                                                             Verifier.class ),
+        //                       ResourceType.DRL );
 
         return resources;
     }
