@@ -2207,6 +2207,58 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    public void testCalendars() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "rule",
+                                                          "rule_calendars_attribute.drl" );
+        assertEquals( "simple_rule",
+                      rule.getName() );
+        assertEqualsIgnoreWhitespace( "bar();",
+                                      (String) rule.getConsequence() );
+
+        final Map<String, AttributeDescr> attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+
+        AttributeDescr at = (AttributeDescr) attrs.get( "calendars" );
+        assertEquals( "calendars",
+                      at.getName() );
+        assertEquals( "[ \"cal1\" ]",
+                      at.getValue() );
+
+        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        assertEquals( "lock-on-active",
+                      at.getName() );
+        assertEquals( "true",
+                      at.getValue() );
+    }
+
+    public void testCalendars2() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "rule",
+                                                          "rule_calendars_attribute2.drl" );
+        assertEquals( "simple_rule",
+                      rule.getName() );
+        assertEqualsIgnoreWhitespace( "bar();",
+                                      (String) rule.getConsequence() );
+
+        final Map<String, AttributeDescr> attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+
+        AttributeDescr at = (AttributeDescr) attrs.get( "calendars" );
+        assertEquals( "calendars",
+                      at.getName() );
+        assertEquals( "[ \"cal 1\", \"cal 2\", \"cal 3\" ]",
+                      at.getValue() );
+
+        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        assertEquals( "lock-on-active",
+                      at.getName() );
+        assertEquals( "true",
+                      at.getValue() );
+    }
+
     public void testAttributes_alternateSyntax() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule",

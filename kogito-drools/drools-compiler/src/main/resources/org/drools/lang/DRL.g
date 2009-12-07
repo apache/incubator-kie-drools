@@ -65,6 +65,7 @@ tokens {
 	VK_AGENDA_GROUP;
 	VK_RULEFLOW_GROUP;
 	VK_TIMER;
+	VK_CALENDARS;
 	VK_DIALECT;
 	VK_SALIENCE;
 	VK_ENABLED;
@@ -722,6 +723,7 @@ rule_attribute
 	|	ruleflow_group 
 	|	lock_on_active
 	|	dialect 
+	|   calendars
 	;
 finally {
 	if (isEditorInterfaceEnabled && isFailed) {
@@ -787,6 +789,20 @@ timer
 	    )
 	;	
 	
+calendars
+	:	calendars_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} string_list
+	;
+
+string_list
+@init {
+    StringBuilder buf = new StringBuilder();
+}
+	:	first=STRING { buf.append( "[ "+ $first.text ); }
+	   (',' next=STRING { buf.append( ", " + $next.text ); } )* 
+	-> STRING[$first,buf.toString()+" ]"]
+	;
+
+
 dialect
 	:	dialect_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
@@ -1549,6 +1565,12 @@ duration_key
 	:	{(validateIdentifierKey(DroolsSoftKeywords.DURATION))}?=>  id=ID
 	{	emit($id, DroolsEditorType.KEYWORD);	}
 		->	VK_TIMER[$id]
+	;
+
+calendars_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.CALENDARS))}?=>  id=ID
+	{	emit($id, DroolsEditorType.KEYWORD);	}
+		->	VK_CALENDARS[$id]
 	;
 
 package_key
