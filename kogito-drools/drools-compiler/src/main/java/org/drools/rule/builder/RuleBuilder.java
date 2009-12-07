@@ -22,6 +22,7 @@ import java.util.Calendar;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
+import org.drools.lang.DroolsSoftKeywords;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -114,7 +115,7 @@ public class RuleBuilder {
             } else if ( name.equals( "lock-on-active" ) ) {
                 rule.setLockOnActive( getBooleanValue( attributeDescr,
                                                        true ) );
-            } else if ( name.equals( "duration" ) ) {
+            } else if ( name.equals( DroolsSoftKeywords.DURATION ) || name.equals( DroolsSoftKeywords.TIMER ) ) {
                 String duration = attributeDescr.getValue();
                 buildTimer( rule, duration, context);
             } else if ( name.equals( "date-effective" ) ) {
