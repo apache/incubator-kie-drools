@@ -1,0 +1,9 @@
+
+rule simple_rule 
+		calendars "cal 1", "cal 2", "cal 3"
+		lock-on-active true
+	when
+		Foo()
+	then
+		bar();
+end
