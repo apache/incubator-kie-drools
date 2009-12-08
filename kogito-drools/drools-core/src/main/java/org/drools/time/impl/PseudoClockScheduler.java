@@ -27,6 +27,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.SystemEventListenerFactory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.time.Job;
@@ -118,7 +119,7 @@ public class PseudoClockScheduler
      * @see org.drools.time.TimerService#removeJob(org.drools.time.JobHandle)
      */
     public boolean removeJob(JobHandle jobHandle) {
-        return this.queue.remove( ((DefaultJobHandle) jobHandle).getJob() );
+        return this.queue.remove( ((DefaultJobHandle) jobHandle).getScheduledJob() );
     }
 
     /**
@@ -158,7 +159,8 @@ public class PseudoClockScheduler
 
     private void runCallBacks() {
         ScheduledJob item = queue.peek();
-        while ( item != null && (item.getTrigger().hasNextFireTime().getTime() <= this.timer) ) {
+        long fireTime;
+        while ( item != null && ((fireTime = item.getTrigger().hasNextFireTime().getTime()) <= this.timer) ) {
             // remove the head
             queue.remove();
             
@@ -167,17 +169,25 @@ public class PseudoClockScheduler
             
             if ( item.getTrigger().hasNextFireTime() != null ) {
                 // reschedule for the next fire time, if one exists
-                queue.add( item );               
+                queue.add( item );
             }
+            // save the current timer because we are going to override to to the job's trigger time
+            long savedTimer = this.timer;
             try {
+                // set the clock back to the trigger's fire time
+                this.timer = fireTime;
                 // execute the call
                 item.call();
             } catch ( Exception e ) {
-                e.printStackTrace();
+                SystemEventListenerFactory.getSystemEventListener().exception( e );
+            } finally {
+                this.timer = savedTimer;
             }
             // get next head
             item = queue.peek();
-        }
+        } 
+        
+
     }
 
     public synchronized long getTimeToNextJob() {
@@ -191,7 +201,7 @@ public class PseudoClockScheduler
      *  
      * @author etirelli
      */
-    private static final class ScheduledJob
+    public static final class ScheduledJob
         implements
         Comparable<ScheduledJob>,
         Callable<Void>,
@@ -239,7 +249,7 @@ public class PseudoClockScheduler
         }
 
         public JobHandle getHandle() {
-            return new DefaultJobHandle( this.job );
+            return new DefaultJobHandle( this );
         }
 
         public String toString() {
