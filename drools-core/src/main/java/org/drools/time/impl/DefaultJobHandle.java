@@ -19,6 +19,7 @@ package org.drools.time.impl;
 
 import org.drools.time.Job;
 import org.drools.time.JobHandle;
+import org.drools.time.impl.PseudoClockScheduler.ScheduledJob;
 
 /**
  * A default implementation for the JobHandle interface
@@ -31,21 +32,25 @@ public class DefaultJobHandle
     
     private static final long serialVersionUID = 5812005196020575395L;
     
-    private final Job     job;
+    private final ScheduledJob     scheduledJob;
 
-    public DefaultJobHandle(Job job) {
-        this.job = job;
+    public DefaultJobHandle(ScheduledJob scheduledJob) {
+        this.scheduledJob = scheduledJob;
     }
 
     public Object getJob() {
-        return job;
+        return scheduledJob.getJob();
     }
 
+    public ScheduledJob getScheduledJob() {
+        return this.scheduledJob;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((job == null) ? 0 : job.hashCode());
+        result = prime * result + ((getJob() == null) ? 0 : getJob().hashCode());
         return result;
     }
 
@@ -55,9 +60,9 @@ public class DefaultJobHandle
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         final DefaultJobHandle other = (DefaultJobHandle) obj;
-        if ( job == null ) {
-            if ( other.job != null ) return false;
-        } else if ( !job.equals( other.job ) ) return false;
+        if ( getJob() == null ) {
+            if ( other.getJob() != null ) return false;
+        } else if ( !getJob().equals( other.getJob() ) ) return false;
         return true;
     }
 }
