@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -249,6 +250,40 @@ public class MVELTest extends TestCase {
         assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|mvel", list.get(4));
         assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|java", list.get(5));
     }
+    
+    public void testPackageImports() throws Exception {
+        String str = "";
+        str += "package org.drools \n";
+        str += "dialect \"mvel\"\n";
+        str += "import org.acme.healthcare.* \n";
+        str += "import org.acme.insurance.* \n";
+        str += "import org.acme.sensors.SensorReading \n";
+        str += "rule rule1 \n";
+        str += "  when \n";
+        str += "    eval(true)\n";
+        str += "  then \n";
+        str += "    insert(new Claim());         // from org.acme.healthcare.* \n";
+        str += "    insert(new Policy());        // from org.acme.insurance.* \n";
+        str += "    insert(new SensorReading()); // from org.acme.sensor.SensorReading \n";
+        str += "end\n";
+        
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        if (kbuilder.hasErrors()) {
+          throw new RuntimeException(kbuilder.getErrors().toString());
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );        
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        int result = ksession.fireAllRules();
+        
+        assertEquals(1, result);
+        Collection<Object> insertedObjects = ksession.getObjects();
+        assertEquals(3, insertedObjects.size());
+    }
+    
 
     private Package compileRule(String drl) throws Exception {
         PackageBuilder builder = new PackageBuilder( new PackageBuilderConfiguration() );
