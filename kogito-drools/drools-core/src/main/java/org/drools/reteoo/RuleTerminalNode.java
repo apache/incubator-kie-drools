@@ -191,17 +191,19 @@ public final class RuleTerminalNode extends BaseNode
             return;
         }
 
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
         // if the current Rule is no-loop and the origin rule is the same and its the same set of facts (tuple) then return
         if ( context.getType() == PropagationContext.MODIFICATION ) {
             if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getLeftTupleOrigin().equals( tuple ) ) {
+                agenda.increaseDormantActivations();
                 return;
             }
         } else if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
+            agenda.increaseDormantActivations();
             return;
         }
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-        
         final Timer timer = this.rule.getTimer();
 
         if ( timer != null ) {
