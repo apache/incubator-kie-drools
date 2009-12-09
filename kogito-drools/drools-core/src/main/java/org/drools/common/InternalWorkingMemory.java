@@ -17,6 +17,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.Calendars;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -102,6 +103,8 @@ public interface InternalWorkingMemory
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     
     public InternalFactHandle getInitialFactHandle();       
+    
+    public Calendars getCalendars();
     
     /**
      * Returns the TimerService instance (session clock) for this

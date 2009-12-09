@@ -44,6 +44,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.Calendars;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
@@ -78,6 +79,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         out.writeObject(timeMachine);
         out.writeObject(globals);
     }
+    
+    public Calendars getCalendars() {
+        return null;
+    }
+    
 	public Iterator iterateObjects() {
 		return this.facts.iterator();
 	}

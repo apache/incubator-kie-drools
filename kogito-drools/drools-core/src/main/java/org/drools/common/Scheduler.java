@@ -17,6 +17,7 @@ package org.drools.common;
  */
 
 import org.drools.Agenda;
+import org.drools.runtime.Calendars;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -43,11 +44,15 @@ final class Scheduler {
      * 
      * @param item
      *            The item to schedule.
+     * @param wm 
      * @param workingMemory
      *            The working memory session.
      */
-    public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda) {
-        Trigger trigger = item.getRule().getTimer().createTrigger( ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime() );
+    public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda, InternalWorkingMemory wm) {
+        String[] calendarNames = item.getRule().getCalendars();
+        Calendars calendars = wm.getCalendars();
+        
+        Trigger trigger = item.getRule().getTimer().createTrigger( ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime(), calendarNames, calendars);
         
         ActivationTimerJob job = new ActivationTimerJob();        
         ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );        

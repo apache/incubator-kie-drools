@@ -53,7 +53,14 @@
 			<artifactId>jetty-embedded</artifactId>
 			<version>6.1.15</version>
 			<scope>test</scope>
-		</dependency>					
+		</dependency>	
+		
+        <dependency>
+  			<groupId>org.opensymphony.quartz</groupId>
+  			<artifactId>quartz</artifactId>
+  			<version>1.6.1</version>
+			<scope>test</scope> 			
+        </dependency> 						
 	</dependencies>
 
 	<profiles>

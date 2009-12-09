@@ -23,7 +23,7 @@ public class CronJobTest extends TestCase {
         
         timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
         
-        CronTrigger trigger = new CronTrigger(date.getTime(), null, null, "15 * * * * ?");
+        CronTrigger trigger = new CronTrigger(date.getTime(), null, null, "15 * * * * ?", null, null);
         
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);    

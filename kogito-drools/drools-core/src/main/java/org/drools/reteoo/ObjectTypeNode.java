@@ -196,7 +196,7 @@ public class ObjectTypeNode extends ObjectSource
                     workingMemory);
             JobHandle handle = clock.scheduleJob(job,
                     jobctx,
-                    new PointInTimeTrigger(nextTimestamp));
+                    new PointInTimeTrigger(nextTimestamp, null, null));
             jobctx.setJobHandle(handle);
         }
 

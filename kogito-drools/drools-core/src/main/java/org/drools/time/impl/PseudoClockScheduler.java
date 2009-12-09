@@ -185,9 +185,7 @@ public class PseudoClockScheduler
             }
             // get next head
             item = queue.peek();
-        } 
-        
-
+        }
     }
 
     public synchronized long getTimeToNextJob() {

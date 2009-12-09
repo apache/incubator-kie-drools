@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
 /**
@@ -35,9 +36,15 @@ public class CompositeMaxDurationTimer
         this.timer = timer;
     }
 
-    public Trigger createTrigger(long timestamp) {
+    public Trigger createTrigger(long timestamp,
+                                 String[] calendarNames,
+                                 Calendars calendars) {
         return new CompositeMaxDurationTrigger( new Date( getMaxDuration() + timestamp ),
-                                                timer.createTrigger( timestamp ) );
+                                                timer.createTrigger( timestamp,
+                                                                     calendarNames,
+                                                                     calendars ),
+                                                calendarNames,
+                                                calendars );
     }
 
     private long getMaxDuration() {

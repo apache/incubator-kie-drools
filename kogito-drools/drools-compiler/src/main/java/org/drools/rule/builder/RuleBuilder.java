@@ -18,6 +18,7 @@ package org.drools.rule.builder;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.List;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
@@ -36,6 +37,7 @@ import org.drools.time.impl.CronTimer;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.time.impl.Timer;
 import org.drools.util.DateUtils;
+import org.mvel2.MVEL;
 
 /**
  * This builds the rule structure from an AST.
@@ -118,6 +120,24 @@ public class RuleBuilder {
             } else if ( name.equals( DroolsSoftKeywords.DURATION ) || name.equals( DroolsSoftKeywords.TIMER ) ) {
                 String duration = attributeDescr.getValue();
                 buildTimer( rule, duration, context);
+            }  else if ( name.equals( "calendars" ) ) {
+                Object val = null;
+                try {
+                    val = MVEL.eval( attributeDescr.getValue() );
+                    String[] calNames = null;
+                    if ( val instanceof List ) {
+                        calNames = ( String[] ) ((List)val).toArray( new String[ ((List)val).size() ] );
+                    } else if ( val instanceof String ) {
+                        calNames = new String[] { (String) val };
+                    } else {
+                        context.getErrors().add( "Calendars attribute did not return a String or String[] '" + val + "'"  );
+                    }
+                    if ( calNames != null ) {
+                        rule.setCalendars( calNames );
+                    }
+                } catch ( Exception e ) {
+                    context.getErrors().add( "Unable to build Calendars attribute '" + val + "'"  + e.getMessage() );
+                }
             } else if ( name.equals( "date-effective" ) ) {
                 final Calendar cal = Calendar.getInstance();
                 cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
@@ -224,7 +244,6 @@ public class RuleBuilder {
                 return;
             }
             timer = new IntervalTimer(null, null, delay, period);
-            //rule.setDuration( TimeUtils.parseTimeString( duration ) );
         } else {
             context.getErrors().add( "Protocol for timer does not exist '" + timerString +"'");
             return;

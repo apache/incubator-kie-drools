@@ -24,7 +24,7 @@ public interface InternalAgenda
 
     public boolean fireNextItem(AgendaFilter filter) throws ConsequenceException;
 
-    public void scheduleItem(final ScheduledAgendaItem item);
+    public void scheduleItem(final ScheduledAgendaItem item, InternalWorkingMemory workingMemory);
 
     public AgendaItem createAgendaItem(final Tuple tuple,
                                        final int salience,

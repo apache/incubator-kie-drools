@@ -53,6 +53,7 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
+import org.drools.time.Calendar;
 import org.drools.time.impl.PseudoClockScheduler;
 
 public class ExecutionFlowControlTest extends TestCase {
@@ -826,8 +827,19 @@ public class ExecutionFlowControlTest extends TestCase {
     }
 
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
-        String str = "package org.drools.test\n" + "import org.drools.Alarm\n" + "global java.util.List list;" + "rule \"COMPTEUR\"\n" + "  duration 50\n" + "  when\n" + "    $alarm : Alarm( number < 5 )\n" + "  then\n"
-                     + "    $alarm.incrementNumber();\n" + "    list.add( $alarm );\n" + "    update($alarm);\n" + "end\n";
+        String str = "";
+        str += "package org.drools.test\n";
+        str += "import org.drools.Alarm\n";
+        str += "global java.util.List list;";
+        str += "rule \"COMPTEUR\"\n";
+        str += "  timer 50\n";
+        str += "  when\n";
+        str += "    $alarm : Alarm( number < 5 )\n";
+        str += "  then\n";
+        str += "    $alarm.incrementNumber();\n";
+        str += "    list.add( $alarm );\n";
+        str += "    update($alarm);\n";
+        str += "end\n";
 
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( str ) );
@@ -913,7 +925,7 @@ public class ExecutionFlowControlTest extends TestCase {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  duration (int:30s 10s) ";
+        str += "  timer (int:30s 10s) ";
         str += "when \n";
         str += "then \n";
         str += "  list.add(\"fired\"); \n";
@@ -971,7 +983,7 @@ public class ExecutionFlowControlTest extends TestCase {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  duration (cron:15 * * * * ?) ";
+        str += "  timer (cron:15 * * * * ?) ";
         str += "when \n";
         str += "then \n";
         str += "  list.add(\"fired\"); \n";
@@ -1022,13 +1034,14 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( 2, list.size() );                   
     }        
     
-    public void testCalendarNormalActivation() throws Exception {
+    public void testCalendarNormalRuleSingleCalendar() throws Exception {
         String str = "";
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  duration (cron:15 * * * * ?) ";
+        str += "  calendars \"cal1\"\n";
         str += "when \n";
+        str += "  String()\n";
         str += "then \n";
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
@@ -1042,6 +1055,151 @@ public class ExecutionFlowControlTest extends TestCase {
             assertTrue( kbuilder.hasErrors() );
         }
 
+        Calendar calFalse = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return false;
+            }           
+        };
+        
+        Calendar calTrue = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return true;
+            }           
+        };        
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );              
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+        
+        ksession.getCalendars().set( "cal1", calTrue );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );     
+        ksession.setGlobal( "list", list );        
+        ksession.insert( "o1" );        
+        ksession.fireAllRules();        
+        assertEquals( 1, list.size() ); 
+                
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.insert( "o2" );
+        ksession.fireAllRules();        
+        assertEquals( 2, list.size() ); 
+        
+        ksession.getCalendars().set( "cal1", calFalse );        
+        timeService.advanceTime( 10, TimeUnit.SECONDS );        
+        ksession.insert( "o3" );
+        ksession.fireAllRules();        
+        assertEquals( 2, list.size() ); 
+        
+        ksession.getCalendars().set( "cal1", calTrue );        
+        timeService.advanceTime( 30, TimeUnit.SECONDS );
+        ksession.insert( "o4" );
+        ksession.fireAllRules();        
+        assertEquals( 3, list.size() );                    
+    }   
+    
+    public void testCalendarNormalRuleMultipleCalendars() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\", \"cal2\"\n";      
+        str += "when \n";
+        str += "  String()\n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }
+
+        Calendar calFalse = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return false;
+            }           
+        };
+        
+        Calendar calTrue = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return true;
+            }           
+        };        
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );              
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+        
+        ksession.getCalendars().set( "cal1", calTrue );
+        ksession.getCalendars().set( "cal2", calTrue );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );     
+        ksession.setGlobal( "list", list );        
+        ksession.insert( "o1" );        
+        ksession.fireAllRules();        
+        assertEquals( 1, list.size() ); 
+
+        ksession.getCalendars().set( "cal2", calFalse );        
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.insert( "o2" );
+        ksession.fireAllRules();        
+        assertEquals( 1, list.size() ); 
+                
+        ksession.getCalendars().set( "cal1", calFalse );            
+        timeService.advanceTime( 10, TimeUnit.SECONDS );    
+        ksession.insert( "o3" );
+        ksession.fireAllRules();        
+        assertEquals( 1, list.size() ); 
+        
+        ksession.getCalendars().set( "cal1", calTrue );
+        ksession.getCalendars().set( "cal2", calTrue );        
+        timeService.advanceTime( 30, TimeUnit.SECONDS );
+        ksession.insert( "o4" );
+        ksession.fireAllRules();        
+        assertEquals( 2, list.size() );                    
+    }      
+    
+    public void testCalendarsWithCron() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\", \"cal2\"\n";           
+        str += "  timer (cron:15 * * * * ?) ";
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }      
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -1056,27 +1214,148 @@ public class ExecutionFlowControlTest extends TestCase {
         
         timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
         
+        final Date date1 = new Date( date.getTime() +  (15 * 1000) );
+        final Date date2 = new Date( date1.getTime() + (60 * 1000) );
+        final Date date3 = new Date( date2.getTime() + (60 * 1000) );
+        final Date date4 = new Date( date3.getTime() + (60 * 1000) );
+        
+        Calendar cal1 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                if ( timestamp == date1.getTime() ) {
+                    return true;
+                } else if ( timestamp == date4.getTime() ) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }           
+        };  
+        
+        Calendar cal2 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+               if ( timestamp == date2.getTime() ) {
+                    return false;
+                }  else if ( timestamp == date3.getTime() ) {
+                    return true;
+                } else {
+                    return true;
+                }
+            }           
+        };          
+        
+        ksession.getCalendars().set( "cal1", cal1 );
+        ksession.getCalendars().set( "cal2", cal2 );
+        
         ksession.setGlobal( "list", list );
-  
-        ksession.fireAllRules();        
-        assertEquals( 0, list.size() ); 
-                
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 0, list.size() ); 
-                 
-        timeService.advanceTime( 10, TimeUnit.SECONDS );            
-        ksession.fireAllRules();        
+                         
+        ksession.fireAllRules();
+        timeService.advanceTime( 20, TimeUnit.SECONDS );       
         assertEquals( 1, list.size() ); 
-        
-        timeService.advanceTime( 30, TimeUnit.SECONDS );   
-        ksession.fireAllRules();        
+                      
+        timeService.advanceTime( 60, TimeUnit.SECONDS );                      
         assertEquals( 1, list.size() ); 
+             
+        timeService.advanceTime( 60, TimeUnit.SECONDS );                  
+        assertEquals( 2, list.size() ); 
         
-        timeService.advanceTime( 30, TimeUnit.SECONDS );  
-        ksession.fireAllRules();        
-        assertEquals( 2, list.size() );                   
-    }         
+        timeService.advanceTime( 60, TimeUnit.SECONDS );         
+        assertEquals( 2, list.size() );  
+
+        timeService.advanceTime( 60, TimeUnit.SECONDS );         
+        assertEquals( 3, list.size() );  
+        
+        timeService.advanceTime( 60, TimeUnit.SECONDS );         
+        assertEquals( 4, list.size() );          
+    }   
+    
+    public void testCalendarsWithIntervals() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\", \"cal2\"\n";           
+        str += "  timer (15s 60s) "; //int: protocol is assumed
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }      
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+        
+        final Date date1 = new Date( date.getTime() +  (15 * 1000) );
+        final Date date2 = new Date( date1.getTime() + (60 * 1000) );
+        final Date date3 = new Date( date2.getTime() + (60 * 1000) );
+        final Date date4 = new Date( date3.getTime() + (60 * 1000) );
+        
+        Calendar cal1 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                if ( timestamp == date1.getTime() ) {
+                    return true;
+                } else if ( timestamp == date4.getTime() ) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }           
+        };  
+        
+        Calendar cal2 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+               if ( timestamp == date2.getTime() ) {
+                    return false;
+                }  else if ( timestamp == date3.getTime() ) {
+                    return true;
+                } else {
+                    return true;
+                }
+            }           
+        };          
+        
+        ksession.getCalendars().set( "cal1", cal1 );
+        ksession.getCalendars().set( "cal2", cal2 );
+        
+        ksession.setGlobal( "list", list );
+                         
+        ksession.fireAllRules();
+        timeService.advanceTime( 20, TimeUnit.SECONDS );       
+        assertEquals( 1, list.size() ); 
+                      
+        timeService.advanceTime( 60, TimeUnit.SECONDS );                      
+        assertEquals( 1, list.size() ); 
+             
+        timeService.advanceTime( 60, TimeUnit.SECONDS );                  
+        assertEquals( 2, list.size() ); 
+        
+        timeService.advanceTime( 60, TimeUnit.SECONDS );         
+        assertEquals( 2, list.size() );  
+
+        timeService.advanceTime( 60, TimeUnit.SECONDS );         
+        assertEquals( 3, list.size() );  
+        
+        timeService.advanceTime( 60, TimeUnit.SECONDS );         
+        assertEquals( 4, list.size() );          
+    }     
 
     public void testFireRuleAfterDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

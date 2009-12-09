@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
 public class DurationTimer
@@ -34,8 +35,12 @@ public class DurationTimer
         return duration;
     }
 
-    public Trigger createTrigger(long timestamp) {
-        return new PointInTimeTrigger( timestamp + duration );
+    public Trigger createTrigger(long timestamp,
+                                 String[] calendarNames,
+                                 Calendars calendars) {
+        return new PointInTimeTrigger( timestamp + duration,
+                                       calendarNames,
+                                       calendars );
     }
 
     @Override
@@ -55,5 +60,5 @@ public class DurationTimer
         if ( duration != other.duration ) return false;
         return true;
     }
-   
+
 }

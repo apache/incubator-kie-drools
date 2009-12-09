@@ -1,10 +1,10 @@
 package org.drools.time.impl;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
 public class CronTrigger implements Trigger {
@@ -17,25 +17,36 @@ public class CronTrigger implements Trigger {
     private Date nextFireTime = null;
     private Date previousFireTime = null;
     private transient TimeZone timeZone = null;   
+    private String[] calendarNames;
+    private Calendars calendars;
     
     
-    public CronTrigger(long timestamp, Date startTime, Date endTime, String cronExpression) {
-        this( timestamp, startTime, endTime, determineCronExpression( cronExpression ));
+    public CronTrigger(long timestamp, Date startTime, Date endTime, String cronExpression, String[] calendarNames, Calendars calendars) {
+        this( timestamp, startTime, endTime, determineCronExpression( cronExpression ), calendarNames, calendars);
     }
     
-    public CronTrigger(long timestamp, Date startTime, Date endTime, CronExpression cronExpression) {
+    public CronTrigger(long timestamp, Date startTime, Date endTime, CronExpression cronExpression, String[] calendarNames, Calendars calendars) {
         setCronExpression(cronExpression);
 
         if (startTime == null) {
             startTime = new Date(timestamp);
         }
         setStartTime(startTime);
+        
         if (endTime != null) {
             setEndTime(endTime);
         }
-        setTimeZone(TimeZone.getDefault());        
+        setTimeZone(TimeZone.getDefault());             
         
-        this.nextFireTime = getFireTimeAfter(new Date(getStartTime().getTime() - 1000l));        
+        // Set the first FireTime, this is sensitive to StartTime
+        this.nextFireTime = getFireTimeAfter(new Date(timestamp - 1000l));  
+        
+        this.calendarNames = calendarNames;
+        this.calendars = calendars;
+        
+        
+        // Update to next include time, if we have calendars
+        updateToNextIncludeDate( );
     }
     
     public Date getStartTime() {
@@ -201,6 +212,7 @@ public class CronTrigger implements Trigger {
     public Date nextFireTime() {
         Date date = this.nextFireTime;
         this.nextFireTime = getFireTimeAfter(this.nextFireTime);
+        updateToNextIncludeDate();
         return date;
     }
     
@@ -235,6 +247,35 @@ public class CronTrigger implements Trigger {
     
     protected Date getTimeAfter(Date afterTime) {
         return (cronEx == null) ? null : cronEx.getTimeAfter(afterTime);
+    }    
+    
+    public void updateToNextIncludeDate() {
+        if ( calendarNames == null || calendarNames.length == 0 ) {
+            // There are no assigned calendars
+            return;
+        }
+
+        // If we have calendars, check we can fire, or get next time until we can fire.
+        while ( this.nextFireTime != null ) {
+            // this will loop forever if the trigger repeats forever and
+            // included calendar position cannot be found
+            boolean included = true;
+            for ( String calName : this.calendarNames ) {
+                // all calendars must not block, as soon as one blocks break, so we can check next time slot
+                org.drools.time.Calendar cal = this.calendars.get( calName );
+                if ( cal != null && !cal.isTimeIncluded( this.nextFireTime.getTime() ) ) {
+                    included = false;
+                    break;
+                }
+            }
+            if ( included == true ) {
+                // if no calendars blocked, break
+                break;
+            } else {
+                // otherwise increase the time and try again
+                this.nextFireTime = getTimeAfter( this.nextFireTime );
+            }
+        }
     }    
 
 }

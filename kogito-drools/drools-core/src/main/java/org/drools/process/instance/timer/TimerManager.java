@@ -44,7 +44,9 @@ public class TimerManager {
                                                              ctx,
                                                              new IntervalTrigger( timerService.getCurrentTime(),
                                                                                timer.getDelay(),
-                                                                               timer.getPeriod() ) );
+                                                                               timer.getPeriod(),
+                                                                               null,
+                                                                               null ) );
         timer.setJobHandle( jobHandle );
         timers.put(timer.getId(), timer);
     }
@@ -74,7 +76,9 @@ public class TimerManager {
 		JobHandle jobHandle = this.timerService.scheduleJob(
 			processJob, ctx, new IntervalTrigger(timerService.getCurrentTime(),
                                               delay, 
-                                              timer.getPeriod()));
+                                              timer.getPeriod(),
+                                              null,
+                                              null));
 		timer.setJobHandle(jobHandle);
 		timers.put(timer.getId(), timer);
 	}

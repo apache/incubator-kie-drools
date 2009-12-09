@@ -178,6 +178,8 @@ public class RuleBuilderTest extends TestCase {
                                                     "false" ) );
         ruleDescr.addAttribute( new AttributeDescr( "duration",
                                                     "60" ) );
+        ruleDescr.addAttribute( new AttributeDescr( "calendars",
+                                                    "\"cal1\"" ) );        
         ruleDescr.addAttribute( new AttributeDescr( "date-effective",
                                                     "10-Jul-1974" ) );
         ruleDescr.addAttribute( new AttributeDescr( "date-expires",
@@ -205,6 +207,7 @@ public class RuleBuilderTest extends TestCase {
                 oneOf( rule ).setLockOnActive( true );
                 oneOf( rule ).setEnabled( EnabledBoolean.ENABLED_FALSE );
                 oneOf( rule ).setTimer( new IntervalTimer( null , null, TimeUtils.parseTimeString( "60" ), 0 ) );
+                oneOf( rule ).setCalendars( new String[] { "cal1" } );
                 oneOf( rule ).setDateEffective( effective );
                 oneOf( rule ).setDateExpires( expires );
             }
@@ -228,7 +231,9 @@ public class RuleBuilderTest extends TestCase {
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
         ruleDescr.addAttribute( new AttributeDescr( "duration",
                                                     "( 1h30m )" ) );
-
+        ruleDescr.addAttribute( new AttributeDescr( "calendars",
+                                                    "[\"cal1\", \"cal2\"]" ) ); 
+        
         // defining expectations on the mock object
         mockery.checking( new Expectations() {
             {
@@ -238,6 +243,7 @@ public class RuleBuilderTest extends TestCase {
 
                 // expected values for the rule object
                 oneOf( rule ).setTimer( new IntervalTimer( null , null, TimeUtils.parseTimeString( "1h30m" ), 0 ) );
+                oneOf( rule ).setCalendars( new String[] { "cal1", "cal2" } );
             }
         } );
 
