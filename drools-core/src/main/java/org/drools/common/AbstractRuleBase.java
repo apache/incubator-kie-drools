@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -57,6 +58,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
+import org.drools.time.Calendar;
 import org.drools.util.ObjectHashSet;
 
 /**
@@ -92,7 +94,7 @@ abstract public class AbstractRuleBase
      */
     private FactHandleFactory                          factHandleFactory;
 
-    private transient Map<String, Class< ? >>          globals;
+    private transient Map<String, Class< ? >>          globals;   
 
     private ReloadPackageCompilationData               reloadPackageCompilationData = null;
 

@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
 public class CronTimer
@@ -60,11 +61,15 @@ public class CronTimer
         return cronExpression;
     }
 
-    public Trigger createTrigger(long timestamp) {
+    public Trigger createTrigger(long timestamp,
+                                 String[] calendarNames,
+                                 Calendars calendars) {
         return new CronTrigger( timestamp,
                                 this.startTime,
                                 this.endTime,
-                                this.cronExpression );
+                                this.cronExpression,
+                                calendarNames,
+                                calendars );
     }
 
     @Override

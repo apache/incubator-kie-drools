@@ -6,7 +6,7 @@ import org.drools.Person;
 global java.util.List list;
 
 rule delayed
-	duration 100
+	timer 100
 	no-loop true
     when
         cheese : Cheese( )

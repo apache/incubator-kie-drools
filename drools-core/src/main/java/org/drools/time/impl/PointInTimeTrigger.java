@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
+import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
 public class PointInTimeTrigger
@@ -31,10 +32,28 @@ public class PointInTimeTrigger
     public PointInTimeTrigger() {
     }
 
-    public PointInTimeTrigger(long timestamp) {
-        this.timestamp = new Date( timestamp );
+    public PointInTimeTrigger(long timestamp,
+                              String[] calendarNames,
+                              Calendars calendars) {
+        boolean included = true;
+
+        if ( calendarNames != null && calendarNames.length > 0 ) {
+            for ( String calName : calendarNames ) {
+                // all calendars must not block, as soon as one blocks break
+                org.drools.time.Calendar cal = calendars.get( calName );
+                if ( cal != null && !cal.isTimeIncluded( timestamp ) ) {
+                    included = false;
+                    break;
+                }
+            }
+        }
+
+        if ( included ) {
+            this.timestamp = new Date( timestamp );
+        }
+
     }
-    
+
     public Date hasNextFireTime() {
         return this.timestamp;
     }
@@ -53,4 +72,5 @@ public class PointInTimeTrigger
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.timestamp );
     }
+
 }

@@ -33,7 +33,6 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.rule.Behavior;
-import org.drools.rule.CompositeMaxDuration;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.FixedDuration;
@@ -197,16 +196,17 @@ public class PatternBuilder
                         timer = durationTimer;
                     } else {
                         // timer exists so we need to make a composite
-                        timer = new CompositeMaxDurationTimer();
+                        CompositeMaxDurationTimer temp = new CompositeMaxDurationTimer();
                         if ( timer instanceof DurationTimer ) {
                             // previous timer was a duration, so add another DurationTimer
-                            ((CompositeMaxDurationTimer)timer).addDurationTimer( ( DurationTimer ) timer );                            
+                            temp.addDurationTimer( ( DurationTimer ) timer );                            
                         } else {
                             // previous timer was not a duration, so set it as the delegate Timer.
-                            ((CompositeMaxDurationTimer)timer).setTimer( context.getRule().getTimer() );    
+                            temp.setTimer( context.getRule().getTimer() );    
                         }
                         // now add the new durationTimer
-                        ((CompositeMaxDurationTimer)timer).addDurationTimer( durationTimer );
+                        temp.addDurationTimer( durationTimer );
+                        timer = temp;
                     }
                     // with the composite made, reset it on the Rule
                     context.getRule().setTimer( timer );

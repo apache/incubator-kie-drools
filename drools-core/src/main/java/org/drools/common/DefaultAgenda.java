@@ -309,10 +309,11 @@ public class DefaultAgenda
      * @param item
      *            The item to schedule.
      */
-    public void scheduleItem(final ScheduledAgendaItem item) {
+    public void scheduleItem(final ScheduledAgendaItem item, final InternalWorkingMemory wm) {
 
         Scheduler.scheduleAgendaItem( item,
-                                      this );
+                                      this,
+                                      wm );
         this.scheduledActivations.add( item );
 
         // adds item to activation group if appropriate

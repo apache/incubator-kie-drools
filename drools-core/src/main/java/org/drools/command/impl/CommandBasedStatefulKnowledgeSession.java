@@ -52,6 +52,7 @@ import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.EntryPoint;
+import org.drools.runtime.Calendars;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
@@ -365,6 +366,11 @@ public class CommandBasedStatefulKnowledgeSession
     public Globals getGlobals() {
         return commandService.execute( new GetGlobalsCommand() );
     }
+    
+    public Calendars getCalendars() {
+        // TODO return
+        throw new UnsupportedOperationException();
+    }    
 
     public Object getObject(FactHandle factHandle) {
         return commandService.execute( new GetObjectCommand( factHandle ) );

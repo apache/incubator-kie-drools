@@ -2,6 +2,7 @@ package org.drools.time.impl;
 
 import java.util.Date;
 
+import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
 public class CompositeMaxDurationTrigger
@@ -11,7 +12,9 @@ public class CompositeMaxDurationTrigger
     private Date               timestamp;
 
     public CompositeMaxDurationTrigger(Date timestamp, // this is the first duration that takes priority
-                                       Trigger trigger) {
+                                       Trigger trigger,
+                                       String[] calendarNames,
+                                       Calendars calendars) {
         this.timestamp = timestamp;
         this.trigger = trigger;
     }

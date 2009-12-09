@@ -6,6 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
+import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
 public class IntervalTimer
@@ -62,10 +63,14 @@ public class IntervalTimer
         return period;
     }
 
-    public Trigger createTrigger(long timestamp) {
+    public Trigger createTrigger(long timestamp,
+                                 String[] calendarNames,
+                                 Calendars calendars) {
         return new IntervalTrigger( timestamp,
                                     delay,
-                                    period );
+                                    period,
+                                    calendarNames,
+                                    calendars );
     }
 
     @Override

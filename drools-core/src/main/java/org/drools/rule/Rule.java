@@ -117,6 +117,8 @@ public class Rule
 
     /** indicates that the rule is semantically correct. */
     private boolean           semanticallyValid;
+    
+    private String[]          calendars;
 
     private Calendar          dateEffective;
 
@@ -626,6 +628,14 @@ public class Rule
      */
     public boolean isSemanticallyValid() {
         return this.semanticallyValid;
+    }
+
+    public String[] getCalendars() {
+        return calendars;
+    }
+
+    public void setCalendars(String[] calendars) {
+        this.calendars = calendars;
     }
 
     /**

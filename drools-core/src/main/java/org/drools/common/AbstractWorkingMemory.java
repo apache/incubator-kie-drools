@@ -50,6 +50,7 @@ import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
+import org.drools.base.CalendarsImpl;
 import org.drools.base.MapGlobalResolver;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.ExternalExecutorService;
@@ -88,6 +89,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.Calendars;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.ExecutionResults;
@@ -145,6 +147,8 @@ public abstract class AbstractWorkingMemory
 
     /** Global values which are associated with this memory. */
     protected GlobalResolver                                     globalResolver;
+    
+    protected Calendars                                          calendars;
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport                          workingMemoryEventSupport;
@@ -279,6 +283,8 @@ public abstract class AbstractWorkingMemory
         } else {
             this.globalResolver = new MapGlobalResolver();
         }
+        
+        this.calendars = new CalendarsImpl();
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
@@ -627,6 +633,10 @@ public abstract class AbstractWorkingMemory
 
     public GlobalResolver getGlobalResolver() {
         return this.globalResolver;
+    }
+    
+    public Calendars getCalendars() {
+        return this.calendars;
     }
 
     public int getId() {

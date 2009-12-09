@@ -211,7 +211,7 @@ public final class RuleTerminalNode extends BaseNode
                                                                                this.subrule );
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
 
-            agenda.scheduleItem( item );
+            agenda.scheduleItem( item, workingMemory );
             tuple.setActivation( item );
 
             if ( this.tupleMemoryEnabled ) {
@@ -221,7 +221,16 @@ public final class RuleTerminalNode extends BaseNode
             item.setActivated( true );
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                           workingMemory );
-        } else {
+        } else {            
+            if ( this.rule.getCalendars() != null ) {
+                // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
+                long timestamp = workingMemory.getSessionClock().getCurrentTime();
+                for ( String cal : this.rule.getCalendars() ) {
+                    if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
+                        return;
+                    }
+                }            
+            }
             // -----------------
             // Lazy instantiation and addition to the Agenda of AgendGroup
             // implementations
