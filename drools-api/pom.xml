@@ -54,6 +54,13 @@
           <scope>provided</scope>
         </dependency>  	 
         
+        <dependency>
+  			<groupId>org.opensymphony.quartz</groupId>
+  			<artifactId>quartz</artifactId>
+  			<version>1.6.1</version>
+            <scope>provided</scope>  			
+        </dependency>          
+        
   </dependencies>
   
   <build>

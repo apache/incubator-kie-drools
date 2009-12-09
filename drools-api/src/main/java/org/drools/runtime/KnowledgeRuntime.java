@@ -29,6 +29,8 @@ public interface KnowledgeRuntime
     Object getGlobal(String identifier);
 
     Globals getGlobals();
+    
+    Calendars getCalendars();
 
     Environment getEnvironment();
 
