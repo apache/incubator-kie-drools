@@ -6787,6 +6787,44 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testJBRules2369() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_JBRules2369.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            fail( "Error loading test_JBRules2369" );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results",
+                            results );
+
+        FactA a = new FactA();
+        FactB b = new FactB( Integer.valueOf( 0 ) );
+
+        org.drools.runtime.rule.FactHandle aHandle = ksession.insert( a );
+        org.drools.runtime.rule.FactHandle bHandle = ksession.insert( b );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+
+        ksession.update( aHandle,
+                         a );
+
+        ksession.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+    }
+
     public void testInsertionOrder() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_InsertionOrder.drl",
@@ -6882,7 +6920,7 @@ public class MiscTest extends TestCase {
         assertFalse( "T1 should have finished",
                      aliveT1 );
     }
-    
+
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";

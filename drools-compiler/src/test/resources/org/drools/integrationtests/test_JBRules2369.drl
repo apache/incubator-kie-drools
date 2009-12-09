@@ -1,0 +1,15 @@
+package org.drools
+ 
+global java.util.List results
+
+rule "test jira jbrules 2369"
+    no-loop
+	when
+		$a : FactA( )
+		$b : FactB( ) 
+	then
+	    results.add( "FIRED" );
+	    modify( $b ) { 
+	        setF2( $b.getF2().intValue() + 1 ) 
+	    } 
+end
