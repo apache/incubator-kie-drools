@@ -10,6 +10,7 @@ import org.drools.command.ExecuteCommand;
 import org.drools.command.GetSessionClockCommand;
 import org.drools.command.runtime.AddEventListenerCommand;
 import org.drools.command.runtime.DisposeCommand;
+import org.drools.command.runtime.GetCalendarsCommand;
 import org.drools.command.runtime.GetEnvironmentCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.GetGlobalsCommand;
@@ -368,8 +369,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
     
     public Calendars getCalendars() {
-        // TODO return
-        throw new UnsupportedOperationException();
+        return commandService.execute( new GetCalendarsCommand() );
     }    
 
     public Object getObject(FactHandle factHandle) {
