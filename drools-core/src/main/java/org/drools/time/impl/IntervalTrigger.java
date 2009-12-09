@@ -6,6 +6,7 @@ package org.drools.time.impl;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.drools.runtime.Calendars;
@@ -14,6 +15,8 @@ import org.drools.time.Trigger;
 public class IntervalTrigger
     implements
     Trigger {
+    private Date           startTime;
+    private Date           endTime;    
     private Date nextFireTime;
     private long period;
     private String[] calendarNames;
@@ -23,21 +26,97 @@ public class IntervalTrigger
 
     }
 
-    public IntervalTrigger(long currentTS,
+    public IntervalTrigger(long timestamp,
+                           Date startTime,
+                           Date endTime,
                            long delay,
                            long period,
                            String[] calendarNames,
                            Calendars calendars) {
-        this.nextFireTime = new Date( currentTS + delay );
         this.period = period;
         
+        if (startTime == null) {
+            startTime = new Date(timestamp);
+        }
+        setStartTime(startTime);
+        
+        if (endTime != null) {
+            setEndTime(endTime);
+        }     
+                
         this.calendarNames = calendarNames;
         this.calendars = calendars;
         
+        this.nextFireTime = new Date( timestamp + delay );
+        
+        setFirstFireTime();
         
         // Update to next include time, if we have calendars
         updateToNextIncludeDate( );         
     }
+    
+    public Date getStartTime() {
+        return this.startTime;
+    }    
+    
+    public void setStartTime(Date startTime) {
+        if (startTime == null) {
+            throw new IllegalArgumentException("Start time cannot be null");
+        }
+
+        Date eTime = getEndTime();
+        if (eTime != null && startTime != null && eTime.before(startTime)) {
+            throw new IllegalArgumentException(
+                "End time cannot be before start time");
+        }
+        
+        // round off millisecond...
+        // Note timeZone is not needed here as parameter for
+        // Calendar.getInstance(),
+        // since time zone is implicit when using a Date in the setTime method.
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(startTime);
+        cl.set(Calendar.MILLISECOND, 0);
+
+        this.startTime = cl.getTime();
+    }
+
+    /**
+     * <p>
+     * Get the time at which the <code>CronTrigger</code> should quit
+     * repeating - even if repeastCount isn't yet satisfied.
+     * </p>
+     * 
+     * @see #getFinalFireTime()
+     */
+    public Date getEndTime() {
+        return this.endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        Date sTime = getStartTime();
+        if (sTime != null && endTime != null && sTime.after(endTime)) {
+            throw new IllegalArgumentException(
+                    "End time cannot be before start time");
+        }
+
+        this.endTime = endTime;
+    }
+    
+    public void setFirstFireTime() {
+        if (getStartTime().after(this.nextFireTime)) {
+            this.nextFireTime = new Date(getStartTime().getTime() - 1000l);
+        }
+
+        if (getEndTime() != null && (this.nextFireTime.compareTo(getEndTime()) >= 0)) {
+            this.nextFireTime = null;
+        }
+        
+        Date pot = getTimeAfter();
+        if (getEndTime() != null && pot != null && pot.after(getEndTime())) {
+            this.nextFireTime = null;
+        }
+    }    
 
     public Date hasNextFireTime() {
         return nextFireTime;
