@@ -11,6 +11,7 @@ import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.runtime.Calendars;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
@@ -345,6 +346,11 @@ public class StatefulKnowledgeSessionRemoteClient
                             long processInstanceId) {
         // TODO Auto-generated method stub
         
+    }
+
+    public Calendars getCalendars() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -67,8 +67,10 @@ public class IntervalTimer
                                  String[] calendarNames,
                                  Calendars calendars) {
         return new IntervalTrigger( timestamp,
-                                    delay,
-                                    period,
+                                    this.startTime,
+                                    this.endTime,
+                                    this.delay,
+                                    this.period,
                                     calendarNames,
                                     calendars );
     }

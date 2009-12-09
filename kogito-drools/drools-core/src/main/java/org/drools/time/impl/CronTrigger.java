@@ -39,7 +39,8 @@ public class CronTrigger implements Trigger {
         setTimeZone(TimeZone.getDefault());             
         
         // Set the first FireTime, this is sensitive to StartTime
-        this.nextFireTime = getFireTimeAfter(new Date(timestamp - 1000l));  
+        this.nextFireTime = new Date(timestamp - 1000l);
+        setFirstFireTimeAfter();
         
         this.calendarNames = calendarNames;
         this.calendars = calendars;
@@ -211,7 +212,7 @@ public class CronTrigger implements Trigger {
 
     public Date nextFireTime() {
         Date date = this.nextFireTime;
-        this.nextFireTime = getFireTimeAfter(this.nextFireTime);
+        this.nextFireTime = getTimeAfter(this.nextFireTime);
         updateToNextIncludeDate();
         return date;
     }
@@ -228,21 +229,21 @@ public class CronTrigger implements Trigger {
      * org.quartz.Calendar (if any)
      * </p>
      */
-    public Date getFireTimeAfter(Date afterTime) {
-        if (getStartTime().after(afterTime)) {
-            afterTime = new Date(getStartTime().getTime() - 1000l);
+    public void setFirstFireTimeAfter() {
+        if (getStartTime().after(this.nextFireTime)) {
+            this.nextFireTime = new Date(getStartTime().getTime() - 1000l);
         }
 
-        if (getEndTime() != null && (afterTime.compareTo(getEndTime()) >= 0)) {
-            return null;
+        if (getEndTime() != null && (this.nextFireTime.compareTo(getEndTime()) >= 0)) {
+            this.nextFireTime =  null;
         }
         
-        Date pot = getTimeAfter(afterTime);
+        Date pot = getTimeAfter(this.nextFireTime);
         if (getEndTime() != null && pot != null && pot.after(getEndTime())) {
-            return null;
+            this.nextFireTime = null;
+        } else {
+            this.nextFireTime = pot;
         }
-
-        return pot;
     }
     
     protected Date getTimeAfter(Date afterTime) {

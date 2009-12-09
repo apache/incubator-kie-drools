@@ -18,6 +18,7 @@ package org.drools.rule.builder;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.drools.RuntimeDroolsException;
@@ -121,23 +122,7 @@ public class RuleBuilder {
                 String duration = attributeDescr.getValue();
                 buildTimer( rule, duration, context);
             }  else if ( name.equals( "calendars" ) ) {
-                Object val = null;
-                try {
-                    val = MVEL.eval( attributeDescr.getValue() );
-                    String[] calNames = null;
-                    if ( val instanceof List ) {
-                        calNames = ( String[] ) ((List)val).toArray( new String[ ((List)val).size() ] );
-                    } else if ( val instanceof String ) {
-                        calNames = new String[] { (String) val };
-                    } else {
-                        context.getErrors().add( "Calendars attribute did not return a String or String[] '" + val + "'"  );
-                    }
-                    if ( calNames != null ) {
-                        rule.setCalendars( calNames );
-                    }
-                } catch ( Exception e ) {
-                    context.getErrors().add( "Unable to build Calendars attribute '" + val + "'"  + e.getMessage() );
-                }
+                buildCalendars( rule, attributeDescr.getValue(), context );
             } else if ( name.equals( "date-effective" ) ) {
                 final Calendar cal = Calendar.getInstance();
                 cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
@@ -204,6 +189,26 @@ public class RuleBuilder {
         }
     }
     
+    private void buildCalendars(Rule rule, String calendarsString, RuleBuildContext context) {
+        Object val = null;
+        try {
+            val = MVEL.eval( calendarsString );
+            String[] calNames = null;
+            if ( val instanceof List ) {
+                calNames = ( String[] ) ((List)val).toArray( new String[ ((List)val).size() ] );
+            } else if ( val instanceof String ) {
+                calNames = new String[] { (String) val };
+            } else {
+                context.getErrors().add( "Calendars attribute did not return a String or String[] '" + val + "'"  );
+            }
+            if ( calNames != null ) {
+                rule.setCalendars( calNames );
+            }
+        } catch ( Exception e ) {
+            context.getErrors().add( "Unable to build Calendars attribute '" + val + "'"  + e.getMessage() );
+        }
+    }
+    
     private void buildTimer(Rule rule, String timerString, RuleBuildContext context) {
         if( timerString.indexOf( '(' ) >=0 ) {
             timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) );
@@ -218,12 +223,44 @@ public class RuleBuilder {
             protocol = timerString.substring( 0, colonPos );
         }
         
-        String body = timerString.substring( colonPos + 1 );
+        int startPos = timerString.indexOf( "start" );
+        int endPos = timerString.indexOf( "end" );
+        
+        int  optionsPos = timerString.length();
+        
+        Date startDate = null;
+        Date endDate = null;
+        
+        if ( startPos != -1 && endPos != -1 ) {
+            // support case where someone puts end before start
+            if ( startPos < endPos ) {
+                // start is first
+                optionsPos = startPos;
+                int equalsPos = timerString.indexOf( '=', startPos );
+                startDate = DateUtils.parseDate( timerString.substring( equalsPos + 2, endPos ).trim() );                   
+            } else {
+                // end is first
+                optionsPos = endPos;   
+                int equalsPos = timerString.indexOf( '=', endPos );
+                startDate = DateUtils.parseDate( timerString.substring( equalsPos + 2, startPos ).trim() );                   
+            }
+        } else if ( startPos != -1 ) {
+            optionsPos = startPos;
+            int equalsPos = timerString.indexOf( '=', startPos );
+            startDate = DateUtils.parseDate( timerString.substring( equalsPos + 2 ).trim() );            
+        } else  if ( endPos != -1 ) {
+            optionsPos = endPos;   
+            int equalsPos = timerString.indexOf( '=', endPos );
+            endDate = DateUtils.parseDate( timerString.substring( equalsPos + 2 ).trim() );                
+        }
+              
+        
+        String body = timerString.substring( colonPos + 1, optionsPos ).trim();        
         
         Timer timer = null;
         if ( "cron".equals( protocol ) ) {
             try {
-                timer = new CronTimer( null, null, new CronExpression( body ) );
+                timer = new CronTimer( startDate, endDate, new CronExpression( body ) );
             } catch ( ParseException e ) {
                 context.getErrors().add( "Unable to build set timer '" + timerString + "'");
                 return;
@@ -243,7 +280,7 @@ public class RuleBuilder {
                 context.getErrors().add( "Incorrect number of arguments for interval timer '" + timerString + "'");
                 return;
             }
-            timer = new IntervalTimer(null, null, delay, period);
+            timer = new IntervalTimer(startDate, endDate, delay, period);
         } else {
             context.getErrors().add( "Protocol for timer does not exist '" + timerString +"'");
             return;
