@@ -16,6 +16,7 @@ public class CronTimer
     Externalizable {
     private Date           startTime;
     private Date           endTime;
+    private int            repeatLimit;
     private CronExpression cronExpression;
     
     public CronTimer() {
@@ -24,9 +25,11 @@ public class CronTimer
 
     public CronTimer(Date startTime,
                      Date endTime,
+                     int repeatLimit,
                      CronExpression cronExpression) {
         this.startTime = startTime;
         this.endTime = endTime;
+        this.repeatLimit = repeatLimit;
         this.cronExpression = cronExpression;
     }
 
@@ -67,6 +70,7 @@ public class CronTimer
         return new CronTrigger( timestamp,
                                 this.startTime,
                                 this.endTime,
+                                this.repeatLimit,
                                 this.cronExpression,
                                 calendarNames,
                                 calendars );

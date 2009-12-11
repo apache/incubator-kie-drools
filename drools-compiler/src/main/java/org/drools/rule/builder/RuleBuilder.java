@@ -225,42 +225,60 @@ public class RuleBuilder {
         
         int startPos = timerString.indexOf( "start" );
         int endPos = timerString.indexOf( "end" );
-        
-        int  optionsPos = timerString.length();
+        int repeatPos = timerString.indexOf( "repeat-limit" );
         
         Date startDate = null;
         Date endDate = null;
+        int repeatLimit = -1;        
         
-        if ( startPos != -1 && endPos != -1 ) {
-            // support case where someone puts end before start
-            if ( startPos < endPos ) {
-                // start is first
-                optionsPos = startPos;
-                int equalsPos = timerString.indexOf( '=', startPos );
-                startDate = DateUtils.parseDate( timerString.substring( equalsPos + 2, endPos ).trim() );                   
-            } else {
-                // end is first
-                optionsPos = endPos;   
-                int equalsPos = timerString.indexOf( '=', endPos );
-                startDate = DateUtils.parseDate( timerString.substring( equalsPos + 2, startPos ).trim() );                   
-            }
-        } else if ( startPos != -1 ) {
+        int  optionsPos = timerString.length();
+        
+        if ( startPos != -1 ) {
             optionsPos = startPos;
+            int p = ( endPos != -1 && endPos < repeatPos ) ? endPos : repeatPos;
+            
+            if ( p == -1 ) {
+                p = timerString.length();
+            }
+            
             int equalsPos = timerString.indexOf( '=', startPos );
-            startDate = DateUtils.parseDate( timerString.substring( equalsPos + 2 ).trim() );            
-        } else  if ( endPos != -1 ) {
-            optionsPos = endPos;   
-            int equalsPos = timerString.indexOf( '=', endPos );
-            endDate = DateUtils.parseDate( timerString.substring( equalsPos + 2 ).trim() );                
+            startDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim() );              
         }
-              
         
+        if ( endPos != -1 ) {
+            if ( optionsPos > endPos ) {
+                optionsPos = endPos;
+            }
+            int p = ( startPos != -1 && startPos < repeatPos ) ? startPos : repeatPos;
+            
+            if ( p == -1 ) {
+                p = timerString.length();
+            }
+            
+            int equalsPos = timerString.indexOf( '=', endPos );
+            endDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim() );              
+        }
+        
+        if ( repeatPos != -1 ) {
+            if ( optionsPos > repeatPos ) {
+                optionsPos = repeatPos;
+            }            
+            int p = ( startPos != -1 && startPos < endPos ) ? startPos : endPos;
+            
+            if ( p == -1 ) {
+                p = timerString.length();
+            }
+            
+            int equalsPos = timerString.indexOf( '=', repeatPos );
+            repeatLimit = Integer.parseInt( timerString.substring( equalsPos + 1, p ).trim() );             
+        }                                
+                     
         String body = timerString.substring( colonPos + 1, optionsPos ).trim();        
         
         Timer timer = null;
         if ( "cron".equals( protocol ) ) {
             try {
-                timer = new CronTimer( startDate, endDate, new CronExpression( body ) );
+                timer = new CronTimer( startDate, endDate, repeatLimit, new CronExpression( body ) );
             } catch ( ParseException e ) {
                 context.getErrors().add( "Unable to build set timer '" + timerString + "'");
                 return;
@@ -280,7 +298,7 @@ public class RuleBuilder {
                 context.getErrors().add( "Incorrect number of arguments for interval timer '" + timerString + "'");
                 return;
             }
-            timer = new IntervalTimer(startDate, endDate, delay, period);
+            timer = new IntervalTimer(startDate, endDate, repeatLimit, delay, period);
         } else {
             context.getErrors().add( "Protocol for timer does not exist '" + timerString +"'");
             return;
