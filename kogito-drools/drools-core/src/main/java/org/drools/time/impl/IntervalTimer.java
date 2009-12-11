@@ -15,6 +15,7 @@ public class IntervalTimer
     Externalizable {
     private Date startTime;
     private Date endTime;
+    private int  repeatLimit;
     private long delay;
     private long period;
     
@@ -24,10 +25,12 @@ public class IntervalTimer
 
     public IntervalTimer(Date startTime,
                          Date endTime,
+                         int repeatLimit,
                          long delay,
                          long period) {
         this.startTime = startTime;
         this.endTime = endTime;
+        this.repeatLimit = repeatLimit;
         this.delay = delay;
         this.period = period;
     }
@@ -69,6 +72,7 @@ public class IntervalTimer
         return new IntervalTrigger( timestamp,
                                     this.startTime,
                                     this.endTime,
+                                    this.repeatLimit,
                                     this.delay,
                                     this.period,
                                     calendarNames,

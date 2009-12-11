@@ -15,12 +15,14 @@ import org.drools.time.Trigger;
 public class IntervalTrigger
     implements
     Trigger {
-    private Date           startTime;
-    private Date           endTime;    
-    private Date nextFireTime;
-    private long period;
-    private String[] calendarNames;
-    private Calendars calendars;    
+    private Date      startTime;
+    private Date      endTime;
+    private int       repeatLimit;
+    private int       repeatCount;
+    private Date      nextFireTime;
+    private long      period;
+    private String[]  calendarNames;
+    private Calendars calendars;
 
     public IntervalTrigger() {
 
@@ -29,54 +31,57 @@ public class IntervalTrigger
     public IntervalTrigger(long timestamp,
                            Date startTime,
                            Date endTime,
+                           int repeatLimit,
                            long delay,
                            long period,
                            String[] calendarNames,
                            Calendars calendars) {
         this.period = period;
-        
-        if (startTime == null) {
-            startTime = new Date(timestamp);
+
+        if ( startTime == null ) {
+            startTime = new Date( timestamp );
         }
-        setStartTime(startTime);
+        setStartTime( startTime );
+
+        if ( endTime != null ) {
+            setEndTime( endTime );
+        }
+
+        this.repeatLimit = repeatLimit;
         
-        if (endTime != null) {
-            setEndTime(endTime);
-        }     
-                
         this.calendarNames = calendarNames;
         this.calendars = calendars;
-        
+
         this.nextFireTime = new Date( timestamp + delay );
-        
+
         setFirstFireTime();
-        
+
         // Update to next include time, if we have calendars
-        updateToNextIncludeDate( );         
+        updateToNextIncludeDate();
     }
-    
+
     public Date getStartTime() {
         return this.startTime;
-    }    
-    
+    }
+
     public void setStartTime(Date startTime) {
-        if (startTime == null) {
-            throw new IllegalArgumentException("Start time cannot be null");
+        if ( startTime == null ) {
+            throw new IllegalArgumentException( "Start time cannot be null" );
         }
 
         Date eTime = getEndTime();
-        if (eTime != null && startTime != null && eTime.before(startTime)) {
-            throw new IllegalArgumentException(
-                "End time cannot be before start time");
+        if ( eTime != null && startTime != null && eTime.before( startTime ) ) {
+            throw new IllegalArgumentException( "End time cannot be before start time" );
         }
-        
+
         // round off millisecond...
         // Note timeZone is not needed here as parameter for
         // Calendar.getInstance(),
         // since time zone is implicit when using a Date in the setTime method.
         Calendar cl = Calendar.getInstance();
-        cl.setTime(startTime);
-        cl.set(Calendar.MILLISECOND, 0);
+        cl.setTime( startTime );
+        cl.set( Calendar.MILLISECOND,
+                0 );
 
         this.startTime = cl.getTime();
     }
@@ -95,42 +100,48 @@ public class IntervalTrigger
 
     public void setEndTime(Date endTime) {
         Date sTime = getStartTime();
-        if (sTime != null && endTime != null && sTime.after(endTime)) {
-            throw new IllegalArgumentException(
-                    "End time cannot be before start time");
+        if ( sTime != null && endTime != null && sTime.after( endTime ) ) {
+            throw new IllegalArgumentException( "End time cannot be before start time" );
         }
 
         this.endTime = endTime;
     }
-    
+
     public void setFirstFireTime() {
-        if (getStartTime().after(this.nextFireTime)) {
-            this.nextFireTime = new Date(getStartTime().getTime() - 1000l);
+        if ( getStartTime().after( this.nextFireTime ) ) {
+            this.nextFireTime = new Date( getStartTime().getTime() - 1000l );
         }
 
-        if (getEndTime() != null && (this.nextFireTime.compareTo(getEndTime()) >= 0)) {
+        if ( getEndTime() != null && (this.nextFireTime.compareTo( getEndTime() ) >= 0) ) {
             this.nextFireTime = null;
         }
-        
+
         Date pot = getTimeAfter();
-        if (getEndTime() != null && pot != null && pot.after(getEndTime())) {
+        if ( getEndTime() != null && pot != null && pot.after( getEndTime() ) ) {
             this.nextFireTime = null;
         }
-    }    
+    }
 
     public Date hasNextFireTime() {
         return nextFireTime;
     }
 
     public Date nextFireTime() {
-        Date date = nextFireTime;
+        Date date = this.nextFireTime;
         // FIXME: this is not safe for serialization
         this.nextFireTime = getTimeAfter();
         updateToNextIncludeDate();
+        if ( this.endTime != null && this.nextFireTime.after( this.endTime ) ) {
+            this.nextFireTime = null;
+        } else if (  repeatLimit != -1 && repeatCount >= repeatLimit ) {
+            this.nextFireTime = null;
+        }
         return date;
     }
-    
+
     private Date getTimeAfter() {
+        this.repeatCount++;
+        
         Date date;
         if ( this.period != 0 ) {
             // repeated fires for the given period
@@ -151,7 +162,7 @@ public class IntervalTrigger
         out.writeObject( this.nextFireTime );
         out.writeLong( this.period );
     }
-    
+
     public void updateToNextIncludeDate() {
         if ( calendarNames == null || calendarNames.length == 0 ) {
             // There are no assigned calendars
@@ -159,7 +170,7 @@ public class IntervalTrigger
         }
 
         // If we have calendars, check we can fire, or get next time until we can fire.
-        while ( this.nextFireTime != null ) {
+        while ( this.nextFireTime != null && (this.endTime == null || this.nextFireTime.before( this.endTime )) ) {
             // this will loop forever if the trigger repeats forever and
             // included calendar position cannot be found
             boolean included = true;
@@ -176,9 +187,8 @@ public class IntervalTrigger
                 break;
             } else {
                 // otherwise increase the time and try again
-                this.nextFireTime = getTimeAfter( );
+                this.nextFireTime = getTimeAfter();
             }
         }
-    }       
-
+    }
 }

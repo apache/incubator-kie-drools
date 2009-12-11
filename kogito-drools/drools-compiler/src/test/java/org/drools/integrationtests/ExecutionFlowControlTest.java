@@ -1356,7 +1356,259 @@ public class ExecutionFlowControlTest extends TestCase {
         timeService.advanceTime( 60, TimeUnit.SECONDS );         
         assertEquals( 4, list.size() );          
     }     
+    
+    public void testCalendarsWithIntervalsAndStartAndEnd() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\"\n";           
+        str += "  timer (0d 1d start=3-JAN-2010 end=5-JAN-2010) "; //int: protocol is assumed
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
 
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }      
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        Date date = df.parse( "1-JAN-2010" );      
+        
+        Calendar cal1 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return true;
+            }           
+        };  
+        
+        long oneDay = 60 * 60 * 24;        
+        ksession.getCalendars().set( "cal1", cal1 );        
+        ksession.setGlobal( "list", list );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
+        assertEquals( 0, list.size() ); 
+                      
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );  // day 3
+        assertEquals( 1, list.size() ); 
+             
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );                  
+        assertEquals( 2, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
+        assertEquals( 3, list.size() );     
+
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );               
+        assertEquals( 3, list.size() );  
+    }
+    
+    public void testCalendarsWithIntervalsAndStartAndLimit() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\"\n";           
+        str += "  timer (0d 1d start=3-JAN-2010 repeat-limit=4) "; //int: protocol is assumed
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }      
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        Date date = df.parse( "1-JAN-2010" );      
+        
+        Calendar cal1 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return true;
+            }           
+        };  
+        
+        long oneDay = 60 * 60 * 24;        
+        ksession.getCalendars().set( "cal1", cal1 );        
+        ksession.setGlobal( "list", list );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
+        assertEquals( 0, list.size() ); 
+                      
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
+        assertEquals( 1, list.size() ); 
+             
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );                 
+        assertEquals( 2, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
+        assertEquals( 3, list.size() );     
+
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );               
+        assertEquals( 3, list.size() );  
+    }    
+    
+    public void testCalendarsWithCronAndStartAndEnd() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\"\n";           
+        str += "  timer (cron: 0 0 0 * * ? start=3-JAN-2010 end=5-JAN-2010) ";
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }      
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        Date date = df.parse( "1-JAN-2010" );
+        
+        Calendar cal1 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return true;
+            }           
+        };  
+        
+        long oneDay = 60 * 60 * 24;        
+        ksession.getCalendars().set( "cal1", cal1 );        
+        ksession.setGlobal( "list", list );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
+        assertEquals( 0, list.size() ); 
+                      
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
+        assertEquals( 1, list.size() ); 
+             
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5  
+        assertEquals( 3, list.size() );     
+
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );              
+        assertEquals( 3, list.size() );  
+    }    
+
+    public void testCalendarsWithCronAndStartAndLimit() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\"\n";           
+        str += "  timer (cron: 0 0 0 * * ? start=3-JAN-2010 repeat-limit=4) "; 
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
+            assertTrue( kbuilder.hasErrors() );
+        }      
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        Date date = df.parse( "1-JAN-2010" );      
+        
+        Calendar cal1 = new Calendar() {
+            public boolean isTimeIncluded(long timestamp) {
+                return true;
+            }           
+        };  
+        
+        long oneDay = 60 * 60 * 24;        
+        ksession.getCalendars().set( "cal1", cal1 );        
+        ksession.setGlobal( "list", list );
+        
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
+        assertEquals( 0, list.size() ); 
+                      
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
+        assertEquals( 1, list.size() ); 
+             
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );                 
+        assertEquals( 2, list.size() ); 
+        
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
+        assertEquals( 3, list.size() );     
+
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );               
+        assertEquals( 3, list.size() );  
+    }        
+    
     public void testFireRuleAfterDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FireRuleAfterDuration.drl" ) ) );
