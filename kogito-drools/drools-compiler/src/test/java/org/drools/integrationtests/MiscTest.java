@@ -350,19 +350,23 @@ public class MiscTest extends TestCase {
     public void testMVELSoundex() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "MVEL_soundex.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "MVEL_soundex.drl", getClass() ), ResourceType.DRL );        
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        kbase = SerializationHelper.serializeObject( kbase );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();         
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );        
+
         Cheese c = new Cheese( "fubar",
                                2 );
 
-        session.insert( c );
-        session.fireAllRules();
+        ksession.insert( c );
+        ksession.fireAllRules();
         assertEquals( 42,
                       c.getPrice() );
     }
@@ -370,16 +374,17 @@ public class MiscTest extends TestCase {
     public void testMVELRewrite() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_MVELrewrite.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_MVELrewrite.drl", getClass() ), ResourceType.DRL );        
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();         
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
         List results = new ArrayList();
-        session.setGlobal( "results",
+        ksession.setGlobal( "results",
                            results );
 
         Cheese brie = new Cheese( "brie",
@@ -390,8 +395,8 @@ public class MiscTest extends TestCase {
         cheesery.addCheese( brie );
         cheesery.addCheese( stilton );
 
-        session.insert( cheesery );
-        session.fireAllRules();
+        ksession.insert( cheesery );
+        ksession.fireAllRules();
 
         assertEquals( 1,
                       results.size() );
@@ -1317,39 +1322,43 @@ public class MiscTest extends TestCase {
     }
 
     public void testExplicitAnd() throws Exception {
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_ExplicitAnd.drl", getClass() ), ResourceType.DRL );        
 
-        StatefulSession session = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
-        session.insert( new Message( "hola" ) );
+        ksession.insert( new Message( "hola" ) );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
-        session.insert( new Cheese( "brie",
+        ksession.insert( new Cheese( "brie",
                                     33 ) );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
+        ksession.fireAllRules();
         assertEquals( 1,
-                      ((List) session.getGlobal( "list" )).size() );
+                      ((List) ksession.getGlobal( "list" )).size() );
     }
 
     public void testHelloWorld() throws Exception {
-
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "HelloWorld.drl", getClass() ), ResourceType.DRL );        
 
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        ksession.setGlobal( "list",
                                  list );
 
         // go !
@@ -1357,13 +1366,13 @@ public class MiscTest extends TestCase {
         message.addToList( "hello" );
         message.setNumber( 42 );
 
-        workingMemory.insert( message );
-        workingMemory.insert( "boo" );
+        ksession.insert( message );
+        ksession.insert( "boo" );
         //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
         assertTrue( message.isFired() );
         assertEquals( message,
-                      ((List) workingMemory.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
 
     }
 
@@ -3435,18 +3444,22 @@ public class MiscTest extends TestCase {
     }
 
     public void testInsurancePricingExample() throws Exception {
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "insurance_pricing_example.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "insurance_pricing_example.drl", getClass() ), ResourceType.DRL );        
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
 
         // now create some test data
         final Driver driver = new Driver();
         final Policy policy = new Policy();
 
-        wm.insert( driver );
-        wm.insert( policy );
+        ksession.insert( driver );
+        ksession.insert( policy );
 
-        wm.fireAllRules();
+        ksession.fireAllRules();
 
         assertEquals( 120,
                       policy.getBasePrice() );
@@ -3455,9 +3468,15 @@ public class MiscTest extends TestCase {
     public void testLLR() throws Exception {
 
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_JoinNodeModifyTuple.drl", getClass() ), ResourceType.DRL );        
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();         
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
 
         // 1st time
         org.drools.Target tgt = new org.drools.Target();
@@ -3467,7 +3486,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.8666667f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -3476,9 +3495,9 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.8666667f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
-        wm.fireAllRules();
+        ksession.fireAllRules();
 
         // 2nd time
         tgt = new org.drools.Target();
@@ -3488,7 +3507,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.9f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -3497,9 +3516,9 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.9f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
-        wm.fireAllRules();
+        ksession.fireAllRules();
 
         // 3d time
         tgt = new org.drools.Target();
@@ -3509,7 +3528,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.9333333f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -3518,9 +3537,9 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.9333333f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
-        wm.fireAllRules();
+        ksession.fireAllRules();
 
         // 4th time
         tgt = new org.drools.Target();
@@ -3530,7 +3549,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.9666667f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -3539,9 +3558,9 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.9666667f ) );
-        wm.insert( tgt );
+        ksession.insert( tgt );
 
-        wm.fireAllRules();
+        ksession.fireAllRules();
     }
 
     public void testDoubleQueryWithExists() throws Exception {

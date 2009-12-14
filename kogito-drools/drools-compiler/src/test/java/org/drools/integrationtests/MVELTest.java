@@ -27,6 +27,7 @@ import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.impl.DateFormatsImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -69,7 +70,8 @@ public class MVELTest extends TestCase {
         assertEquals( "hello world",
                       list2.get( 0 ) );
 
-        Date dt = DateUtils.parseDate( "10-Jul-1974" );
+        Date dt = DateUtils.parseDate( "10-Jul-1974",
+                                       new DateFormatsImpl() );
         assertEquals( dt,
                       c.getUsedBy() );
     }

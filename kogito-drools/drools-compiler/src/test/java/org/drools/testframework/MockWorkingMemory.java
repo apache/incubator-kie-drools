@@ -18,6 +18,7 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemoryEntryPoint;
+import org.drools.builder.DateFormats;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -548,16 +549,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Collection< ? extends org.drools.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public Collection< Object > getObjects() {
         // TODO Auto-generated method stub
         return null;
@@ -616,6 +607,21 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public long getTotalFactCount() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    public DateFormats getDateFormats() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

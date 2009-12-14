@@ -1085,7 +1085,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) < 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) < 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -1095,7 +1095,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) < 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) < 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1105,7 +1105,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( workingMemory, right );
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) < 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) < 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -1146,7 +1146,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) <= 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) <= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -1156,7 +1156,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) <= 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) <= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1166,7 +1166,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( workingMemory, right );
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) <= 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) <= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -1207,7 +1207,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) > 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) > 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -1217,7 +1217,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) > 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) > 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1227,7 +1227,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( workingMemory, right );
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) > 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) > 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -1268,7 +1268,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) >= 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) >= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -1278,7 +1278,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( workingMemory, left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) >= 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) >= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1288,7 +1288,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( workingMemory, right );
-            return DateUtils.getRightDate( value2 ).compareTo( value1 ) >= 0;
+            return DateUtils.getRightDate( value2, workingMemory.getDateFormats() ).compareTo( value1 ) >= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,

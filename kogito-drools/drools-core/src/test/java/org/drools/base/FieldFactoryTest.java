@@ -7,13 +7,15 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.drools.builder.impl.DateFormatsImpl;
 import org.drools.spi.FieldValue;
 
 public class FieldFactoryTest extends TestCase {
 
     public void testBigDecimal() {
         final FieldValue val = FieldFactory.getFieldValue( "42.42",
-                                                           ValueType.BIG_DECIMAL_TYPE );
+                                                           ValueType.BIG_DECIMAL_TYPE,
+                                                           new DateFormatsImpl() );
         assertEquals( BigDecimal.class,
                       val.getValue().getClass() );
         assertTrue( val.getValue().equals( new BigDecimal( "42.42" ) ) );
@@ -21,7 +23,8 @@ public class FieldFactoryTest extends TestCase {
 
     public void testBigInteger() {
         final FieldValue val = FieldFactory.getFieldValue( "424242",
-                                                           ValueType.BIG_INTEGER_TYPE );
+                                                           ValueType.BIG_INTEGER_TYPE,
+                                                           new DateFormatsImpl() );
         assertEquals( BigInteger.class,
                       val.getValue().getClass() );
         assertTrue( val.getValue().equals( new BigInteger( "424242" ) ) );
@@ -30,7 +33,8 @@ public class FieldFactoryTest extends TestCase {
     public void testDate() throws Exception {
     	SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
     	String s = df.format(df.parse("10-Jul-1974"));
-        final FieldValue val = FieldFactory.getFieldValue( s, ValueType.DATE_TYPE );
+        final FieldValue val = FieldFactory.getFieldValue( s, ValueType.DATE_TYPE,
+                                                           new DateFormatsImpl() );
         assertEquals( Date.class, val.getValue().getClass() );
 
         Date dt = (Date) val.getValue();
