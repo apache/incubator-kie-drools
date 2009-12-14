@@ -41,9 +41,11 @@ import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.evaluators.TimeIntervalParser;
+import org.drools.builder.DateFormats;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
+import org.drools.builder.impl.DateFormatsImpl;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.definition.process.Process;
@@ -86,6 +88,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.runtime.EnvironmentName;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.DroolsStreamUtils;
 import org.drools.xml.XmlChangeSetReader;
@@ -133,6 +136,8 @@ public class PackageBuilder {
     private List<DSLTokenizedMappingFile>     dslFiles;
 
     private TimeIntervalParser                timeParser;
+    
+    protected DateFormats                     dateFormats;    
 
     /**
      * Use this when package is starting from scratch.
@@ -178,6 +183,12 @@ public class PackageBuilder {
         } else {
             this.configuration = configuration;
         }
+        
+        this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
+        if ( this.dateFormats == null ) {
+            this.dateFormats = new DateFormatsImpl();
+            //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
+        }        
 
         this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
 
@@ -208,6 +219,12 @@ public class PackageBuilder {
         } else {
             this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
         }
+        
+        this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
+        if ( this.dateFormats == null ) {
+            this.dateFormats = new DateFormatsImpl();
+            //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
+        }                
 
         // FIXME, we need to get drools to support "default" namespace.
         //this.defaultNamespace = pkg.getName();        
@@ -1202,6 +1219,10 @@ public class PackageBuilder {
     public Map<String, PackageRegistry> getPackageRegistry() {
         return this.pkgRegistryMap;
     }
+    
+    public DateFormats getDateFormats() {
+        return this.dateFormats;
+    }    
 
     /**
      * Returns an expander for DSLs (only if there is a DSL configured for this package).

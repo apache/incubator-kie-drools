@@ -164,7 +164,7 @@ public class IntervalTrigger
     }
 
     public void updateToNextIncludeDate() {
-        if ( calendarNames == null || calendarNames.length == 0 ) {
+        if ( this.calendars == null || calendarNames == null || calendarNames.length == 0 ) {
             // There are no assigned calendars
             return;
         }

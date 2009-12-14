@@ -52,6 +52,8 @@ import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.CalendarsImpl;
 import org.drools.base.MapGlobalResolver;
+import org.drools.builder.DateFormats;
+import org.drools.builder.impl.DateFormatsImpl;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.ExternalExecutorService;
 import org.drools.definition.process.Process;
@@ -149,6 +151,7 @@ public abstract class AbstractWorkingMemory
     protected GlobalResolver                                     globalResolver;
     
     protected Calendars                                          calendars;
+    protected DateFormats                                        dateFormats;
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport                          workingMemoryEventSupport;
@@ -285,6 +288,12 @@ public abstract class AbstractWorkingMemory
         }
         
         this.calendars = new CalendarsImpl();
+        
+        this.dateFormats = (DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
+        if ( this.dateFormats == null ) {
+            this.dateFormats = new DateFormatsImpl();
+            this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
+        }
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
@@ -637,6 +646,10 @@ public abstract class AbstractWorkingMemory
     
     public Calendars getCalendars() {
         return this.calendars;
+    }
+    
+    public DateFormats getDateFormats() {
+        return this.dateFormats;
     }
 
     public int getId() {

@@ -178,7 +178,7 @@ public class SchedulerTest extends DroolsTestCase {
                       data.size() );
 
         // sleep for 0.5 seconds
-        Thread.sleep( 500 );
+        Thread.sleep( 750 );
 
         // now check for update
         assertEquals( 4,

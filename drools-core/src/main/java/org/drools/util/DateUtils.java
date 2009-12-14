@@ -17,11 +17,14 @@
  */
 package org.drools.util;
 
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import org.drools.builder.DateFormats;
 
 /**
  * @author etirelli
@@ -66,9 +69,14 @@ public class DateUtils {
 	}
 
 	/** Use the simple date formatter to read the date from a string */
-	public static Date parseDate(final String input) {
+	public static Date parseDate(final String input, DateFormats dateFormats) {
 		try {
-			return df.get().parse(input);
+//		    if (  dateFormat != null ) {
+//		        return dateFormat.parse( input );
+//		    } else {
+//		        return df.get().parse(input);
+//		    }
+		    return df.get().parse(input);
 		} catch (final ParseException e) {
 			throw new IllegalArgumentException("Invalid date input format: ["
 					+ input + "] it should follow: [" + DATE_FORMAT_MASK + "]");
@@ -76,12 +84,12 @@ public class DateUtils {
 	}
 
 	/** Converts the right hand side date as appropriate */
-	public static Date getRightDate(final Object object2) {
+	public static Date getRightDate(final Object object2, DateFormats dateFormats) {
 		if (object2 == null) {
 			return null;
 		}
 		if (object2 instanceof String) {
-			return parseDate((String) object2);
+			return parseDate((String) object2, dateFormats);
 		} else if (object2 instanceof Date) {
 			return (Date) object2;
 		} else {

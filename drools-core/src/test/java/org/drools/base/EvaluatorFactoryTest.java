@@ -34,6 +34,7 @@ import junit.framework.TestCase;
 
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.rule.VariableRestriction.CharVariableContextEntry;
@@ -451,7 +452,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                                     final Object[] row,
                                                     final Evaluator evaluator) {
         final FieldValue value = FieldFactory.getFieldValue( row[2] );
-        final boolean result = evaluator.evaluate( null,
+        final boolean result = evaluator.evaluate( ( InternalWorkingMemory ) new ReteooRuleBase( "id1" ).newStatefulSession(),
                                                    extractor,
                                                    row[0],
                                                    value );
@@ -480,7 +481,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                                                    extractor,
                                                                    valueType,
                                                                    row );
-        final boolean result = evaluator.evaluateCachedRight( null,
+        final boolean result = evaluator.evaluateCachedRight( ( InternalWorkingMemory ) new ReteooRuleBase( "id1" ).newStatefulSession(),
                                                               context,
                                                               row[2] );
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
@@ -508,7 +509,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                                                    extractor,
                                                                    valueType,
                                                                    row );
-        final boolean result = evaluator.evaluateCachedLeft( null,
+        final boolean result = evaluator.evaluateCachedLeft( ( InternalWorkingMemory ) new ReteooRuleBase( "id1" ).newStatefulSession(),
                                                              context,
                                                              row[0] );
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];

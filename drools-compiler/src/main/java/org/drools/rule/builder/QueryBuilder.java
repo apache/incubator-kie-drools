@@ -28,7 +28,8 @@ public class QueryBuilder implements EngineElementBuilder {
         final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, objectType, "name", null, true );
 
         final FieldValue field = FieldFactory.getFieldValue( queryDescr.getName(),
-                                                             ValueType.STRING_TYPE );
+                                                             ValueType.STRING_TYPE,
+                                                             context.getPackageBuilder().getDateFormats() );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     context.getConfiguration().getEvaluatorRegistry().getEvaluator( ValueType.STRING_TYPE,

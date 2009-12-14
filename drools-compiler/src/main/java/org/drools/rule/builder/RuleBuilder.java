@@ -125,11 +125,13 @@ public class RuleBuilder {
                 buildCalendars( rule, attributeDescr.getValue(), context );
             } else if ( name.equals( "date-effective" ) ) {
                 final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
+                cal.setTime( DateUtils.parseDate( attributeDescr.getValue(),
+                                                  context.getPackageBuilder().getDateFormats()  ) );
                 rule.setDateEffective( cal );
             } else if ( name.equals( "date-expires" ) ) {
                 final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
+                cal.setTime( DateUtils.parseDate( attributeDescr.getValue(),
+                                                  context.getPackageBuilder().getDateFormats()  ) );
                 rule.setDateExpires( cal );
             }
         }
@@ -242,7 +244,8 @@ public class RuleBuilder {
             }
             
             int equalsPos = timerString.indexOf( '=', startPos );
-            startDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim() );              
+            startDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim(),
+                                             context.getPackageBuilder().getDateFormats()  );              
         }
         
         if ( endPos != -1 ) {
@@ -256,7 +259,8 @@ public class RuleBuilder {
             }
             
             int equalsPos = timerString.indexOf( '=', endPos );
-            endDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim() );              
+            endDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim(),
+                                           context.getPackageBuilder().getDateFormats()  );              
         }
         
         if ( repeatPos != -1 ) {

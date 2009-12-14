@@ -957,7 +957,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value2 == null ) {
                 return false;
             }
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) == 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) == 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -970,7 +970,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value2 == null ) {
                 return false;
             }
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) == 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) == 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -983,7 +983,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value2 == null ) {
                 return false;
             }
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) == 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) == 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -1030,7 +1030,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value2 == null ) {
                 return true;
             }
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) != 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) != 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -1043,7 +1043,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value2 == null ) {
                 return true;
             }
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) != 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) != 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1056,7 +1056,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if ( value2 == null ) {
                 return true;
             }
-            return value1.compareTo( DateUtils.getRightDate( value2 ) ) != 0;
+            return value1.compareTo( DateUtils.getRightDate( value2, workingMemory.getDateFormats() ) ) != 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,

@@ -806,7 +806,8 @@ public class PatternBuilder
             }
 
             field = FieldFactory.getFieldValue( value,
-                                                extractor.getValueType() );
+                                                extractor.getValueType(),
+                                                context.getPackageBuilder().getDateFormats() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           literalRestrictionDescr,
@@ -899,7 +900,8 @@ public class PatternBuilder
         try {
             final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
             field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
-                                                extractor.getValueType() );
+                                                extractor.getValueType(),
+                                                context.getPackageBuilder().getDateFormats()  );
             if ( field.isObjectField() ) {
                 ((ObjectFieldImpl) field).setEnum( true );
                 ((ObjectFieldImpl) field).setEnumName( staticClass.getName() );

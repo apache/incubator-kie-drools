@@ -87,9 +87,9 @@ public class LiteralRestriction
 
     public boolean isAllowed(final InternalReadAccessor readAccessor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemoiry,
+                             final InternalWorkingMemory workingMemory,
                              final ContextEntry context) {
-        return this.evaluator.evaluate( null,
+        return this.evaluator.evaluate( workingMemory,
                                         this.readAccessor,
                                         handle.getObject(),
                                         this.field );
@@ -97,7 +97,7 @@ public class LiteralRestriction
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final InternalFactHandle handle) {
-        return this.evaluator.evaluate( null,
+        return this.evaluator.evaluate( ((LiteralContextEntry)context).workingMemory,
                                         ((LiteralContextEntry) context).getFieldExtractor(),
                                         handle.getObject(),
                                         this.field );
@@ -105,7 +105,7 @@ public class LiteralRestriction
 
     public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
-        return this.evaluator.evaluate( null,
+        return this.evaluator.evaluate( ((LiteralContextEntry)context).workingMemory,
                                         ((LiteralContextEntry) context).getFieldExtractor(),
                                         ((LiteralContextEntry) context).getObject(),
                                         this.field );
@@ -170,6 +170,7 @@ public class LiteralRestriction
         public InternalReadAccessor extractor;
         public Object               object;
         public ContextEntry         next;
+        public InternalWorkingMemory workingMemory;
 
         public LiteralContextEntry() {
         }
@@ -183,12 +184,14 @@ public class LiteralRestriction
             extractor = (InternalReadAccessor) in.readObject();
             object = in.readObject();
             next = (ContextEntry) in.readObject();
+            workingMemory = ( InternalWorkingMemory ) in .readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( extractor );
             out.writeObject( object );
             out.writeObject( next );
+            out.writeObject( workingMemory );
         }
 
         public InternalReadAccessor getFieldExtractor() {
@@ -210,11 +213,12 @@ public class LiteralRestriction
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
             this.object = handle.getObject();
+            this.workingMemory = workingMemory;
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
                                     final LeftTuple tuple) {
-            // nothing to do
+            this.workingMemory = workingMemory;
         }
 
         public void resetTuple() {

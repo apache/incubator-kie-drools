@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.TypeResolver;
+import org.drools.builder.impl.DateFormatsImpl;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
@@ -187,9 +188,11 @@ public class RuleBuilderTest extends TestCase {
 
         // creates expected results
         final Calendar effective = Calendar.getInstance();
-        effective.setTime( DateUtils.parseDate( "10-Jul-1974" ) );
+        effective.setTime( DateUtils.parseDate( "10-Jul-1974",
+                                                new DateFormatsImpl() ) );
         final Calendar expires = Calendar.getInstance();
-        expires.setTime( DateUtils.parseDate( "10-Jul-2040" ) );
+        expires.setTime( DateUtils.parseDate( "10-Jul-2040",
+                                              new DateFormatsImpl() ) );
 
         // defining expectations on the mock object
         mockery.checking( new Expectations() {
@@ -197,6 +200,7 @@ public class RuleBuilderTest extends TestCase {
                 // return values for the context
                 allowing( context ).getRule(); will( returnValue( rule ) );
                 allowing( context ).getRuleDescr(); will( returnValue( ruleDescr ) );
+                allowing( context ).getPackageBuilder(); will( returnValue( new PackageBuilder() ) );
 
                 // expected values for the rule object
                 oneOf( rule ).setNoLoop( true );

@@ -7,6 +7,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
+import org.drools.builder.DateFormats;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
@@ -203,5 +204,7 @@ public interface InternalWorkingMemory
      * @return
      */
     public long getTotalFactCount();
+    
+    public DateFormats getDateFormats();  
 
 }

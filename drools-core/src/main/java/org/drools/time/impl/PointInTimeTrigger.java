@@ -37,7 +37,7 @@ public class PointInTimeTrigger
                               Calendars calendars) {
         boolean included = true;
 
-        if ( calendarNames != null && calendarNames.length > 0 ) {
+        if ( calendars != null && calendarNames != null && calendarNames.length > 0 ) {
             for ( String calName : calendarNames ) {
                 // all calendars must not block, as soon as one blocks break
                 org.drools.time.Calendar cal = calendars.get( calName );
