@@ -18,7 +18,7 @@ import org.drools.runtime.rule.FactHandle;
  * drools-transformer-xstream is added then the PipelineFactory can be used in conjunction with the BatchExecutionHelper to marshall to and from XML. BatchExecutionHelper
  * also provides additional documentation on the supported XML format.
  * </p>
- *
+ *`
  *
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>  
  */
