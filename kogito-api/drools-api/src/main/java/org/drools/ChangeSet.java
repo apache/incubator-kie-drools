@@ -1,6 +1,7 @@
 package org.drools;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.io.Resource;
 
@@ -80,5 +81,9 @@ public interface ChangeSet {
      * @return
      */
     public Collection<Resource> getResourcesModified();
+
+    Map<Resource, String> getKnowledgeDefinitionsRemoved();
+
+    void setKnowledgeDefinitionsRemoved(Map<Resource, String> knowledgeDefinitionsRemoved);
 
 }
