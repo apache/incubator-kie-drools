@@ -16,4 +16,13 @@ public interface KnowledgeAgentConfiguration
     extends
     PropertiesConfiguration {
 
+    public boolean isScanResources();
+
+    public boolean isScanDirectories();
+
+    public boolean isMonitorChangeSetEvents();
+
+    public boolean isNewInstance();
+
+
 }

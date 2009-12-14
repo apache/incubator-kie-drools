@@ -1,5 +1,6 @@
 package org.drools.agent;
 
+import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListener;
 import org.drools.io.Resource;
@@ -44,6 +45,8 @@ public interface KnowledgeAgent {
     void monitorResourceChangeEvents(boolean monitor);
 
     void applyChangeSet(Resource resource);
+
+    void applyChangeSet(ChangeSet changeSet);
 
     void setSystemEventListener(SystemEventListener listener);
 }
