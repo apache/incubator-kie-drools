@@ -81,7 +81,9 @@ public class VariablePersistenceStrategyTest extends TestCase {
         System.out.println("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
-        parameters.put("y", new MyEntity("This is a test Entity"));
+        parameters.put("y", new MyEntity("This is a test Entity with annotation in fields"));
+        parameters.put("m", new MyEntityMethods("This is a test Entity with annotations in methods"));
+        parameters.put("f", new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods"));
         parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
         	ksession.startProcess( "com.sample.ruleflow", parameters );
@@ -91,7 +93,7 @@ public class VariablePersistenceStrategyTest extends TestCase {
         assertNotNull( workItem );
         
         List<?> result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        assertEquals(3, result.size());
+        assertEquals(5, result.size());
 
         System.out.println("### Retrieving process instance ###");
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
@@ -99,7 +101,9 @@ public class VariablePersistenceStrategyTest extends TestCase {
         	ksession.getProcessInstance( processInstance.getId() );
         assertNotNull( processInstance );
         assertEquals("SomeString", processInstance.getVariable("x"));
-        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test Entity with annotation in fields", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test Entity with annotations in methods", ((MyEntityMethods) processInstance.getVariable("m")).getTest());
+        assertEquals("This is a test Entity with annotations in fields and without accesors methods", ((MyEntityOnlyFields) processInstance.getVariable("f")).test);
         assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
         assertNull(processInstance.getVariable("a"));
         assertNull(processInstance.getVariable("b"));
@@ -112,9 +116,10 @@ public class VariablePersistenceStrategyTest extends TestCase {
         
         System.out.println("### Retrieving variable instance infos ###");
         result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        assertEquals(6, result.size());
+        assertEquals(8, result.size());
         for (Object o: result) {
-        	System.out.println(((VariableInstanceInfo) o));
+        	assertTrue(VariableInstanceInfo.class.isAssignableFrom(o.getClass()));
+        	System.out.println(o);
         }
         
         System.out.println("### Retrieving process instance ###");
@@ -123,7 +128,9 @@ public class VariablePersistenceStrategyTest extends TestCase {
 			ksession.getProcessInstance(processInstance.getId());
 		assertNotNull(processInstance);
         assertEquals("SomeString", processInstance.getVariable("x"));
-        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test Entity with annotation in fields", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test Entity with annotations in methods", ((MyEntityMethods) processInstance.getVariable("m")).getTest());
+        assertEquals("This is a test Entity with annotations in fields and without accesors methods", ((MyEntityOnlyFields) processInstance.getVariable("f")).test);
         assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
         assertEquals("Some new String", processInstance.getVariable("a"));
         assertEquals("This is a new test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
@@ -135,7 +142,7 @@ public class VariablePersistenceStrategyTest extends TestCase {
         assertNotNull(workItem);
         
         result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        assertEquals(6, result.size());
+        assertEquals(8, result.size());
         
         System.out.println("### Retrieving process instance ###");
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, null, env);
@@ -143,7 +150,9 @@ public class VariablePersistenceStrategyTest extends TestCase {
         	ksession.getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
         assertEquals("SomeString", processInstance.getVariable("x"));
-        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test Entity with annotation in fields", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test Entity with annotations in methods", ((MyEntityMethods) processInstance.getVariable("m")).getTest());
+        assertEquals("This is a test Entity with annotations in fields and without accesors methods", ((MyEntityOnlyFields) processInstance.getVariable("f")).test);
         assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
         assertEquals("Some changed String", processInstance.getVariable("a"));
         assertEquals("This is a changed test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
@@ -185,7 +194,9 @@ public class VariablePersistenceStrategyTest extends TestCase {
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
-        parameters.put("y", new MyEntity("This is a test Entity"));
+        parameters.put("y", new MyEntity("This is a test Entity with annotation in fields"));
+        parameters.put("m", new MyEntityMethods("This is a test Entity with annotations in methods"));
+        parameters.put("f", new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods"));
         parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
         ProcessInstance processInstance = ksession.startProcess( "com.sample.ruleflow", parameters );
 
@@ -234,7 +245,9 @@ public class VariablePersistenceStrategyTest extends TestCase {
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
-        parameters.put("y", new MyEntity("This is a test Entity"));
+        parameters.put("y", new MyEntity("This is a test Entity with annotation in fields"));
+        parameters.put("m", new MyEntityMethods("This is a test Entity with annotations in methods"));
+        parameters.put("f", new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods"));
         parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
         ProcessInstance processInstance = ksession.startProcess( "com.sample.ruleflow", parameters );
 
