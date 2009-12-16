@@ -59,6 +59,10 @@ public class SessionInfo {
         this.helper = helper;
     }
 
+    public JPASessionMarshallingHelper getJPASessionMashallingHelper() {
+        return helper;
+    }
+    
     public byte[] getData() {
         return this.rulesByteArray;
     }
