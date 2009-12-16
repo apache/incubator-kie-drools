@@ -1,5 +1,7 @@
 package org.drools.persistence.processinstance.variabletypes;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -16,7 +18,7 @@ public class JPAPersistedVariable extends VariableInstanceInfo {
 	@Transient
 	private Object entity;
 	private String entityClass;
-	private Long entityId;
+	private Serializable entityId;
 
 	public String getEntityClass() {
 		return entityClass;
@@ -26,11 +28,11 @@ public class JPAPersistedVariable extends VariableInstanceInfo {
 		this.entityClass = entityClass;
 	}
 
-	public Long getEntityId() {
+	public Serializable getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(Long varid) {
+	public void setEntityId(Serializable varid) {
 		this.entityId = varid;
 	}
 
