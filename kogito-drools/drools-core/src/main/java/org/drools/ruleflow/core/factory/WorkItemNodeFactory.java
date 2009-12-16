@@ -30,7 +30,6 @@ import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
-import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.WorkItemNode;
 
@@ -45,7 +44,7 @@ public class WorkItemNodeFactory extends NodeFactory {
     }
 
     protected Node createNode() {
-        return new ActionNode();
+        return new WorkItemNode();
     }
 
     protected WorkItemNode getWorkItemNode() {
