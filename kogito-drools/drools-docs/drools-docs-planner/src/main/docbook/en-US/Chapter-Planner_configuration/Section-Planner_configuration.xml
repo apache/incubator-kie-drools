@@ -242,14 +242,14 @@
     it with a solver configuration xml file:</para>
 
     <programlisting>    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-    configurer.configure("/org/drools/solver/examples/nqueens/solver/nqueensSolverConfig.xml");
+    configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
     Solver solver = configurer.buildSolver();</programlisting>
 
     <para>A basic solver configuration file looks something like this:</para>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;localSearchSolver&gt;
-    &lt;scoreDrl&gt;/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;scoreDefinition&gt;
         &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
     &lt;/scoreDefinition&gt;
@@ -257,7 +257,7 @@
         &lt;scoreAttained&gt;0&lt;/scoreAttained&gt;
     &lt;/termination&gt;
     &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.solver.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;
     &lt;accepter&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
@@ -471,14 +471,14 @@
       <para>You'll need to set a (uninitialized) solution on the solver. Once the solver starts, it will first call the
       <literal>StartingSolutionInitializer</literal> to initialize the solution. If the
       <literal>StartingSolutionInitializer</literal> adds, edits or removes facts it needs to notify the workingMemory
-      about this. It can use score calculation during its intialization process.</para>
+      about this. It can use score calculation during its initialization process.</para>
 
       <para>Here's an example on how you add the <literal>StartingSolutionInitializer</literal> to the
       configuration:</para>
 
       <programlisting>&lt;localSearchSolver&gt;
     ...
-    &lt;startingSolutionInitializerClass&gt;org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/startingSolutionInitializerClass&gt;
+    &lt;startingSolutionInitializerClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/startingSolutionInitializerClass&gt;
     ...
 &lt;/localSearchSolver&gt;</programlisting>
     </section>
