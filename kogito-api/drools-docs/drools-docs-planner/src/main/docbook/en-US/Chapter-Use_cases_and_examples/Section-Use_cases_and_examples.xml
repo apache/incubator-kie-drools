@@ -7,7 +7,7 @@
                              http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          version="5.0" xml:base="./">
 
-  <title>Solver examples</title>
+  <title>Use cases and examples</title>
 
   <section>
     <title>Introduction</title>
@@ -69,7 +69,9 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png" format="PNG"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -213,7 +215,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/nQueensDomainDiagram.png" format="PNG"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/nQueensDomainDiagram.png"
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -247,7 +250,8 @@
             <row>
               <entry morerows="3"><mediaobject>
                   <imageobject>
-                    <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png" format="PNG"></imagedata>
+                    <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
+                               format="PNG"></imagedata>
                   </imageobject>
                 </mediaobject></entry>
 

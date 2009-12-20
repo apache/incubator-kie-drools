@@ -7,7 +7,7 @@
                              http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          version="5.0" xml:base="./">
 
-  <title>Solver configuration</title>
+  <title>Planner configuration</title>
 
   <section>
     <title>Types of solvers</title>
