@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
-         xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
+<chapter xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+                             http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         version="5.0" xml:base="./">
+
   <title>Score calculation with a rule engine</title>
 
   <section>
@@ -31,7 +35,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Solver/unsolvedNQueens04.png" format="PNG"></imagedata>
+          <imagedata fileref="images/Chapter-Score_calculation/unsolvedNQueens04.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -250,4 +254,4 @@ end</programlisting>
     and innocent looking problems can hide an enormous problem size. For example, they probably still don't know the
     optimal solution of the traveling tournament problem for as little as 10 traveling teams.</para>
   </section>
-</section>
+</chapter>
