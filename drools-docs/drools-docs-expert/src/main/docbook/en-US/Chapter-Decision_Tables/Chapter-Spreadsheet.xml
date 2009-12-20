@@ -8,7 +8,7 @@
     logic, and are well suited to <emphasis>business</emphasis> level rules.</para>
   <para>Drools supports managing rules in a Spreadsheet format. Formats supported are Excel, and
     CSV. Meaning that a variety of spreadsheet programs (such as Microsoft Excel, OpenOffice.org
-    Calc amongst others) can be utalized. It is expected that web based decision table editors will
+    Calc amongst others) can be utilized. It is expected that web based decision table editors will
     be included in a near future release.</para>
   <para>Decision tables are an old concept (in software terms) but have proven useful over the
     years. Very briefly speaking, in Drools decision tables are a way to generate rules driven from
