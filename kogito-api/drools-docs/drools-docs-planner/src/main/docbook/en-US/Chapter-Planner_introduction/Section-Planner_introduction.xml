@@ -136,16 +136,16 @@
       <title>Get it with maven 2</title>
 
       <para>The drools-solver jars are available on <link xlink:href="http://repository.jboss.com/maven2/">the jboss
-      maven repository</link>. If you use maven 2, just add a dependency to <literal>drools-solver-core</literal> in
+      maven repository</link>. If you use maven 2, just add a dependency to <literal>drools-planner-core</literal> in
       your project's <filename>pom.xml</filename>:</para>
 
       <programlisting>    &lt;dependency&gt;
         &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
-        &lt;artifactId&gt;drools-solver-core&lt;/artifactId&gt;
+        &lt;artifactId&gt;drools-planner-core&lt;/artifactId&gt;
         &lt;version&gt;5.x&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
-      <para>You might also need to add the jboss repository in your respository manager (nexus, archiva, ...) or your
+      <para>You might also need to add the jboss repository in your repository manager (nexus, archiva, ...) or your
       <filename>~/settings.xml</filename>:</para>
 
       <programlisting>    &lt;repositories&gt;
@@ -178,7 +178,7 @@ $ mvn -DskipTests clean install
       <para>After that, you can run any example directly from the command line, just run this command and pick an
       example:</para>
 
-      <programlisting>$ cd drools-solver/drools-solver-examples/
+      <programlisting>$ cd drools-planner/drools-planner-examples/
 $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
 ...</programlisting>
     </section>
@@ -193,7 +193,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
 
     <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the drools-solver code
     or for this manual to <link xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools JIRA</link>. Select
-    the component <literal>drools-solver</literal>.</para>
+    the component <literal>drools-planner</literal>.</para>
 
     <para>Patches are very welcome and get priority treatment! Attach them to a JIRA issue and optionally send a mail to
     the dev mailing list to get the issue fixed fast. By open sourcing your improvements, you 'll benefit from
