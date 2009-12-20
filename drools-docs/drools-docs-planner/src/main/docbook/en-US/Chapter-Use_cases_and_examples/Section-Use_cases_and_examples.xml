@@ -405,9 +405,9 @@
       <literal>ExamplesApp</literal> always runs the smart implementation, but with these commands you can compare the 2
       implementations yourself:</para>
 
-      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
+      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
 ...
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
+$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
 ...</programlisting>
 
       <para>The smart implementation performs and scales exponentially better than the simple implementation.</para>

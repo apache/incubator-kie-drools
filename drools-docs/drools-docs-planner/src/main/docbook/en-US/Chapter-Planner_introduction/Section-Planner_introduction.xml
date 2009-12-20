@@ -140,7 +140,7 @@
       your project's <filename>pom.xml</filename>:</para>
 
       <programlisting>    &lt;dependency&gt;
-        &lt;groupId&gt;org.drools.solver&lt;/groupId&gt;
+        &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
         &lt;artifactId&gt;drools-solver-core&lt;/artifactId&gt;
         &lt;version&gt;5.x&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
@@ -179,7 +179,7 @@ $ mvn -DskipTests clean install
       example:</para>
 
       <programlisting>$ cd drools-solver/drools-solver-examples/
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.app.ExamplesApp"
+$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
 ...</programlisting>
     </section>
   </section>

@@ -33,7 +33,7 @@
     </para>
 
     <programlisting>XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
-      benchmarker.configure("/org/drools/solver/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
+      benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
       benchmarker.benchmark();
       benchmarker.writeResults(resultFile);
     </programlisting>
@@ -47,7 +47,7 @@
       &lt;inheritedUnsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inheritedUnsolvedSolutionFile&gt;
       &lt;inheritedUnsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/inheritedUnsolvedSolutionFile&gt;
       &lt;inheritedLocalSearchSolver&gt;
-      &lt;scoreDrl&gt;/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+      &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
       &lt;scoreDefinition&gt;
       &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
       &lt;/scoreDefinition&gt;
@@ -55,7 +55,7 @@
       &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
       &lt;/termination&gt;
       &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
       &lt;/selector&gt;
       &lt;forager&gt;
       &lt;foragerType&gt;MAX_SCORE_OF_ALL&lt;/foragerType&gt;
