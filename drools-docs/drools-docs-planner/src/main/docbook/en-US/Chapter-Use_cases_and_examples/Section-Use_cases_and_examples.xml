@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
-         xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
+<chapter xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+                             http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         version="5.0" xml:base="./">
+
   <title>Solver examples</title>
 
   <section>
@@ -29,7 +33,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Solver/screenshotNQueens.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotNQueens.png"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -65,7 +69,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Solver/partiallySolvedNQueens04Explained.png" format="PNG"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -85,7 +89,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Solver/solvedNQueens04.png" format="PNG"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/solvedNQueens04.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -209,7 +213,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Solver/nQueensDomainDiagram.png" format="PNG"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/nQueensDomainDiagram.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -243,7 +247,7 @@
             <row>
               <entry morerows="3"><mediaobject>
                   <imageobject>
-                    <imagedata fileref="images/Chapter-Solver/partiallySolvedNQueens04Explained.png" format="PNG"></imagedata>
+                    <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png" format="PNG"></imagedata>
                   </imageobject>
                 </mediaobject></entry>
 
@@ -316,7 +320,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Solver/screenshotLessonSchedule.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotLessonSchedule.png"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -352,7 +356,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Solver/screenshotTravelingTournament.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotTravelingTournament.png"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -583,7 +587,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Solver/screenshotExamination.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotExamination.png"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -887,7 +891,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Solver/examinationDomainDiagram.png"></imagedata>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationDomainDiagram.png"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -996,4 +1000,4 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
     <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this webpage</link> and the
     test data comes from real world hospitals.</para>
   </section>
-</section>
+</chapter>
