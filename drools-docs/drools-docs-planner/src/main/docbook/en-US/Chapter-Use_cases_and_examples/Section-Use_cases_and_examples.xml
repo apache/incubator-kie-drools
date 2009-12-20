@@ -17,7 +17,7 @@
     recommended.</para>
 
     <para>You can find the source code of all these examples in the drools source distribution and also in subversion
-    under <literal>drools-solver/drools-solver-examples</literal>.</para>
+    under <literal>drools-planner/drools-planner-examples</literal>.</para>
   </section>
 
   <section>
@@ -200,7 +200,7 @@
         </tgroup>
       </table>
 
-      <para>The drools-solver implemenation has not been optimized because it functions as a beginner example.
+      <para>The drools-solver implementation has not been optimized because it functions as a beginner example.
       Nevertheless, it can easily handle 64 queens.</para>
     </section>
 
@@ -579,7 +579,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>The ITC2007 examination example</title>
+    <title>The ITC 2007 examination example</title>
 
     <section>
       <title>Screenshot</title>
