@@ -450,7 +450,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       <para>A selector is currently based on a <literal>MoveFactory</literal>.</para>
 
       <programlisting>    &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.solver.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;</programlisting>
 
       <para>You're not obligated to generate the same stable set of moves at each step. You could start with generating
@@ -461,7 +461,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       relativeSelection only a random subset of them is evaluated:</para>
 
       <programlisting>    &lt;selector&gt;
-       &lt;moveFactoryClass&gt;org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory&lt;/moveFactoryClass&gt;
+       &lt;moveFactoryClass&gt;org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory&lt;/moveFactoryClass&gt;
        &lt;relativeSelection&gt;0.002&lt;/relativeSelection&gt;
     &lt;/selector&gt;</programlisting>
     </section>

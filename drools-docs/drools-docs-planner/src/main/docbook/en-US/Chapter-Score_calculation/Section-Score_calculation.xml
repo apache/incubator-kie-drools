@@ -47,7 +47,7 @@ end</programlisting>
 
     <para>You need to add your score rules drl files in the solver configuration, for example:</para>
 
-    <programlisting>    &lt;scoreDrl&gt;/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;</programlisting>
+    <programlisting>    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;</programlisting>
 
     <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed.</para>
 
