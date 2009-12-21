@@ -176,8 +176,6 @@ public class LeftTuple
             this.rightParent.setBetaChildren( null );
         }
 
-        //this.parent  = null;
-
         this.blocker = null;
 
         this.rightParent = null;
@@ -374,6 +372,8 @@ public class LeftTuple
         // we know the object is never null and always of the  type LeftTuple
         if ( other == this ) {
             return true;
+        } else if( other == null ) {
+            return false;
         }
 
         // A LeftTuple is  only the same if it has the same hashCode, factId and parent

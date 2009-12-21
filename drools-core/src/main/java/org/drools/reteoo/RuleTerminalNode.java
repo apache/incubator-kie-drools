@@ -324,7 +324,7 @@ public final class RuleTerminalNode extends BaseNode
     }
 
     public String toString() {
-        return "[RuleTerminalNode: rule=" + this.rule.getName() + "]";
+        return "[RuleTerminalNode("+this.getId()+"): rule=" + this.rule.getName() + "]";
     }
 
     public void ruleAttached() {

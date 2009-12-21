@@ -228,52 +228,6 @@ public class ExistsNode extends BetaNode {
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
-        //        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        //        if ( !memory.getRightTupleMemory().remove( handle ) ) {
-        //            return;
-        //        }
-        //
-        //        final Iterator it = memory.getLeftTupleMemory().iterator( handle );
-        //        this.constraints.updateFromFactHandle( memory.getContext(),
-        //                                               workingMemory,
-        //                                               handle );
-        //        for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
-        //            if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-        //                                                        tuple ) ) {
-        //                if ( tuple.getMatch() == handle ) {
-        //                    // reset the match
-        //                    tuple.setMatch( null );
-        //
-        //                    // find next match, remember it and break.
-        //                    final Iterator tupleIt = memory.getRightTupleMemory().iterator( tuple );
-        //                    this.constraints.updateFromTuple( memory.getContext(),
-        //                                                      workingMemory,
-        //                                                      tuple );
-        //
-        //                    for ( FactEntry entry = (FactEntry) tupleIt.next(); entry != null; entry = (FactEntry) tupleIt.next() ) {
-        //                        final InternalFactHandle rightHandle = entry.getFactHandle();
-        //                        if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
-        //                                                                   rightHandle ) ) {
-        //                            tuple.setMatch( rightHandle );
-        //                            break;
-        //                        }
-        //                    }
-        //
-        //                    this.constraints.resetTuple( memory.getContext() );
-        //
-        //                    // if there is now no new tuple match then propagate assert.
-        //                    if ( tuple.getMatch() == null ) {
-        //                        this.sink.propagateRetractLeftTuple( tuple,
-        //                                                             context,
-        //                                                             workingMemory );
-        //                    }
-        //                }
-        //
-        //            }
-        //        }
-        //
-        //        this.constraints.resetFactHandle( memory.getContext() );
-        // assign now, so we can remove from memory before doing any possible propagations
         final RightTuple rootBlocker = (RightTuple) rightTuple.getNext();
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
@@ -319,6 +273,7 @@ public class ExistsNode extends BetaNode {
 
             leftTuple = temp;
         }
+        rightTuple.setBlocked( null );
         this.constraints.resetTuple( memory.getContext() );
     }
 
@@ -385,11 +340,10 @@ public class ExistsNode extends BetaNode {
 
     public String toString() {
         ObjectSource source = this.rightInput;
-        while ( source.getClass() != ObjectTypeNode.class ) {
+        while ( source != null && source.getClass() != ObjectTypeNode.class ) {
             source = source.source;
         }
-
-        return "[ExistsNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
+        return "[ExistsNode("+this.getId()+") - " + ((source != null) ? ((ObjectTypeNode) source).getObjectType() : "<source from a subnetwork>" ) + "]";
     }
     
     public short getType() {
