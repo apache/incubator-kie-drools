@@ -51,7 +51,7 @@ public class Primitives
     private Boolean           booleanWrapper;
 
     private Object            object;
-
+    
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
     }

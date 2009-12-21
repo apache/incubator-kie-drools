@@ -487,7 +487,7 @@ public class PackageBuilder {
                 addPackageFromDrl( new StringReader( string ) );
             } else if ( ResourceType.PKG.equals( type ) ) {
                 InputStream is = resource.getInputStream();
-                Package pkg = (Package) DroolsStreamUtils.streamIn( is );
+                Package pkg = (Package) DroolsStreamUtils.streamIn( is, this.configuration.getClassLoader() );
                 is.close();
                 addPackage( pkg );
             } else if ( ResourceType.CHANGE_SET.equals( type ) ) {
