@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.spi.FieldValue;
 import org.drools.util.MathUtils;
 
@@ -68,7 +69,7 @@ public class ObjectFieldImpl
         if ( !isEnum || enumName == null || fieldName == null ) {
             value = (Serializable) in.readObject();
         } else {
-            resolveEnumValue();
+            resolveEnumValue( (DroolsObjectInputStream) in );
         }
         setBooleans();
     }
@@ -82,9 +83,11 @@ public class ObjectFieldImpl
         }
     }
 
-    private void resolveEnumValue() {
+    private void resolveEnumValue( DroolsObjectInputStream in ) {
         try {
-            final Class<?> staticClass = Class.forName( enumName );
+            final ClassLoader loader = in.getClassLoader();
+            final Class<?> staticClass = Class.forName( enumName, true, loader );
+            //final Class<?> staticClass = Class.forName( enumName );
             value = (Serializable) staticClass.getField( fieldName ).get( null );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException("Error deserializing enum value "+enumName+"."+fieldName+" : "+e.getMessage());

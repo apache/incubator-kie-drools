@@ -1,0 +1,11 @@
+package org.drools.test
+
+import org.drools.Primitives 
+import org.drools.TestEnum 
+
+rule "enum serialization with isolated classloader"
+    when
+        $p : Primitives( enumValue == TestEnum.TWO )
+    then
+        // do something
+end  

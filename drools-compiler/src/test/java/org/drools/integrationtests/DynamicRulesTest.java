@@ -6,6 +6,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -15,12 +16,14 @@ import org.drools.Cheese;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.Precondition;
+import org.drools.Primitives;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -28,12 +31,14 @@ import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.marshalling.MarshallerFactory;
@@ -41,6 +46,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.util.DroolsStreamUtils;
 
 public class DynamicRulesTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -1004,6 +1010,103 @@ public class DynamicRulesTest extends TestCase {
         ksession.fireAllRules();
         assertEquals( 3,
                       results.size() );
+
+    }
+
+    public void testIsolatedClassLoaderWithEnumsPkgBuilder() throws Exception {
+        try {
+            // Creates first class loader and use it to load fact classes
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+                                                            this.getClass().getClassLoader() );
+
+            // create a builder with the given classloader
+            KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
+                                                                                                           loader1 );
+            KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
+            builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EnumSerialization.drl" ) ),
+                         ResourceType.DRL );
+            Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+            KnowledgePackage pkg = pkgs.iterator().next();
+            
+            // serialize out
+            byte[] out = DroolsStreamUtils.streamOut( ((KnowledgePackageImp) pkg).pkg );
+
+            // adding original packages to a kbase just to make sure they are fine
+            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader1 );
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
+            kbase.addKnowledgePackages( pkgs );
+            
+            // now, create another classloader and make sure it has access to the classes
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+                                                            this.getClass().getClassLoader() );
+            
+            // create another builder
+            KnowledgeBuilderConfiguration conf2 = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
+                                                                                                            loader2 );
+            KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( conf2 );
+            builder2.add( ResourceFactory.newByteArrayResource( out ),
+                         ResourceType.PKG );
+            Collection<KnowledgePackage> pkgs2 = builder2.getKnowledgePackages();
+            
+            // create another kbase
+            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader2 );
+            KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
+            kbase2.addKnowledgePackages( pkgs2 );
+
+        } catch ( ClassCastException cce ) {
+            cce.printStackTrace();
+            fail( "No ClassCastException should be raised." );
+        }
+
+    }
+
+    public void testIsolatedClassLoaderWithEnumsContextClassloader() throws Exception {
+        try {
+            // Creates first class loader and use it to load fact classes
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+                                                            this.getClass().getClassLoader() );
+            //loader1.loadClass( "org.drools.Primitives" );
+            //loader1.loadClass( "org.drools.TestEnum" );
+
+            // create a builder with the given classloader
+            KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
+                                                                                                           loader1 );
+            KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
+            builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EnumSerialization.drl" ) ),
+                         ResourceType.DRL );
+            Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+            KnowledgePackage pkg = pkgs.iterator().next();
+            
+            // serialize out
+            byte[] out = DroolsStreamUtils.streamOut( pkg );
+
+            // adding original packages to a kbase just to make sure they are fine
+            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader1 );
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
+            kbase.addKnowledgePackages( pkgs );
+            
+            // now, create another classloader and make sure it has access to the classes
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+                                                            this.getClass().getClassLoader() );
+            //loader2.loadClass( "org.drools.Primitives" );
+            //loader2.loadClass( "org.drools.TestEnum" );
+            
+            // set context classloader and use it
+            ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader( loader2 );
+            KnowledgePackage pkg2 = (KnowledgePackage) DroolsStreamUtils.streamIn( out );
+            Collection<KnowledgePackage> pkgs2 = Collections.singleton( pkg2 );
+            Thread.currentThread().setContextClassLoader( ccl );
+            
+            // create another kbase
+            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader2 );
+            KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
+            kbase2.addKnowledgePackages( pkgs2 );
+
+        } catch ( ClassCastException cce ) {
+            cce.printStackTrace();
+            fail( "No ClassCastException should be raised." );
+        }
 
     }
 
