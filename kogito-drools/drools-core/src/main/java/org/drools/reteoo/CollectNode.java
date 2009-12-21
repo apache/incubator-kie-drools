@@ -506,10 +506,6 @@ public class CollectNode extends BetaNode {
                                                                                                                      other.resultConstraints );
     }
 
-    public String toString() {
-        return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
-    }
-
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */

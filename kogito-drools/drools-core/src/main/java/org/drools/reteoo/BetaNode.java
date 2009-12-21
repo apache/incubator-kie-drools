@@ -318,7 +318,7 @@ public abstract class BetaNode extends LeftTupleSource
 	}
 
 	public String toString() {
-        return "";
+        return "[ " + this.getClass().getSimpleName() + "(" + this.id + ") ]";
     }
 
     public void dumpMemory(final InternalWorkingMemory workingMemory) {

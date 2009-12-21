@@ -213,7 +213,7 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
                 .getNodeMemory( this );
 
         // first we clear up the action queued flag
-        memory.isQueued().set( false );
+        memory.isQueued().compareAndSet( true, false );
 
         // we limit the propagation to avoid a hang when this queue is never empty
         Action next = memory.getNext();
@@ -221,9 +221,8 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
             next.execute( this.sink, workingMemory );
         }
 
-        if( memory.hasNext() ) {
+        if( memory.hasNext() && memory.isQueued().compareAndSet( false, true )) {
             // add action to the queue again.
-            memory.isQueued().set( true );
             workingMemory.queueWorkingMemoryAction( this.action );
         }
     }
@@ -284,6 +283,10 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
 
         public AtomicBoolean isQueued() {
             return isQueued;
+        }
+        
+        public long getSize() {
+            return this.queue.size();
         }
     }
 

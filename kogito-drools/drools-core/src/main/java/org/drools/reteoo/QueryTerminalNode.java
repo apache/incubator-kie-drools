@@ -157,7 +157,7 @@ public final class QueryTerminalNode extends BaseNode
     }
 
     public String toString() {
-        return "[QueryTerminalNode: rule=" + this.rule.getName() + "]";
+        return "[QueryTerminalNode("+this.getId()+"): rule=" + this.rule.getName() + "]";
     }
 
     public void ruleAttached() {

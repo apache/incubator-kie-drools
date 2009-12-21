@@ -1,6 +1,6 @@
 package org.drools;
 
-import java.awt.*;
+import java.awt.Dimension;
 
 rule "A"
     when
