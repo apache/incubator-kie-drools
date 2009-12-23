@@ -12,7 +12,7 @@
   <section>
     <title>Introduction</title>
 
-    <para>Drools-solver has several examples. In this manual we explain drools-solver mainly using the n queens example.
+    <para>Drools Planner has several examples. In this manual we explain Drools Planner mainly using the n queens example.
     So it's advisable to read at least the section about that example. For advanced users, the Examination example is
     recommended.</para>
 
@@ -60,7 +60,7 @@
       </itemizedlist>
 
       <para>The most common n queens puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>. We 'll explain
-      drools-solver using the 4 queens puzzle as the primary example.</para>
+      Drools Planner using the 4 queens puzzle as the primary example.</para>
 
       <para>A proposed solution could be:</para>
 
@@ -200,14 +200,14 @@
         </tgroup>
       </table>
 
-      <para>The drools-solver implementation has not been optimized because it functions as a beginner example.
+      <para>The Drools Planner implementation has not been optimized because it functions as a beginner example.
       Nevertheless, it can easily handle 64 queens.</para>
     </section>
 
     <section>
       <title>Domain class diagram</title>
 
-      <para>Use a good domain model and it will be easier to understand and solve your problem with drools-solver. We
+      <para>Use a good domain model and it will be easier to understand and solve your problem with Drools Planner. We
       'll use this domain model for the n queens example:</para>
 
       <figure>
@@ -306,7 +306,7 @@
       </table>
 
       <para>A single <literal>NQueens</literal> instance contains a list of all <literal>Queen</literal> instances. It
-      is the <literal>Solution</literal> implementation which will be supplied to and retrieved from drools-solver.
+      is the <literal>Solution</literal> implementation which will be supplied to and retrieved from the Solver.
       Notice that in the 4 queens example, NQueens's <literal>getN()</literal> method will always return 4.</para>
     </section>
   </section>
@@ -881,8 +881,8 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
         </tgroup>
       </table>
 
-      <para>Geoffrey De Smet (the drools-solver lead) finished 4th in the International Timetabling Competition 2007's
-      examination track with a very early version of drools-solver. Many improvements have been made since then.</para>
+      <para>Geoffrey De Smet (the Drools Planner lead) finished 4th in the International Timetabling Competition 2007's
+      examination track with a very early version of Drools Planner. Many improvements have been made since then.</para>
     </section>
 
     <section>
