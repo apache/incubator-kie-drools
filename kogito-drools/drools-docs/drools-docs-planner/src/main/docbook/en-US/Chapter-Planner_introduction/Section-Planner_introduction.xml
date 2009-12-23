@@ -10,10 +10,10 @@
   <title>Planner introduction</title>
 
   <section>
-    <title>What is drools-solver?</title>
+    <title>What is Drools Planner?</title>
 
-    <para><emphasis role="bold">Drools-solver solves planning problems</emphasis> by combining a search algorithm with
-    the power of the drools rule engine. Good examples of such planning problems include:</para>
+    <para><emphasis role="bold">Drools Planner does automated planning </emphasis>by combining a search algorithm with
+    the power of the Drools rule engine. Good examples of such planning problems include:</para>
 
     <itemizedlist>
       <listitem>
@@ -50,7 +50,7 @@
       </listitem>
 
       <listitem>
-        <para>Miss manners too (although the drools-solver example solves this differently than the pure drools rule
+        <para>Miss manners too (although the Drools Planner example solves this differently than the pure Drools rule
         engine example)</para>
       </listitem>
     </itemizedlist>
@@ -102,29 +102,29 @@
       </listitem>
     </itemizedlist>
 
-    <para>Drools-solver supports several search algorithms to efficiently wade through the incredbly large number of
+    <para>Drools Planner supports several search algorithms to efficiently wade through the incredibly large number of
     possible solutions. <emphasis role="bold">It makes it easy to switch the search algorithm</emphasis>, by simply
     changing the solver configuration.</para>
   </section>
 
   <section>
-    <title>Status of drools-solver</title>
+    <title>Status of Drools Planner</title>
 
-    <para>Drools-solver is a beta module of Drools. The API is almost stable but backward incompatible changes can
+    <para>Drools Planner is a beta module of Drools. The API is almost stable but backward incompatible changes can
     occur. With the recipe called <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and
     deal with any backwards incompatible changes between versions. You can find this recipe in subversion and in every
     release.</para>
 
-    <para>Drools-solver, like Drools, is open source software under the Apache Software License.</para>
+    <para>Drools Planner, like Drools, is open source software under the Apache Software License.</para>
   </section>
 
   <section>
-    <title>Getting drools-solver and running the examples</title>
+    <title>Getting Drools Planner and running the examples</title>
 
     <section>
       <title>Getting the release package and running the examples</title>
 
-      <para>You can download a release of drools-solver from <link
+      <para>You can download a release of Drools Planner from <link
       xlink:href="http://www.jboss.org/drools/downloads.html">the drools download site</link>. To run an example, just
       run the script (<filename>runExamples.sh</filename> on linux or <filename>runExamples.bat</filename> on windows)
       and pick an example:</para>
@@ -135,7 +135,7 @@
     <section>
       <title>Get it with maven 2</title>
 
-      <para>The drools-solver jars are available on <link xlink:href="http://repository.jboss.com/maven2/">the jboss
+      <para>The Drools Planner jars are available on <link xlink:href="http://repository.jboss.com/maven2/">the jboss
       maven repository</link>. If you use maven 2, just add a dependency to <literal>drools-planner-core</literal> in
       your project's <filename>pom.xml</filename>:</para>
 
@@ -191,7 +191,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
     list</link>. You can read/write to the mailing list without littering your mailbox through <link
     xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
 
-    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the drools-solver code
+    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the Drools Planner code
     or for this manual to <link xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools JIRA</link>. Select
     the component <literal>drools-planner</literal>.</para>
 

@@ -12,13 +12,13 @@
   <section>
     <title>Finding the best configuration</title>
 
-    <para>Drools-solver supports several solver types, but you're probably wondering which is the best one? Although
+    <para>Drools Planner supports several solver types, but you're probably wondering which is the best one? Although
       some solver types generally perform better then others, it really depends on your problem domain. Most solver types
       also have settings which can be tweaked. Those settings can influence the results of a solver a lot, although most
       settings perform pretty good out-of-the-box.
     </para>
 
-    <para>Luckily, drools-solver includes with a benchmarker, which allows you to play out different solver types and
+    <para>Luckily, Drools Planner includes a benchmarker, which allows you to play out different solver types and
       different settings against each other, so you can pick the best configuration for your problem domain.
     </para>
   </section>
