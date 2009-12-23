@@ -59,7 +59,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>Drools-solver's local search implementation combines both. On top of that, it also offers additional support
+    <para>Drools Planner's local search implementation combines both. On top of that, it also offers additional support
     for benchmarking etc.</para>
   </section>
 
@@ -142,7 +142,7 @@
 
     <para>An instance of <literal>YChangeMove</literal> moves a queen from it's current y to a different y.</para>
 
-    <para>Drool-solver calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
+    <para>Drools Planner calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
     <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
     facts:</para>
 
@@ -153,14 +153,14 @@
         workingMemory.modifyInsert(queenHandle, queen); // after changes are made
     }</programlisting>
 
-    <para>Drools-solver disables shadow facts for increased performance, so you cannot use the
+    <para>Drools Planner disables shadow facts for increased performance, so you cannot use the
     <literal>workingMemory.update(FactHandle, Object)</literal> method, instead you need to call the
     <literal>workingMemory.modifyRetract(FactHandle)</literal> method before modifying the fact and the
     <literal>workingMemory.modifyInsert(FactHandle, Object)</literal> method after modifying the fact. Note that you can
     alter multiple facts in a single move and effectively create a big move (also known as a coarse-grained
     move).</para>
 
-    <para>Drools-solver automatically filters out <emphasis>non doable moves</emphasis> by calling the
+    <para>Drools Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
     <literal>isDoable(WorkingMemory)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
 
     <itemizedlist>
@@ -231,7 +231,7 @@
     move type if you're using more then 1 move type.</para>
 
     <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read
-    drools-solver's logging more easily:</para>
+    Drools Planner's logging more easily:</para>
 
     <programlisting>    public String toString() {
         return queen + " =&gt; " + toY;
@@ -390,7 +390,7 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
       </listitem>
     </itemizedlist>
 
-    <para>Of course drools-solver implements better local searches, such <emphasis>tabu search</emphasis> and
+    <para>Of course Drools Planner implements better local searches, such as <emphasis>tabu search</emphasis> and
     <emphasis>simulated annealing</emphasis> which can avoid these problems. It's recommended to never use a simple
     local search, unless you're absolutely sure there are no local optima in your planning problem.</para>
   </section>
@@ -480,7 +480,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
         <title>Tabu search accepter</title>
 
         <para>When tabu search takes steps it creates tabu's. It does not accept a move as the next step if that move
-        breaks tabu. Drools-solver implements several tabu types:</para>
+        breaks tabu. Drools Planner implements several tabu types:</para>
 
         <itemizedlist>
           <listitem>
