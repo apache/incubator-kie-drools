@@ -18,6 +18,8 @@ public interface ServiceManager extends CommandExecutor {
     
     JPAKnowledgeServiceProvider JPAKnowledgeService();
 
+    HumanTaskServiceProvider getHumanTaskService();
+
     void register(String identifier,
                   CommandExecutor executor);
 
