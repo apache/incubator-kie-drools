@@ -285,7 +285,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     public SignalManager getSignalManager();
     
     /**
-     * Stops rule firing after the currect rule finishes executing
+     * Stops rule firing after the current rule finishes executing
      *
      */
     public void halt();
