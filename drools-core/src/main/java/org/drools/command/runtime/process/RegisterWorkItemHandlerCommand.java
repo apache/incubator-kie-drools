@@ -1,20 +1,25 @@
 package org.drools.command.runtime.process;
 
-import java.util.Collection;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.rule.FactHandle;
 
 public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
 	
 	private WorkItemHandler handler;
 	private String workItemName;
-	
+
+        public RegisterWorkItemHandlerCommand() {
+        }
+
+        public RegisterWorkItemHandlerCommand(String workItemName, WorkItemHandler handler) {
+            this.handler = handler;
+            this.workItemName = workItemName;
+        }
+        
 	public WorkItemHandler getHandler() {
 		return handler;
 	}

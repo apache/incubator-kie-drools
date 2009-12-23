@@ -40,7 +40,11 @@
 	      <groupId>org.drools</groupId>
 	      <artifactId>drools-compiler</artifactId>
 	    </dependency>         		  
-           
+           <dependency>
+    		<groupId>org.drools</groupId>
+    		<artifactId>drools-workitems</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
     	<dependency>
     		<groupId>org.apache.mina</groupId>
     		<artifactId>mina-core</artifactId>
@@ -89,8 +93,33 @@
             <artifactId>cli</artifactId>
             <version>4.0-M3-SNAPSHOT</version>
         </dependency>
+            <dependency>
+                  <groupId>org.drools</groupId>
+                  <artifactId>drools-process-task</artifactId>
+                  <version>5.1.0.SNAPSHOT</version>
+                  
+                  <type>jar</type>
+            </dependency>
+      
 
-
+    	<!-- HSQLDB -->
+    	<dependency>
+    		<groupId>com.h2database</groupId>
+    		<artifactId>h2</artifactId>
+    		<version>1.0.77</version>
+                <scope>test</scope>
+    	</dependency>
+        <!-- Hibernate -->
+    	<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-entitymanager</artifactId>
+    		<version>3.4.0.GA</version>
+    	</dependency>
+         <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+        </dependency>
+        
       </dependencies>
        <repositories>
         <repository>
@@ -120,5 +149,6 @@
 
         </pluginRepository>
     </pluginRepositories>
-                  
+
 </project>
+

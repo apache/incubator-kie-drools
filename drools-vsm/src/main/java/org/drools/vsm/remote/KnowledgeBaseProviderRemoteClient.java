@@ -12,7 +12,6 @@ import org.drools.command.SetVariableCommand;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.vsm.Message;
-import org.drools.vsm.responsehandlers.BlockingMessageResponseHandler;
 
 public class KnowledgeBaseProviderRemoteClient
     implements

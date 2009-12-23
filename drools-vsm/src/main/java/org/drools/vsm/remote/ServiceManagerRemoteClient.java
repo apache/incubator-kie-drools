@@ -1,6 +1,7 @@
 package org.drools.vsm.remote;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,33 +17,43 @@ import org.drools.command.FinishedCommand;
 import org.drools.command.KnowledgeContextResolveFromContextCommand;
 import org.drools.command.vsm.LookupCommand;
 import org.drools.command.vsm.RegisterCommand;
-import org.drools.command.vsm.ServiceManagerClientConnectCommand;
 import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.vsm.GenericConnector;
+import org.drools.vsm.HumanTaskServiceProvider;
 import org.drools.vsm.Message;
 import org.drools.vsm.ServiceManager;
-import org.drools.vsm.responsehandlers.BlockingMessageResponseHandler;
+import org.drools.vsm.command.ServiceManagerClientConnectCommand;
 
 public class ServiceManagerRemoteClient
     implements
     ServiceManager {
-    public GenericConnector client;
+	private String name;
+
+	public GenericConnector client;
+
+    private List<GenericConnector> services;
 
     public AtomicInteger    counter;
 
-    public ServiceManagerRemoteClient(String name,
-                                      GenericConnector client) {
-        this.client = client;
-        this.counter = new AtomicInteger();
-    }
-   
     private int sessionId = -1;
 
-    public boolean connect() {
+
+    public ServiceManagerRemoteClient(String name, GenericConnector client) {
+    	this.name = name;
+    	this.client = client;
+    	this.counter = new AtomicInteger();
+    }
+    
+    public ServiceManagerRemoteClient(String name, GenericConnector client, List<GenericConnector> services) {
+        this(name, client);
+        this.services = services;
+    }
+
+	public boolean connect() {
         boolean connected = this.client.connect();
 
         if ( connected ) {
@@ -73,13 +84,21 @@ public class ServiceManagerRemoteClient
                                             e );
             }
         }
+        // Connecting with services
+        for (GenericConnector connector : services){
+            boolean serviceConnected = connector.connect();
+              if ( serviceConnected )
+            	  System.out.println("Service Connected");
+        }
 
         return connected;
     }
 
-    public void disconnect() {
-        this.client.disconnect();
-    }
+	public void disconnect() {
+		this.client.disconnect();
+		for (GenericConnector connector : this.services)
+			connector.disconnect();
+	}
 
     public KnowledgeBuilderProvider getKnowledgeBuilderFactory() {
         return new KnowledgeBuilderProviderRemoteClient( this );
@@ -194,12 +213,13 @@ public class ServiceManagerRemoteClient
 
     public void release(String identifier) {
         // TODO Auto-generated method stub
-
     }
 
-    public static class RemoveKnowledgeBuilderProvider
-        implements
-        KnowledgeBuilderProvider {
+    public HumanTaskServiceProvider getHumanTaskService() {
+    	return new HumanTaskServiceRemoteProviderImpl(this);
+    }
+
+    public static class RemoveKnowledgeBuilderProvider implements KnowledgeBuilderProvider {
 
         public DecisionTableConfiguration newDecisionTableConfiguration() {
             // TODO Auto-generated method stub
@@ -251,5 +271,13 @@ public class ServiceManagerRemoteClient
         // TODO Auto-generated method stub
         return null;
     }
+
+	public List<GenericConnector> getServices() {
+		return services;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
 
 }

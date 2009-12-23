@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.SystemEventListener;
+import org.drools.task.service.Command;
 import org.drools.vsm.ClientGenericMessageReceiver;
 import org.drools.vsm.GenericIoWriter;
 import org.drools.vsm.GenericMessageHandler;
@@ -50,7 +51,10 @@ public class ClientGenericMessageReceiverImpl
 
         if ( responseHandler != null ) {
             Object payload = msg.getPayload();
-            if ( payload != null && payload instanceof RuntimeException ) {
+            if (payload instanceof Command && ((Command)msg.getPayload()).getArguments().size() > 0 &&
+            	((Command)msg.getPayload()).getArguments().get(0) instanceof RuntimeException)
+            	payload = ((Command)msg.getPayload()).getArguments().get(0);
+            if (( payload != null && payload instanceof RuntimeException )) {
                 responseHandler.setError( (RuntimeException) payload );
             } else {
                 responseHandler.receive( msg );
