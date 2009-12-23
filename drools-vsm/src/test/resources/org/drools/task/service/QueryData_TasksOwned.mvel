@@ -1,0 +1,117 @@
+format = new java.text.SimpleDateFormat( "dd/MMM/yyyy" );
+
+tasks = [
+	(with ( new Task() ) { 
+	    priority = 20,
+	    taskData = (with ( new TaskData() ) {
+	        actualOwner = users[ 'peter' ],
+	        createdOn = format.parse( "15/Jan/2008" ),	        
+	        activationTime = format.parse( "20/Jan/2008" ),
+	        status = Status.Created,
+	    }),
+	    peopleAssignments = (with ( new PeopleAssignments() ) {        
+	        taskInitiator = users['darth' ],
+	        potentialOwners = [users['bobba' ], users['jabba' ]],
+	        excludedOwners = [users['liz' ], users['dalai' ], users['christoper' ]]
+	    }),	    
+        names = [ new I18NText( "en-UK", "This is my task name Jan" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name Jan" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject Jan" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema Jan" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description Jan" ),
+                         new I18NText( "en-DK", "Das ist mein task Beschreibung Jan" ) ]    
+	}),
+	(with ( new Task() ) { 
+	    priority = 150,
+	    peopleAssignments = (with ( new PeopleAssignments() ) {     
+	        excludedOwners = [users['liz' ], users['dalai' ], users['christoper' ]],
+	        potentialOwners = [users['bobba' ], users['jabba' ]], 
+	        taskStakeholders = [users['liz' ], users['stuart' ], users['jane' ]],
+	        businessAdministrators = [users['peter' ], users['steve' ]],
+	        recipients = [users['sly' ], users['bobba' ], users['liz' ]]
+	    }),	 	    
+	    taskData = (with ( new TaskData() ) {
+	        actualOwner = users[ 'steve' ],
+	        createdBy = users[ 'tony' ],
+	        createdOn = format.parse( "15/Feb/2008" ),
+	        activationTime = format.parse( "20/Feb/2008" ),
+	        status = Status.Created,
+	    }),
+        names = [ new I18NText( "en-UK", "This is my task name Feb" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name Feb" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject Feb" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema Feb" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description Feb" ),
+                         new I18NText( "en-DK", "Das ist mein task Beschreibung Feb" ) ]          
+	}),
+	(with ( new Task() ) { 
+	    priority = 90,
+	    peopleAssignments = (with ( new PeopleAssignments() ) {
+	    businessAdministrators = [users['liz' ], users['darth' ]],     
+	        potentialOwners = [users['bobba' ], users['jabba' ]], 
+	    }),	 	    
+	    taskData = (with ( new TaskData() ) {
+	        actualOwner = users[ 'peter' ],
+	        createdBy = users[ 'steve' ],
+	        createdOn = format.parse( "15/Mar/2008" ),	        
+	        activationTime = format.parse( "20/Mar/2008" ),
+	        status = Status.Created,
+	    }),
+        names = [ new I18NText( "en-UK", "This is my task name Mar" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name Mar" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject Mar" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema Mar" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description Mar" ),
+                         new I18NText( "en-DK", "Das ist mein task Beschreibung Mar" ) ]       
+	}),
+	(with ( new Task() ) { 
+	    priority = 20,
+	    taskData = (with ( new TaskData() ) {
+	        actualOwner = users[ 'darth' ],
+	        createdBy = users[ 'bobba' ],
+	        createdOn = format.parse( "15/Apr/2008" ),	        
+	        activationTime = format.parse( "20/Apr/2008" ),
+	        status = Status.Created,
+	    }),
+        names = [ new I18NText( "en-UK", "This is my task name Apr" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name Apr" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject Apr" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema Apr" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description Apr" ),
+                         new I18NText( "en-DK", "Das ist mein task Beschreibung Apr" ) ]     
+	}),
+	(with ( new Task() ) { 
+	    priority = 20,
+	    taskData = (with ( new TaskData() ) {
+	        actualOwner = users[ 'peter' ],
+	        createdBy = users[ 'steve' ],
+	        createdOn = format.parse( "15/May/2008" ),	        
+	        activationTime = format.parse( "20/May/2008" ),
+	        status = Status.Created,
+	    }),
+        names = [ new I18NText( "en-UK", "This is my task name May" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name May" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject May" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema May" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description May" ),
+                         new I18NText( "en-DK", "Das ist mein task Beschreibung May" ) ]   
+	}),	
+	(with ( new Task() ) { 
+	    priority = 15,
+	    taskData = (with ( new TaskData() ) {
+	        actualOwner = users[ 'steve' ],
+	        createdBy = users[ 'steve' ],
+	        createdOn = format.parse( "15/Jun/2008" ),	        
+	        activationTime = format.parse( "20/Jun/2008" ),
+	        status = Status.Created,
+	    }),
+        names = [ new I18NText( "en-UK", "This is my task name Jun" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name Jun" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject Jun" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema Jun" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description Jun" ),
+                         new I18NText( "en-DK", "Das ist mein task Beschreibung Jun" ) ]    
+	})			
+]
+
+return tasks;
