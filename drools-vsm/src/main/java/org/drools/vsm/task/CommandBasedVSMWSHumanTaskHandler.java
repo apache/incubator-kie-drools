@@ -41,6 +41,7 @@ import org.drools.task.event.TaskSkippedEvent;
 import org.drools.task.service.Command;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.HumanTaskServiceImpl;
+import org.drools.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.drools.vsm.GenericConnector;
 import org.drools.vsm.Message;
 import org.drools.vsm.mina.MinaConnector;
@@ -208,7 +209,7 @@ public class CommandBasedVSMWSHumanTaskHandler implements WorkItemHandler {
 		}
 	}
 	
-    public class TaskWorkItemAddTaskMessageResponseHandler implements AddTaskMessageResponseHandler {
+    public class TaskWorkItemAddTaskMessageResponseHandler extends AbstractBaseResponseHandler implements AddTaskMessageResponseHandler {
     	
     	private Map<Long, WorkItemManager> managers;
     	private Map<Long, Long> idMapping;
@@ -249,13 +250,11 @@ public class CommandBasedVSMWSHumanTaskHandler implements WorkItemHandler {
             client.registerForEvent( key, true, eventResponseHandler );
         }
 
-        public void setError(RuntimeException error) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+       
 
     }
     
-    private class TaskCompletedMessageHandler implements EventMessageResponseHandler {
+    private class TaskCompletedMessageHandler extends AbstractBaseResponseHandler implements EventMessageResponseHandler {
         private long workItemId;
         private long taskId;
 		private final Map<Long, WorkItemManager> managers;
@@ -266,13 +265,9 @@ public class CommandBasedVSMWSHumanTaskHandler implements WorkItemHandler {
 			this.managers = managers;
         }
 
-        public void execute(Payload payload) {
-        	throw new UnsupportedOperationException("Not supported yet.");
-        }
+        
 
-        public void setError(RuntimeException error) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+       
 
 		public void receive(Message message) {
 			Command cmd = (Command) message.getPayload();
@@ -299,9 +294,13 @@ public class CommandBasedVSMWSHumanTaskHandler implements WorkItemHandler {
 		        }
 			}
 		}
+
+        public void execute(Payload payload) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
     
-    private class GetCompletedTaskMessageResponseHandler  implements GetTaskMessageResponseHandler {
+    private class GetCompletedTaskMessageResponseHandler extends AbstractBaseResponseHandler implements GetTaskMessageResponseHandler {
 
         private WorkItemManager manager;
 
@@ -309,9 +308,7 @@ public class CommandBasedVSMWSHumanTaskHandler implements WorkItemHandler {
 			this.manager = manager;
 		}
 
-		public void setError(RuntimeException error) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+	
 
         public void receive(Message message) {
         	Command cmd = (Command) message.getPayload();
@@ -333,9 +330,11 @@ public class CommandBasedVSMWSHumanTaskHandler implements WorkItemHandler {
         public void execute(Task task) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
+
+
     }
     
-    private class GetResultContentMessageResponseHandler  implements GetContentMessageResponseHandler {
+    private class GetResultContentMessageResponseHandler extends AbstractBaseResponseHandler implements GetContentMessageResponseHandler {
     	
     	private Task task;
     	private final WorkItemManager manager;
@@ -347,9 +346,7 @@ public class CommandBasedVSMWSHumanTaskHandler implements WorkItemHandler {
     		this.results = results;
     	}
 
-        public void setError(RuntimeException error) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+        
 
         public void receive(Message message) {
         	Command cmd = (Command)message.getPayload();

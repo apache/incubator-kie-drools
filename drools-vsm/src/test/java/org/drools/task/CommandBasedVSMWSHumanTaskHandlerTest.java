@@ -132,6 +132,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
 
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
@@ -169,6 +170,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
 
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
@@ -214,6 +216,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
         humanTaskClient.getTasksAssignedAsPotentialOwner(null, groupIds, "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
@@ -271,6 +274,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", groupIds, "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(2, tasks.size());
     }
@@ -289,6 +293,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
 
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
@@ -327,6 +332,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
 
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
@@ -363,6 +369,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
 
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(0, tasks.size());
     }
@@ -382,6 +389,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
 
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
 
@@ -410,6 +418,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
 
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
@@ -480,6 +489,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
         //Test if the task is succesfully created
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
@@ -625,6 +635,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
         //Test if the task is succesfully created
         BlockingTaskSummaryMessageResponseHandler responseHandler = new BlockingTaskSummaryMessageResponseHandler();
         humanTaskClient.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
