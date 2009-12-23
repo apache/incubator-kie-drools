@@ -16,6 +16,13 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
 	private String processId;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<Object> data = null;
+
+        public StartProcessCommand() {
+        }
+
+        public StartProcessCommand(String processId) {
+            this.processId = processId;
+        }
 	
 	public String getProcessId() {
 		return processId;

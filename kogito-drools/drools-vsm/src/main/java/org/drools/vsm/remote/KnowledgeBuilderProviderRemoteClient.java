@@ -15,7 +15,6 @@ import org.drools.command.FinishedCommand;
 import org.drools.command.SetVariableCommand;
 import org.drools.command.builder.NewKnowledgeBuilderCommand;
 import org.drools.vsm.Message;
-import org.drools.vsm.responsehandlers.BlockingMessageResponseHandler;
 
 public class KnowledgeBuilderProviderRemoteClient
     implements

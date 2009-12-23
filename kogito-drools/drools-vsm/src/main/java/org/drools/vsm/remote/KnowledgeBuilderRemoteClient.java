@@ -16,7 +16,6 @@ import org.drools.io.Resource;
 import org.drools.runtime.ExecutionResults;
 import org.drools.vsm.CollectionClient;
 import org.drools.vsm.Message;
-import org.drools.vsm.responsehandlers.BlockingMessageResponseHandler;
 
 public class KnowledgeBuilderRemoteClient
     implements

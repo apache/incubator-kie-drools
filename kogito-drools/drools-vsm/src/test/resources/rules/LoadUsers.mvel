@@ -1,0 +1,7 @@
+users = [ 'lucaz'  : new User('lucaz'),  
+          'salaboy'  : new User( 'salaboy'),
+          'admin'      : new User('Administrator')
+        ];       
+
+return users;
+        

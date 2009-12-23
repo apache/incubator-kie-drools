@@ -20,7 +20,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.vsm.CollectionClient;
 import org.drools.vsm.Message;
-import org.drools.vsm.responsehandlers.BlockingMessageResponseHandler;
 
 public class KnowledgeBaseRemoteClient
     implements

@@ -8,6 +8,7 @@ import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.pipeline.impl.ServiceManagerPipelineImpl;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.vsm.ServiceManager;
 
 public class KnowledgeCommandContext
@@ -41,6 +42,10 @@ public class KnowledgeCommandContext
 
     public StatefulKnowledgeSession getStatefulKnowledgesession() {
         return statefulKsession;
+    }
+    
+    public WorkItemManager getWorkItemManager() {
+    	return statefulKsession.getWorkItemManager();
     }
     
     public ExecutionResults getExecutionResults() {

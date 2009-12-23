@@ -15,6 +15,7 @@ import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
+import org.drools.vsm.HumanTaskServiceProvider;
 import org.drools.vsm.ServiceManager;
 import org.drools.vsm.ServiceManagerData;
 
@@ -80,7 +81,10 @@ public class ServiceManagerLocalClient
 
     public void release(String identifier) {
         // TODO Auto-generated method stub
+    }
 
+    public HumanTaskServiceProvider getHumanTaskService() {
+    	return new HumanTaskServiceLocalProviderImpl(this);
     }
 
     public static class RemoveKnowledgeBuilderProvider

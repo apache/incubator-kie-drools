@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.SystemEventListener;
-import org.drools.command.Context;
 import org.drools.command.FinishedCommand;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
-import org.drools.command.vsm.ServiceManagerServerContext;
 import org.drools.runtime.impl.ExecutionResultImpl;
 
 public class GenericMessageHandlerImpl implements GenericMessageHandler {
