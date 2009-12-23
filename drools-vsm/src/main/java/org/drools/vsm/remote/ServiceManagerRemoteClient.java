@@ -85,10 +85,12 @@ public class ServiceManagerRemoteClient
             }
         }
         // Connecting with services
-        for (GenericConnector connector : services){
-            boolean serviceConnected = connector.connect();
-              if ( serviceConnected )
-            	  System.out.println("Service Connected");
+        if (this.services!=null) {
+        	for (GenericConnector connector : services){
+        		boolean serviceConnected = connector.connect();
+        		if ( serviceConnected )
+        			System.out.println("Service Connected");
+        	}
         }
 
         return connected;
@@ -96,8 +98,9 @@ public class ServiceManagerRemoteClient
 
 	public void disconnect() {
 		this.client.disconnect();
-		for (GenericConnector connector : this.services)
-			connector.disconnect();
+		if (this.services!=null)
+			for (GenericConnector connector : this.services)
+				connector.disconnect();
 	}
 
     public KnowledgeBuilderProvider getKnowledgeBuilderFactory() {
