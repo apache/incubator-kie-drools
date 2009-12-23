@@ -56,7 +56,7 @@ end</programlisting>
     full score calculation on each solution evaluation. For example, if a single queen moves from y <literal>0</literal>
     to <literal>3</literal>, it won't bother to recalculate the "multiple queens on the same horizontal line" constraint
     for queens with y <literal>1</literal> or <literal>2</literal>. This is a huge performance gain. <emphasis
-    role="bold">Drools-solver gives you this huge performance gain without forcing you to write a very complicated delta
+    role="bold">Drools Planner gives you this huge performance gain without forcing you to write a very complicated delta
     based score calculation algorithm.</emphasis> Just let the drools rule engine do the hard work.</para>
 
     <para><emphasis role="bold">Adding more constraints is <emphasis role="bold">easy and </emphasis>scalable</emphasis>

@@ -42,7 +42,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Brute force is currently not implemented in drools-solver. But we have plans to implement it in the future,
+      <para>Brute force is currently not implemented in Drools Planner. But we have plans to implement it in the future,
       as a reference for validating the output of the other solver types.</para>
     </section>
 
@@ -73,7 +73,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Branch and bound is currently not implemented in drools-solver. But we have plans to implement it in the
+      <para>Branch and bound is currently not implemented in Drools Planner. But we have plans to implement it in the
       future, as a reference for validating the output of the other solver types.</para>
     </section>
 
@@ -98,7 +98,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Drools-solver does not implement simplex.</para>
+      <para>Drools Planner does not implement simplex.</para>
     </section>
 
     <section>
@@ -129,7 +129,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>The genetic algorithm is currently not implemented in drools-solver.</para>
+      <para>The genetic algorithm is currently not implemented in Drools Planner.</para>
     </section>
 
     <section>
@@ -150,12 +150,12 @@
 
       <itemizedlist>
         <listitem>
-          <para>It's relatively simple and natural to implement constraints (at least in drools-solver's
+          <para>It's relatively simple and natural to implement constraints (at least in Drools Planner's
           implementation).</para>
         </listitem>
 
         <listitem>
-          <para>It's very scalable, even when adding extra constraints (at least in drools-solver's
+          <para>It's very scalable, even when adding extra constraints (at least in Drools Planner's
           implementation).</para>
         </listitem>
 
@@ -177,7 +177,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Drools-solver implements local search, including tabu search and simulated annealing.</para>
+      <para>Drools Planner implements local search, including tabu search and simulated annealing.</para>
     </section>
   </section>
 
@@ -197,7 +197,7 @@
   <section>
     <title>The Solver interface</title>
 
-    <para>Every build-in solver implemented in drools-solver implements the <literal>Solver</literal> interface:</para>
+    <para>Every build-in solver implemented in Drools Planner implements the <literal>Solver</literal> interface:</para>
 
     <programlisting>public interface Solver {
 
@@ -211,7 +211,7 @@
 
 }</programlisting>
 
-    <para>Solving a planning problem with drools-solver consists out of 4 steps:</para>
+    <para>Solving a planning problem with Drools Planner consists out of 4 steps:</para>
 
     <orderedlist>
       <listitem>
@@ -270,7 +270,7 @@
     <para>This is a tabu search configuration for n queens. We 'll explain the various parts of a configuration later in
     this manual.</para>
 
-    <para><emphasis role="bold">Drools-solver makes it relatively easy to switch a solver type just by changing the
+    <para><emphasis role="bold">Drools Planner makes it relatively easy to switch a solver type just by changing the
     configuration.</emphasis> There's even a benchmark utility which allows you to play out different configurations
     against each other and report the most appropriate configuration for your problem. You could for example play out
     tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
