@@ -91,6 +91,14 @@ public interface KnowledgeBase
                     String ruleName);
     
     /**
+     * Remove a function from the specified package.
+     * @param packageName
+     * @param ruleName
+     */
+    void removeFunction(String packageName,
+                    String ruleName);
+
+    /**
      * Returns the FactType identified by the given package and type names.
      * 
      * @param packageName the name of the package the fact belongs to.

@@ -82,8 +82,11 @@ public interface ChangeSet {
      */
     public Collection<Resource> getResourcesModified();
 
-    Map<Resource, String> getKnowledgeDefinitionsRemoved();
+    /**
+     * Returns a collection containing the full names (package+name) of the kdefinitions to be removed.
+     * @return
+     */
+    Collection<String> getKnowledgeDefinitionsRemoved();
 
-    void setKnowledgeDefinitionsRemoved(Map<Resource, String> knowledgeDefinitionsRemoved);
 
 }
