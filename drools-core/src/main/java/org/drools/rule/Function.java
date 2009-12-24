@@ -10,6 +10,7 @@ import org.drools.io.Resource;
 
 public class Function implements  KnowledgeDefinition, Dialectable, Externalizable {
     private String name;
+    private String namespace;
     private String dialect;
     private Resource resource;
 
@@ -17,8 +18,9 @@ public class Function implements  KnowledgeDefinition, Dialectable, Externalizab
 
     }
 
-    public Function(String name,
+    public Function(String namespace, String name,
                     String dialect) {
+        this.namespace = namespace;
         this.name = name;
         this.dialect = dialect;
     }
@@ -38,6 +40,16 @@ public class Function implements  KnowledgeDefinition, Dialectable, Externalizab
     public void setResource(Resource resource) {
         this.resource = resource;
     }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name    = (String)in.readObject();

@@ -2,11 +2,8 @@ package org.drools.io.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.drools.ChangeSet;
-import org.drools.definition.KnowledgeDefinition;
 import org.drools.io.Resource;
 
 public class ChangeSetImpl implements ChangeSet {
@@ -16,7 +13,7 @@ public class ChangeSetImpl implements ChangeSet {
 
     //Map of removed kdefinitions. The key is the resource and the string is
     //the knowledgeDefinition's name.
-    private Map<Resource,String>  knowledgeDefinitionsRemoved = new HashMap<Resource, String>();
+    private Collection<String>  knowledgeDefinitionsRemoved = Collections.<String>emptyList();
     
     public ChangeSetImpl() {
         
@@ -46,11 +43,11 @@ public class ChangeSetImpl implements ChangeSet {
         this.resourcesModified = resourcesModified;
     }
 
-    public Map<Resource, String> getKnowledgeDefinitionsRemoved() {
+    public Collection<String> getKnowledgeDefinitionsRemoved() {
         return knowledgeDefinitionsRemoved;
     }
 
-    public void setKnowledgeDefinitionsRemoved(Map<Resource, String> knowledgeDefinitionsRemoved) {
+    public void setKnowledgeDefinitionsRemoved(Collection<String> knowledgeDefinitionsRemoved) {
         this.knowledgeDefinitionsRemoved = knowledgeDefinitionsRemoved;
     }
 
