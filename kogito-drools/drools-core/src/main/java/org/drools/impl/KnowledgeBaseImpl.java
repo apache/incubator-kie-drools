@@ -172,6 +172,12 @@ public class KnowledgeBaseImpl
                                   ruleName );
     }
 
+    public void removeFunction(String packageName,
+                           String ruleName) {
+        this.ruleBase.removeFunction( packageName,
+                                  ruleName );
+    }
+
     public void removeProcess(String processId) {
         this.ruleBase.removeProcess( processId );
     }

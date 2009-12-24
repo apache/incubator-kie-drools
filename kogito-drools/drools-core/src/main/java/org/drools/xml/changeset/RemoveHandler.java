@@ -1,18 +1,12 @@
 package org.drools.xml.changeset;
 
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
 import org.drools.ChangeSet;
-import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 import org.drools.io.impl.ChangeSetImpl;
-import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.KnowledgeResource;
-import org.drools.io.impl.UrlResource;
-import org.drools.util.StringUtils;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -55,9 +49,32 @@ public class RemoveHandler extends BaseAbstractHandler
         final Element element = parser.endElementBuilder();
         
         final ChangeSetImpl changeSet = (ChangeSetImpl) parser.getParent();
-        final Collection removed = ( Collection ) parser.getCurrent();
-        changeSet.setResourcesRemoved( removed );
-        return removed;
+        
+        Collection<Resource> removedResources = new ArrayList<Resource>();
+        Collection<String> removedDefinitions = new ArrayList<String>();
+
+        for (Object object : ( Collection ) parser.getCurrent()) {
+            if (object instanceof DefinitionHandler.DefinitionHandlerData){
+                DefinitionHandler.DefinitionHandlerData data = (DefinitionHandler.DefinitionHandlerData)object;
+
+                String fullName = data.getPackageName();
+
+                if (fullName == null || fullName.equals("")){
+                    fullName = data.getName();
+                }else{
+                    fullName += "."+data.getName();
+                }
+
+                removedDefinitions.add(fullName);
+
+            }else if (object instanceof Resource){
+                removedResources.add((Resource)object);
+            }
+        }
+
+        changeSet.setResourcesRemoved( removedResources );
+        changeSet.setKnowledgeDefinitionsRemoved( removedDefinitions );
+        return ( Collection ) parser.getCurrent();
     }
 
     

@@ -582,7 +582,7 @@ public class JavaDialect
 
         this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
 
-        Function function = new Function( functionDescr.getName(),
+        Function function = new Function( functionDescr.getNamespace(), functionDescr.getName(),
                                           this.ID );
         if ( resource != null && ((InternalResource) resource).hasURL() ) {
             function.setResource( resource );
