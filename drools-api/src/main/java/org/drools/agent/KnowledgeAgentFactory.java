@@ -27,7 +27,7 @@ import org.drools.io.ResourceFactory;
  * KnowledgeBase kbase = kagent.getKnowledgeBase();    
  * </pre>
  * 
- * <p>If you wish to change to change the polling time of the scanner, this can be done with the ResourceChangeScannerService on the ResourceFactory</p>
+ * <p>If you wish to change the polling time of the scanner, this can be done with the ResourceChangeScannerService on the ResourceFactory</p>
  * <pre>
  * // Set the interval on the ResourceChangeScannerService if the default of 60s is not desirable.
  * ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
@@ -53,10 +53,9 @@ import org.drools.io.ResourceFactory;
  * </pre>
  * 
  * <p>
- * You'll notice the property "drools.agent.newInstance", which defaults to true, currently this cannot be set to false. This property when
+ * You'll notice the property "drools.agent.newInstance", which defaults to true. This property when
  * true means the KnowledgeBase will be rebuilt as a new instance when changes are detected and that new instance will be available when
- * kagent.getKnowledgeBase() is next called. We hope to add incremental KnowledgeBase support in the future, when a "false" value will be supported
- * for this property.
+ * kagent.getKnowledgeBase() is next called. 
  * </p>
  * 
  * <p>
@@ -85,13 +84,31 @@ import org.drools.io.ResourceFactory;
  * For example -Ddrools.resource.urlcache=/home/rulecaches
  *
  * </p>
+ *
+ * <p>
+ * The default implementation of KnowledgeAgent returned by this factory is
+ * "org.drools.agent.impl.KnowledgeAgentProviderImpl". You can change it using
+ *  the system property {@link #PROVIDER_CLASS_NAME_PROPERTY_NAME} to point to a diverse
+ * implementation of "org.drools.agent.KnowledgeAgentProvider".
+ * </p>
  * 
  * @see org.drools.agent.KnowledgeAgent
- * @see org.drools.agent.KnowledgeAgentConfiguration
+ * @see org.drools.agent.KnowledgeAgent
  * 
  */
 public class KnowledgeAgentFactory {
+
+    public static final String PROVIDER_CLASS_NAME_PROPERTY_NAME = "drools.agent.factory.provider";
+    /**
+     * The provider class name. The default provider is org.drools.agent.impl.KnowledgeAgentProviderImpl.
+     * If you need a different provider you can use the system property
+     * {@link #PROVIDER_CLASS_NAME_PROPERTY_NAME}  to point to a diverse implementation of
+     * "org.drools.agent.KnowledgeAgentProvider"
+     */
+    private static String providerClassName = "org.drools.agent.impl.KnowledgeAgentProviderImpl";
+
     private static KnowledgeAgentProvider provider;
+
 
     public static KnowledgeAgentConfiguration newKnowledgeAgentConfiguration() {
         return getKnowledgeAgentProvider().newKnowledgeAgentConfiguration();
@@ -140,11 +157,13 @@ public class KnowledgeAgentFactory {
 
     private static void loadProvider() {
         try {
-            // we didn't find anything in properties so lets try and us reflection
-            Class<KnowledgeAgentProvider> cls = (Class<KnowledgeAgentProvider>) Class.forName( "org.drools.agent.impl.KnowledgeAgentProviderImpl" );
+            //loads the provider class
+            providerClassName = System.getProperty(KnowledgeAgentFactory.PROVIDER_CLASS_NAME_PROPERTY_NAME, providerClassName);
+
+            Class<KnowledgeAgentProvider> cls = (Class<KnowledgeAgentProvider>) Class.forName(providerClassName);
             setKnowledgeAgentProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider org.drools.agent.KnowledgeAgentProvider could not be set." );
+            throw new ProviderInitializationException( "Provider "+providerClassName+" could not be set." );
         }
     }
 }
