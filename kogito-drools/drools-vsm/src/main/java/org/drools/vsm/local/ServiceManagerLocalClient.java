@@ -12,6 +12,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderProvider;
 import org.drools.command.Command;
 import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
+import org.drools.persistence.jpa.impl.JPAKnowledgeServiceProviderImpl;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
@@ -51,8 +52,7 @@ public class ServiceManagerLocalClient
     }
 
     public JPAKnowledgeServiceProvider JPAKnowledgeService() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAKnowledgeServiceProviderImpl();
     }
 
     public Environment getEnvironment() {
