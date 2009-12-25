@@ -20,17 +20,17 @@
     </author>
   </info>
 
-	<xi:include href="Chapter-Planner_introduction/Section-Planner_introduction.xml" />
+	<xi:include href="Chapter-Planner_introduction/Chapter-Planner_introduction.xml" />
 
-	<xi:include href="Chapter-Use_cases_and_examples/Section-Use_cases_and_examples.xml" />
+	<xi:include href="Chapter-Use_cases_and_examples/Chapter-Use_cases_and_examples.xml" />
 
-	<xi:include href="Chapter-Planner_configuration/Section-Planner_configuration.xml" />
+	<xi:include href="Chapter-Planner_configuration/Chapter-Planner_configuration.xml" />
 
-	<xi:include href="Chapter-Score_calculation/Section-Score_calculation.xml" />
+	<xi:include href="Chapter-Score_calculation/Chapter-Score_calculation.xml" />
 
-	<xi:include href="Chapter-Local_search/Section-Local_search.xml" />
+	<xi:include href="Chapter-Local_search/Chapter-Local_search.xml" />
 
-	<xi:include href="Chapter-Benchmarking_and_tweaking/Section-Benchmarking_and_tweaking.xml" />
+	<xi:include href="Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.xml" />
 
   <index/>
 </book>
