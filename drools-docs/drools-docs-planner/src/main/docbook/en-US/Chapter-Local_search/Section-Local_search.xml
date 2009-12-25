@@ -407,7 +407,7 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
       </listitem>
 
       <listitem>
-        <para>An <emphasis>accepter</emphasis> which filters out unacceptable moves. It can also weigh a move it
+        <para>An <emphasis>acceptor</emphasis> which filters out unacceptable moves. It can also weigh a move it
         accepts.</para>
       </listitem>
 
@@ -426,7 +426,7 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
       </mediaobject>
     </figure>
 
-    <para>In the above example the selector generated the moves shown with the blue lines, the accepter accepted all of
+    <para>In the above example the selector generated the moves shown with the blue lines, the acceptor accepted all of
     them and the forager picked the move <emphasis>B0 to B3</emphasis>.</para>
 
     <para>If we turn on DEBUG logging, we can see the decision making in the log:</para>
@@ -467,17 +467,17 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     </section>
 
     <section>
-      <title>Accepter</title>
+      <title>Acceptor</title>
 
-      <para>An accepter is used (together with a forager) to active tabu search, simulated annealing, great deluge, ...
+      <para>An acceptor is used (together with a forager) to active tabu search, simulated annealing, great deluge, ...
       For each move it generates an accept chance. If a move is rejected it is given an accept chance of
       <literal>0.0</literal>.</para>
 
-      <para>You can implement your own <literal>Accepter</literal>, although the build-in accepters should suffice for
-      most needs. You can also combine multiple accepters.</para>
+      <para>You can implement your own <literal>Acceptor</literal>, although the build-in acceptors should suffice for
+      most needs. You can also combine multiple acceptors.</para>
 
       <section>
-        <title>Tabu search accepter</title>
+        <title>Tabu search acceptor</title>
 
         <para>When tabu search takes steps it creates tabu's. It does not accept a move as the next step if that move
         breaks tabu. Drools Planner implements several tabu types:</para>
@@ -489,35 +489,35 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             recommend this type of tabu because it tends to give the best results and requires little or no
             tweaking.</para>
 
-            <programlisting>    &lt;accepter&gt;
+            <programlisting>    &lt;acceptor&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-    &lt;/accepter&gt;</programlisting>
+    &lt;/acceptor&gt;</programlisting>
           </listitem>
 
           <listitem>
             <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It does not accept a move equal to one of
             those steps.</para>
 
-            <programlisting>    &lt;accepter&gt;
+            <programlisting>    &lt;acceptor&gt;
         &lt;completeMoveTabuSize&gt;1000&lt;/completeMoveTabuSize&gt;
-    &lt;/accepter&gt;</programlisting>
+    &lt;/acceptor&gt;</programlisting>
           </listitem>
 
           <listitem>
             <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
 
-            <programlisting>    &lt;accepter&gt;
+            <programlisting>    &lt;acceptor&gt;
         &lt;completeUndoMoveTabuSize&gt;1000&lt;/completeUndoMoveTabuSize&gt;
-    &lt;/accepter&gt;</programlisting>
+    &lt;/acceptor&gt;</programlisting>
           </listitem>
 
           <listitem>
             <para><emphasis>Property tabu</emphasis> makes a property of recent steps tabu. For example, it can make the
             queen tabu, so that a recently moved queen can't be moved.</para>
 
-            <programlisting>    &lt;accepter&gt;
+            <programlisting>    &lt;acceptor&gt;
         &lt;completePropertyTabuSize&gt;1000&lt;/completePropertyTabuSize&gt;
-    &lt;/accepter&gt;</programlisting>
+    &lt;/acceptor&gt;</programlisting>
 
             <para>To use property tabu, your moves must implement the <literal>TabuPropertyEnabled</literal> interface,
             for example:</para>
@@ -539,21 +539,21 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
         <para>You can even combine tabu types:</para>
 
-        <programlisting>    &lt;accepter&gt;
+        <programlisting>    &lt;acceptor&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
         &lt;completeUndoMoveTabuSize&gt;10&lt;/completeUndoMoveTabuSize&gt;
-    &lt;/accepter&gt;</programlisting>
+    &lt;/acceptor&gt;</programlisting>
 
         <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
         with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
         the walls. Use the benchmarker to fine tweak your configuration.</para>
 
-        <para>A tabu search accepter should be combined with a <emphasis>maximum score of all</emphasis> or
+        <para>A tabu search acceptor should be combined with a <emphasis>maximum score of all</emphasis> or
         <emphasis>first best score improving</emphasis> forager.</para>
       </section>
 
       <section>
-        <title>Simulated annealing accepter</title>
+        <title>Simulated annealing acceptor</title>
 
         <para>Simulated annealing does not pick the move with the highest score, neither does it evaluate all moves. At
         least at first.</para>
@@ -562,7 +562,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
         <emphasis>temperature</emphasis> is relative to how long it has been solving. In the end, it gradually turns
         into a simple local search, only accepting improving moves.</para>
 
-        <para>A simulated annealing accepter should be combined with a <emphasis>first randomly accepted</emphasis>
+        <para>A simulated annealing acceptor should be combined with a <emphasis>first randomly accepted</emphasis>
         forager.</para>
       </section>
     </section>

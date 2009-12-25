@@ -259,9 +259,9 @@
     &lt;selector&gt;
         &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;
-    &lt;accepter&gt;
+    &lt;acceptor&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-    &lt;/accepter&gt;
+    &lt;/acceptor&gt;
     &lt;forager&gt;
         &lt;foragerType&gt;MAX_SCORE_OF_ALL&lt;/foragerType&gt;
     &lt;/forager&gt;
