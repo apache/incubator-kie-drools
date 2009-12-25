@@ -166,4 +166,8 @@ public class KnowledgeBaseRemoteClient
 
     }
 
+	public void removeFunction(String packageName, String ruleName) {
+		// TODO Auto-generated method stub
+	}
+
 }
