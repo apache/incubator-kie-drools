@@ -594,6 +594,55 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3414"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3445"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3482"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3516"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3550"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3586"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4889"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -602,9 +651,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.96875001"
-     inkscape:cx="390.16179"
-     inkscape:cy="335.20154"
+     inkscape:zoom="1.1866667"
+     inkscape:cx="371.29444"
+     inkscape:cy="371.97959"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -647,6 +696,20 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-452.36218)">
+    <rect
+       style="fill:#b9bdb6;fill-opacity:1;stroke:none;opacity:0.8"
+       id="rect3576-5"
+       width="740"
+       height="70"
+       x="30"
+       y="957.36218" />
+    <rect
+       style="fill:#b9bdb6;fill-opacity:1;stroke:none;opacity:0.8"
+       id="rect3576"
+       width="740"
+       height="70"
+       x="30"
+       y="817.36218" />
     <path
        style="fill:none;stroke:#ce5c00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 380,570 c 0,0 20,10 30,10 10,0 20,-10 20,-20 0,-10 0,-70 -20,-70"
@@ -1284,10 +1347,18 @@
              id="rect3931-4" /></flowRegion><flowPara
            id="flowPara3933-84">Eng</flowPara></flowRoot>    </g>
     <g
-       id="g5818"
-       transform="translate(50,49.999997)">
+       id="g3623">
+      <rect
+         ry="5"
+         rx="4.999999"
+         y="822.86218"
+         x="230.5"
+         height="59"
+         width="89"
+         id="rect2851-41-5-5-0"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(120,712.36218)"
+         transform="translate(170,762.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3879-4"
          xml:space="preserve"><flowRegion
@@ -1298,7 +1369,7 @@
              width="90"
              id="rect3883-0" /></flowRegion><flowPara
            id="flowPara3885-5">History</flowPara></flowRoot>      <g
-         transform="translate(120,230)"
+         transform="translate(170,280)"
          id="g4130-3">
         <rect
            style="fill:#fcaf3e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1323,7 +1394,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara3963-7">A</flowPara></flowRoot>      </g>
       <g
-         transform="translate(150,200)"
+         transform="translate(200,250)"
          id="g4137-6">
         <rect
            style="fill:#ad7fa8;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1348,7 +1419,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara4039-6">B</flowPara></flowRoot>      </g>
       <g
-         transform="translate(180,170)"
+         transform="translate(230,220)"
          id="g4144-7">
         <rect
            style="fill:#fce94f;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1371,21 +1442,20 @@
                x="60"
                y="180" /></flowRegion><flowPara
              id="flowPara4047-9">C</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g3894">
       <rect
          ry="5"
          rx="4.999999"
-         y="772.86218"
-         x="180.5"
+         y="892.86218"
+         x="230.5"
          height="59"
          width="89"
-         id="rect2851-41-5-5-0"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5913"
-       transform="translate(50,49.999997)">
+         id="rect2851-41-5-5-0-5"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(30,782.36218)"
+         transform="translate(80,832.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3895-6"
          xml:space="preserve"><flowRegion
@@ -1396,7 +1466,7 @@
              width="90.000023"
              id="rect3899-9" /></flowRegion><flowPara
            id="flowPara3901-7">Math</flowPara></flowRoot>      <g
-         transform="translate(120,300)"
+         transform="translate(170,350)"
          id="g4130-2">
         <rect
            style="fill:#fcaf3e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1421,7 +1491,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara3963-4">A</flowPara></flowRoot>      </g>
       <g
-         transform="translate(150,270)"
+         transform="translate(200,320)"
          id="g4137-5">
         <rect
            style="fill:#ad7fa8;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1446,7 +1516,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara4039-65">B</flowPara></flowRoot>      </g>
       <g
-         transform="translate(180,210)"
+         transform="translate(230,260)"
          id="g4151-9">
         <rect
            style="fill:#8ae234;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1469,21 +1539,20 @@
                x="60"
                y="210" /></flowRegion><flowPara
              id="flowPara4055-3">D</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g3875">
       <rect
          ry="5"
          rx="4.999999"
-         y="842.86218"
-         x="180.5"
+         y="822.86218"
+         x="360.5"
          height="59"
-         width="89"
-         id="rect2851-41-5-5-0-5"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5843"
-       transform="translate(50,49.999997)">
+         width="59"
+         id="rect2851-41-5-5-0-4"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(70,712.36218)"
+         transform="translate(120,762.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3903-3-1"
          xml:space="preserve"><flowRegion
@@ -1494,7 +1563,7 @@
              width="59.999985"
              id="rect3907-9-9" /></flowRegion><flowPara
            id="flowPara3909-5-3">Chem</flowPara></flowRoot>      <g
-         transform="translate(250,140)"
+         transform="translate(300,190)"
          id="g4151-0">
         <rect
            style="fill:#8ae234;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1518,7 +1587,7 @@
                y="210" /></flowRegion><flowPara
              id="flowPara4055-5">D</flowPara></flowRoot>      </g>
       <g
-         transform="translate(280,110)"
+         transform="translate(330,160)"
          id="g4158-8">
         <rect
            style="fill:#729fcf;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1541,21 +1610,20 @@
                x="60"
                y="240" /></flowRegion><flowPara
              id="flowPara4063-6">E</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g3932">
       <rect
          ry="5"
          rx="4.999999"
-         y="772.86218"
-         x="310.5"
+         y="892.86218"
+         x="360.5"
          height="59"
          width="59"
-         id="rect2851-41-5-5-0-4"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5938"
-       transform="translate(50,49.999997)">
+         id="rect2851-41-5-5-0-4-7"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(10,782.36218)"
+         transform="translate(60,832.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3911-9-9"
          xml:space="preserve"><flowRegion
@@ -1566,7 +1634,7 @@
              width="60.000023"
              id="rect3915-46-8" /></flowRegion><flowPara
            id="flowPara3917-3-9">Bio</flowPara></flowRoot>      <g
-         transform="translate(250,180)"
+         transform="translate(300,230)"
          id="g4158-5">
         <rect
            style="fill:#729fcf;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1590,7 +1658,7 @@
                y="240" /></flowRegion><flowPara
              id="flowPara4063-8">E</flowPara></flowRoot>      </g>
       <g
-         transform="translate(280,150)"
+         transform="translate(330,200)"
          id="g4165-6">
         <rect
            style="fill:#e9b96e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1613,21 +1681,20 @@
                x="60"
                y="270" /></flowRegion><flowPara
              id="flowPara4071-6">F</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g3970">
       <rect
          ry="5"
          rx="4.999999"
-         y="842.86218"
-         x="310.5"
+         y="962.86218"
+         x="230.5"
          height="59"
          width="59"
-         id="rect2851-41-5-5-0-4-7"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5862"
-       transform="translate(50,49.999997)">
+         id="rect2851-41-5-5-0-4-9"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(-180,852.36218)"
+         transform="translate(-130,902.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3919-9-5"
          xml:space="preserve"><flowRegion
@@ -1638,7 +1705,7 @@
              width="60"
              id="rect3923-9-6" /></flowRegion><flowPara
            id="flowPara3925-7-9">Geo</flowPara></flowRoot>      <g
-         transform="translate(120,250)"
+         transform="translate(170,300)"
          id="g4158-6">
         <rect
            style="fill:#729fcf;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1662,7 +1729,7 @@
                y="240" /></flowRegion><flowPara
              id="flowPara4063-7">E</flowPara></flowRoot>      </g>
       <g
-         transform="translate(150,190)"
+         transform="translate(200,240)"
          id="g4172-2">
         <rect
            style="fill:#ef2929;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1685,21 +1752,20 @@
                x="60"
                y="300" /></flowRegion><flowPara
              id="flowPara4079-7">G</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g3951">
       <rect
          ry="5"
          rx="4.999999"
-         y="912.86218"
-         x="180.5"
+         y="962.86218"
+         x="360.5"
          height="59"
          width="59"
-         id="rect2851-41-5-5-0-4-9"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5894"
-       transform="translate(50,49.999997)">
+         id="rect2851-41-5-5-0-4-0"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(-110,852.36218)"
+         transform="translate(-60,902.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3927-63-5"
          xml:space="preserve"><flowRegion
@@ -1710,7 +1776,7 @@
              width="60.129028"
              id="rect3931-4-0" /></flowRegion><flowPara
            id="flowPara3933-84-2">Eng</flowPara></flowRoot>      <g
-         transform="translate(250,220)"
+         transform="translate(300,270)"
          id="g4165-5">
         <rect
            style="fill:#e9b96e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1734,7 +1800,7 @@
                y="270" /></flowRegion><flowPara
              id="flowPara4071-61">F</flowPara></flowRoot>      </g>
       <g
-         transform="translate(280,190)"
+         transform="translate(330,240)"
          id="g4172-4">
         <rect
            style="fill:#ef2929;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1757,21 +1823,20 @@
                x="60"
                y="300" /></flowRegion><flowPara
              id="flowPara4079-8">G</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g3919">
       <rect
          ry="5"
          rx="4.999999"
-         y="912.86218"
-         x="310.5"
+         y="892.86218"
+         x="320.5"
          height="59"
-         width="59"
-         id="rect2851-41-5-5-0-4-0"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5881"
-       transform="translate(50,49.999997)">
+         width="29"
+         id="rect2851-41-5-5-0-4-73"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(-210,782.36218)"
+         transform="translate(-160,832.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3887-3-5"
          xml:space="preserve"><flowRegion
@@ -1782,7 +1847,7 @@
              width="29.999998"
              id="rect3891-1-0" /></flowRegion><flowPara
            id="flowPara3893-7-0">Fr</flowPara></flowRoot>      <g
-         transform="translate(210,240)"
+         transform="translate(260,290)"
          id="g4144-3">
         <rect
            style="fill:#fce94f;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1805,15 +1870,6 @@
                x="60"
                y="180" /></flowRegion><flowPara
              id="flowPara4047-6">C</flowPara></flowRoot>      </g>
-      <rect
-         ry="5"
-         rx="4.999999"
-         y="842.86218"
-         x="270.5"
-         height="59"
-         width="29"
-         id="rect2851-41-5-5-0-4-73"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
     </g>
     <flowRoot
        xml:space="preserve"
@@ -1934,10 +1990,18 @@
            y="55.837181" /></flowRegion><flowPara
          id="flowPara6086-8">Room X</flowPara><flowPara
          id="flowPara6090-5">4 seats</flowPara></flowRoot>    <g
-       id="g5818-0"
-       transform="translate(460,49.999997)">
+       id="g4027">
+      <rect
+         ry="5"
+         rx="4.999999"
+         y="822.86218"
+         x="640.5"
+         height="59"
+         width="89"
+         id="rect2851-41-5-5-0-9"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(120,712.36218)"
+         transform="translate(580,762.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3879-4-7"
          xml:space="preserve"><flowRegion
@@ -1948,7 +2012,7 @@
              width="90"
              id="rect3883-0-8" /></flowRegion><flowPara
            id="flowPara3885-5-9">History</flowPara></flowRoot>      <g
-         transform="translate(120,230)"
+         transform="translate(580,280)"
          id="g4130-3-8">
         <rect
            style="fill:#fcaf3e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1973,7 +2037,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara3963-7-1">A</flowPara></flowRoot>      </g>
       <g
-         transform="translate(150,200)"
+         transform="translate(610,250)"
          id="g4137-6-1">
         <rect
            style="fill:#ad7fa8;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1998,7 +2062,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara4039-6-6">B</flowPara></flowRoot>      </g>
       <g
-         transform="translate(180,170)"
+         transform="translate(640,220)"
          id="g4144-7-7">
         <rect
            style="fill:#fce94f;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2021,21 +2085,20 @@
                x="60"
                y="180" /></flowRegion><flowPara
              id="flowPara4047-9-8">C</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g4052">
       <rect
          ry="5"
          rx="4.999999"
-         y="772.86218"
-         x="180.5"
+         y="892.86218"
+         x="510.5"
          height="59"
          width="89"
-         id="rect2851-41-5-5-0-9"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5913-4"
-       transform="translate(330.00001,49.999997)">
+         id="rect2851-41-5-5-0-5-7"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(30,782.36218)"
+         transform="translate(360.00001,832.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3895-6-8"
          xml:space="preserve"><flowRegion
@@ -2046,7 +2109,7 @@
              width="90.000023"
              id="rect3899-9-4" /></flowRegion><flowPara
            id="flowPara3901-7-5">Math</flowPara></flowRoot>      <g
-         transform="translate(120,300)"
+         transform="translate(450.00001,350)"
          id="g4130-2-8">
         <rect
            style="fill:#fcaf3e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2071,7 +2134,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara3963-4-6">A</flowPara></flowRoot>      </g>
       <g
-         transform="translate(150,270)"
+         transform="translate(480.00001,320)"
          id="g4137-5-6">
         <rect
            style="fill:#ad7fa8;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2096,7 +2159,7 @@
                style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
              id="flowPara4039-65-7">B</flowPara></flowRoot>      </g>
       <g
-         transform="translate(180,210)"
+         transform="translate(510.00001,260)"
          id="g4151-9-6">
         <rect
            style="fill:#8ae234;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2119,21 +2182,29 @@
                x="60"
                y="210" /></flowRegion><flowPara
              id="flowPara4055-3-4">D</flowPara></flowRoot>      </g>
+    </g>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
+       id="rect2851-41-5-5-0-4-7-2"
+       width="59"
+       height="59"
+       x="640.5"
+       y="892.86218"
+       rx="4.999999"
+       ry="5" />
+    <g
+       id="g3989">
       <rect
          ry="5"
          rx="4.999999"
-         y="842.86218"
-         x="180.5"
+         y="822.86218"
+         x="510.5"
          height="59"
-         width="89"
-         id="rect2851-41-5-5-0-5-7"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5843-7"
-       transform="translate(200,49.999997)">
+         width="59"
+         id="rect2851-41-5-5-0-4-8"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(70,712.36218)"
+         transform="translate(270,762.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3903-3-1-1"
          xml:space="preserve"><flowRegion
@@ -2144,7 +2215,7 @@
              width="59.999985"
              id="rect3907-9-9-2" /></flowRegion><flowPara
            id="flowPara3909-5-3-1">Chem</flowPara></flowRoot>      <g
-         transform="translate(250,140)"
+         transform="translate(450,190)"
          id="g4151-0-9">
         <rect
            style="fill:#8ae234;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2168,7 +2239,7 @@
                y="210" /></flowRegion><flowPara
              id="flowPara4055-5-3">D</flowPara></flowRoot>      </g>
       <g
-         transform="translate(280,110)"
+         transform="translate(480,160)"
          id="g4158-8-4">
         <rect
            style="fill:#729fcf;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2191,93 +2262,79 @@
                x="60"
                y="240" /></flowRegion><flowPara
              id="flowPara4063-6-4">E</flowPara></flowRoot>      </g>
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3911-9-9-2"
+       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(340.00001,832.36218)"><flowRegion
+         id="flowRegion3913-55-6-3"><rect
+           id="rect3915-46-8-2"
+           width="60.000023"
+           height="30.000011"
+           x="300"
+           y="60" /></flowRegion><flowPara
+         id="flowPara3917-3-9-6">Bio</flowPara></flowRoot>    <g
+       id="g4158-5-1"
+       transform="translate(580.00001,230)">
       <rect
          ry="5"
          rx="4.999999"
-         y="772.86218"
-         x="310.5"
-         height="59"
-         width="59"
-         id="rect2851-41-5-5-0-4-8"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5938-7"
-       transform="translate(330.00001,49.999997)">
+         y="692.86218"
+         x="60.5"
+         height="29"
+         width="29"
+         id="rect2851-41-5-1-70-4-3-1-9-8"
+         style="fill:#729fcf;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
       <flowRoot
-         transform="translate(10,782.36218)"
+         transform="translate(0,452.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-         id="flowRoot3911-9-9-2"
+         id="flowRoot4057-7-4"
          xml:space="preserve"><flowRegion
-           id="flowRegion3913-55-6-3"><rect
-             y="60"
-             x="300"
-             height="30.000011"
-             width="60.000023"
-             id="rect3915-46-8-2" /></flowRegion><flowPara
-           id="flowPara3917-3-9-6">Bio</flowPara></flowRoot>      <g
-         transform="translate(250,180)"
-         id="g4158-5-1">
-        <rect
-           style="fill:#729fcf;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-           id="rect2851-41-5-1-70-4-3-1-9-8"
-           width="29"
-           height="29"
-           x="60.5"
-           y="692.86218"
-           rx="4.999999"
-           ry="5" />
-        <flowRoot
-           xml:space="preserve"
-           id="flowRoot4057-7-4"
-           style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-           transform="translate(0,452.36218)"><flowRegion
-             id="flowRegion4059-6-1"><rect
-               id="rect4061-6-9"
-               width="29.999998"
-               height="30.000004"
-               x="60"
-               y="240" /></flowRegion><flowPara
-             id="flowPara4063-8-1">E</flowPara></flowRoot>      </g>
-      <g
-         transform="translate(280,150)"
-         id="g4165-6-7">
-        <rect
-           style="fill:#e9b96e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-           id="rect2851-41-5-1-70-4-5-2-1-7"
-           width="29"
-           height="29"
-           x="60.5"
-           y="722.86218"
-           rx="4.999999"
-           ry="5" />
-        <flowRoot
-           xml:space="preserve"
-           id="flowRoot4065-8-0"
-           style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-           transform="translate(0,452.36218)"><flowRegion
-             id="flowRegion4067-5-8"><rect
-               id="rect4069-9-7"
-               width="30"
-               height="30"
-               x="60"
-               y="270" /></flowRegion><flowPara
-             id="flowPara4071-6-3">F</flowPara></flowRoot>      </g>
+           id="flowRegion4059-6-1"><rect
+             y="240"
+             x="60"
+             height="30.000004"
+             width="29.999998"
+             id="rect4061-6-9" /></flowRegion><flowPara
+           id="flowPara4063-8-1">E</flowPara></flowRoot>    </g>
+    <g
+       id="g4165-6-7"
+       transform="translate(610.00001,200)">
       <rect
          ry="5"
          rx="4.999999"
-         y="842.86218"
-         x="310.5"
+         y="722.86218"
+         x="60.5"
+         height="29"
+         width="29"
+         id="rect2851-41-5-1-70-4-5-2-1-7"
+         style="fill:#e9b96e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+      <flowRoot
+         transform="translate(0,452.36218)"
+         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         id="flowRoot4065-8-0"
+         xml:space="preserve"><flowRegion
+           id="flowRegion4067-5-8"><rect
+             y="270"
+             x="60"
+             height="30"
+             width="30"
+             id="rect4069-9-7" /></flowRegion><flowPara
+           id="flowPara4071-6-3">F</flowPara></flowRoot>    </g>
+    <g
+       id="g4077">
+      <rect
+         ry="5"
+         rx="4.999999"
+         y="962.86218"
+         x="510.5"
          height="59"
          width="59"
-         id="rect2851-41-5-5-0-4-7-2"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5862-8"
-       transform="translate(330.00001,49.999997)">
+         id="rect2851-41-5-5-0-4-9-5"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(-180,852.36218)"
+         transform="translate(150.00001,902.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3919-9-5-8"
          xml:space="preserve"><flowRegion
@@ -2288,7 +2345,7 @@
              width="60"
              id="rect3923-9-6-5" /></flowRegion><flowPara
            id="flowPara3925-7-9-0">Geo</flowPara></flowRoot>      <g
-         transform="translate(120,250)"
+         transform="translate(450.00001,300)"
          id="g4158-6-5">
         <rect
            style="fill:#729fcf;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2312,7 +2369,7 @@
                y="240" /></flowRegion><flowPara
              id="flowPara4063-7-5">E</flowPara></flowRoot>      </g>
       <g
-         transform="translate(150,190)"
+         transform="translate(480.00001,240)"
          id="g4172-2-6">
         <rect
            style="fill:#ef2929;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2335,21 +2392,20 @@
                x="60"
                y="300" /></flowRegion><flowPara
              id="flowPara4079-7-6">G</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g4008">
       <rect
          ry="5"
          rx="4.999999"
-         y="912.86218"
-         x="180.5"
+         y="822.86218"
+         x="570.5"
          height="59"
          width="59"
-         id="rect2851-41-5-5-0-4-9-5"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5894-1"
-       transform="translate(260,-90.000003)">
+         id="rect2851-41-5-5-0-4-0-1"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(-110,852.36218)"
+         transform="translate(150,762.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3927-63-5-7"
          xml:space="preserve"><flowRegion
@@ -2360,7 +2416,7 @@
              width="60.129028"
              id="rect3931-4-0-2" /></flowRegion><flowPara
            id="flowPara3933-84-2-8">Eng</flowPara></flowRoot>      <g
-         transform="translate(250,220)"
+         transform="translate(510,130)"
          id="g4165-5-4">
         <rect
            style="fill:#e9b96e;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2384,7 +2440,7 @@
                y="270" /></flowRegion><flowPara
              id="flowPara4071-61-5">F</flowPara></flowRoot>      </g>
       <g
-         transform="translate(280,190)"
+         transform="translate(540,99.999997)"
          id="g4172-4-0">
         <rect
            style="fill:#ef2929;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2407,21 +2463,20 @@
                x="60"
                y="300" /></flowRegion><flowPara
              id="flowPara4079-8-1">G</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g4096">
       <rect
          ry="5"
          rx="4.999999"
-         y="912.86218"
-         x="310.5"
+         y="962.86218"
+         x="640.5"
          height="59"
-         width="59"
-         id="rect2851-41-5-5-0-4-0-1"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
-    <g
-       id="g5881-8"
-       transform="translate(370,120)">
+         width="29"
+         id="rect2851-41-5-5-0-4-73-6"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
       <flowRoot
-         transform="translate(-210,782.36218)"
+         transform="translate(160,902.36218)"
          style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
          id="flowRoot3887-3-5-3"
          xml:space="preserve"><flowRegion
@@ -2432,7 +2487,7 @@
              width="29.999998"
              id="rect3891-1-0-0" /></flowRegion><flowPara
            id="flowPara3893-7-0-9">Fr</flowPara></flowRoot>      <g
-         transform="translate(210,240)"
+         transform="translate(580,360)"
          id="g4144-3-3">
         <rect
            style="fill:#fce94f;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2455,15 +2510,6 @@
                x="60"
                y="180" /></flowRegion><flowPara
              id="flowPara4047-6-1">C</flowPara></flowRoot>      </g>
-      <rect
-         ry="5"
-         rx="4.999999"
-         y="842.86218"
-         x="270.5"
-         height="59"
-         width="29"
-         id="rect2851-41-5-5-0-4-73-6"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
     </g>
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -2515,9 +2561,9 @@
          id="flowRegion6586"><rect
            id="rect6588"
            width="220"
-           height="29.999985"
+           height="30.000023"
            x="230"
-           y="270" /></flowRegion><flowPara
+           y="279.99976" /></flowRegion><flowPara
          id="flowPara6590">Most students first</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot6592"
@@ -2525,10 +2571,10 @@
        transform="translate(0,442.36194)"><flowRegion
          id="flowRegion6594"><rect
            id="rect6596"
-           width="220.00002"
-           height="30"
+           width="219.99983"
+           height="30.000006"
            x="510"
-           y="270" /></flowRegion><flowPara
+           y="280.00024" /></flowRegion><flowPara
          id="flowPara6598">Drools Planner</flowPara></flowRoot>    <rect
        style="fill:none;stroke:#000000;stroke-width:0.99999988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect2851-41-5-1-70-5-2"
@@ -2546,9 +2592,9 @@
          id="flowRegion6720"><rect
            id="rect6722"
            width="140"
-           height="60.000008"
+           height="70"
            x="42.933594"
-           y="305.01117"
+           y="285.01117"
            style="font-size:24px;text-align:start;text-anchor:start" /></flowRegion><flowPara
          id="flowPara6724">Examination</flowPara><flowPara
          id="flowPara6730">timetabling</flowPara></flowRoot>    <text
@@ -2561,5 +2607,70 @@
        transform="translate(0,452.36218)"><tspan
          sodipodi:role="line"
          id="tspan6728" /></text>
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5957-7"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(364.00098,616.51382)"><flowRegion
+         id="flowRegion5959-4"><rect
+           id="rect5961-1"
+           width="39.999996"
+           height="40"
+           x="65.999023"
+           y="345.84836"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#ce5c00;stroke:none" /></flowRegion><flowPara
+         id="flowPara3468">same</flowPara><flowPara
+         id="flowPara3472">day</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5957-7-1"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(238.46484,702.29992)"><flowRegion
+         id="flowRegion5959-4-7"><rect
+           id="rect5961-1-4"
+           width="80.000008"
+           height="20.000046"
+           x="61.53516"
+           y="330.06226"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#a40000;stroke:none" /></flowRegion><flowPara
+         id="flowPara5963-8-3">same  time</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5957-7-5"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(230.7002,617.09447)"><flowRegion
+         id="flowRegion5959-4-2"><rect
+           id="rect5961-1-2"
+           width="49.999996"
+           height="40.000027"
+           x="59.299801"
+           y="345.2677"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#ce5c00;stroke:none" /></flowRegion><flowPara
+         id="flowPara3468-2">same</flowPara><flowPara
+         id="flowPara3472-7">day</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5957-7-5-8"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(514.14453,620.72769)"><flowRegion
+         id="flowRegion5959-4-2-0"><rect
+           id="rect5961-1-2-4"
+           width="50"
+           height="39.999981"
+           x="55.855469"
+           y="341.63449"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#ce5c00;stroke:none" /></flowRegion><flowPara
+         id="flowPara3468-2-1">same</flowPara><flowPara
+         id="flowPara3472-7-1">day</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot6718-3"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(7.066406,267.35101)"><flowRegion
+         id="flowRegion6720-9"><rect
+           id="rect6722-0"
+           width="130"
+           height="60"
+           x="32.933594"
+           y="285.01117"
+           style="font-size:14px;text-align:start;text-anchor:start" /></flowRegion><flowPara
+         id="flowPara4919">Assign each exam</flowPara><flowPara
+         id="flowPara4927">a period and</flowPara><flowPara
+         id="flowPara4931">a room.</flowPara></flowRoot>  </g>
 </svg>
