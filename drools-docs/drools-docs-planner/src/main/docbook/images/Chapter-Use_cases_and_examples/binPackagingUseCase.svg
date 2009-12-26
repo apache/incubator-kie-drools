@@ -216,6 +216,27 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2987"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3018"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3049"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -224,9 +245,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.3700194"
-     inkscape:cx="402.67238"
-     inkscape:cy="426.65243"
+     inkscape:zoom="1.1866667"
+     inkscape:cx="400"
+     inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -259,7 +280,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -270,7 +291,7 @@
      transform="translate(0,-452.36218)">
     <g
        id="g3851"
-       transform="translate(10,0)">
+       transform="translate(10,29.999997)">
       <rect
          ry="5"
          rx="4.999999"
@@ -295,7 +316,7 @@
            id="flowPara3728">3*3=9</flowPara></flowRoot>    </g>
     <g
        id="g3858"
-       transform="translate(10,0)">
+       transform="translate(10,29.999997)">
       <rect
          inkscape:transform-center-y="18.790824"
          inkscape:transform-center-x="53.265064"
@@ -322,7 +343,7 @@
            id="flowPara3798">2*4=8</flowPara></flowRoot>    </g>
     <g
        id="g3865"
-       transform="translate(10,0)">
+       transform="translate(10,29.999997)">
       <rect
          ry="5"
          rx="4.999999"
@@ -347,7 +368,7 @@
            id="flowPara3817">2*3=6</flowPara></flowRoot>    </g>
     <g
        id="g3872"
-       transform="translate(10,0)">
+       transform="translate(10,29.999997)">
       <rect
          ry="5"
          rx="4.9999995"
@@ -372,7 +393,7 @@
            id="flowPara3728-7">1*5=5</flowPara></flowRoot>    </g>
     <g
        id="g3879"
-       transform="translate(10,0)">
+       transform="translate(10,29.999997)">
       <rect
          ry="5"
          rx="4.999999"
@@ -849,5 +870,41 @@
            height="60.000008"
            x="60.18248"
            y="231.6423" /></flowRegion><flowPara
-         id="flowPara4332">Largest size first</flowPara></flowRoot>  </g>
+         id="flowPara4332">Largest size first</flowPara></flowRoot>    <flowRoot
+       transform="translate(-20,482.36218)"
+       xml:space="preserve"
+       id="flowRoot4302-6"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+         id="flowRegion4304-7"><rect
+           id="rect4306-3"
+           width="660"
+           height="30"
+           x="90"
+           y="50"
+           style="font-size:14px" /></flowRegion><flowPara
+         id="flowPara4308-6">Place each item on a location in a container.</flowPara></flowRoot>    <flowRoot
+       transform="translate(-89.166992,605.63882)"
+       xml:space="preserve"
+       id="flowRoot4302-6-6"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+         id="flowRegion4304-7-0"><rect
+           id="rect4306-3-4"
+           width="40"
+           height="40"
+           x="279.16699"
+           y="196.72336"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#a40000" /></flowRegion><flowPara
+         id="flowPara4308-6-8">no space</flowPara></flowRoot>    <flowRoot
+       transform="translate(192.26953,661.3312)"
+       xml:space="preserve"
+       id="flowRoot4302-6-6-5"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+         id="flowRegion4304-7-0-6"><rect
+           id="rect4306-3-4-9"
+           width="60.000069"
+           height="19.99999"
+           x="267.73047"
+           y="221.03098"
+           style="font-size:14px;fill:#a40000" /></flowRegion><flowPara
+         id="flowPara4308-6-8-8">no space</flowPara></flowRoot>  </g>
 </svg>
