@@ -1154,6 +1154,34 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3744"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4549"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4571"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4608"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1162,9 +1190,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.96875001"
-     inkscape:cx="511.29864"
-     inkscape:cy="285.8489"
+     inkscape:zoom="1.1866667"
+     inkscape:cx="400"
+     inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -1198,7 +1226,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1207,6 +1235,20 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-452.36218)">
+    <rect
+       style="opacity:0.8;fill:#babdb6"
+       id="rect3767-3"
+       width="760"
+       height="70"
+       x="20"
+       y="957.36218" />
+    <rect
+       style="opacity:0.8;fill:#babdb6"
+       id="rect3767"
+       width="760"
+       height="100"
+       x="20"
+       y="757.36218" />
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect2851-41-5-5-0-4-8-7-1-8-3"
@@ -1287,11 +1329,11 @@
        transform="translate(236.32422,160.92403)"><flowRegion
          id="flowRegion6720"><rect
            id="rect6722"
-           width="740.00018"
-           height="60.00021"
+           width="740"
+           height="60.000008"
            x="-206.32422"
-           y="321.43814"
-           style="font-size:40;text-align:center;text-anchor:middle" /></flowRegion><flowPara
+           y="311.43814"
+           style="font-size:40px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara3455">Employee shift rostering</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -2981,15 +3023,18 @@
            id="flowPara3963-9-7">A</flowPara></flowRoot>    </g>
     <g
        id="g7362"
-       transform="translate(0,-30)">
-      <path
-         id="path7356"
-         d="m 340,832.36218 c 10,-20 20,-20 20,-20"
-         style="fill:none;stroke:#cc0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <path
-         id="path7360"
-         d="m 390,832.36218 c -10,-20 -20,-20 -20,-20 l -10,0"
-         style="fill:none;stroke:#cc0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       transform="matrix(1,0,0,-1,0,1641.7244)">
+      <g
+         id="g4634">
+        <path
+           style="fill:none;stroke:#a40000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 340,832.36218 c 10,-20 20,-20 20,-20"
+           id="path7356" />
+        <path
+           style="fill:none;stroke:#a40000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 390,832.36218 c -10,-20 -20,-20 -20,-20 l -10,0"
+           id="path7360" />
+      </g>
     </g>
     <g
        transform="translate(290,200)"
@@ -4085,5 +4130,43 @@
              width="29.999998"
              id="rect4061-6-92-7-0-4" /></flowRegion><flowPara
            id="flowPara4063-2-0-7-5-1">I</flowPara></flowRoot>    </g>
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot6718-7"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(176.32422,220.92403)"><flowRegion
+         id="flowRegion6720-2"><rect
+           id="rect6722-2"
+           width="740"
+           height="40.000027"
+           x="-146.32422"
+           y="301.43814"
+           style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
+         id="flowPara3455-6">Populate each work shift with a nurse.</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot6718-7-2"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(243.17969,627.33999)"><flowRegion
+         id="flowRegion6720-2-6"><rect
+           id="rect6722-2-0"
+           width="60"
+           height="50.000004"
+           x="46.820309"
+           y="295.02219"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#a40000" /></flowRegion><flowPara
+         id="flowPara4594">too</flowPara><flowPara
+         id="flowPara4598"> early</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot6718-7-2-1"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(260.31836,526.87382)"><flowRegion
+         id="flowRegion6720-2-6-9"><rect
+           id="rect6722-2-0-9"
+           width="40"
+           height="39.999989"
+           x="59.681641"
+           y="295.48837"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#a40000" /></flowRegion><flowPara
+         id="flowPara4594-6">too</flowPara><flowPara
+         id="flowPara4598-0"> early</flowPara></flowRoot>  </g>
 </svg>
