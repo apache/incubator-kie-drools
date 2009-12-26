@@ -35,6 +35,7 @@ public class FaultNode extends ExtendedNodeImpl {
 	
 	private String faultName;
 	private String faultVariable;
+	private boolean terminateParent = false;
 
     public String getFaultVariable() {
 		return faultVariable;
@@ -52,7 +53,15 @@ public class FaultNode extends ExtendedNodeImpl {
 		this.faultName = faultName;
 	}
 	
-	public String[] getActionTypes() {
+	public boolean isTerminateParent() {
+        return terminateParent;
+    }
+
+    public void setTerminateParent(boolean terminateParent) {
+        this.terminateParent = terminateParent;
+    }
+
+    public String[] getActionTypes() {
 		return EVENT_TYPES;
 	}
 	
