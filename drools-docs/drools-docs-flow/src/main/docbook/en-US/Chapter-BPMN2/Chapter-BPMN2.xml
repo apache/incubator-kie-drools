@@ -18,9 +18,12 @@
       <itemizedlist>
         <listitem>Events
           <itemizedlist>
-            <listitem>Start Event (None)</listitem>
-            <listitem>End Event (Terminate, None, Error)</listitem>
-            <listitem>Intermediate Event (Signal, Timer)</listitem>
+            <listitem>Start Event (None, Conditional, Signal)</listitem>
+            <listitem>End Event (None, Terminate, Error, Escalation, Signal)</listitem>
+            <listitem>Intermediate Catch Event (Signal, Timer)</listitem>
+            <listitem>Intermediate Throw Event (None, Signal)</listitem>
+            <listitem>Non-interrupting Boundary Event (Escalation, Timer)</listitem>
+            <listitem>Interrupting Boundary Event ()</listitem>
           </itemizedlist>
         </listitem>
         <listitem>Activities
@@ -42,6 +45,7 @@
             <listitem>Diverging
               <itemizedlist>
                 <listitem>Exclusive (Java, MVEL or XPath expression language)</listitem>
+                <listitem>Inclusive (Java, MVEL or XPath expression language)</listitem>
                 <listitem>Parallel</listitem>
               </itemizedlist>
             </listitem>
@@ -60,6 +64,7 @@
       <itemizedlist>
         <listitem>Java type language</listitem>
         <listitem>Process properties</listitem>
+        <listitem>Embedded Sub-Process properties</listitem>
         <listitem>Activity properties</listitem>
       </itemizedlist>
     </listitem>

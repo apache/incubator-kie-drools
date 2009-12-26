@@ -23,14 +23,14 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.instance.NodeInstanceContainer;
-import org.drools.workflow.instance.impl.NodeInstanceImpl;
+import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 
 /**
  * Runtime counterpart of an end node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class EndNodeInstance extends NodeInstanceImpl {
+public class EndNodeInstance extends ExtendedNodeInstanceImpl {
 
     private static final long serialVersionUID = 400L;
 
@@ -39,6 +39,7 @@ public class EndNodeInstance extends NodeInstanceImpl {
     }
     
     public void internalTrigger(final NodeInstance from, String type) {
+        super.internalTrigger(from, type);
         if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An EndNode only accepts default incoming connections!");

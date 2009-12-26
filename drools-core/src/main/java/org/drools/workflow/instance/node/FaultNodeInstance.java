@@ -16,12 +16,15 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import java.util.Collection;
+
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -46,7 +49,18 @@ public class FaultNodeInstance extends NodeInstanceImpl {
         }
         String faultName = getFaultName();
         ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(faultName);
-        ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+        NodeInstanceContainer nodeInstanceContainer =  (NodeInstanceContainer) getNodeInstanceContainer();
+        nodeInstanceContainer.removeNodeInstance(this);
+        if (getFaultNode().isTerminateParent()) {
+            if (nodeInstanceContainer instanceof CompositeNodeInstance) {
+                ((CompositeNodeInstance) nodeInstanceContainer).cancel();
+            } else if (nodeInstanceContainer instanceof WorkflowProcessInstance) {
+                Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstance) nodeInstanceContainer).getNodeInstances();
+                for (NodeInstance nodeInstance: nodeInstances) {
+                    ((org.drools.workflow.instance.NodeInstance) nodeInstance).cancel();
+                }
+            }
+        }
         if (exceptionScopeInstance != null) {
         	handleException(faultName, exceptionScopeInstance);
         } else {
