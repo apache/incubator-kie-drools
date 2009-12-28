@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -525,8 +527,8 @@ public class MVELDialect
 
     public MVELCompilationUnit getMVELCompilationUnit(final String expression,
                                                       final Dialect.AnalysisResult analysis,
-                                                      final Declaration[] previousDeclarations,
-                                                      final Declaration[] localDeclarations,
+                                                      Declaration[] previousDeclarations,
+                                                      Declaration[] localDeclarations,
                                                       final Map<String, Class<?>> otherInputVariables,
                                                       final PackageBuildContext context) {
         String[] pkgImports = new String[this.packageImports.size()];
@@ -582,19 +584,31 @@ public class MVELDialect
             //            }
 
             // Set<String> usedIdentifiers = new HashSet<String>( list[0] );
+            
+            HashSet set = new HashSet( list[0] );
 
+            List<Declaration> usedDeclrs = new ArrayList<Declaration>();
             if ( previousDeclarations != null ) {
                 for ( Declaration declr : previousDeclarations ) {
-                    resolvedInputs.put( declr.getIdentifier(),
-                                        declr.getExtractor().getExtractToClass() );
+                    if ( set.contains( declr.getIdentifier() )) {
+                        usedDeclrs.add( declr );
+                        resolvedInputs.put( declr.getIdentifier(),
+                                            declr.getExtractor().getExtractToClass() );
+                    }
                 }
+                previousDeclarations = usedDeclrs.toArray( new Declaration[usedDeclrs.size()]);
             }
 
             if ( localDeclarations != null ) {
+                usedDeclrs.clear();
                 for ( Declaration declr : localDeclarations ) {
-                    resolvedInputs.put( declr.getIdentifier(),
-                                        declr.getExtractor().getExtractToClass() );
+                    if ( set.contains( declr.getIdentifier() )) {
+                        usedDeclrs.add( declr );
+                        resolvedInputs.put( declr.getIdentifier(),
+                                            declr.getExtractor().getExtractToClass() );
+                    }
                 }
+                localDeclarations = usedDeclrs.toArray( new Declaration[usedDeclrs.size()]);
             }
 
             //            if ( outerDeclarations != null ) {

@@ -114,7 +114,9 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
+import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -6429,6 +6431,88 @@ public class MiscTest extends TestCase {
         assertEquals( "should have fired once",
                       1,
                       list.size() );
+    }
+    
+    public void testOrWithAndUsingNestedBindings() {
+        String str = "";
+        str += "package org.drools\n";
+        str += "import org.drools.Person\n";
+        str += "global java.util.List mlist\n";
+        str += "global java.util.List jlist\n";
+        str += "rule rule1 dialect \"mvel\" \n";
+        str += "when\n";
+        str += "$a : Person( name == \"a\" )\n";
+        str += "  (or $b : Person( name == \"b1\" )\n";
+        str += "      (and $p : Person( name == \"p2\" )\n";
+        str += "           $b : Person( name == \"b2\" ) )\n";
+        str += "      (and $p : Person( name == \"p3\" )\n";
+        str += "           $b : Person( name == \"b3\" ) )\n";
+        str += "   )\n ";
+        str += "then\n";
+        str += "   mlist.add( $b );\n";
+        str += "end\n";
+        str += "rule rule2 dialect \"java\" \n";
+        str += "when\n";
+        str += "$a : Person( name == \"a\" )\n";
+        str += "  (or $b : Person( name == \"b1\" )\n";
+        str += "      (and $p : Person( name == \"p2\" )\n";
+        str += "           $b : Person( name == \"b2\" ) )\n";
+        str += "      (and $p : Person( name == \"p3\" )\n";
+        str += "           $b : Person( name == \"b3\" ) )\n";
+        str += "   )\n ";
+        str += "then\n";
+        str += "   jlist.add( $b );\n";
+        str += "end\n";        
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        Person a = new Person( "a" );
+        Person b1 = new Person( "b1" );
+        Person p2 = new Person( "p2" );
+        Person b2 = new Person( "b2" );
+        Person p3 = new Person( "p3" );
+        Person b3 = new Person( "b3" );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        List mlist = new ArrayList();
+        List jlist = new ArrayList();
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "mlist", mlist);
+        ksession.setGlobal( "jlist", jlist);
+        ksession.insert( a );
+        ksession.insert( b1 );    
+        ksession.fireAllRules();        
+        assertEquals( b1, mlist.get(0));
+        assertEquals( b1, jlist.get(0));
+        
+        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "mlist", mlist);
+        ksession.setGlobal( "jlist", jlist);
+        ksession.insert( a );
+        ksession.insert( b2 );
+        ksession.insert( p2 );
+        ksession.fireAllRules();        
+        assertEquals( b2, mlist.get(1));
+        assertEquals( b2, jlist.get(1));
+        
+        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "mlist", mlist);
+        ksession.setGlobal( "jlist", jlist);
+        ksession.insert( a );
+        ksession.insert( b3 );
+        ksession.insert( p3 );
+        ksession.fireAllRules();        
+        assertEquals( b3, mlist.get(2));
+        assertEquals( b3, jlist.get(2));
+        
     }
 
     public void testDeepNestedConstraints() throws Exception {
