@@ -4755,7 +4755,7 @@ public class MiscTest extends TestCase {
     }
 
     // this is an MVEL regression that we need fixed in mvel-2.0.11
-    public void FIXME_testMapAccessWithVariable() throws Exception {
+    public void testMapAccessWithVariable() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccessWithVariable.drl" ) ) );
         final Package pkg = builder.getPackage();
