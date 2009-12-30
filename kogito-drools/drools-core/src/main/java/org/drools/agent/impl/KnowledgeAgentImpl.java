@@ -153,6 +153,14 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         processChangeSet(getChangeSet(resource), changeSetState);
     }
 
+    /**
+     * Processes a changeSet.
+     * If {@link ChangeSetState#incrementalBuild} is set to true, this method
+     * fill the lists and Maps of <code>changeSetState</code>.
+     * 
+     * @param changeSet
+     * @param changeSetState
+     */
     public void processChangeSet(ChangeSet changeSet,
             ChangeSetState changeSetState) {
         synchronized (this.registeredResources) {
@@ -276,7 +284,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
                             changeSetState.modifiedResourceMappings.put(resource, definitions);
 
-                            //adds a new empty mapping that will be filled in buildResourceMapping()
+                            //adds a new empty mapping that will be filled in buildKnowledgeBase()
                             this.addResourceMapping(resource, false);
                         }
                     }
@@ -349,6 +357,13 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         boolean incrementalBuild;
     }
 
+    /**
+     * Same as {@link #buildResourceMapping(org.drools.rule.Package, org.drools.io.Resource, boolean)
+     *  buildResourceMapping(org.drools.rule.Package, org.drools.io.Resource, false)}.
+     * If <code>resource</code> is null, this method does nothing.
+     * @param pkg
+     * @param resource
+     */
     private void buildResourceMapping(Package pkg, Resource resource) {
         if (resource == null) {
             this.listener.warning("KnowledgeAgent: trying to build a resource map for a null resource!");
@@ -357,6 +372,23 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         this.buildResourceMapping(pkg, resource, false);
     }
 
+    /**
+     * Iterates over the pkg's definitions and maps it to resource.
+     * If autoDiscoverResource is set to true, the resource used in the mapping
+     * will be taken from each definition. In this case, the parameter <code>
+     * resource</code> is not used and should be null. This is useful for packages
+     * that contains definitions from more than one resource.
+     * If <code>autoDiscoverResource</code> is false and <code>resource</code>
+     * is null, this method does nothig. 
+     * @param pkg the definitions present in this package will be iterated and
+     * mapped to <code>resource</code>
+     * @param resource The resouce where the pkg's definition will be mapped. If
+     * <code>autoDiscoverResource</code> is true, this parameter should be null;
+     * it will not be used.
+     * @param autoDiscoverResource if set to true, the resource to do the mapping
+     * will be taken from each definition. If that is the case, the parameter
+     * <code>resource</code> is not used.
+     */
     private void buildResourceMapping(Package pkg, Resource resource, boolean autoDiscoverResource) {
 
         synchronized (this.registeredResources) {
@@ -497,10 +529,27 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         this.listener.debug("KnowledgeAgent finished rebuilding KnowledgeBase using ChangeSet");
     }
 
+    /**
+     * Same as {@link #createPackageFromResource(org.drools.io.Resource, org.drools.builder.KnowledgeBuilder)
+     * createPackageFromResource(org.drools.io.Resource, null)}
+     *
+     * @param resource
+     * @return
+     * @see #createPackageFromResource(org.drools.io.Resource, org.drools.builder.KnowledgeBuilder) 
+     */
     private KnowledgePackageImp createPackageFromResource(Resource resource) {
         return this.createPackageFromResource(resource, null);
     }
 
+    /**
+     * Compiles the resource and returns the created package using the passed
+     * kbuilder. If kbuilder is null, a new instance of a Builder is used.
+     * Kbuilder is not used for resources that already are packages.
+     * @param resource the resource to compile.
+     * @param kbuilder the builder used to compile the resource. If the resource
+     * is already a package, this builder is not used.
+     * @return the package resulting of the compilation of resource.
+     */
     private KnowledgePackageImp createPackageFromResource(Resource resource,KnowledgeBuilder kbuilder) {
 
         if (kbuilder == null){
@@ -572,20 +621,50 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
             this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
         }
 
+        //puts all the resources as added in the changeSet.
         changeSetState.addedResources.clear();
         changeSetState.addedResources.addAll(this.registeredResources.getAllResources());
         addResourcesToKnowledgeBase(changeSetState);
-        //autoBuildResourceMapping();
 
         this.listener.info("KnowledgeAgent new KnowledgeBase now built and in use");
     }
 
     /**
-     * This method is meant to incrementally build or update the current
-     * KnowledgeBase.
-     *
-     * @param changeSet
-     * @param changeSetState
+     * Processes {@link ChangeSetState#removedResourceMappings},
+     * {@link ChangeSetState#addedResources} and
+     * {@link ChangeSetState#modifiedResourceMappings} of <code>changeSetState</code>
+     * and apply them to {@link #kbase}.
+     * The way the lists are processed is:
+     * <ol>
+     * <li>
+     * Each element of {@link ChangeSetState#removedResourceMappings} is removed
+     * from {@link #kbase} using {@link #removeKnowledgeDefinitionFromBase(org.drools.definition.KnowledgeDefinition) }.
+     * </li>
+     * <li>
+     * Each element of {@link ChangeSetState#modifiedResourceMappings} is compiled
+     * using {@link #createPackageFromResource(org.drools.io.Resource) } and
+     * diffed against the previous version of the resource. The diff dictates
+     * wich definitions should be removed and what should be updated. The
+     * ones that should be removed are deleted using
+     * {@link #removeKnowledgeDefinitionFromBase(org.drools.definition.KnowledgeDefinition) },
+     * the ones that should be update/added are put into
+     * {@link ChangeSetState#createdPackages} of <code>changeSetState</code>.
+     * </li>
+     * <li>
+     * Each element of {@link ChangeSetState#addedResources} is compiled
+     * using {@link #createPackageFromResource(org.drools.io.Resource) }
+     * and added to {@link ChangeSetState#createdPackages} of
+     * <code>changeSetState</code>.
+     * </li>
+     * </ol>
+     * Because the elements of {@link ChangeSetState#addedResources} and
+     * {@link ChangeSetState#modifiedResourceMappings} were already processed and
+     * added as elements of {@link ChangeSetState#createdPackages}, these two lists
+     * are emtpied.
+     * The <code>changeSetState</code> is then passed to
+     * {@link #addResourcesToKnowledgeBase(org.drools.agent.impl.KnowledgeAgentImpl.ChangeSetState) }
+     * in order to process {@link ChangeSetState#createdPackages}.
+     * @param changeSetState the ChangeSetState
      */
     private void incrementalBuildResources(ChangeSetState changeSetState) {
         if (this.newInstance) {
@@ -608,14 +687,12 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
                 }
             }
 
-
-
-
             for (Map.Entry<Resource, Set<KnowledgeDefinition>> entry : changeSetState.modifiedResourceMappings.entrySet()) {
 
                 KnowledgePackageImp kpkg = createPackageFromResource(entry.getKey());
 
                 if (kpkg == null){
+                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: "+entry.getKey());
                     continue;
                 }
 
@@ -640,12 +717,16 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
                 ///compile the new resource
                 KnowledgePackageImp kpkg = createPackageFromResource(resource);
                 if (kpkg == null){
+                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: "+resource);
                     continue;
                 }
                 changeSetState.createdPackages.put(resource, kpkg);
             }
-            //the added resources were already processed and converted to createdPackages.
+            
+            //the added and modified resources were already processed and 
+            //converted to createdPackages. We must clear the lists.
             changeSetState.addedResources.clear();
+            changeSetState.modifiedResourceMappings.clear();
 
             addResourcesToKnowledgeBase(changeSetState);
 
@@ -654,8 +735,8 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     }
 
     /**
-     *
-     * @param kd
+     * Removes a definition from {@link #kbase}.
+     * @param kd the definition to be removed.
      */
     private void removeKnowledgeDefinitionFromBase(KnowledgeDefinition kd) {
         try {
@@ -683,19 +764,35 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
     /**
      * Adds the resources to the current KnowledgeBase on this KnowledgeAgent.
-     * Only uses the KnowledgeBuilder when necessary.
+     * This method processes {@link ChangeSetState#addedResources} and
+     * {@link ChangeSetState#createdPackages} lists in two different ways:
+     * <ul>
+     * <li>
+     * The elments of {@link ChangeSetState#addedResources} are compiled using
+     * {@link #createPackageFromResource(org.drools.io.Resource, org.drools.builder.KnowledgeBuilder)}
+     * and added to {@link ChangeSetState#createdPackages}. The same kbuilder
+     * is used for all the elements.
+     * </li>
+     * <li>
+     * The elments of {@link ChangeSetState#createdPackages} are added to
+     * {@link #kbase}. Each package is mapped to the original resource
+     * using {@link #buildResourceMapping(org.drools.rule.Package, org.drools.io.Resource)}.
+     * </li>
+     * </ul>
      *
-     * @param resources
+     *
+     * @param changeSetState the object containing the added resources list and
+     * created pacages list.
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 
-        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();;
+        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
         List<Package> packages = new ArrayList<Package>();
+
 
         for (Resource resource : changeSetState.addedResources) {
             KnowledgePackageImp createdPackage = this.createPackageFromResource(resource, kbuilder);
             changeSetState.createdPackages.put(resource, createdPackage);
-
         }
 
 
@@ -706,7 +803,6 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
                     + resource);
 
             try {
-                // .pks are handled as a special case.
                 Package pkg = ((KnowledgePackageImp) entry.getValue()).pkg;
                 for (Rule rule : pkg.getRules()) {
                     rule.setResource(resource);
