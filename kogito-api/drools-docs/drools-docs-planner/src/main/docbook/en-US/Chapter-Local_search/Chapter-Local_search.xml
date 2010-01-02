@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
-                             http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         version="5.0" xml:base="./">
-
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Local search solver</title>
 
   <section>
@@ -230,8 +227,8 @@
     move is an instance of the same move type. This is important because a move will be compared to a move with another
     move type if you're using more then 1 move type.</para>
 
-    <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read
-    Drools Planner's logging more easily:</para>
+    <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read Drools
+    Planner's logging more easily:</para>
 
     <programlisting>    public String toString() {
         return queen + " =&gt; " + toY;
@@ -363,7 +360,7 @@ INFO  Step (2), time spend (15) doing next step ([Queen-0] 0 @ 0 =&gt; 1).
 INFO  New score (0) is better then last best score (-1). Updating best solution and best score.
 INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
 
-    <para>Notice that the logging used the <literal>toString()</literal> method from our <literal>Move</literal>
+    <para>Notice that the logging uses the <literal>toString()</literal> method of our <literal>Move</literal>
     implementation: <literal>[Queen-1] 1 @ 0 =&gt; 3</literal>.</para>
 
     <para>The local search solver solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3
@@ -391,8 +388,8 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
     </itemizedlist>
 
     <para>Of course Drools Planner implements better local searches, such as <emphasis>tabu search</emphasis> and
-    <emphasis>simulated annealing</emphasis> which can avoid these problems. It's recommended to never use a simple
-    local search, unless you're absolutely sure there are no local optima in your planning problem.</para>
+    <emphasis>simulated annealing</emphasis> which can avoid these problems. We recommend to never use a simple local
+    search, unless you're absolutely sure there are no local optima in your planning problem.</para>
   </section>
 
   <section>
@@ -457,13 +454,34 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       only big moves initially, and gradually switch to small moves. There's no build-in support for this yet
       though.</para>
 
-      <para>If there are many possible moves, it can become inefficient to evaluate all of them every step. With
-      relativeSelection only a random subset of them is evaluated:</para>
+      <para>If there are many possible moves, it can become inefficient to evaluate all of them at every step. To
+      evaluate only a random subset of all the moves, use:</para>
 
-      <programlisting>    &lt;selector&gt;
+      <itemizedlist>
+        <listitem>
+          <para>An <literal>absoluteSelection</literal> integer, which specifies how many moves can be maximally
+          evaluated each step.</para>
+
+          <programlisting>    &lt;selector&gt;
+       &lt;moveFactoryClass&gt;org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory&lt;/moveFactoryClass&gt;
+       &lt;absoluteSelection&gt;500&lt;/absoluteSelection&gt;
+    &lt;/selector&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para>A <literal>relativeSelection</literal> double, which specifies how many moves of the total number of
+          moves must be evaluated each step.</para>
+
+          <programlisting>    &lt;selector&gt;
        &lt;moveFactoryClass&gt;org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory&lt;/moveFactoryClass&gt;
        &lt;relativeSelection&gt;0.002&lt;/relativeSelection&gt;
     &lt;/selector&gt;</programlisting>
+        </listitem>
+      </itemizedlist>
+
+      <para>Unlike the n queens problem, real world problems require the use of subset selection. We recommend to start
+      from an <literal>absoluteSelection</literal> that takes a step in less then 2 seconds and use the
+      <literal>Benchmarker</literal> to tune it. Turn on INFO logging to see the step times.</para>
     </section>
 
     <section>
@@ -649,9 +667,9 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
     <para>Sooner or later the local search solver will have to stop solving. This can be because of a number of reasons:
     the time is up, the perfect score has been reached, ... The only thing you can't depend on is on finding the optimal
-    solution (unless you know the optimal score), because a local search solver doesn't know that when it finds the
+    solution (unless you know the optimal score), because a local search algorithm doesn't know it when it finds the
     optimal solution. For real-life problems this doesn't turn out to be much of a problem, because finding the optimal
-    solution would take years, so you 'll want to terminate sooner anyway.</para>
+    solution would take billions of years, so you 'll want to terminate sooner anyway.</para>
 
     <para>You can configure when a local search solver needs to stop by configuring a Termination. You can implement
     your own <literal>Termination</literal>, although the build-in Terminations should suffice for most needs.</para>
