@@ -132,7 +132,6 @@ public class @{invokerClassName} implements org.drools.spi.PredicateExpression, 
             @end{","} );
     }
 
-
     @includeNamed{"hashCode"}
 
     @includeNamed{"getMethodBytecode"}
@@ -350,9 +349,12 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
 	        @end{","} );
     }
     
-    public java.util.List getMethodBytecode() {
-        return null;
-    }    
+
+    @includeNamed{"hashCode"}
+
+    @includeNamed{"getMethodBytecode"}
+
+    @includeNamed{"equals"}
 }
 @end{}
 
