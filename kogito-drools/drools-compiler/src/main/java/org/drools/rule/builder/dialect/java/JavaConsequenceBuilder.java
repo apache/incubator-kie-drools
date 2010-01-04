@@ -93,13 +93,11 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         }
 
         final Map<String, Object> map = createVariableContext( className,
-                                                               null,
+                                                               fixedConsequence,
                                                                context,
                                                                declarations,
                                                                null,
                                                                (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-        map.put( "text",
-                 fixedConsequence );
 
         // Must use the rule declarations, so we use the same order as used in the generated invoker
         final List list = Arrays.asList( context.getRule().getDeclarations() );
