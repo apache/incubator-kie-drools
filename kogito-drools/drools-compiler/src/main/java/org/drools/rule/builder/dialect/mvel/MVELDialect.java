@@ -585,12 +585,13 @@ public class MVELDialect
 
             // Set<String> usedIdentifiers = new HashSet<String>( list[0] );
             
-            HashSet set = new HashSet( list[0] );
+            HashSet boundSet = new HashSet( list[0] );
+            HashSet implicitSet = new HashSet( analysis.getIdentifiers() );
 
             List<Declaration> usedDeclrs = new ArrayList<Declaration>();
             if ( previousDeclarations != null ) {
                 for ( Declaration declr : previousDeclarations ) {
-                    if ( set.contains( declr.getIdentifier() )) {
+                    if ( boundSet.contains( declr.getIdentifier() )) {
                         usedDeclrs.add( declr );
                         resolvedInputs.put( declr.getIdentifier(),
                                             declr.getExtractor().getExtractToClass() );
@@ -602,11 +603,15 @@ public class MVELDialect
             if ( localDeclarations != null ) {
                 usedDeclrs.clear();
                 for ( Declaration declr : localDeclarations ) {
-                    if ( set.contains( declr.getIdentifier() )) {
+                    if ( boundSet.contains( declr.getIdentifier() )) {
                         usedDeclrs.add( declr );
                         resolvedInputs.put( declr.getIdentifier(),
                                             declr.getExtractor().getExtractToClass() );
-                    }
+                    } else if ( implicitSet.contains( declr.getIdentifier() )) {
+                        usedDeclrs.add( declr );
+                        resolvedInputs.put( declr.getIdentifier(),
+                                            declr.getExtractor().getExtractToClass() );
+                    }                    
                 }
                 localDeclarations = usedDeclrs.toArray( new Declaration[usedDeclrs.size()]);
             }
