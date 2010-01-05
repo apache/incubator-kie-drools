@@ -21,8 +21,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.LinkedList;
 
+import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
+import org.drools.common.DisconnectedFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
@@ -148,7 +151,18 @@ public final class QueryTerminalNode extends BaseNode
             ((ReteooWorkingMemory) workingMemory).setQueryResults( this.rule.getName(),
                                                                    this );
         }
-        list.add( tuple );
+        
+        InternalFactHandle[] handles = new InternalFactHandle[tuple.getIndex()]; // don't add one, as we adjust for root Query object
+        LeftTuple entry = tuple;
+  
+        // miss out 0, which is the DroolsQuery object
+        while ( entry.getIndex() != 0 ) { 
+            InternalFactHandle handle  = entry.getLastHandle();
+            handles[entry.getIndex() - 1] = new DisconnectedFactHandle(handle.getId(), handle.getIdentityHashCode(), handle.getObjectHashCode(), handle.getRecency(), handle.getObject() );
+            entry = entry.getParent();
+        }
+        
+        list.add( handles );   
     }
 
     public void retractLeftTuple(final LeftTuple tuple,

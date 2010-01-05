@@ -353,7 +353,11 @@ public class MiscTest extends TestCase {
 
         // read in the source
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "MVEL_soundex.drl", getClass() ), ResourceType.DRL );        
+        kbuilder.add( ResourceFactory.newClassPathResource( "MVEL_soundex.drl", getClass() ), ResourceType.DRL ); 
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

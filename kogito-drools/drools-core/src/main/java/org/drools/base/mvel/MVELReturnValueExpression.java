@@ -41,15 +41,11 @@ public class MVELReturnValueExpression
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         id = in.readUTF();
         unit = ( MVELCompilationUnit ) in.readObject();
-//        expr    = (Serializable)in.readObject();
-//        prototype   = (DroolsMVELFactory)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( id );
         out.writeObject( unit );
-//        out.writeObject(expr);
-//        out.writeObject(prototype);
     }
     
     public void compile(ClassLoader classLoader) {
@@ -89,6 +85,35 @@ public class MVELReturnValueExpression
     
     public String toString() {
         return this.unit.getExpression();
-    }    
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        if ( expr == null ) {
+            throw new RuntimeException("this MVELReturnValueExpression must be compiled for hashCode");
+        }        
+        result = prime * result + unit.getExpression().hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        
+        if ( expr == null ) {
+            throw new RuntimeException("this MVELReturnValueExpression must be compiled for equality");
+        }
+        
+        MVELReturnValueExpression other = (MVELReturnValueExpression) obj;
+        if ( other.expr == null ) {
+            throw new RuntimeException("other MVELReturnValueExpression must be compiled for equality");
+        }
+        
+        return this.expr.equals( other.expr );
+    } 
 
 }
