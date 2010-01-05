@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -26,14 +27,14 @@ import org.drools.spi.Tuple;
 
 public class QueryResult {
 
-    protected Tuple       tuple;
+    protected FactHandle[] factHandles;
     private WorkingMemory workingMemory;
     private QueryResults  queryResults;
 
-    public QueryResult(final Tuple tuple,
+    public QueryResult(final FactHandle[] factHandles,
                        final WorkingMemory workingMemory,
                        final QueryResults queryResults) {
-        this.tuple = tuple;
+        this.factHandles = factHandles;
         this.workingMemory = workingMemory;
         this.queryResults = queryResults;
     }
@@ -57,8 +58,7 @@ public class QueryResult {
      *     The Object
      */
     public Object get(final int i) {
-        //adjust for the DroolsQuery object
-        return getObject( this.tuple.get( i + 1 ));
+        return getObject( this.factHandles[ i ]);
     }
 
     /** 
@@ -78,31 +78,24 @@ public class QueryResult {
      *      The Object
      */    
     public Object get(final Declaration declaration) {
-        return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( this.tuple.get( declaration ) ) );
+        return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( getFactHandle( declaration ) ) );
     }
     
     public FactHandle getFactHandle(String identifier) {
-        return this.tuple.get( ( Declaration ) this.queryResults.getDeclarations().get( identifier ) );
+        return getFactHandle( ( Declaration ) this.queryResults.getDeclarations().get( identifier ) );
     }
     
     public FactHandle getFactHandle(Declaration declr) {
-        return this.tuple.get( declr );
-    }    
+        return this.factHandles[  declr.getPattern().getOffset() -1 ]; // -1 because we shifted the array left
+                                                                       // when removing the query object
+    }     
 
     /**
      * Return the FactHandles for the Tuple.
      * @return
      */
     public FactHandle[] getFactHandles() {
-        // Strip the DroolsQuery fact
-        final FactHandle[] src = this.tuple.getFactHandles();
-        final FactHandle[] dst = new FactHandle[src.length - 1];
-        System.arraycopy( src,
-                          1,
-                          dst,
-                          0,
-                          dst.length );
-        return dst;
+        return this.factHandles;
     }
 
     /**
@@ -110,8 +103,7 @@ public class QueryResult {
      * @return
      */
     public int size() {
-        // Adjust for the DroolsQuery object
-        return this.tuple.getFactHandles().length - 1;
+        return this.factHandles.length;
     }
     
     /**

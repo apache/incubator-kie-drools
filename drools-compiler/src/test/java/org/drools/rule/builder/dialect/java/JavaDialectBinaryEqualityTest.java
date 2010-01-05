@@ -72,7 +72,7 @@ public class JavaDialectBinaryEqualityTest{
         assertNotSame( pe1, pe3 );
         assertThat(pe1, not( equalTo( pe3 ) ) );
         
-       // test inline eval
+       // test eval
         EvalCondition ec1 = ( EvalCondition ) rule1.getLhs().getChildren().get( 1 );
         EvalExpression ee1 =( EvalExpression) ec1.getEvalExpression();
 

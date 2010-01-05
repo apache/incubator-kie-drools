@@ -135,6 +135,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
         try {
             startOperation();
+            this.ruleBase.readLock();
+            this.lock.lock();            
             Object object = new DroolsQuery( query,
                                              arguments );
             InternalFactHandle handle = this.handleFactory.newFactHandle( object,
@@ -187,6 +189,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                      queryObj,
                                      this );
         } finally {
+            this.lock.unlock();
+            this.ruleBase.readUnlock();            
             endOperation();
         }
     }

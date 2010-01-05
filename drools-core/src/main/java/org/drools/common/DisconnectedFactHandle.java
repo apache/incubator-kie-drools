@@ -12,6 +12,16 @@ public class DisconnectedFactHandle
     private int  identityHashCode;
     private int  objectHashCode;
     private long recency;
+    private Object object;
+
+    public DisconnectedFactHandle(int id,
+                                  int identityHashCode,
+                                  int objectHashCode,
+                                  long recency,
+                                  Object object) {
+        this( id, identityHashCode, objectHashCode, recency );
+        this.object = object;
+    }    
 
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,
@@ -56,6 +66,9 @@ public class DisconnectedFactHandle
     }
 
     public Object getObject() {
+        if ( this.object != null ) {
+            return this.object;
+        }
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 

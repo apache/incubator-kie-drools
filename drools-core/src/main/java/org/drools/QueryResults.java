@@ -51,7 +51,7 @@ public class QueryResults implements Iterable<QueryResult>{
         if ( i > this.results.size() ) {
             throw new NoSuchElementException();
         }
-        return new QueryResult( (Tuple) this.results.get( i ),
+        return new QueryResult( (FactHandle[]) this.results.get( i ),
                                 this.workingMemory,
                                 this );
     }
@@ -107,7 +107,7 @@ public class QueryResults implements Iterable<QueryResult>{
         }
 
         public Object next() {
-            return new QueryResult( (Tuple) this.iterator.next(),
+            return new QueryResult( (FactHandle[]) this.iterator.next(),
                                     QueryResults.this.workingMemory,
                                     QueryResults.this );
         }
