@@ -221,7 +221,7 @@ public class ReturnValueRestriction
                              final WorkingMemory workingMemory,
                              final ContextEntry context) {
         try {
-            return this.evaluator.evaluate( null,
+            return this.evaluator.evaluate( (InternalWorkingMemory)workingMemory,
                                             this.readAccessor,
                                             handle.getObject(),
                                             this.expression.evaluate( handle.getObject(),
