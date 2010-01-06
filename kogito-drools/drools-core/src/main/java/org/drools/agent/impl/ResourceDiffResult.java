@@ -26,16 +26,32 @@ import org.drools.definition.KnowledgePackage;
  * @author esteban.aliverti@gmail.com
  */
 public class ResourceDiffResult {
-    private KnowledgePackage pkg;
-    private Set<KnowledgeDefinition> removedDefinitions;
+    private final KnowledgePackage pkg;
 
-    public ResourceDiffResult(KnowledgePackage pkg, Set<KnowledgeDefinition> removedDefinitions) {
+    /**
+     * The definitions present in package's old version but not in the
+     * new one.
+     */
+    private final Set<KnowledgeDefinition> removedDefinitions;
+
+    /**
+     * The definitions that were not modified in the new version of the
+     * package.
+     */
+    private final Set<KnowledgeDefinition> unmodifiedDefinitions;
+
+    public ResourceDiffResult(KnowledgePackage pkg, Set<KnowledgeDefinition> unmodifiedDefinitions, Set<KnowledgeDefinition> removedDefinitions) {
         this.pkg = pkg;
+        this.unmodifiedDefinitions = unmodifiedDefinitions;
         this.removedDefinitions = removedDefinitions;
     }
 
     public KnowledgePackage getPkg() {
         return pkg;
+    }
+
+    public Set<KnowledgeDefinition> getUnmodifiedDefinitions() {
+        return unmodifiedDefinitions;
     }
 
     public Set<KnowledgeDefinition> getRemovedDefinitions() {

@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -18,12 +20,16 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.pipeline.ResultHandler;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.util.DroolsStreamUtils;
 import org.drools.util.FileManager;
 import org.mortbay.jetty.Server;
@@ -63,31 +69,25 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         server.stop();
     }
 
-    
     public void testModifyFileUrlIncremental() throws Exception {
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
+
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+        
+        String rule1 =  this.createCommonRule("rule1");
+
         File f1 = fileManager.newFile("rule1.drl");
         Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
         output.write(rule1);
         output.close();
 
-        String rule2 = "";
-        rule2 += "package org.drools.test\n";
-        rule2 += "global java.util.List list\n";
-        rule2 += "rule rule2\n";
-        rule2 += "when\n";
-        rule2 += "then\n";
-        rule2 += "list.add( drools.getRule().getName() );\n";
-        rule2 += "end\n";
+        String rule2 = this.createCommonRule("rule2");
+        
         File f2 = fileManager.newFile("rule2.drl");
         output = new BufferedWriter(new FileWriter(f2));
+        output.write(header);
         output.write(rule2);
         output.close();
 
@@ -106,20 +106,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        // Testing incremental build here
-        aconf.setProperty("drools.agent.newInstance", "false");
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
-
-        assertEquals("test agent", kagent.getName());
+        KnowledgeAgent kagent = this.createKAgent(kbase);
 
         kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
@@ -139,16 +126,11 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
         Thread.sleep(2000);
 
-        rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule3\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
+        String rule3 = this.createCommonRule("rule3");
+
         output = new BufferedWriter(new FileWriter(f1));
-        output.write(rule1);
+        output.write(header);
+        output.write(rule3);
         output.close();
         Thread.sleep(3000);
 
@@ -167,29 +149,24 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
     }
 
     public void testRemoveFileUrlIncremental() throws Exception {
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
+
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+        
+        String rule1 = this.createCommonRule("rule1");
+
         File f1 = fileManager.newFile("rule1.drl");
         Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
         output.write(rule1);
         output.close();
 
-        String rule2 = "";
-        rule2 += "package org.drools.test\n";
-        rule2 += "global java.util.List list\n";
-        rule2 += "rule rule2\n";
-        rule2 += "when\n";
-        rule2 += "then\n";
-        rule2 += "list.add( drools.getRule().getName() );\n";
-        rule2 += "end\n";
+        String rule2 = this.createCommonRule("rule2");
+
         File f2 = fileManager.newFile("rule2.drl");
         output = new BufferedWriter(new FileWriter(f2));
+        output.write(header);
         output.write(rule2);
         output.close();
 
@@ -209,19 +186,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        // Testing incremental build here
-        aconf.setProperty("drools.agent.newInstance", "false");
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
-
-        assertEquals("test agent", kagent.getName());
+        KnowledgeAgent kagent = this.createKAgent(kbase);
 
         kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
@@ -275,38 +240,27 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
      * @throws Exception
      */
     public void testModifyFileUrlOverwriteIncremental() throws Exception {
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
 
-        String rule2 = "";
-        rule2 += "rule rule2\n";
-        rule2 += "when\n";
-        rule2 += "then\n";
-        rule2 += "list.add( drools.getRule().getName() );\n";
-        rule2 += "end\n";
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+
+        String rule1 = this.createCommonRule("rule1");
+
+        String rule2 = this.createCommonRule("rule2");
 
         File f1 = fileManager.newFile("rule1.drl");
         Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
         output.write(rule1);
         output.write(rule2);
         output.close();
 
-        String rule1v2 = "";
-        rule1v2 += "package org.drools.test\n";
-        rule1v2 += "global java.util.List list\n";
-        rule1v2 += "rule rule1\n";
-        rule1v2 += "when\n";
-        rule1v2 += "then\n";
-        rule1v2 += "list.add( drools.getRule().getName() + \"_v2\");\n";
-        rule1v2 += "end\n";
+        String rule1v2 = this.createCommonRule("rule1","2");
+        
         File f2 = fileManager.newFile("rule2.drl");
         output = new BufferedWriter(new FileWriter(f2));
+        output.write(header);
         output.write(rule1v2);
         output.close();
 
@@ -326,20 +280,8 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        // Testing incremental build here
-        aconf.setProperty("drools.agent.newInstance", "false");
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
-
-        assertEquals("test agent", kagent.getName());
-
+        KnowledgeAgent kagent = this.createKAgent(kbase);
+        
         kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -349,7 +291,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         ksession.dispose();
 
         assertEquals(2, list.size());
-        assertTrue(list.contains("rule1_v2"));
+        assertTrue(list.contains("rule1-V2"));
         assertTrue(list.contains("rule2"));
 
         list.clear();
@@ -358,15 +300,10 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
         Thread.sleep(2000);
 
-        String rule1v3 = "";
-        rule1v3 += "package org.drools.test\n";
-        rule1v3 += "global java.util.List list\n";
-        rule1v3 += "rule rule1\n";
-        rule1v3 += "when\n";
-        rule1v3 += "then\n";
-        rule1v3 += "list.add( drools.getRule().getName() + \"_v3\" );\n";
-        rule1v3 += "end\n";
+        String rule1v3 = this.createCommonRule("rule1","3");
+
         output = new BufferedWriter(new FileWriter(f2));
+        output.write(header);
         output.write(rule1v3);
         output.close();
         Thread.sleep(3000);
@@ -378,7 +315,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         ksession.dispose();
 
         assertEquals(2, list.size());
-        assertTrue(list.contains("rule1_v3"));
+        assertTrue(list.contains("rule1-V3"));
         assertTrue(list.contains("rule2"));
 
         //Delete f2 now, rule1 should still fire if the indexing worked properly
@@ -405,25 +342,18 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
      * @throws Exception
      */
     public void testMultipleRulesOnFileUrlIncremental() throws Exception {
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n\n";
+        
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+        
+        String rule1 = this.createCommonRule("rule1");
 
-
-        String rule2 = "";
-        rule2 += "rule rule2\n";
-        rule2 += "when\n";
-        rule2 += "then\n";
-        rule2 += "list.add( drools.getRule().getName());\n";
-        rule2 += "end\n";
+        String rule2 = this.createCommonRule("rule2");
 
         File f1 = fileManager.newFile("rules.drl");
         Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
         output.write(rule1);
         output.write(rule2);
         output.close();
@@ -443,19 +373,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        // Testing incremental build here
-        aconf.setProperty("drools.agent.newInstance", "false");
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
-
-        assertEquals("test agent", kagent.getName());
+        KnowledgeAgent kagent = this.createKAgent(kbase);
 
         kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
@@ -475,13 +393,10 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
         Thread.sleep(2000);
 
-        String rule3 = "";
-        rule3 += "rule rule3\n";
-        rule3 += "when\n";
-        rule3 += "then\n";
-        rule3 += "list.add( drools.getRule().getName());\n";
-        rule3 += "end\n";
+        String rule3 = this.createCommonRule("rule3");
+
         output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
         output.write(rule1);
         output.write(rule3);
         output.close();
@@ -655,25 +570,16 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
 
     public void testModifyPackageUrlIncremental() throws Exception {
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
 
-        String rule2 = "";
-        rule2 += "package org.drools.test\n";
-        rule2 += "global java.util.List list\n";
-        rule2 += "rule rule2\n";
-        rule2 += "when\n";
-        rule2 += "then\n";
-        rule2 += "list.add( drools.getRule().getName() );\n";
-        rule2 += "end\n";
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+        
+        String rule1 = header + this.createCommonRule("rule1");
 
-        // Do only Rule1 in the first package
+        String rule2 = header + this.createCommonRule("rule2");
+
+        // Put just Rule1 in the first package
         File pkg1 = fileManager.newFile("pkg1.pkg");
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(rule1.getBytes()),
@@ -699,16 +605,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        aconf.setProperty("drools.agent.newInstance", "false");
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
+        KnowledgeAgent kagent = this.createKAgent(kbase);
 
         kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
@@ -727,17 +624,10 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
         Thread.sleep(2000);
 
-        rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule3\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
+        String rule3 = header+this.createCommonRule("rule3");
 
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(rule1.getBytes()),
+        kbuilder.add(ResourceFactory.newByteArrayResource(rule3.getBytes()),
                 ResourceType.DRL);
         kbuilder.add(ResourceFactory.newByteArrayResource(rule2.getBytes()),
                 ResourceType.DRL);
@@ -763,23 +653,13 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
     }
 
     public void testUpdatePackageUrlIncremental() throws Exception {
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+        
+        String rule1 = header + this.createCommonRule("rule1");
 
-        String rule2 = "";
-        rule2 += "package org.drools.test\n";
-        rule2 += "global java.util.List list\n";
-        rule2 += "rule rule2\n";
-        rule2 += "when\n";
-        rule2 += "then\n";
-        rule2 += "list.add( drools.getRule().getName() );\n";
-        rule2 += "end\n";
+        String rule2 = header + this.createCommonRule("rule2");
 
         // Add Rule1 and Rule2 in the first package
         File pkg1 = fileManager.newFile("pkg1.pkg");
@@ -809,16 +689,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        aconf.setProperty("drools.agent.newInstance", "false");
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
+        KnowledgeAgent kagent = this.createKAgent(kbase);
 
         kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
@@ -838,14 +709,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
         Thread.sleep(2000);
 
-        String rule3 = "";
-        rule3 += "package org.drools.test\n";
-        rule3 += "global java.util.List list\n";
-        rule3 += "rule rule3\n";
-        rule3 += "when\n";
-        rule3 += "then\n";
-        rule3 += "list.add( drools.getRule().getName() );\n";
-        rule3 += "end\n";
+        String rule3 = header + this.createCommonRule("rule3");
 
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(rule2.getBytes()),
@@ -875,41 +739,18 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
 
     public void testUpdatePackageUrlOverwriteIncremental() throws Exception {
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
 
-        String rule1v2 = "";
-        rule1v2 += "package org.drools.test\n";
-        rule1v2 += "global java.util.List list\n";
-        rule1v2 += "rule rule1\n";
-        rule1v2 += "when\n";
-        rule1v2 += "then\n";
-        rule1v2 += "list.add( drools.getRule().getName()+\"_V2\");\n";
-        rule1v2 += "end\n";
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+        
+        String rule1 = header + this.createCommonRule("rule1");
 
-        String rule2 = "";
-        rule2 += "package org.drools.test\n";
-        rule2 += "global java.util.List list\n";
-        rule2 += "rule rule2\n";
-        rule2 += "when\n";
-        rule2 += "then\n";
-        rule2 += "list.add( drools.getRule().getName() );\n";
-        rule2 += "end\n";
+        String rule1v2 = header + this.createCommonRule("rule1","2");
 
-        String rule3 = "";
-        rule3 += "package org.drools.test\n";
-        rule3 += "global java.util.List list\n";
-        rule3 += "rule rule3\n";
-        rule3 += "when\n";
-        rule3 += "then\n";
-        rule3 += "list.add( drools.getRule().getName() );\n";
-        rule3 += "end\n";
+        String rule2 = header + this.createCommonRule("rule2");
+
+        String rule3 = header + this.createCommonRule("rule3");
 
         // Add Rule1 and Rule2 in the first package
         File pkgF1 = fileManager.newFile("pkg1.pkg");
@@ -951,16 +792,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        aconf.setProperty("drools.agent.newInstance", "false");
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
+        KnowledgeAgent kagent = this.createKAgent(kbase);
 
         kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
@@ -1000,13 +832,13 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         assertEquals(2, list.size());
 
-        assertTrue(list.contains("rule1_V2"));
+        assertTrue(list.contains("rule1-V2"));
         assertTrue(list.contains("rule2"));
         kagent.monitorResourceChangeEvents(false);
     }
 
 
-    public void completeTest() throws Exception {
+    public void testCompleteRuleScenario() throws Exception {
         String header = "";
         header += "package org.drools.test\n";
         header += "global java.util.List list\n\n";
@@ -1204,18 +1036,223 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals(4, list.size());
+        assertEquals(3, list.size());
         assertTrue(list.contains("rule1-V3"));
         assertTrue(list.contains("rule2"));
-        //rule3 reapears because rules2.drl was reporcessed
-        assertTrue(list.contains("rule3"));
+        //rule3 doesn't reapear because it was not modified in the resource
+        //assertTrue(list.contains("rule3"));
         assertTrue(list.contains("rule4"));
 
         kagent.monitorResourceChangeEvents(false);
 
     }
 
-     
+
+
+    public void testAddModifyFunctionIncremental() throws Exception {
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("rule rule1 \n");
+        sb.append("when\n");
+        sb.append("then\n");
+        sb.append("function1 (list,\"rule1\");\n");
+        sb.append("end\n");
+
+        String rule1 = sb.toString();
+
+        File f1 = fileManager.newFile("rule1.drl");
+        Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(rule1);
+        output.close();
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.newFile("changeset.xml");
+        output = new BufferedWriter(new FileWriter(fxml));
+        output.write(xml);
+        output.close();
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent(kbase);
+
+        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+
+
+        KnowledgePackage knowledgePackage = kbase.getKnowledgePackage("org.drools.test");
+
+        //the resource didn't compile because function1 doesn't exist
+        assertNull(knowledgePackage);
+
+        // have to sleep here as linux lastModified does not do milliseconds
+        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        Thread.sleep(2000);
+
+        //we are going to add function1 now
+        String function1 = this.createCommonFunction("function1", "function1");
+        output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(function1);
+        output.write(rule1);
+        output.close();
+        Thread.sleep(3000);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("function1 from rule1"));
+
+        //we are going to modify the definition of function1()
+        // have to sleep here as linux lastModified does not do milliseconds
+        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        Thread.sleep(2000);
+
+        //we are going to modify function1 now
+        String function1V2 = this.createCommonFunction("function1", "function1-V2");
+        output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(function1V2);
+        output.write(rule1);
+        output.close();
+        Thread.sleep(3000);
+
+        ksession = kbase.newStatefulKnowledgeSession();
+        list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("function1-V2 from rule1"));
+
+        kagent.monitorResourceChangeEvents(false);
+    }
+
+
+    public void testAddModifyQueryIncremental() throws Exception {
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "global java.util.List list\n\n";
+
+
+        String query1 = "";
+        query1 += "query \"all the Strings\"\n";
+        query1 += "     $strings : String()\n";
+        query1 += "end\n";
+
+        String rule1 = this.createCommonRule("rule1");
+
+        File f1 = fileManager.newFile("rule1.drl");
+        Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(rule1);
+        output.close();
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.newFile("changeset.xml");
+        output = new BufferedWriter(new FileWriter(fxml));
+        output.write(xml);
+        output.close();
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent(kbase);
+
+        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+
+
+        KnowledgePackage knowledgePackage = kbase.getKnowledgePackage("org.drools.test");
+
+        assertNotNull(knowledgePackage);
+
+        Rule allTheStringsQuery = ((KnowledgePackageImp) knowledgePackage).getRule("all the Strings");
+
+        assertNull(allTheStringsQuery);
+
+        // have to sleep here as linux lastModified does not do milliseconds
+        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        Thread.sleep(2000);
+
+        //we are going to add the query now
+        output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(query1);
+        output.write(rule1);
+        output.close();
+        Thread.sleep(3000);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.insert("Some String");
+        ksession.insert("Some Other String");
+
+        QueryResults queryResults = ksession.getQueryResults("all the Strings");
+
+        ksession.dispose();
+
+
+        assertEquals(2, queryResults.size());
+
+        Iterator<QueryResultsRow> iterator = queryResults.iterator();
+        while (iterator.hasNext()){
+            System.out.println("Row= "+iterator.next().get("$strings"));
+        }
+
+        //we are going to modify the query definition
+        // have to sleep here as linux lastModified does not do milliseconds
+        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        Thread.sleep(2000);
+
+        //we are going to add function1 now
+        String query1V2 = "";
+        query1V2 += "query \"all the Strings\"\n";
+        query1V2 += "     $strings : String(this == \"Some String\")\n";
+        query1V2 += "end\n";
+
+        output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(query1V2);
+        output.write(rule1);
+        output.close();
+        Thread.sleep(3000);
+
+        ksession = kbase.newStatefulKnowledgeSession();
+        list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.insert("Some String");
+        ksession.insert("Some Other String");
+
+        queryResults = ksession.getQueryResults("all the Strings");
+
+        ksession.dispose();
+
+
+        assertEquals(1, queryResults.size());
+        assertEquals("Some String",queryResults.iterator().next().get("$strings"));
+
+        kagent.monitorResourceChangeEvents(false);
+    }
 
     private static void writePackage(Object pkg, File p1file)
             throws IOException, FileNotFoundException {
