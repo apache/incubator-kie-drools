@@ -697,13 +697,26 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
                 }
 
 
-                ResourceDiffProducer rdp = new DefaultResourceDiffProducerImpl();
-                //ResourceDiffProducer rdp = new BinaryResourceDiffProducerImpl();
+                this.listener.debug("KnowledgeAgent: Diffing: "+entry.getKey());
 
-                ResourceDiffResult diff = rdp.diff(entry.getValue(), kpkg);
+
+                ResourceDiffProducer rdp = new BinaryResourceDiffProducerImpl();
+
+                //we suppose that the package definition didn't change in the resource.
+                //That's why we are serching the current package as
+                //this.kbase.getKnowledgePackage(kpkg.getName())
+                ResourceDiffResult diff = rdp.diff(entry.getValue(), kpkg, (KnowledgePackageImp) this.kbase.getKnowledgePackage(kpkg.getName()));
 
                 for (KnowledgeDefinition kd : diff.getRemovedDefinitions()) {
+                    this.listener.debug("KnowledgeAgent: Removing: "+kd);
                     removeKnowledgeDefinitionFromBase(kd);
+                }
+
+                //because all the mappings for "resource" were removed, we
+                //need to map again the definitions that didn't change.
+                //Those modified or added will be mapped in addResourcesToKnowledgeBase()
+                for (KnowledgeDefinition knowledgeDefinition : diff.getUnmodifiedDefinitions()) {
+                    this.addDefinitionMapping(entry.getKey(), knowledgeDefinition, false);
                 }
 
                 changeSetState.createdPackages.put(entry.getKey(), diff.getPkg());
