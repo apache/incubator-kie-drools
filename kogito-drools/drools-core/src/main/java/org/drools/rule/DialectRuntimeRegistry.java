@@ -42,7 +42,7 @@ public class DialectRuntimeRegistry
         this.lineMappings = (Map) stream.readObject();
     }
 
-    public void onAdd(CompositeClassLoader rootClassLoader) {
+    public void onAdd(DroolsCompositeClassLoader rootClassLoader) {
         //this.classLoader = rootClassLoader;
         for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
             DialectRuntimeData data = (DialectRuntimeData) it.next();
@@ -85,7 +85,7 @@ public class DialectRuntimeRegistry
     }
 
     public void merge(DialectRuntimeRegistry newDatas,
-                      CompositeClassLoader rootClassLoader) {
+                      DroolsCompositeClassLoader rootClassLoader) {
         for ( Entry<String, DialectRuntimeData> entry : newDatas.dialects.entrySet() ) {
             DialectRuntimeData data = this.dialects.get( entry.getKey() );
             if ( data == null ) {

@@ -14,10 +14,10 @@ public interface DialectRuntimeData extends Cloneable {
 
     public void reload();
 
-    public DialectRuntimeData clone(DialectRuntimeRegistry registry, CompositeClassLoader rootClassLoader);
+    public DialectRuntimeData clone(DialectRuntimeRegistry registry, DroolsCompositeClassLoader rootClassLoader);
 
     public void onAdd(DialectRuntimeRegistry dialectRuntimeRegistry,
-                     CompositeClassLoader rootClassLoader);
+                     DroolsCompositeClassLoader rootClassLoader);
     
     public void onRemove();
     

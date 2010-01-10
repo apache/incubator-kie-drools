@@ -168,10 +168,10 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0) {
-            // we do this after the shadowproxy update, just so that its up to date for the future
-            return;
-        }
+//        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0) {
+//            // we do this after the shadowproxy update, just so that its up to date for the future
+//            return;
+//        }
 
         if (this.objectMemoryEnabled) {
             final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory(this);
@@ -214,9 +214,9 @@ public class ObjectTypeNode extends ObjectSource
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
 
-        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0) {
-            return;
-        }
+//        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0) {
+//            return;
+//        }
 
         if (this.objectMemoryEnabled) {
             final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory(this);

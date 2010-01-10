@@ -60,8 +60,8 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
     public void testIgnoreDetauls() {
         // check standard chained properties, that includes defaults
-        ChainedProperties chainedProperties = new ChainedProperties( null,
-                                                                     "packagebuilder.conf",
+        ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf",
+                                                                     getClass().getClassLoader(),
                                                                      true );
         //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
         //                                                   null ) );
@@ -70,9 +70,9 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
 
         // now check that chained properties can ignore defaults
-        chainedProperties = new ChainedProperties( null,
-                                                   "packagebuilder.conf",
-                                                   false );
+        chainedProperties = new ChainedProperties( "packagebuilder.conf",
+                                                   getClass().getClassLoader(),
+                                                   true );
         //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
         //                                                   null ) );
         assertNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
@@ -80,8 +80,8 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
 
         // now check it can find defaults again.
-        chainedProperties = new ChainedProperties( null,
-                                                   "packagebuilder.conf",
+        chainedProperties = new ChainedProperties( "packagebuilder.conf",
+                                                   getClass().getClassLoader(),
                                                    true );
         //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
         //                                                   null ) );

@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInput;
 import org.drools.spi.Wireable;
+import org.drools.util.DroolsClassLoader;
 import org.drools.util.StringUtils;
 
 public class JavaDialectRuntimeData
@@ -58,7 +59,7 @@ public class JavaDialectRuntimeData
 
     private transient PackageClassLoader   classLoader;
 
-    private transient CompositeClassLoader rootClassLoader;
+    private transient DroolsCompositeClassLoader rootClassLoader;
 
     private boolean                        dirty;
 
@@ -121,7 +122,7 @@ public class JavaDialectRuntimeData
     }
 
     public void onAdd(DialectRuntimeRegistry registry,
-                      CompositeClassLoader rootClassLoader) {
+                      DroolsCompositeClassLoader rootClassLoader) {
         this.registry = registry;
         this.rootClassLoader = rootClassLoader;
         this.classLoader = new PackageClassLoader( this,
@@ -152,7 +153,7 @@ public class JavaDialectRuntimeData
     }
 
     public DialectRuntimeData clone(DialectRuntimeRegistry registry,
-                                    CompositeClassLoader rootClassLoader) {
+                                    DroolsCompositeClassLoader rootClassLoader) {
         DialectRuntimeData cloneOne = new JavaDialectRuntimeData();
         cloneOne.merge( registry,
                         this );
@@ -422,10 +423,10 @@ public class JavaDialectRuntimeData
         implements
         DroolsClassLoader {
         private JavaDialectRuntimeData store;
-        CompositeClassLoader           rootClassLoader;
+        DroolsCompositeClassLoader           rootClassLoader;
 
         public PackageClassLoader(JavaDialectRuntimeData store,
-                                  CompositeClassLoader rootClassLoader) {
+                                  DroolsCompositeClassLoader rootClassLoader) {
             super( rootClassLoader );
             this.rootClassLoader = rootClassLoader;
             this.store = store;

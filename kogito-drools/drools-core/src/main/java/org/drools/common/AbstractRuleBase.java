@@ -49,7 +49,7 @@ import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.management.DroolsManagementAgent;
 import org.drools.process.core.Process;
-import org.drools.rule.CompositeClassLoader;
+import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
@@ -87,7 +87,7 @@ abstract public class AbstractRuleBase
 
     private Map                                        agendaGroupRuleTotals;
 
-    private transient CompositeClassLoader             rootClassLoader;
+    private transient DroolsCompositeClassLoader             rootClassLoader;
 
     /**
      * The fact handle factory.
@@ -153,7 +153,7 @@ abstract public class AbstractRuleBase
             this.agendaGroupRuleTotals = new HashMap();
         }
 
-        this.rootClassLoader = new CompositeClassLoader( this.config.getClassLoader() );
+        this.rootClassLoader = new DroolsCompositeClassLoader( this.config.getClassLoader() );
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
         this.globals = new HashMap<String, Class< ? >>();
@@ -250,7 +250,7 @@ abstract public class AbstractRuleBase
             droolsStream = new DroolsObjectInputStream( bytes );
         }
 
-        this.rootClassLoader = new CompositeClassLoader( droolsStream.getParentClassLoader() );
+        this.rootClassLoader = new DroolsCompositeClassLoader( droolsStream.getParentClassLoader() );
         droolsStream.setClassLoader( this.rootClassLoader );
         droolsStream.setRuleBase( this );
 
@@ -826,7 +826,7 @@ abstract public class AbstractRuleBase
         return this.config;
     }
 
-    public CompositeClassLoader getRootClassLoader() {
+    public DroolsCompositeClassLoader getRootClassLoader() {
         return this.rootClassLoader;
     }
 

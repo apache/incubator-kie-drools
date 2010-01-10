@@ -25,7 +25,7 @@ public class MVELDialectRuntimeData
 
     private Map<Wireable, MVELCompileable> invokerLookups;
 
-    private CompositeClassLoader           rootClassLoader;
+    private DroolsCompositeClassLoader           rootClassLoader;
 
     private List<Wireable>                 wireList = Collections.<Wireable> emptyList();
 
@@ -70,7 +70,7 @@ public class MVELDialectRuntimeData
     }
 
     public DialectRuntimeData clone(DialectRuntimeRegistry registry,
-                                    CompositeClassLoader rootClassLoader) {
+                                    DroolsCompositeClassLoader rootClassLoader) {
         DialectRuntimeData clone = new MVELDialectRuntimeData();
         clone.merge( registry,
                      this );
@@ -80,7 +80,7 @@ public class MVELDialectRuntimeData
     }
 
     public void onAdd(DialectRuntimeRegistry registry,
-                      CompositeClassLoader rootClassLoader) {
+                      DroolsCompositeClassLoader rootClassLoader) {
         this.rootClassLoader = rootClassLoader;
 
         //        for (Entry<Wireable, MVELCompilable> entry : this.invokerLookups.entrySet() ) {

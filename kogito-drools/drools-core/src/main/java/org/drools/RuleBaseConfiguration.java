@@ -68,6 +68,8 @@ import org.drools.runtime.rule.ConsequenceExceptionHandler;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ClassLoaderUtil;
+import org.drools.util.CompositeClassLoader;
 import org.drools.util.ConfFileUtils;
 import org.drools.util.StringUtils;
 import org.drools.workflow.core.Node;
@@ -379,15 +381,9 @@ public class RuleBaseConfiguration
                       Properties properties) {
         this.immutable = false;
 
-        if ( classLoader != null ) {
-            this.classLoader = classLoader;
-        } else if ( Thread.currentThread().getContextClassLoader() != null ) {
-            this.classLoader = Thread.currentThread().getContextClassLoader();
-        } else {
-            this.classLoader = this.getClass().getClassLoader();
-        }
+        setClassLoader( classLoader );
 
-        this.chainedProperties = new ChainedProperties( "rulebase.conf" );
+        this.chainedProperties = new ChainedProperties( "rulebase.conf", this.classLoader, true );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
@@ -971,7 +967,7 @@ public class RuleBaseConfiguration
     }
 
     public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, getClass() );
     }
 
     /**

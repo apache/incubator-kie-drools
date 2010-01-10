@@ -43,7 +43,9 @@ import org.drools.process.builder.ProcessNodeBuilderRegistry;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ClassLoaderUtil;
 import org.drools.util.ClassUtils;
+import org.drools.util.CompositeClassLoader;
 import org.drools.util.ConfFileUtils;
 import org.drools.util.StringUtils;
 import org.drools.workflow.core.Node;
@@ -156,16 +158,11 @@ public class PackageBuilderConfiguration
 
     private void init(ClassLoader classLoader,
                       Properties properties) {
-        if ( classLoader == null ) {
-            classLoader = Thread.currentThread().getContextClassLoader();
-            if ( classLoader == null ) {
-                classLoader = this.getClass().getClassLoader();
-            }
-        }
         setClassLoader( classLoader );
 
-        this.chainedProperties = new ChainedProperties( this.classLoader,
-                                                        "packagebuilder.conf" );
+        this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
+                                                        this.classLoader,
+                                                        true);
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
@@ -319,11 +316,9 @@ public class PackageBuilderConfiguration
         return this.classLoader;
     }
 
-    /** Use this to override the classloader that will be used for the rules. */
+    /** Use this to override the classLoader that will be used for the rules. */
     public void setClassLoader(final ClassLoader classLoader) {
-        if ( classLoader != null ) {
-            this.classLoader = classLoader;
-        }
+        this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, getClass() );
     }
 
     public void addSemanticModule(SemanticModule module) {
