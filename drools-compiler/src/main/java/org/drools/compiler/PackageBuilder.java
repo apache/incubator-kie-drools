@@ -79,7 +79,7 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.CompositeClassLoader;
+import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -127,7 +127,7 @@ public class PackageBuilder {
      */
     private final String                      defaultDialect;
 
-    private CompositeClassLoader              rootClassLoader;
+    private DroolsCompositeClassLoader              rootClassLoader;
 
     private Map<String, Class< ? >>           globals;
 
@@ -190,7 +190,7 @@ public class PackageBuilder {
             //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
         }        
 
-        this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
+        this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader() );
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
@@ -217,7 +217,7 @@ public class PackageBuilder {
         if ( ruleBase != null ) {
             this.rootClassLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
         } else {
-            this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
+            this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader() );
         }
         
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
@@ -1489,7 +1489,7 @@ public class PackageBuilder {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
-    public CompositeClassLoader getRootClassLoader() {
+    public DroolsCompositeClassLoader getRootClassLoader() {
         return this.rootClassLoader;
     }
 }

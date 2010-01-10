@@ -7,9 +7,9 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.Entry;
+import org.drools.util.ObjectHashSet;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.util.RightTupleIndexHashTable;
 import org.drools.util.RightTupleList;
@@ -60,8 +60,8 @@ public class MemoryVisitor extends ReflectiveVisitor
     public void visitObjectTypeNode(final ObjectTypeNode node) {
         System.out.println( indent() + node );
 
-        final RightTupleList memory = (RightTupleList) this.workingMemory.getNodeMemory( node );
-        checkObjectHashTable( memory );
+        ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( node );
+        checkObjectHashSet( memory );
 
         this.indent++;
         try {
@@ -80,9 +80,6 @@ public class MemoryVisitor extends ReflectiveVisitor
 
     public void visitAlphaNode(final AlphaNode node) {
         System.out.println( indent() + node );
-
-        final RightTupleList memory = (RightTupleList) this.workingMemory.getNodeMemory( node );
-        checkObjectHashTable( memory );
 
         this.indent++;
         try {
@@ -168,10 +165,10 @@ public class MemoryVisitor extends ReflectiveVisitor
         this.indent--;
     }
 
-    public void visitTerminalNode(final RuleTerminalNode node) {
+    public void visitRuleTerminalNode(final RuleTerminalNode node) {
         System.out.println( indent() + node );
-        final TerminalNodeMemory memory = (TerminalNodeMemory) this.workingMemory.getNodeMemory( node );
-        checkLeftTupleMemory( memory.getTupleMemory() );
+//        final TerminalNodeMemory memory = (TerminalNodeMemory) this.workingMemory.getNodeMemory( node );
+//        checkLeftTupleMemory( memory.getTupleMemory() );
     }
 
     //    private void checkObjectHashMap(final ObjectHashMap map) {
@@ -189,6 +186,26 @@ public class MemoryVisitor extends ReflectiveVisitor
     //        }
     //    }
 
+    private void checkObjectHashSet(ObjectHashSet memory) {
+        final Entry[] entries = memory.getTable();
+        int factCount = 0;
+        int bucketCount = 0;
+        for ( int i = 0, length = entries.length; i < length; i++ ) {
+            if ( entries[i] != null ) {
+                Entry  entry = (Entry ) entries[i];
+                while ( entry != null ) {
+                  entry = entry.getNext();
+                  factCount++;                    
+                }
+            }
+        }
+        
+        System.out.println( indent() + "ObjectHashSet: " + memory.size() + ":" + factCount );
+        if( factCount != memory.size() ) {
+            System.out.println( indent() + "error" );
+        }
+    }
+    
     private void checkObjectHashTable(final RightTupleMemory memory) {
         if ( memory instanceof RightTupleList ) {
             checkRightTupleList( (RightTupleList) memory );

@@ -9,47 +9,17 @@ import org.drools.RuntimeDroolsException;
 import org.drools.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorCache {
-    private static ClassFieldAccessorCache instance;
 
     private Map<ClassLoader, CacheEntry>   cacheByClassLoader;
 
     private ClassLoader                    classLoader;
 
-    //    private boolean                        eagerWire;
-
-    //    public static ClassFieldAccessorCache getInstance() {
-    //        if ( instance == null ) {
-    //            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    //            if ( cl == null ) {
-    //                cl = ClassFieldAccessorCache.class.getClassLoader();
-    //            }
-    //            instance = new ClassFieldAccessorCache( cl );
-    //        }
-    //        
-    //        return instance;
-    //    }
-    //
-    //    public ClassFieldAccessorCache() {
-    //        // we don't set the classloader here, its just for Externalisable
-    //        // any using class will need to set the classloader before using
-    //        this( null );
-    //    }
 
     public ClassFieldAccessorCache(ClassLoader classLoader) {
         //        lookup = new HashMap<AccessorKey, LookupEntry>();
         cacheByClassLoader = new WeakHashMap<ClassLoader, CacheEntry>();
         this.classLoader = classLoader;
     }
-
-    //    public void writeExternal(ObjectOutput out) throws IOException {
-    //        out.writeObject( lookup );
-    //
-    //    }
-    //
-    //    public void readExternal(ObjectInput in) throws IOException,
-    //                                            ClassNotFoundException {
-    //        lookup = ( Map<AccessorKey, LookupEntry> ) in.readObject();
-    //    }
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -58,136 +28,7 @@ public class ClassFieldAccessorCache {
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
-
-    //    public void setEagerWire(boolean eagerWire) {
-    //        this.eagerWire = eagerWire;
-    //    }
-    //
-    //    public ClassFieldWriter getWriter(Class cls,
-    //                                      String fieldName,
-    //                                      ClassLoader classLoader) {
-    //        //        return getReader( cls.getName(),
-    //        //                          fieldName,
-    //        //                          null );
-    //        return null;
-    //    }
-    //
-    //    public ClassFieldReader getReader(Class cls,
-    //                                      String fieldName,
-    //                                      ClassLoader classLoader) {
-    //        return getReader( cls.getName(),
-    //                          fieldName,
-    //                          null );
-    //    }
-    //
-    //    public synchronized ClassFieldReader getReader(final String className,
-    //                                                   final String fieldName,
-    //                                                   final AcceptsReadAccessor target) {
-    //        AccessorKey key = new AccessorKey( className,
-    //                                           fieldName );
-    //        LookupEntry entry = this.lookup.get( key );
-    //        if ( entry == null ) {
-    //            entry = new LookupEntry( new ClassFieldReader( className,
-    //                                                           fieldName ) );
-    //        }
-    //
-    //        if ( target != null ) {
-    //            entry.addReadAccessorTargets( target );
-    //        }
-    //
-    //        if ( this.eagerWire ) {
-    //            wire( entry.getClassFieldReader() );
-    //        }
-    //
-    //        return entry.getClassFieldReader();
-    //    }
-    //
-    //    public synchronized ClassFieldWriter getWriter(final String className,
-    //                                                   final String fieldName,
-    //                                                   final AcceptsWriteAccessor target) {
-    //        AccessorKey key = new AccessorKey( className,
-    //                                           fieldName );
-    //        LookupEntry entry = this.lookup.get( key );
-    //        if ( entry == null ) {
-    //            entry = new LookupEntry( new ClassFieldWriter( className,
-    //                                                           fieldName ) );
-    //            if ( target != null ) {
-    //                //entry.addReadAccessorTargets( target );
-    //            }
-    //        }
-    //
-    //        if ( this.eagerWire ) {
-    //            wire( entry.getClassFieldReader() );
-    //        }
-    //
-    //        return entry.getClassFieldWriter();
-    //    }
-    //
-    //    public void merge(ClassFieldAccessorCache other) {
-    //        for ( Entry<AccessorKey, LookupEntry> entry : other.lookup.entrySet() ) {
-    //            LookupEntry lookupEntry = this.lookup.get( entry.getKey() );
-    //            if ( lookupEntry == null ) {
-    //                // ClassFieldReader does not exist here, so copy in everything.
-    //                this.lookup.put( entry.getKey(),
-    //                                 entry.getValue() );
-    //            } else {
-    //                // iterate through new constraints adding them and wiring them up
-    //                // to the existing ClassFieldReader
-    //                for ( AcceptsReadAccessor target : entry.getValue().getReadAccessorTargets() ) {
-    //                    target.setReadAccessor( lookupEntry.getClassFieldReader() );
-    //                    lookupEntry.addReadAccessorTargets( target );
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    public void wire() {
-    //        for ( Entry<AccessorKey, LookupEntry> entry : lookup.entrySet() ) {
-    //            wire( entry.getValue().getClassFieldReader() );
-    //        }
-    //    }
-    //
-    //    public void wire(ClassFieldReader reader) {
-    //        reader.setReadAccessor( getReadAcessor( reader ) );
-    //    }
-    //
-    //    public void wire(ClassFieldWriter writer) {
-    //        writer.setWriteAccessor( getWriteAcessor( writer ) );
-    //    }
-    //
-    //    public ClassFieldAccessor getAccessor(Class cls,
-    //                                          String fieldName,
-    //                                          ClassLoader classLoader) {
-    //        return getAccessor( cls.getName(),
-    //                            fieldName,
-    //                            null );
-    //    }
-    //
-    //    public ClassFieldAccessor getAccessor(final String className,
-    //                                          final String fieldName,
-    //                                          final AcceptsReadAccessor target) {
-    //        AccessorKey key = new AccessorKey( className,
-    //                                           fieldName );
-    //        LookupEntry entry = this.lookup.get( key );
-    //        if ( entry == null ) {
-    //            entry = new LookupEntry( new ClassFieldReader( className,
-    //                                                           fieldName ),
-    //                                     new ClassFieldWriter( className,
-    //                                                           fieldName ) );
-    //            if ( target != null ) {
-    //                entry.addReadAccessorTargets( target );
-    //            }
-    //        }
-    //
-    //        if ( this.eagerWire ) {
-    //            wire( entry.getClassFieldReader() );
-    //            wire( entry.getClassFieldWriter() );
-    //        }
-    //
-    //        return new ClassFieldAccessor( entry.getClassFieldReader(),
-    //                                       entry.getClassFieldWriter() );
-    //    }
-
+    
     public ClassObjectType getClassObjectType(ClassObjectType objectType) {
         // always lookup the class, as the ClassObjectType might refer to the class from another ClassLoader
         Class cls = getClass( objectType.getClassName() );
@@ -273,14 +114,12 @@ public class ClassFieldAccessorCache {
     public CacheEntry getCacheEntry(Class cls) {
         // System classloader classes return null on some JVMs
         ClassLoader cl = cls.getClassLoader() != null ? 
-        		         cls.getClassLoader() : ( this.classLoader != null ) ? 
-        		        		                  this.classLoader : 
-        		        		                  ClassLoader.getSystemClassLoader();
+        		         cls.getClassLoader() : this.classLoader;
 
         CacheEntry cache = this.cacheByClassLoader.get( cl );
         if ( cache == null ) {
             // setup a cache for this ClassLoader
-            cache = new CacheEntry( cl );
+            cache = new CacheEntry( this.classLoader );
             this.cacheByClassLoader.put( cl,
                                          cache );
         }

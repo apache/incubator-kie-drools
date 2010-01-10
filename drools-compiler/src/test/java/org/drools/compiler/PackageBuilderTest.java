@@ -74,7 +74,7 @@ import org.drools.process.core.Context;
 import org.drools.process.core.Process;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Behavior;
-import org.drools.rule.CompositeClassLoader;
+import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
@@ -1088,7 +1088,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( builder.hasErrors() );
 
         Package bp = builder.getPackage();
-        CompositeClassLoader rootClassloader = new CompositeClassLoader( Thread.currentThread().getContextClassLoader() );
+        DroolsCompositeClassLoader rootClassloader = new DroolsCompositeClassLoader( Thread.currentThread().getContextClassLoader() );
         JavaDialectRuntimeData dialectData = (JavaDialectRuntimeData) bp.getDialectRuntimeRegistry().getDialectData( "java" );
         dialectData.onAdd( bp.getDialectRuntimeRegistry(),
                            rootClassloader );

@@ -36,6 +36,7 @@ import org.drools.runtime.conf.MultiValueKnowledgeSessionOption;
 import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ClassLoaderUtil;
 import org.drools.util.ConfFileUtils;
 import org.drools.util.StringUtils;
 import org.mvel2.MVEL;
@@ -117,18 +118,10 @@ public class SessionConfiguration
     }
 
     private void init(ClassLoader classLoader, Properties properties) {
-    	
-    	if ( classLoader != null ) {
-            this.classLoader = classLoader;
-        } else if ( Thread.currentThread().getContextClassLoader() != null ) {
-            this.classLoader = Thread.currentThread().getContextClassLoader();
-        } else {
-            this.classLoader = this.getClass().getClassLoader();
-        }
+    	this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, getClass() );
     	
         this.immutable = false;
-
-        this.chainedProperties = new ChainedProperties( "session.conf" );
+        this.chainedProperties = new ChainedProperties( "session.conf",  this.classLoader );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
