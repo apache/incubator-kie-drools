@@ -135,8 +135,9 @@ public abstract class ProviderLocator {
         }
 
         // Look for a definition in the Drools config files.
-        ChainedProperties props = new ChainedProperties( classLoader,
-                                                         CONFIG_FILE );
+        ChainedProperties props = new ChainedProperties( CONFIG_FILE,
+                                                         ClassLoaderUtil.getClassLoader( null, ProviderLocator.class ),
+                                                         true );
         String providerName = props.getProperty( serviceClass.getName(),
                                                  null );
         if ( providerName != null ) {
@@ -176,8 +177,8 @@ public abstract class ProviderLocator {
         final String msg = MessageFormat.format( ERR_NOT_FOUND,
                                                  serviceClass.getName() );
         throw new ProviderInitializationException( msg );
-    }
-
+    }   
+    
     /**
      * Parses a Provider-Configuration File as described in the JAR
      * File Specification.
