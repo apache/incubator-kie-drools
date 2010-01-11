@@ -4,10 +4,12 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.util.DroolsClassLoader;
+
 /**
  * A classloader that loads from a (dynamic) list of sub-classloaders.
  */
-public class CompositeClassLoader extends ClassLoader
+public class DroolsCompositeClassLoader extends ClassLoader
     implements
     DroolsClassLoader {
     
@@ -16,7 +18,7 @@ public class CompositeClassLoader extends ClassLoader
     private final List<ClassLoader> classLoaders = new CopyOnWriteArrayList<ClassLoader>();
     private boolean hasParent = false;
     
-    public CompositeClassLoader(final ClassLoader parentClassLoader) {
+    public DroolsCompositeClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
         if ( parentClassLoader != null ) {
             this.hasParent = true;
@@ -24,6 +26,9 @@ public class CompositeClassLoader extends ClassLoader
     }
 
     public synchronized void addClassLoader(final ClassLoader classLoader) {
+        if ( classLoader == null ) {
+            return;
+        }
         /* NB: we need synchronized here even though we use a COW list:
          *     two threads may try to add the same new class loader, so we need
          *     to protect over a bigger area than just a single iteration.
