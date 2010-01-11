@@ -1,4 +1,4 @@
-package org.drools.rule;
+package org.drools.util;
 
 import java.io.InputStream;
 
