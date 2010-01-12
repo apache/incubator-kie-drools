@@ -145,7 +145,7 @@ public class RuleModel
         if ( f instanceof CompositeFieldConstraint ) {
             CompositeFieldConstraint s = (CompositeFieldConstraint) f;
             for ( FieldConstraint ss : s.constraints ) {
-                List<String> t = giveFieldBinding( s );
+                List<String> t = giveFieldBinding( ss );
                 result.addAll( t );
             }
         }
