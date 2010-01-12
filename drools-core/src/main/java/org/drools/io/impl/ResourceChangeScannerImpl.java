@@ -12,11 +12,11 @@ import java.util.Map.Entry;
 import org.drools.ChangeSet;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
-import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
 import org.drools.io.ResourceChangeScannerConfiguration;
+import org.drools.io.internal.InternalResource;
 
 public class ResourceChangeScannerImpl implements ResourceChangeScanner {
 

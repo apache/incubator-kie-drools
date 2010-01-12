@@ -7,8 +7,8 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.drools.builder.impl.DateFormatsImpl;
 import org.drools.spi.FieldValue;
+import org.drools.type.DateFormatsImpl;
 
 public class FieldFactoryTest extends TestCase {
 

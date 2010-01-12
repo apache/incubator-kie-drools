@@ -18,7 +18,6 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.builder.DateFormats;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -59,6 +58,7 @@ import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
+import org.drools.type.DateFormats;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 

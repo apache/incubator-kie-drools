@@ -8,8 +8,8 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.io.InternalResource;
 import org.drools.io.Resource;
+import org.drools.io.internal.InternalResource;
 
 public class InputStreamResource  extends BaseResource implements InternalResource {
     private InputStream stream;

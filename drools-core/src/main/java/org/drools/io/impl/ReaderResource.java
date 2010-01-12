@@ -9,8 +9,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 
-import org.drools.io.InternalResource;
 import org.drools.io.Resource;
+import org.drools.io.internal.InternalResource;
 
 public class ReaderResource  extends BaseResource implements InternalResource {
     private Reader reader;

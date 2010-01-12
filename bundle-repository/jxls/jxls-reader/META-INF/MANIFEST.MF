@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JXLS Reader
+Bundle-SymbolicName: org.drools.osgi.wrapper.jxls-reader
+Bundle-Version: 0.9.8
+Bundle-Vendor: JBoss
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: lib/commons-jexl.jar,
+ lib/jxls-reader.jar,
+ .
+Export-Package: 
+ net.sf.jxls.reader
+Require-Bundle: com.springsource.org.apache.commons.collections;bundle-version="3.2.0",
+ com.springsource.org.apache.commons.logging;bundle-version="1.1.1",
+ com.springsource.org.apache.log4j;bundle-version="1.2.15",
+ com.springsource.org.apache.poi;bundle-version="3.0.2",
+ com.springsource.org.apache.commons.beanutils;bundle-version="1.8.0",
+ com.springsource.org.apache.commons.digester;bundle-version="1.8.1"
+DynamicImport-Package: *
+

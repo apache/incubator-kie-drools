@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.builder.DateFormats;
-import org.drools.builder.impl.DateFormatsImpl;
+import org.drools.type.DateFormats;
+import org.drools.type.DateFormatsImpl;
 import org.drools.util.DateUtils;
 import org.mvel2.ConversionHandler;
 

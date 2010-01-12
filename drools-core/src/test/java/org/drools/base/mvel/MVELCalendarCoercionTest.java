@@ -6,7 +6,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.drools.builder.impl.DateFormatsImpl;
+import org.drools.type.DateFormatsImpl;
 import org.drools.util.DateUtils;
 
 public class MVELCalendarCoercionTest extends TestCase {

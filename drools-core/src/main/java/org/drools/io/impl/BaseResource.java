@@ -4,7 +4,7 @@ import java.io.Externalizable;
 
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
-import org.drools.io.InternalResource;
+import org.drools.io.internal.InternalResource;
 
 public abstract class BaseResource
     implements

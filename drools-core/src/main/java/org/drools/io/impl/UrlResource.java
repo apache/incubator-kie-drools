@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.io.InternalResource;
 import org.drools.io.Resource;
+import org.drools.io.internal.InternalResource;
 import org.drools.util.StringUtils;
 
 import com.sun.net.ssl.HttpsURLConnection;

@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.drools.builder.ResourceType;
-import org.drools.io.InternalResource;
 import org.drools.io.Resource;
+import org.drools.io.internal.InternalResource;
 import org.drools.util.StringUtils;
 
 public class ByteArrayResource extends BaseResource

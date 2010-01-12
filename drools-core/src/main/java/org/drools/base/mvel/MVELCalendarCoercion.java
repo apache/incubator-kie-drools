@@ -2,7 +2,7 @@ package org.drools.base.mvel;
 
 import java.util.Calendar;
 
-import org.drools.builder.impl.DateFormatsImpl;
+import org.drools.type.DateFormatsImpl;
 import org.drools.util.DateUtils;
 import org.mvel2.ConversionHandler;
 

@@ -1,4 +1,4 @@
-package org.drools.builder.impl;
+package org.drools.builder.conf.impl;
 
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;

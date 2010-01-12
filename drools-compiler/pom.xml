@@ -23,26 +23,30 @@
 		</dependency>
 		<!-- External dependencies -->
 		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr-runtime</artifactId>
+            <groupId>org.antlr</groupId>  
+            <artifactId>com.springsource.org.antlr.runtime</artifactId>  
+		</dependency>
+        <dependency>
+           <groupId>org.antlr</groupId>  
+           <artifactId>com.springsource.org.antlr</artifactId>  
+           <scope>test</scope>
+        </dependency>  
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>gunit</artifactId>
+        </dependency>         
+		<dependency>
+             <groupId>org.apache.jasper.springsource</groupId>  
+             <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId> 
 		</dependency>
 		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr</artifactId>
-			<scope>test</scope>
+          <groupId>org.codehaus.janino</groupId>  
+          <artifactId>com.springsource.org.codehaus.janino</artifactId> 
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>janino</groupId>
-			<artifactId>janino</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<optional>true</optional>
+           <groupId>com.thoughtworks.xstream</groupId>  
+           <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>  
+		   <optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.mvel</groupId>
@@ -56,9 +60,8 @@
 		</dependency>	
 		
         <dependency>
-  			<groupId>org.opensymphony.quartz</groupId>
-  			<artifactId>quartz</artifactId>
-  			<version>1.6.1</version>
+            <groupId>com.opensymphony.quartz</groupId>  
+            <artifactId>com.springsource.org.quartz</artifactId>  
 			<scope>test</scope> 			
         </dependency> 						
 	</dependencies>
@@ -155,4 +158,45 @@
 			</build>
 		</profile>
 	</profiles>
+    
+  <build>
+    <plugins> 
+            <plugin>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                <archive>  
+                  <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+                </archive> 
+              </configuration>
+            </plugin>  
+            
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.0.1</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+                    <manifestLocation>META-INF</manifestLocation>
+					<instructions>
+                        <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>                    
+						<Import-Package>!*</Import-Package>
+						<Export-Package>!org.drools.commons.*, 
+                                        !org.drools.lang.*, 
+                                        !org.drools.compiler,
+                                        org.drools.builder.impl, <!-- add this one manually as BND seems to miss it out -->
+                                        org.drools.*</Export-Package>                     
+					</instructions>
+				</configuration>
+			</plugin>   
+    </plugins>
+  </build>    
 </project>

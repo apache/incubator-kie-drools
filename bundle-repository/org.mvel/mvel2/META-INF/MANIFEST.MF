@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: mvel2
+Bundle-SymbolicName: org.drools.osgi.wrapper.mvel2
+Bundle-Version: 2.0.12
+Bundle-Vendor: JBoss
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: 
+ .,
+ lib/mvel2.jar
+Export-Package: 
+ org.mvel2,
+ org.mvel2.asm,
+ org.mvel2.asm.signature,
+ org.mvel2.asm.util,
+ org.mvel2.ast,
+ org.mvel2.compiler,
+ org.mvel2.conversion,
+ org.mvel2.debug,
+ org.mvel2.integration,
+ org.mvel2.integration.impl,
+ org.mvel2.math,
+ org.mvel2.optimizers,
+ org.mvel2.optimizers.dynamic,
+ org.mvel2.optimizers.impl.asm,
+ org.mvel2.optimizers.impl.refl,
+ org.mvel2.optimizers.impl.refl.collection,
+ org.mvel2.optimizers.impl.refl.nodes,
+ org.mvel2.sh,
+ org.mvel2.sh.command.basic,
+ org.mvel2.sh.command.file,
+ org.mvel2.sh.text,
+ org.mvel2.templates,
+ org.mvel2.templates.res,
+ org.mvel2.templates.util,
+ org.mvel2.templates.util.io,
+ org.mvel2.util
+DynamicImport-Package: *
+
