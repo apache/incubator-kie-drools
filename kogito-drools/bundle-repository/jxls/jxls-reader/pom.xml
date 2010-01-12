@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.1.0.SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.drools.osgi.wrapper.jxls-reader</artifactId>
+  <version>0.9.8</version>
+  <packaging>jar</packaging>
+
+  <name>Drools :: OSGi :: Wrapper :: jxls-reader</name>
+  <build>
+    <plugins>    
+    
+            <plugin>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                <archive>  
+                  <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+                </archive> 
+              </configuration>
+            </plugin>      
+  
+     <plugin>
+       <artifactId>maven-antrun-plugin</artifactId>
+       <inherited>false</inherited>
+       <executions>
+         <execution>
+           <id>clean lib</id>
+           <phase>clean</phase>
+           <configuration>
+             <tasks>                              
+                <delete>
+                  <fileset dir="lib" includes="**/*.jar" excludes="**/.svn" />                 
+                </delete>  
+             </tasks>
+           </configuration>
+           <goals>
+             <goal>run</goal>
+           </goals>
+         </execution>        
+       </executions>
+     </plugin>    
+    
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>lib</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+              <stripVersion>true</stripVersion>
+              <includeScope>runtime</includeScope>                    
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>   
+    </plugins>
+     
+              <resources>          
+                <resource>
+                  <targetPath>META-INF</targetPath>                
+                  <directory>META-INF</directory>
+                </resource>  
+                <resource>
+                  <targetPath>lib</targetPath>                
+                  <directory>lib</directory>
+                    <includes>
+                      <include>*.jar</include>
+                    </includes>                
+                </resource>                      
+              </resources>       
+  </build>
+
+  <dependencies>
+        <dependency>
+          <groupId>net.sf.jxls</groupId>
+          <artifactId>jxls-reader</artifactId>  
+               <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>  
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion> 
+                    <exclusion>
+                        <groupId>commons-beanutils</groupId>
+                        <artifactId>commons-beanutils</artifactId>
+                    </exclusion>     
+                    <exclusion>
+                        <groupId>commons-digester</groupId>
+                        <artifactId>commons-digester</artifactId>
+                    </exclusion>                    
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion> 
+                    <exclusion>  
+                        <groupId>org.apache.poi</groupId>  
+                        <artifactId>poi</artifactId>  
+                    </exclusion>                     
+               </exclusions>               
+          
+        </dependency>   
+  </dependencies>
+
+</project>

@@ -1,4 +1,4 @@
-package org.drools.io;
+package org.drools.io.internal;
 
 import java.io.IOException;
 import java.net.URL;
@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
+import org.drools.io.Resource;
 
 public interface InternalResource extends Resource {
     void setResourceType(ResourceType resourceType);

@@ -7,7 +7,6 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
-import org.drools.builder.DateFormats;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
@@ -27,6 +26,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.time.TimerService;
+import org.drools.type.DateFormats;
 
 public interface InternalWorkingMemory
     extends

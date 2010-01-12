@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**/*.java" including="**" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-jexl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jxls-reader.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

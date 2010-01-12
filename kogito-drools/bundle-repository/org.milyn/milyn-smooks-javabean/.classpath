@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**/*.java" including="**" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/mvel2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/milyn-commons.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/milyn-smooks-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/milyn-smooks-javabean.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-digester/commons-digester/1.8/commons-digester-1.8.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-jexl/commons-jexl/1.1/commons-jexl-1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar" sourcepath="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/jmock/jmock-legacy/2.5.1/jmock-legacy-2.5.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/sf/jxls/jxls-reader/0.9.6/jxls-reader-0.9.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar" sourcepath="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.0.2-FINAL/poi-3.0.2-FINAL.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

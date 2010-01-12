@@ -1,4 +1,4 @@
-package org.drools.builder.impl;
+package org.drools.type;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.builder.DateFormats;
 
 public class DateFormatsImpl
     implements

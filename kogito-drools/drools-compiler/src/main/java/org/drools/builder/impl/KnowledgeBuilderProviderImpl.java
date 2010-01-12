@@ -7,6 +7,7 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.impl.KnowledgeBaseImpl;
