@@ -1,20 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>drools-api</name>
-  <comment>A rule production system</comment>
-  <projects/>
-  <buildSpec>
-    <buildCommand>
-      <name>org.eclipse.jdt.core.javabuilder</name>
-    </buildCommand>
-    <buildCommand>
-      <name>org.drools.eclipse.droolsbuilder</name>
-    </buildCommand>
-    <buildCommand>
-      <name>org.devzuz.q.maven.jdt.core.mavenIncrementalBuilder</name>
-    </buildCommand>
-  </buildSpec>
-  <natures>
-    <nature>org.eclipse.jdt.core.javanature</nature>
-    <nature>org.devzuz.q.maven.jdt.core.mavenNature</nature>
-  </natures>
+	<name>drools-api</name>
+	<comment>A rule production system</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.ManifestBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.SchemaBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.pde.PluginNature</nature>
+	</natures>
 </projectDescription>
