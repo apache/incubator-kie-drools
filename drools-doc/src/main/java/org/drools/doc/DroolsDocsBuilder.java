@@ -36,11 +36,6 @@ public class DroolsDocsBuilder {
         this.packageData = DrlPackageParser.findPackageDataFromDrl( packageDrl );
     }
     
-    protected DroolsDocsBuilder(DrlPackageData packageData) {
-        // @ FIXME
-        throw new UnsupportedOperationException( "Waiting for Rikkola to fix his bad commit" );
-    }    
-
     protected DroolsDocsBuilder(DrlPackageParser packageData) {
         this.packageData = packageData;
     }
