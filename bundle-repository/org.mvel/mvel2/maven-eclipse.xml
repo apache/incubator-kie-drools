@@ -4,8 +4,5 @@
     <copy todir="target/classes/META-INF" filtering="false">
       <fileset dir="META-INF"/>
     </copy>
-    <copy todir="target/classes/lib" filtering="false">
-      <fileset dir="lib" includes="*.jar"/>
-    </copy>
   </target>
 </project>
