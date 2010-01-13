@@ -31,7 +31,7 @@
     <dependency>  
        <groupId>org.osgi</groupId>  
        <artifactId>org.osgi.core</artifactId>  
-       <scope>optional</scope>
+       <scope>provided</scope>
     </dependency>
                 
     <dependency>  

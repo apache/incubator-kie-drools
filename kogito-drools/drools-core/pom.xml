@@ -16,7 +16,7 @@
       <dependency>  
          <groupId>org.osgi</groupId>  
          <artifactId>org.osgi.core</artifactId>  
-         <scope>optional</scope>
+         <scope>provided</scope>
        </dependency>
               
     <!-- following are required for parser (lang). May be refactored out of core module. -->    
