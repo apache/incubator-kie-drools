@@ -21,6 +21,7 @@ global VerifierReport result;
 #						and in Foo( <= 42 || == 42 ) is missing.
 #
 rule "Range check for doubles, if smaller than or equal is missing"
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field( fieldType == Field.FieldType.DOUBLE )
 		
@@ -52,6 +53,7 @@ end
 #						and in Foo( >= 42 || == 42 ) is missing.
 #
 rule "Range check for doubles, if greater than or equal is missing"
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field( fieldType == Field.FieldType.DOUBLE )
 		
@@ -84,6 +86,7 @@ end
 #						then Foo( bar > 42 ) is missing.
 #
 rule "Range check for doubles, equal and greater than"
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field( fieldType == Field.FieldType.DOUBLE )
 
@@ -116,6 +119,7 @@ end
 #						then Foo( bar < 42 ) is missing.
 #
 rule "Range check for doubles, equal and smaller than"
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field( fieldType == Field.FieldType.DOUBLE )
 

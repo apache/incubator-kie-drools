@@ -36,6 +36,8 @@ public interface VerifierData {
 
     public RulePackage getPackageByName(String name);
 
+    public VerifierRule getRuleByName(String name);
+
     public Collection<VerifierRule> getRulesByFieldId(String guid);
 
     public Collection<VerifierRule> getRulesByObjectTypeId(String guid);
@@ -46,4 +48,5 @@ public interface VerifierData {
 
     public VerifierEntryPointDescr getEntryPointByEntryId(String entryId);
 
+    public Collection<VerifierRule> getRulesByCategoryName(String categoryName);
 }

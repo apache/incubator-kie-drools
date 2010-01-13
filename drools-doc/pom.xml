@@ -31,12 +31,17 @@
   </build>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-verifier</artifactId>
+    </dependency>
   
     <dependency>
 	    <groupId>com.lowagie</groupId>
 	    <artifactId>itext</artifactId>
 	    <version>2.1.2</version>
 	</dependency> 
-
+   
   </dependencies>
 </project>

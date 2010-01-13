@@ -1,7 +1,6 @@
 package org.drools.verifier.report.components;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**

@@ -5,6 +5,10 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.drools.verifier.misc.DrlPackageParser;
+import org.drools.verifier.misc.DrlRuleParser;
+
+
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -25,13 +29,13 @@ public class DroolsDocsBuilder {
         return new SimpleDateFormat( getDateFormatMask() );
     }
 
-    private final DrlPackageData packageData;
+    private final DrlPackageParser packageData;
 
     protected DroolsDocsBuilder(String packageDrl) {
-        this.packageData = DrlPackageData.findPackageDataFromDrl( packageDrl );
+        this.packageData = DrlPackageParser.findPackageDataFromDrl( packageDrl );
     }
 
-    protected DroolsDocsBuilder(DrlPackageData packageData) {
+    protected DroolsDocsBuilder(DrlPackageParser packageData) {
         this.packageData = packageData;
     }
 
@@ -39,7 +43,7 @@ public class DroolsDocsBuilder {
         return new DroolsDocsBuilder( packageDrl );
     }
 
-    public static DroolsDocsBuilder getInstance(DrlPackageData packageData) {
+    public static DroolsDocsBuilder getInstance(DrlPackageParser packageData) {
         return new DroolsDocsBuilder( packageData );
     }
 
@@ -53,11 +57,11 @@ public class DroolsDocsBuilder {
             PdfWriter.getInstance( document,
                                    out );
 
-            HeaderFooter footer = DroolsDocsComponentFactory.createFooter( packageData.packageName );
+            HeaderFooter footer = DroolsDocsComponentFactory.createFooter( packageData.getName() );
 
             document.setFooter( footer );
 
-            document.addTitle( packageData.packageName.toUpperCase() );
+            document.addTitle( packageData.getName().toUpperCase() );
             document.open();
 
             // First page, documentation info.            
@@ -69,13 +73,13 @@ public class DroolsDocsBuilder {
 
             // List index of the rules            
             document.add( new Phrase( "Table of Contents" ) );
-            document.add( DroolsDocsComponentFactory.createContents( packageData.rules ) );
+            document.add( DroolsDocsComponentFactory.createContents( packageData.getRules() ) );
 
             document.newPage();
 
-            for ( DrlRuleData ruleData : packageData.rules ) {
+            for ( DrlRuleParser ruleData : packageData.getRules() ) {
                 DroolsDocsComponentFactory.newRulePage( document,
-                                                           packageData.packageName,
+                                                           packageData.getName(),
                                                            ruleData );
             }
 

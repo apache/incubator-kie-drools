@@ -25,6 +25,7 @@ global VerifierReport result;
 # Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
 # 					then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns"
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field(
 			( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE )
@@ -66,6 +67,7 @@ end
 # Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
 # 					then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns, !="
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field( 
 			( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE ) 

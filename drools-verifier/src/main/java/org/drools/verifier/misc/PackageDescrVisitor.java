@@ -531,6 +531,8 @@ public class PackageDescrVisitor {
 
         Consequence consequence = visitConsequence( rule,
                                                     descr.getConsequence() );
+        
+        rule.getMetadata().putAll( descr.getMetaAttributes() );
         rule.setConsequenceGuid( consequence.getGuid() );
         rule.setConsequenceType( consequence.getConsequenceType() );
         rule.setLineNumber( descr.getLine() );

@@ -25,6 +25,7 @@ import org.drools.verifier.report.components.MessageType;
 # Dependencies: None
 #
 rule "Find equivalent Rules"
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		# Check that VerifierRule $left and $right have redundant fields.
 		$left :VerifierRule()

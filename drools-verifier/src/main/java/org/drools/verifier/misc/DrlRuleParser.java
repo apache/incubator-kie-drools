@@ -1,4 +1,4 @@
-package org.drools.doc;
+package org.drools.verifier.misc;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,32 +8,32 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DrlRuleData {
-    private static final String            rulesExpr = "(^\\s*#.*?\\n)?(^\\s*rule.*?$)(.*?)(when)(.*?)(then)(.*?)(^\\s*end)";
+public class DrlRuleParser {
+    private static final String             rulesExpr = "(^\\s*#.*?\\n)?(^\\s*rule.*?$)(.*?)(when)(.*?)(then)(.*?)(^\\s*end)";
 
-    private static final Pattern           finder    = Pattern.compile( rulesExpr,
-                                                                        Pattern.DOTALL | Pattern.MULTILINE );
+    private static final Pattern            finder    = Pattern.compile( rulesExpr,
+                                                                         Pattern.DOTALL | Pattern.MULTILINE );
 
-    public final Collection<String>        header;
-    public final Collection<String>        lhs;
-    public final Collection<String>        rhs;
+    private final Collection<String>        header;
+    private final Collection<String>        lhs;
+    private final Collection<String>        rhs;
 
-    public final String                    ruleName;
+    private final String                    name;
 
-    public final String                    description;
+    private final String                    description;
 
-    public final Collection<String>        metadata;
+    private final Collection<String>        metadata;
 
-    public final Map<String, List<String>> otherInformation;
+    private final Map<String, List<String>> otherInformation;
 
-    private DrlRuleData(String ruleName,
+    private DrlRuleParser(String ruleName,
                         String header,
                         String lhs,
                         String rhs,
                         String description,
                         List<String> metadata,
                         Map<String, List<String>> otherInformation) {
-        this.ruleName = ruleName;
+        this.name = ruleName;
         this.header = asList( header.split( "\n" ) );
         this.lhs = asList( lhs.split( "\n" ) );
         this.rhs = asList( rhs.split( "\n" ) );
@@ -55,9 +55,9 @@ public class DrlRuleData {
         return list;
     }
 
-    public static List<DrlRuleData> findRulesDataFromDrl(String drl) {
+    public static List<DrlRuleParser> findRulesDataFromDrl(String drl) {
         final Matcher m = finder.matcher( drl );
-        final List<DrlRuleData> list = new ArrayList<DrlRuleData>();
+        final List<DrlRuleParser> list = new ArrayList<DrlRuleParser>();
 
         while ( m.find() ) {
 
@@ -75,7 +75,7 @@ public class DrlRuleData {
 
             ruleName = trimRuleName( ruleName );
 
-            list.add( new DrlRuleData( ruleName,
+            list.add( new DrlRuleParser( ruleName,
                                        m.group( 3 ),
                                        m.group( 5 ),
                                        m.group( 7 ),
@@ -158,6 +158,34 @@ public class DrlRuleData {
         }
 
         return list;
+    }
+
+    public Collection<String> getHeader() {
+        return header;
+    }
+
+    public Collection<String> getLhs() {
+        return lhs;
+    }
+
+    public Collection<String> getRhs() {
+        return rhs;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Collection<String> getMetadata() {
+        return metadata;
+    }
+
+    public Map<String, List<String>> getOtherInformation() {
+        return otherInformation;
     }
 }
 

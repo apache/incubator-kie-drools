@@ -1,0 +1,43 @@
+#created on: 18.12.2009
+package org.drools.verifier
+
+global VerifierReport result;
+
+import java.util.ArrayList;
+
+import org.drools.verifier.data.VerifierReport;
+
+import org.drools.verifier.components.VerifierRule;
+
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.MessageType;
+
+rule "Single"
+	@verifying_scopes(single-rule)
+	when
+		$a :VerifierRule()
+	then 
+		result.add(new VerifierMessage(
+						Severity.NOTE, MessageType.EQUIVALANCE,
+						$a, "", new ArrayList() ) );
+end
+
+rule "single or dtable"
+	@verifying_scopes(single-rule, decision-table)
+	when
+		$a :VerifierRule()
+	then 
+		result.add(new VerifierMessage(
+						Severity.NOTE, MessageType.EQUIVALANCE,
+						$a, "", new ArrayList() ) );
+end
+
+rule "no verifying scope set"
+	when
+		$a :VerifierRule()
+	then 
+		result.add(new VerifierMessage(
+						Severity.NOTE, MessageType.EQUIVALANCE,
+						$a, "", new ArrayList() ) );
+end

@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.Map;
 
+import org.drools.verifier.misc.DrlPackageParser;
+import org.drools.verifier.misc.DrlRuleParser;
+
+
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -87,7 +91,7 @@ public class DroolsDocsComponentFactory {
         }
     }
 
-    public static Table newRuleTable(DrlRuleData drl) throws BadElementException,
+    public static Table newRuleTable(DrlRuleParser drl) throws BadElementException,
                                                      DocumentException {
         Table table = newTable();
 
@@ -95,19 +99,19 @@ public class DroolsDocsComponentFactory {
                                          CATEGORIES_TEXT );
         table.addCell( headerCell );
 
-        for ( String s : drl.header ) {
+        for ( String s : drl.getHeader() ) {
             table.addCell( newCell( INDENT + s.trim() ) );
         }
 
         table.addCell( newHeaderCell( INDENT + "WHEN",
                                       BODY_TEXT ) );
-        for ( String s : drl.lhs ) {
+        for ( String s : drl.getLhs() ) {
             table.addCell( newCell( INDENT + INDENT + s.trim() ) );
         }
 
         table.addCell( newHeaderCell( INDENT + "THEN",
                                       BODY_TEXT ) );
-        for ( String s : drl.rhs ) {
+        for ( String s : drl.getRhs() ) {
             table.addCell( newCell( INDENT + INDENT + s.trim() ) );
         }
         // table.addCell( newEmptyWhenThenCell( "END" ) );
@@ -135,11 +139,11 @@ public class DroolsDocsComponentFactory {
         return table;
     }
 
-    public static List createContents(java.util.List<DrlRuleData> rules) {
+    public static List createContents(java.util.List<DrlRuleParser> rules) {
         List index = new List( true );
 
-        for ( DrlRuleData drlRuleData : rules ) {
-            Chunk chunk = new Chunk( drlRuleData.ruleName );
+        for ( DrlRuleParser drlRuleData : rules ) {
+            Chunk chunk = new Chunk( drlRuleData.getName() );
             // chunk.setLocalGoto( item.getName() );
             ListItem listItem = new ListItem( chunk );
             index.add( listItem );
@@ -181,46 +185,46 @@ public class DroolsDocsComponentFactory {
 
     public static void newRulePage(Document document,
                                    String packageName,
-                                   DrlRuleData drlData) throws DocumentException {
+                                   DrlRuleParser drlData) throws DocumentException {
 
         document.add( new Paragraph( packageName,
                                      PACKAGE_NAME ) );
-        document.add( new Paragraph( "Rule " + drlData.ruleName,
+        document.add( new Paragraph( "Rule " + drlData.getName(),
                                      CHAPTER_TITLE ) );
 
         // Extends
-        int index = drlData.ruleName.lastIndexOf( "extends" );
+        int index = drlData.getName().lastIndexOf( "extends" );
         if ( index > 0 ) {
             document.add( new Paragraph( "Extends:",
                                          BODY_TEXT ) );
 
-            Paragraph ext = new Paragraph( drlData.ruleName.substring( "extends".length() + index ),
+            Paragraph ext = new Paragraph( drlData.getName().substring( "extends".length() + index ),
                                            BODY_TEXT );
             ext.setIndentationLeft( INTENTATION_LEFT );
             document.add( ext );
         }
 
         // Description
-        document.add( newDescription( drlData.description ) );
+        document.add( newDescription( drlData.getDescription() ) );
 
         // DRL
         document.add( newRuleTable( drlData ) );
 
         // Meta data
         document.add( newTable( "Meta Data",
-                                drlData.metadata ) );
+                                drlData.getMetadata() ) );
 
         // Other
         createOtherItems( document,
-                          drlData.otherInformation );
+                          drlData.getOtherInformation() );
 
         document.newPage();
     }
 
     public static void createFirstPage(Document document,
                                        String currentDate,
-                                       DrlPackageData packageData) throws DocumentException {
-        Paragraph title = new Paragraph( "\n\n\n\n\n" + packageData.packageName.toUpperCase(),
+                                       DrlPackageParser packageData) throws DocumentException {
+        Paragraph title = new Paragraph( "\n\n\n\n\n" + packageData.getName().toUpperCase(),
                                          RULE_PACKAGE_TITLE );
         title.setAlignment( Element.ALIGN_CENTER );
         document.add( title );
@@ -230,14 +234,14 @@ public class DroolsDocsComponentFactory {
         date.setAlignment( Element.ALIGN_CENTER );
         document.add( date );
 
-        document.add( new Paragraph( "\n\n\n\n\n" + packageData.description,
+        document.add( new Paragraph( "\n\n\n\n\n" + packageData.getDescription(),
                                      BODY_TEXT ) );
         document.add( newTable( "Meta Data ",
-                                packageData.metadata ) );
+                                packageData.getMetadata() ) );
         document.add( newTable( "Globals ",
-                                packageData.globals ) );
+                                packageData.getGlobals() ) );
         createOtherItems( document,
-                          packageData.otherInformation );
+                          packageData.getOtherInformation() );
     }
 }
 
