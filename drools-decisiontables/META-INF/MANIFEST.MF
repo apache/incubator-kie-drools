@@ -1,21 +1,28 @@
 Manifest-Version: 1.0
-Private-Package: python-dt;version="5.1.0.SNAPSHOT"
-Tool: Bnd-0.0.357
-Bundle-Name: Drools :: Decision Tables
-Created-By: 1.6.0_10 (Sun Microsystems Inc.)
-Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT",
- org.drools.compiler;bundle-version="5.1.0"
-Bundle-Vendor: JBoss Inc.
-DynamicImport-Package: org.drools.*
-Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1263361084615
-Bundle-ManifestVersion: 2
-Bundle-Description: A rule production system
-Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: jxl;version="2.6",
- jxl.read.biff;version="2.6",
- org.osgi.framework
-Bundle-SymbolicName: org.drools.decisiontables
-Bundle-DocURL: http://www.jboss.org/
 Bundle-Activator: org.drools.osgi.decisiontables.Activator
+Created-By: 1.5.0_16 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: jxl;version="2.6",jxl.read.biff;version="2.6",org.osgi
+ .framework;version="1.5"
+Bnd-LastModified: 1263393346838
+Export-Package: org.drools.decisiontable;uses:="org.drools.decisiontab
+ le.parser.csv,org.drools.decisiontable.parser,org.drools.decisiontabl
+ e.parser.xls";version="5.1.0.SNAPSHOT",org.drools.decisiontable.parse
+ r.xls;uses:="jxl.read.biff,org.drools.decisiontable.parser,jxl";versi
+ on="5.1.0.SNAPSHOT",org.drools.decisiontable.parser.csv;uses:="org.dr
+ ools.decisiontable.parser";version="5.1.0.SNAPSHOT",org.drools.decisi
+ ontable.parser;uses:="org.drools.decisiontable.parser.xls";version="5
+ .1.0.SNAPSHOT",org.drools.osgi.decisiontables;uses:="org.drools.decis
+ iontable,org.osgi.framework";version="5.1.0.SNAPSHOT"
+Bundle-Version: 5.1.0.SNAPSHOT
+Bundle-Name: Drools :: Decision Tables
+Bundle-Description: A rule production system
+Private-Package: python-dt;version="5.1.0.SNAPSHOT"
+Bundle-DocURL: http://www.jboss.org/
+Bundle-Vendor: JBoss Inc.
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.drools.decisiontables
+Tool: Bnd-0.0.357
+Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
+DynamicImport-Package: org.drools.*
 
