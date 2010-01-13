@@ -1,11 +1,15 @@
 package org.drools.verifier.builder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -16,10 +20,13 @@ import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierError;
+import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
+import org.drools.verifier.misc.DrlPackageParser;
+import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.verifier.misc.PackageDescrVisitor;
-import org.drools.verifier.misc.RuleLoader;
 
 /**
  * This is the main user class for verifier. This will use rules to validate
@@ -102,7 +109,9 @@ public class VerifierImpl
             // Object that returns the results.
             ksession.setGlobal( "result",
                                 result );
-            ksession.fireAllRules();
+            ksession.fireAllRules( new MetaDataAgendaFilter( conf.acceptRulesWithoutVerifiyingScope(),
+                                                             "verifying_scopes",
+                                                             conf.getVerifyingScopes() ) );
 
         } catch ( Throwable t ) {
             t.printStackTrace();
@@ -134,7 +143,20 @@ public class VerifierImpl
 
         verifierKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        verifierKnowledgeBase.addKnowledgePackages( RuleLoader.loadPackages( conf.getVerifyingResources() ) );
+        KnowledgeBuilderConfiguration kbuilderConfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbuilderConfiguration.setProperty( "drools.dialect.java.compiler",
+                                           "JANINO" );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbuilderConfiguration );
+
+        if ( conf.getVerifyingResources() != null ) {
+            for ( Resource resource : conf.getVerifyingResources().keySet() ) {
+                kbuilder.add( resource,
+                              conf.getVerifyingResources().get( resource ) );
+            }
+        }
+
+        verifierKnowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     }
 
     /*
@@ -158,14 +180,63 @@ public class VerifierImpl
 
             try {
 
+                BufferedReader reader = new BufferedReader( resource.getReader() );
+
+                StringBuffer drl = new StringBuffer( "" );
+                String line = null;
+                do {
+                    line = reader.readLine();
+                    if ( line != null ) {
+                        drl.append( line );
+                        drl.append( "\n" );
+
+                    }
+                } while ( line != null );
+
                 PackageDescr pkg = p.parse( resource.getInputStream() );
+
                 addPackageDescr( pkg );
+
+                // TODO: Move this into a method
+                addDrlData( drl.toString() );
+
+                reader.close();
 
             } catch ( DroolsParserException e ) {
                 errors.add( new VerifierError( e.getMessage() ) );
             } catch ( IOException e ) {
                 errors.add( new VerifierError( e.getMessage() ) );
             }
+        }
+    }
+
+    /**
+     * 
+     * Adds meta data from DRL to package and rule.
+     * 
+     * @param drl Package DRL
+     */
+    private void addDrlData(String drl) {
+
+        DrlPackageParser pData = DrlPackageParser.findPackageDataFromDrl( drl );
+
+        RulePackage rPackage = this.result.getVerifierData().getPackageByName( pData.getName() );
+
+        rPackage.getGlobals().addAll( pData.getGlobals() );
+        rPackage.setDescription( pData.getDescription() );
+        rPackage.getMetadata().addAll( pData.getMetadata() );
+        rPackage.getOtherInfo().putAll( pData.getOtherInformation() );
+
+        for ( DrlRuleParser rData : pData.getRules() ) {
+            VerifierRule rule = this.result.getVerifierData().getRuleByName( rData.getName() );
+
+            rule.getHeader().addAll( rData.getHeader() );
+            rule.getLhsRows().addAll( rData.getLhs() );
+            rule.getRhsRows().addAll( rData.getRhs() );
+            rule.setDescription( rData.getDescription() );
+            rule.getCommentMetadata().addAll( rData.getMetadata() );
+            rule.getOtherInfo().putAll( rData.getOtherInformation() );
+
         }
     }
 

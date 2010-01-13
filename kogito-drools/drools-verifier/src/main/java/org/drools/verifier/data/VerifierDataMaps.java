@@ -19,6 +19,9 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierEntryPointDescr;
 import org.drools.verifier.components.VerifierRule;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
+
 /**
  * 
  * @author Toni Rikkola
@@ -32,18 +35,20 @@ class VerifierDataMaps
     private Map<String, RulePackage>                                   packagesByName                 = new TreeMap<String, RulePackage>();
     private Map<String, ObjectType>                                    objectTypesByName              = new TreeMap<String, ObjectType>();
     private Map<String, Field>                                         fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>();
-    private DataTree<String, Field>                                    fieldsByObjectTypeId           = new DataTree<String, Field>();
+    private Multimap<String, Field>                                    fieldsByObjectTypeId           = new TreeMultimap<String, Field>();
     private Map<String, FieldObjectTypeLink>                           fieldObjectTypeLinkByPath      = new TreeMap<String, FieldObjectTypeLink>();
-    private DataTree<String, Pattern>                                  patternsByObjectTypeId         = new DataTree<String, Pattern>();
-    private DataTree<String, Pattern>                                  patternsByRuleName             = new DataTree<String, Pattern>();
-    private DataTree<String, Restriction>                              restrictionsByFieldId          = new DataTree<String, Restriction>();
+    private Multimap<String, Pattern>                                  patternsByObjectTypeId         = new TreeMultimap<String, Pattern>();
+    private Multimap<String, Pattern>                                  patternsByRuleName             = new TreeMultimap<String, Pattern>();
+    private Multimap<String, Restriction>                              restrictionsByFieldId          = new TreeMultimap<String, Restriction>();
     private Map<String, Variable>                                      variablesByRuleAndVariableName = new TreeMap<String, Variable>();
     private Map<String, VerifierEntryPointDescr>                       entryPointsByEntryId           = new TreeMap<String, VerifierEntryPointDescr>();
+    private Map<String, VerifierRule>                                  rulesByName                    = new TreeMap<String, VerifierRule>();
+    private Multimap<String, VerifierRule>                             rulesByCategory                = new TreeMultimap<String, VerifierRule>();
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
         Set<ObjectType> set = new HashSet<ObjectType>();
 
-        for ( Pattern pattern : patternsByRuleName.getBranch( ruleName ) ) {
+        for ( Pattern pattern : patternsByRuleName.get( ruleName ) ) {
             ObjectType objectType = (ObjectType) getVerifierObject( VerifierComponentType.OBJECT_TYPE,
                                                                     pattern.getObjectTypeGuid() );
             set.add( objectType );
@@ -82,13 +87,13 @@ class VerifierDataMaps
     }
 
     public Collection<Field> getFieldsByObjectTypeId(String id) {
-        return fieldsByObjectTypeId.getBranch( id );
+        return fieldsByObjectTypeId.get( id );
     }
 
     public Collection<VerifierRule> getRulesByObjectTypeId(String id) {
         Set<VerifierRule> rules = new HashSet<VerifierRule>();
 
-        for ( Pattern pattern : patternsByObjectTypeId.getBranch( id ) ) {
+        for ( Pattern pattern : patternsByObjectTypeId.get( id ) ) {
 
             rules.add( (VerifierRule) getVerifierObject( VerifierComponentType.RULE,
                                                          pattern.getRuleGuid() ) );
@@ -101,7 +106,7 @@ class VerifierDataMaps
 
         Set<VerifierRule> rules = new HashSet<VerifierRule>();
 
-        for ( Restriction restriction : restrictionsByFieldId.getBranch( id ) ) {
+        for ( Restriction restriction : restrictionsByFieldId.get( id ) ) {
 
             rules.add( (VerifierRule) getVerifierObject( VerifierComponentType.RULE,
                                                          restriction.getRuleGuid() ) );
@@ -115,7 +120,7 @@ class VerifierDataMaps
     }
 
     public Collection<Restriction> getRestrictionsByFieldGuid(String id) {
-        return restrictionsByFieldId.getBranch( id );
+        return restrictionsByFieldId.get( id );
     }
 
     public void add(VerifierComponent object) {
@@ -128,6 +133,14 @@ class VerifierDataMaps
 
             fieldsByObjectTypeId.put( field.getObjectTypeGuid(),
                                       field );
+        } else if ( VerifierComponentType.RULE.equals( object.getVerifierComponentType() ) ) {
+            VerifierRule rule = (VerifierRule) object;
+            rulesByName.put( rule.getRuleName(),
+                             rule );
+            if ( rule.getMetadata().containsKey( "category" ) ) {
+                rulesByCategory.put( rule.getMetadata().get( "category" ),
+                                     rule );
+            }
         } else if ( VerifierComponentType.VARIABLE.equals( object.getVerifierComponentType() ) ) {
             Variable variable = (Variable) object;
             variablesByRuleAndVariableName.put( variable.getRuleName() + "." + variable.getName(),
@@ -176,6 +189,10 @@ class VerifierDataMaps
 
     }
 
+    public Collection<VerifierRule> getRulesByCategoryName(String categoryName) {
+        return rulesByCategory.get( categoryName );
+    }
+
     //    public <T extends VerifierComponent> Collection<T> getAll(VerifierComponentType type) {
     public Collection< ? extends VerifierComponent> getAll(VerifierComponentType type) {
         return all.get( type ).values();
@@ -190,6 +207,10 @@ class VerifierDataMaps
 
     public VerifierEntryPointDescr getEntryPointByEntryId(String entryId) {
         return entryPointsByEntryId.get( entryId );
+    }
+
+    public VerifierRule getRuleByName(String name) {
+        return rulesByName.get( name );
     }
 
 }

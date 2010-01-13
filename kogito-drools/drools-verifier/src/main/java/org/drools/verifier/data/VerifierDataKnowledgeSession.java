@@ -2,27 +2,17 @@ package org.drools.verifier.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.net.ssl.KeyStoreBuilderParameters;
 
 import org.drools.ClassObjectFilter;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
-import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.FieldObjectTypeLink;
 import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.Variable;
@@ -125,6 +115,16 @@ class VerifierDataKnowledgeSession
     }
 
     public VerifierEntryPointDescr getEntryPointByEntryId(String entryId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public VerifierRule getRuleByName(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Collection<VerifierRule> getRulesByCategoryName(String categoryName) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -1,0 +1,67 @@
+<change-set xmlns='http://drools.org/drools-5.0/change-set'
+	xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+	xs:schemaLocation='http://drools.org/drools-5.0/composition drools-composition-4.0.xsd'>
+	<add>
+		<resource source='classpath:org/drools/verifier/Consequence.drl'
+			type='DRL' />
+		<!-- Always false -->
+		<resource source='classpath:org/drools/verifier/alwaysFalse/Patterns.drl'
+			type='DRL' />
+		<!-- Incoherence -->
+		<resource source='classpath:org/drools/verifier/incoherence/Patterns.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/incoherence/Restrictions.drl'
+			type='DRL' />
+		<!-- Incompatibility -->
+		<resource source='classpath:org/drools/verifier/incompatibility/Patterns.drl'
+			type='DRL' />
+		<resource
+			source='classpath:org/drools/verifier/incompatibility/Restrictions.drl'
+			type='DRL' />
+		<!-- Missing equality -->
+		<resource
+			source='classpath:org/drools/verifier/missingEquality/MissingEquality.drl'
+			type='DRL' />
+		<!-- Opposites -->
+		<resource source='classpath:org/drools/verifier/opposites/Patterns.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/opposites/Restrictions.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/opposites/Rules.drl'
+			type='DRL' />
+		<!-- Opposites -->
+		<resource
+			source='classpath:org/drools/verifier/optimisation/PatternOrder.drl'
+			type='DRL' />
+		<!-- Overlaps -->
+		<resource source='classpath:org/drools/verifier/overlaps/Restrictions.drl'
+			type='DRL' />
+		<!-- Range checks -->
+		<resource source='classpath:org/drools/verifier/rangeChecks/Clean.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/rangeChecks/Dates.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/rangeChecks/Doubles.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/rangeChecks/Integers.drl'
+			type='DRL' />
+		<!-- Redundancy -->
+		<resource source='classpath:org/drools/verifier/redundancy/Redundancy.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/redundancy/Notes.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/redundancy/Warnings.drl'
+			type='DRL' />
+		<!-- Subsumption -->
+		<resource source='classpath:org/drools/verifier/subsumption/Consequences.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/subsumption/Restrictions.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/subsumption/SubPatterns.drl'
+			type='DRL' />
+		<resource source='classpath:org/drools/verifier/subsumption/SubRules.drl'
+			type='DRL' />
+	</add>
+
+
+</change-set>

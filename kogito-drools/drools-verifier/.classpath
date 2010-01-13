@@ -11,6 +11,7 @@
   <classpathentry kind="src" path="/drools-api"/>
   <classpathentry kind="src" path="/drools-compiler"/>
   <classpathentry kind="src" path="/drools-core"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/collections/google-collections/0.8/google-collections-0.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>

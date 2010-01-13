@@ -26,6 +26,7 @@ import org.drools.verifier.report.components.MessageType;
 
 
 rule "Find redundant LHS"
+	@verifying_scopes(knowledge-package, decision-table)
 	when
 		# Check that VerifierRule $left and $right have redundant fields.
 		$left :VerifierRule()
@@ -152,6 +153,7 @@ end
 #			rule "Find rule possibility redundancy"
 #
 rule "Find subsumptant rule possibilities from different rules"
+	@verifying_scopes(knowledge-package, decision-table)
 	salience -100
 	when
 		$subsumption:Subsumption(

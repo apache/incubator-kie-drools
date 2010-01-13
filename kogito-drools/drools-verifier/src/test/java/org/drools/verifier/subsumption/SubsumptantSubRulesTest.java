@@ -40,7 +40,7 @@ public class SubsumptantSubRulesTest extends TestCase {
 
         int count = 0;
         for ( Object object : subsumptionList ) {
-            //            System.out.println( " * " + ((Subsumption) object) );
+            //                        System.out.println( " * " + ((Subsumption) object) );
             if ( ((Subsumption) object).getLeft().getCauseType().equals( CauseType.SUB_RULE ) ) {
                 //                System.out.println( " ** " + ((SubRule) ((Subsumption) object).getLeft()).getItems() + " - " + ((SubRule) ((Subsumption) object).getRight()).getItems() );
                 count++;

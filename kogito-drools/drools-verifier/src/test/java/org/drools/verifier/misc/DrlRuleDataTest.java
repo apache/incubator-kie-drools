@@ -1,6 +1,8 @@
-package org.drools.doc;
+package org.drools.verifier.misc;
 
 import java.util.List;
+
+import org.drools.verifier.misc.DrlRuleParser;
 
 import junit.framework.TestCase;
 
@@ -17,12 +19,12 @@ public class DrlRuleDataTest extends TestCase {
 		drl += "		insert( new Cheese()) \n ";
 		drl += "end ";
 
-		DrlRuleData s = DrlRuleData.findRulesDataFromDrl(drl).get(0);
+		DrlRuleParser s = DrlRuleParser.findRulesDataFromDrl(drl).get(0);
 
-		assertEquals(1, s.header.size());
-		assertEquals(2, s.lhs.size());
-		assertEquals(3, s.rhs.size());
-		assertEquals("", s.description);
+		assertEquals(1, s.getHeader().size());
+		assertEquals(2, s.getLhs().size());
+		assertEquals(3, s.getRhs().size());
+		assertEquals("", s.getDescription());
 
 	}
 
@@ -34,14 +36,14 @@ public class DrlRuleDataTest extends TestCase {
 		drl += "		applicant.setName( \"Toni\" ) \n";
 		drl += "		applicant.setAge( 10 ) \n";
 		drl += "end";
-		DrlRuleData s = DrlRuleData.findRulesDataFromDrl(drl).get(0);
+		DrlRuleParser s = DrlRuleParser.findRulesDataFromDrl(drl).get(0);
 
 		assertNotNull(s);
 
-		assertEquals(1, s.header.size());
-		assertEquals(0, s.lhs.size());
-		assertEquals(3, s.rhs.size());
-		assertEquals("", s.description);
+		assertEquals(1, s.getHeader().size());
+		assertEquals(0, s.getLhs().size());
+		assertEquals(3, s.getRhs().size());
+		assertEquals("", s.getDescription());
 
 	}
 
@@ -89,45 +91,45 @@ public class DrlRuleDataTest extends TestCase {
 		drl += "		applicant.setAge( 10 ) \n";
 		drl += "end";
 
-		List<DrlRuleData> list = DrlRuleData.findRulesDataFromDrl(drl);
+		List<DrlRuleParser> list = DrlRuleParser.findRulesDataFromDrl(drl);
 
 		assertEquals(3, list.size());
 
-		DrlRuleData rd = list.get(0);
+		DrlRuleParser rd = list.get(0);
 
 		assertNotNull(rd);
 
-		assertEquals(1, rd.header.size());
-		assertEquals(2, rd.lhs.size());
-		assertEquals(3, rd.rhs.size());
-		assertEquals(1, rd.metadata.size());
-		assertNotNull(rd.description);
-		assertNotSame("", rd.description);
+		assertEquals(1, rd.getHeader().size());
+		assertEquals(2, rd.getLhs().size());
+		assertEquals(3, rd.getRhs().size());
+		assertEquals(1, rd.getMetadata().size());
+		assertNotNull(rd.getDescription());
+		assertNotSame("", rd.getDescription());
 
-		DrlRuleData rd2 = list.get(1);
+		DrlRuleParser rd2 = list.get(1);
 
 		assertNotNull(rd2);
 
-		assertEquals(1, rd2.header.size());
-		assertEquals(2, rd2.lhs.size());
-		assertEquals(3, rd2.rhs.size());
-		assertEquals(3, rd2.metadata.size());
-		assertNotNull(rd2.description);
+		assertEquals(1, rd2.getHeader().size());
+		assertEquals(2, rd2.getLhs().size());
+		assertEquals(3, rd2.getRhs().size());
+		assertEquals(3, rd2.getMetadata().size());
+		assertNotNull(rd2.getDescription());
 
 		String description = "Really important information about this rule\n";
 		description += "Another line because one was not enough\n\n";
 
-		assertEquals(description, rd2.description);
-		assertNotSame("", rd2.description);
+		assertEquals(description, rd2.getDescription());
+		assertNotSame("", rd2.getDescription());
 
-		DrlRuleData rd3 = list.get(2);
+		DrlRuleParser rd3 = list.get(2);
 
 		assertNotNull(rd3);
 
-		assertEquals(1, rd3.header.size());
-		assertEquals(2, rd3.lhs.size());
-		assertEquals(3, rd3.rhs.size());
-		assertNotNull(rd3.description);
-		assertEquals("", rd3.description);
+		assertEquals(1, rd3.getHeader().size());
+		assertEquals(2, rd3.getLhs().size());
+		assertEquals(3, rd3.getRhs().size());
+		assertNotNull(rd3.getDescription());
+		assertEquals("", rd3.getDescription());
 	}
 }

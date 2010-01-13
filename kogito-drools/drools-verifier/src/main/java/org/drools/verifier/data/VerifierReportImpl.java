@@ -13,6 +13,9 @@ import org.drools.verifier.report.components.RangeCheckCause;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
+
 /**
  * 
  * @author Toni Rikkola
@@ -23,12 +26,12 @@ class VerifierReportImpl
     private static final long                       serialVersionUID               = -6207688526236713721L;
 
     private Map<String, Gap>                        gapsById                       = new TreeMap<String, Gap>();
-    private DataTree<String, Gap>                   gapsByFieldId                  = new DataTree<String, Gap>();
+    private Multimap<String, Gap>                   gapsByFieldId                  = new TreeMultimap<String, Gap>();
     private Map<String, MissingNumberPattern>       missingNumberPatternsById      = new TreeMap<String, MissingNumberPattern>();
-    private DataTree<String, MissingNumberPattern>  missingNumberPatternsByFieldId = new DataTree<String, MissingNumberPattern>();
+    private Multimap<String, MissingNumberPattern>  missingNumberPatternsByFieldId = new TreeMultimap<String, MissingNumberPattern>();
 
     private List<VerifierMessageBase>               messages                       = new ArrayList<VerifierMessageBase>();
-    private DataTree<Severity, VerifierMessageBase> messagesBySeverity             = new DataTree<Severity, VerifierMessageBase>();
+    private Multimap<Severity, VerifierMessageBase> messagesBySeverity             = new TreeMultimap<Severity, VerifierMessageBase>();
 
     private VerifierData                            data;
 
@@ -43,7 +46,7 @@ class VerifierReportImpl
     }
 
     public Collection<VerifierMessageBase> getBySeverity(Severity severity) {
-        Collection<VerifierMessageBase> result = messagesBySeverity.getBranch( severity );
+        Collection<VerifierMessageBase> result = messagesBySeverity.get( severity );
 
         if ( result == null ) {
             return Collections.emptyList();
@@ -69,7 +72,7 @@ class VerifierReportImpl
     }
 
     public Collection<Gap> getGapsByFieldId(String fieldId) {
-        return gapsByFieldId.getBranch( fieldId );
+        return gapsByFieldId.get( fieldId );
     }
 
     public Collection<RangeCheckCause> getRangeCheckCauses() {
@@ -93,9 +96,9 @@ class VerifierReportImpl
     public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(String id) {
         Collection<RangeCheckCause> result = new ArrayList<RangeCheckCause>();
 
-        result.addAll( gapsByFieldId.getBranch( id ) );
+        result.addAll( gapsByFieldId.get( id ) );
 
-        result.addAll( missingNumberPatternsByFieldId.getBranch( id ) );
+        result.addAll( missingNumberPatternsByFieldId.get( id ) );
 
         return result;
     }

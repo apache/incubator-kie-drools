@@ -11,18 +11,20 @@ import org.drools.verifier.components.Field;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.data.DataTree;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.RangeCheckCause;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.mvel2.templates.TemplateRuntime;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 
 class MissingRangesReportVisitor extends ReportVisitor {
 
     public static Collection<String> visitRestrictionsCollection(String sourceFolder,
                                                                  Collection<Restriction> restrictions,
                                                                  Collection<RangeCheckCause> causes) {
-        DataTree<Object, DataRow> dt = new DataTree<Object, DataRow>();
+        Multimap<Object, DataRow> dt = new TreeMultimap<Object, DataRow>();
         Collection<String> stringRows = new ArrayList<String>();
 
         for ( RangeCheckCause cause : causes ) {
