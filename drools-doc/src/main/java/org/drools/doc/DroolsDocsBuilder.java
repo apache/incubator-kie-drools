@@ -24,6 +24,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class DroolsDocsBuilder {
 
     protected final String currentDate = getFormatter().format( new Date() );
+    
 
     protected static Format getFormatter() {
         return new SimpleDateFormat( getDateFormatMask() );
@@ -31,9 +32,14 @@ public class DroolsDocsBuilder {
 
     private final DrlPackageParser packageData;
 
-    protected DroolsDocsBuilder(String packageDrl) {
+    public DroolsDocsBuilder(String packageDrl) {
         this.packageData = DrlPackageParser.findPackageDataFromDrl( packageDrl );
     }
+    
+    protected DroolsDocsBuilder(DrlPackageData packageData) {
+        // @ FIXME
+        throw new UnsupportedOperationException( "Waiting for Rikkola to fix his bad commit" );
+    }    
 
     protected DroolsDocsBuilder(DrlPackageParser packageData) {
         this.packageData = packageData;
