@@ -31,8 +31,8 @@ public class DecisionTableFactory {
     private static void loadProvider() {
         try {
             // we didn't find anything in properties so lets try and us reflection
-            //Class<DecisionTableProvider> cls = ( Class<DecisionTableProvider> ) Class.forName( "org.drools.decisiontable.DecisionTableProviderImpl" );            
-            setDecisionTableProvider( ( DecisionTableProvider ) Activator.bc.getService( Activator.bc.getServiceReference( DecisionTableProvider.class.getName() ) ) );
+            Class<DecisionTableProvider> cls = ( Class<DecisionTableProvider> ) Class.forName( "org.drools.decisiontable.DecisionTableProviderImpl" );            
+            setDecisionTableProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
             throw new ProviderInitializationException( "Provider org.drools.decisiontable.DecisionTableProviderImpl could not be set.", e2);
         }
