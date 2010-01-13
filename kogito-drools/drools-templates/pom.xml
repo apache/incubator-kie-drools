@@ -31,10 +31,49 @@
     </dependency>
 
     <dependency>
-        <groupId>hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
+        <groupId>org.hsqldb</groupId>  
+        <artifactId>com.springsource.org.hsqldb</artifactId> 
         <scope>test</scope>
     </dependency>
   </dependencies>
+  
+  <build>
+    <plugins> 
+            <plugin>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                <archive>  
+                  <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+                </archive> 
+              </configuration>
+            </plugin>  
+            
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.0.1</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+                    <manifestLocation>META-INF</manifestLocation>
+					<instructions>
+                        <_removeheaders>Ignore-Package</_removeheaders>                    
+                        <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>                    
+						<Import-Package>!org.drools.*, *</Import-Package>
+						<Export-Package>org.drools.*</Export-Package>   
+                        <DynamicImport-Package>org.drools.*</DynamicImport-Package>                                        
+					</instructions>
+				</configuration>
+			</plugin>   
+    </plugins>
+  </build>     
 
 </project>

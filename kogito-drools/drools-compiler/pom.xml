@@ -22,6 +22,12 @@
 			<artifactId>drools-core</artifactId>
 		</dependency>
 		<!-- External dependencies -->
+            <dependency>  
+               <groupId>org.osgi</groupId>  
+               <artifactId>org.osgi.core</artifactId>  
+               <scope>optional</scope>
+            </dependency>
+            
 		<dependency>
             <groupId>org.antlr</groupId>  
             <artifactId>com.springsource.org.antlr.runtime</artifactId>  
@@ -34,6 +40,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>gunit</artifactId>
+            <scope>test</scope>
         </dependency>         
 		<dependency>
              <groupId>org.apache.jasper.springsource</groupId>  
@@ -187,13 +194,15 @@
 				<configuration>
                     <manifestLocation>META-INF</manifestLocation>
 					<instructions>
+                        <_removeheaders>Ignore-Package</_removeheaders>                    
                         <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>                    
-						<Import-Package>!*</Import-Package>
+						<Import-Package>!org.drools.*, *</Import-Package>
 						<Export-Package>!org.drools.commons.*, 
                                         !org.drools.lang.*, 
-                                        !org.drools.compiler,
                                         org.drools.builder.impl, <!-- add this one manually as BND seems to miss it out -->
-                                        org.drools.*</Export-Package>                     
+                                        org.drools.*</Export-Package>   
+                        <DynamicImport-Package>org.drools.*</DynamicImport-Package> 
+                        <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>                                                               
 					</instructions>
 				</configuration>
 			</plugin>   

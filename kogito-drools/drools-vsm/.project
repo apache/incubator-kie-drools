@@ -5,6 +5,9 @@
     <project>drools-api</project>
     <project>drools-compiler</project>
     <project>drools-core</project>
+    <project>drools-persistence-jpa</project>
+    <project>drools-process-task</project>
+    <project>drools-workitems</project>
   </projects>
   <buildSpec>
     <buildCommand>

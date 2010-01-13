@@ -494,9 +494,9 @@ public class PackageBuilder {
                 ((InternalResource) resource).setResourceType( type );
                 XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
                 if ( resource instanceof ClassPathResource ) {
-                    reader.setClassLoader( ((ClassPathResource) resource).getClassLoader() );
+                    reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),  ((ClassPathResource) resource).getClazz() );
                 } else {
-                    reader.setClassLoader( this.configuration.getClassLoader() );
+                    reader.setClassLoader( this.configuration.getClassLoader() , null);
                 }
                 ChangeSet changeSet = reader.read( resource.getReader() );
                 if ( changeSet == null ) {

@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
+import org.drools.util.ClassLoaderUtil;
+import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
 
 /**
@@ -67,7 +69,7 @@ public class ClassPathResource extends BaseResource
         }
         this.path = path;
         this.clazz = clazz;
-        this.classLoader = classLoader;
+        this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, clazz );        
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -88,16 +90,10 @@ public class ClassPathResource extends BaseResource
         InputStream is = null;
         if ( this.clazz != null ) {
             is = this.clazz.getResourceAsStream( this.path );
-        } else if ( this.classLoader != null ) {
+        } 
+        
+        if ( is == null ) {
             is = this.classLoader.getResourceAsStream( this.path );
-        }
-
-        if ( is == null ) {
-            is = Thread.currentThread().getContextClassLoader().getResourceAsStream( this.path );
-        }
-
-        if ( is == null ) {
-            is = Class.class.getClassLoader().getSystemClassLoader().getResourceAsStream( this.path );
         }
 
         if ( is == null ) {
@@ -116,16 +112,10 @@ public class ClassPathResource extends BaseResource
         URL url = null;
         if ( this.clazz != null ) {
             url = this.clazz.getResource( this.path );
-        } else if ( this.classLoader != null ) {
+        } 
+        
+        if ( url == null ) {
             url = this.classLoader.getResource( this.path );
-        }
-
-        if ( url == null ) {
-            url = Thread.currentThread().getContextClassLoader().getResource( this.path );
-        }
-
-        if ( url == null ) {
-            url = Class.class.getClassLoader().getSystemClassLoader().getResource( this.path );
         }
 
         if ( url == null ) {
@@ -197,6 +187,10 @@ public class ClassPathResource extends BaseResource
 
     public ClassLoader getClassLoader() {
         return this.classLoader;
+    }
+    
+    public Class getClazz() {
+        return this.clazz;
     }
     
     public boolean equals(Object object) {

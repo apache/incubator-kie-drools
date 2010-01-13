@@ -57,7 +57,7 @@ public class ResourceHandler extends BaseAbstractHandler
         InternalResource resource = null;
         
         if ( src.trim().startsWith( "classpath:" ) ) {
-            resource = new ClassPathResource( src.substring( src.indexOf( ':' ) + 1 ), parser.getClassLoader() );
+            resource = new ClassPathResource( src.substring( src.indexOf( ':' ) + 1 ), ( Class ) parser.getMetaData().get( "clazz" ), parser.getClassLoader() );
         } else {
             resource = new UrlResource( src );
         }

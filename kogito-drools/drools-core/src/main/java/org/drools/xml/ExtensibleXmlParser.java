@@ -112,6 +112,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
     private DocumentFragment    docFragment;
     
     private ClassLoader         classLoader;
+    
+    private Map                 metaData                       = new HashMap();
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -272,6 +274,10 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+    
+    public Map getMetaData() {
+        return this.metaData;
     }
 
     /**

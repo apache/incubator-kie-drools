@@ -89,13 +89,13 @@ public class JavaDialectConfiguration
         // check that the jar for the specified compiler are present
         if ( compiler == ECLIPSE ) {
             try {
-                getClass().getClassLoader().loadClass( "org.eclipse.jdt.internal.compiler.Compiler" );
+            	Class.forName( "org.eclipse.jdt.internal.compiler.Compiler", true, this.conf.getClassLoader() );
             } catch ( ClassNotFoundException e ) {
                 throw new RuntimeException( "The Eclipse JDT Core jar is not in the classpath" );
             }
         } else if ( compiler == JANINO ){
             try {
-                getClass().getClassLoader().loadClass( "org.codehaus.janino.Parser" );
+            	Class.forName( "org.codehaus.janino.Parser", true, this.conf.getClassLoader() );
             } catch ( ClassNotFoundException e ) {
                 throw new RuntimeException( "The Janino jar is not in the classpath" );
             }
