@@ -13,6 +13,12 @@
   <name>Drools :: Core</name>
 
   <dependencies>  
+      <dependency>  
+         <groupId>org.osgi</groupId>  
+         <artifactId>org.osgi.core</artifactId>  
+         <scope>optional</scope>
+       </dependency>
+              
     <!-- following are required for parser (lang). May be refactored out of core module. -->    
       <dependency>  
           <groupId>com.thoughtworks.xstream</groupId>  
@@ -65,10 +71,13 @@
 				<configuration>
                     <manifestLocation>META-INF</manifestLocation>
 					<instructions>
+                        <_removeheaders>Ignore-Package</_removeheaders>                    
                         <Require-Bundle>org.drools.api;visibility:=reexport;bundle-version="${pom.version}"</Require-Bundle>
-						<Import-Package>!*</Import-Package>
+						<Import-Package>!org.drools.*, *</Import-Package>
 						<Export-Package>!org.drools.reteoo.*,
-                                        org.drools.*</Export-Package>                      
+                                        org.drools.*</Export-Package>     
+                        <DynamicImport-Package>org.drools.*</DynamicImport-Package>
+                        <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
 			</plugin> 

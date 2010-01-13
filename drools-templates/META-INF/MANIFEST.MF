@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Export-Package: org.drools.template.model;version="5.1.0.SNAPSHOT",org
+ .drools.template.objects;uses:="org.drools.template.parser,org.drools
+ .template";version="5.1.0.SNAPSHOT",org.drools.template.parser;uses:=
+ "org.mvel2.templates,org.drools.template.model";version="5.1.0.SNAPSH
+ OT",org.drools.template.jdbc;uses:="org.drools.template.parser";versi
+ on="5.1.0.SNAPSHOT",org.drools.template;uses:="org.drools.template.pa
+ rser,org.drools.template.objects";version="5.1.0.SNAPSHOT"
+Tool: Bnd-0.0.357
+Bundle-Name: Drools :: Templates
+Created-By: 1.6.0_10 (Sun Microsystems Inc.)
+Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
+Bundle-Vendor: JBoss Inc.
+DynamicImport-Package: org.drools.*
+Bundle-Version: 5.1.0.SNAPSHOT
+Bnd-LastModified: 1263361051637
+Bundle-ManifestVersion: 2
+Bundle-Description: A rule production system
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.mvel2.templates
+Bundle-SymbolicName: org.drools.templates
+Bundle-DocURL: http://www.jboss.org/
+

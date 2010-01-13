@@ -51,7 +51,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-dependencies</id>
+            <id>copy-tran-dependencies</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>copy-dependencies</goal>
@@ -62,11 +62,35 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
               <stripVersion>true</stripVersion>
-              <includeScope>runtime</includeScope>                    
+              <includeScope>runtime</includeScope> 
+              <excludeGroupIds>net.sf.jxls</excludeGroupIds>
             </configuration>
           </execution>
         </executions>
-      </plugin>   
+      </plugin> 
+
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-dependency</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/classes</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+              <stripVersion>true</stripVersion>
+              <includeScope>runtime</includeScope> 
+              <includeGroupIds>net.sf.jxls</includeGroupIds>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>       
     </plugins>
      
               <resources>          

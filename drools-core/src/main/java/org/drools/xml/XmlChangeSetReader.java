@@ -27,8 +27,9 @@ public class XmlChangeSetReader {
         this.parser.setSemanticModules( modules );
     }
     
-    public void setClassLoader(ClassLoader classLoader) {
+    public void setClassLoader(ClassLoader classLoader, Class clazz ) {
         this.parser.setClassLoader( classLoader );
+        this.parser.getMetaData().put( "clazz", clazz );
     }
     
     public ExtensibleXmlParser getParser() {

@@ -24,45 +24,25 @@
                 </archive> 
               </configuration>
             </plugin>    
-  
-     <plugin>
-       <artifactId>maven-antrun-plugin</artifactId>
-       <inherited>false</inherited>
-       <executions>
-         <execution>
-           <id>clean lib</id>
-           <phase>clean</phase>
-           <configuration>
-             <tasks>                              
-                <delete>
-                  <fileset dir="lib" includes="**/*.jar" excludes="**/.svn" />                 
-                </delete>  
-             </tasks>
-           </configuration>
-           <goals>
-             <goal>run</goal>
-           </goals>
-         </execution>        
-       </executions>
-     </plugin>    
-    
+      
      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-dependencies</id>
+            <id>unpack-dependencies</id>
             <phase>generate-resources</phase>
             <goals>
-              <goal>copy-dependencies</goal>
+              <goal>unpack-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>lib</outputDirectory>
+              <outputDirectory>target/classes</outputDirectory>
               <overWriteReleases>true</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
               <stripVersion>true</stripVersion>
-              <includeScope>runtime</includeScope>                    
+              <includeScope>runtime</includeScope> 
+              <includeGroupIds>org.milyn</includeGroupIds>
             </configuration>
           </execution>
         </executions>
@@ -120,9 +100,13 @@
                     <exclusion>  
                         <groupId>xerces</groupId>  
                         <artifactId>xercesImpl</artifactId>  
-                    </exclusion>                      
-               </exclusions>               
-            </dependency>      
+                    </exclusion>  
+                    <exclusion>  
+                        <groupId>org.mvel</groupId>  
+                        <artifactId>mvel2</artifactId>  
+                    </exclusion>                    
+               </exclusions>   
+        </dependency>               
   </dependencies>
 
 </project>

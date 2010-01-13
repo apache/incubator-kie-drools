@@ -6,7 +6,6 @@ Bundle-Version: 0.9.8
 Bundle-Vendor: JBoss
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/commons-jexl.jar,
- lib/jxls-reader.jar,
  .
 Export-Package: 
  net.sf.jxls.reader

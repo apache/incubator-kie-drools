@@ -310,9 +310,9 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
         XmlChangeSetReader reader = new XmlChangeSetReader(this.semanticModules);
         if (resource instanceof ClassPathResource) {
-            reader.setClassLoader(((ClassPathResource) resource).getClassLoader());
+            reader.setClassLoader(((ClassPathResource) resource).getClassLoader(), null);
         } else {
-            reader.setClassLoader(((AbstractRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getConfiguration().getClassLoader());
+            reader.setClassLoader(((AbstractRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getConfiguration().getClassLoader(), null);
         }
 
         ChangeSet changeSet = null;
