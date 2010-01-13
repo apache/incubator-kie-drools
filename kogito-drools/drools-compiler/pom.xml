@@ -40,7 +40,12 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>gunit</artifactId>
-            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.antlr</groupId>  
+                    <artifactId>antlr</artifactId>                  
+                </exclusion>
+            </exclusions>
         </dependency>         
 		<dependency>
              <groupId>org.apache.jasper.springsource</groupId>  
@@ -201,7 +206,7 @@
                                         !org.drools.lang.*, 
                                         org.drools.builder.impl, <!-- add this one manually as BND seems to miss it out -->
                                         org.drools.*</Export-Package>   
-                        <DynamicImport-Package>org.drools.*</DynamicImport-Package> 
+                        <DynamicImport-Package>*</DynamicImport-Package> 
                         <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>                                                               
 					</instructions>
 				</configuration>

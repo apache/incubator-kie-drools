@@ -5,22 +5,24 @@
   <classpathentry kind="src" path="src/test/resources" output="target/test-classes" including="**" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.1.1/antlr-runtime-3.1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
   <classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.4.2.v_883_R34x/core-3.4.2.v_883_R34x.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/thoughtworks/xstream/com.springsource.com.thoughtworks.xstream/1.3.1/com.springsource.com.thoughtworks.xstream-1.3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/antlr/com.springsource.org.antlr.runtime/3.1.3/com.springsource.org.antlr.runtime-3.1.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/jasper/springsource/com.springsource.org.apache.jasper.org.eclipse.jdt.springsource/6.0.20.S2-r5956/com.springsource.org.apache.jasper.org.eclipse.jdt.springsource-6.0.20.S2-r5956.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/janino/com.springsource.org.codehaus.janino/2.5.15/com.springsource.org.codehaus.janino-2.5.15.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/xmlpull/com.springsource.org.xmlpull/1.1.4.c/com.springsource.org.xmlpull-1.1.4.c.jar"/>
   <classpathentry kind="src" path="/drools-api"/>
   <classpathentry kind="src" path="/drools-compiler"/>
   <classpathentry kind="src" path="/drools-core"/>
   <classpathentry kind="var" path="M2_REPO/com/google/collections/google-collections/0.8/google-collections-0.8.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/antlr/gunit/3.1.3/gunit-3.1.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar" sourcepath="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock-legacy/2.5.1/jmock-legacy-2.5.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/joda-time/joda-time/1.6/joda-time-1.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12/mvel2-2.0.12.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/thoughtworks/xstream/xstream/1.3.1/xstream-1.3.1.jar" sourcepath="M2_REPO/com/thoughtworks/xstream/xstream/1.3.1/xstream-1.3.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
 </classpath>
