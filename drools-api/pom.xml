@@ -12,13 +12,7 @@
   <packaging>jar</packaging>
   <name>Drools :: API</name>
 
-  <dependencies>  
-         <dependency>  
-            <groupId>org.drools</groupId>  
-            <artifactId>bundle-repository</artifactId>  
-            <scope>optional</scope> 
-         </dependency>    
-  
+  <dependencies>    
          <dependency>  
             <groupId>com.sun.xml</groupId>  
             <artifactId>com.springsource.com.sun.tools.xjc</artifactId>  
