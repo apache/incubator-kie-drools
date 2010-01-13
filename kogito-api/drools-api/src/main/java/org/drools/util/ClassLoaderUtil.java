@@ -1,35 +1,34 @@
 package org.drools.util;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class ClassLoaderUtil {
     public static ClassLoader getClassLoader(final ClassLoader classLoader, Class cls) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader currentClassLoader = cls.getClassLoader();
-        List<ClassLoader> list = new ArrayList<ClassLoader>();
-        if ( classLoader != null) {
-            list.add( classLoader );
-        }
+        ClassLoader currentClassLoader = ( cls != null ) ? cls.getClassLoader() : ClassLoaderUtil.class.getClassLoader();
+        ClassLoader systemClassLoader = Class.class.getClassLoader().getSystemClassLoader();
         
-        if ( contextClassLoader != null && contextClassLoader != classLoader ) {
-            list.add( contextClassLoader );
-        }
+        IdentityHashMap<ClassLoader, Object> map = new IdentityHashMap<ClassLoader, Object>();
+        map.put( classLoader, null );
+        map.put( contextClassLoader, null );
+        map.put( currentClassLoader, null );
+        map.put( systemClassLoader, null );
         
-        if ( currentClassLoader != null && ( currentClassLoader != classLoader || currentClassLoader != contextClassLoader ) ) {
-            list.add( currentClassLoader );
-        }
-        
-        if ( list.size() > 0 ) {
+        if ( map.size() > 0 ) {
             CompositeClassLoader cl = new CompositeClassLoader( null );
-            for ( ClassLoader entry : list ) {
-                cl.addClassLoader( entry );
+            for ( ClassLoader entry : map.keySet() ) {
+                if ( entry != null ) {
+                    cl.addClassLoader( entry );
+                }
             }
             
             return cl;
             
         } else {
-            return list.get(0);
+            return map.keySet().iterator().next();
         }
                
     } 
