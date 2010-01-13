@@ -23,7 +23,7 @@ Import-Package: com.sun.tools.xjc;resolution:=optional;version="2.1",c
  org.drools.time;version="5.1",org.drools.util;version="5.1",org.drool
  s.vsm;version="5.1",org.milyn;resolution:=optional,org.quartz;resolut
  ion:=optional;version="1.6"
-Bnd-LastModified: 1263393281943
+Bnd-LastModified: 1263413779469
 Export-Package: org.drools.logger;uses:="org.drools.event,org.drools";
  version="5.1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command
  ,org.drools.time,org.drools.event,org.drools,org.drools.runtime.proce
