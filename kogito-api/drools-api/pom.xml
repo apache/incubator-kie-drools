@@ -97,9 +97,10 @@
 				<configuration>
                     <manifestLocation>META-INF</manifestLocation>
 					<instructions>
-						<Import-Package>org.drools.*,*;resolution:=optional</Import-Package>
-						<Export-Package>org.drools.*</Export-Package>   
-                        <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
+						<Import-Package>!org.drools.*,*;resolution:=optional</Import-Package>
+						<Export-Package>org.drools.*</Export-Package> 
+                        <DynamicImport-Package>*</DynamicImport-Package>                        
+                        <Bundle-Activator>org.drools.osgi.api.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
 			</plugin>   

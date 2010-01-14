@@ -54,6 +54,7 @@ public class Activator
 
         public Object addingService(ServiceReference ref) {
             Service service = (Service) bc.getService( ref );
+            System.out.println( "registering" + service );
             
             
             ServiceRegistryImpl.getInstance().registerLocator( service.getClass().getInterfaces()[0], new ReturnInstance( service ) );
