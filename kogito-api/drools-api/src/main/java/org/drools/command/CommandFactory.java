@@ -3,7 +3,6 @@ package org.drools.command;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ProviderInitializationException;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 
@@ -280,7 +279,7 @@ public class CommandFactory {
             Class<CommandFactoryProvider> cls = (Class<CommandFactoryProvider>) Class.forName( "org.drools.command.impl.CommandFactoryProviderImpl" );
             setCommandFactoryProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.command.impl.CommandFactoryProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.command.impl.CommandFactoryProviderImpl could not be set.",
                                                        e2 );
         }
     }

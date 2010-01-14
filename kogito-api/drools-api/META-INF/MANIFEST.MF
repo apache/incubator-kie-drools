@@ -39,6 +39,7 @@ Import-Package: com.sun.tools.xjc;version="2.1";resolution:=optional,
  org.drools.util.internal;version="5.1",
  org.drools.vsm;version="5.1",
  org.milyn;resolution:=optional,
+ org.osgi.framework,
  org.quartz;version="1.6";resolution:=optional
 Bnd-LastModified: 1263413779469
 Export-Package: org.drools;version="5.1.0.SNAPSHOT";

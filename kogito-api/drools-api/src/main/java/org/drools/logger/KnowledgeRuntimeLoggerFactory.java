@@ -1,6 +1,5 @@
 package org.drools.logger;
 
-import org.drools.ProviderInitializationException;
 import org.drools.event.KnowledgeRuntimeEventManager;
 
 /**
@@ -84,7 +83,7 @@ public class KnowledgeRuntimeLoggerFactory {
             Class<KnowledgeRuntimeLoggerProvider> cls = (Class<KnowledgeRuntimeLoggerProvider>) Class.forName( "org.drools.audit.KnowledgeRuntimeLoggerProviderImpl" );
             setKnowledgeRuntimeLoggerProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider org.drools.audit.KnowledgeRuntimeLoggerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.audit.KnowledgeRuntimeLoggerProviderImpl could not be set.",
                                                        e );
         }
     }

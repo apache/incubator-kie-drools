@@ -1,11 +1,11 @@
 package org.drools.persistence.jpa;
 
 import org.drools.KnowledgeBase;
-import org.drools.ProviderInitializationException;
+import org.drools.KnowledgeBaseProvider;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.util.internal.ServiceLocatorImpl;
+import org.drools.util.internal.ServiceRegistryImpl;
 
 /**
  * <p>
@@ -123,7 +123,7 @@ public class JPAKnowledgeService {
             Class<JPAKnowledgeServiceProvider> cls = (Class<JPAKnowledgeServiceProvider>) Class.forName( "org.drools.persistence.jpa.impl.JPAKnowledgeServiceProviderImpl" );
             setJPAKnowledgeServiceProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider org.drools.persistence.jpa.impl.JPAKnowledgeServiceProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.persistence.jpa.impl.JPAKnowledgeServiceProviderImpl could not be set.",
                                                        e );
         }
     }

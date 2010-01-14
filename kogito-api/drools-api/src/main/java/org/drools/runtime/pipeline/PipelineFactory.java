@@ -9,7 +9,6 @@ import javax.xml.bind.Unmarshaller;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReader;
 
-import org.drools.ProviderInitializationException;
 import org.drools.builder.help.KnowledgeBuilderHelper;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -588,7 +587,7 @@ public class PipelineFactory {
             Class<CorePipelineProvider> cls = (Class<CorePipelineProvider>) Class.forName( "org.drools.runtime.pipeline.impl.CorePipelineProviderImpl" );
             setCorePipelineProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "org.drools.runtime.pipeline.impl.CorePipelineProviderImpl could not be set.",
+            throw new RuntimeException( "org.drools.runtime.pipeline.impl.CorePipelineProviderImpl could not be set.",
                                                        e2 );
         }
     }
@@ -609,7 +608,7 @@ public class PipelineFactory {
             Class<JaxbTransformerProvider> cls = (Class<JaxbTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JaxbTransformerProviderImpl" );
             setJaxbTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JaxbTransformerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.runtime.pipeline.impl.JaxbTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }
@@ -630,7 +629,7 @@ public class PipelineFactory {
             Class<SmooksTransformerProvider> cls = (Class<SmooksTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.SmooksTransformerProviderImpl" );
             setSmooksTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }
@@ -651,7 +650,7 @@ public class PipelineFactory {
             Class<XStreamTransformerProvider> cls = (Class<XStreamTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.XStreamTransformerProviderImpl" );
             setXStreamTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }
@@ -672,7 +671,7 @@ public class PipelineFactory {
             Class<JxlsTransformerProvider> cls = (Class<JxlsTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JxlsTransformer$JxlsTransformerProviderImpl" );
             setJxlsTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JxlsTransformer$JxlsTransformerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.runtime.pipeline.impl.JxlsTransformer$JxlsTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }
@@ -693,7 +692,7 @@ public class PipelineFactory {
             Class<JmsMessengerProvider> cls = (Class<JmsMessengerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JmsMessengerProviderImpl" );
             setJmsMessengerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JmsMessengerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.runtime.pipeline.impl.JmsMessengerProviderImpl could not be set.",
                                                        e2 );
         }
     }

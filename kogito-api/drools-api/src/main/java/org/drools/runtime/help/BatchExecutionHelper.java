@@ -1,7 +1,5 @@
 package org.drools.runtime.help;
 
-import org.drools.ProviderInitializationException;
-
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -258,7 +256,7 @@ public class BatchExecutionHelper {
             Class<BatchExecutionHelperProvider> cls = (Class<BatchExecutionHelperProvider>) Class.forName( "org.drools.runtime.help.impl.BatchExecutionHelperProviderImpl" );
             setBatchExecutionHelperProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.help.impl.BatchExecutionHelperProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.runtime.help.impl.BatchExecutionHelperProviderImpl could not be set.",
                                                        e2 );
         }
     }

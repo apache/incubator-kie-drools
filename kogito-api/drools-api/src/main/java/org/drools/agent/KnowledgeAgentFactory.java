@@ -4,7 +4,6 @@ import java.util.Properties;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.ProviderInitializationException;
 import org.drools.io.ResourceFactory;
 
 /**
@@ -163,7 +162,7 @@ public class KnowledgeAgentFactory {
             Class<KnowledgeAgentProvider> cls = (Class<KnowledgeAgentProvider>) Class.forName(providerClassName);
             setKnowledgeAgentProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider "+providerClassName+" could not be set." );
+            throw new RuntimeException( "Provider "+providerClassName+" could not be set." );
         }
     }
 }
