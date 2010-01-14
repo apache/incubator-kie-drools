@@ -17,7 +17,7 @@ Import-Package: com.thoughtworks.xstream;version="1.3",com.thoughtwork
  rg.mvel2.integration,org.mvel2.integration.impl,org.mvel2.optimizers,
  org.mvel2.templates,org.mvel2.util,org.osgi.framework;version="1.5",o
  rg.w3c.dom,org.xml.sax
-Bnd-LastModified: 1263459155537
+Bnd-LastModified: 1263462737582
 Export-Package: org.drools.builder.impl;uses:="org.drools.compiler";ve
  rsion="5.1.0.SNAPSHOT",org.drools.rule.builder;uses:="org.drools.comp
  iler,org.mvel2.compiler,org.mvel2,org.drools.rule.builder.dialect.mve
