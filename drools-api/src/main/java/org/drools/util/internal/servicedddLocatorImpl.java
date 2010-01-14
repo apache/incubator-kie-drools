@@ -28,12 +28,12 @@ import org.drools.io.ResourceProvider;
  *
  */
 public class serviceLocatorImpl {
-    private static serviceLocatorImpl            instance         = new serviceLocatorImpl();
+    private static ServiceLocatorImpl            instance         = new ServiceLocatorImpl();
 
     private Map<String, Callable<Class< ? >>> serviceFactories = new HashMap<String, Callable<Class< ? >>>();
 
-    public static serviceLocatorImpl getInstance() {
-        return serviceLocatorImpl.instance;
+    public static ServiceLocatorImpl getInstance() {
+        return ServiceLocatorImpl.instance;
     }
     
     public synchronized void registerLocator(String name, Callable<Class< ? >> cal) {
