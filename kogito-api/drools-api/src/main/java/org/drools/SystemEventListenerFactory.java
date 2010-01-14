@@ -1,6 +1,6 @@
 package org.drools;
 
-import org.drools.util.internal.ServiceRegistryImpl;
+import org.drools.util.ServiceRegistryImpl;
 
 /**
  * This factory allows you to set the SystemEventListener that will be used by various components of Drools, such

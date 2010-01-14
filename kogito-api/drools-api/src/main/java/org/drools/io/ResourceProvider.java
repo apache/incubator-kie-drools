@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import org.drools.Service;
+
 /**
  * ResourceProvider is used by the ResourceFactory to "provide" it's concrete implementation.
  * 
@@ -12,7 +14,7 @@ import java.net.URL;
  * the Factory api, which is considered stable.
  *
  */
-public interface ResourceProvider {
+public interface ResourceProvider extends Service {
     ResourceChangeNotifier getResourceChangeNotifierService();
 
     ResourceChangeScanner getResourceChangeScannerService();

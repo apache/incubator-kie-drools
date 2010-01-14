@@ -12,7 +12,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
  * the KnowledgeBaseFactory api, which is considered stable.
  *
  */
-public interface KnowledgeBaseProvider {
+public interface KnowledgeBaseProvider extends Service {
 
     /**
      * Instantiate and return a new KnowledgeBaseConfiguration

@@ -3,7 +3,7 @@ package org.drools.builder;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
-import org.drools.util.internal.ServiceRegistryImpl;
+import org.drools.util.ServiceRegistryImpl;
 
 /**
  * This factory is used to build the knowledge base definitions that are held collectively in
