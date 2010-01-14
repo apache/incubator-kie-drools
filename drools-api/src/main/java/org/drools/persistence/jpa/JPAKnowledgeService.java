@@ -5,7 +5,7 @@ import org.drools.ProviderInitializationException;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.util.ProviderLocator;
+import org.drools.util.internal.ServiceLocatorImpl;
 
 /**
  * <p>
@@ -84,7 +84,7 @@ import org.drools.util.ProviderLocator;
  * java.naming.factory.initial=bitronix.tm.jndi.BitronixInitialContextFactory
  * </pre>
  */
-public class JPAKnowledgeService extends ProviderLocator {
+public class JPAKnowledgeService {
     private static JPAKnowledgeServiceProvider provider;
 
     public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,

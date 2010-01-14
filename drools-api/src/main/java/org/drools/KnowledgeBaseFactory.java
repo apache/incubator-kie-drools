@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.util.ProviderLocator;
+import org.drools.util.internal.ServiceLocatorImpl;
 
 /**
  * <p>
@@ -34,7 +34,7 @@ import org.drools.util.ProviderLocator;
  *
  * @see org.drools.KnowledgeBase
  */
-public class KnowledgeBaseFactory extends ProviderLocator {
+public class KnowledgeBaseFactory  {
     private static KnowledgeBaseProvider provider;
 
     /**
