@@ -53,7 +53,7 @@ class VerifierDataKnowledgeSession
         return new ArrayList( list );
     }
 
-    public ObjectType getObjectTypeByName(String name) {
+    public ObjectType getObjectTypeByFullName(String name) {
         return null;
     }
 

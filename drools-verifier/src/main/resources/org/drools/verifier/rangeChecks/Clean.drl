@@ -86,7 +86,7 @@ rule "Remove useless integer gaps lesser or lesser and equal"
 	when
 		# Covered x > 10
 		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.INT,
+			valueType == Field.INT,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
@@ -139,7 +139,7 @@ rule "Remove useless integer gaps greater or greater and equal"
 	when
 		# Covered x > 10
 		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.INT,
+			valueType == Field.INT,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
@@ -192,7 +192,7 @@ rule "Remove useless double gaps lesser or lesser and equal"
 	when
 		# Covered x > 10.0
 		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.DOUBLE,
+			valueType == Field.DOUBLE,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
@@ -245,7 +245,7 @@ rule "Remove useless double gaps greater or greater and equal"
 	when
 		# Covered x > 10.0
 		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.DOUBLE,
+			valueType == Field.DOUBLE,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
@@ -298,7 +298,7 @@ rule "Remove useless date gaps lesser or lesser and equal"
 	when
 		# Covered x > "01-Oct-2007"
 		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.DATE,
+			valueType == Field.DATE,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
@@ -351,7 +351,7 @@ rule "Remove useless date gaps greater or greater and equal"
 	when
 		# Covered x > "01-Oct-2007"
 		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.DATE,
+			valueType == Field.DATE,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 

@@ -21,7 +21,7 @@ global VerifierReport result;
 rule "Range check for integers, if smaller than or equal is missing"
 	@verifying_scopes(knowledge-package, decision-table)
 	when
-		$f :Field( fieldType == Field.FieldType.INT )
+		$f :Field( fieldType == Field.INT )
 		
 		# Foo( bar > 42 )
 		$r :LiteralRestriction( 
@@ -53,7 +53,7 @@ end
 rule "Range check for integers, if greater than or equal is missing"
 	@verifying_scopes(knowledge-package, decision-table)
 	when
-		$f :Field( fieldType == Field.FieldType.INT )
+		$f :Field( fieldType == Field.INT )
 		
 		# Foo( bar > 42 )
 		$r :LiteralRestriction( 
@@ -86,7 +86,7 @@ end
 rule "Range check for integers, equal and greater than"
 	@verifying_scopes(knowledge-package, decision-table)
 	when
-		$f :Field( fieldType == Field.FieldType.INT )
+		$f :Field( fieldType == Field.INT )
 
 		# Foo( bar == 42 ) 
 		$r :LiteralRestriction( 
@@ -127,7 +127,7 @@ end
 rule "Range check for integers, equal and smaller than"
 	@verifying_scopes(knowledge-package, decision-table)
 	when
-		$f :Field( fieldType == Field.FieldType.INT )
+		$f :Field( fieldType == Field.INT )
 
 		# Foo( bar == 42 ) 
 		$r :LiteralRestriction( 

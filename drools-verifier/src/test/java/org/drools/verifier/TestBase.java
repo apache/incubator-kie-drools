@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -112,6 +113,7 @@ abstract public class TestBase extends TestCase {
         PackageDescrVisitor ruleFlattener = new PackageDescrVisitor();
 
         ruleFlattener.addPackageDescrToData( descr,
+                                             Collections.EMPTY_LIST,
                                              data );
 
         // Rules with relations

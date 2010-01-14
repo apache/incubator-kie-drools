@@ -2,6 +2,7 @@ package org.drools.verifier.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ class VerifierDataMaps
     private Map<VerifierComponentType, Map<String, VerifierComponent>> all                            = new TreeMap<VerifierComponentType, Map<String, VerifierComponent>>();
 
     private Map<String, RulePackage>                                   packagesByName                 = new TreeMap<String, RulePackage>();
-    private Map<String, ObjectType>                                    objectTypesByName              = new TreeMap<String, ObjectType>();
+    private Map<String, ObjectType>                                    objectTypesByFullName          = new TreeMap<String, ObjectType>();
     private Map<String, Field>                                         fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>();
     private Multimap<String, Field>                                    fieldsByObjectTypeId           = new TreeMultimap<String, Field>();
     private Map<String, FieldObjectTypeLink>                           fieldObjectTypeLinkByPath      = new TreeMap<String, FieldObjectTypeLink>();
@@ -57,8 +58,8 @@ class VerifierDataMaps
         return set;
     }
 
-    public ObjectType getObjectTypeByName(String name) {
-        return objectTypesByName.get( name );
+    public ObjectType getObjectTypeByFullName(String name) {
+        return objectTypesByFullName.get( name );
     }
 
     public Field getFieldByObjectTypeAndFieldName(String objectTypeName,
@@ -128,7 +129,7 @@ class VerifierDataMaps
             Field field = (Field) object;
             ObjectType objectType = (ObjectType) getVerifierObject( VerifierComponentType.OBJECT_TYPE,
                                                                     field.getObjectTypeGuid() );
-            fieldsByObjectTypeAndFieldName.put( objectType.getName() + "." + field.getName(),
+            fieldsByObjectTypeAndFieldName.put( objectType.getFullName() + "." + field.getName(),
                                                 field );
 
             fieldsByObjectTypeId.put( field.getObjectTypeGuid(),
@@ -168,8 +169,8 @@ class VerifierDataMaps
                                 rulePackage );
         } else if ( VerifierComponentType.OBJECT_TYPE.equals( object.getVerifierComponentType() ) ) {
             ObjectType objectType = (ObjectType) object;
-            objectTypesByName.put( objectType.getName(),
-                                   objectType );
+            objectTypesByFullName.put( objectType.getFullName(),
+                                       objectType );
         } else if ( VerifierComponentType.ENTRY_POINT_DESCR.equals( object.getVerifierComponentType() ) ) {
             VerifierEntryPointDescr entryPoint = (VerifierEntryPointDescr) object;
             entryPointsByEntryId.put( entryPoint.getEntryId(),
@@ -195,7 +196,13 @@ class VerifierDataMaps
 
     //    public <T extends VerifierComponent> Collection<T> getAll(VerifierComponentType type) {
     public Collection< ? extends VerifierComponent> getAll(VerifierComponentType type) {
-        return all.get( type ).values();
+        Map<String, VerifierComponent> result = all.get( type );
+
+        if ( result == null ) {
+            return Collections.emptyList();
+        } else {
+            return result.values();
+        }
     }
 
     //    public <T extends VerifierComponent> T getVerifierObject(VerifierComponentType type,

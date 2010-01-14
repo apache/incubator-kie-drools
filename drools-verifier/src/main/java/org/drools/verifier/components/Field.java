@@ -11,33 +11,20 @@ public class Field extends RuleComponent
     implements
     Cause {
 
-    public static class FieldType {
-        public static final FieldType BOOLEAN  = new FieldType( "boolean" );
-        public static final FieldType STRING   = new FieldType( "String" );
-        public static final FieldType INT      = new FieldType( "int" );
-        public static final FieldType DOUBLE   = new FieldType( "double" );
-        public static final FieldType DATE     = new FieldType( "Date" );
-        public static final FieldType VARIABLE = new FieldType( "Variable" );
-        public static final FieldType OBJECT   = new FieldType( "Object" );
-        public static final FieldType ENUM     = new FieldType( "Enum" );
-        public static final FieldType UNKNOWN  = new FieldType( "Unknown" );
+    public static final String BOOLEAN  = "boolean";
+    public static final String STRING   = "java.lang.String";
+    public static final String INT      = "int";
+    public static final String DOUBLE   = "double";
+    public static final String DATE     = "java.util.Date";
+    public static final String VARIABLE = "Variable";
+    public static final String OBJECT   = "Object";
+    public static final String ENUM     = "Enum";
+    public static final String UNKNOWN  = "Unknown";
 
-        private final String          string;
-
-        private FieldType(String string) {
-            this.string = string;
-        }
-
-        @Override
-        public String toString() {
-            return string;
-        }
-    }
-
-    private String    objectTypeGuid;
-    protected String  objectTypeName;
-    protected String  name;
-    private FieldType fieldType;
+    private String             objectTypeGuid;
+    protected String           objectTypeName;
+    protected String           name;
+    private String             fieldType;
 
     public VerifierComponentType getVerifierComponentType() {
         return VerifierComponentType.FIELD;
@@ -55,13 +42,13 @@ public class Field extends RuleComponent
         this.name = name;
     }
 
-    public FieldType getFieldType() {
+    public String getFieldType() {
         return fieldType;
     }
 
-    public void setFieldType(FieldType fieldType) {
+    public void setFieldType(String fieldType) {
         // Only set fieldType to variable if there is no other fieldType found.
-        if ( fieldType == FieldType.VARIABLE && this.fieldType == null ) {
+        if ( fieldType == VARIABLE && this.fieldType == null ) {
             this.fieldType = fieldType;
         } else {
             this.fieldType = fieldType;

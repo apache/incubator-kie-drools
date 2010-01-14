@@ -1,6 +1,7 @@
 package org.drools.verifier;
 
 import java.util.List;
+import java.util.jar.JarInputStream;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
@@ -17,9 +18,9 @@ public interface Verifier {
                                      ResourceType type);
 
     /**
-     * TODO: Something like this, takes a look at the objects and finds out
+     * Give model info optionally as a jar. This way verifier doesn't have to figure out the field types.
      */
-    // public void addObjectModel();
+     public void addObjectModel(JarInputStream jar);
 
     /**
      * 
