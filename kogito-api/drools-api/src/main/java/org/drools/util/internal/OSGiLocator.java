@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.util.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
