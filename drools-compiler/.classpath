@@ -30,7 +30,8 @@
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12/mvel2-2.0.12.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/osgi/org.osgi.core/r4v42/org.osgi.core-r4v42.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/org.eclipse.osgi/3.5.1/org.eclipse.osgi-3.5.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/org.eclipse.osgi.util/3.5.1/org.eclipse.osgi.util-3.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
 </classpath>

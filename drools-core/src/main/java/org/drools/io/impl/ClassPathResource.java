@@ -19,9 +19,9 @@ import java.util.List;
 
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
+import org.drools.util.ClassLoaderUtil;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
-import org.drools.util.internal.ClassLoaderUtil;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
