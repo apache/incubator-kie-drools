@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.poi.hssf.record.formula.functions.T;
 import org.drools.KnowledgeBaseProvider;
+import org.drools.Service;
 import org.drools.builder.KnowledgeBuilderProvider;
 import org.drools.io.ResourceProvider;
 
@@ -47,8 +48,8 @@ public class ServiceRegistryImpl
     /* (non-Javadoc)
      * @see org.drools.util.internal.ServiceRegistry#registerLocator(java.lang.String, java.util.concurrent.Callable)
      */
-    public synchronized <T> void registerLocator(Class<T> cls,
-                                                 Callable<Class<T>> cal) {
+    public synchronized void registerLocator(Class cls,
+                                                 Callable cal) {
         this.registry.put( cls.getName(),
                            cal );
     }
@@ -56,7 +57,7 @@ public class ServiceRegistryImpl
     /* (non-Javadoc)
      * @see org.drools.util.internal.ServiceRegistry#unregisterLocator(java.lang.String)
      */
-    public synchronized void unregisterLocator(Class<T> cls) {
+    public synchronized void unregisterLocator(Class cls) {
         this.registry.remove( cls.getName() );
         this.registry.put( cls.getName(), this.defaultServices.get( cls.getName() ) );
     }
@@ -77,23 +78,19 @@ public class ServiceRegistryImpl
     }
 
     private void init() {
-        ReflectionInstantiator<KnowledgeBuilderProvider> kbuilderRi = new ReflectionInstantiator<KnowledgeBuilderProvider>( "org.drools.builder.impl.KnowledgeBuilderProviderImpl" );
-        registry.put( KnowledgeBuilderProvider.class.getName(),
-                      kbuilderRi );
-        defaultServices.put( KnowledgeBuilderProvider.class.getName(),
-                             kbuilderRi );
-
-        ReflectionInstantiator<KnowledgeBaseProvider> kbaseRi = new ReflectionInstantiator<KnowledgeBaseProvider>( "org.drools.impl.KnowledgeBaseProviderImpl" );
-        registry.put( KnowledgeBaseProvider.class.getName(),
-                      kbaseRi );
-        defaultServices.put( KnowledgeBaseProvider.class.getName(),
-                             kbaseRi );
-
-        ReflectionInstantiator<ResourceProvider> resourceRi = new ReflectionInstantiator<ResourceProvider>( "org.drools.io.impl.ResourceProviderImpl" );
-        registry.put( ResourceProvider.class.getName(),
+        addDefault( KnowledgeBuilderProvider.class, "org.drools.builder.impl.KnowledgeBuilderProviderImpl" );
+        
+        addDefault( KnowledgeBaseProvider.class, "org.drools.impl.KnowledgeBaseProviderImpl" );
+        
+        addDefault( ResourceProvider.class,  "org.drools.io.impl.ResourceProviderImpl" );
+    }
+    
+    private void addDefault(Class cls, String impl) {
+        ReflectionInstantiator<Service> resourceRi = new ReflectionInstantiator<Service>( impl );
+        registry.put( cls.getName(),
                       resourceRi );
-        defaultServices.put( ResourceProvider.class.getName(),
-                             resourceRi );
+        defaultServices.put( cls.getName(),
+                             resourceRi );        
     }
 
     static class ReflectionInstantiator<V>

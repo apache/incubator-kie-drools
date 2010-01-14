@@ -6,10 +6,10 @@ import org.apache.poi.hssf.record.formula.functions.T;
 
 public interface ServiceRegistry {
 
-    public <T> void registerLocator(Class<T> cls,
-                                  Callable<Class<T>> cal);
+    public void registerLocator(Class cls,
+                                  Callable cal);
 
-    public void unregisterLocator(Class<T> cls);
+    public void unregisterLocator(Class cls);
     
     public <T> T get(Class<T> cls);
 
