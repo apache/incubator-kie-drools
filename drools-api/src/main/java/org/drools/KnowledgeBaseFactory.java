@@ -2,9 +2,10 @@ package org.drools;
 
 import java.util.Properties;
 
+import org.drools.builder.KnowledgeBuilderProvider;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.util.internal.ServiceLocatorImpl;
+import org.drools.util.internal.ServiceRegistryImpl;
 
 /**
  * <p>
@@ -151,12 +152,6 @@ public class KnowledgeBaseFactory  {
 
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
-        try {
-            // we didn't find anything in properties so lets try and us reflection
-            Class<KnowledgeBaseProvider> cls = (Class<KnowledgeBaseProvider>) Class.forName( "org.drools.impl.KnowledgeBaseProviderImpl" );
-            setKnowledgeBaseProvider( cls.newInstance() );
-        } catch ( Exception e ) {
-            throw new ProviderInitializationException( "Provider org.drools.impl.KnowledgeBaseProviderImpl could not be set.", e );
-        }
+        setKnowledgeBaseProvider( ServiceRegistryImpl.getInstance().get( KnowledgeBaseProvider.class ) );
     }
 }

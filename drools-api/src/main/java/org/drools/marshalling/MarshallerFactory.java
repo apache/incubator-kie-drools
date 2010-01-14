@@ -3,7 +3,6 @@ package org.drools.marshalling;
 import java.io.ByteArrayOutputStream;
 
 import org.drools.KnowledgeBase;
-import org.drools.ProviderInitializationException;
 
 
 /**
@@ -113,7 +112,7 @@ public class MarshallerFactory {
             Class<MarshallerProvider> cls = (Class<MarshallerProvider>) Class.forName( "org.drools.marshalling.impl.MarshallerProviderImpl" );
             setMarshallerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.marshalling.impl.MarshallerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.marshalling.impl.MarshallerProviderImpl could not be set.",
                                                        e2 );
         }
     }

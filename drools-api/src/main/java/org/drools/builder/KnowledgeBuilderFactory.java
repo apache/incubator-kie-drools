@@ -3,7 +3,7 @@ package org.drools.builder;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
-import org.drools.ProviderInitializationException;
+import org.drools.util.internal.ServiceRegistryImpl;
 
 /**
  * This factory is used to build the knowledge base definitions that are held collectively in
@@ -104,12 +104,6 @@ public class KnowledgeBuilderFactory {
     }
 
     private static void loadProvider() {
-        try {
-            Class<KnowledgeBuilderProvider> cls = (Class<KnowledgeBuilderProvider>) Class.forName( "org.drools.builder.impl.KnowledgeBuilderProviderImpl" );
-            setKnowledgeBuilderProvider( cls.newInstance() );
-        } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.builder.impl.KnowledgeBuilderProviderImpl could not be set.",
-                                                       e2 );
-        }
+        setKnowledgeBuilderProvider( ServiceRegistryImpl.getInstance().get( KnowledgeBuilderProvider.class ) );
     }
 }

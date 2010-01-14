@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.drools.ProviderInitializationException;
+import org.drools.KnowledgeBaseProvider;
+import org.drools.util.internal.ServiceRegistryImpl;
 
 /**
  * <p>
@@ -108,13 +109,7 @@ public class ResourceFactory {
     }
 
     private static void loadProvider() {
-        try {
-            Class<ResourceProvider> cls = (Class<ResourceProvider>) Class.forName( "org.drools.io.impl.ResourceProviderImpl" );
-            setResourceProvider( cls.newInstance() );
-        } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.io.impl.ResourceProviderImpl could not be set.",
-                                                       e2 );
-        }
+        setResourceProvider( ServiceRegistryImpl.getInstance().get( ResourceProvider.class ) );
     }
 
 }

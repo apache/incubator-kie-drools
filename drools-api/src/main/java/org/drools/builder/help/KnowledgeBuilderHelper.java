@@ -8,7 +8,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.drools.KnowledgeBase;
-import org.drools.ProviderInitializationException;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.io.Resource;
@@ -110,7 +109,7 @@ public class KnowledgeBuilderHelper {
             Class<DroolsJaxbHelperProvider> cls = (Class<DroolsJaxbHelperProvider>) Class.forName( "org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl" );
             setDroolsJaxbHelperProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl could not be set.",
                                                        e2 );
         }
     }
