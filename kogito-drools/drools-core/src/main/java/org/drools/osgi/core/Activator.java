@@ -18,18 +18,18 @@ public class Activator
 
     public void start(BundleContext bc) throws Exception {
         System.out.println( "registering core  services" );
-//        this.resourceReg = bc.registerService( ResourceProvider.class.getName(),
-//                                               new ResourceProviderImpl(),
-//                                               new Hashtable() );
-//        this.kbaseReg = bc.registerService( KnowledgeBaseProvider.class.getName(),
-//                                            new KnowledgeBaseProviderImpl(),
-//                                            new Hashtable() );
+        this.resourceReg = bc.registerService( ResourceProvider.class.getName(),
+                                               new ResourceProviderImpl(),
+                                               new Hashtable() );
+        this.kbaseReg = bc.registerService( KnowledgeBaseProvider.class.getName(),
+                                            new KnowledgeBaseProviderImpl(),
+                                            new Hashtable() );
         System.out.println( "core services registered" );
     }
 
     public void stop(BundleContext bc) throws Exception {
-//        this.resourceReg.unregister();
-//        this.kbaseReg.unregister();
+        this.resourceReg.unregister();
+        this.kbaseReg.unregister();
     }
 
 }

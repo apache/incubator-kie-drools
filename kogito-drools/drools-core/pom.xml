@@ -81,7 +81,7 @@
 						<Import-Package>!org.drools.*, *</Import-Package>
 						<Export-Package>!org.drools.reteoo.*,
                                         org.drools.*</Export-Package>     
-                        <DynamicImport-Package>org.drools.*</DynamicImport-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
