@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.drools.util.internal;
+package org.drools.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class ServiceRegistryImpl
         return ServiceRegistryImpl.instance;
     }
 
-    ServiceRegistryImpl() {
+    public ServiceRegistryImpl() {
         init();
     }
     

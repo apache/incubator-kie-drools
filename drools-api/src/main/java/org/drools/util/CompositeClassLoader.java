@@ -1,4 +1,4 @@
-package org.drools.util.internal;
+package org.drools.util;
 
 import java.io.IOException;
 import java.io.InputStream;
