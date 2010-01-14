@@ -3,6 +3,7 @@ package org.drools.builder;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
+import org.drools.Service;
 
 /**
  * KnowledgeBuilderProvider is used by the KnowledgeBuilderFacotry to "provide" it's concrete implementation.
@@ -11,7 +12,7 @@ import org.drools.KnowledgeBase;
  * the Factory api, which is considered stable.
  *
  */
-public interface KnowledgeBuilderProvider {
+public interface KnowledgeBuilderProvider  extends Service {
     /**
      * Instantiate and return a new KnowledgeBuilderConfiguration
      * @return

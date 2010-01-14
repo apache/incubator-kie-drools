@@ -13,11 +13,16 @@
   <name>Drools :: API</name>
 
   <dependencies>    
-      <dependency>  
-         <groupId>org.osgi</groupId>  
-         <artifactId>org.osgi.core</artifactId>  
-         <scope>provided</scope>
-       </dependency>
+            <dependency>  
+               <groupId>org.eclipse.equinox</groupId>  
+               <artifactId>org.eclipse.osgi</artifactId>  
+               <scope>provided</scope> 
+            </dependency>            
+            <dependency>  
+               <groupId>org.eclipse.equinox</groupId>  
+               <artifactId>org.eclipse.osgi.util</artifactId>  
+               <scope>provided</scope> 
+            </dependency>
          
          <dependency>  
             <groupId>com.sun.xml</groupId>  
@@ -93,7 +98,8 @@
                     <manifestLocation>META-INF</manifestLocation>
 					<instructions>
 						<Import-Package>org.drools.*,*;resolution:=optional</Import-Package>
-						<Export-Package>org.drools.*</Export-Package>                     
+						<Export-Package>org.drools.*</Export-Package>   
+                        <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
 			</plugin>   

@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.net.URL;
 
 import org.drools.KnowledgeBaseProvider;
-import org.drools.util.internal.ServiceRegistryImpl;
+import org.drools.util.ServiceRegistryImpl;
 
 /**
  * <p>

@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.drools.builder.KnowledgeBuilderProvider;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.util.internal.ServiceRegistryImpl;
+import org.drools.util.ServiceRegistryImpl;
 
 /**
  * <p>
