@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.JarInputStream;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -47,6 +48,8 @@ public class VerifierImpl
 
     private VerifierReport              result = VerifierReportFactory.newVerifierReport();
 
+    private List<JarInputStream>        jars   = new ArrayList<JarInputStream>();
+
     public VerifierImpl(VerifierConfiguration conf) {
         this.conf = conf;
     }
@@ -71,11 +74,16 @@ public class VerifierImpl
             PackageDescrVisitor ruleFlattener = new PackageDescrVisitor();
 
             ruleFlattener.addPackageDescrToData( descr,
+                                                 jars,
                                                  result.getVerifierData() );
 
         } catch ( Throwable t ) {
             t.printStackTrace();
         }
+    }
+
+    public void addObjectModel(JarInputStream jar) {
+        this.jars.add( jar );
     }
 
     /*
@@ -175,6 +183,7 @@ public class VerifierImpl
     public void addResourcesToVerify(Resource resource,
                                      ResourceType type) {
 
+        // TODO: Other than DRL
         if ( type.matchesExtension( ".drl" ) ) {
             DrlParser p = new DrlParser();
 
@@ -197,7 +206,6 @@ public class VerifierImpl
 
                 addPackageDescr( pkg );
 
-                // TODO: Move this into a method
                 addDrlData( drl.toString() );
 
                 reader.close();

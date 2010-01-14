@@ -1,8 +1,15 @@
 package org.drools.verifier.misc;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.JarInputStream;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -20,6 +27,7 @@ import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionCallDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
@@ -74,18 +82,21 @@ import org.drools.verifier.solver.Solvers;
  */
 public class PackageDescrVisitor {
 
-    private Solvers       solvers           = new Solvers();
+    private Solvers              solvers           = new Solvers();
 
-    private VerifierData  data;
+    private VerifierData         data;
+    private List<JarInputStream> jars              = null;
 
-    private RulePackage   currentPackage    = null;
-    private VerifierRule  currentRule       = null;
-    private Pattern       currentPattern    = null;
-    private Constraint    currentConstraint = null;
-    private ObjectType    currentObjectType = null;
-    private Field         currentField      = null;
+    Map<String, String>          imports           = new HashMap<String, String>();
 
-    private WorkingMemory workingMemory     = null;
+    private RulePackage          currentPackage    = null;
+    private VerifierRule         currentRule       = null;
+    private Pattern              currentPattern    = null;
+    private Constraint           currentConstraint = null;
+    private ObjectType           currentObjectType = null;
+    private Field                currentField      = null;
+
+    private WorkingMemory        workingMemory     = null;
 
     /**
      * Adds packageDescr to given VerifierData object
@@ -97,9 +108,11 @@ public class PackageDescrVisitor {
      * @throws UnknownDescriptionException
      */
     public void addPackageDescrToData(PackageDescr packageDescr,
+                                      List<JarInputStream> jars,
                                       VerifierData data) throws UnknownDescriptionException {
 
         this.data = data;
+        this.jars = jars;
 
         visit( packageDescr );
 
@@ -503,6 +516,48 @@ public class PackageDescrVisitor {
     private void visit(PackageDescr descr) throws UnknownDescriptionException {
         RulePackage rulePackage = data.getPackageByName( descr.getName() );
 
+        // Imports
+        StringBuilder header = new StringBuilder();
+        for ( ImportDescr i : descr.getImports() ) {
+            String fullPath = i.getTarget();
+            String name = fullPath.substring( fullPath.lastIndexOf( "." ) + 1 );
+
+            header.append( "import " );
+            header.append( fullPath );
+            header.append( "\n" );
+
+            imports.put( name,
+                         fullPath );
+
+            ObjectType objectType = this.data.getObjectTypeByFullName( fullPath );
+            if ( objectType == null ) objectType = new ObjectType();
+            objectType.setName( name );
+            objectType.setFullName( fullPath );
+            data.add( objectType );
+        }
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( header.toString(),
+                                                                        jars,
+                                                                        Collections.EMPTY_LIST );
+        for ( String factTypeName : engine.getFactTypes() ) {
+            for ( String fieldName : engine.getFieldCompletions( factTypeName ) ) {
+                ObjectType ot = this.data.getObjectTypeByFullName( imports.get( factTypeName ) );
+
+                Field field = data.getFieldByObjectTypeAndFieldName( ot.getFullName(),
+                                                                     fieldName );
+                if ( field == null ) {
+                    field = createField( fieldName,
+                                         ot );
+                    field.setFieldType( engine.getFieldType( ot.getName(),
+                                                             fieldName ) );
+                    data.add( field );
+                }
+            }
+        }
+
+        // TODO: Declaretions
+
         if ( rulePackage == null ) {
             rulePackage = new RulePackage();
 
@@ -531,7 +586,7 @@ public class PackageDescrVisitor {
 
         Consequence consequence = visitConsequence( rule,
                                                     descr.getConsequence() );
-        
+
         rule.getMetadata().putAll( descr.getMetaAttributes() );
         rule.setConsequenceGuid( consequence.getGuid() );
         rule.setConsequenceType( consequence.getConsequenceType() );
@@ -699,13 +754,11 @@ public class PackageDescrVisitor {
                        VerifierComponent parent,
                        int orderNumber) throws UnknownDescriptionException {
 
-        Field field = data.getFieldByObjectTypeAndFieldName( currentObjectType.getName(),
+        Field field = data.getFieldByObjectTypeAndFieldName( currentObjectType.getFullName(),
                                                              descr.getFieldName() );
         if ( field == null ) {
             field = createField( descr.getFieldName(),
-                                 currentObjectType.getGuid(),
-                                 currentObjectType.getName(),
-                                 parent );
+                                 currentObjectType );
             data.add( field );
         }
         currentField = field;
@@ -806,7 +859,7 @@ public class PackageDescrVisitor {
         restriction.setParentType( parent.getVerifierComponentType() );
 
         // Set field value, if it is unset.
-        currentField.setFieldType( Field.FieldType.VARIABLE );
+        currentField.setFieldType( Field.VARIABLE );
 
         data.add( restriction );
         solvers.addRestriction( restriction );
@@ -912,7 +965,7 @@ public class PackageDescrVisitor {
             restriction.setParentType( parent.getVerifierComponentType() );
 
             // Set field value, if it is not set.
-            currentField.setFieldType( Field.FieldType.VARIABLE );
+            currentField.setFieldType( Field.VARIABLE );
 
             variable.setObjectTypeType( VerifierComponentType.FIELD.getType() );
 
@@ -953,7 +1006,7 @@ public class PackageDescrVisitor {
             restriction.setParentType( parent.getVerifierComponentType() );
 
             // Set field value, if it is not set.
-            currentField.setFieldType( Field.FieldType.ENUM );
+            currentField.setFieldType( Field.ENUM );
 
             data.add( restriction );
             solvers.addRestriction( restriction );
@@ -961,27 +1014,28 @@ public class PackageDescrVisitor {
     }
 
     private ObjectType findOrCreateNewObjectType(String name) {
-        ObjectType objectType = data.getObjectTypeByName( name );
+        ObjectType objectType = data.getObjectTypeByFullName( name );
         if ( objectType == null ) {
             objectType = new ObjectType();
             objectType.setName( name );
+            String fullName = imports.get( name );
+            if ( fullName == null ) fullName = name;
+            objectType.setFullName( fullName );
             data.add( objectType );
         }
         return objectType;
     }
 
     private Field createField(String fieldName,
-                              String classGuid,
-                              String className,
-                              VerifierComponent parent) {
+                              ObjectType ot) {
         Field field = new Field();
-        field.setObjectTypeGuid( classGuid );
-        field.setObjectTypeName( className );
+        field.setObjectTypeGuid( ot.getGuid() );
+        field.setObjectTypeName( ot.getFullName() );
         field.setName( fieldName );
-        field.setParentGuid( parent.getGuid() );
-        field.setParentType( parent.getVerifierComponentType() );
+        field.setParentGuid( ot.getGuid() );
+        field.setParentType( ot.getVerifierComponentType() );
 
-        currentObjectType.getFields().add( field );
+        ot.getFields().add( field );
         return field;
     }
 

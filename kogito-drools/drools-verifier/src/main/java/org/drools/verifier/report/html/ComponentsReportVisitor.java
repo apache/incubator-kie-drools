@@ -129,7 +129,7 @@ class ComponentsReportVisitor extends ReportVisitor {
         map.put( "rules",
                  rules );
 
-        if ( field.getFieldType() == Field.FieldType.DOUBLE || field.getFieldType() == Field.FieldType.DATE || field.getFieldType() == Field.FieldType.INT ) {
+        if ( field.getFieldType() == Field.DOUBLE || field.getFieldType() == Field.DATE || field.getFieldType() == Field.INT ) {
             Collection<RangeCheckCause> causes = result.getRangeCheckCausesByFieldId( field.getGuid() );
             Collection<Restriction> restrictions = data.getRestrictionsByFieldGuid( field.getGuid() );
             map.put( "ranges",

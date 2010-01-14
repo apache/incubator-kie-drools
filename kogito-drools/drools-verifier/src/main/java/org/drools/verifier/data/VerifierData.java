@@ -29,7 +29,7 @@ public interface VerifierData {
     public Variable getVariableByRuleAndVariableName(String ruleName,
                                                      String base);
 
-    public ObjectType getObjectTypeByName(String name);
+    public ObjectType getObjectTypeByFullName(String name);
 
     public Field getFieldByObjectTypeAndFieldName(String base,
                                                   String fieldName);

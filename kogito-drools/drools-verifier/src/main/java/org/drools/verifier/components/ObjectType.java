@@ -15,17 +15,19 @@ public class ObjectType extends VerifierComponent
     Serializable {
     private static final long serialVersionUID = -783733402566313623L;
 
-    private int               offset = 0;
-    
+    private int               offset           = 0;
+
+    private String            fullName;
+
     private String            name;
 
     private Set<Field>        fields           = new HashSet<Field>();
-    
+
     public int getOffset() {
         offset++;
         return offset % 2;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -42,8 +44,20 @@ public class ObjectType extends VerifierComponent
         this.fields = fields;
     }
 
-
     public VerifierComponentType getVerifierComponentType() {
         return VerifierComponentType.OBJECT_TYPE;
     }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String toString() {
+        return "ObjectType: " + fullName;
+    }
+
 }

@@ -2,9 +2,9 @@
 package org.drools.verifier.subsumption.patterns
 
 import org.drools.base.evaluators.Operator;
+import org.drools.verifier.components.Field;
 
 import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.Field.FieldType;
 import org.drools.verifier.report.components.Subsumption;
 
 
@@ -21,7 +21,7 @@ rule "Find subsumptant restrictions, greater than"
 	when
 		# Covered x > 10
 		$lower:LiteralRestriction(
-			( valueType == Field.FieldType.INT || == Field.FieldType.DOUBLE || == Field.FieldType.DATE ),
+			( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
 		)
 
@@ -65,7 +65,7 @@ rule "Find subsumptant restrictions, less than"
 	when
 		# Covered x < 10
 		$higher :LiteralRestriction(
-			( valueType == Field.FieldType.INT || == Field.FieldType.DOUBLE || == Field.FieldType.DATE ),
+			( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL )
 		)
 

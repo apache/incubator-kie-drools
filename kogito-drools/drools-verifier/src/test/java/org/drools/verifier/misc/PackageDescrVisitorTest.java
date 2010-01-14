@@ -3,6 +3,7 @@ package org.drools.verifier.misc;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -32,12 +33,13 @@ public class PackageDescrVisitorTest extends TestCase {
         assertNotNull( packageDescr );
 
         visitor.addPackageDescrToData( packageDescr,
+                                       Collections.EMPTY_LIST,
                                        data );
 
         Collection<VerifierComponent> all = data.getAll();
 
         assertNotNull( all );
-        assertEquals( 50,
+        assertEquals( 51,
                       all.size() );
 
         //        for ( VerifierComponent verifierComponent : all ) {
@@ -58,6 +60,7 @@ public class PackageDescrVisitorTest extends TestCase {
         assertNotNull( packageDescr );
 
         visitor.addPackageDescrToData( packageDescr,
+                                       Collections.EMPTY_LIST,
                                        data );
 
         Collection<VerifierComponent> all = data.getAll();

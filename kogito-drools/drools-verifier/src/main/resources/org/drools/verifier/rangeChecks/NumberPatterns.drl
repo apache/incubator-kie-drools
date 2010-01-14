@@ -28,7 +28,7 @@ rule "Range check for number patterns"
 	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field(
-			( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE )
+			( fieldType == Field.INT || == Field.DOUBLE )
 		)
 		(
 			# Where pattern is false.
@@ -70,7 +70,7 @@ rule "Range check for number patterns, !="
 	@verifying_scopes(knowledge-package, decision-table)
 	when
 		$f :Field( 
-			( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE ) 
+			( fieldType == Field.INT || == Field.DOUBLE ) 
 		)
 		(
 			# Where pattern is false.
