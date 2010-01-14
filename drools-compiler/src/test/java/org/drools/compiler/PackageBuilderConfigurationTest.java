@@ -44,7 +44,7 @@ import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.util.ChainedProperties;
+import org.drools.util.internal.ChainedProperties;
 
 public class PackageBuilderConfigurationTest extends TestCase {
 
