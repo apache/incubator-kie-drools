@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -191,7 +191,7 @@
      inkscape:window-height="948"
      inkscape:window-width="1280"
      inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="1"
      guidetolerance="10.0"
      gridtolerance="10.0"
      objecttolerance="10.0"
@@ -201,10 +201,10 @@
      id="base"
      inkscape:zoom="1.78"
      inkscape:cx="300"
-     inkscape:cy="200"
+     inkscape:cy="198.8764"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:current-layer="g4332"
+     inkscape:current-layer="svg2"
      inkscape:grid-points="true"
      inkscape:object-nodes="true"
      inkscape:guide-points="true"
@@ -350,12 +350,12 @@
        sodipodi:nodetypes="cc"
        id="path4257"
        d="m 80.5,59.5 30,0"
-       style="fill:none;stroke:#a40000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       style="fill:none;stroke:#ef2929;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        sodipodi:nodetypes="cc"
        id="path4328"
        d="m 80.5,59.5 -30,30.028"
-       style="fill:none;stroke:#a40000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       style="fill:none;stroke:#ef2929;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        sodipodi:nodetypes="cc"
        id="path4330"
@@ -777,13 +777,13 @@
          id="path4247-1"
          sodipodi:nodetypes="cc" />
       <path
-         style="fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;opacity:0.50000000000000000"
          d="m 65,90 60,90"
          id="path4251-6"
          sodipodi:nodetypes="cc" />
       <path
          sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;opacity:0.50000000000000000"
          d="m 95,90 30,90"
          id="path4253-1" />
       <path
@@ -791,7 +791,7 @@
          transform="translate(-205.5,35.5)"
          id="path4309"
          d="m 300.5,54.5 -60,60"
-         style="fill:none;stroke:#a40000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+         style="fill:none;stroke:#ef2929;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       <path
          sodipodi:nodetypes="cc"
          transform="translate(-205.5,35.5)"
@@ -799,7 +799,7 @@
          d="m 270.5,54.5 -30,60"
          style="fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       <path
-         style="fill:none;stroke:#a40000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:none;stroke:#ef2929;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;opacity:0.50000000000000000"
          d="m 65,90 30,0"
          id="path4257-5"
          sodipodi:nodetypes="cc" />
@@ -1385,7 +1385,7 @@
          y="1172.045">3</tspan></text>
   </g>
   <rect
-     style="fill:#729fcf;stroke:#204a87;stroke-width:0.99999994;stroke-opacity:1"
+     style="fill:#729fcf;stroke:#3465a4;stroke-width:0.99999994000000003;stroke-opacity:1"
      id="rect3463-8"
      width="30"
      height="180"
@@ -1425,7 +1425,7 @@
        y="255.92268"
        id="tspan3340-5">B</tspan></text>
   <rect
-     style="fill:#729fcf;stroke:#204a87;stroke-width:0.99999994;stroke-opacity:1"
+     style="fill:#729fcf;stroke:#3465a4;stroke-width:0.99999994000000003;stroke-opacity:1"
      id="rect3463-8-3"
      width="30"
      height="180"
@@ -1525,7 +1525,7 @@
        x="224.27211"
        y="256.59103">A</tspan></text>
   <rect
-     style="opacity:0.6;fill:#ef2929;stroke:#a40000;stroke-width:1;stroke-opacity:1"
+     style="opacity:0.50000000000000000;fill:#ef2929;stroke:#a40000;stroke-width:1;stroke-opacity:1"
      id="rect3463-07-5"
      width="50"
      height="20"
@@ -1576,7 +1576,7 @@
        x="121.94508"
        y="300.69705">D</tspan></text>
   <rect
-     style="opacity:0.6;fill:#8ae234;stroke:#4e9a06;stroke-width:1;stroke-opacity:1"
+     style="opacity:0.50000000000000000;fill:#8ae234;stroke:#4e9a06;stroke-width:1;stroke-opacity:1"
      id="rect3463-9-5"
      width="80"
      height="20"
@@ -1638,7 +1638,7 @@
        x="91.760628"
        y="346.60443">C</tspan></text>
   <rect
-     style="opacity:0.6;fill:#8ae234;stroke:#4e9a06;stroke-width:1;stroke-opacity:1"
+     style="opacity:0.50000000000000000;fill:#8ae234;stroke:#4e9a06;stroke-width:1;stroke-opacity:1"
      id="rect3463-3-3"
      width="50"
      height="20"
