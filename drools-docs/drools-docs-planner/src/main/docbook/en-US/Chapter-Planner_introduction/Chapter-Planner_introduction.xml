@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
-                             http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         version="5.0" xml:base="./">
-
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Planner introduction</title>
 
   <section>
@@ -130,6 +127,8 @@
       and pick an example:</para>
 
       <programlisting>$ ./runExamples.sh</programlisting>
+
+      <programlisting>$ runExamples.bat</programlisting>
     </section>
 
     <section>
@@ -185,18 +184,25 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
   </section>
 
   <section>
-    <title>Questions, issues and patches</title>
+    <title>Questions, issues, patches and blogs</title>
 
-    <para>Your questions are welcome on <link xlink:href="http://www.jboss.org/drools/lists.html">the user mailing
-    list</link>. You can read/write to the mailing list without littering your mailbox through <link
+    <para>Your questions and remarks are welcome on <link xlink:href="http://www.jboss.org/drools/lists.html">the user
+    mailing list</link>. Start the subject of your mail with <literal>[planner]</literal>. You can read/write to the
+    user mailing list without littering your mailbox through <link
+    xlink:href="http://n3.nabble.com/Drools-User-f47000.html">this web forum</link> or <link
     xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
 
     <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the Drools Planner code
-    or for this manual to <link xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools JIRA</link>. Select
-    the component <literal>drools-planner</literal>.</para>
+    or for this manual to <link xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools issue tracker</link>.
+    Select the component <literal>drools-planner</literal>.</para>
 
     <para>Patches are very welcome and get priority treatment! Attach them to a JIRA issue and optionally send a mail to
-    the dev mailing list to get the issue fixed fast. By open sourcing your improvements, you 'll benefit from
-    improvements made upon your improvements.</para>
+    the dev mailing list to get the issue fixed fast. By open sourcing your improvements, you 'll benefit from our peer
+    review, improvements made upon your improvements and maybe even a thank you on our blog.</para>
+
+    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link> for news. If Drools
+    Planner helps you, don't forget to blog or to <link
+    xlink:href="http://twitter.com/#search?q=%23droolsplanner">twitter (hashtag #droolsplanner)</link> about it
+    yourself!</para>
   </section>
 </chapter>
