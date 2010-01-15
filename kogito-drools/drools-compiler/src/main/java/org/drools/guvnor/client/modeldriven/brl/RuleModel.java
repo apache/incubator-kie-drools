@@ -72,7 +72,7 @@ public class RuleModel
         if ( f instanceof CompositeFieldConstraint ) {
             CompositeFieldConstraint s = (CompositeFieldConstraint) f;
             for ( FieldConstraint ss : s.constraints ) {
-                return giveFieldBinding( s,
+                return giveFieldBinding( ss,
                                          var );
             }
         }
