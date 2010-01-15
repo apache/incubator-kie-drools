@@ -42,9 +42,6 @@ public class PackageDescrVisitorTest extends TestCase {
         assertEquals( 51,
                       all.size() );
 
-        //        for ( VerifierComponent verifierComponent : all ) {
-        //            System.out.println( verifierComponent );
-        //        }
     }
 
     public void testSubPatterns() throws DroolsParserException,
