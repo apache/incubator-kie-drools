@@ -1,0 +1,17 @@
+package com.misc.someData
+
+import org.test.Person;
+import org.test.Pet;
+import org.test.Rambo;
+
+
+declare Person
+	sex : String
+end
+
+declare VoiceCall
+    @role( event )
+    @timestamp( callDateTime )
+    @duration( callDuration )
+    @expires( 1h35m )
+end

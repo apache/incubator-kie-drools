@@ -40,6 +40,7 @@ import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.Constraint;
@@ -556,7 +557,36 @@ public class PackageDescrVisitor {
             }
         }
 
-        // TODO: Declaretions
+        // Declarations
+        for ( TypeDeclarationDescr typeDeclaration : descr.getTypeDeclarations() ) {
+            String objectTypeName = imports.get( typeDeclaration.getTypeName() );
+            if ( objectTypeName == null ) objectTypeName = typeDeclaration.getTypeName();
+
+            ObjectType objectType = this.data.getObjectTypeByFullName( objectTypeName );
+
+            if ( objectType == null ) {
+                objectType = new ObjectType();
+                objectType.setName( typeDeclaration.getTypeName() );
+                objectType.setFullName( typeDeclaration.getTypeName() );
+                data.add( objectType );
+            }
+
+            for ( String fieldName : typeDeclaration.getFields().keySet() ) {
+
+                Field field = data.getFieldByObjectTypeAndFieldName( objectType.getFullName(),
+                                                                     fieldName );
+                if ( field == null ) {
+                    field = createField( fieldName,
+                                         objectType );
+                    field.setFieldType( typeDeclaration.getFields().get( fieldName ).getPattern().getObjectType() );
+                    data.add( field );
+                }
+            }
+            for ( String metadata : typeDeclaration.getMetaAttributes().keySet() ) {
+                objectType.getMetadata().put( metadata,
+                                              typeDeclaration.getMetaAttribute( metadata ) );
+            }
+        }
 
         if ( rulePackage == null ) {
             rulePackage = new RulePackage();

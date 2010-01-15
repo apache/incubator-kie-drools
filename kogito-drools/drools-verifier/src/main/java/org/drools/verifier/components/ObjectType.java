@@ -1,7 +1,9 @@
 package org.drools.verifier.components;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.verifier.data.VerifierComponent;
@@ -13,15 +15,17 @@ import org.drools.verifier.data.VerifierComponent;
 public class ObjectType extends VerifierComponent
     implements
     Serializable {
-    private static final long serialVersionUID = -783733402566313623L;
+    private static final long   serialVersionUID = -783733402566313623L;
 
-    private int               offset           = 0;
+    private int                 offset           = 0;
 
-    private String            fullName;
+    private String              fullName;
 
-    private String            name;
+    private String              name;
 
-    private Set<Field>        fields           = new HashSet<Field>();
+    private Set<Field>          fields           = new HashSet<Field>();
+
+    private Map<String, String> metadata         = new HashMap<String, String>();
 
     public int getOffset() {
         offset++;
@@ -60,4 +64,7 @@ public class ObjectType extends VerifierComponent
         return "ObjectType: " + fullName;
     }
 
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
 }
