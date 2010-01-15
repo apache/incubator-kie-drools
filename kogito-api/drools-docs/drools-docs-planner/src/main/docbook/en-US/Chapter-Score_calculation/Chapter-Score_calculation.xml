@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
-                             http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         version="5.0" xml:base="./">
-
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Score calculation with a rule engine</title>
 
   <section>
@@ -51,18 +48,36 @@ end</programlisting>
 
     <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed.</para>
 
-    <para>It's recommended to use drools in forward-chaining mode (which is the default behaviour), as for solver
-    implementations this will create the effect of a <emphasis>delta based score calculation</emphasis> instead of a
-    full score calculation on each solution evaluation. For example, if a single queen moves from y <literal>0</literal>
-    to <literal>3</literal>, it won't bother to recalculate the "multiple queens on the same horizontal line" constraint
-    for queens with y <literal>1</literal> or <literal>2</literal>. This is a huge performance gain. <emphasis
-    role="bold">Drools Planner gives you this huge performance gain without forcing you to write a very complicated delta
-    based score calculation algorithm.</emphasis> Just let the drools rule engine do the hard work.</para>
-
     <para><emphasis role="bold">Adding more constraints is <emphasis role="bold">easy and </emphasis>scalable</emphasis>
     (once you understand the drools rule syntax). This allows you to add a bunch of soft constraint score rules on top
     of the hard constraints score rules with little effort and at a reasonable performance cost. For example, for a
     freight routing problem you could add a soft constraint to avoid the certain flagged highways at rush hour.</para>
+  </section>
+
+  <section>
+    <title>Delta based score calculation</title>
+
+    <para>It's recommended to use Drools in forward-chaining mode (which is the default behaviour), as for score
+    implementations this will create the effect of a <emphasis>delta based score calculation</emphasis> instead of a
+    full score calculation on each solution evaluation. For example, if a single queen A moves from y
+    <literal>0</literal> to <literal>3</literal>, it won't bother to recalculate the "multiple queens on the same
+    horizontal line" constraint between 2 queens if neither of those queens is queen A. This is a huge performance gain.
+    <emphasis role="bold">Drools Planner gives you this huge performance gain without forcing you to write a very
+    complicated delta based score calculation algorithm.</emphasis> Just let the Drools rule engine do the hard
+    work.</para>
+
+    <figure>
+      <title>Delta based score calculation for the 4 queens puzzle</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/deltaBasedScoreCalculationNQueens04.png" format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The speedup due to delta based score calculation is huge, because the speedup is relative to the size of your
+    planning problem (your n). By using score rules, you get that speedup without writing any delta code.</para>
   </section>
 
   <section>
