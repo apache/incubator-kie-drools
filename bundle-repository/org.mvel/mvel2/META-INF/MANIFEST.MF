@@ -1,11 +1,6 @@
 Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Created-By: 1.5.0_16 (Sun Microsystems Inc.)
-Built-By: mproctor
-Build-Jdk: 1.5.0_16
-Package: org.mvel2
-Main-Class: org.mvel2.sh.Main
 Bundle-Name: mvel2
+Created-By: 1.5.0_16 (Sun Microsystems Inc.)
 Import-Package: org.mvel2;version="2.0",org.mvel2.asm;version="2.0",or
  g.mvel2.asm.signature;version="2.0",org.mvel2.asm.util;version="2.0",
  org.mvel2.ast;version="2.0",org.mvel2.compiler;version="2.0",org.mvel
@@ -20,11 +15,11 @@ Import-Package: org.mvel2;version="2.0",org.mvel2.asm;version="2.0",or
  l2.sh.text;version="2.0",org.mvel2.templates;version="2.0",org.mvel2.
  templates.res;version="2.0",org.mvel2.templates.util;version="2.0",or
  g.mvel2.templates.util.io;version="2.0",org.mvel2.util;version="2.0",
- sun.misc
+ sun.misc;resolution:=optional
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.mvel2
+Bundle-SymbolicName: org.drools.osgi.wrapper.mvel2
 Tool: Bnd-0.0.357
-Bnd-LastModified: 1263804487520
+Bnd-LastModified: 1263853170490
 Export-Package: org.mvel2;uses:="org.mvel2.util,org.mvel2.conversion,o
  rg.mvel2.optimizers.impl.refl.nodes,org.mvel2.compiler,org.mvel2.inte
  gration,org.mvel2.integration.impl,org.mvel2.ast,org.mvel2.debug";ver
