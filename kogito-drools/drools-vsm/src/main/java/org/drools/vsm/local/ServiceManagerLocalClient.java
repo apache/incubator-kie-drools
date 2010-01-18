@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.agent.KnowledgeAgentProvider;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.command.Command;
 import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
 import org.drools.persistence.jpa.impl.JPAKnowledgeServiceProviderImpl;
@@ -38,11 +38,11 @@ public class ServiceManagerLocalClient
 
     }
 
-    public KnowledgeBuilderProvider getKnowledgeBuilderFactory() {
+    public KnowledgeBuilderFactoryService getKnowledgeBuilderFactoryService() {
         return new KnowledgeBuilderProviderLocalClient();
     }
 
-    public KnowledgeBaseProvider getKnowledgeBaseFactory() {
+    public KnowledgeBaseFactoryService getKnowledgeBaseFactoryService() {
         return new KnowledgeBaseProviderLocalClient();
     }
 
@@ -87,9 +87,9 @@ public class ServiceManagerLocalClient
     	return new HumanTaskServiceLocalProviderImpl(this);
     }
 
-    public static class RemoveKnowledgeBuilderProvider
+    public static class RemoveKnowledgeBuilderFactoryService
         implements
-        KnowledgeBuilderProvider {
+        KnowledgeBuilderFactoryService {
 
         public DecisionTableConfiguration newDecisionTableConfiguration() {
             // TODO Auto-generated method stub

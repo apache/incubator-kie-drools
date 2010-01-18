@@ -4,14 +4,14 @@ import java.util.Properties;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
-public class KnowledgeBaseProviderImpl implements KnowledgeBaseProvider {
+public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryService {
 
     public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration() {
         return new RuleBaseConfiguration();

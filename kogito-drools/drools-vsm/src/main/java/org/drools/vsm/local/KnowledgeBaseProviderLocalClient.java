@@ -5,13 +5,13 @@ import java.util.Properties;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
 public class KnowledgeBaseProviderLocalClient
     implements
-    KnowledgeBaseProvider {
+    KnowledgeBaseFactoryService {
 
     public Environment newEnvironment() {
         return KnowledgeBaseFactory.newEnvironment();

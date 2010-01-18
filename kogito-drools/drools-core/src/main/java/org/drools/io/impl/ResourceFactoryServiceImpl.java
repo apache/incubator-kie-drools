@@ -10,12 +10,12 @@ import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
-import org.drools.io.ResourceProvider;
+import org.drools.io.ResourceFactoryService;
 import org.drools.util.DelegatingSystemEventListener;
 
-public class ResourceProviderImpl
+public class ResourceFactoryServiceImpl
     implements
-    ResourceProvider {
+    ResourceFactoryService {
 
     private ResourceChangeNotifier notifier;
     private ResourceChangeScanner  scanner;

@@ -3,12 +3,12 @@ package org.drools.osgi.decisiontables;
 import java.util.Hashtable;
 
 
-//import org.drools.KnowledgeBaseProvider;
-//import org.drools.builder.KnowledgeBuilderProvider;
-//import org.drools.builder.impl.KnowledgeBuilderProviderImpl;
-//import org.drools.impl.KnowledgeBaseProviderImpl;
-//import org.drools.io.ResourceProvider;
-//import org.drools.io.impl.ResourceProviderImpl;
+//import org.drools.KnowledgeBaseFactoryService;
+//import org.drools.builder.KnowledgeBuilderFactoryService;
+//import org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl;
+//import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
+//import org.drools.io.ResourceFactoryService;
+//import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.decisiontable.DecisionTableProviderImpl;
 import org.osgi.framework.BundleActivator;

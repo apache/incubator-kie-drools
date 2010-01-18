@@ -15,7 +15,7 @@ import org.apache.mina.transport.socket.SocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.SystemEventListenerFactory;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItem;
@@ -103,7 +103,7 @@ public class CommandBasedVSMWSHumanTaskHandlerTest extends BaseTest {
     	HumanTaskServiceProvider humanTaskServiceFactory = this.client.getHumanTaskService();
     	this.humanTaskClient = (HumanTaskServiceImpl) humanTaskServiceFactory.newHumanTaskServiceClient();
     	
-    	KnowledgeBaseProvider kbaseFactory = this.client.getKnowledgeBaseFactory();
+    	KnowledgeBaseFactoryService kbaseFactory = this.client.getKnowledgeBaseFactoryService();
     	KnowledgeBase kbase = kbaseFactory.newKnowledgeBase();
     	
     	this.handler = new CommandBasedVSMWSHumanTaskHandler(kbase.newStatefulKnowledgeSession());

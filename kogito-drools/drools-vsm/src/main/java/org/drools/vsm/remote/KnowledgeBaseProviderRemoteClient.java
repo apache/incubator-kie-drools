@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.command.FinishedCommand;
 import org.drools.command.NewKnowledgeBaseCommand;
 import org.drools.command.SetVariableCommand;
@@ -15,7 +15,7 @@ import org.drools.vsm.Message;
 
 public class KnowledgeBaseProviderRemoteClient
     implements
-    KnowledgeBaseProvider {
+    KnowledgeBaseFactoryService {
     private ServiceManagerRemoteClient serviceManager;
 
     public KnowledgeBaseProviderRemoteClient(ServiceManagerRemoteClient serviceManager) {

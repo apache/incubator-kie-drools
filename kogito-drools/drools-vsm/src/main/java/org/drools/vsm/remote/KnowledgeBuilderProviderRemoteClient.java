@@ -10,7 +10,7 @@ import org.drools.KnowledgeBase;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.command.FinishedCommand;
 import org.drools.command.SetVariableCommand;
 import org.drools.command.builder.NewKnowledgeBuilderCommand;
@@ -18,7 +18,7 @@ import org.drools.vsm.Message;
 
 public class KnowledgeBuilderProviderRemoteClient
     implements
-    KnowledgeBuilderProvider {
+    KnowledgeBuilderFactoryService {
     private ServiceManagerRemoteClient serviceManager;
 
     public KnowledgeBuilderProviderRemoteClient(ServiceManagerRemoteClient serviceManager) {

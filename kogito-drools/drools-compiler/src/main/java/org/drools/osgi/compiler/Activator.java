@@ -4,8 +4,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.drools.Service;
-import org.drools.builder.KnowledgeBuilderProvider;
-import org.drools.builder.impl.KnowledgeBuilderProviderImpl;
+import org.drools.builder.KnowledgeBuilderFactoryService;
+import org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.osgi.api.Activator.BundleContextInstantiator;
 import org.drools.util.ServiceRegistryImpl;
@@ -25,8 +25,8 @@ public class Activator
 
     public void start(BundleContext bc) throws Exception {
         System.out.println( "registering compiler services" );
-        this.kbuilderReg = bc.registerService( new String[]{KnowledgeBuilderProvider.class.getName(), Service.class.getName()},
-                                               new KnowledgeBuilderProviderImpl(),
+        this.kbuilderReg = bc.registerService( new String[]{KnowledgeBuilderFactoryService.class.getName(), Service.class.getName()},
+                                               new KnowledgeBuilderFactoryServiceImpl(),
                                                new Hashtable() );
 
         this.dtableTracker = new ServiceTracker( bc,
