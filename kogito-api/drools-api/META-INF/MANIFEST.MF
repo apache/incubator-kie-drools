@@ -2,7 +2,14 @@ Manifest-Version: 1.0
 Bundle-Activator: org.drools.osgi.api.Activator
 Created-By: 1.5.0_16 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bnd-LastModified: 1263462703475
+Import-Package: com.sun.tools.xjc;resolution:=optional;version="2.1",c
+ om.thoughtworks.xstream;resolution:=optional;version="1.3",javax.mana
+ gement;resolution:=optional,javax.xml.bind;resolution:=optional;versi
+ on="2.1",net.sf.jxls.reader;resolution:=optional,org.milyn;resolution
+ :=optional,org.osgi.framework;resolution:=optional;version="1.5",org.
+ osgi.util.tracker;resolution:=optional;version="1.4",org.quartz;resol
+ ution:=optional;version="1.6"
+Bnd-LastModified: 1263788844395
 Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command,org.drools
  .time,org.drools.event,org.drools,org.drools.runtime.process,org.droo
@@ -17,10 +24,10 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  ls.event,org.drools.runtime.process";version="5.1.0.SNAPSHOT",org.dro
  ols.event.io;uses:="org.drools";version="5.1.0.SNAPSHOT",org.drools.c
  onf;uses:="org.drools.runtime.rule";version="5.1.0.SNAPSHOT",org.droo
- ls.osgi.api;uses:="org.drools,org.drools.util,org.osgi.framework,org.
+ ls.osgi.api;uses:="org.osgi.framework,org.drools,org.drools.util,org.
  osgi.util.tracker";version="5.1.0.SNAPSHOT",org.drools;uses:="org.dro
  ols.io,org.drools.event.knowledgebase,org.drools.runtime,org.drools.d
- efinition,org.drools.definition.type,org.drools.definition.rule,org.d
+ efinition,org.drools.definition.rule,org.drools.definition.type,org.d
  rools.definition.process,org.drools.conf,org.drools.util";version="5.
  1.0.SNAPSHOT",org.drools.runtime.conf;uses:="org.drools.conf";version
  ="5.1.0.SNAPSHOT",org.drools.runtime.process;uses:="org.drools.runtim
@@ -46,13 +53,24 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  lder;uses:="org.drools.io,org.drools.definition,org.drools,org.drools
  .builder.conf,org.drools.util";version="5.1.0.SNAPSHOT",org.drools.io
  ;uses:="org.drools,org.drools.event.io,org.drools.util";version="5.1.
- 0.SNAPSHOT",org.drools.util;uses:="org.drools.builder,org.drools.io,o
- rg.drools";version="5.1.0.SNAPSHOT",org.drools.command.impl;uses:="or
+ 0.SNAPSHOT",org.drools.util;uses:="org.drools,org.drools.builder,org.
+ drools.io";version="5.1.0.SNAPSHOT",org.drools.command.impl;uses:="or
  g.drools.command";version="5.1.0.SNAPSHOT",org.drools.definition.type
  ;version="5.1.0.SNAPSHOT",org.drools.definition.process;uses:="org.dr
  ools.definition";version="5.1.0.SNAPSHOT",org.drools.agent;uses:="org
  .drools.runtime,org.drools,org.drools.io";version="5.1.0.SNAPSHOT"
 Bundle-Version: 5.1.0.SNAPSHOT
+Ignore-Package: org.drools.logger,org.drools.runtime,org.drools.task.s
+ ervice,org.drools.marshalling,org.drools.runtime.rule,org.drools.time
+ ,org.drools.command,org.drools.event.io,org.drools.event.process,org.
+ drools.management,org.drools.conf,org.drools.osgi.api,org.drools,org.
+ drools.runtime.conf,org.drools.runtime.process,org.drools.event.rule,
+ org.drools.builder.help,org.drools.vsm,org.drools.builder.conf,org.dr
+ ools.definition,org.drools.definition.rule,org.drools.runtime.pipelin
+ e,org.drools.runtime.help,org.drools.event,org.drools.event.knowledge
+ base,org.drools.persistence.jpa,org.drools.builder,org.drools.io,org.
+ drools.util,org.drools.command.impl,org.drools.definition.type,org.dr
+ ools.definition.process,org.drools.agent
 Bundle-Name: Drools :: API
 Bundle-Description: A rule production system
 Bundle-DocURL: http://www.jboss.org/
@@ -61,3 +79,4 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.drools.api
 Tool: Bnd-0.0.357
 DynamicImport-Package: *
+

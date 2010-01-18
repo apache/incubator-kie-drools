@@ -20,10 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.Service;
-import org.drools.builder.KnowledgeBuilderProvider;
-import org.drools.io.ResourceProvider;
+import org.drools.SystemEventListener;
+import org.drools.SystemEventListenerService;
+import org.drools.builder.KnowledgeBuilderFactoryService;
+import org.drools.io.ResourceFactoryService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
@@ -155,14 +157,21 @@ public class ServiceRegistryImpl
     }
 
     private void init() {
-        addDefault( KnowledgeBuilderProvider.class,
-                    "org.drools.builder.impl.KnowledgeBuilderProviderImpl" );
+        addDefault( KnowledgeBuilderFactoryService.class,
+                    "org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
 
-        addDefault( KnowledgeBaseProvider.class,
-                    "org.drools.impl.KnowledgeBaseProviderImpl" );
+        addDefault( KnowledgeBaseFactoryService.class,
+                    "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );
 
-        addDefault( ResourceProvider.class,
-                    "org.drools.io.impl.ResourceProviderImpl" );
+        addDefault( ResourceFactoryService.class,
+                    "org.drools.io.impl.ResourceFactoryServiceImpl" );
+        
+        addDefault(  SystemEventListenerService.class,
+                     "org.drools.impl.SystemEventListenerServiceImpl" );
+        
+        
+//        addDefault( SystemE.class,
+//        "org.drools.io.impl.ResourceFactoryServiceImpl" );        
     }
 
     private void addDefault(Class cls,

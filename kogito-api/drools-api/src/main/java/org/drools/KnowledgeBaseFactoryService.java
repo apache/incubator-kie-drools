@@ -6,13 +6,13 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
 /**
- * KnowledgeBaseProvider is used by the KnowledgeBaseFacotry to "provide" it's concrete implementation.
+ * KnowledgeBaseFactoryService is used by the KnowledgeBaseFacotry to "provide" it's concrete implementation.
  * 
  * This class is not considered stable and may change, the user is protected from this change by using 
  * the KnowledgeBaseFactory api, which is considered stable.
  *
  */
-public interface KnowledgeBaseProvider extends Service {
+public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return a new KnowledgeBaseConfiguration

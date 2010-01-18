@@ -2,7 +2,7 @@ package org.drools;
 
 import java.util.Properties;
 
-import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.util.ServiceRegistryImpl;
@@ -36,7 +36,7 @@ import org.drools.util.ServiceRegistryImpl;
  * @see org.drools.KnowledgeBase
  */
 public class KnowledgeBaseFactory  {
-    private static KnowledgeBaseProvider provider;
+    private static KnowledgeBaseFactoryService provider;
 
     /**
      * Create a new KnowledgeBase using the default KnowledgeBaseConfiguration
@@ -132,18 +132,18 @@ public class KnowledgeBaseFactory  {
         return getKnowledgeBaseProvider().newEnvironment();
     }
 
-//    private static synchronized KnowledgeBaseProvider getKnowledgeBaseProvider() {
+//    private static synchronized KnowledgeBaseFactoryService getKnowledgeBaseProvider() {
 //        if ( provider == null ) {
-//            provider = newProviderFor( KnowledgeBaseProvider.class );
+//            provider = newProviderFor( KnowledgeBaseFactoryService.class );
 //        }
 //        return provider;
 //    }
     
-    private static synchronized void setKnowledgeBaseProvider(KnowledgeBaseProvider provider) {
+    private static synchronized void setKnowledgeBaseProvider(KnowledgeBaseFactoryService provider) {
         KnowledgeBaseFactory.provider = provider;
     }
 
-    private static synchronized KnowledgeBaseProvider getKnowledgeBaseProvider() {
+    private static synchronized KnowledgeBaseFactoryService getKnowledgeBaseProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -152,6 +152,6 @@ public class KnowledgeBaseFactory  {
 
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
-        setKnowledgeBaseProvider( ServiceRegistryImpl.getInstance().get( KnowledgeBaseProvider.class ) );
+        setKnowledgeBaseProvider( ServiceRegistryImpl.getInstance().get( KnowledgeBaseFactoryService.class ) );
     }
 }

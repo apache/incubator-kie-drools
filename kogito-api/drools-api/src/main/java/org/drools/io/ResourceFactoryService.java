@@ -8,13 +8,13 @@ import java.net.URL;
 import org.drools.Service;
 
 /**
- * ResourceProvider is used by the ResourceFactory to "provide" it's concrete implementation.
+ * ResourceFactoryService is used by the ResourceFactory to "provide" it's concrete implementation.
  * 
  * This class is not considered stable and may change, the user is protected from this change by using 
  * the Factory api, which is considered stable.
  *
  */
-public interface ResourceProvider extends Service {
+public interface ResourceFactoryService extends Service {
     ResourceChangeNotifier getResourceChangeNotifierService();
 
     ResourceChangeScanner getResourceChangeScannerService();

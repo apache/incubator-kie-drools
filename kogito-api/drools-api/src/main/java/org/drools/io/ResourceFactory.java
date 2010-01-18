@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.util.ServiceRegistryImpl;
 
 /**
@@ -27,7 +27,7 @@ import org.drools.util.ServiceRegistryImpl;
  *
  */
 public class ResourceFactory {
-    private static ResourceProvider resourceProvider;
+    private static ResourceFactoryService resourceFactoryService;
 
     /**
      * A Service that can be started, to provide notifications of changed Resources.
@@ -97,19 +97,19 @@ public class ResourceFactory {
                                                            classLoader );
     }
 
-    private static synchronized void setResourceProvider(ResourceProvider provider) {
-        ResourceFactory.resourceProvider = provider;
+    private static synchronized void setResourceProvider(ResourceFactoryService provider) {
+        ResourceFactory.resourceFactoryService = provider;
     }
 
-    private static synchronized ResourceProvider getResourceProvider() {
-        if ( resourceProvider == null ) {
+    private static synchronized ResourceFactoryService getResourceProvider() {
+        if ( resourceFactoryService == null ) {
             loadProvider();
         }
-        return resourceProvider;
+        return resourceFactoryService;
     }
 
     private static void loadProvider() {
-        setResourceProvider( ServiceRegistryImpl.getInstance().get( ResourceProvider.class ) );
+        setResourceProvider( ServiceRegistryImpl.getInstance().get( ResourceFactoryService.class ) );
     }
 
 }

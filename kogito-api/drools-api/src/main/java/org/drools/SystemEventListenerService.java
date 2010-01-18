@@ -1,13 +1,13 @@
 package org.drools;
 
 /**
- * KnowledgeBaseProvider is used by the KnowledgeBaseFacotry to "provide" it's concrete implementation.
+ * KnowledgeBaseFactoryService is used by the KnowledgeBaseFacotry to "provide" it's concrete implementation.
  * 
  * This class is not considered stable and may change, the user is protected from this change by using 
  * the KnowledgeBaseFactory api, which is considered stable.
  *
  */
-public interface SystemEventListenerProvider {
+public interface SystemEventListenerService {
 
     /**
      * Set the SystemEventListener

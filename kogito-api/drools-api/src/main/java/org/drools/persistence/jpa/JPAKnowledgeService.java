@@ -1,7 +1,7 @@
 package org.drools.persistence.jpa;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;

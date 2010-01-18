@@ -6,13 +6,13 @@ import org.drools.KnowledgeBase;
 import org.drools.Service;
 
 /**
- * KnowledgeBuilderProvider is used by the KnowledgeBuilderFacotry to "provide" it's concrete implementation.
+ * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFacotry to "provide" it's concrete implementation.
  * 
  * This class is not considered stable and may change, the user is protected from this change by using 
  * the Factory api, which is considered stable.
  *
  */
-public interface KnowledgeBuilderProvider  extends Service {
+public interface KnowledgeBuilderFactoryService  extends Service {
     /**
      * Instantiate and return a new KnowledgeBuilderConfiguration
      * @return

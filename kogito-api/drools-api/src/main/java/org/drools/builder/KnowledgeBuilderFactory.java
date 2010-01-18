@@ -18,7 +18,7 @@ import org.drools.util.ServiceRegistryImpl;
  *
  */
 public class KnowledgeBuilderFactory {
-    private static volatile KnowledgeBuilderProvider provider;
+    private static volatile KnowledgeBuilderFactoryService provider;
 
     /**
      * Create and return a new KnowledgeBuilder, using the default KnowledgeBuilderConfigurations
@@ -92,11 +92,11 @@ public class KnowledgeBuilderFactory {
         return getKnowledgeBuilderProvider().newDecisionTableConfiguration();
     }
 
-    private static synchronized void setKnowledgeBuilderProvider(KnowledgeBuilderProvider provider) {
+    private static synchronized void setKnowledgeBuilderFactoryService(KnowledgeBuilderFactoryService provider) {
         KnowledgeBuilderFactory.provider = provider;
     }
 
-    private static synchronized KnowledgeBuilderProvider getKnowledgeBuilderProvider() {
+    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -104,6 +104,6 @@ public class KnowledgeBuilderFactory {
     }
 
     private static void loadProvider() {
-        setKnowledgeBuilderProvider( ServiceRegistryImpl.getInstance().get( KnowledgeBuilderProvider.class ) );
+        setKnowledgeBuilderFactoryService( ServiceRegistryImpl.getInstance().get( KnowledgeBuilderFactoryService.class ) );
     }
 }
