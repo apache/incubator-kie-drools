@@ -9,7 +9,7 @@ Import-Package: com.sun.tools.xjc;resolution:=optional;version="2.1",c
  :=optional,org.osgi.framework;resolution:=optional;version="1.5",org.
  osgi.util.tracker;resolution:=optional;version="1.4",org.quartz;resol
  ution:=optional;version="1.6"
-Bnd-LastModified: 1263788844395
+Bnd-LastModified: 1263792610218
 Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command,org.drools
  .time,org.drools.event,org.drools,org.drools.runtime.process,org.droo
@@ -27,7 +27,7 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  ls.osgi.api;uses:="org.osgi.framework,org.drools,org.drools.util,org.
  osgi.util.tracker";version="5.1.0.SNAPSHOT",org.drools;uses:="org.dro
  ols.io,org.drools.event.knowledgebase,org.drools.runtime,org.drools.d
- efinition,org.drools.definition.rule,org.drools.definition.type,org.d
+ efinition,org.drools.definition.type,org.drools.definition.rule,org.d
  rools.definition.process,org.drools.conf,org.drools.util";version="5.
  1.0.SNAPSHOT",org.drools.runtime.conf;uses:="org.drools.conf";version
  ="5.1.0.SNAPSHOT",org.drools.runtime.process;uses:="org.drools.runtim
@@ -79,4 +79,3 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.drools.api
 Tool: Bnd-0.0.357
 DynamicImport-Package: *
-

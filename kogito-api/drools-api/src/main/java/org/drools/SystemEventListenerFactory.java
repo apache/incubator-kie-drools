@@ -10,7 +10,7 @@ import org.drools.util.ServiceRegistryImpl;
  *
  */
 public class SystemEventListenerFactory {
-    private static SystemEventListenerService provider;
+    private static SystemEventListenerService service;
 
     /**
      * Set the SystemEventListener
@@ -18,7 +18,7 @@ public class SystemEventListenerFactory {
      * @param listener
      */
     public static void setSystemEventListener(SystemEventListener listener) {
-        getSystemEventListenerProvider().setSystemEventListener( listener );
+        getSystemEventListenerService().setSystemEventListener( listener );
     }
 
     /**
@@ -26,21 +26,21 @@ public class SystemEventListenerFactory {
      * @return
      */
     public static SystemEventListener getSystemEventListener() {
-        return getSystemEventListenerProvider().getSystemEventListener();
+        return getSystemEventListenerService().getSystemEventListener();
     }
 
-    private static synchronized void setSystemEventListenerProvider(SystemEventListenerService provider) {
-        SystemEventListenerFactory.provider = provider;
+    private static synchronized void setSystemEventListenerService(SystemEventListenerService service) {
+        SystemEventListenerFactory.service = service;
     }
 
-    private static synchronized SystemEventListenerService getSystemEventListenerProvider() {
-        if ( provider == null ) {
-            loadProvider();
+    private static synchronized SystemEventListenerService getSystemEventListenerService() {
+        if ( service == null ) {
+            loadService();
         }
-        return provider;
+        return service;
     }
 
-    private static void loadProvider() {
-        setSystemEventListenerProvider( ServiceRegistryImpl.getInstance().get( SystemEventListenerService.class ) );
+    private static void loadService() {
+        setSystemEventListenerService( ServiceRegistryImpl.getInstance().get( SystemEventListenerService.class ) );
     }
 }

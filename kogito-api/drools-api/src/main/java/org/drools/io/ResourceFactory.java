@@ -27,7 +27,7 @@ import org.drools.util.ServiceRegistryImpl;
  *
  */
 public class ResourceFactory {
-    private static ResourceFactoryService resourceFactoryService;
+    private static ResourceFactoryService factoryService;
 
     /**
      * A Service that can be started, to provide notifications of changed Resources.
@@ -35,7 +35,7 @@ public class ResourceFactory {
      * @return
      */
     public static ResourceChangeNotifier getResourceChangeNotifierService() {
-        return getResourceProvider().getResourceChangeNotifierService();
+        return getFactoryService().getResourceChangeNotifierService();
     }
 
     /**
@@ -44,72 +44,72 @@ public class ResourceFactory {
      * @return
      */
      public static ResourceChangeScanner getResourceChangeScannerService() {
-        return getResourceProvider().getResourceChangeScannerService();
+        return getFactoryService().getResourceChangeScannerService();
     }
 
     public static Resource newUrlResource(URL url) {
-        return getResourceProvider().newUrlResource( url );
+        return getFactoryService().newUrlResource( url );
     }
 
     public static Resource newUrlResource(String path) {
-        return getResourceProvider().newUrlResource( path );
+        return getFactoryService().newUrlResource( path );
     }
 
     public static Resource newFileResource(File file) {
-        return getResourceProvider().newFileSystemResource( file );
+        return getFactoryService().newFileSystemResource( file );
     }
 
     public static Resource newFileResource(String fileName) {
-        return getResourceProvider().newFileSystemResource( fileName );
+        return getFactoryService().newFileSystemResource( fileName );
     }
 
     public static Resource newByteArrayResource(byte[] bytes) {
-        return getResourceProvider().newByteArrayResource( bytes );
+        return getFactoryService().newByteArrayResource( bytes );
     }
 
     public static Resource newInputStreamResource(InputStream stream) {
-        return getResourceProvider().newInputStreamResource( stream );
+        return getFactoryService().newInputStreamResource( stream );
     }
 
     public static Resource newReaderResource(Reader reader) {
-        return getResourceProvider().newReaderResource( reader );
+        return getFactoryService().newReaderResource( reader );
     }
 
     public static Resource newReaderResource(Reader reader,
                                              String encoding) {
-        return getResourceProvider().newReaderResource( reader,
+        return getFactoryService().newReaderResource( reader,
                                                         encoding );
     }
 
     public static Resource newClassPathResource(String path) {
-        return getResourceProvider().newClassPathResource( path );
+        return getFactoryService().newClassPathResource( path );
     }
 
     public static Resource newClassPathResource(String path,
                                                 Class clazz) {
-        return getResourceProvider().newClassPathResource( path,
+        return getFactoryService().newClassPathResource( path,
                                                            clazz );
     }
 
     public static Resource newClassPathResource(String path,
                                                 ClassLoader classLoader) {
-        return getResourceProvider().newClassPathResource( path,
+        return getFactoryService().newClassPathResource( path,
                                                            classLoader );
     }
 
-    private static synchronized void setResourceProvider(ResourceFactoryService provider) {
-        ResourceFactory.resourceFactoryService = provider;
+    private static synchronized void setFactoryService(ResourceFactoryService factoryService) {
+        ResourceFactory.factoryService = factoryService;
     }
 
-    private static synchronized ResourceFactoryService getResourceProvider() {
-        if ( resourceFactoryService == null ) {
-            loadProvider();
+    private static synchronized ResourceFactoryService getFactoryService() {
+        if ( factoryService == null ) {
+            loadFactoryService();
         }
-        return resourceFactoryService;
+        return factoryService;
     }
 
-    private static void loadProvider() {
-        setResourceProvider( ServiceRegistryImpl.getInstance().get( ResourceFactoryService.class ) );
+    private static void loadFactoryService() {
+        setFactoryService( ServiceRegistryImpl.getInstance().get( ResourceFactoryService.class ) );
     }
 
 }

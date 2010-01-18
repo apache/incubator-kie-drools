@@ -36,7 +36,7 @@ import org.drools.util.ServiceRegistryImpl;
  * @see org.drools.KnowledgeBase
  */
 public class KnowledgeBaseFactory  {
-    private static KnowledgeBaseFactoryService provider;
+    private static KnowledgeBaseFactoryService factoryService;
 
     /**
      * Create a new KnowledgeBase using the default KnowledgeBaseConfiguration
@@ -44,7 +44,7 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeBase
      */
     public static KnowledgeBase newKnowledgeBase() {
-        return getKnowledgeBaseProvider().newKnowledgeBase();
+        return getKnowledgeBaseFactoryService().newKnowledgeBase();
     }
 
     /**
@@ -60,7 +60,7 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeBase
      */
     public static KnowledgeBase newKnowledgeBase(String kbaseId) {
-        return getKnowledgeBaseProvider().newKnowledgeBase(kbaseId);
+        return getKnowledgeBaseFactoryService().newKnowledgeBase(kbaseId);
     }
 
     /**
@@ -69,7 +69,7 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeBase
      */
     public static KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
-        return getKnowledgeBaseProvider().newKnowledgeBase( conf );
+        return getKnowledgeBaseFactoryService().newKnowledgeBase( conf );
     }
 
     /**
@@ -86,7 +86,7 @@ public class KnowledgeBaseFactory  {
      */
     public static KnowledgeBase newKnowledgeBase(String kbaseId,
                                                  KnowledgeBaseConfiguration conf) {
-        return getKnowledgeBaseProvider().newKnowledgeBase( kbaseId, conf );
+        return getKnowledgeBaseFactoryService().newKnowledgeBase( kbaseId, conf );
     }
 
     /**
@@ -95,7 +95,7 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeBaseConfiguration.
      */
     public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration() {
-        return getKnowledgeBaseProvider().newKnowledgeBaseConfiguration();
+        return getKnowledgeBaseFactoryService().newKnowledgeBaseConfiguration();
     }
 
     /**
@@ -106,7 +106,7 @@ public class KnowledgeBaseFactory  {
      */
     public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
                                                                            ClassLoader classLoader) {
-        return getKnowledgeBaseProvider().newKnowledgeBaseConfiguration( properties,
+        return getKnowledgeBaseFactoryService().newKnowledgeBaseConfiguration( properties,
                                                                          classLoader );
     }
 
@@ -116,7 +116,7 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeSessionConfiguration.
      */
     public static KnowledgeSessionConfiguration newKnowledgeSessionConfiguration() {
-        return getKnowledgeBaseProvider().newKnowledgeSessionConfiguration();
+        return getKnowledgeBaseFactoryService().newKnowledgeSessionConfiguration();
     }
 
     /**
@@ -125,33 +125,27 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeSessionConfiguration.
      */
     public static KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
-        return getKnowledgeBaseProvider().newKnowledgeSessionConfiguration( properties );
+        return getKnowledgeBaseFactoryService().newKnowledgeSessionConfiguration( properties );
     }
 
     public static Environment newEnvironment() {
-        return getKnowledgeBaseProvider().newEnvironment();
+        return getKnowledgeBaseFactoryService().newEnvironment();
     }
 
-//    private static synchronized KnowledgeBaseFactoryService getKnowledgeBaseProvider() {
-//        if ( provider == null ) {
-//            provider = newProviderFor( KnowledgeBaseFactoryService.class );
-//        }
-//        return provider;
-//    }
     
-    private static synchronized void setKnowledgeBaseProvider(KnowledgeBaseFactoryService provider) {
-        KnowledgeBaseFactory.provider = provider;
+    private static synchronized void setKnowledgeBaseServiceFactory(KnowledgeBaseFactoryService serviceFactory) {
+        KnowledgeBaseFactory.factoryService = serviceFactory;
     }
 
-    private static synchronized KnowledgeBaseFactoryService getKnowledgeBaseProvider() {
-        if ( provider == null ) {
-            loadProvider();
+    private static synchronized KnowledgeBaseFactoryService getKnowledgeBaseFactoryService() {
+        if ( factoryService == null ) {
+            loadServiceFactory();
         }
-        return provider;
+        return factoryService;
     }
 
     @SuppressWarnings("unchecked")
-    private static void loadProvider() {
-        setKnowledgeBaseProvider( ServiceRegistryImpl.getInstance().get( KnowledgeBaseFactoryService.class ) );
+    private static void loadServiceFactory() {
+        setKnowledgeBaseServiceFactory( ServiceRegistryImpl.getInstance().get( KnowledgeBaseFactoryService.class ) );
     }
 }
