@@ -2,17 +2,17 @@ package org.drools.vsm;
 
 import java.util.Collection;
 
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.agent.KnowledgeAgentProvider;
-import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 
 public interface ServiceManager extends CommandExecutor {
-    KnowledgeBuilderProvider getKnowledgeBuilderFactory();
+    KnowledgeBuilderFactoryService getKnowledgeBuilderFactoryService();
 
-    KnowledgeBaseProvider getKnowledgeBaseFactory();
+    KnowledgeBaseFactoryService getKnowledgeBaseFactoryService();
 
     KnowledgeAgentProvider getKnowledgeAgentFactory();
     

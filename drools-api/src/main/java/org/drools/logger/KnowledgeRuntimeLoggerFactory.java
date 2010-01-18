@@ -21,7 +21,7 @@ import org.drools.event.KnowledgeRuntimeEventManager;
  */
 public class KnowledgeRuntimeLoggerFactory {
 
-    private static KnowledgeRuntimeLoggerProvider knowledgeRuntimeLoggerProvider;
+    private static KnowledgeRuntimeLoggerFactoryService knowledgeRuntimeLoggerFactoryService;
 
     /**
      * Creates a file logger in the current thread. The file is in XML format, suitable for interpretation by Eclipse's Drools Audit View
@@ -66,21 +66,21 @@ public class KnowledgeRuntimeLoggerFactory {
         return getKnowledgeRuntimeLoggerProvider().newConsoleLogger( session );
     }
 
-    private static synchronized void setKnowledgeRuntimeLoggerProvider(KnowledgeRuntimeLoggerProvider provider) {
-        KnowledgeRuntimeLoggerFactory.knowledgeRuntimeLoggerProvider = provider;
+    private static synchronized void setKnowledgeRuntimeLoggerProvider(KnowledgeRuntimeLoggerFactoryService provider) {
+        KnowledgeRuntimeLoggerFactory.knowledgeRuntimeLoggerFactoryService = provider;
     }
 
-    private static synchronized KnowledgeRuntimeLoggerProvider getKnowledgeRuntimeLoggerProvider() {
-        if ( knowledgeRuntimeLoggerProvider == null ) {
+    private static synchronized KnowledgeRuntimeLoggerFactoryService getKnowledgeRuntimeLoggerProvider() {
+        if ( knowledgeRuntimeLoggerFactoryService == null ) {
             loadProvider();
         }
-        return knowledgeRuntimeLoggerProvider;
+        return knowledgeRuntimeLoggerFactoryService;
     }
 
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
         try {
-            Class<KnowledgeRuntimeLoggerProvider> cls = (Class<KnowledgeRuntimeLoggerProvider>) Class.forName( "org.drools.audit.KnowledgeRuntimeLoggerProviderImpl" );
+            Class<KnowledgeRuntimeLoggerFactoryService> cls = (Class<KnowledgeRuntimeLoggerFactoryService>) Class.forName( "org.drools.audit.KnowledgeRuntimeLoggerProviderImpl" );
             setKnowledgeRuntimeLoggerProvider( cls.newInstance() );
         } catch ( Exception e ) {
             throw new RuntimeException( "Provider org.drools.audit.KnowledgeRuntimeLoggerProviderImpl could not be set.",
