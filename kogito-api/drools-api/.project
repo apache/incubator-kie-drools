@@ -12,6 +12,9 @@
     <buildCommand>
       <name>org.eclipse.pde.SchemaBuilder</name>
     </buildCommand>
+    <buildCommand>
+      <name>org.eclipse.pde.ds.core.builder</name>
+    </buildCommand>
   </buildSpec>
   <natures>
     <nature>org.eclipse.jdt.core.javanature</nature>
