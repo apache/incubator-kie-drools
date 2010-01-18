@@ -18,7 +18,7 @@ import org.drools.util.ServiceRegistryImpl;
  *
  */
 public class KnowledgeBuilderFactory {
-    private static volatile KnowledgeBuilderFactoryService provider;
+    private static volatile KnowledgeBuilderFactoryService factoryService;
 
     /**
      * Create and return a new KnowledgeBuilder, using the default KnowledgeBuilderConfigurations
@@ -26,7 +26,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder() {
-        return getKnowledgeBuilderProvider().newKnowledgeBuilder();
+        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder();
     }
 
     /**
@@ -35,16 +35,16 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderProvider().newKnowledgeBuilder( conf );
+        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder( conf );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
-        return getKnowledgeBuilderProvider().newKnowledgeBuilder( kbase );
+        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder( kbase );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
                                                        KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderProvider().newKnowledgeBuilder( kbase,
+        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder( kbase,
                                                                   conf );
     }
 
@@ -54,7 +54,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilderConfiguration.
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
-        return getKnowledgeBuilderProvider().newKnowledgeBuilderConfiguration();
+        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilderConfiguration();
     }
 
     /**
@@ -65,7 +65,7 @@ public class KnowledgeBuilderFactory {
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
                                                                                  ClassLoader classLoader) {
-        return getKnowledgeBuilderProvider().newKnowledgeBuilderConfiguration( properties,
+        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilderConfiguration( properties,
                                                                                classLoader );
     }
 
@@ -89,21 +89,21 @@ public class KnowledgeBuilderFactory {
      * @return
      */
     public static DecisionTableConfiguration newDecisionTableConfiguration() {
-        return getKnowledgeBuilderProvider().newDecisionTableConfiguration();
+        return getKnowledgeBuilderPServiceFactory().newDecisionTableConfiguration();
     }
 
-    private static synchronized void setKnowledgeBuilderFactoryService(KnowledgeBuilderFactoryService provider) {
-        KnowledgeBuilderFactory.provider = provider;
+    private static synchronized void setKnowledgeBuilderFactoryService(KnowledgeBuilderFactoryService serviceFactory) {
+        KnowledgeBuilderFactory.factoryService = serviceFactory;
     }
 
-    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderProvider() {
-        if ( provider == null ) {
-            loadProvider();
+    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderPServiceFactory() {
+        if ( factoryService == null ) {
+            loadServiceFactory();
         }
-        return provider;
+        return factoryService;
     }
 
-    private static void loadProvider() {
+    private static void loadServiceFactory() {
         setKnowledgeBuilderFactoryService( ServiceRegistryImpl.getInstance().get( KnowledgeBuilderFactoryService.class ) );
     }
 }
