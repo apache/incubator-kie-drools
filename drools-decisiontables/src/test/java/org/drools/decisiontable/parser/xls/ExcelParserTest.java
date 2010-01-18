@@ -24,6 +24,7 @@ import org.drools.template.parser.DataListener;
 import junit.framework.TestCase;
 import jxl.Cell;
 //import jxl.CellFeatures;
+import jxl.CellFeatures;
 import jxl.CellType;
 import jxl.Range;
 import jxl.format.CellFormat;
@@ -122,6 +123,10 @@ public class ExcelParserTest extends TestCase {
 		public boolean isHidden() {
 			return false;
 		}
+
+        public CellFeatures getCellFeatures() {
+            return null;
+        }
     	
     }
     
