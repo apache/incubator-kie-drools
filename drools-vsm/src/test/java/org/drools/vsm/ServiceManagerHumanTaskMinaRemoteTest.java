@@ -19,10 +19,10 @@ import org.apache.mina.transport.socket.SocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.SystemEventListenerFactory;
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -186,7 +186,7 @@ public class ServiceManagerHumanTaskMinaRemoteTest extends TestCase {
     }
      public void testHumanTasks() throws Exception {
 
-    	KnowledgeBuilderProvider kbuilderFactory = this.client.getKnowledgeBuilderFactory();
+    	KnowledgeBuilderFactoryService kbuilderFactory = this.client.getKnowledgeBuilderFactoryService();
     	KnowledgeBuilder kbuilder = kbuilderFactory.newKnowledgeBuilder();
     	kbuilder.add( new ClassPathResource("rules/humanTasks.rf"),
     			ResourceType.DRF );
@@ -195,7 +195,7 @@ public class ServiceManagerHumanTaskMinaRemoteTest extends TestCase {
     		System.out.println( "Errors: " + kbuilder.getErrors() );
     	}
 
-    	KnowledgeBaseProvider kbaseFactory = this.client.getKnowledgeBaseFactory();
+    	KnowledgeBaseFactoryService kbaseFactory = this.client.getKnowledgeBaseFactoryService();
     	KnowledgeBase kbase = kbaseFactory.newKnowledgeBase();
 
     	kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

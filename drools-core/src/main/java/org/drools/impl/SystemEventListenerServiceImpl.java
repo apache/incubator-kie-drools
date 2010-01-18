@@ -1,11 +1,11 @@
 package org.drools.impl;
 
 import org.drools.SystemEventListener;
-import org.drools.SystemEventListenerProvider;
+import org.drools.SystemEventListenerService;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.util.DelegatingSystemEventListener;
 
-public class SystemEventListenerProviderImpl implements SystemEventListenerProvider{
+public class SystemEventListenerServiceImpl implements SystemEventListenerService{
     
     private DelegatingSystemEventListener    listener = new DelegatingSystemEventListener( new PrintStreamSystemEventListener() );
     

@@ -2,9 +2,9 @@ package org.drools.audit;
 
 import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerProvider;
+import org.drools.logger.KnowledgeRuntimeLoggerFactoryService;
 
-public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLoggerProvider {
+public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLoggerFactoryService {
 
 	public KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session, String fileName) {
 		WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);

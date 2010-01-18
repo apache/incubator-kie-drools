@@ -10,11 +10,11 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.KnowledgeBuilderFactoryService;
 
 public class KnowledgeBuilderProviderLocalClient
     implements
-    KnowledgeBuilderProvider {
+    KnowledgeBuilderFactoryService {
 
     public DecisionTableConfiguration newDecisionTableConfiguration() {
         return KnowledgeBuilderFactory.newDecisionTableConfiguration();

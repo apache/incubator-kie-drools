@@ -3,9 +3,9 @@ package org.drools.vsm;
 import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseProvider;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderProvider;
+import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.io.ResourceFactory;
@@ -37,7 +37,7 @@ public class ServiceManagerTestBase extends TestCase {
         str += "    System.out.println( \"hello2!!!\" ); \n";
         str += "end \n";
 
-        KnowledgeBuilderProvider kbuilderFactory = this.client.getKnowledgeBuilderFactory();
+        KnowledgeBuilderFactoryService kbuilderFactory = this.client.getKnowledgeBuilderFactoryService();
         KnowledgeBuilder kbuilder = kbuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
@@ -46,7 +46,7 @@ public class ServiceManagerTestBase extends TestCase {
             System.out.println( "Errors: " + kbuilder.getErrors() );
         }
 
-        KnowledgeBaseProvider kbaseFactory = this.client.getKnowledgeBaseFactory();
+        KnowledgeBaseFactoryService kbaseFactory = this.client.getKnowledgeBaseFactoryService();
         KnowledgeBase kbase = kbaseFactory.newKnowledgeBase();
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -74,7 +74,7 @@ public class ServiceManagerTestBase extends TestCase {
         str += "    System.out.println( \"hello2!!!\" ); \n";
         str += "end \n";
 
-        KnowledgeBuilderProvider kbuilderFactory = this.client.getKnowledgeBuilderFactory();
+        KnowledgeBuilderFactoryService kbuilderFactory = this.client.getKnowledgeBuilderFactoryService();
         KnowledgeBuilder kbuilder = kbuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
@@ -83,7 +83,7 @@ public class ServiceManagerTestBase extends TestCase {
             System.out.println( "Errors: " + kbuilder.getErrors() );
         }
 
-        KnowledgeBaseProvider kbaseFactory = this.client.getKnowledgeBaseFactory();
+        KnowledgeBaseFactoryService kbaseFactory = this.client.getKnowledgeBaseFactoryService();
         KnowledgeBase kbase = kbaseFactory.newKnowledgeBase();
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -113,7 +113,7 @@ public class ServiceManagerTestBase extends TestCase {
         str += "    System.out.println( \"hello2!!!\" ); \n";
         str += "end \n";
 
-        KnowledgeBuilderProvider kbuilderFactory = this.client.getKnowledgeBuilderFactory();
+        KnowledgeBuilderFactoryService kbuilderFactory = this.client.getKnowledgeBuilderFactoryService();
         KnowledgeBuilder kbuilder = kbuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
@@ -122,7 +122,7 @@ public class ServiceManagerTestBase extends TestCase {
             System.out.println( "Errors: " + kbuilder.getErrors() );
         }
 
-        KnowledgeBaseProvider kbaseFactory = this.client.getKnowledgeBaseFactory();
+        KnowledgeBaseFactoryService kbaseFactory = this.client.getKnowledgeBaseFactoryService();
         KnowledgeBase kbase = kbaseFactory.newKnowledgeBase();
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -155,7 +155,7 @@ public class ServiceManagerTestBase extends TestCase {
         str += "    System.out.println( \"hello2!!!\" ); \n";
         str += "end \n";
 
-        KnowledgeBuilderProvider kbuilderFactory = this.client.getKnowledgeBuilderFactory();
+        KnowledgeBuilderFactoryService kbuilderFactory = this.client.getKnowledgeBuilderFactoryService();
         KnowledgeBuilder kbuilder = kbuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
@@ -164,7 +164,7 @@ public class ServiceManagerTestBase extends TestCase {
             System.out.println( "Errors: " + kbuilder.getErrors() );
         }
 
-        KnowledgeBaseProvider kbaseFactory = this.client.getKnowledgeBaseFactory();
+        KnowledgeBaseFactoryService kbaseFactory = this.client.getKnowledgeBaseFactoryService();
         KnowledgeBase kbase = kbaseFactory.newKnowledgeBase();
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
