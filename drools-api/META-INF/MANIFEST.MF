@@ -9,7 +9,7 @@ Import-Package: com.sun.tools.xjc;resolution:=optional;version="2.1",c
  :=optional,org.osgi.framework;resolution:=optional;version="1.5",org.
  osgi.util.tracker;resolution:=optional;version="1.4",org.quartz;resol
  ution:=optional;version="1.6"
-Bnd-LastModified: 1263792610218
+Bnd-LastModified: 1263793389191
 Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command,org.drools
  .time,org.drools.event,org.drools,org.drools.runtime.process,org.droo
