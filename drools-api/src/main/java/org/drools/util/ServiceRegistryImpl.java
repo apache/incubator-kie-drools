@@ -14,16 +14,21 @@
 
 package org.drools.util;
 
+import java.io.IOException;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.drools.KnowledgeBaseProvider;
 import org.drools.Service;
 import org.drools.builder.KnowledgeBuilderProvider;
 import org.drools.io.ResourceProvider;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * This is an internal class, not for public consumption.
@@ -32,24 +37,27 @@ import org.drools.io.ResourceProvider;
 public class ServiceRegistryImpl
     implements
     ServiceRegistry {
-    private static ServiceRegistry     instance        = new ServiceRegistryImpl();
+    private static ServiceRegistry     instance;
 
     private Map<String, Callable< ? >> registry        = new HashMap<String, Callable< ? >>();
     private Map<String, Callable< ? >> defaultServices = new HashMap<String, Callable< ? >>();
 
-    public static ServiceRegistry getInstance() {
+    public static synchronized ServiceRegistry getInstance() {
+        if ( instance == null ) {
+            instance = new ServiceRegistryImpl();
+        }
         return ServiceRegistryImpl.instance;
     }
 
     public ServiceRegistryImpl() {
         init();
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.util.internal.ServiceRegistry#registerLocator(java.lang.String, java.util.concurrent.Callable)
      */
     public synchronized void registerLocator(Class cls,
-                                                 Callable cal) {
+                                             Callable cal) {
         this.registry.put( cls.getName(),
                            cal );
     }
@@ -59,8 +67,77 @@ public class ServiceRegistryImpl
      */
     public synchronized void unregisterLocator(Class cls) {
         this.registry.remove( cls.getName() );
-        this.registry.put( cls.getName(), this.defaultServices.get( cls.getName() ) );
+        this.registry.put( cls.getName(),
+                           this.defaultServices.get( cls.getName() ) );
     }
+    
+    synchronized void registerInstance(Service service, Map map) {  
+        //this.context.getProperties().put( "org.dr, value )
+        System.out.println( "regInstance : " + map );
+        String[] values = ( String[] ) map.get( "objectClass" );        
+
+        for ( String v : values ) {
+            System.out.println( v );
+        }
+       // System.out.println( "register : " + service );
+        this.registry.put( service.getClass().getInterfaces()[0].getName(),
+                           new ReturnInstance<Service>( service ) );
+        
+
+//        
+//        BundleContext bc = this.context.getBundleContext();
+//        ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
+//        ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
+//        
+//        try {
+//            Configuration conf = admin.getConfiguration( (String) confAdminRef.getProperty( "service.id" ) );
+//            Dictionary properties = conf.getProperties();
+//            properties.put( values[0], "true" );
+//            conf.update( properties );
+//        } catch ( IOException e ) {
+//            e.printStackTrace();
+//        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.util.internal.ServiceRegistry#unregisterLocator(java.lang.String)
+     */
+    synchronized void unregisterInstance(Service service, Map map) {
+        System.out.println( "unregister : " + map );
+        String name = service.getClass().getInterfaces()[0].getName();
+        this.registry.remove( name );
+        this.registry.put( name,
+                           this.defaultServices.get( name ) );
+    }    
+    
+//    ConfigurationAdmin confAdmin;
+//    synchronized void setConfigurationAdmin(ConfigurationAdmin confAdmin) {
+//        this.confAdmin = confAdmin;
+//        System.out.println( "ConfAdmin : " + this.confAdmin );
+//    }   
+//    
+//    synchronized void unsetConfigurationAdmin(ConfigurationAdmin confAdmin) {
+//        this.confAdmin = null;
+//    }    
+    
+//    private ComponentContext context;
+//    void activate(ComponentContext context) {
+//        System.out.println( "reg comp" + context.getProperties() );
+//        this.context = context;
+//        
+//       
+//        
+//      BundleContext bc = this.context.getBundleContext();
+//      
+//      ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
+//      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );     
+//      System.out.println( "conf admin : " + admin );
+//        //context.
+//    //    log = (LogService) context.locateService("LOG");
+//        }
+//    void deactivate(ComponentContext context ){
+//        
+//    }
 
     public synchronized <T> T get(Class<T> cls) {
 
@@ -78,19 +155,23 @@ public class ServiceRegistryImpl
     }
 
     private void init() {
-        addDefault( KnowledgeBuilderProvider.class, "org.drools.builder.impl.KnowledgeBuilderProviderImpl" );
-        
-        addDefault( KnowledgeBaseProvider.class, "org.drools.impl.KnowledgeBaseProviderImpl" );
-        
-        addDefault( ResourceProvider.class,  "org.drools.io.impl.ResourceProviderImpl" );
+        addDefault( KnowledgeBuilderProvider.class,
+                    "org.drools.builder.impl.KnowledgeBuilderProviderImpl" );
+
+        addDefault( KnowledgeBaseProvider.class,
+                    "org.drools.impl.KnowledgeBaseProviderImpl" );
+
+        addDefault( ResourceProvider.class,
+                    "org.drools.io.impl.ResourceProviderImpl" );
     }
-    
-    private void addDefault(Class cls, String impl) {
+
+    private void addDefault(Class cls,
+                            String impl) {
         ReflectionInstantiator<Service> resourceRi = new ReflectionInstantiator<Service>( impl );
         registry.put( cls.getName(),
                       resourceRi );
         defaultServices.put( cls.getName(),
-                             resourceRi );        
+                             resourceRi );
     }
 
     static class ReflectionInstantiator<V>
@@ -107,13 +188,27 @@ public class ServiceRegistryImpl
         }
     }
 
+    static class ReturnInstance<V>
+        implements
+        Callable<V> {
+        private Service service;
+
+        public ReturnInstance(Service service) {
+            this.service = service;
+        }
+
+        public V call() throws Exception {
+            return (V) service;
+        }
+    }
+
     static <T> T newInstance(String name) {
         try {
             Class<T> cls = (Class<T>) Class.forName( name );
             return cls.newInstance();
         } catch ( Exception e2 ) {
             throw new IllegalArgumentException( "Unable to instantiate '" + name + "'",
-                                                       e2 );
+                                                e2 );
         }
     }
 

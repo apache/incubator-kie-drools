@@ -13,16 +13,21 @@
   <name>Drools :: API</name>
 
   <dependencies>    
-            <dependency>  
-               <groupId>org.eclipse.equinox</groupId>  
-               <artifactId>org.eclipse.osgi</artifactId>  
-               <scope>provided</scope> 
-            </dependency>            
-            <dependency>  
-               <groupId>org.eclipse.equinox</groupId>  
-               <artifactId>org.eclipse.osgi.util</artifactId>  
-               <scope>provided</scope> 
+            <dependency>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>org.osgi.core</artifactId>
+              <scope>provided</scope> 
             </dependency>
+            <dependency>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>org.osgi.foundation</artifactId>
+              <scope>provided</scope> 
+            </dependency>            
+            <dependency>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>org.osgi.compendium</artifactId>
+              <scope>provided</scope> 
+            </dependency>           
          
          <dependency>  
             <groupId>com.sun.xml</groupId>  
