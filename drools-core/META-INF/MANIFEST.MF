@@ -2,20 +2,34 @@ Manifest-Version: 1.0
 Bundle-Activator: org.drools.osgi.core.Activator
 Created-By: 1.5.0_16 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: com.thoughtworks.xstream;version="1.3",com.thoughtwork
- s.xstream.converters;version="1.3",com.thoughtworks.xstream.converter
- s.collections;version="1.3",com.thoughtworks.xstream.io;version="1.3"
- ,com.thoughtworks.xstream.io.xml;version="1.3",com.thoughtworks.xstre
- am.mapper;version="1.3",javax.management,javax.management.openmbean,j
- avax.swing,javax.swing.border,javax.swing.event,javax.xml.parsers,org
- .mvel2;version="2.0",org.mvel2.asm;version="2.0",org.mvel2.asm.util;v
- ersion="2.0",org.mvel2.ast;version="2.0",org.mvel2.compiler;version="
- 2.0",org.mvel2.debug;version="2.0",org.mvel2.integration;version="2.0
- ",org.mvel2.integration.impl;version="2.0",org.mvel2.optimizers;versi
- on="2.0",org.mvel2.templates;version="2.0",org.mvel2.util;version="2.
- 0",org.osgi.framework;version="1.5",org.w3c.dom,org.xml.sax,org.xml.s
- ax.helpers
-Bnd-LastModified: 1263792618964
+Import-Package: com.thoughtworks.xstream;version="1.3",
+ com.thoughtworks.xstream.converters;version="1.3",
+ com.thoughtworks.xstream.converters.collections;version="1.3",
+ com.thoughtworks.xstream.io;version="1.3",
+ com.thoughtworks.xstream.io.xml;version="1.3",
+ com.thoughtworks.xstream.mapper;version="1.3",
+ javax.management,
+ javax.management.openmbean,
+ javax.swing,
+ javax.swing.border,
+ javax.swing.event,
+ javax.xml.parsers,
+ org.mvel2;version="2.0",
+ org.mvel2.asm;version="2.0",
+ org.mvel2.asm.util;version="2.0",
+ org.mvel2.ast;version="2.0",
+ org.mvel2.compiler;version="2.0",
+ org.mvel2.debug;version="2.0",
+ org.mvel2.integration;version="2.0",
+ org.mvel2.integration.impl;version="2.0",
+ org.mvel2.optimizers;version="2.0",
+ org.mvel2.templates;version="2.0",
+ org.mvel2.util;version="2.0",
+ org.osgi.framework;version="1.5",
+ org.w3c.dom,
+ org.xml.sax,
+ org.xml.sax.helpers
+Bnd-LastModified: 1263791526266
 Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  g.drools.process.core.context.swimlane,org.drools.process.core,org.dr
  ools.process.instance.context";version="5.1.0.SNAPSHOT",org.drools.pr
@@ -23,7 +37,7 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  lidation;uses:="org.mvel2.compiler,org.drools.process.core.timer,org.
  drools.process.core.validation,org.drools.process.core.datatype,org.d
  rools.workflow.core.node,org.drools.process.core.context.variable,org
- .drools.time,org.drools.workflow.core.impl,org.mvel2,org.drools.proce
+ .drools.workflow.core.impl,org.mvel2,org.drools.time,org.drools.proce
  ss.core.validation.impl,org.drools,org.drools.ruleflow.core,org.drool
  s.process.core,org.drools.workflow.core";version="5.1.0.SNAPSHOT",org
  .drools.ruleflow.instance;uses:="org.drools.workflow.instance.impl,or
@@ -39,11 +53,11 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  nstance";version="5.1.0.SNAPSHOT",org.drools.process.instance.event;u
  ses:="org.drools.marshalling.impl,org.drools.process.instance,org.dro
  ols.common,org.drools";version="5.1.0.SNAPSHOT",org.drools.osgi.core;
- uses:="org.drools,org.drools.impl,org.osgi.framework,org.drools.io.im
+ uses:="org.drools.impl,org.drools,org.osgi.framework,org.drools.io.im
  pl";version="5.1.0.SNAPSHOT",org.drools.ruleflow.core.factory;uses:="
  org.drools.workflow.core.impl,org.drools.ruleflow.core,org.drools.wor
- kflow.core.node,org.drools.workflow.core,org.drools.process.core,org.
- drools.process.core.datatype,org.drools.process.core.context.exceptio
+ kflow.core.node,org.drools.workflow.core,org.drools.process.core.data
+ type,org.drools.process.core,org.drools.process.core.context.exceptio
  n,org.drools.process.core.context.variable,org.drools.process.core.ev
  ent,org.drools.process.core.timer,org.drools.process.core.impl";versi
  on="5.1.0.SNAPSHOT",org.drools.marshalling.impl;uses:="org.drools.wor
@@ -77,8 +91,8 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  tance.context,org.drools.common";version="5.1.0.SNAPSHOT",org.drools.
  audit;uses:="org.drools.event,org.drools,org.drools.audit.event,com.t
  houghtworks.xstream,org.drools.impl,org.drools.workflow.core.node,org
- .drools.command,org.drools.workflow.instance.node,org.drools.workflow
- .instance,org.drools.rule,org.drools.spi,org.drools.command.impl,org.
+ .drools.command,org.drools.workflow.instance,org.drools.workflow.inst
+ ance.node,org.drools.rule,org.drools.spi,org.drools.command.impl,org.
  drools.common";version="5.1.0.SNAPSHOT",org.drools.base.extractors;us
  es:="org.drools.base,org.drools.util,org.drools.spi,org.drools.common
  ,org.drools,org.mvel2,org.mvel2.compiler";version="5.1.0.SNAPSHOT",or
@@ -91,7 +105,7 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  e.context.variable,org.drools.process.instance.context.variable,org.d
  rools.common,org.drools.ruleflow.instance,org.drools.ruleflow.core";v
  ersion="5.1.0.SNAPSHOT",org.drools.process.core.context.variable;uses
- :="org.drools.process.core.datatype,org.drools.process.core,org.drool
+ :="org.drools.process.core,org.drools.process.core.datatype,org.drool
  s.process.core.datatype.impl.type,org.drools.process.core.context";ve
  rsion="5.1.0.SNAPSHOT",org.drools.event.rule.impl;uses:="org.drools.e
  vent,org.drools,org.drools.spi,org.drools.common,org.drools.impl";ver
@@ -107,7 +121,7 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  g.xml.sax,org.drools.xml.changeset,javax.xml.parsers,org.xml.sax.help
  ers,org.w3c.dom,org.drools";version="5.1.0.SNAPSHOT",org.drools.factt
  emplates;uses:="org.drools.rule,org.drools.base,org.drools,org.drools
- .util,org.drools.spi,org.drools.common";version="5.1.0.SNAPSHOT",org.
+ .spi,org.drools.util,org.drools.common";version="5.1.0.SNAPSHOT",org.
  drools.base.field;uses:="org.drools,org.drools.spi,org.drools.util,or
  g.drools.common";version="5.1.0.SNAPSHOT",org.drools.runtime.rule.imp
  l;uses:="org.drools.spi,org.drools.common,org.drools,org.drools.rule"
@@ -170,7 +184,7 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  ls.util.asm,org.drools.util,org.drools.common,org.drools.time,org.dro
  ols.base.evaluators,org.drools.base.extractors,org.mvel2.asm,org.droo
  ls.rule,org.drools.impl,org.drools.base.field,org.drools.type,org.mve
- l2.ast,org.mvel2.compiler,org.mvel2.integration,org.drools.base.mvel,
+ l2.ast,org.mvel2.integration,org.mvel2.compiler,org.drools.base.mvel,
  org.drools.facttemplates";version="5.1.0.SNAPSHOT",org.drools;uses:="
  org.drools.spi,org.drools.time,org.drools.time.impl,org.drools.rule,o
  rg.drools.common,org.drools.workflow.instance.impl,org.drools.process
@@ -208,8 +222,8 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  n="5.1.0.SNAPSHOT",org.drools.process.core.validation;version="5.1.0.
  SNAPSHOT",org.drools.process.instance.context.exception;uses:="org.dr
  ools.base,org.drools.workflow.instance,org.drools,org.drools.spi,org.
- drools.process.instance,org.drools.process.core.context.exception,org
- .drools.workflow.core,org.drools.common,org.drools.process.core,org.d
+ drools.process.instance,org.drools.workflow.core,org.drools.process.c
+ ore.context.exception,org.drools.common,org.drools.process.core,org.d
  rools.process.instance.context";version="5.1.0.SNAPSHOT",org.drools.x
  ml.changeset;uses:="org.drools.xml,org.xml.sax,org.drools,org.w3c.dom
  ,org.drools.io.impl,org.drools.io.internal,org.drools.builder.conf.im
@@ -217,8 +231,8 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  nce.timer;uses:="org.drools.time,org.drools,org.drools.process.instan
  ce.event,org.drools.process.instance,org.drools.time.impl";version="5
  .1.0.SNAPSHOT",org.drools.base.dataproviders;uses:="org.mvel2,org.mve
- l2.integration,org.drools,org.drools.rule,org.drools.spi,org.drools.u
- til,org.drools.base.mvel";version="5.1.0.SNAPSHOT",org.drools.process
+ l2.integration,org.drools,org.drools.rule,org.drools.util,org.drools.
+ base.mvel,org.drools.spi";version="5.1.0.SNAPSHOT",org.drools.process
  .instance.impl.factory;uses:="org.drools.process.core,org.drools.proc
  ess.instance,org.drools.process.instance.impl,org.drools.process.inst
  ance.context";version="5.1.0.SNAPSHOT",org.drools.workflow.instance;u
@@ -269,8 +283,8 @@ Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  untime.pipeline,org.drools.command,org.drools.command.runtime.rule,or
  g.mvel2,org.mvel2.compiler,org.drools.common,org.drools,org.drools.im
  pl,org.drools.rule";version="5.1.0.SNAPSHOT",org.drools.command.runti
- me.rule;uses:="org.drools.command,org.drools.command.impl,org.drools,
- org.drools.impl,org.drools.spi,org.drools.runtime.impl,org.drools.com
+ me.rule;uses:="org.drools.command,org.drools.command.impl,org.drools.
+ impl,org.drools,org.drools.spi,org.drools.runtime.impl,org.drools.com
  mon,org.mvel2";version="5.1.0.SNAPSHOT",org.drools.command.runtime;us
  es:="org.drools.command,org.drools.command.impl,org.drools.runtime.im
  pl,org.drools.impl,org.drools";version="5.1.0.SNAPSHOT"
