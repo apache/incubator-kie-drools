@@ -109,15 +109,15 @@
       </dependency>    
 
       <dependency>  
-          <groupId>org.drools</groupId>  
+          <groupId>org.mvel</groupId>  
           <artifactId>org.drools.osgi.wrapper.mvel2</artifactId>  
-          <version>2.0.12</version>
+          <version>2.0.12</version> 
           <exclusions>
              <exclusion>
                 <groupId>org.mvel</groupId>
                 <artifactId>mvel2</artifactId> 
              </exclusion>           
-           </exclusions>          
+           </exclusions>           
       </dependency>      
 
       <!-- from springsource -->      

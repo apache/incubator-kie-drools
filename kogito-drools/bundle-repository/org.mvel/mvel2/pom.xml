@@ -8,6 +8,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mvel</groupId>
   <artifactId>org.drools.osgi.wrapper.mvel2</artifactId>
   <version>2.0.12</version>
   <packaging>jar</packaging>
@@ -53,7 +54,13 @@
                 <resource>
                   <targetPath>META-INF</targetPath>                
                   <directory>META-INF</directory>
-                </resource>                       
+                </resource>  
+                <resource>
+                    <directory>.</directory>
+                    <includes>
+                        <include>build.properties</include>                
+                    </includes>                        
+                </resource>                
               </resources>       
   </build>
 
