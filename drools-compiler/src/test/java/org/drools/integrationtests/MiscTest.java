@@ -71,6 +71,7 @@ import org.drools.Person;
 import org.drools.PersonFinal;
 import org.drools.PersonInterface;
 import org.drools.PersonWithEquals;
+import org.drools.Pet;
 import org.drools.PolymorphicFact;
 import org.drools.Primitives;
 import org.drools.QueryResult;
@@ -7305,6 +7306,45 @@ public class MiscTest extends TestCase {
         ksession.insert( new Cheese( "brie" ) );
 
         context.assertIsSatisfied();
+    }
+    
+    public void testInsert() throws Exception {
+        String drl = "";
+        drl += "package test\n";
+        drl += "import org.drools.Person\n";
+        drl += "import org.drools.Pet\n";
+        drl += "import java.util.ArrayList\n";
+        drl += "rule test\n";
+        drl += "when\n";
+        drl += "$person:Person()\n";
+        drl += "$pets : ArrayList()\n";
+        drl += "   from collect( \n";
+        drl += "      Pet(\n";
+        drl += "         ownerName == $person.name\n";
+        drl += "      )\n";
+        drl += "   )\n";
+        drl += "then\n";
+        drl += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Person("Toni") );
+        // XXX: Fails here, this worked in revision 30833
+        ksession.insert( new Pet("Toni") );
     }
 
 }
