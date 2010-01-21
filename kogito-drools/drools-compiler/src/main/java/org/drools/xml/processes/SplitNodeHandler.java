@@ -49,7 +49,8 @@ public class SplitNodeHandler extends AbstractNodeHandler {
                 ConnectionRef connection = entry.getKey();
                 Constraint constraint = entry.getValue();
                 xmlDump.append("        <constraint "
-                        + "toNodeId=\"" + connection.getNodeId() + "\" ");
+                    + "toNodeId=\"" + connection.getNodeId() + "\" "
+                    + "toType=\"" + connection.getToType() + "\" ");
                 String name = constraint.getName();
                 if (name != null && !"".equals(name)) {
                     xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
