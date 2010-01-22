@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
 
@@ -84,6 +85,38 @@ public class SuggestionCompletionEngineTest extends TestCase {
         assertEquals( null,
                       engine.getEnums( new FactPattern( "Something" ),
                                        "else" ) );
+
+    }
+    
+    public void testDataEnums3() {
+        String pkg = "package org.test\n import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List enums = new ArrayList();
+
+        enums.add( "'Fact.f1' : ['a1', 'a2'] \n 'Fact.f2' : ['def1', 'def2', 'def3'] \n 'Fact.f2[f1=a2]' : ['c1', 'c2']" );
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList(),
+                                                                        new ArrayList(),
+                                                                        enums );
+        assertEquals( "String",
+                      engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass",
+                                           "name" ) );
+
+        FactPattern pat = new FactPattern( "Fact" );
+        SingleFieldConstraint f1 = new SingleFieldConstraint( "f1" );
+        f1.value = "a1";
+        pat.addConstraint( f1 );
+        pat.addConstraint( new SingleFieldConstraint( "f2" ) );
+
+        DropDownData data = engine.getEnums( pat,
+                                             "f2" );
+
+        assertNotNull( data );
+        assertEquals( 3,
+                      data.fixedList.length );
 
     }
 
