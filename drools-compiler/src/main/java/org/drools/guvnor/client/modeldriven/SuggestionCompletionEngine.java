@@ -331,8 +331,10 @@ public class SuggestionCompletionEngine
                     key += "]";
                 }
 
-                return DropDownData.create( (String[]) this.dataEnumLists.get( key ) );
-
+                DropDownData data = DropDownData.create( (String[]) this.dataEnumLists.get( key ) );
+                if ( data != null ) {
+                    return DropDownData.create( (String[]) this.dataEnumLists.get( key ) );
+                }
             } else if ( _typeFields != null ) {
                 // these enums are calculated on demand, server side...
                 String[] fieldsNeeded = (String[]) _typeFields;
