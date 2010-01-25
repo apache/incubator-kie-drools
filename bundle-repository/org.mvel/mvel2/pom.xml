@@ -8,7 +8,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mvel</groupId>
+  <groupId>org.drools</groupId>
   <artifactId>org.drools.osgi.wrapper.mvel2</artifactId>
   <version>2.0.12</version>
   <packaging>jar</packaging>
