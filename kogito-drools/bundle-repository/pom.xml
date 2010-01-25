@@ -97,6 +97,20 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             </exclusion>
          </exclusions>
       </dependency>
+	  
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>org.drools.osgi.wrapper.mvel2</artifactId>
+         <version>2.0.12</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.mvel</groupId>
+               <artifactId>mvel2</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>	  
+	  
+	  
       <dependency>
          <groupId>net.sourceforge.jexcelapi</groupId>
          <artifactId>com.springsource.jxl</artifactId>
@@ -107,11 +121,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
          <version>1.3.1</version>
       </dependency>
-      <dependency>
+      <!--dependency>
          <groupId>org.mvel</groupId>
          <artifactId>mvel2</artifactId>
          <version>${mvel.dep.version}</version>
-      </dependency>
+      </dependency-->
       <dependency>
          <groupId>org.joda</groupId>
          <artifactId>com.springsource.org.joda.time</artifactId>
@@ -143,11 +157,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             </exclusion>
          </exclusions>
       </dependency>
-      <dependency>
+      <!--dependency>
          <groupId>org.antlr</groupId>
          <artifactId>gunit</artifactId>
          <version>3.1.3</version>
-      </dependency>
+      </dependency-->
       <dependency>
          <groupId>org.apache.jasper.springsource</groupId>
          <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
