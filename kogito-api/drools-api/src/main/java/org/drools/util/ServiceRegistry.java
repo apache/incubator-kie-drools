@@ -2,7 +2,6 @@ package org.drools.util;
 
 import java.util.concurrent.Callable;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.drools.Service;
 
 public interface ServiceRegistry extends Service {
