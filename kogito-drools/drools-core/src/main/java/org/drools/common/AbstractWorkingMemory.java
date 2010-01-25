@@ -84,6 +84,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -2119,6 +2120,16 @@ public abstract class AbstractWorkingMemory
             this.lastIdleTimestamp.set( -1 );
         }
     }
+    
+    private EndOperationListener endOperationListener;
+    
+    public void setEndOperationListener(EndOperationListener listener) {
+        this.endOperationListener = listener;
+    }
+    
+    public static interface EndOperationListener {
+        void endOperation(ReteooWorkingMemory wm);
+    }
 
     /**
      * This method must be called after finishing any work in the engine,
@@ -2132,6 +2143,9 @@ public abstract class AbstractWorkingMemory
         if ( this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
             this.lastIdleTimestamp.set( this.timerManager.getTimerService().getCurrentTime() );
+            if ( this.endOperationListener != null ) {
+                this.endOperationListener.endOperation( (ReteooWorkingMemory) this );
+            }
         }
     }
 
@@ -2146,6 +2160,10 @@ public abstract class AbstractWorkingMemory
     public long getIdleTime() {
         long lastIdle = this.lastIdleTimestamp.get();
         return lastIdle > -1 ? timerManager.getTimerService().getCurrentTime() - lastIdle : -1;
+    }
+    
+    public long getLastIdleTimestamp() {
+        return this.lastIdleTimestamp.get();
     }
 
     /**
