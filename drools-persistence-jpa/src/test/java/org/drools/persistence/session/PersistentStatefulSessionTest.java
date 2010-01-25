@@ -119,9 +119,9 @@ public class PersistentStatefulSessionTest extends TestCase {
         str += "global java.util.List list\n";
         str += "rule rule1\n";
         str += "when\n";
-        str += "  Integer(intValue > 0)\n";
+        str += "  $i : Integer(intValue > 0)\n";
         str += "then\n";
-        str += "  list.add( 1 );\n";
+        str += "  list.add( $i );\n";
         str += "end\n";
         str += "\n";
 
@@ -164,17 +164,19 @@ public class PersistentStatefulSessionTest extends TestCase {
                             list );
         ksession.insert( 1 );
         ksession.insert( 2 );
-        ut.commit();
-
-        // insert and rollback
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-        ut.begin();
+//        ut.commit();
+//
+//        // insert and rollback
+//        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+//        ut.begin();
         ksession.insert( 3 );
-        ut.rollback();
+       // ut.rollback();
 
         // check we rolled back the state changes from the 3rd insert
         ksession.fireAllRules();
-        assertEquals( 2,
+        ut.commit();
+        System.out.println( list );
+        assertEquals( 3,
                       list.size() );
 
         // insert and commit

@@ -1,79 +1,70 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>drools</artifactId>
-    <groupId>org.drools</groupId>
-  <version>5.1.0.SNAPSHOT</version>
-  </parent>
-
-  <artifactId>drools-templates</artifactId>
-  <packaging>jar</packaging>
-  <name>Drools :: Templates</name>
-
-  <repositories>
-    <repository>
-      <id>basedir</id>
-      <url>file://${basedir}/../m2_repo</url>
-    </repository>
-  </repositories>  
-  
-  <dependencies>
-    <!-- Internal dependencies -->
-    <dependency>
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>drools</artifactId>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>org.hsqldb</groupId>  
-        <artifactId>com.springsource.org.hsqldb</artifactId> 
-        <scope>test</scope>
-    </dependency>
-  </dependencies>
-  
-  <build>
-    <plugins> 
-            <plugin>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                <archive>  
+      <version>5.1.0.SNAPSHOT</version>
+   </parent>
+   <artifactId>drools-templates</artifactId>
+   <packaging>jar</packaging>
+   <name>Drools :: Templates</name>
+   <repositories>
+      <repository>
+         <id>basedir</id>
+         <url>file://${basedir}/../m2_repo</url>
+      </repository>
+   </repositories>
+   <dependencies>
+      <!-- Internal dependencies -->
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-core</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-compiler</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.hsqldb</groupId>
+         <artifactId>hsqldb</artifactId>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
                   <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-                </archive> 
-              </configuration>
-            </plugin>  
-            
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.0.1</version>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-                    <manifestLocation>META-INF</manifestLocation>
-					<instructions>
-                        <_removeheaders>Ignore-Package</_removeheaders>                    
-                        <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>                    
-						<Import-Package>!org.drools.*, *</Import-Package>
-						<Export-Package>org.drools.*</Export-Package>   
-                        <DynamicImport-Package>org.drools.*</DynamicImport-Package>                                        
-					</instructions>
-				</configuration>
-			</plugin>   
-    </plugins>
-  </build>     
-
+               </archive>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.0.1</version>
+            <extensions>true</extensions>
+            <executions>
+               <execution>
+                  <id>manifest</id>
+                  <phase>process-classes</phase>
+                  <goals>
+                     <goal>manifest</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <manifestLocation>META-INF</manifestLocation>
+               <instructions>&lt;_removeheaders&gt;Ignore-Package&lt;/_removeheaders&gt; 
+               <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>
+               <Import-Package>!org.drools.*, *</Import-Package>
+               <Export-Package>org.drools.*</Export-Package>
+               <DynamicImport-Package>org.drools.*</DynamicImport-Package></instructions>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>

@@ -1,5 +1,6 @@
 package org.drools.persistence.session;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.naming.InitialContext;
@@ -21,12 +22,14 @@ import org.drools.command.Context;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.common.AbstractWorkingMemory.EndOperationListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.processinstance.JPAProcessInstanceManager;
 import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -73,6 +76,19 @@ public class SingleSessionCommandService
 		      (SessionConfiguration) conf,
 		      env );
 	}
+    
+    public static class EndOperationListenerImpl implements EndOperationListener {
+        private SessionInfo info;
+        
+        public EndOperationListenerImpl(SessionInfo info) {
+            this.info = info;
+        }
+        
+        @Override
+        public void endOperation(ReteooWorkingMemory wm) {
+            this.info.setLastModificationDate( new Date( wm.getLastIdleTimestamp() ) );
+        }
+    }
 
     public SingleSessionCommandService(KnowledgeBase kbase,
                                        KnowledgeSessionConfiguration conf,
@@ -98,6 +114,10 @@ public class SingleSessionCommandService
                                                                   conf );
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
+        
+        ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        
+        //this.sessionInfo.setReteooWorkingMemory( ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session) );
 
         this.emf = (EntityManagerFactory) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
         this.em = emf.createEntityManager(); // how can I ensure this is an extended entity?
@@ -169,7 +189,8 @@ public class SingleSessionCommandService
             }
             this.em.joinTransaction();
             registerRollbackSync();
-            sessionInfo = this.em.find( SessionInfo.class, sessionId );
+            this.sessionInfo = this.em.find( SessionInfo.class, sessionId );
+            
             if ( localTransaction ) {
                 // it's a locally created transaction so commit
                 ut.commit();
@@ -198,6 +219,7 @@ public class SingleSessionCommandService
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
 		this.ksession = this.marshallingHelper.getObject();
+        ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
 		this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession, null );
         ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
 
@@ -239,6 +261,7 @@ public class SingleSessionCommandService
                 // there must have been a rollback to lazily re-initialise the state
                 this.em = this.emf.createEntityManager();
                 this.sessionInfo = this.em.find( SessionInfo.class, this.sessionInfo.getId() );
+                ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
                 this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
                 // have to create a new localEM as an EM part of a transaction cannot do a find.
                 // this.sessionInfo.rollback();
@@ -247,7 +270,6 @@ public class SingleSessionCommandService
             }
 
             this.em.joinTransaction();
-            this.sessionInfo.setDirty();
 
             registerRollbackSync();
 

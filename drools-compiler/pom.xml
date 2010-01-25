@@ -1,226 +1,205 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	     
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>drools</artifactId>
-		<groupId>org.drools</groupId>
-		<version>5.1.0.SNAPSHOT</version>
-	</parent>
-	
-	<artifactId>drools-compiler</artifactId>
-	<packaging>jar</packaging>
-	<name>Drools :: Compiler</name>
-	
-	<dependencies>
-		<!-- Internal dependencies -->
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-core</artifactId>
-		</dependency>
-		<!-- External dependencies -->
-            <dependency>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>org.osgi.core</artifactId>
-              <scope>provided</scope> 
-            </dependency>
-            <dependency>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>org.osgi.foundation</artifactId>
-              <scope>provided</scope> 
-            </dependency>            
-            <dependency>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>org.osgi.compendium</artifactId>
-              <scope>provided</scope> 
-            </dependency>                
-            
-		<dependency>
-            <groupId>org.antlr</groupId>  
-            <artifactId>com.springsource.org.antlr.runtime</artifactId>  
-		</dependency>
-        <dependency>
-           <groupId>org.antlr</groupId>  
-           <artifactId>com.springsource.org.antlr</artifactId>  
-           <scope>test</scope>
-        </dependency>  
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>gunit</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.antlr</groupId>  
-                    <artifactId>antlr</artifactId>                  
-                </exclusion>
-            </exclusions>
-        </dependency>         
-		<dependency>
-             <groupId>org.apache.jasper.springsource</groupId>  
-             <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId> 
-		</dependency>
-		<dependency>
-          <groupId>org.codehaus.janino</groupId>  
-          <artifactId>com.springsource.org.codehaus.janino</artifactId> 
-		</dependency>
-		<dependency>
-           <groupId>com.thoughtworks.xstream</groupId>  
-           <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>  
-		   <optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.mvel</groupId>
-			<artifactId>mvel2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-embedded</artifactId>
-			<version>6.1.15</version>
-			<scope>test</scope>
-		</dependency>	
-		
-        <dependency>
-            <groupId>com.opensymphony.quartz</groupId>  
-            <artifactId>com.springsource.org.quartz</artifactId>  
-			<scope>test</scope> 			
-        </dependency> 						
-	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>grammars</id>
-			<activation>
-				<property>
-					<name>grammars</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>generate-sources</phase>
-
-								<configuration>
-									<tasks if="generategrammars">
-										<path id="base.classpath">
-											<pathelement
-												path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar" />
-											<pathelement
-												path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar" />
-											<pathelement
-												path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar" />
-										</path>
-										<property name="antlr_classpath" refid="maven.compile.classpath" />
-										<echo message="Generating Antlr Grammars" />
-										<java classname="org.antlr.Tool" fork="true">
-											<arg
-												line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DRL.g src/main/resources/org/drools/lang/DescrBuilderTree.g" />
-											<classpath refid="base.classpath" />
-										</java>
-										<move todir="src/main/java/org/drools/lang/">
-											<fileset dir="src/main/resources/org/drools/lang">
-												<include name="**/*.java" />
-											</fileset>
-										</move>
-										<java classname="org.antlr.Tool" fork="true">
-											<arg
-												line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/Tree2TestDRL.g" />
-											<classpath refid="base.classpath" />
-										</java>
-										<move todir="src/test/java/org/drools/lang/">
-											<fileset dir="src/main/resources/org/drools/lang">
-												<include name="**/*.java" />
-											</fileset>
-										</move>
-										<java classname="org.antlr.Tool" fork="true">
-											<arg
-												line="-lib src/main/resources/org/drools/lang/dsl src/main/resources/org/drools/lang/dsl/DSLMap.g src/main/resources/org/drools/lang/dsl/DSLMapWalker.g" />
-											<classpath refid="base.classpath" />
-										</java>
-										<move todir="src/main/java/org/drools/lang/dsl/">
-											<fileset dir="src/main/resources/org/drools/lang/dsl">
-												<include name="**/*.java" />
-											</fileset>
-										</move>
-										<java classname="org.antlr.Tool" fork="true">
-											<arg
-												line="-lib src/main/resources/org/drools/semantics/java/parser src/main/resources/org/drools/semantics/java/parser/Java.g" />
-											<classpath refid="base.classpath" />
-										</java>
-										<move todir="src/main/java/org/drools/rule/builder/dialect/java/parser">
-											<fileset dir="src/main/resources/org/drools/semantics/java/parser">
-												<include name="**/*.java" />
-											</fileset>
-										</move>
-										<delete>
-											<fileset dir="src/main/resources/org/drools/lang">
-												<include name="**/*.tokens" />
-												<include name="DRL__.g" />
-												<include name="dsl/DSLMap__.g" />
-											</fileset>
-											<fileset dir="src/main/resources/org/drools/semantics/java/parser">
-												<include name="**/*.tokens" />
-												<include name="Java__.g" />
-											</fileset>
-										</delete>
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-    
-  <build>
-    <plugins> 
-            <plugin>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                <archive>  
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>drools</artifactId>
+      <groupId>org.drools</groupId>
+      <version>5.1.0.SNAPSHOT</version>
+   </parent>
+   <artifactId>drools-compiler</artifactId>
+   <packaging>jar</packaging>
+   <name>Drools :: Compiler</name>
+   <dependencies>
+      <!-- Internal dependencies -->
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-core</artifactId>
+      </dependency>
+      <!-- External dependencies -->
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.core</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.foundation</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.compendium</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.antlr</groupId>
+         <artifactId>antlr-runtime</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.antlr</groupId>
+         <artifactId>antlr</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.antlr</groupId>
+         <artifactId>gunit</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>org.antlr</groupId>
+               <artifactId>antlr</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.jasper.springsource</groupId>
+         <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>janino</groupId>
+         <artifactId>janino</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.mvel</groupId>
+         <artifactId>mvel2</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.mortbay.jetty</groupId>
+         <artifactId>jetty-embedded</artifactId>
+         <version>6.1.15</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.opensymphony.quartz</groupId>
+         <artifactId>quartz</artifactId>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   <profiles>
+      <profile>
+         <id>grammars</id>
+         <activation>
+            <property>
+               <name>grammars</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                           <tasks if="generategrammars">
+                              <path id="base.classpath">
+                                 <pathelement path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar" />
+                                 <pathelement path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar" />
+                                 <pathelement path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar" />
+                              </path>
+                              <property name="antlr_classpath" refid="maven.compile.classpath" />
+                              <echo message="Generating Antlr Grammars" />
+                              <java classname="org.antlr.Tool" fork="true">
+                                 <arg line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DRL.g src/main/resources/org/drools/lang/DescrBuilderTree.g" />
+                                 <classpath refid="base.classpath" />
+                              </java>
+                              <move todir="src/main/java/org/drools/lang/">
+                                 <fileset dir="src/main/resources/org/drools/lang">
+                                    <include name="**/*.java" />
+                                 </fileset>
+                              </move>
+                              <java classname="org.antlr.Tool" fork="true">
+                                 <arg line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/Tree2TestDRL.g" />
+                                 <classpath refid="base.classpath" />
+                              </java>
+                              <move todir="src/test/java/org/drools/lang/">
+                                 <fileset dir="src/main/resources/org/drools/lang">
+                                    <include name="**/*.java" />
+                                 </fileset>
+                              </move>
+                              <java classname="org.antlr.Tool" fork="true">
+                                 <arg line="-lib src/main/resources/org/drools/lang/dsl src/main/resources/org/drools/lang/dsl/DSLMap.g src/main/resources/org/drools/lang/dsl/DSLMapWalker.g" />
+                                 <classpath refid="base.classpath" />
+                              </java>
+                              <move todir="src/main/java/org/drools/lang/dsl/">
+                                 <fileset dir="src/main/resources/org/drools/lang/dsl">
+                                    <include name="**/*.java" />
+                                 </fileset>
+                              </move>
+                              <java classname="org.antlr.Tool" fork="true">
+                                 <arg line="-lib src/main/resources/org/drools/semantics/java/parser src/main/resources/org/drools/semantics/java/parser/Java.g" />
+                                 <classpath refid="base.classpath" />
+                              </java>
+                              <move todir="src/main/java/org/drools/rule/builder/dialect/java/parser">
+                                 <fileset dir="src/main/resources/org/drools/semantics/java/parser">
+                                    <include name="**/*.java" />
+                                 </fileset>
+                              </move>
+                              <delete>
+                                 <fileset dir="src/main/resources/org/drools/lang">
+                                    <include name="**/*.tokens" />
+                                    <include name="DRL__.g" />
+                                    <include name="dsl/DSLMap__.g" />
+                                 </fileset>
+                                 <fileset dir="src/main/resources/org/drools/semantics/java/parser">
+                                    <include name="**/*.tokens" />
+                                    <include name="Java__.g" />
+                                 </fileset>
+                              </delete>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
                   <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-                </archive> 
-              </configuration>
-            </plugin>  
-            
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.0.1</version>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-                    <manifestLocation>META-INF</manifestLocation>
-					<instructions>
-                        <_removeheaders>Ignore-Package</_removeheaders>                    
-                        <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>                    
-						<Import-Package>!org.drools.*, *</Import-Package>
-						<Export-Package>!org.drools.commons.*, 
-                                        !org.drools.lang.*, 
-                                        org.drools.builder.impl, <!-- add this one manually as BND seems to miss it out -->
-                                        org.drools.*</Export-Package>   
-                        <DynamicImport-Package>*</DynamicImport-Package> 
-                        <Bundle-Activator>org.drools.osgi.compiler.Activator</Bundle-Activator>                                                               
-					</instructions>
-				</configuration>
-			</plugin>   
-    </plugins>
-  </build>    
+               </archive>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.0.1</version>
+            <extensions>true</extensions>
+            <executions>
+               <execution>
+                  <id>manifest</id>
+                  <phase>process-classes</phase>
+                  <goals>
+                     <goal>manifest</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <manifestLocation>META-INF</manifestLocation>
+               <instructions>&lt;_removeheaders&gt;Ignore-Package&lt;/_removeheaders&gt; 
+               <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>
+               <Import-Package>!org.drools.*, *</Import-Package>
+               <Export-Package>!org.drools.commons.*, !org.drools.lang.*, org.drools.builder.impl, 
+               <!-- add this one manually as BND seems to miss it out -->
+               org.drools.*</Export-Package>
+               <DynamicImport-Package>*</DynamicImport-Package>
+               <Bundle-Activator>org.drools.osgi.compiler.Activator</Bundle-Activator></instructions>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>

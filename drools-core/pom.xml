@@ -1,105 +1,92 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>drools</artifactId>
-    <groupId>org.drools</groupId>
-    <version>5.1.0.SNAPSHOT</version>
-  </parent>
-
-  <artifactId>drools-core</artifactId>
-  <packaging>jar</packaging>
-  <name>Drools :: Core</name>
-
-  <dependencies>  
-            <dependency>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>org.osgi.core</artifactId>
-              <scope>provided</scope> 
-            </dependency>
-            <dependency>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>org.osgi.foundation</artifactId>
-              <scope>provided</scope> 
-            </dependency>            
-            <dependency>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>org.osgi.compendium</artifactId>
-              <scope>provided</scope> 
-            </dependency>                
-              
-    <!-- following are required for parser (lang). May be refactored out of core module. -->    
-      <dependency>  
-          <groupId>com.thoughtworks.xstream</groupId>  
-          <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>  
-          <optional>true</optional>
-      </dependency>      
-        
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency> 
-
-    <dependency>
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>drools</artifactId>
       <groupId>org.drools</groupId>
-      <artifactId>drools-api</artifactId>
-    </dependency>         
-    
-    <!--dependency>
+      <version>5.1.0.SNAPSHOT</version>
+   </parent>
+   <artifactId>drools-core</artifactId>
+   <packaging>jar</packaging>
+   <name>Drools :: Core</name>
+   <dependencies>
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.core</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.foundation</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.compendium</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <!-- following are required for parser (lang). May be refactored out of core module. -->
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.mvel</groupId>
+         <artifactId>mvel2</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-api</artifactId>
+      </dependency>
+      <!--dependency>
         <groupId>org.joda</groupId>  
         <artifactId>com.springsource.org.joda.time</artifactId>  
     </dependency-->
-    
-  </dependencies>
-  
-  <build>
-    <plugins> 
-            <plugin>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                <archive>  
+   </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
                   <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-                </archive> 
-              </configuration>
-            </plugin>  
-            
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.0.1</version>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-                    <manifestLocation>META-INF</manifestLocation>
-					<instructions>
-                        <_removeheaders>Ignore-Package</_removeheaders>                    
-                        <Require-Bundle>org.drools.api;visibility:=reexport;bundle-version="${pom.version}"</Require-Bundle>
-						<Import-Package>!org.drools.*, *</Import-Package>
-						<Export-Package>!org.drools.reteoo.*,
-                                        org.drools.*</Export-Package>     
-                        <DynamicImport-Package>*</DynamicImport-Package>
-                        <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
-					</instructions>
-				</configuration>
-			</plugin> 
-    
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
-            <!--excludes>
+               </archive>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.0.1</version>
+            <extensions>true</extensions>
+            <executions>
+               <execution>
+                  <id>manifest</id>
+                  <phase>process-classes</phase>
+                  <goals>
+                     <goal>manifest</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <manifestLocation>META-INF</manifestLocation>
+               <instructions>&lt;_removeheaders&gt;Ignore-Package&lt;/_removeheaders&gt; 
+               <Require-Bundle>org.drools.api;visibility:=reexport;bundle-version="${pom.version}"</Require-Bundle>
+               <Import-Package>!org.drools.*, *</Import-Package>
+               <Export-Package>!org.drools.reteoo.*, org.drools.*</Export-Package>
+               <DynamicImport-Package>*</DynamicImport-Package>
+               <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator></instructions>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <includes>
+                  <include>**/*Test.java</include>
+               </includes>
+               <!--excludes>
               <exclude>**/LogicTransformerTest.java</exclude>
               <exclude>**/LeapsMannersTest.java</exclude>          
               <exclude>**/ReteooMannersTest.java</exclude>                    
@@ -107,38 +94,35 @@
               <exclude>**/ReteooWaltzTest.java</exclude>             
               <exclude>**/TableTest.java</exclude>                       
             </excludes-->
-          </configuration>
-        </plugin>      
-    </plugins>
-  </build>
-  
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <aggregate>false</aggregate>
-                    <links>
-                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-                    </links>
-                    <minmemory>128m</minmemory>
-                    <maxmemory>512</maxmemory>
-                    <author>false</author>
-                    <bottom>true</bottom>
-                    <header>JBoss Drools</header>
-                    <packagenames>org.drools.*</packagenames>
-                    <use>true</use>
-                    <version>true</version>
-                    <windowtitle>${project.name} ${project.version} API</windowtitle>
-                    <breakiterator>true</breakiterator>
-                    <excludePackageNames>org.drools.asm*,org.drools.objenesis.*,org.drools.commons.jci.*
-                    </excludePackageNames>       
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>    
-
-
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+   <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+               <aggregate>false</aggregate>
+               <links>
+                  <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+               </links>
+               <minmemory>128m</minmemory>
+               <maxmemory>512</maxmemory>
+               <author>false</author>
+               <bottom>true</bottom>
+               <header>JBoss Drools</header>
+               <packagenames>org.drools.*</packagenames>
+               <use>true</use>
+               <version>true</version>
+               <windowtitle>${project.name} ${project.version} API</windowtitle>
+               <breakiterator>true</breakiterator>
+               <excludePackageNames>
+               org.drools.asm*,org.drools.objenesis.*,org.drools.commons.jci.*</excludePackageNames>
+            </configuration>
+         </plugin>
+      </plugins>
+   </reporting>
 </project>
