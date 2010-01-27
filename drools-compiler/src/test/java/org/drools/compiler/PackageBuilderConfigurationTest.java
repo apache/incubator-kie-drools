@@ -58,7 +58,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         System.getProperties().remove( "drools.dialect.default" );
     }
 
-    public void testIgnoreDetauls() {
+    public void testIgnoreDefaults() {
         // check standard chained properties, that includes defaults
         ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                                      getClass().getClassLoader(),
@@ -72,7 +72,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         // now check that chained properties can ignore defaults
         chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                    getClass().getClassLoader(),
-                                                   true );
+                                                   false );
         //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
         //                                                   null ) );
         assertNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
@@ -144,7 +144,8 @@ public class PackageBuilderConfigurationTest extends TestCase {
     }
 
     public void testProgramaticProperties2() {
-        JavaDialectConfiguration javaConf =  new JavaDialectConfiguration();
+        JavaDialectConfiguration javaConf =  new JavaDialectConfiguration( );
+        javaConf.init(new PackageBuilderConfiguration());
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         cfg.setDialectConfiguration( "java", javaConf );
@@ -155,6 +156,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
                       javaConf2.getCompiler() );
 
         javaConf =  new JavaDialectConfiguration();
+        javaConf.init(new PackageBuilderConfiguration());
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         cfg = new PackageBuilderConfiguration();
         cfg.setDialectConfiguration( "java", javaConf );
