@@ -82,6 +82,18 @@ public class ForEachNode extends CompositeNode {
         return variableName;
     }
     
+    public DataType getVariableType() {
+    	if (variableName == null) {
+    		return null;
+    	}
+    	for (Variable variable: ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables()) {
+    		if (variableName.equals(variable.getName())) {
+    			return variable.getType();
+    		}
+    	}
+    	return null;
+    }
+    
     public CompositeContextNode getCompositeNode() {
         return (CompositeContextNode) super.getNode(2); 
     }

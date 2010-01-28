@@ -348,14 +348,15 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
                 }
-                if (forEachNode.getLinkedIncomingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
-                    errors.add(new ProcessValidationErrorImpl(process,
-                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked start node"));
-                }
-                if (forEachNode.getLinkedOutgoingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
-                    errors.add(new ProcessValidationErrorImpl(process,
-                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked end node"));
-                }
+                // TODO: check, if no linked connections, for start and end node(s)
+//                if (forEachNode.getLinkedIncomingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
+//                    errors.add(new ProcessValidationErrorImpl(process,
+//                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked start node"));
+//                }
+//                if (forEachNode.getLinkedOutgoingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
+//                    errors.add(new ProcessValidationErrorImpl(process,
+//                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked end node"));
+//                }
                 validateNodes(forEachNode.getNodes(), errors, process);
             } else if (node instanceof DynamicNode) {
                 final DynamicNode dynamicNode = (DynamicNode) node;

@@ -104,6 +104,7 @@ public class ProcessBuilder {
         if ( !hasErrors ) {
             // generate and add rule for process
             String rules = generateRules( process );
+            System.out.println(rules);
             try {
                 packageBuilder.addPackageFromDrl( new StringReader( rules ) );
             } catch ( IOException e ) {
