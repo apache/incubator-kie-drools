@@ -17,7 +17,7 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  datatype,org.mvel2,org.drools.process.core,org.drools.concurrent,org.
  drools.event,org.drools.process.instance.event,org.drools.command,org
  .drools.process.instance.timer";version="5.1.0.SNAPSHOT",org.drools.c
- ommand.assertion;uses:="org.mvel2,org.drools.util,org.drools.command,
+ ommand.assertion;uses:="org.mvel2,org.drools.command,org.drools.util,
  org.drools.command.impl";version="5.1.0.SNAPSHOT",org.drools.workflow
  .instance.context;uses:="org.drools.process.instance,org.drools.workf
  low.instance,org.drools.process.instance.impl,org.drools.process.inst
@@ -65,13 +65,13 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  5.1.0.SNAPSHOT",org.drools.audit;uses:="org.drools.event,org.drools.a
  udit.event,org.drools,com.thoughtworks.xstream,org.drools.impl,org.dr
  ools.workflow.instance.node,org.drools.workflow.core.node,org.drools.
- common,org.drools.rule,org.drools.workflow.instance,org.drools.comman
+ common,org.drools.workflow.instance,org.drools.rule,org.drools.comman
  d,org.drools.spi,org.drools.command.impl";version="5.1.0.SNAPSHOT",or
  g.drools.osgi.core;uses:="org.drools.io.impl,org.drools.impl,org.droo
  ls,org.osgi.framework";version="5.1.0.SNAPSHOT",org.drools.impl;uses:
  ="org.drools,org.drools.definitions.rule.impl,org.drools.event.knowle
  gebase.impl,org.drools.event,org.drools.rule,org.drools.definitions.i
- mpl,org.drools.common,org.drools.command,org.drools.agent,org.drools.
+ mpl,org.drools.common,org.drools.agent,org.drools.command,org.drools.
  command.impl,org.drools.event.rule.impl,org.drools.spi,org.drools.eve
  nt.process.impl,org.drools.runtime.impl,org.drools.runtime.rule.impl,
  org.drools.process.instance.event,org.drools.process.instance,org.dro
@@ -97,7 +97,7 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  .process.core";version="5.1.0.SNAPSHOT",org.drools.ruleflow.core.fact
  ory;uses:="org.drools.ruleflow.core,org.drools.workflow.core.node,org
  .drools.workflow.core,org.drools.workflow.core.impl,org.drools.proces
- s.core.context.variable,org.drools.process.core.context.exception,org
+ s.core.context.exception,org.drools.process.core.context.variable,org
  .drools.process.core.datatype,org.drools.process.core,org.drools.proc
  ess.core.event,org.drools.process.core.timer,org.drools.process.core.
  impl";version="5.1.0.SNAPSHOT",org.drools.event.rule.impl;uses:="org.
@@ -116,7 +116,7 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  .1.0.SNAPSHOT",org.drools.process.instance.event;uses:="org.drools.co
  mmon,org.drools.process.instance,org.drools.marshalling.impl,org.droo
  ls";version="5.1.0.SNAPSHOT",org.drools.process.instance;uses:="org.d
- rools.process.core.context.variable,org.drools.common,org.drools.proc
+ rools.common,org.drools.process.core.context.variable,org.drools.proc
  ess.instance.context.variable,org.drools,org.drools.process.core,org.
  drools.ruleflow.core,org.drools.ruleflow.instance";version="5.1.0.SNA
  PSHOT",org.drools.command.builder;uses:="org.drools.command,org.drool
@@ -124,15 +124,15 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  drools.command.runtime;uses:="org.drools.command,org.drools.command.i
  mpl,org.drools.impl,org.drools.runtime.impl,org.drools";version="5.1.
  0.SNAPSHOT",org.drools.process.instance.context.variable;uses:="org.d
- rools.common,org.drools.process.core.context.variable,org.drools.proc
+ rools.process.core.context.variable,org.drools.common,org.drools.proc
  ess.instance,org.drools.event,org.drools,org.drools.process.instance.
  context,org.drools.process.core";version="5.1.0.SNAPSHOT",org.drools.
- ruleflow.core.validation;uses:="org.drools.process.core.timer,org.dro
- ols.process.core.context.variable,org.drools.ruleflow.core,org.drools
+ ruleflow.core.validation;uses:="org.drools.process.core.context.varia
+ ble,org.drools.process.core.timer,org.drools.ruleflow.core,org.drools
  .workflow.core.node,org.drools,org.drools.process.core.validation.imp
  l,org.drools.workflow.core,org.drools.workflow.core.impl,org.drools.p
  rocess.core.validation,org.drools.process.core.datatype,org.mvel2,org
- .mvel2.compiler,org.drools.time,org.drools.process.core";version="5.1
+ .mvel2.compiler,org.drools.process.core,org.drools.time";version="5.1
  .0.SNAPSHOT",org.drools.process.instance.context.exception;uses:="org
  .drools.common,org.drools.process.core.context.exception,org.drools.p
  rocess.instance,org.drools.base,org.drools.workflow.instance,org.droo
@@ -167,8 +167,8 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  drools.event.process.impl;uses:="org.drools.event,org.drools,org.droo
  ls.common";version="5.1.0.SNAPSHOT",org.drools.process.instance.impl;
  uses:="org.drools.process.instance,org.drools.process.core,org.drools
- .process.core.context.exception,org.drools.process.core.context.varia
- ble,org.drools.process.instance.context.swimlane,org.drools.process.c
+ .process.core.context.variable,org.drools.process.core.context.except
+ ion,org.drools.process.instance.context.swimlane,org.drools.process.c
  ore.context.swimlane,org.drools.process.instance.impl.factory,org.dro
  ols.process.instance.context.variable,org.drools.process.instance.con
  text.exception,org.drools,org.drools.common";version="5.1.0.SNAPSHOT"
@@ -189,7 +189,7 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  ols.util,org.drools.base.evaluators,org.drools.time,org.drools.base.e
  xtractors,org.mvel2.asm,org.drools.rule,org.drools.impl,org.drools.ba
  se.field,org.drools.type,org.mvel2.integration,org.drools.base.mvel,o
- rg.mvel2.ast,org.mvel2.compiler,org.drools.facttemplates";version="5.
+ rg.mvel2.compiler,org.mvel2.ast,org.drools.facttemplates";version="5.
  1.0.SNAPSHOT",org.drools.process.core.datatype;version="5.1.0.SNAPSHO
  T",org.drools.workflow.instance;uses:="org.drools.process.instance,or
  g.drools.impl,org.drools.workflow.instance.impl,org.drools,org.drools
@@ -209,7 +209,7 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  .workflow.core.node,org.drools.workflow.instance,org.drools.process.i
  nstance";version="5.1.0.SNAPSHOT",org.drools.marshalling.impl;uses:="
  org.drools.process.instance.context.swimlane,org.drools.workflow.inst
- ance.impl,org.drools.workflow.instance.node,org.drools.common,org.dro
+ ance.node,org.drools.workflow.instance.impl,org.drools.common,org.dro
  ols.process.instance,org.drools.process.instance.context.variable,org
  .drools.workflow.instance,org.drools.process.core,org.drools.util,org
  .drools.impl,org.drools,org.drools.spi,org.drools.concurrent,org.droo
@@ -217,8 +217,8 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  .base,org.drools.rule,org.drools.process.instance.event,org.drools.ru
  leflow.instance";version="5.1.0.SNAPSHOT",org.drools.common;uses:="or
  g.drools.spi,org.drools.rule,org.drools.impl,org.drools.event,org.dro
- ols,org.drools.util,org.drools.base,org.drools.process.core,org.drool
- s.management,org.drools.process.instance.event,org.drools.process.ins
+ ols,org.drools.util,org.drools.base,org.drools.management,org.drools.
+ process.core,org.drools.process.instance.event,org.drools.process.ins
  tance,org.drools.process.core.event,org.drools.runtime.impl,org.drool
  s.type,org.drools.process.instance.timer,org.drools.time,org.drools.r
  uleflow.core,org.drools.workflow.core.node,org.drools.concurrent,org.
@@ -243,8 +243,8 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  ,org.drools.impl,org.drools,org.drools.spi,org.drools.runtime.impl,or
  g.drools.common,org.mvel2";version="5.1.0.SNAPSHOT",org.drools.io.int
  ernal;version="5.1.0.SNAPSHOT",org.drools.runtime.help.impl;uses:="or
- g.drools.command.runtime.process,com.thoughtworks.xstream.io,com.thou
- ghtworks.xstream.converters,com.thoughtworks.xstream.mapper,org.drool
+ g.drools.command.runtime.process,com.thoughtworks.xstream.converters,
+ com.thoughtworks.xstream.io,com.thoughtworks.xstream.mapper,org.drool
  s.command,com.thoughtworks.xstream.converters.collections,org.drools.
  common,org.drools.runtime.impl,org.drools.command.runtime.rule,org.dr
  ools.command.runtime,org.drools.runtime.rule.impl,org.drools.base,org
@@ -308,7 +308,7 @@ Require-Bundle: org.drools.api;visibility:=reexport;bundle-version="5.
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1264462046584
+Bnd-LastModified: 1264632445217
 Bundle-Activator: org.drools.osgi.core.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system

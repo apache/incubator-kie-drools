@@ -57,7 +57,7 @@ public class MVELAccumulateBuilderTest extends TestCase {
         final Accumulate acc = (Accumulate) builder.build( context,
                                                            accDescr );
 
-        ((MVELCompileable) acc.getAccumulator()).compile( Thread.currentThread().getContextClassLoader() );
+        ((MVELCompileable) acc.getAccumulator()).compile( pkgBuilder.getRootClassLoader() );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();
