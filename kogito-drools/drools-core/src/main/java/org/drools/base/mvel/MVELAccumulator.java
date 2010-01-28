@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
@@ -33,6 +34,7 @@ import org.drools.WorkingMemory;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.compiler.CompiledExpression;
 
 /**
  * An MVEL accumulator implementation
@@ -52,7 +54,11 @@ public class MVELAccumulator
     MVELCompilationUnit       reverseUnit;
     MVELCompilationUnit       resultUnit;
 
-    private DroolsMVELFactory prototype;
+    private DroolsMVELFactory initPrototype;
+    private DroolsMVELFactory actionPrototype;
+    private DroolsMVELFactory resultPrototype;
+    private DroolsMVELFactory reversePrototype;
+    
     private Serializable      init;
     private Serializable      action;
     private Serializable      reverse;
@@ -91,12 +97,15 @@ public class MVELAccumulator
         init = initUnit.getCompiledExpression( classLoader );
         action = actionUnit.getCompiledExpression( classLoader );
         result = resultUnit.getCompiledExpression( classLoader );
+        
+        initPrototype = initUnit.getFactory();
+        actionPrototype = actionUnit.getFactory();        
         if ( reverseUnit != null ) {
             reverse = reverseUnit.getCompiledExpression( classLoader );
-            prototype = reverseUnit.getFactory();
-        } else {
-            prototype = resultUnit.getFactory();
+            reversePrototype = reverseUnit.getFactory();
         }
+        
+        resultPrototype = resultUnit.getFactory();
     }
 
     /* (non-Javadoc)
@@ -119,7 +128,7 @@ public class MVELAccumulator
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        DroolsMVELFactory factory = (DroolsMVELFactory) ((MVELFactoryContext)workingMemoryContext).initPrototype;
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
@@ -146,7 +155,7 @@ public class MVELAccumulator
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+    	DroolsMVELFactory factory = (DroolsMVELFactory) ((MVELFactoryContext)workingMemoryContext).actionPrototype;
         factory.setContext( leftTuple,
                             null,
                             handle.getObject(),
@@ -187,7 +196,7 @@ public class MVELAccumulator
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+    	DroolsMVELFactory factory = (DroolsMVELFactory) ((MVELFactoryContext)workingMemoryContext).reversePrototype;
         factory.setContext( leftTuple,
                             null,
                             handle.getObject(),
@@ -215,12 +224,13 @@ public class MVELAccumulator
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+    	DroolsMVELFactory factory = (DroolsMVELFactory) ((MVELFactoryContext)workingMemoryContext).resultPrototype;
         factory.setContext( leftTuple,
                             null,
                             null,
                             workingMemory,
                             ((MVELAccumulatorContext) context).variables );
+        Map<String, Object> vars = ((MVELAccumulatorContext) context).variables;
 
         final Object result = MVEL.executeExpression( this.result,
                                                       null,
@@ -233,7 +243,33 @@ public class MVELAccumulator
     }
 
     public Object createWorkingMemoryContext() {
-        return this.prototype.clone();
+    	return new MVELFactoryContext( this );
+    }
+    
+    private static class MVELFactoryContext {
+        public DroolsMVELFactory initPrototype;
+        public DroolsMVELFactory actionPrototype;
+        public DroolsMVELFactory resultPrototype;
+        public DroolsMVELFactory reversePrototype;  
+        
+        public MVELFactoryContext(MVELAccumulator acc) {
+        	initPrototype = (DroolsMVELFactory) acc.initPrototype.clone();
+        	actionPrototype = (DroolsMVELFactory) acc.actionPrototype.clone();
+        	resultPrototype = (DroolsMVELFactory)acc.resultPrototype.clone();
+        	if ( acc.reversePrototype != null ) {
+        		reversePrototype =(DroolsMVELFactory) acc.reversePrototype.clone();
+        	}        	
+        	
+        	for ( Entry<String, Class> var : ((CompiledExpression)acc.init).getParserContext().getVariables().entrySet() ) {
+        		actionPrototype.addResolver( var.getKey(), new LocalVariableResolver(actionPrototype, var.getKey()) );
+        		resultPrototype.addResolver( var.getKey(), new LocalVariableResolver(resultPrototype, var.getKey()) );
+        		if ( acc.reversePrototype != null ) {
+        			reversePrototype.addResolver( var.getKey(), new LocalVariableResolver(reversePrototype, var.getKey()) );	
+        		}
+        	}
+        }
+        
+        
     }
 
     private static class MVELAccumulatorContext

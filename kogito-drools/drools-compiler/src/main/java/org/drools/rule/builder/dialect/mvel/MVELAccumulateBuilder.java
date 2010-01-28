@@ -110,7 +110,7 @@ public class MVELAccumulateBuilder
                 final MVELAnalysisResult initCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                        accumDescr,
                                                                                                        accumDescr.getInitCode(),
-                                                                                                       new Map[]{declarationsMap, context.getPackageBuilder().getGlobals()} );
+                                                                                                       new Map[]{declarationsMap, context.getPackageBuilder().getGlobals()} );                                
 
                 final MVELAnalysisResult actionCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                          accumDescr,
@@ -118,6 +118,7 @@ public class MVELAccumulateBuilder
                                                                                                          accumDescr.getActionCode(),
                                                                                                          new Map[]{declarationsMap, context.getPackageBuilder().getGlobals()},
                                                                                                          initCodeAnalysis.getMvelVariables() );
+                
                 final MVELAnalysisResult resultCodeAnalysis = (MVELAnalysisResult) dialect.analyzeExpression( context,
                                                                                                               accumDescr,
                                                                                                               accumDescr.getResultCode(),
@@ -151,7 +152,7 @@ public class MVELAccumulateBuilder
                 MVELCompilationUnit reverseUnit = null;
                 if ( accumDescr.getReverseCode() != null ) {
                     reverseUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getReverseCode(),
-                                                                  resultCodeAnalysis,
+                                                                  reverseCodeAnalysis,
                                                                   previousDeclarations,
                                                                   (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] ),
                                                                   initCodeAnalysis.getMvelVariables(),
@@ -170,7 +171,10 @@ public class MVELAccumulateBuilder
                     shadow.retainAll( reverseCodeAnalysis.getNotBoundedIdentifiers() );
                     shadow.addAll( reverseCodeAnalysis.getBoundIdentifiers()[0] );
 
-                    reverseUnit.setShadowIdentifiers( (String[]) shadow.toArray( new String[shadow.size()] ) );
+                    String[] shadowVars = (String[]) shadow.toArray( new String[shadow.size()] );
+                    
+                    actionUnit.setShadowIdentifiers( shadowVars );
+                    reverseUnit.setShadowIdentifiers( shadowVars );
                 }
 
                 accumulator = new MVELAccumulator( initUnit,
@@ -193,7 +197,6 @@ public class MVELAccumulateBuilder
 
             return accumulate;
         } catch ( Exception e ) {
-            e.printStackTrace();
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           e,
