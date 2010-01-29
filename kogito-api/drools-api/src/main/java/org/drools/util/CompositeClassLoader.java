@@ -49,8 +49,8 @@ public class CompositeClassLoader extends ClassLoader {
         Class< ? > cls = null;
 
         for ( final ClassLoader classLoader : this.classLoaders ) {
-            try {
-                cls = classLoader.loadClass( name );
+            try {            	
+                cls = Class.forName( name, true, classLoader );
             } catch ( ClassNotFoundException e ) {
                 // swallow as we need to check more classLoaders
             }
