@@ -11,25 +11,21 @@ public class ClassLoaderUtil {
         ClassLoader currentClassLoader = ( cls != null ) ? cls.getClassLoader() : ClassLoaderUtil.class.getClassLoader();
         ClassLoader systemClassLoader = Class.class.getClassLoader().getSystemClassLoader();
         
-        IdentityHashMap<ClassLoader, Object> map = new IdentityHashMap<ClassLoader, Object>();
-        map.put( classLoader, null );
-        map.put( contextClassLoader, null );
-        map.put( currentClassLoader, null );
-        map.put( systemClassLoader, null );
-        
-        if ( map.size() > 0 ) {
-            CompositeClassLoader cl = new CompositeClassLoader( null );
-            for ( ClassLoader entry : map.keySet() ) {
-                if ( entry != null ) {
-                    cl.addClassLoader( entry );
-                }
-            }
-            
-            return cl;
-            
-        } else {
-            return map.keySet().iterator().next();
+        CompositeClassLoader cl = new CompositeClassLoader( null );
+        if (classLoader != null ) {
+        	cl.addClassLoader(classLoader); 
         }
-               
+        if (contextClassLoader != null ) {
+        	cl.addClassLoader(contextClassLoader); 
+        }     
+        if (currentClassLoader != null ) {
+        	cl.addClassLoader(currentClassLoader); 
+        }   
+        if (systemClassLoader != null ) {
+        	cl.addClassLoader(systemClassLoader); 
+        }        
+        
+        return cl;
+                       
     } 
 }
