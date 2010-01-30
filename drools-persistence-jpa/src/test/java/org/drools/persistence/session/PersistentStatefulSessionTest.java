@@ -164,19 +164,20 @@ public class PersistentStatefulSessionTest extends TestCase {
                             list );
         ksession.insert( 1 );
         ksession.insert( 2 );
-//        ut.commit();
+        ut.commit();
 //
-//        // insert and rollback
-//        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-//        ut.begin();
+        // insert and rollback
+        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut.begin();
         ksession.insert( 3 );
-       // ut.rollback();
+        ut.rollback();
 
         // check we rolled back the state changes from the 3rd insert
+        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut.begin();        
         ksession.fireAllRules();
         ut.commit();
-        System.out.println( list );
-        assertEquals( 3,
+        assertEquals( 2,
                       list.size() );
 
         // insert and commit

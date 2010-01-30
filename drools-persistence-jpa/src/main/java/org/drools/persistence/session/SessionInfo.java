@@ -34,13 +34,6 @@ public class SessionInfo {
     private byte[]             rulesByteArray;
 
     @Transient
-    private int                versionShadow;
-    @Transient
-    private Date               lastModificationDateShadow;  
-    @Transient
-    private byte[]             rulesByteArrayShadow;
-
-    @Transient
     JPASessionMarshallingHelper helper;
     
     public SessionInfo() {
@@ -51,9 +44,9 @@ public class SessionInfo {
         return this.id;
     }
     
-//    public int getVersion() {
-//        return this.version;
-//    }
+    public int getVersion() {
+        return this.version;
+    }
 
     public void setJPASessionMashallingHelper(JPASessionMarshallingHelper helper) {
         this.helper = helper;
@@ -79,26 +72,11 @@ public class SessionInfo {
         this.lastModificationDate = date;
     }
     
-    @PostLoad
-    public void postLoad() {
-        this.lastModificationDateShadow = this.lastModificationDate;       
-        this.rulesByteArrayShadow = this.rulesByteArray;
-//        this.versionShadow = this.version;
-    }
-    
+
     @PrePersist 
     @PreUpdate 
     public void update() {
-        // this would not be called unless we had an last modification date change
         this.rulesByteArray  = this.helper.getSnapshot();
-//        this.lastModificationDateShadow = this.lastModificationDate;       
-//        this.rulesByteArrayShadow = this.rulesByteArray;
     }
-    
-//    public void rollback() {
-//        this.lastModificationDate = this.lastModificationDateShadow;
-//        this.rulesByteArray = this.rulesByteArrayShadow;
-////        this.version = this.versionShadow;
-//    }
 
 }

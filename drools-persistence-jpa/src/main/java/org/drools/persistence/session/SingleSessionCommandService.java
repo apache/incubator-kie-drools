@@ -84,7 +84,6 @@ public class SingleSessionCommandService
             this.info = info;
         }
         
-        @Override
         public void endOperation(ReteooWorkingMemory wm) {
             this.info.setLastModificationDate( new Date( wm.getLastIdleTimestamp() ) );
         }
@@ -104,8 +103,6 @@ public class SingleSessionCommandService
                                                                                                  this.env );
         this.ksession = new StatefulKnowledgeSessionImpl( session, kbase );
         
-        //this.ksession = kbase.newStatefulKnowledgeSession( conf, this.env );
-        
         this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession, null );
 
         ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
@@ -116,12 +113,10 @@ public class SingleSessionCommandService
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
         
         ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
-        
-        //this.sessionInfo.setReteooWorkingMemory( ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session) );
 
         this.emf = (EntityManagerFactory) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
         this.em = emf.createEntityManager(); // how can I ensure this is an extended entity?
-        //        System.out.println( ((EntityManagerImpl) this.em).getFlushMode() );
+
         boolean localTransaction = false;
         UserTransaction ut = null;
         try {
@@ -156,11 +151,6 @@ public class SingleSessionCommandService
         // update the session id to be the same as the session info id
         ((StatefulKnowledgeSessionImpl)ksession).session.setId( this.sessionInfo.getId() );
 
-//        new Thread( new Runnable() {
-//            public void run() {
-//                ksession.fireUntilHalt();
-//            }
-//        } );
     }
 
     public SingleSessionCommandService(int sessionId,
@@ -225,12 +215,6 @@ public class SingleSessionCommandService
 
         // update the session id to be the same as the session info id
         ((StatefulKnowledgeSessionImpl)ksession).session.setId( this.sessionInfo.getId() );
-
-//        new Thread( new Runnable() {
-//            public void run() {
-//                ksession.fireUntilHalt();
-//            }
-//        } );
     }
 
     public Context getContext() {
@@ -309,12 +293,6 @@ public class SingleSessionCommandService
                 throw new RuntimeException( "Could not execute command",
                                             t1 );
             }
-//        } finally {
-//            new Thread( new Runnable() {
-//                public void run() {
-//                    ksession.fireUntilHalt();
-//                }
-//            } );
         }
     }
 
@@ -349,13 +327,6 @@ public class SingleSessionCommandService
                      this );
         }
 
-        //        // lazy registration that ensures we registration the rollback just once
-        //        if ( !rollbackRegistered.get() ) {
-        //            TransactionManagerServices.getTransactionManager().getTransaction().registerSynchronization( new SynchronizationImpl( rollbackRegistered,
-        //                                                                                                                                  ks ) );  
-        //            rollbackRegistered.set( true );
-        //            System.out.println( "registered rollback sychronisation" );
-        //        }
     }
 
     private class SynchronizationImpl
@@ -394,37 +365,6 @@ public class SingleSessionCommandService
         }
 
     }
-
-    //    public static class SynchronizationImpl
-    //    implements
-    //    Synchronization {
-    //    KnowledgeStore       ks;
-    //    ThreadLocal<Boolean> rollbackRegistered;
-    //
-    //    SynchronizationImpl(ThreadLocal<Boolean> rollbackRegistered,
-    //                        KnowledgeStore ks) {
-    //        this.ks = ks;
-    //        this.rollbackRegistered = rollbackRegistered;
-    //    }
-    //
-    //    public void afterCompletion(int status) {
-    //        if ( status == Status.STATUS_COMMITTED) {
-    //            ks.commit();
-    //            System.out.println( "after with local commit: " + status );
-    //        } else {
-    //            ks.rollback();
-    //            System.out.println( "after with local rollacbk: " + status );
-    //        }
-    //        
-    //        // always cleanup thread local whatever the result
-    //        rollbackRegistered.remove();
-    //        System.out.println( "cleanedup rollback sychronisation" );
-    //    }
-    //
-    //    public void beforeCompletion() {
-    //        System.out.println( "before " );
-    //    }
-    //}     
 
     private void rollback() {
         // with em null, if someone tries to use this session it'll first restore it's state
