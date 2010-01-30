@@ -46,7 +46,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 		return list;
 	}	
 	
-	
 	public boolean hasErrors() {
 	    return this.pkgBuilder.hasErrors();
 	}
