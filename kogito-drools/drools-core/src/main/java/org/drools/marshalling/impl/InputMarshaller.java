@@ -122,8 +122,10 @@ public class InputMarshaller {
                     agenda );
 
         context.wm = session;
+        
+        context.handles.put( context.wm.getInitialFactHandle().getId(),  context.wm.getInitialFactHandle() );
 
-        readFactHandles( context );
+        readFactHandles( context );       
 
         readActionQueue( context );
 

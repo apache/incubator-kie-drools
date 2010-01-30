@@ -71,7 +71,7 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  ls,org.osgi.framework";version="5.1.0.SNAPSHOT",org.drools.impl;uses:
  ="org.drools,org.drools.definitions.rule.impl,org.drools.event.knowle
  gebase.impl,org.drools.event,org.drools.rule,org.drools.definitions.i
- mpl,org.drools.common,org.drools.agent,org.drools.command,org.drools.
+ mpl,org.drools.common,org.drools.command,org.drools.agent,org.drools.
  command.impl,org.drools.event.rule.impl,org.drools.spi,org.drools.eve
  nt.process.impl,org.drools.runtime.impl,org.drools.runtime.rule.impl,
  org.drools.process.instance.event,org.drools.process.instance,org.dro
@@ -162,8 +162,8 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  i,org.drools,org.drools.common,org.drools.process.instance";version="
  5.1.0.SNAPSHOT",org.drools.base.mvel;uses:="org.mvel2.integration,org
  .drools,org.drools.common,org.mvel2.integration.impl,org.mvel2,org.dr
- ools.rule,org.drools.spi,org.mvel2.compiler,org.drools.util,org.drool
- s.type,org.drools.base,org.mvel2.debug";version="5.1.0.SNAPSHOT",org.
+ ools.rule,org.drools.spi,org.mvel2.compiler,org.drools.type,org.drool
+ s.util,org.drools.base,org.mvel2.debug";version="5.1.0.SNAPSHOT",org.
  drools.event.process.impl;uses:="org.drools.event,org.drools,org.droo
  ls.common";version="5.1.0.SNAPSHOT",org.drools.process.instance.impl;
  uses:="org.drools.process.instance,org.drools.process.core,org.drools
@@ -308,7 +308,7 @@ Require-Bundle: org.drools.api;visibility:=reexport;bundle-version="5.
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1264632445217
+Bnd-LastModified: 1264724432806
 Bundle-Activator: org.drools.osgi.core.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system
@@ -317,11 +317,13 @@ Import-Package: com.thoughtworks.xstream,com.thoughtworks.xstream.conv
  erters,com.thoughtworks.xstream.converters.collections,com.thoughtwor
  ks.xstream.io,com.thoughtworks.xstream.io.xml,com.thoughtworks.xstrea
  m.mapper,javax.management,javax.management.openmbean,javax.swing,java
- x.swing.border,javax.swing.event,javax.xml.parsers,org.mvel2,org.mvel
- 2.asm,org.mvel2.asm.util,org.mvel2.ast,org.mvel2.compiler,org.mvel2.d
- ebug,org.mvel2.integration,org.mvel2.integration.impl,org.mvel2.optim
- izers,org.mvel2.templates,org.mvel2.util,org.osgi.framework;version="
- 1.5",org.w3c.dom,org.xml.sax,org.xml.sax.helpers
+ x.swing.border,javax.swing.event,javax.xml.parsers,org.mvel2;version=
+ "2.0",org.mvel2.asm;version="2.0",org.mvel2.asm.util;version="2.0",or
+ g.mvel2.ast;version="2.0",org.mvel2.compiler;version="2.0",org.mvel2.
+ debug;version="2.0",org.mvel2.integration;version="2.0",org.mvel2.int
+ egration.impl;version="2.0",org.mvel2.optimizers;version="2.0",org.mv
+ el2.templates;version="2.0",org.mvel2.util;version="2.0",org.osgi.fra
+ mework;version="1.5",org.w3c.dom,org.xml.sax,org.xml.sax.helpers
 Bundle-SymbolicName: org.drools.core
 Bundle-DocURL: http://www.jboss.org/
 
