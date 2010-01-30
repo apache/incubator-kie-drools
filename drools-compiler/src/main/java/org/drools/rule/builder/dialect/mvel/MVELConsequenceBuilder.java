@@ -106,7 +106,6 @@ public class MVELConsequenceBuilder
             
             expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
-        	e.printStackTrace();
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,
