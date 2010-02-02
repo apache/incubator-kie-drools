@@ -46,35 +46,12 @@ Export-Package: org.drools.builder.impl;uses:="org.drools.compiler";ve
  com.thoughtworks.xstream,org.drools.guvnor.client.modeldriven,org.mve
  l2,org.drools.guvnor.client.modeldriven.dt,org.drools.guvnor.client.m
  odeldriven.testing";version="5.1.0.SNAPSHOT"
-Ignore-Package: org.drools.osgi.compiler,org.drools.util.asm,org.drool
- s.process.core.impl,org.drools.base.dataproviders,org.drools.builder.
- conf.impl,org.drools,org.drools.definition.process,org.drools.util,or
- g.drools.type,org.drools.testframework,org.drools.workflow.core,org.d
- rools.builder,org.drools.workflow.core.impl,org.drools.builder.conf,o
- rg.drools.process.core.validation,org.drools.rule.builder.dialect.mve
- l,org.drools.runtime.process,org.drools.time.impl,org.drools.guvnor.s
- erver.rules,org.drools.rule,org.drools.guvnor.client.modeldriven.brl,
- org.drools.guvnor.client.modeldriven.testing,org.drools.spi,org.drool
- s.time,org.drools.reteoo,org.drools.xml,org.drools.base.extractors,or
- g.drools.base.field,org.drools.process.core.context.exception,org.dro
- ols.osgi.api,org.drools.impl,org.drools.guvnor.client.modeldriven.ui,
- org.drools.workflow.instance.impl,org.drools.ruleflow.core,org.drools
- .guvnor.client,org.drools.process.core.context.swimlane,org.drools.wo
- rkflow.core.node,org.drools.base.evaluators,org.drools.compiler,org.d
- rools.definition,org.drools.process.core.event,org.drools.definitions
- .impl,org.drools.reteoo.compiled,org.drools.guvnor.client.modeldriven
- .dt,org.drools.ruleflow.core.validation,org.drools.process.core.timer
- ,org.drools.process.core.context.variable,org.drools.io.impl,org.droo
- ls.event,org.drools.base.mvel,org.drools.base.accumulators,org.drools
- .facttemplates,org.drools.process.builder,org.drools.rule.builder.dia
- lect.java,org.drools.builder.impl,org.drools.base,org.drools.process.
- core.datatype,org.drools.rule.builder.dialect.java.parser,org.drools.
- xml.rules,org.drools.guvnor.server,org.drools.xml.processes,org.drool
- s.process.core,org.drools.factmodel,org.drools.process.core.datatype.
- impl.type,org.drools.runtime.rule,org.drools.semantics.java.parser,or
- g.drools.common,org.drools.io,org.drools.agent,org.drools.io.internal
- ,org.drools.guvnor.client.modeldriven,org.drools.rule.builder,org.dro
- ols.guvnor.server.util
+Private-Package: org.drools.lang.descr;version="5.1.0.SNAPSHOT",org.dr
+ ools.commons.jci.compilers;version="5.1.0.SNAPSHOT",org.drools.lang.d
+ sl;version="5.1.0.SNAPSHOT",org.drools.commons.jci.problems;version="
+ 5.1.0.SNAPSHOT",org.drools.commons.jci.readers;version="5.1.0.SNAPSHO
+ T",org.drools.commons.jci.stores;version="5.1.0.SNAPSHOT",org.drools.
+ lang;version="5.1.0.SNAPSHOT"
 Tool: Bnd-0.0.357
 Bundle-Name: Drools :: Compiler
 Created-By: 1.6.0_18 (Sun Microsystems Inc.)
@@ -82,7 +59,7 @@ Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1264632495664
+Bnd-LastModified: 1265079373773
 Bundle-Activator: org.drools.osgi.compiler.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system
@@ -96,11 +73,12 @@ Import-Package: com.thoughtworks.xstream,com.thoughtworks.xstream.io,c
  ;provider=jasper;version="3.3",org.eclipse.jdt.internal.compiler.clas
  sfmt;provider=jasper;version="3.3",org.eclipse.jdt.internal.compiler.
  env;provider=jasper;version="3.3",org.eclipse.jdt.internal.compiler.p
- roblem;provider=jasper;version="3.3",org.mvel2,org.mvel2.ast,org.mvel
- 2.compiler,org.mvel2.integration,org.mvel2.integration.impl,org.mvel2
- .optimizers,org.mvel2.templates,org.mvel2.util,org.osgi.framework;ver
- sion="1.5",org.osgi.util.tracker;version="1.4",org.w3c.dom,org.xml.sa
- x
+ roblem;provider=jasper;version="3.3",org.mvel2;version="2.0",org.mvel
+ 2.ast;version="2.0",org.mvel2.compiler;version="2.0",org.mvel2.integr
+ ation;version="2.0",org.mvel2.integration.impl;version="2.0",org.mvel
+ 2.optimizers;version="2.0",org.mvel2.templates;version="2.0",org.mvel
+ 2.util;version="2.0",org.osgi.framework;version="1.5",org.osgi.util.t
+ racker;version="1.4",org.w3c.dom,org.xml.sax
 Bundle-SymbolicName: org.drools.compiler
 Bundle-DocURL: http://www.jboss.org/
 
