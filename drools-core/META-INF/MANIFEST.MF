@@ -257,49 +257,9 @@ Export-Package: org.drools.audit.event;version="5.1.0.SNAPSHOT",org.dr
  ols,org.drools.command.runtime,org.drools.rule,org.drools.time,org.dr
  ools.runtime.impl";version="5.1.0.SNAPSHOT",org.drools.concurrent;use
  s:="org.drools,org.drools.spi";version="5.1.0.SNAPSHOT"
-Ignore-Package: org.drools.conf,org.drools.process.core.impl,org.drool
- s.command.assertion,org.drools.workflow.instance.context,org.drools.d
- efinition.process,org.drools.runtime.pipeline.impl,org.drools.conflic
- t,org.drools.time.impl,org.drools.process.instance.impl.humantask,org
- .drools.process.instance.context,org.drools.base.field,org.drools.bas
- e.extractors,org.drools.workflow.instance.impl,org.drools.ruleflow.co
- re,org.drools.event.rule.impl,org.drools.base.evaluators,org.drools.d
- efinition,org.drools.definitions.impl,org.drools.process.core.event,o
- rg.drools.process.instance.event,org.drools.definition.type,org.drool
- s.ruleflow.core.validation,org.drools.process.instance.context.variab
- le,org.drools.command.runtime,org.drools.process.instance.context.exc
- eption,org.drools.command,org.drools.management,org.drools.process.co
- re.context.variable,org.drools.definitions.rule.impl,org.drools.workf
- low.instance.node,org.drools.process.instance.impl,org.drools.event.p
- rocess.impl,org.drools.process.core.validation.impl,org.drools.proces
- s.instance.timer,org.drools.logger,org.drools.base,org.drools.workflo
- w.instance,org.drools.visualize,org.drools.util.debug,org.drools.proc
- ess.core,org.drools.event.rule,org.drools.process.core.datatype.impl.
- type,org.drools.event.process,org.drools.common,org.drools.process.in
- stance.impl.factory,org.drools.workflow.instance.impl.factory,org.dro
- ols.command.runtime.rule,org.drools.agent,org.drools.xml.changeset,or
- g.drools.command.impl,org.drools.event.io,org.drools.audit.event,org.
- drools.process.instance.context.swimlane,org.drools.runtime,org.drool
- s.marshalling,org.drools.util.asm,org.drools.base.dataproviders,org.d
- rools.builder.conf.impl,org.drools,org.drools.util,org.drools.type,or
- g.drools.workflow.core,org.drools.builder,org.drools.workflow.core.im
- pl,org.drools.process.core.validation,org.drools.command.runtime.proc
- ess,org.drools.runtime.process,org.drools.process.core.datatype.impl,
- org.drools.rule,org.drools.runtime.help,org.drools.spi,org.drools.tim
- e,org.drools.xml,org.drools.audit,org.drools.process.core.context.exc
- eption,org.drools.impl,org.drools.osgi.core,org.drools.event.knowlege
- base.impl,org.drools.ruleflow.core.factory,org.drools.process.core.co
- ntext.swimlane,org.drools.workflow.core.node,org.drools.process.insta
- nce,org.drools.command.builder,org.drools.process.core.timer,org.droo
- ls.io.impl,org.drools.event,org.drools.base.mvel,org.drools.event.kno
- wledgebase,org.drools.runtime.impl,org.drools.base.accumulators,org.d
- rools.runtime.rule.impl,org.drools.facttemplates,org.drools.process.c
- ore.datatype,org.drools.runtime.conf,org.drools.definition.rule,org.d
- rools.factmodel,org.drools.ruleflow.instance,org.drools.runtime.rule,
- org.drools.marshalling.impl,org.drools.vsm,org.drools.process.instanc
- e.impl.demo,org.drools.process.core.context,org.drools.agent.impl,org
- .drools.io,org.drools.runtime.pipeline,org.drools.runtime.help.impl,o
- rg.drools.io.internal,org.drools.concurrent
+Private-Package: org.drools.reteoo;version="5.1.0.SNAPSHOT",.;version=
+ "5.1.0.SNAPSHOT",org.drools.reteoo.compiled;version="5.1.0.SNAPSHOT",
+ org.drools.reteoo.builder;version="5.1.0.SNAPSHOT"
 Tool: Bnd-0.0.357
 Bundle-Name: Drools :: Core
 Created-By: 1.6.0_18 (Sun Microsystems Inc.)
@@ -308,7 +268,7 @@ Require-Bundle: org.drools.api;visibility:=reexport;bundle-version="5.
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1264724432806
+Bnd-LastModified: 1265079316810
 Bundle-Activator: org.drools.osgi.core.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system

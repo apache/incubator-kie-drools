@@ -1,6 +1,7 @@
 package org.drools.persistence.session;
 
 import java.util.Date;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import javax.naming.InitialContext;
@@ -13,7 +14,6 @@ import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
-import org.apache.commons.collections.map.IdentityMap;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -316,7 +316,7 @@ public class SingleSessionCommandService
 
         Map map = (Map) env.get( "synchronizations" );
         if ( map == null ) {
-            map = new IdentityMap();
+            map = new IdentityHashMap();
             env.set( "synchronizations",
                      map );
         }

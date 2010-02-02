@@ -190,14 +190,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             </executions>
             <configuration>
                <manifestLocation>META-INF</manifestLocation>
-               <instructions>&lt;_removeheaders&gt;Ignore-Package&lt;/_removeheaders&gt; 
-               <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>
-               <Import-Package>!org.drools.*, *</Import-Package>
-               <Export-Package>!org.drools.commons.*, !org.drools.lang.*, org.drools.builder.impl, 
-               <!-- add this one manually as BND seems to miss it out -->
-               org.drools.*</Export-Package>
-               <DynamicImport-Package>*</DynamicImport-Package>
-               <Bundle-Activator>org.drools.osgi.compiler.Activator</Bundle-Activator></instructions>
+               <instructions>
+                  <_removeheaders>Ignore-Package</_removeheaders> 
+                  <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>
+                  <Import-Package>!org.drools.*, *</Import-Package>
+                  <Export-Package>!org.drools.commons.*, !org.drools.lang.*, org.drools.builder.impl, 
+                  <!-- add this one manually as BND seems to miss it out -->
+                  org.drools.*</Export-Package>
+                  <DynamicImport-Package>*</DynamicImport-Package>
+                  <Bundle-Activator>org.drools.osgi.compiler.Activator</Bundle-Activator>
+               </instructions>
             </configuration>
          </plugin>
       </plugins>
