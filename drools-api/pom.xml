@@ -89,6 +89,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <configuration>
                <manifestLocation>META-INF</manifestLocation>
                <instructions>
+                  <_removeheaders>Ignore-Package</_removeheaders>
                   <Import-Package>!org.drools.*,*;resolution:=optional</Import-Package>
                   <Export-Package>org.drools.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>
