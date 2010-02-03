@@ -117,12 +117,12 @@ public class RuleModelTest extends TestCase {
 		cons[0].fieldBinding = "qbc";
 		cons[0].fieldType = "String";
 		cons[0].connectives = new ConnectiveConstraint[1];
-		cons[0].connectives[0] = new ConnectiveConstraint("&", "x");
+		cons[0].connectives[0] = new ConnectiveConstraint("age", "String", "&", "x");
 		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 		cons[1] = new SingleFieldConstraint("make");
 		cons[1].fieldType = "Long";
 		cons[1].connectives = new ConnectiveConstraint[1];
-		cons[1].connectives[0] = new ConnectiveConstraint("=", "2");
+		cons[1].connectives[0] = new ConnectiveConstraint("make", "Long", "=", "2");
 		cons[1].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 
 
@@ -340,7 +340,7 @@ public class RuleModelTest extends TestCase {
 		cons[1] = new SingleFieldConstraint("make");
 		cons[0].fieldBinding = "qbc";
 		cons[0].connectives = new ConnectiveConstraint[1];
-		cons[0].connectives[0] = new ConnectiveConstraint("&", "x");
+		cons[0].connectives[0] = new ConnectiveConstraint("age", null, "&", "x");
 		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 
 		final FactPattern other = new FactPattern("House");
@@ -413,12 +413,12 @@ public class RuleModelTest extends TestCase {
 		cons[0].fieldBinding = "qbc";
 		cons[0].fieldType = "String";
 		cons[0].connectives = new ConnectiveConstraint[1];
-		cons[0].connectives[0] = new ConnectiveConstraint("&", "x");
+		cons[0].connectives[0] = new ConnectiveConstraint("age", "String", "&", "x");
 		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 		cons[1] = new SingleFieldConstraint("make");
 		cons[1].fieldType = "Long";
 		cons[1].connectives = new ConnectiveConstraint[1];
-		cons[1].connectives[0] = new ConnectiveConstraint("=", "2");
+		cons[1].connectives[0] = new ConnectiveConstraint("make", "Long", "=", "2");
 		cons[1].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 
 		final FactPattern other = new FactPattern("House");

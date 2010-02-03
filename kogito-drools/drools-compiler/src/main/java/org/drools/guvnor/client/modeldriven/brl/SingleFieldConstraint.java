@@ -41,13 +41,13 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
      */
     public void addNewConnective() {
         if ( this.connectives == null ) {
-            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint()};
+            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint(this.fieldName, this.fieldType, null, null)};
         } else {
             final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length + 1];
             for ( int i = 0; i < this.connectives.length; i++ ) {
                 newList[i] = this.connectives[i];
             }
-            newList[this.connectives.length] = new ConnectiveConstraint();
+            newList[this.connectives.length] = new ConnectiveConstraint(this.fieldName, this.fieldType, null, null);
             this.connectives = newList;
         }
     }
