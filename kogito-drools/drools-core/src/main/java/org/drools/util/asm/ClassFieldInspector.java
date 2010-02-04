@@ -271,7 +271,7 @@ public class ClassFieldInspector {
         } catch (NoSuchFieldException e) {
            // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        if ( method.getName().startsWith( "set" ) ) {
+        if ( method.getName().startsWith( "set" ) && method.getParameterTypes().length == 1) {
             this.setterMethods.put( fieldName,
                                     method );
             if ( !fieldTypes.containsKey( fieldName ) ) {
