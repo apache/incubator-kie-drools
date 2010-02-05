@@ -24,8 +24,8 @@ public class ActionCallMethod extends ActionSetField {
 	 */
 	public static final int TYPE_DEFINED = 1;
 	/*
-	 * shows the sstate;tate of the method call TYPE_UNDEFINED => the user has
-	 * not choosen a method or TYPE_DEFINED => The user has choosen a functin
+	 * shows the state of the method call TYPE_UNDEFINED => the user has
+	 * not choosen a method or TYPE_DEFINED => The user has choosen a function
 	 */
 	public int state;
 

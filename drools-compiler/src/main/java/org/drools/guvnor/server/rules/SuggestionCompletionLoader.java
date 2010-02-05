@@ -2,9 +2,8 @@ package org.drools.guvnor.server.rules;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,13 +14,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.ParserError;
+import org.drools.guvnor.client.modeldriven.MethodInfo;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.server.util.ClassMethodInspector;
 import org.drools.guvnor.server.util.DataEnumLoader;
@@ -56,7 +57,7 @@ import org.drools.util.asm.ClassFieldInspector;
  *
  * @author Michael Neale
  */
-public class SuggestionCompletionLoader {
+public class SuggestionCompletionLoader implements ClassToGenericClassConverter {
 
     private final SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
 
@@ -89,7 +90,7 @@ public class SuggestionCompletionLoader {
             }
         }
         this.loader = new MapBackedClassLoader(classLoader);
-        this.resolver = new ClassTypeResolver(new HashSet(),
+        this.resolver = new ClassTypeResolver(new HashSet<String>(),
                 this.loader);
     }
 
@@ -104,8 +105,8 @@ public class SuggestionCompletionLoader {
      * @return A SuggestionCompletionEngine ready to be used in anger.
      */
     public SuggestionCompletionEngine getSuggestionEngine(final String header,
-                                                          final List jars,
-                                                          final List dsls) {
+                                                          final List<JarInputStream> jars,
+                                                          final List<DSLTokenizedMappingFile> dsls) {
         return this.getSuggestionEngine(header, jars, dsls, Collections.EMPTY_LIST);
     }
 
@@ -123,9 +124,9 @@ public class SuggestionCompletionLoader {
      * @return A SuggestionCompletionEngine ready to be used in anger.
      */
     public SuggestionCompletionEngine getSuggestionEngine(final String header,
-                                                          final List jars,
-                                                          final List dsls,
-                                                          final List dataEnums) {
+                                                          final List<JarInputStream> jars,
+                                                          final List<DSLTokenizedMappingFile> dsls,
+                                                          final List<String> dataEnums) {
         this.builder.newCompletionEngine();
 
         if (!header.trim().equals("")) {
@@ -141,19 +142,17 @@ public class SuggestionCompletionLoader {
 
         populateDateEnums(dataEnums, sce);
 
-        Arrays.sort(sce.factTypes);
-
         return sce;
     }
 
-    private void populateDateEnums(List dataEnums, SuggestionCompletionEngine sce) {
-        for (Iterator iter = dataEnums.iterator(); iter.hasNext();) {
-            String enumFile = (String) iter.next();
+    private void populateDateEnums(List<String> dataEnums, SuggestionCompletionEngine sce) {
+        for (Iterator<String> iter = dataEnums.iterator(); iter.hasNext();) {
+            String enumFile = iter.next();
             DataEnumLoader enumLoader = new DataEnumLoader(enumFile);
             if (enumLoader.hasErrors()) {
                 this.errors.addAll(enumLoader.getErrors());
             } else {
-                sce.dataEnumLists.putAll(enumLoader.getData());
+                sce.putAllDataEnumLists(enumLoader.getData());
             }
         }
 
@@ -170,9 +169,8 @@ public class SuggestionCompletionLoader {
         }
 
         if (this.parser.hasErrors()) {
-            for (final Iterator iter = this.parser.getErrors().iterator(); iter.hasNext();) {
-                final ParserError element = (ParserError) iter.next();
-                this.errors.add(element.getMessage());
+            for (final Iterator<DroolsError> iter = this.parser.getErrors().iterator(); iter.hasNext();) {
+                this.errors.add(iter.next().getMessage());
             }
         }
 
@@ -193,7 +191,7 @@ public class SuggestionCompletionLoader {
      * @param pkg
      * @param errors
      */
-    private void populateDSLSentences(final List dsls) {
+    private void populateDSLSentences(final List<DSLTokenizedMappingFile> dsls) {
         // AssetItemIterator it = pkg.listAssetsByFormat( new
         // String[]{AssetFormats.DSL} );
         // while ( it.hasNext() ) {
@@ -223,8 +221,8 @@ public class SuggestionCompletionLoader {
         // }
         // }
 
-        for (final Iterator it = dsls.iterator(); it.hasNext();) {
-            final DSLTokenizedMappingFile file = (DSLTokenizedMappingFile) it.next();
+        for (final Iterator<DSLTokenizedMappingFile> it = dsls.iterator(); it.hasNext();) {
+            final DSLTokenizedMappingFile file = it.next();
             final DSLMapping mapping = file.getMapping();
             for (final Iterator entries = mapping.getEntries().iterator(); entries.hasNext();) {
                 final AbstractDSLMappingEntry entry = (AbstractDSLMappingEntry) entries.next();
@@ -307,11 +305,16 @@ public class SuggestionCompletionLoader {
 
         for (final Iterator<TypeDeclarationDescr> it = pkgDescr.getTypeDeclarations().iterator(); it.hasNext();) {
             TypeDeclarationDescr td = it.next();
+            declaredTypes.add(td.getTypeName());
+        }
+
+        for (final Iterator<TypeDeclarationDescr> it = pkgDescr.getTypeDeclarations().iterator(); it.hasNext();) {
+            TypeDeclarationDescr td = it.next();
 
             if (td.getFields().size() > 0) {
                 //add the type to the map
                 String declaredType = td.getTypeName();
-                declaredTypes.add(declaredType);
+                
                 this.builder.addFactType(declaredType);
                 List<String> fieldNames = new ArrayList<String>();
                 for (Map.Entry<String, TypeFieldDescr> f : td.getFields().entrySet()) {
@@ -321,16 +324,15 @@ public class SuggestionCompletionLoader {
 
 
                     if (declaredTypes.contains(fieldClass)) {
-                        this.builder.addFieldType(declaredType + "." + fieldName, fieldClass);//SuggestionCompletionEngine.TYPE_OBJECT );
+                        this.builder.addFieldType(declaredType + "." + fieldName, fieldClass,null);//SuggestionCompletionEngine.TYPE_OBJECT );
                     } else {
                         try {
                             Class clz = resolver.resolveType(fieldClass);
-                            this.builder.addFieldType(declaredType + "." + fieldName, getFieldType(clz));
+                            this.builder.addFieldType(declaredType + "." + fieldName, translateClassToGenericType(clz),clz);
                         } catch (ClassNotFoundException e) {
                             this.errors.add("Class of field not found: " + fieldClass);
                         }
                     }
-
                 }
 
                 this.builder.addFieldsForType(declaredType, fieldNames.toArray(new String[fieldNames.size()]));
@@ -371,7 +373,7 @@ public class SuggestionCompletionLoader {
                     this.errors.add("Fact template field type not found: " + fieldType);
                 }
                 this.builder.addFieldType(factType + "." + fieldDescr.getName(),
-                        getFieldType(fieldTypeClass));
+                        translateClassToGenericType(fieldTypeClass),fieldTypeClass);
             }
 
             Arrays.sort(fields);
@@ -410,24 +412,19 @@ public class SuggestionCompletionLoader {
         return clazz;
     }
 
-    private void loadClassFields(final Class clazz,
+    private void loadClassFields(final Class<?> clazz,
                                  final String shortTypeName) throws IOException {
         if (clazz == null) {
             return;
         }
 
         final ClassFieldInspector inspector = new ClassFieldInspector(clazz);
-        Set<String> fieldSet = new HashSet<String>();
+        Set<String> fieldSet = new TreeSet<String>();
         fieldSet.addAll(inspector.getFieldNames().keySet());
         // add the "this" field. This won't come out from the inspector
         fieldSet.add("this");
 
-        String [] fields = fieldSet.toArray(new String []{});
-        Arrays.sort(fields);
-
-        fields = removeIrrelevantFields(fields);
-
-        this.builder.addFieldsForType(shortTypeName, fields);
+        this.builder.addFieldsForType(shortTypeName, removeIrrelevantFields(fieldSet));
         
         Method[] methods = clazz.getMethods();
         List<String> modifierStrings = new ArrayList<String>();
@@ -439,21 +436,29 @@ public class SuggestionCompletionLoader {
 
         this.builder.addModifiersForType(shortTypeName, modifiers);
 
-        // remove this back out because there is no type for it. We add it explicity
+        // remove this back out because there is no type for it. We add it explicitly
         fieldSet.remove("this");
-        this.builder.addFieldType(shortTypeName + ".this", SuggestionCompletionEngine.TYPE_OBJECT);
+        this.builder.addFieldType(shortTypeName + ".this", SuggestionCompletionEngine.TYPE_OBJECT,clazz);
 
         for (String field : fieldSet) {
-            final Class type = inspector.getFieldTypes().get(field);
-            final String fieldType = getFieldType(type);
-            this.builder.addFieldType(shortTypeName + "." + field, fieldType);
+            final Class<?> type = inspector.getFieldTypes().get(field);
+            final String fieldType = translateClassToGenericType(type);
+            this.builder.addFieldType(shortTypeName + "." + field, fieldType,type);
             Field f = inspector.getFieldTypesField().get(field);
             this.builder.addFieldTypeField(shortTypeName + "." + field,f);
         }
         
-        ClassMethodInspector methodInspector = new ClassMethodInspector(clazz);
+        ClassMethodInspector methodInspector = new ClassMethodInspector(clazz, this);
         
-        this.builder.getInstance().addMethodInfo( shortTypeName, methodInspector.getMethodInfos() );
+        List<MethodInfo> methodInfos = methodInspector.getMethodInfos();
+        for (MethodInfo mi : methodInfos) {
+				String genericType = mi.getParametricReturnType();
+				if (genericType != null) {
+					this.builder.putParametricFieldType(shortTypeName + "."
+							+ mi.getNameWithParameters(), genericType);
+				}
+		}
+		this.builder.getInstance().addMethodInfo( shortTypeName, methodInfos );
     }
 
     String getShortNameOfClass(final String clazz) {
@@ -464,25 +469,22 @@ public class SuggestionCompletionLoader {
      * This will remove the unneeded "fields" that come from java.lang.Object
      * these are really not needed for the modeller.
      */
-    String[] removeIrrelevantFields(final String[] fields) {
-        final List result = new ArrayList();
-        for (int i = 0; i < fields.length; i++) {
-            final String field = fields[i];
-            if (field.equals("class") || field.equals("hashCode") || field.equals("toString")) {
-                // ignore
-            } else {
+    String[] removeIrrelevantFields(Collection<String> fields) {
+        final List<String> result = new ArrayList<String>();
+        for (String field : fields) {
+            if (!(field.equals("class") || field.equals("hashCode") || field.equals("toString"))) {
                 result.add(field);
             }
         }
-        return (String[]) result.toArray(new String[result.size()]);
+        return result.toArray(new String[result.size()]);
     }
 
     /**
      * This will add the given jars to the classloader.
      */
-    private void addJars(final List jars) throws IOException {
-        for (final Iterator it = jars.iterator(); it.hasNext();) {
-            final JarInputStream jis = (JarInputStream) it.next();
+    private void addJars(final List<JarInputStream> jars) throws IOException {
+        for (final Iterator<JarInputStream> it = jars.iterator(); it.hasNext();) {
+            final JarInputStream jis = it.next();
             JarEntry entry  ;
             final byte[] buf = new byte[1024];
             int len  ;
@@ -502,13 +504,11 @@ public class SuggestionCompletionLoader {
         }
     }
 
-    /**
-     * @param inspector
-     * @param fields
-     * @param i
-     * @return
-     */
-    private String getFieldType(final Class type) {
+    /* (non-Javadoc)
+	 * @see org.drools.guvnor.server.rules.ClassToGenericClassConverter#translateClassToGenericType(java.lang.Class)
+	 */
+    //XXX {bauna} field type
+    public String translateClassToGenericType(final Class<?>type) {
         String fieldType = null; // if null, will use standard operators
         if (type != null) {
             if (type.isPrimitive() && (type != boolean.class)) {

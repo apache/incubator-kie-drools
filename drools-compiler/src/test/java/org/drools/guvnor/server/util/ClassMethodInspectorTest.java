@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.guvnor.server.rules.ClassToGenericClassConverter;
+
 import junit.framework.TestCase;
 
 /**
@@ -32,7 +34,7 @@ import junit.framework.TestCase;
 public class ClassMethodInspectorTest extends TestCase {
 
     public void testSimpleMethods() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( SimpleMethods.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( SimpleMethods.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -41,7 +43,7 @@ public class ClassMethodInspectorTest extends TestCase {
     }
 
     public void testMoreThanOneMethodWithTheSameName() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( MoreThanOneMethodWithTheSameName.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( MoreThanOneMethodWithTheSameName.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -51,7 +53,7 @@ public class ClassMethodInspectorTest extends TestCase {
     }
 
     public void testCollection() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( Collection.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( Collection.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -60,7 +62,7 @@ public class ClassMethodInspectorTest extends TestCase {
     }
 
     public void testArrayList() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( ArrayList.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( ArrayList.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -69,7 +71,7 @@ public class ClassMethodInspectorTest extends TestCase {
     }
 
     public void testList() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( List.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( List.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -78,7 +80,7 @@ public class ClassMethodInspectorTest extends TestCase {
     }
 
     public void testSet() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( Set.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( Set.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -87,7 +89,7 @@ public class ClassMethodInspectorTest extends TestCase {
     }
 
     public void testMap() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( Map.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( Map.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -96,7 +98,7 @@ public class ClassMethodInspectorTest extends TestCase {
     }
 
     public void testMyMap() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class );
+        final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class, new Converter() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -205,5 +207,13 @@ public class ClassMethodInspectorTest extends TestCase {
             return null;
         }
 
+    }
+    
+    private static class Converter implements ClassToGenericClassConverter {
+
+		public String translateClassToGenericType(Class<?> type) {
+			return null;
+		}
+    	
     }
 }

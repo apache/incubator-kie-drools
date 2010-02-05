@@ -3,14 +3,13 @@ package org.drools.guvnor.client.modeldriven;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
 import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
 public class SuggestionCompletionEngine2Test extends TestCase {
 
@@ -20,9 +19,9 @@ public class SuggestionCompletionEngine2Test extends TestCase {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
-                                                                        new ArrayList(),
-                                                                        new ArrayList(),
-                                                                        new ArrayList() );
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        new ArrayList<String>() );
 
         List<String> methodNames = engine.getMethodNames( "ArrayList" );
 
@@ -44,7 +43,7 @@ public class SuggestionCompletionEngine2Test extends TestCase {
 
         // Add jar file
         String header = "package foo \n import org.test.Person \n import org.test.Banana \n ";
-        List jars = new ArrayList();
+        List<JarInputStream> jars = new ArrayList<JarInputStream>();
         JarInputStream jis = null;
         SuggestionCompletionEngine suggestionCompletionEngine = null;
 
@@ -58,7 +57,7 @@ public class SuggestionCompletionEngine2Test extends TestCase {
         try {
             suggestionCompletionEngine = loader.getSuggestionEngine( header,
                                                                      jars,
-                                                                     new ArrayList() );
+                                                                     new ArrayList<DSLTokenizedMappingFile>() );
         } catch ( ClassFormatError e ) {
             fail( "Can not load suggestions " + e );
         }
@@ -73,6 +72,10 @@ public class SuggestionCompletionEngine2Test extends TestCase {
 
         assertTrue( list.contains( "Person" ) );
         assertTrue( list.contains( "Banana" ) );
+        
+        assertEquals("java.util.Collection", suggestionCompletionEngine.getFieldClassName("Person", "bananas"));
+        assertEquals(SuggestionCompletionEngine.TYPE_COLLECTION, suggestionCompletionEngine.getFieldType("Person", "bananas"));
+        assertEquals("Banana",  suggestionCompletionEngine.getParametricFieldType("Person", "bananas"));
 
     }
 

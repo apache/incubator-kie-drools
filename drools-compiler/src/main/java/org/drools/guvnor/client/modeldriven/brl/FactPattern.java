@@ -44,11 +44,7 @@ public class FactPattern
      * Returns true if there is a variable bound to this fact.
      */
     public boolean isBound() {
-        if ( this.boundName != null && !"".equals( this.boundName ) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.boundName != null && !"".equals( this.boundName ) ;
     }
 
     /**

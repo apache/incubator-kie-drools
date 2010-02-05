@@ -3,7 +3,6 @@ package org.drools.guvnor.server.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -15,21 +14,21 @@ import org.mvel2.MVEL;
  */
 public class DataEnumLoader {
 
-	private final List errors;
-	private final Map data;
+	private final List<String> errors;
+	private final Map<String, String[]> data;
 
 	/**
 	 * This is the source of the asset, which is an MVEL map (minus the outer "[") of course.
 	 */
 	public DataEnumLoader(String mvelSource) {
-		errors = new ArrayList();
+		errors = new ArrayList<String>();
 		this.data = loadEnum(mvelSource);
 	}
 
-	private Map loadEnum(String mvelSource) {
+	private Map<String, String[]> loadEnum(String mvelSource) {
 
         if (mvelSource == null || (mvelSource.trim().equals( "" ))) {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
         if (mvelSource.startsWith("=")) {
         	mvelSource = mvelSource.substring(1);
@@ -38,33 +37,33 @@ public class DataEnumLoader {
         }
 		final Object mvelData;
 		try {
-			mvelData = MVEL.eval(mvelSource, new HashMap());
+			mvelData = MVEL.eval(mvelSource, new HashMap<String, Object>());
 		} catch (RuntimeException e) {
 			addError("Unable to load enumeration data.");
 			addError(e.getMessage());
 			addError("Error type: " + e.getClass().getName());
-			return Collections.EMPTY_MAP;
+			return Collections.emptyMap();
 		}
-		if (!(mvelData instanceof Map)) {
+		if (!(mvelData instanceof Map<?, ?>)) {
 			addError("The expression is not a map, it is a " + mvelData.getClass().getName());
-			return Collections.EMPTY_MAP;
+			return Collections.emptyMap();
 		}
-		Map map = (Map) mvelData;
-        Map newMap = new HashMap();
-		for (Iterator iter = map.keySet().iterator(); iter.hasNext();) {
-			String key = (String) iter.next();
-			Object list = map.get(key);
-			if (!(list instanceof List || list instanceof String)) {
+		Map<String, Object> map = (Map<String, Object>) mvelData;
+        Map<String, String[]> newMap = new HashMap<String, String[]>();
+		for (Map.Entry<String, Object> entry: map.entrySet()) {
+			String key = entry.getKey();
+			Object list = entry.getValue();
+			if (!(list instanceof List<?> || list instanceof String)) {
 				if (list == null) {
 					addError("The item with " + key + " is null.");
 				} else {
 					addError("The item with " + key + " is not a list or a string, it is a " + list.getClass().getName());
 				}
-				return new HashMap();
+				return Collections.emptyMap();
 			} else if (list instanceof String) {
 				newMap.put(key, new String[] {(String)list});
 			} else {
-				List items = (List) list;
+				List<?> items = (List<?>) list;
 				String[] newItems = new String[items.size()];
 				for (int i = 0; i < items.size(); i++) {
 					Object listItem = items.get(i);
@@ -107,7 +106,7 @@ public class DataEnumLoader {
 	/**
 	 * Return a list of any errors found.
 	 */
-	public List getErrors() {
+	public List<String> getErrors() {
 		return this.errors;
 	}
 
@@ -118,7 +117,7 @@ public class DataEnumLoader {
 	/**
 	 * Return the map of Fact.field to List (of Strings).
 	 */
-	public Map getData() {
+	public Map<String, String[]> getData() {
 		return this.data;
 	}
 
