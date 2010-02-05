@@ -946,7 +946,7 @@ public class RuleBaseConfiguration
                                                            null ).invoke( null,
                                                                           null );
             } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to Conflict Resolver '" + className + "'" );
+                throw new IllegalArgumentException( "Unable to set Conflict Resolver '" + className + "'" );
             }
         } else {
             throw new IllegalArgumentException( "conflict Resolver '" + className + "' not found" );
