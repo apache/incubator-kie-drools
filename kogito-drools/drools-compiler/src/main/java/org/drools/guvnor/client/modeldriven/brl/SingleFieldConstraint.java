@@ -15,6 +15,12 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
     public String                 fieldType;
     public FieldConstraint  parent;
 
+    /**
+     * Used instead of "value" when constraintValueType = TYPE_EXPR_BUILDER.
+     * Eteban Aliverti
+     */
+    private ExpressionFormLine expression = new ExpressionFormLine();
+
     public ConnectiveConstraint[] connectives;
 
     public SingleFieldConstraint(final String field, final String fieldType, final FieldConstraint parent) {
@@ -62,5 +68,15 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
             return false;
         }
     }
+
+    public ExpressionFormLine getExpression() {
+        return expression;
+    }
+
+    public void setExpression(ExpressionFormLine expression) {
+        this.expression = expression;
+    }
+
+    
 
 }

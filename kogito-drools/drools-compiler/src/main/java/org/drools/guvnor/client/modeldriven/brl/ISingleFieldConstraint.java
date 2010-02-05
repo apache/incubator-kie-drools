@@ -32,6 +32,11 @@ public class ISingleFieldConstraint
     public static final int TYPE_RET_VALUE = 3;
 
     /**
+     * This is for a "expression builder" that calculates a value.
+     */
+    public static final int TYPE_EXPR_BUILDER = 6;
+
+    /**
      * This is not used yet. ENUMs are not suitable for business rules
      * until we can get data driven non code enums.
      */

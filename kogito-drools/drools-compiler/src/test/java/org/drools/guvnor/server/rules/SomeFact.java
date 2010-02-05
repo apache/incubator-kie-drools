@@ -154,4 +154,8 @@ public class SomeFact {
     public void setAnEnum(EnumClass anEnum) {
         this.anEnum = anEnum;
     }
+    
+    public List<SomeFact> aMethod(int anInt) {
+    	return null;
+    }
 }

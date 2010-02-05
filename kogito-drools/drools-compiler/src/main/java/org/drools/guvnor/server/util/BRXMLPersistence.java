@@ -38,6 +38,12 @@ public class BRXMLPersistence
                        DSLSentence.class );
         this.xt.alias( "compositePattern",
                        CompositeFactPattern.class );
+        this.xt.alias( "fromCompositePattern",
+                       FromCompositeFactPattern.class );
+        this.xt.alias( "fromCollectCompositePattern",
+                       FromCollectCompositeFactPattern.class );
+        this.xt.alias( "fromAccumulateCompositePattern",
+                       FromAccumulateCompositeFactPattern.class );
         this.xt.alias( "metadata",
                        RuleMetadata.class );
         this.xt.alias( "attribute",
@@ -60,7 +66,31 @@ public class BRXMLPersistence
 
         this.xt.alias( "addToGlobal",
                        ActionGlobalCollectionAdd.class );
+        //Begin ExpressionFormLine
+        this.xt.alias( "expression",
+                ExpressionFormLine.class );
+        
+        this.xt.alias( "field",
+                ExpressionField.class );
+        
+        this.xt.alias( "method",
+                ExpressionMethod.class );
+        
+        this.xt.alias( "collection",
+                ExpressionCollection.class );
+        
+        this.xt.alias( "collectionIndex",
+                ExpressionCollectionIndex.class );
+        
+        this.xt.alias( "text",
+                ExpressionText.class );
 
+        this.xt.alias( "global",
+                ExpressionGlobalVariable.class );
+        
+        this.xt.alias( "variable",
+                ExpressionVariable.class );
+        //end ExpressionFormLine
     }
 
     public static BRLPersistence getInstance() {

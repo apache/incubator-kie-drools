@@ -437,4 +437,178 @@ public class RuleModelTest extends TestCase {
 		FactPattern varTypeCar = model.getBoundFact("y");
 		assertEquals("Car", varTypeCar.factType);
 	}
+
+        public void testAddItemLhsAtSpecificPosition() {
+		final RuleModel model = new RuleModel();
+
+                final FactPattern a = new FactPattern();
+		model.addLhsItem(a);
+
+                assertEquals(1, model.lhs.length);
+
+		final FactPattern b = new FactPattern();
+		model.addLhsItem(b);
+
+		assertEquals(2, model.lhs.length);
+
+                final FactPattern c = new FactPattern();
+		model.addLhsItem(c,true);
+
+		assertEquals(3, model.lhs.length);
+
+		assertEquals(a, model.lhs[0]);
+		assertEquals(b, model.lhs[1]);
+		assertEquals(c, model.lhs[2]);
+
+                final FactPattern d = new FactPattern();
+		model.addLhsItem(d,false);
+
+                assertEquals(4, model.lhs.length);
+
+		assertEquals(d, model.lhs[0]);
+		assertEquals(a, model.lhs[1]);
+		assertEquals(b, model.lhs[2]);
+		assertEquals(c, model.lhs[3]);
+
+                final FactPattern e = new FactPattern();
+		model.addLhsItem(e,2);
+
+                assertEquals(5, model.lhs.length);
+
+		assertEquals(d, model.lhs[0]);
+		assertEquals(a, model.lhs[1]);
+		assertEquals(e, model.lhs[2]);
+		assertEquals(b, model.lhs[3]);
+		assertEquals(c, model.lhs[4]);
+
+                //test auto-bound
+                final FactPattern f = new FactPattern();
+                final FactPattern g = new FactPattern();
+		model.addLhsItem(f,-1);
+		model.addLhsItem(g,100);
+
+                assertEquals(7, model.lhs.length);
+
+		assertEquals(f, model.lhs[0]);
+		assertEquals(d, model.lhs[1]);
+		assertEquals(a, model.lhs[2]);
+		assertEquals(e, model.lhs[3]);
+		assertEquals(b, model.lhs[4]);
+		assertEquals(c, model.lhs[5]);
+		assertEquals(g, model.lhs[6]);
+
+                model.moveLhsItemDown(5);
+                model.moveLhsItemUp(3);
+
+                assertEquals(7, model.lhs.length);
+
+		assertEquals(f, model.lhs[0]);
+		assertEquals(d, model.lhs[1]);
+		assertEquals(e, model.lhs[2]);
+		assertEquals(a, model.lhs[3]);
+		assertEquals(b, model.lhs[4]);
+		assertEquals(g, model.lhs[5]);
+		assertEquals(c, model.lhs[6]);
+
+                model.moveLhsItemUp(0);
+                model.moveLhsItemDown(6);
+
+                assertEquals(7, model.lhs.length);
+
+		assertEquals(f, model.lhs[0]);
+		assertEquals(d, model.lhs[1]);
+		assertEquals(e, model.lhs[2]);
+		assertEquals(a, model.lhs[3]);
+		assertEquals(b, model.lhs[4]);
+		assertEquals(g, model.lhs[5]);
+		assertEquals(c, model.lhs[6]);
+
+	}
+
+        public void testAddItemRhsAtSpecificPosition() {
+		final RuleModel model = new RuleModel();
+
+                final ActionSetField a = new ActionSetField();
+		model.addRhsItem(a);
+
+                assertEquals(1, model.rhs.length);
+
+		final ActionSetField b = new ActionSetField();
+		model.addRhsItem(b);
+
+		assertEquals(2, model.rhs.length);
+
+                final ActionSetField c = new ActionSetField();
+		model.addRhsItem(c,true);
+
+		assertEquals(3, model.rhs.length);
+
+		assertEquals(a, model.rhs[0]);
+		assertEquals(b, model.rhs[1]);
+		assertEquals(c, model.rhs[2]);
+
+                final ActionSetField d = new ActionSetField();
+		model.addRhsItem(d,false);
+
+                assertEquals(4, model.rhs.length);
+
+		assertEquals(d, model.rhs[0]);
+		assertEquals(a, model.rhs[1]);
+		assertEquals(b, model.rhs[2]);
+		assertEquals(c, model.rhs[3]);
+
+                final ActionSetField e = new ActionSetField();
+		model.addRhsItem(e,2);
+
+                assertEquals(5, model.rhs.length);
+
+		assertEquals(d, model.rhs[0]);
+		assertEquals(a, model.rhs[1]);
+		assertEquals(e, model.rhs[2]);
+		assertEquals(b, model.rhs[3]);
+		assertEquals(c, model.rhs[4]);
+
+                //test auto-bound
+                final ActionSetField f = new ActionSetField();
+                final ActionSetField g = new ActionSetField();
+		model.addRhsItem(f,-1);
+		model.addRhsItem(g,100);
+
+                assertEquals(7, model.rhs.length);
+
+		assertEquals(f, model.rhs[0]);
+		assertEquals(d, model.rhs[1]);
+		assertEquals(a, model.rhs[2]);
+		assertEquals(e, model.rhs[3]);
+		assertEquals(b, model.rhs[4]);
+		assertEquals(c, model.rhs[5]);
+		assertEquals(g, model.rhs[6]);
+
+                model.moveRhsItemDown(5);
+                model.moveRhsItemUp(3);
+
+                assertEquals(7, model.rhs.length);
+
+		assertEquals(f, model.rhs[0]);
+		assertEquals(d, model.rhs[1]);
+		assertEquals(e, model.rhs[2]);
+		assertEquals(a, model.rhs[3]);
+		assertEquals(b, model.rhs[4]);
+		assertEquals(g, model.rhs[5]);
+		assertEquals(c, model.rhs[6]);
+
+                model.moveRhsItemUp(0);
+                model.moveRhsItemDown(6);
+
+                assertEquals(7, model.rhs.length);
+
+		assertEquals(f, model.rhs[0]);
+		assertEquals(d, model.rhs[1]);
+		assertEquals(e, model.rhs[2]);
+		assertEquals(a, model.rhs[3]);
+		assertEquals(b, model.rhs[4]);
+		assertEquals(g, model.rhs[5]);
+		assertEquals(c, model.rhs[6]);
+
+	}
 }
