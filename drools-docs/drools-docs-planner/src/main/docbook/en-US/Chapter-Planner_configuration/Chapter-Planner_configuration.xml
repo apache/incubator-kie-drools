@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
-                             http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         version="5.0" xml:base="./">
-
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Planner configuration</title>
 
   <section>
@@ -186,8 +183,12 @@
 
     <para>As a planning problem gets bigger, the search space tends to blow up really fast. It's not uncommon to see
     that it's possible to optimally plan 5 people in less then a second, while planning 6 people optimally would take
-    years. Take a look at the problem size of the examples: many instances have a lot more possible solutions than there
-    are supposedly atoms in the known universe (10^80).</para>
+    years. Take a look at the problem size of the examples: many instances have a lot more possible solutions than the
+    minimal number of atoms in the known universe (10^80).</para>
+
+    <para>The cold, hard reality is that <emphasis role="bold">for most real-world planning problems we will not find
+    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we improve upon the solutions created by
+    human planners (which is easy) or other systems.</para>
 
     <para>Planning competitions (such as the International Timetabling Competition) show that local search variations
     (tabu search, simulated annealing, ...) usually perform best for real-world problems given real-world time
@@ -196,20 +197,6 @@
 
   <section>
     <title>The Solver interface</title>
-
-    <para>Every build-in solver implemented in Drools Planner implements the <literal>Solver</literal> interface:</para>
-
-    <programlisting>public interface Solver {
-
-    void setStartingSolution(Solution solution);
-
-    Solution getBestSolution();
-    
-    void solve();
-
-    // ...
-
-}</programlisting>
 
     <para>Solving a planning problem with Drools Planner consists out of 4 steps:</para>
 
@@ -231,15 +218,31 @@
       </listitem>
     </orderedlist>
 
+    <para>Every build-in solver implemented in Drools Planner implements the <literal>Solver</literal> interface:</para>
+
+    <programlisting>public interface Solver {
+
+    void setStartingSolution(Solution solution);
+
+    Solution getBestSolution();
+    
+    void solve();
+
+    // ...
+
+}</programlisting>
+
+    <para>There is normally no need to implement the <literal>Solver</literal> interface yourself.</para>
+
     <para>A <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
     specifically javadocced as thread-safe.</para>
   </section>
 
   <section>
-    <title>Building a solver</title>
+    <title>Building a Solver</title>
 
     <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>. Configure
-    it with a solver configuration xml file:</para>
+    it with a solver configuration XML file:</para>
 
     <programlisting>    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
     configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
@@ -275,16 +278,71 @@
     against each other and report the most appropriate configuration for your problem. You could for example play out
     tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
 
-    <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use that instance a lot
-    more than others. For example simulated annealing depends highly on random numbers, while tabu search only depends
-    on it to deal with score ties. In any case, during your testing it's advisable to set that <literal>Random</literal>
-    instance, so your tests are reproducible.</para>
+    <section>
+      <title>Environment mode</title>
+
+      <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use the
+      <literal>Random</literal> instance a lot more than others. For example simulated annealing depends highly on
+      random numbers, while tabu search only depends on it to deal with score ties. The environment mode influences the
+      seed of that <literal>Random</literal> instance.</para>
+
+      <para>The environment mode also allows you to detect common bugs in your implementation.</para>
+
+      <para>You can set the environment mode in the solver configuration XML file:</para>
+
+      <programlisting>&lt;localSearchSolver&gt;
+    &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
+    ...
+&lt;/localSearchSolver&gt;</programlisting>
+
+      <para>There are 3 environment modes:</para>
+
+      <section>
+        <title>DEBUG</title>
+
+        <para>The debug mode is reproducible (see the reproducible mode) and also turns on assertions (such as assert
+        that the undo Move is uncorrupted) to fail-fast on a bug in your Move implementation, your score rule,
+        ...</para>
+
+        <para>The debug mode is slow.</para>
+
+        <para>It's recommended to write a test case which does a short run of your planning problem with debug mode
+        on.</para>
+      </section>
+
+      <section>
+        <title>REPRODUCIBLE (default)</title>
+
+        <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
+        runs on the same computer will execute the same code in the same order. They will also yield the same result,
+        except if they use a time based termination and they have a sufficiently large difference in allocated CPU time.
+        This allows you to benchmark new optimizations (such as a new move implementation or a different
+        absoluteSelection setting) fairly.</para>
+
+        <para>The reproducible mode is not much slower than the production mode.</para>
+
+        <para>In practice, this mode uses the default random seed, and it also disables certain concurrency
+        optimizations (such as work stealing).</para>
+      </section>
+
+      <section>
+        <title>PRODUCTION</title>
+
+        <para>The production mode is the fastest and the most robust, but not reproducible. It is recommended for a
+        production environment.</para>
+
+        <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
+        unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in
+        most use cases the impact of the random seed is relatively low on the result (even with simulated annealing). An
+        occasional bad result is far more likely caused by another issue (such as a score trap).</para>
+      </section>
+    </section>
   </section>
 
   <section>
     <title>The Solution interface</title>
 
-    <para>A Solver can only solve 1 problem at a time.</para>
+    <para>A Solver can only solve 1 problem instance at a time.</para>
 
     <para>You need to present the problem as a starting <literal>Solution</literal> instance to the solver.</para>
 
@@ -315,8 +373,8 @@
       <title>The getScore and setScore methods</title>
 
       <para>A <literal>Solution</literal> requires a score property. The score property is null if the
-      <literal>Solution</literal> is unitialized or if the score has not yet been (re)calculated.The score property is
-      ussually typed to the specific <literal>Score</literal> implementation you use. For example, NQueens uses a
+      <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The score property
+      is usually typed to the specific <literal>Score</literal> implementation you use. For example, NQueens uses a
       <literal>SimpleScore</literal>:</para>
 
       <programlisting>    private SimpleScore score;
@@ -390,27 +448,26 @@
     <para>First, you will need to make a starting solution and set that on the solver:</para>
 
     <programlisting>solver.setStartingSolution(startingSolution);</programlisting>
-  </section>
 
-  <section>
-    <title>A simple filler algorithm</title>
+    <section>
+      <title>A simple filler algorithm</title>
 
-    <para>For 4 queens we use a simple filler algorithm that creates a starting solution with all queens on a different
-    x and on the same y (with y = 0).</para>
+      <para>For 4 queens we use a simple filler algorithm that creates a starting solution with all queens on a
+      different x and on the same y (with y = 0).</para>
 
-    <figure>
-      <title>Starting solution for the 4 queens puzzle</title>
+      <figure>
+        <title>Starting solution for the 4 queens puzzle</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Planner_configuration/unsolvedNQueens04.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/unsolvedNQueens04.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>Here's how we generate it:</para>
+      <para>Here's how we generate it:</para>
 
-    <programlisting>    private NQueens createNQueens(int n) {
+      <programlisting>    private NQueens createNQueens(int n) {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
@@ -425,8 +482,9 @@
         return nQueens;
     }</programlisting>
 
-    <para>The starting solution will probably be far from optimal (or even feasible). Here, it's actually the worst
-    possible solution. However, we 'll let the solver find a much better solution for us anyway.</para>
+      <para>The starting solution will probably be far from optimal (or even feasible). Here, it's actually the worst
+      possible solution. However, we 'll let the solver find a much better solution for us anyway.</para>
+    </section>
 
     <section>
       <title>StartingSolutionInitializer</title>
@@ -435,7 +493,7 @@
       (local search) solver starting from a bad starting solution wastes a lot of time to reach a solution which an
       initializer algorithm can generate in a fraction of that time.</para>
 
-      <para>An initializer algorithm ussually works something like this:</para>
+      <para>An initializer algorithm usually works something like this:</para>
 
       <itemizedlist>
         <listitem>
