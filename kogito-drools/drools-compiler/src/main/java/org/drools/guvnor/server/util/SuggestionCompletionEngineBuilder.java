@@ -205,7 +205,7 @@ public class SuggestionCompletionEngineBuilder {
                 Class<?> fieldClazz = this.fieldClasses.get(typeEntry.getKey() + "." + field);
 
                 fields.add(new ModelField(
-                        fieldName, fieldClazz.getName(), fieldType));
+                        fieldName, fieldClazz == null ? null : fieldClazz.getName(), fieldType));
             }
 
             modelMap.put(typeEntry.getKey(), fields.toArray(new ModelField[fields.size()]));
