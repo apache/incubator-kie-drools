@@ -71,31 +71,31 @@
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio</artifactId>
-            <version>4.0-M3-SNAPSHOT</version>
+            <version>4.0-M3</version>
         </dependency>
 
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>cybernode</artifactId>
-            <version>4.0-M3-SNAPSHOT</version>
+            <version>4.0-M3</version>
         </dependency>
 
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>monitor</artifactId>
-            <version>4.0-M3-SNAPSHOT</version>
+            <version>4.0-M3</version>
         </dependency>
 
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>boot</artifactId>
-            <version>4.0-M3-SNAPSHOT</version>
+            <version>4.0-M3</version>
         </dependency>
 
         <dependency>
-            <groupId>org.rioproject.tools</groupId>
-            <artifactId>cli</artifactId>
-            <version>4.0-M3-SNAPSHOT</version>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-cli</artifactId>
+            <version>4.0-M3</version>
         </dependency>
             <dependency>
                   <groupId>org.drools</groupId>
@@ -123,7 +123,12 @@
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
         </dependency>
-        
+            <dependency>
+                  <groupId>org.rioproject</groupId>
+                  <artifactId>rio-test</artifactId>
+                  <version>4.0-M3</version>
+                  <type>jar</type>
+            </dependency>
       </dependencies>
        <repositories>
         <repository>
@@ -155,4 +160,5 @@
     </pluginRepositories>
 
 </project>
+
 

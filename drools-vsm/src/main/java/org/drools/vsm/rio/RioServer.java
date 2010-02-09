@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.drools.vsm.AcceptorService;
 import org.rioproject.cybernode.StaticCybernode;
 
+
 public class RioServer
     implements
     AcceptorService {
