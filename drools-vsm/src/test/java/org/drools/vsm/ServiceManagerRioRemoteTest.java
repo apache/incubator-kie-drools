@@ -12,30 +12,30 @@ public class ServiceManagerRioRemoteTest extends ServiceManagerTestBase {
 
     protected void setUp() throws Exception {
 
-        ServiceManagerData serverData = new ServiceManagerData();
-
-        //setup Server
-        RioServer rioServer = new RioServer();
-        rioServer.start();
-        
-        GenericMessageHandler handler =  ((SessionServiceImpl)rioServer.getSessionService()).getGenericMessageHandler();
-                                       
-        RioConnector connector = new RioConnector( "client 1",
-                                                   SystemEventListenerFactory.getSystemEventListener(),
-                                                   rioServer.getSessionService(),
-                                                   new ClientGenericMessageReceiverImpl(handler, SystemEventListenerFactory.getSystemEventListener()));
-
-        // setup Client
-        this.client = new ServiceManagerRemoteClient( "client 1",
-                                                      connector );
-        //this.client.connect();
+//        ServiceManagerData serverData = new ServiceManagerData();
+//
+//        //setup Server
+//        RioServer rioServer = new RioServer();
+//        rioServer.start();
+//        
+//        GenericMessageHandler handler =  ((SessionServiceImpl)rioServer.getSessionService()).getGenericMessageHandler();
+//                                       
+//        RioConnector connector = new RioConnector( "client 1",
+//                                                   SystemEventListenerFactory.getSystemEventListener(),
+//                                                   rioServer.getSessionService(),
+//                                                   new ClientGenericMessageReceiverImpl(handler, SystemEventListenerFactory.getSystemEventListener()));
+//
+//        // setup Client
+//        this.client = new ServiceManagerRemoteClient( "client 1",
+//                                                      connector );
+//        //this.client.connect();
 
     }
 
     protected void tearDown() throws Exception {
-        super.tearDown();
-        ((ServiceManagerRemoteClient) client).disconnect();
-        //this.server.stop();
+//        super.tearDown();
+//        ((ServiceManagerRemoteClient) client).disconnect();
+//        //this.server.stop();
     }
 
 }
