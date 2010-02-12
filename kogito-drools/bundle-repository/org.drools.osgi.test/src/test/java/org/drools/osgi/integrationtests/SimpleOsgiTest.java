@@ -10,7 +10,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
-import org.test.decisiontable.Test;
+import org.test.decisiontable.Dummy;
 import org.drools.io.ResourceFactoryService;
 import org.drools.osgi.test.AbstractDroolsSpringDMTest;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -112,7 +112,7 @@ public class SimpleOsgiTest extends AbstractDroolsSpringDMTest {
                                                                                                                 getClass().getClassLoader() );
         KnowledgeBuilder kbuilder = knowledgeBuilderFactoryService.newKnowledgeBuilder( kbConf );
         kbuilder.add( resourceFactoryService.newClassPathResource( "changeset1Test.xml",
-                                                                   Test.class ),
+                                                                   Dummy.class ),
                       ResourceType.CHANGE_SET );
 
         kbaseConf = knowledgeBaseFactoryService.newKnowledgeBaseConfiguration( null,

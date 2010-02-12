@@ -60,13 +60,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+	        <inherited>false</inherited>
             <executions>
                <execution>
                   <id>copy-dependencies</id>
                   <phase>generate-resources</phase>
                   <goals>
                      <goal>copy-dependencies</goal>
-                  </goals>
+                  </goals>				   
                   <configuration>
                      <outputDirectory>plugins</outputDirectory>
                      <overWriteReleases>true</overWriteReleases>
