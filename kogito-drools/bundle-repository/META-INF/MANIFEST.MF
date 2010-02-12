@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Bundles Repo
-Bundle-SymbolicName: org.drools.osgi.bundles
-Bundle-Version: 5.1.0.SNAPSHOT
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: .
-Bundle-Vendor: JBoss, a division of Red Hat
