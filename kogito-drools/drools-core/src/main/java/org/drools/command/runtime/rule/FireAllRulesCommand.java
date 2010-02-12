@@ -42,7 +42,27 @@ public class FireAllRulesCommand
     }
 
     public int getMax() {
-        return this.max;
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public AgendaFilter getAgendaFilter() {
+        return agendaFilter;
+    }
+
+    public void setAgendaFilter(AgendaFilter agendaFilter) {
+        this.agendaFilter = agendaFilter;
+    }
+
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
     }
 
     public Integer execute(Context context) {

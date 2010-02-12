@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.drools</groupId>
   <artifactId>org.drools.osgi.wrapper.mvel2</artifactId>
-  <version>2.0.12</version>
+  <version>2.0.16</version>
   <packaging>jar</packaging>
 
   <name>Drools :: OSGi :: Wrapper :: MVEL2</name>
@@ -43,7 +43,8 @@
               <overWriteIfNewer>true</overWriteIfNewer>
               <stripVersion>true</stripVersion>
               <includeScope>runtime</includeScope>    
-              <includeGroupIds>org.mvel</includeGroupIds>              
+              <includeGroupIds>org.mvel</includeGroupIds>    
+              <excludes>META-INF/MANIFEST.MF</excludes> 			  
             </configuration>
           </execution>
         </executions>
@@ -51,10 +52,10 @@
     </plugins>
      
               <resources>          
-                <resource>
+                <!--resource>
                   <targetPath>META-INF</targetPath>                
                   <directory>META-INF</directory>
-                </resource>  
+                </resource-->  
                 <resource>
                     <directory>.</directory>
                     <includes>

@@ -16,7 +16,7 @@ Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: org.drools.*
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1264462057824
+Bnd-LastModified: 1264522655309
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt

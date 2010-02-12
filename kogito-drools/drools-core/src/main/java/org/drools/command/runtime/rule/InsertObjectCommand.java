@@ -19,6 +19,10 @@ public class InsertObjectCommand
 
     private boolean returnObject = true;
 
+    public InsertObjectCommand() {
+        
+    }
+    
     public InsertObjectCommand(Object object) {
         this.object = object;
     }
@@ -39,6 +43,12 @@ public class InsertObjectCommand
         }
 
         return factHandle;
+    }
+    
+    
+
+    public void setObject(Object object) {
+        this.object = object;
     }
 
     public Object getObject() {
