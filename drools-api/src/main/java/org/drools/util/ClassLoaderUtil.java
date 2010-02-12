@@ -12,16 +12,25 @@ public class ClassLoaderUtil {
         ClassLoader systemClassLoader = Class.class.getClassLoader().getSystemClassLoader();
         
         CompositeClassLoader cl = new CompositeClassLoader( null );
+        
+        if (currentClassLoader != null ) {
+            // this must come first, so that generated classes use the same classloader for search and execution
+            // as the main drools jars (core and compiler)
+            cl.addClassLoader(currentClassLoader); 
+        } 
+        
         if (classLoader != null ) {
+            // the user specified classloader
         	cl.addClassLoader(classLoader); 
         }
+        
         if (contextClassLoader != null ) {
+            // context classloader
         	cl.addClassLoader(contextClassLoader); 
-        }     
-        if (currentClassLoader != null ) {
-        	cl.addClassLoader(currentClassLoader); 
-        }   
+        }       
+        
         if (systemClassLoader != null ) {
+            // system classloader
         	cl.addClassLoader(systemClassLoader); 
         }        
         
