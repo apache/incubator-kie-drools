@@ -1,5 +1,5 @@
 package org.test.decisiontable;
 
-public class Test {
+public class Dummy {
 
 }
