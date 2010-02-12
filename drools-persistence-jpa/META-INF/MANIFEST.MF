@@ -9,22 +9,22 @@ Export-Package: org.drools.persistence.processinstance;uses:="javax.pe
  x.persistence";version="5.1.0.SNAPSHOT",org.drools.persistence.proces
  sinstance.variabletypes;uses:="javax.persistence";version="5.1.0.SNAP
  SHOT",org.drools.persistence.session;uses:="javax.persistence,org.dro
- ols.persistence.processinstance,javax.transaction,javax.naming,org.ap
- ache.commons.collections.map";version="5.1.0.SNAPSHOT"
+ ols.persistence.processinstance,javax.transaction,javax.naming";versi
+ on="5.1.0.SNAPSHOT"
 Tool: Bnd-0.0.357
 Bundle-Name: Drools :: Persistence :: JPA
 Created-By: 1.6.0_18 (Sun Microsystems Inc.)
-Require-Bundle: org.drools.api;visibility:=reexport;bundle-version="5.
- 1.0.SNAPSHOT"
+Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT", org.d
+ rools.compiler;bundle-version="5.1.0.SNAPSHOT"
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1264901969905
+Bnd-LastModified: 1265177336096
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: javax.naming,javax.persistence,javax.transaction,
- org.apache.commons.collections.map,org.hibernate.annotations
+Import-Package: javax.naming,javax.persistence,javax.transaction,org.h
+ ibernate.annotations
 Bundle-SymbolicName: org.drools.persistence-jpa
 Bundle-DocURL: http://www.jboss.org/
 

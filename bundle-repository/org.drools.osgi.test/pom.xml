@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>bundle-repository</artifactId>
+      <groupId>org.drools</groupId>
+      <version>5.1.0.SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.drools</groupId>
+   <artifactId>org.drools.osgi.test</artifactId>
+   <packaging>jar</packaging>
+   <name>Spring OSGi Test</name>
+   <version>5.1.0.SNAPSHOT</version>
+   <url>http://drools.org</url>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>1.5</source>
+               <target>1.5</target>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+               <systemPropertyVariables>
+                  <propertyName>propertyValue</propertyName>
+                  <buildDirectory>${project.build.directory}</buildDirectory>
+                  <eclipse.target.area>../plugins</eclipse.target.area>
+                  <eclipse.workspace.area>../..</eclipse.workspace.area>
+               </systemPropertyVariables>
+            </configuration>
+         </plugin>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-eclipse-plugin</artifactId>
+	        <configuration>
+	          <excludes>              	         
+	            <exclude>org.drools:org.drools.osgi.wrapper.mvel2</exclude>
+	            <exclude>org.drools:org.drools.osgi.wrapper.milyn-smooks-javabean</exclude>
+	            <exclude>org.drools:org.drools.osgi.wrapper.jxls-reader</exclude>
+				<exclude>org.mvel:mvel2</exclude>
+	          </excludes>
+	        </configuration>
+	      </plugin>
+         
+      </plugins>
+   </build>
+</project>

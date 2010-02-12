@@ -55,18 +55,22 @@ import com.thoughtworks.xstream.mapper.Mapper;
 public class BatchExecutionHelperProviderImpl
     implements
     BatchExecutionHelperProvider {
-
+    
     public XStream newXStreamMarshaller() {
+        return newXStreamMarshaller( new XStream());
+    }
+
+    public XStream newXStreamMarshaller(XStream xstream) {
         ElementNames names = new XmlElementNames();
         // ElementNames names = new JsonElementNames();
 
         // XStream xstream = new XStream( new JettisonMappedXmlDriver() );
-        XStream xstream = new XStream();
+        
         // xstream.setMode( XStream.NO_REFERENCES );
         xstream.processAnnotations( BatchExecutionImpl.class );
         xstream.addImplicitCollection( BatchExecutionImpl.class,
                                        "commands" );
-
+        
         xstream.alias( "batch-execution",
                        BatchExecutionImpl.class );
         xstream.alias( "insert",
@@ -106,23 +110,23 @@ public class BatchExecutionHelperProviderImpl
         xstream.alias("fact-handle", DefaultFactHandle.class);
 
 
-        xstream.registerConverter( new InsertConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new RetractConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new ModifyConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new GetObjectConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new InsertElementsConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new FireAllRulesConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new StartProcessConvert( xstream.getMapper() ) );
-        xstream.registerConverter( new SignalEventConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new CompleteWorkItemConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new AbortWorkItemConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new QueryConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new SetGlobalConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new GetGlobalConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new GetObjectsConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new BatchExecutionResultConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new QueryResultsConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new FactHandleConverter(xstream.getMapper()));
+//        xstream.registerConverter( new InsertConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new RetractConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new ModifyConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new GetObjectConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new InsertElementsConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new FireAllRulesConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new StartProcessConvert( xstream.getMapper() ) );
+//        xstream.registerConverter( new SignalEventConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new CompleteWorkItemConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new AbortWorkItemConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new QueryConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new SetGlobalConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new GetGlobalConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new GetObjectsConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new BatchExecutionResultConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new QueryResultsConverter( xstream.getMapper() ) );
+//        xstream.registerConverter( new FactHandleConverter(xstream.getMapper()));
 
         return xstream;
     }
