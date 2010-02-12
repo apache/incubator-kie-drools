@@ -11,18 +11,17 @@ public class ClassLoaderUtil {
         ClassLoader currentClassLoader = ( cls != null ) ? cls.getClassLoader() : ClassLoaderUtil.class.getClassLoader();
         ClassLoader systemClassLoader = Class.class.getClassLoader().getSystemClassLoader();
         
-        CompositeClassLoader cl = new CompositeClassLoader( null );
-        
-        if (currentClassLoader != null ) {
-            // this must come first, so that generated classes use the same classloader for search and execution
-            // as the main drools jars (core and compiler)
-            cl.addClassLoader(currentClassLoader); 
-        } 
+        CompositeClassLoader cl = new CompositeClassLoader( null );        
         
         if (classLoader != null ) {
             // the user specified classloader
         	cl.addClassLoader(classLoader); 
         }
+        
+        if (currentClassLoader != null ) {
+            // the current classloader, typically from a drools-core or drools-compiler class
+            cl.addClassLoader(currentClassLoader); 
+        }         
         
         if (contextClassLoader != null ) {
             // context classloader
