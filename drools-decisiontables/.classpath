@@ -16,7 +16,6 @@
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/felix/javax.servlet/1.0.0/javax.servlet-1.0.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock-legacy/2.5.1/jmock-legacy-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
@@ -25,7 +24,6 @@
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/felix/org.osgi.compendium/1.4.0/org.osgi.compendium-1.4.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/felix/org.osgi.core/1.4.0/org.osgi.core-1.4.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/felix/org.osgi.foundation/1.2.0/org.osgi.foundation-1.2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>
