@@ -18,7 +18,6 @@
   <classpathentry kind="var" path="M2_REPO/org/freemarker/freemarker/2.3.9/freemarker-2.3.9.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/felix/javax.servlet/1.0.0/javax.servlet-1.0.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.1.7/jaxb-impl-2.1.7.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-xjc/2.1.7/jaxb-xjc-2.1.7.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar"/>
@@ -33,7 +32,6 @@
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/felix/org.osgi.compendium/1.4.0/org.osgi.compendium-1.4.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/felix/org.osgi.core/1.4.0/org.osgi.core-1.4.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/felix/org.osgi.foundation/1.2.0/org.osgi.foundation-1.2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.0.2-FINAL/poi-3.0.2-FINAL.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/opensymphony/quartz/quartz/1.6.1/quartz-1.6.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar"/>
