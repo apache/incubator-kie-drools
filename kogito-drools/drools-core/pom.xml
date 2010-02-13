@@ -18,11 +18,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       </dependency>
       <dependency>
          <groupId>org.apache.felix</groupId>
-         <artifactId>org.osgi.foundation</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.felix</groupId>
          <artifactId>org.osgi.compendium</artifactId>
          <scope>provided</scope>
       </dependency>
