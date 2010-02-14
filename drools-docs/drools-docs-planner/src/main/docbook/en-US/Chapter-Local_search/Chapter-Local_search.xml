@@ -799,4 +799,20 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       will return in the original solver thread.</para>
     </section>
   </section>
+
+  <section>
+    <title>Using a custom Selector, Accepter, Forager or Termination</title>
+
+    <para>It is easy to plug in a custom <literal>Selector</literal>, <literal>Accepter</literal>,
+    <literal>Forager</literal> or <literal>Termination</literal> by extending the abstract class and also the config
+    class.</para>
+
+    <para>For example, to use a custom <literal>Selector</literal>, extend the <literal>AbstractSelector</literal> class
+    (see <literal>AllMovesOfOneExamSelector</literal>), extend the <literal>SelectorConfig</literal> class (see
+    <literal>AllMovesOfOneExamSelectorConfig</literal>) and configure it in the configuration XML:</para>
+
+    <programlisting>    &lt;selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/&gt;</programlisting>
+
+    <para>It is that simple.</para>
+  </section>
 </chapter>
