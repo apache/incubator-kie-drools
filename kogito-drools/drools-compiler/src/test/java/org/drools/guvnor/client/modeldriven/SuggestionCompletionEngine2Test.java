@@ -13,6 +13,53 @@ import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
 public class SuggestionCompletionEngine2Test extends TestCase {
 
+    public void testAccessorsAndMutatorsDeclaredModel() throws Exception {
+        String pkg = "package org.test\n";
+        pkg += "declare Test\n";
+        pkg += "number: Integer\n";
+        pkg += "end\n";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        new ArrayList<String>() );
+
+        String[] accessors = engine.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
+                                                         "Test" );
+        assertEquals( 2,
+                      accessors.length );
+
+        String[] mutators = engine.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                        "Test" );
+        assertEquals( 2,
+                      mutators.length );
+
+    }
+    
+    public void testAccessorsAndMutatorsJavaClass() throws Exception {
+        String pkg = "package org.test\n import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine2Test.Person\n";
+        
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
+                                                                        new ArrayList<JarInputStream>(),
+                                                                        new ArrayList<DSLTokenizedMappingFile>(),
+                                                                        new ArrayList<String>() );
+        
+        String[] accessors = engine.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
+        "SuggestionCompletionEngine2Test$Person" );
+        assertEquals( 3,
+                      accessors.length );
+        
+        String[] mutators = engine.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+        "SuggestionCompletionEngine2Test$Person" );
+        assertEquals( 3,
+                      mutators.length );
+        
+    }
+
     public void testArrayList() {
 
         String pkg = "package org.test\n global java.util.ArrayList testList";
@@ -72,10 +119,16 @@ public class SuggestionCompletionEngine2Test extends TestCase {
 
         assertTrue( list.contains( "Person" ) );
         assertTrue( list.contains( "Banana" ) );
-        
-        assertEquals("java.util.Collection", suggestionCompletionEngine.getFieldClassName("Person", "bananas"));
-        assertEquals(SuggestionCompletionEngine.TYPE_COLLECTION, suggestionCompletionEngine.getFieldType("Person", "bananas"));
-        assertEquals("Banana",  suggestionCompletionEngine.getParametricFieldType("Person", "bananas"));
+
+        assertEquals( "java.util.Collection",
+                      suggestionCompletionEngine.getFieldClassName( "Person",
+                                                                    "bananas" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_COLLECTION,
+                      suggestionCompletionEngine.getFieldType( "Person",
+                                                               "bananas" ) );
+        assertEquals( "Banana",
+                      suggestionCompletionEngine.getParametricFieldType( "Person",
+                                                                         "bananas" ) );
 
     }
 
@@ -84,5 +137,32 @@ public class SuggestionCompletionEngine2Test extends TestCase {
                 || "get".equals( methodName ) || "isEmpty".equals( methodName ) || "containsKey".equals( methodName ) || "values".equals( methodName ) || "entrySet".equals( methodName ) || "containsValue".equals( methodName )
                 || "keySet".equals( methodName ) || "size".equals( methodName ) || "toArray".equals( methodName ) || "iterator".equals( methodName ) || "contains".equals( methodName ) || "isEmpty".equals( methodName )
                 || "containsAll".equals( methodName ) || "size".equals( methodName ));
+    }
+
+    public static class Person {
+
+        private String name;
+        private int    age;
+        private String something;
+
+        public String getSomething() {
+            return something;
+        }
+
+        public void setSomething(String something) {
+            this.something = something;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void addPet(String petName) {
+
+        }
     }
 }

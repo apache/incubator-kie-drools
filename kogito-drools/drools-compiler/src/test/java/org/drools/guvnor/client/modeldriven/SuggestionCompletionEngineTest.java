@@ -8,6 +8,7 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
+import org.drools.guvnor.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
@@ -193,15 +194,15 @@ public class SuggestionCompletionEngineTest extends TestCase {
             {
                 put( "Person",
                      new ModelField[]{
-                        new ModelField("age", Integer.class.getName(), SuggestionCompletionEngine.TYPE_NUMERIC),
-                        new ModelField("rank", Integer.class.getName(), SuggestionCompletionEngine.TYPE_COMPARABLE),
-                        new ModelField("name", String.class.getName(), SuggestionCompletionEngine.TYPE_STRING)
+                        new ModelField("age", Integer.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_NUMERIC),
+                        new ModelField("rank", Integer.class.getName(),FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_COMPARABLE),
+                        new ModelField("name", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING)
                 } );
 
                 put( "Vehicle",
                      new ModelField[]{
-                        new ModelField("make", String.class.getName(), SuggestionCompletionEngine.TYPE_STRING),
-                        new ModelField("type", String.class.getName(), SuggestionCompletionEngine.TYPE_STRING)
+                        new ModelField("make", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING),
+                        new ModelField("type", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING)
                 } );
             }
         });
@@ -334,7 +335,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
             {
                 put( "Foo",
                      new ModelField[]{
-                        new ModelField("a", String.class.getName(), "String")
+                        new ModelField("a", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, "String")
                 });
             }
         });
@@ -701,7 +702,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
             {
                 put( "Foo",
                      new ModelField[]{
-                        new ModelField("a", String.class.getName(), "String")
+                        new ModelField("a", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, "String")
                 });
             }
         });

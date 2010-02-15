@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.guvnor.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
@@ -154,6 +155,7 @@ public class SuggestionCompletionEngine
 
     private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
 
+    private Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
     
     public SuggestionCompletionEngine() {
 
@@ -192,6 +194,12 @@ public class SuggestionCompletionEngine
         return this.getModelFields( factType );
     }
 
+    public String[] getFieldCompletions(FieldAccessorsAndMutators accessorOrMutator,
+                                        String factType) {
+        return this.getModelFields( accessorOrMutator,
+                                    factType );
+    }
+    
     public String[] getOperatorCompletions(final String factType,
                                            final String fieldName) {
         final String type = this.getFieldType( factType, fieldName );
@@ -685,6 +693,30 @@ public class SuggestionCompletionEngine
         return null;
     }
 
+    public String[] getModelFields(FieldAccessorsAndMutators accessorOrMutator,
+                                   String modelClassName) {
+
+        if ( !this.modelFields.containsKey( modelClassName ) ) {
+            return new String[0];
+        }
+
+        ModelField[] fields = this.modelFields.get( modelClassName );
+
+        List<String> fieldNames = new ArrayList<String>();
+        fieldNames.add( "this" );
+
+        for ( int i = 0; i < fields.length; i++ ) {
+            String fieldName = fields[i].getName();
+            if ( fields[i].getClassType() == FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS ) {
+                fieldNames.add( fieldName );
+            } else if ( FieldAccessorsAndMutators.compare( accessorOrMutator,
+                                                           this.accessorsAndMutators.get( modelClassName + "." + fieldName ) ) ) {
+                fieldNames.add( fieldName );
+            }
+        }
+
+        return fieldNames.toArray( new String[fieldNames.size()] );
+    }
 
     public String[] getModelFields(String modelClassName){
 
@@ -738,4 +770,10 @@ public class SuggestionCompletionEngine
         ModelField field = this.getField(modelClassName, fieldName);
         return field==null?null:field.getType();
     }
+
+    public void setAccessorsAndMutators(Map<String, FieldAccessorsAndMutators> accessorsAndMutators) {
+        this.accessorsAndMutators=accessorsAndMutators;
+        
+    }
+
 }
