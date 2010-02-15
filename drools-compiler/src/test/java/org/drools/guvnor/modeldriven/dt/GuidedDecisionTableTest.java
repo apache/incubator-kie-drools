@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 import org.drools.guvnor.client.modeldriven.ModelField;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
@@ -208,8 +209,8 @@ public class GuidedDecisionTableTest extends TestCase {
             {
                 put("Driver",
                         new ModelField[]{
-                            new ModelField("age", Integer.class.getName(), SuggestionCompletionEngine.TYPE_NUMERIC),
-                            new ModelField("name", String.class.getName(), SuggestionCompletionEngine.TYPE_STRING)
+                            new ModelField("age", Integer.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_NUMERIC),
+                            new ModelField("name", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING)
                         });
             }
         });
@@ -326,8 +327,8 @@ public class GuidedDecisionTableTest extends TestCase {
             {
                 put("Driver",
                         new ModelField[]{
-                            new ModelField("age", Integer.class.getName(), SuggestionCompletionEngine.TYPE_NUMERIC),
-                            new ModelField("name", String.class.getName(), SuggestionCompletionEngine.TYPE_STRING)
+                            new ModelField("age", Integer.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_NUMERIC),
+                            new ModelField("name", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING)
                         });
             }
         });

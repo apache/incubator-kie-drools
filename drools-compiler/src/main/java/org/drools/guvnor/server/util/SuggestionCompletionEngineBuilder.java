@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.ModelField;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.lang.dsl.DSLMappingEntry;
 
@@ -35,20 +37,21 @@ import org.drools.lang.dsl.DSLMappingEntry;
  */
 public class SuggestionCompletionEngineBuilder {
 
-    private SuggestionCompletionEngine instance = new SuggestionCompletionEngine();
-    private List<String> factTypes = new ArrayList<String>();
-    private Map<String, String[]> fieldsForType = new HashMap<String, String[]>();
-    private Map<String, String[]> modifiersForType = new HashMap<String, String[]>();
-    private Map<String, String> fieldTypes = new HashMap<String, String>();
-    private Map<String, Class<?>> fieldClasses = new HashMap<String, Class<?>>();
-    private Map<String, Field> fieldTypesField = new HashMap<String, Field>();
-    private Map<String, String> globalTypes = new HashMap<String, String>();
-    private List<DSLSentence> actionDSLSentences = new ArrayList<DSLSentence>();
-    private List<DSLSentence> conditionDSLSentences = new ArrayList<DSLSentence>();
-    private List<DSLSentence> keywordDSLItems = new ArrayList<DSLSentence>();
-    private List<DSLSentence> anyScopeDSLItems = new ArrayList<DSLSentence>();
-    private List<String> globalCollections = new ArrayList<String>();
-
+    private SuggestionCompletionEngine             instance              = new SuggestionCompletionEngine();
+    private Map<String, FIELD_CLASS_TYPE>          factTypes             = new HashMap<String, FIELD_CLASS_TYPE>();
+    private Map<String, String[]>                  fieldsForType         = new HashMap<String, String[]>();
+    private Map<String, String[]>                  modifiersForType      = new HashMap<String, String[]>();
+    private Map<String, String>                    fieldTypes            = new HashMap<String, String>();
+    private Map<String, Class< ? >>                fieldClasses          = new HashMap<String, Class< ? >>();
+    private Map<String, Field>                     fieldTypesField       = new HashMap<String, Field>();
+    private Map<String, String>                    globalTypes           = new HashMap<String, String>();
+    private List<DSLSentence>                      actionDSLSentences    = new ArrayList<DSLSentence>();
+    private List<DSLSentence>                      conditionDSLSentences = new ArrayList<DSLSentence>();
+    private List<DSLSentence>                      keywordDSLItems       = new ArrayList<DSLSentence>();
+    private List<DSLSentence>                      anyScopeDSLItems      = new ArrayList<DSLSentence>();
+    private List<String>                           globalCollections     = new ArrayList<String>();
+    private Map<String, FieldAccessorsAndMutators> accessorsAndMutators  = new HashMap<String, FieldAccessorsAndMutators>();
+    
     public SuggestionCompletionEngineBuilder() {
     }
 
@@ -57,7 +60,7 @@ public class SuggestionCompletionEngineBuilder {
      */
     public void newCompletionEngine() {
         this.instance = new SuggestionCompletionEngine();
-        this.factTypes = new ArrayList<String>();
+        this.factTypes = new HashMap<String, FIELD_CLASS_TYPE>();
         this.fieldsForType = new HashMap<String, String[]>();
         this.modifiersForType = new HashMap<String, String[]>();
         this.fieldTypes = new HashMap<String, String>();
@@ -68,6 +71,7 @@ public class SuggestionCompletionEngineBuilder {
         this.keywordDSLItems = new ArrayList<DSLSentence>();
         this.anyScopeDSLItems = new ArrayList<DSLSentence>();
         this.globalCollections = new ArrayList<String>();
+        this.accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
     }
 
     /**
@@ -75,8 +79,8 @@ public class SuggestionCompletionEngineBuilder {
      *
      * @param factType
      */
-    public void addFactType(final String factType) {
-        this.factTypes.add(factType);
+    public void addFactType(final String factType,final FIELD_CLASS_TYPE type) {
+        this.factTypes.put(factType,type);
     }
 
     /**
@@ -190,7 +194,7 @@ public class SuggestionCompletionEngineBuilder {
      * @return
      */
     public SuggestionCompletionEngine getInstance() {
-        this.instance.setFactTypes(this.factTypes.toArray(new String[this.factTypes.size()]));
+        this.instance.setFactTypes( this.factTypes.keySet().toArray( new String[this.factTypes.keySet().size()] ) );
         this.instance.setModifiers(this.modifiersForType);
 
 
@@ -205,7 +209,7 @@ public class SuggestionCompletionEngineBuilder {
                 Class<?> fieldClazz = this.fieldClasses.get(typeEntry.getKey() + "." + field);
 
                 fields.add(new ModelField(
-                        fieldName, fieldClazz == null ? null : fieldClazz.getName(), fieldType));
+                        fieldName, fieldClazz == null ? null : fieldClazz.getName(), this.factTypes.get( typeEntry.getKey() ), fieldType));
             }
 
             modelMap.put(typeEntry.getKey(), fields.toArray(new ModelField[fields.size()]));
@@ -249,6 +253,7 @@ public class SuggestionCompletionEngineBuilder {
         this.instance.keywordDSLItems = makeArray(this.keywordDSLItems);
         this.instance.anyScopeDSLItems = makeArray(this.anyScopeDSLItems);
         this.instance.setGlobalCollections(this.globalCollections.toArray(new String[globalCollections.size()]));
+        this.instance.setAccessorsAndMutators( accessorsAndMutators );
         return this.instance;
     }
 
@@ -269,5 +274,9 @@ public class SuggestionCompletionEngineBuilder {
             this.anyScopeDSLItems.add(sen);
         }
 
+    }
+
+    public void addFieldAccessorsAndMutatorsForField(Map<String, FieldAccessorsAndMutators> accessorsAndMutators) {
+        this.accessorsAndMutators.putAll( accessorsAndMutators );
     }
 }

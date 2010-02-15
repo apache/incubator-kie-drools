@@ -26,20 +26,17 @@ public class ModelField implements PortableObject {
      * Creates a new ModelField instance
      * @param name field's name
      * @param clazz the class of the field. For fields defined as a type declaration
+     * @param fieldClassType tells if this is a field for a regular POJO class or for a object type declaration
      * this clazz should be null.
      * @param type the type of the clazz.
      */
-    public ModelField(String name, String clazz, String type) {
+    public ModelField(String name,
+                      String clazz,
+                      FIELD_CLASS_TYPE fieldClassType,
+                      String type) {
         this.name = name;
-        
-        //if clazz==null it is considered as a Type Declaration
-        if (clazz == null){
-            this.classType = FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS;
-        }else{
-            this.classType = FIELD_CLASS_TYPE.REGULAR_CLASS;
-            this.className = clazz;
-        }
-
+        this.classType = fieldClassType;
+        this.className = clazz;
         this.type = type;
     }
 
