@@ -168,11 +168,11 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
         assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "Applicant", "creditRating" ));
         assertEquals("java.lang.String", eng.getFieldClassName( "Applicant", "creditRating" ));
-        assertEquals(FIELD_CLASS_TYPE.REGULAR_CLASS, eng.getFieldClassType( "Applicant", "creditRating" ));
+        assertEquals(FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS, eng.getFieldClassType( "Applicant", "creditRating" ));
 
         assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType( "LoanApplication", "deposit" ));
         assertEquals("java.lang.Integer", eng.getFieldClassName( "LoanApplication", "deposit" ));
-        assertEquals(FIELD_CLASS_TYPE.REGULAR_CLASS, eng.getFieldClassType( "LoanApplication", "deposit" ));
+        assertEquals(FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS, eng.getFieldClassType( "LoanApplication", "deposit" ));
 
         assertEquals("Applicant", eng.getFieldType( "LoanApplication", "applicant" ));
         assertNull(eng.getFieldClassName( "LoanApplication", "applicant" ));
