@@ -2,15 +2,11 @@ package org.drools.runtime.pipeline;
 
 import java.util.Properties;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReader;
 
-import org.drools.builder.help.KnowledgeBuilderHelper;
-import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.milyn.Smooks;
