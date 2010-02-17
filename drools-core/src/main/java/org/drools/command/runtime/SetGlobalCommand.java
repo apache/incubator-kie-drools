@@ -1,23 +1,36 @@
 package org.drools.command.runtime;
 
-import org.drools.KnowledgeBase;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
     GenericCommand<Void> {
 
+	@XmlAttribute(required=true)
     private String  identifier;
+	
+	@XmlElement
     private Object  object;
 
+    @XmlAttribute
     private String  outIdentifier;
 
+    @XmlAttribute
     private boolean out;
+    
+    public SetGlobalCommand() {
+	}
 
     public SetGlobalCommand(String identifier,
                             Object object) {
@@ -44,6 +57,10 @@ public class SetGlobalCommand
 
     public Object getObject() {
         return this.object;
+    }
+    
+    public void setObject( Object object ) {
+    	this.object = object;
     }
 
     public String getOutIdentifier() {

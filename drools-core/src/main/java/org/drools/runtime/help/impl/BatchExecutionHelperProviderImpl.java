@@ -679,7 +679,7 @@ public class BatchExecutionHelperProviderImpl
                                 UnmarshallingContext context) {
             String processId = reader.getAttribute( "processId" );
 
-            Map<String, Object> params = new HashMap<String, Object>();
+            HashMap<String, Object> params = new HashMap<String, Object>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String identifier = reader.getAttribute( "identifier" );
@@ -1011,18 +1011,18 @@ public class BatchExecutionHelperProviderImpl
             }
             reader.moveUp();
 
-            Map<String, Integer> identifiers = new HashMap<String, Integer>();
+            HashMap<String, Integer> identifiers = new HashMap<String, Integer>();
             for ( int i = 0; i < list.size(); i++ ) {
                 identifiers.put( list.get( i ),
                                  i );
             }
 
-            List results = new ArrayList();      
-            List<List<FactHandle>> resultHandles = new ArrayList();
+            ArrayList<ArrayList<Object>> results = new ArrayList();      
+            ArrayList<ArrayList<FactHandle>> resultHandles = new ArrayList();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                List objects = new ArrayList();
-                List<FactHandle> handles = new ArrayList();
+                ArrayList objects = new ArrayList();
+                ArrayList<FactHandle> handles = new ArrayList();
                 while ( reader.hasMoreChildren() ) {
                     reader.moveDown();
                     Object object = readItem( reader,

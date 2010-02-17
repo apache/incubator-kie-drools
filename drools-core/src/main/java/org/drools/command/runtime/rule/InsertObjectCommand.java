@@ -1,24 +1,33 @@
 package org.drools.command.runtime.rule;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.InternalFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectCommand
     implements
     GenericCommand<FactHandle> {
 
-    private Object  object;
+	private static final long serialVersionUID = 1L;
 
+	@XmlElement
+	private Object  object;
+
+	@XmlAttribute(name="out-identifier", required=true)
     private String  outIdentifier;
 
     private boolean returnObject = true;
-
+    
     public InsertObjectCommand() {
         
     }
@@ -27,7 +36,13 @@ public class InsertObjectCommand
         this.object = object;
     }
 
-    public FactHandle execute(Context context) {
+    public InsertObjectCommand(Object object, String outIdentifier) {
+		super();
+		this.object = object;
+		this.outIdentifier = outIdentifier;
+	}
+
+	public FactHandle execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         FactHandle factHandle = ksession.insert( object );
         

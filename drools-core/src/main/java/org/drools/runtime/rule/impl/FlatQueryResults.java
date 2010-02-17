@@ -3,39 +3,52 @@ package org.drools.runtime.rule.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
+import org.drools.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 
+@XmlAccessorType( XmlAccessType.FIELD )
 public class FlatQueryResults
     implements
     QueryResults {
-    private Map<String, Integer> identifiers;
-    private List<List>           results;
-    private List<List<FactHandle>> factHandles;
+    private HashMap<String, Integer> identifiers;
+    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
+	@XmlElement(name="results")
+    private ArrayList<ArrayList<Object>>           results;
+    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
+	@XmlElement(name="fact-handles")
+    private ArrayList<ArrayList<FactHandle>> factHandles;
+    
+    public FlatQueryResults() {
+    	
+	}
 
-    public FlatQueryResults(Map<String, Integer> identifiers,
-                            List<List> results,
-                            List<List<FactHandle>> factHandles) {
+    public FlatQueryResults(HashMap<String, Integer> identifiers,
+                            ArrayList<ArrayList<Object>> results,
+                            ArrayList<ArrayList<FactHandle>> factHandles) {
         this.identifiers = identifiers;
         this.results = results;
         this.factHandles = factHandles;
     }
-
+    
     public FlatQueryResults(org.drools.QueryResults results) {
-        Declaration[] declrs = (Declaration[]) results.getDeclarations().values().toArray( new Declaration[results.getDeclarations().size()] );
-        this.results = new ArrayList<List>( results.size() );
-        this.factHandles = new ArrayList<List<FactHandle>> ( results.size() );
+        Declaration[] declrs = results.getDeclarations().values().toArray( new Declaration[results.getDeclarations().size()] );
+        this.results = new ArrayList<ArrayList<Object>>( results.size() );
+        this.factHandles = new ArrayList<ArrayList<FactHandle>> ( results.size() );
 
         int length = declrs.length;
 
         for ( org.drools.QueryResult result : results ) {
-            List<Object> row = new ArrayList<Object>();
-            List<FactHandle> rowHandle = new ArrayList<FactHandle>();
+        	ArrayList<Object> row = new ArrayList<Object>();
+        	ArrayList<FactHandle> rowHandle = new ArrayList<FactHandle>();
 
             for ( int i = 0; i < length; i++ ) {
                 Declaration declr = declrs[i];
@@ -55,8 +68,8 @@ public class FlatQueryResults
 
     }
 
-    public String[] getIdentifiers() {
-        return (String[]) identifiers.keySet().toArray( new String[identifiers.size()] );
+	public String[] getIdentifiers() {
+        return identifiers.keySet().toArray( new String[identifiers.size()] );
     }
 
     public int size() {
@@ -69,16 +82,14 @@ public class FlatQueryResults
                                          this.factHandles.iterator() );
     }
 
-    private class QueryResultsIterator
-        implements
-        Iterator {
-        private Map<String, Integer> identifiers;
-        private Iterator             iterator;
-        private Iterator<List<FactHandle>> handleIterator;
+    private class QueryResultsIterator implements Iterator<QueryResultsRow> {
+        private HashMap<String, Integer> identifiers;
+        private Iterator<ArrayList<Object>> iterator;
+        private Iterator<ArrayList<FactHandle>> handleIterator;
 
-        public QueryResultsIterator(Map<String, Integer> identifiers,
-                                    final Iterator iterator,
-                                    final Iterator<List<FactHandle>> handleIterator) {
+        public QueryResultsIterator(HashMap<String, Integer> identifiers,
+                                    final Iterator<ArrayList<Object>> iterator,
+                                    final Iterator<ArrayList<FactHandle>> handleIterator) {
             this.identifiers = identifiers;
             this.iterator = iterator;
             this.handleIterator = handleIterator;
@@ -88,10 +99,10 @@ public class FlatQueryResults
             return this.iterator.hasNext();
         }
 
-        public Object next() {
+        public QueryResultsRow next() {
             return new FlatQueryResultRow( identifiers,
-                                           (List) this.iterator.next(),
-                                           (List<FactHandle>) this.handleIterator.next() );
+                                           this.iterator.next(),
+                                           this.handleIterator.next() );
         }
 
         public void remove() {

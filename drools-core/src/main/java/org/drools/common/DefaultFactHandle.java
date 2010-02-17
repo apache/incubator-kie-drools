@@ -16,16 +16,23 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.drools.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * Implementation of <code>FactHandle</code>.
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
+@XmlRootElement(name="fact-handle")
+@XmlAccessorType(XmlAccessType.NONE)
 public class DefaultFactHandle
     implements
     InternalFactHandle {
@@ -134,6 +141,11 @@ public class DefaultFactHandle
         return "0:" + this.id + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency();
     }
 
+    @XmlAttribute(name="external-form")
+    public String getExternalForm() {
+    	return toExternalForm();
+    }
+    
     /**
      * @see Object
      */

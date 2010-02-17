@@ -4,38 +4,53 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.xml.jaxb.util.JaxbListWrapper;
 
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
+@XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand
     implements
     GenericCommand<Collection<FactHandle>> {
-    public Iterable objects;
 
+	private static final long serialVersionUID = 501L;
+
+    @XmlElement
+	public List<Object> objects;
+
+    @XmlAttribute
     private String  outIdentifier;
 
+    @XmlAttribute
     private boolean returnObject = true;
 
     public InsertElementsCommand() {
-        this.objects = new ArrayList();
+        this.objects = new ArrayList<Object>();
     }
 
-    public InsertElementsCommand(Iterable objects) {
+    public InsertElementsCommand(List<Object> objects) {
         this.objects = objects;
     }
 
-    public Iterable getObjects() {
+    public InsertElementsCommand(String outIdentifier) {
+		this();
+		this.outIdentifier = outIdentifier;
+	}
+
+	public List<Object> getObjects() {
         return this.objects;
     }
 
-    public void setObjects(Iterable objects) {
+    public void setObjects(List<Object> objects) {
         this.objects = objects;
     }
 
@@ -49,7 +64,7 @@ public class InsertElementsCommand
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {
                 ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier,
-                                                               objects );
+                                                               objects);
             }
             ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getFactHandles().put( this.outIdentifier,
                                                                handles );

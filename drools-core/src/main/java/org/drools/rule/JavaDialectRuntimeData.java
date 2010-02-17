@@ -432,12 +432,16 @@ public class JavaDialectRuntimeData
             this.store = store;
         }
 
-        public Class fastFindClass(final String name) {
-            Class cls = findLoadedClass( name );
+        public Class<?> fastFindClass(final String name) {
+            Class<?> cls = findLoadedClass( name );
 
             if ( cls == null ) {
                 final byte[] clazzBytes = this.store.read( convertClassToResourcePath( name ) );
                 if ( clazzBytes != null ) {
+                	String pkgName = name.substring(0, name.lastIndexOf('.'));
+                	if (getPackage(pkgName) == null) {
+                		definePackage(pkgName, "", "", "", "", "", "", null);
+                	}
                     cls = defineClass( name,
                                        clazzBytes,
                                        0,

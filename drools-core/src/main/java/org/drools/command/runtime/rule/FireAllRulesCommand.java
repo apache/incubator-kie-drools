@@ -1,19 +1,23 @@
 package org.drools.command.runtime.rule;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.AgendaFilter;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class FireAllRulesCommand
     implements
     GenericCommand<Integer> {
 
+	@XmlAttribute
     private int          max          = -1;
     private AgendaFilter agendaFilter = null;
     private String       outIdentifier;

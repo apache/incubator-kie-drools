@@ -1,21 +1,23 @@
 package org.drools.runtime.impl;
 
-import java.util.Collection;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.vsm.ServiceManager;
 
-
+@XmlRootElement
 public class BatchExecutionImpl implements GenericCommand<Void> {
+
+	private static final long serialVersionUID = 1L;
+
 	private List<GenericCommand> commands;
 	
 	private String lookup;
+	
+	public BatchExecutionImpl() {
+	}
 
 	public BatchExecutionImpl(List<GenericCommand> commands) {
         this.commands = commands;

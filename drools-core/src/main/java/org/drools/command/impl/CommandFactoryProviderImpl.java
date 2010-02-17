@@ -1,5 +1,6 @@
 package org.drools.command.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,9 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 	}
 
 	public Command newInsertElements(Iterable objects) {
-		return new InsertElementsCommand(objects);
+//		TODO: FIX THIS
+//		return new InsertElementsCommand(objects);
+		return null;
 	}
 
 	public Command newInsert(Object object) {
@@ -112,7 +115,7 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 			Map<String, Object> parameters) {
 		StartProcessCommand startProcess = new StartProcessCommand();
 		startProcess.setProcessId(processId);
-		startProcess.setParameters(parameters);
+		startProcess.setParameters((HashMap<String, Object>) parameters);
 		return startProcess;
 	}
 

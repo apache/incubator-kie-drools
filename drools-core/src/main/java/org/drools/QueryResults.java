@@ -23,8 +23,6 @@ import java.util.NoSuchElementException;
 
 import org.drools.rule.Declaration;
 import org.drools.rule.Query;
-import org.drools.WorkingMemory;
-import org.drools.spi.Tuple;
 
 /**
  * Returned QueryResults instance for a requested named query. from here you can iterate the returned data, or
@@ -34,12 +32,15 @@ import org.drools.spi.Tuple;
 public class QueryResults implements Iterable<QueryResult>{
     private Query           query;
 
-    private Map             declarations;
+    private Map<String, Declaration> declarations;
 
-    protected List          results;
+    protected List<FactHandle[]> results;
     protected WorkingMemory workingMemory;
+    
+    public QueryResults() {
+	}
 
-    public QueryResults(final List results,
+    public QueryResults(final List<FactHandle[]> results,
                         final Query query,
                         final WorkingMemory workingMemory) {
         this.results = results;
@@ -51,7 +52,7 @@ public class QueryResults implements Iterable<QueryResult>{
         if ( i > this.results.size() ) {
             throw new NoSuchElementException();
         }
-        return new QueryResult( (FactHandle[]) this.results.get( i ),
+        return new QueryResult( this.results.get(i),
                                 this.workingMemory,
                                 this );
     }
@@ -72,10 +73,10 @@ public class QueryResults implements Iterable<QueryResult>{
      * @return
      *      The Map of Declarations.
      */
-    public Map getDeclarations() {
+    public Map<String, Declaration> getDeclarations() {
 
         final Declaration[] declarations = this.query.getDeclarations();
-        final Map map = new HashMap( declarations.length );
+        final Map<String, Declaration> map = new HashMap<String, Declaration>( declarations.length );
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             map.put( declarations[i].getIdentifier(),
                      declarations[i] );
@@ -95,10 +96,10 @@ public class QueryResults implements Iterable<QueryResult>{
 
     private class QueryResultsIterator
         implements
-        Iterator {
-        private Iterator iterator;
+        Iterator<QueryResult> {
+        private Iterator<FactHandle[]> iterator;
 
-        public QueryResultsIterator(final Iterator iterator) {
+        public QueryResultsIterator(final Iterator<FactHandle[]> iterator) {
             this.iterator = iterator;
         }
 
@@ -106,8 +107,8 @@ public class QueryResults implements Iterable<QueryResult>{
             return this.iterator.hasNext();
         }
 
-        public Object next() {
-            return new QueryResult( (FactHandle[]) this.iterator.next(),
+        public QueryResult next() {
+            return new QueryResult( this.iterator.next(),
                                     QueryResults.this.workingMemory,
                                     QueryResults.this );
         }

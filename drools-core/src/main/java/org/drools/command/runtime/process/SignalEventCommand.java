@@ -1,15 +1,24 @@
 package org.drools.command.runtime.process;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class SignalEventCommand implements GenericCommand<Object> {
 	
+	@XmlAttribute(name="process-instance-id")
 	private long processInstanceId = -1;
+	@XmlAttribute(name="event-type", required=true)
 	private String eventType;
+	@XmlElement(name="event")
 	private Object event;	
 	
     public SignalEventCommand() {

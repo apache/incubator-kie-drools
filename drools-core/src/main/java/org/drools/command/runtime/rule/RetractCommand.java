@@ -1,35 +1,46 @@
 package org.drools.command.runtime.rule;
 
-import java.util.Collection;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class RetractCommand
-    implements
-    GenericCommand<Object> {
+implements
+GenericCommand<Object> {
 
-    private FactHandle handle;
+	private FactHandle handle;
 
-    public RetractCommand(FactHandle handle) {
-        this.handle = handle;
-    }
+	public RetractCommand() {
+	}
 
-    public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        ksession.retract( handle );
-        return null;
-    }
-    
-    public FactHandle getFactHandle() {
-        return this.handle;
-    }
+	public RetractCommand(FactHandle handle) {
+		this.handle = handle;
+	}
 
-    public String toString() {
-        return "session.retract( " + handle + " );";
-    }
+	public Object execute(Context context) {
+		StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+		ksession.retract( handle );
+		return null;
+	}
+
+	public FactHandle getFactHandle() {
+		return this.handle;
+	}
+
+	@XmlAttribute(name="factHandle", required=true)
+	public void setFactHandleFromString(String factHandleId) {
+		handle = new DisconnectedFactHandle(factHandleId);
+	}
+
+	public String toString() {
+		return "session.retract( " + handle + " );";
+	}
 }
