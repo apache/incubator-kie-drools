@@ -1,19 +1,26 @@
 package org.drools.common;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class DisconnectedFactHandle
     implements
     InternalFactHandle {
 
     private int  id;
-    private int  identityHashCode;
+	private int  identityHashCode;
     private int  objectHashCode;
     private long recency;
     private Object object;
 
+	protected DisconnectedFactHandle() {}
+	
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,
                                   int objectHashCode,
@@ -126,6 +133,11 @@ public class DisconnectedFactHandle
 
     public String toExternalForm() {
         return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency;
+    }
+    
+    @XmlAttribute(name="external-form")
+    public String getExternalForm() {
+    	return toExternalForm();
     }
 
 }

@@ -1,23 +1,30 @@
 package org.drools.command.runtime;
 
-import java.util.Collection;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.runtime.rule.FactHandle;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class GetGlobalCommand
     implements
     GenericCommand<Object> {
 
-    private String identifier;
+	private static final long serialVersionUID = 1L;
+	
+	@XmlAttribute
+	private String identifier;
+	@XmlAttribute(name="out-identifier")
     private String outIdentifier;
+    
+    public GetGlobalCommand() {
+	}
 
     public GetGlobalCommand(String identifier) {
         this.identifier = identifier;
@@ -39,7 +46,7 @@ public class GetGlobalCommand
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
         Object object = ksession.getGlobal( identifier );
-        ExecutionResultImpl results = (ExecutionResultImpl) ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
+        ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
         if ( results != null ) {
             results.getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
                                       object );

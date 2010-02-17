@@ -5,11 +5,28 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.runtime.ExecutionResults;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.runtime.ExecutionResults;
+import org.drools.xml.jaxb.util.JaxbMapAdapter;
+
+@XmlRootElement(name="execution-results")
+@XmlAccessorType(XmlAccessType.NONE)
 public class ExecutionResultImpl implements ExecutionResults, Serializable {
-    Map<String, Object> results = new HashMap<String, Object>();    
-    Map<String, Object> facts = new HashMap<String, Object>();
+	
+	private static final long serialVersionUID = 1L;
+	
+	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
+	@XmlElement(name="results")
+    HashMap<String, Object> results = new HashMap<String, Object>();
+
+	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
+	@XmlElement(name="facts")
+	HashMap<String, Object> facts = new HashMap<String, Object>();
     
     /* (non-Javadoc)
      * @see org.drools.batchexecution.BatchExecutionResult#getIdentifiers()
@@ -33,7 +50,7 @@ public class ExecutionResultImpl implements ExecutionResults, Serializable {
         return this.results;
     }
 
-    public void setResults(Map<String, Object> results) {
+    public void setResults(HashMap<String, Object> results) {
         this.results = results;
     }
     
@@ -41,7 +58,7 @@ public class ExecutionResultImpl implements ExecutionResults, Serializable {
         return this.facts;
     }    
     
-    public void setFactHandles(Map<String, Object> facts) {
+    public void setFactHandles(HashMap<String, Object> facts) {
         this.facts = facts;
     }
 }

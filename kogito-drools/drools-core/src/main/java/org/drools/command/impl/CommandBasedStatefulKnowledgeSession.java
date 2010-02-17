@@ -1,6 +1,7 @@
 package org.drools.command.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
@@ -162,7 +163,7 @@ public class CommandBasedStatefulKnowledgeSession
                                         Map<String, Object> parameters) {
         StartProcessCommand command = new StartProcessCommand();
         command.setProcessId( processId );
-        command.setParameters( parameters );
+        command.setParameters( (HashMap<String, Object>) parameters );
         return commandService.execute( command );
     }
 

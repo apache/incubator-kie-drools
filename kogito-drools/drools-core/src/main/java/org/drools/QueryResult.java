@@ -62,13 +62,13 @@ public class QueryResult {
     }
 
     /** 
-     * Return the Object for the given Declaration identifer.
+     * Return the Object for the given Declaration identifier.
      * @param identifier
      * @return
      *      The Object
      */
     public Object get(final String identifier) {
-        return get( (Declaration) this.queryResults.getDeclarations().get( identifier ) );
+        return get( this.queryResults.getDeclarations().get( identifier ) );
     }
 
     /** 
@@ -82,7 +82,7 @@ public class QueryResult {
     }
     
     public FactHandle getFactHandle(String identifier) {
-        return getFactHandle( ( Declaration ) this.queryResults.getDeclarations().get( identifier ) );
+        return getFactHandle( this.queryResults.getDeclarations().get( identifier ) );
     }
     
     public FactHandle getFactHandle(Declaration declr) {

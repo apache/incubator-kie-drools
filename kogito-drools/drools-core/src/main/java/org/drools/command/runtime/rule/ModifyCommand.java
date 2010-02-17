@@ -1,17 +1,24 @@
 package org.drools.command.runtime.rule;
 
-import java.util.Collection;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.command.Context;
 import org.drools.command.Setter;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.mvel2.MVEL;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class ModifyCommand
     implements
     GenericCommand<Object> {
@@ -24,9 +31,12 @@ public class ModifyCommand
 
 
     private FactHandle       handle;
+    @XmlAnyElement
     private List<Setter> setters;
 
-
+    public ModifyCommand() {
+    }
+    
     public ModifyCommand(FactHandle handle,
                          List<Setter> setters) {
         this.handle = handle;
@@ -47,9 +57,18 @@ public class ModifyCommand
     public FactHandle getFactHandle() {
         return this.handle;
     }
+    
+    @XmlAttribute(name="factHandle", required=true)
+	public void setFactHandleFromString(String factHandleId) {
+		handle = new DisconnectedFactHandle(factHandleId);
+	}
 
     public List<Setter> getSetters() {
         return this.setters;
+    }
+    
+    public void setSetters(List<Setter> setters) {
+    	this.setters = setters;
     }
 
     private String getMvelExpr() {
@@ -74,11 +93,17 @@ public class ModifyCommand
         return "modify() " + getMvelExpr();
     }
 
+    @XmlRootElement(name="set")
     public static class SetterImpl
         implements
         Setter {
+    	@XmlAttribute
         private String accessor;
+    	@XmlAttribute
         private String value;
+    	
+    	public SetterImpl() {
+		}
 
         public SetterImpl(String accessor,
                           String value) {
