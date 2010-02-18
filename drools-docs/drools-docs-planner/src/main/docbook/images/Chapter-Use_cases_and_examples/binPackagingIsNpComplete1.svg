@@ -324,7 +324,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.1866667"
      inkscape:cx="376.37431"
-     inkscape:cy="298.31461"
+     inkscape:cy="296.62922"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -357,7 +357,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -418,11 +418,11 @@
        width="156"
        height="156"
        x="67"
-       y="779.36218"
+       y="789.36218"
        rx="0"
        ry="0" />
     <g
-       transform="translate(9.9999977,329.99996)"
+       transform="translate(9.9999977,339.99996)"
        id="g3851-3-8">
       <rect
          ry="5"
@@ -447,7 +447,7 @@
              id="rect3720-7-3" /></flowRegion><flowPara
            id="flowPara3728-6-8">3*3=9</flowPara></flowRoot>    </g>
     <g
-       transform="matrix(0,-1,1,0,-382.36218,1112.3622)"
+       transform="matrix(0,-1,1,0,-382.36218,1122.3622)"
        id="g3858-9-3">
       <rect
          inkscape:transform-center-y="18.790824"
@@ -474,7 +474,7 @@
              id="rect3720-1-1-0" /></flowRegion><flowPara
            id="flowPara3798-7-4">2*4=8</flowPara></flowRoot>    </g>
     <g
-       transform="translate(-380,209.99999)"
+       transform="translate(-380,219.99999)"
        id="g3872-3-7">
       <rect
          ry="5"
@@ -499,7 +499,7 @@
              id="rect3720-5-64-0" /></flowRegion><flowPara
            id="flowPara3728-7-16-6">1*5=5</flowPara></flowRoot>    </g>
     <g
-       transform="translate(-560,239.99995)"
+       transform="translate(-560,249.99995)"
        id="g3879-93-8">
       <rect
          ry="5"
@@ -529,11 +529,11 @@
        width="126"
        height="216"
        x="367"
-       y="719.36218"
+       y="729.36218"
        rx="0"
        ry="0" />
     <g
-       transform="translate(310,269.99999)"
+       transform="translate(310,279.99999)"
        id="g3851-3-4">
       <rect
          ry="5"
@@ -558,7 +558,7 @@
              id="rect3720-7-5" /></flowRegion><flowPara
            id="flowPara3728-6-7">3*3=9</flowPara></flowRoot>    </g>
     <g
-       transform="translate(190.00002,330)"
+       transform="translate(190.00002,340)"
        id="g3858-9-0">
       <rect
          inkscape:transform-center-y="18.790824"
@@ -585,7 +585,7 @@
              id="rect3720-1-1-9" /></flowRegion><flowPara
            id="flowPara3798-7-7">2*4=8</flowPara></flowRoot>    </g>
     <g
-       transform="matrix(0,-1,1,0,-112.36218,1322.3622)"
+       transform="matrix(0,-1,1,0,-112.36218,1332.3622)"
        id="g3872-3-8">
       <rect
          ry="5"
@@ -610,7 +610,7 @@
              id="rect3720-5-64-4" /></flowRegion><flowPara
            id="flowPara3728-7-16-9">1*5=5</flowPara></flowRoot>    </g>
     <g
-       transform="translate(-260,179.99996)"
+       transform="translate(-260,189.99996)"
        id="g3879-93-0">
       <rect
          ry="5"
@@ -640,11 +640,11 @@
        width="96"
        height="276"
        x="637"
-       y="659.36218"
+       y="669.36218"
        rx="0"
        ry="0" />
     <g
-       transform="translate(580,330)"
+       transform="translate(580,340)"
        id="g3851-3-82">
       <rect
          ry="5"
@@ -669,7 +669,7 @@
              id="rect3720-7-6" /></flowRegion><flowPara
            id="flowPara3728-6-4">3*3=9</flowPara></flowRoot>    </g>
     <g
-       transform="matrix(0,-1,1,0,127.63782,992.36216)"
+       transform="matrix(0,-1,1,0,127.63782,1002.3622)"
        id="g3858-9-6">
       <rect
          inkscape:transform-center-y="18.790824"
@@ -696,7 +696,7 @@
              id="rect3720-1-1-07" /></flowRegion><flowPara
            id="flowPara3798-7-0">2*4=8</flowPara></flowRoot>    </g>
     <g
-       transform="matrix(0,-1,1,0,67.637817,1262.3622)"
+       transform="matrix(0,-1,1,0,67.637817,1272.3622)"
        id="g3872-3-1">
       <rect
          ry="5"
@@ -721,7 +721,7 @@
              id="rect3720-5-64-7" /></flowRegion><flowPara
            id="flowPara3728-7-16-2">1*5=5</flowPara></flowRoot>    </g>
     <g
-       transform="translate(10,239.99999)"
+       transform="translate(10,249.99999)"
        id="g3879-93-6">
       <rect
          ry="5"
@@ -759,7 +759,7 @@
            style="font-size:28px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara4308-5">A given solution can be verified fast.</flowPara><flowPara
          id="flowPara2986">There is no efficient way to find a solution</flowPara></flowRoot>    <g
-       transform="translate(180.00002,-3.695661e-6)"
+       transform="translate(145.00002,-3.695661e-6)"
        id="g3858-9-0-2">
       <rect
          inkscape:transform-center-y="18.790824"
@@ -797,8 +797,8 @@
            x="103.6797"
            y="-40.342781"
            style="font-size:28px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara2986-9">When do we put                 into the box?</flowPara></flowRoot>    <flowRoot
-       transform="translate(-173.67969,562.70496)"
+         id="flowPara2986-9">When do we put                 into the container?</flowPara></flowRoot>    <flowRoot
+       transform="translate(-173.67969,572.70496)"
        xml:space="preserve"
        id="flowRoot4302-5-1"
        style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
@@ -811,7 +811,7 @@
            style="font-size:24px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara2986-1">Second,</flowPara><flowPara
          id="flowPara3133">of course!</flowPara></flowRoot>    <flowRoot
-       transform="translate(102.9375,506.56075)"
+       transform="translate(102.9375,516.56075)"
        xml:space="preserve"
        id="flowRoot4302-5-1-8"
        style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
@@ -824,7 +824,7 @@
            style="font-size:24px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara2986-1-7">First,</flowPara><flowPara
          id="flowPara3133-0">of course!</flowPara></flowRoot>    <flowRoot
-       transform="translate(351.52344,452.6506)"
+       transform="translate(351.52344,462.6506)"
        xml:space="preserve"
        id="flowRoot4302-5-1-8-7"
        style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
