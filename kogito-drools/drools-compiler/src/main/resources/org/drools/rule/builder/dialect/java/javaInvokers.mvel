@@ -1,6 +1,6 @@
 @declare{"getMethodBytecode"}
     public java.util.List getMethodBytecode() {
-        org.drools.util.asm.MethodComparator.Tracer visit = new org.drools.util.asm.MethodComparator.Tracer("@{methodName}");
+        org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer("@{methodName}");
 
         java.io.InputStream is = getClass().getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + ".class" );
 
@@ -40,7 +40,7 @@
 
         org.drools.spi.CompiledInvoker other = ( org.drools.spi.CompiledInvoker ) object;
 
-        return org.drools.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), other.getMethodBytecode() );
+        return org.drools.core.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), other.getMethodBytecode() );
     }
 @end{}
 
@@ -182,7 +182,7 @@ package @{package};
 
 import org.mvel2.asm.ClassReader;
 import org.mvel2.asm.util.TraceMethodVisitor;
-import org.drools.util.asm.MethodComparator.Tracer;
+import org.drools.core.util.asm.MethodComparator.Tracer;
 import java.util.Collections;
 public class @{invokerClassName} implements org.drools.spi.Accumulator, org.drools.spi.CompiledInvoker
 {

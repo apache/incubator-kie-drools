@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.command.CommandService;
+import org.drools.core.util.ConfFileUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.process.instance.ProcessInstanceManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.process.instance.event.SignalManagerFactory;
@@ -37,8 +39,6 @@ import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
-import org.drools.util.ConfFileUtils;
-import org.drools.util.StringUtils;
 import org.mvel2.MVEL;
 
 /**

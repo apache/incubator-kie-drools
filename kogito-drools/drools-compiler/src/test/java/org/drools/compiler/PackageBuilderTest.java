@@ -44,6 +44,8 @@ import org.drools.common.ActivationNode;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
+import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.LinkedList;
 import org.drools.facttemplates.Fact;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.io.Resource;
@@ -93,8 +95,6 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.DroolsStreamUtils;
-import org.drools.util.LinkedList;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 
 public class PackageBuilderTest extends DroolsTestCase {

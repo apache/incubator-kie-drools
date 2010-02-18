@@ -24,7 +24,7 @@ package org.drools.template.parser;
 import java.util.Map;
 
 import org.drools.StatefulSession;
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 
 public class ArrayCell implements Cell {
 	Row row;

@@ -10,10 +10,10 @@ import java.math.BigInteger;
 
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MathUtils;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.ClassUtils;
-import org.drools.util.MathUtils;
 
 public class ArrayElementReader implements AcceptsReadAccessor, InternalReadAccessor, Externalizable  {
     private InternalReadAccessor arrayReadAccessor;

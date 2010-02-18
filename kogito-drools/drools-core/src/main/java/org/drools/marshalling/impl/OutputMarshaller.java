@@ -28,6 +28,8 @@ import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
@@ -52,8 +54,6 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.ObjectHashSet;
 
 public class OutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
@@ -186,9 +186,9 @@ public class OutputMarshaller {
         ObjectHashMap assertMap = context.wm.getTruthMaintenanceSystem().getAssertMap();
 
         EqualityKey[] keys = new EqualityKey[assertMap.size()];
-        org.drools.util.Iterator it = assertMap.iterator();
+        org.drools.core.util.Iterator it = assertMap.iterator();
         int i = 0;
-        for ( org.drools.util.ObjectHashMap.ObjectEntry entry = (org.drools.util.ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (org.drools.util.ObjectHashMap.ObjectEntry) it.next() ) {
+        for ( org.drools.core.util.ObjectHashMap.ObjectEntry entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next() ) {
             EqualityKey key = (EqualityKey) entry.getKey();
             keys[i++] = key;
         }
@@ -659,7 +659,7 @@ public class OutputMarshaller {
         stream.writeBoolean( agendaItem.isActivated() );
 //        context.out.println( "AgendaItem bool:" + agendaItem.isActivated() );
 
-        org.drools.util.LinkedList list = agendaItem.getLogicalDependencies();
+        org.drools.core.util.LinkedList list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
             for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
                 stream.writeShort( PersisterEnums.LOGICAL_DEPENDENCY );

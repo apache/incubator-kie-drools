@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.xml.XmlProcessReader;
+import org.drools.compiler.xml.processes.RuleFlowMigrator;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
@@ -56,8 +58,6 @@ import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.Trigger;
-import org.drools.xml.XmlProcessReader;
-import org.drools.xml.processes.RuleFlowMigrator;
 
 /**
  * A ProcessBuilder can be used to build processes based on XML files

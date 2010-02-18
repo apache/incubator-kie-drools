@@ -1,5 +1,7 @@
 package org.drools.util;
 
+import org.drools.core.util.ClassUtils;
+
 import junit.framework.TestCase;
 
 public class ClassUtilsTest extends TestCase {

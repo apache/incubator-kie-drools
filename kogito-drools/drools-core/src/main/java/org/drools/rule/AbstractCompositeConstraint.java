@@ -23,11 +23,11 @@ import java.util.Arrays;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.ArrayUtils;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
-import org.drools.util.ArrayUtils;
 
 /**
  * A superclass for all composite constraints, like "OR" and "AND"

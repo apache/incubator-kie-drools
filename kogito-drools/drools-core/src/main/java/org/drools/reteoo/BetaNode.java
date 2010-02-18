@@ -30,16 +30,16 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.core.util.ConcurrentRightTupleList;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ConcurrentRightTupleList;
-import org.drools.util.Iterator;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements

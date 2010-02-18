@@ -26,6 +26,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.SingleBetaConstraints;
+import org.drools.core.util.StringUtils;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
@@ -55,7 +56,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
-import org.drools.util.StringUtils;
 import org.mvel2.MVEL;
 
 public class ReteDslTestEngine {

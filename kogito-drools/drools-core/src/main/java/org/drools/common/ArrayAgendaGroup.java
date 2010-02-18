@@ -21,10 +21,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.PriorityQueue;
 
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.spi.Activation;
-import org.drools.util.Iterator;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added

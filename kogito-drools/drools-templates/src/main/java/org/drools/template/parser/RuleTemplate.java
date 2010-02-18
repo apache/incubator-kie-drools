@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>

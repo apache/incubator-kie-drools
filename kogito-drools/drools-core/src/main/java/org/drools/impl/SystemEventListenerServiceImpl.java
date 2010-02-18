@@ -3,7 +3,7 @@ package org.drools.impl;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerService;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
-import org.drools.util.DelegatingSystemEventListener;
+import org.drools.core.util.DelegatingSystemEventListener;
 
 public class SystemEventListenerServiceImpl implements SystemEventListenerService{
     

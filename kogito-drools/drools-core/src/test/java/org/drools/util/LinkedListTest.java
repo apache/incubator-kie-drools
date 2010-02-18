@@ -16,6 +16,10 @@ package org.drools.util;
  * limitations under the License.
  */
 
+import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListNode;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

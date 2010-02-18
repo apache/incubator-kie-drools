@@ -1,8 +1,8 @@
 package org.drools.guvnor.server.util;
 
+import org.drools.core.util.ReflectiveVisitor;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.*;
-import org.drools.util.ReflectiveVisitor;
 
 /**
  * This class persists the rule model to DRL and back

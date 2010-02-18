@@ -1,6 +1,6 @@
 package org.drools.template.parser;
 
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 
 /*
  * Copyright 2005 JBoss Inc

@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ObjectHashMap;
 
 public class PropagationContextImpl
     implements

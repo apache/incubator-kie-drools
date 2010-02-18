@@ -18,10 +18,10 @@ package org.drools.template.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.core.util.StringUtils;
 import org.drools.template.model.Condition;
 import org.drools.template.model.Rule;
 import org.drools.template.model.SnippetBuilder;
-import org.drools.util.StringUtils;
 
 /**
  * 

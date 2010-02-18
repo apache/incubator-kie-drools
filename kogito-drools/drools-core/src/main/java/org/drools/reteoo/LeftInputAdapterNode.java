@@ -27,9 +27,9 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
-import org.drools.util.RightTupleList;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern

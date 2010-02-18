@@ -25,6 +25,7 @@ import org.drools.builder.ResourceType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
+import org.drools.core.util.ObjectHashMap;
 import org.drools.definition.KnowledgePackage;
 import org.drools.event.DefaultWorkingMemoryEventListener;
 import org.drools.event.ObjectInsertedEvent;
@@ -36,7 +37,6 @@ import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
-import org.drools.util.ObjectHashMap;
 
 public class TruthMaintenanceTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

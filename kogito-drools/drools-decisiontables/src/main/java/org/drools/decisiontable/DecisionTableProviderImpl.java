@@ -7,7 +7,7 @@ import java.io.Reader;
 
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.compiler.DecisionTableProvider;
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 
 public class DecisionTableProviderImpl
     implements

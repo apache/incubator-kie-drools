@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.core.util.asm.ClassFieldInspector;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

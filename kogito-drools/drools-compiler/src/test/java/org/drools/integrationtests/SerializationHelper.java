@@ -9,13 +9,13 @@ import java.io.ObjectOutputStream;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.util.DroolsStreamUtils;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object

@@ -1,11 +1,11 @@
 package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.core.util.Entry;
+import org.drools.core.util.LeftTupleList;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
-import org.drools.util.Entry;
-import org.drools.util.LeftTupleList;
 
 public class LeftTuple
     implements

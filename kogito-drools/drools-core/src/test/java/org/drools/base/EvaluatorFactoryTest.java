@@ -34,6 +34,7 @@ import junit.framework.TestCase;
 
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.MathUtils;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
@@ -45,7 +46,6 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.MathUtils;
 
 /**
  * Some test coverage goodness for the evaluators.

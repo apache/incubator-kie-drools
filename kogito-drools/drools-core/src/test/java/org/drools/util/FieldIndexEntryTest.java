@@ -11,9 +11,10 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.core.util.RightTupleList;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.reteoo.RightTuple;
-import org.drools.util.AbstractHashTable.FieldIndex;
-import org.drools.util.AbstractHashTable.SingleIndex;
 
 public class FieldIndexEntryTest extends TestCase {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();

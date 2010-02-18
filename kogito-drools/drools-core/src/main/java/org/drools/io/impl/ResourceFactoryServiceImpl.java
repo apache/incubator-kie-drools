@@ -7,11 +7,11 @@ import java.net.URL;
 
 import org.drools.SystemEventListener;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
+import org.drools.core.util.DelegatingSystemEventListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
 import org.drools.io.ResourceFactoryService;
-import org.drools.util.DelegatingSystemEventListener;
 
 public class ResourceFactoryServiceImpl
     implements

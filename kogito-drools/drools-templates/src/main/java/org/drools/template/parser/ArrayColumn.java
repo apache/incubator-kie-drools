@@ -16,7 +16,7 @@ package org.drools.template.parser;
  * limitations under the License.
  */
 
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 

@@ -16,8 +16,8 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.spi.Activation;
-import org.drools.util.AbstractBaseLinkedListNode;
 
 public class ActivationNode extends AbstractBaseLinkedListNode {
 

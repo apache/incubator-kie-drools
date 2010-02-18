@@ -30,16 +30,16 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.ArrayUtils;
+import org.drools.core.util.Entry;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ArrayUtils;
-import org.drools.util.Entry;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * AccumulateNode

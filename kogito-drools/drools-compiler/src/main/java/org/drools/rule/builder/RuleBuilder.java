@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
+import org.drools.core.util.DateUtils;
 import org.drools.lang.DroolsSoftKeywords;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -37,7 +38,6 @@ import org.drools.time.impl.CronExpression;
 import org.drools.time.impl.CronTimer;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.time.impl.Timer;
-import org.drools.util.DateUtils;
 import org.mvel2.MVEL;
 
 /**

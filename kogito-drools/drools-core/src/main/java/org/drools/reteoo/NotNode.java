@@ -19,10 +19,10 @@ package org.drools.reteoo;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
-import org.drools.util.Iterator;
 
 /**
  * <code>NotNode</code> extends <code>BetaNode</code> to perform tests for

@@ -36,6 +36,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.conf.EventProcessingOption;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -49,7 +50,6 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
-import org.drools.util.DroolsStreamUtils;
 
 public class CepEspTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

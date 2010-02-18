@@ -13,9 +13,9 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MathUtils;
 import org.drools.facttemplates.Fact;
-import org.drools.util.ClassUtils;
-import org.drools.util.MathUtils;
 
 /*
  * Copyright 2005 JBoss Inc

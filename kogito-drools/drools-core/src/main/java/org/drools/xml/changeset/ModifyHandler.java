@@ -7,12 +7,12 @@ import java.util.HashSet;
 
 import org.drools.ChangeSet;
 import org.drools.builder.ResourceType;
+import org.drools.core.util.StringUtils;
 import org.drools.io.Resource;
 import org.drools.io.impl.ChangeSetImpl;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.UrlResource;
-import org.drools.util.StringUtils;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

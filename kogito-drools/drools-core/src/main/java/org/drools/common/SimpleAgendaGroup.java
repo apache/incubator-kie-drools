@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.BinaryHeapQueue;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.Queueable;
 import org.drools.spi.Activation;
-import org.drools.util.AbstractBaseLinkedListNode;
-import org.drools.util.BinaryHeapQueue;
-import org.drools.util.LinkedList;
-import org.drools.util.Queueable;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a

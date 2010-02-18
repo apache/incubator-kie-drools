@@ -77,7 +77,19 @@
     		<groupId>org.slf4j</groupId>
     		<artifactId>slf4j-api</artifactId>
     		<version>1.5.2</version>
-    	</dependency>          	 
+    	</dependency>    
+    	
+    	      	    
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.core</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.compendium</artifactId>
+         <scope>provided</scope>
+      </dependency>
    	
     	<!-- Hibernate -->
     	<dependency>

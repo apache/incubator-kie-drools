@@ -3,8 +3,8 @@
  */
 package org.drools.rule.builder.dialect.java;
 
+import org.drools.core.util.ClassUtils;
 import org.drools.rule.Declaration;
-import org.drools.util.ClassUtils;
 
 /**
  * @author fburlet

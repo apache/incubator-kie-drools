@@ -35,9 +35,9 @@ import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInput;
+import org.drools.core.util.DroolsClassLoader;
+import org.drools.core.util.StringUtils;
 import org.drools.spi.Wireable;
-import org.drools.util.DroolsClassLoader;
-import org.drools.util.StringUtils;
 
 public class JavaDialectRuntimeData
     implements

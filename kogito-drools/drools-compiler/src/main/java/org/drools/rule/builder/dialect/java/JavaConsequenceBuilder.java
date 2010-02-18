@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
+import org.drools.core.util.ClassUtils;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.ConsequenceBuilder;
@@ -37,7 +38,6 @@ import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr.BlockType;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.PatternExtractor;
-import org.drools.util.ClassUtils;
 import org.mvel2.compiler.ExecutableStatement;
 
 /**

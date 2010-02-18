@@ -1,12 +1,13 @@
 package org.drools.agent;
 
 import junit.framework.TestCase;
+
+import org.drools.core.util.FileManager;
+import org.drools.core.util.StringUtils;
 import org.drools.io.impl.UrlResource;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.ResourceFactory;
-import org.drools.util.FileManager;
-import org.drools.util.StringUtils;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 

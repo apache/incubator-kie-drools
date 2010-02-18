@@ -3,8 +3,8 @@ package org.drools.reteoo;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.util.Entry;
-import org.drools.util.RightTupleList;
+import org.drools.core.util.Entry;
+import org.drools.core.util.RightTupleList;
 
 public class ConcurrentRightTuple extends RightTuple {
     private RightTupleList     memory;

@@ -31,12 +31,12 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ObjectHashSet;
 
 public class ObjectTypeNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;

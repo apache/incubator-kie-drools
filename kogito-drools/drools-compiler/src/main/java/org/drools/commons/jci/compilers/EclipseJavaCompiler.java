@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.commons.jci.stores.ResourceStore;
-import org.drools.util.ClassUtils;
+import org.drools.core.util.ClassUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.CompilationResult;

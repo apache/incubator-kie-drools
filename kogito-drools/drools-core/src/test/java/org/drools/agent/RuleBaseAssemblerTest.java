@@ -13,9 +13,9 @@ import junit.framework.TestSuite;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
-import org.drools.util.DroolsStreamUtils;
 
 public class RuleBaseAssemblerTest extends TestCase {
 

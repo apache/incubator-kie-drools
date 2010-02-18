@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 
 public class ReaderInputStream extends InputStream {
 

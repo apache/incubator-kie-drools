@@ -6,7 +6,7 @@ import java.util.Map;
 import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 import org.mvel2.MVEL;
 
 public class AssertEquals

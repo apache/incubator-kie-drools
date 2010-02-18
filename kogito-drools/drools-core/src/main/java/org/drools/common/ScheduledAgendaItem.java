@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.util.LinkedListNode;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.time.JobHandle;
-import org.drools.util.LinkedListNode;
 
 /**
  * Item entry in the <code>Agenda</code>.

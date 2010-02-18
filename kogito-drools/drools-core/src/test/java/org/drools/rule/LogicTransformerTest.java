@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import org.drools.DroolsTestCase;
 import org.drools.base.ClassObjectType;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.spi.ObjectType;
-import org.drools.util.DroolsStreamUtils;
 
 public class LogicTransformerTest extends DroolsTestCase {
     /**

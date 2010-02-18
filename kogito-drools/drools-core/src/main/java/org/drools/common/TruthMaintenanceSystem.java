@@ -24,12 +24,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.FactException;
+import org.drools.core.util.ObjectHashMap;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ObjectHashMap;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
@@ -171,7 +171,7 @@ public class TruthMaintenanceSystem {
     public void removeLogicalDependencies(final Activation activation,
                                           final PropagationContext context,
                                           final Rule rule) throws FactException {
-        final org.drools.util.LinkedList list = activation.getLogicalDependencies();
+        final org.drools.core.util.LinkedList list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;
         }

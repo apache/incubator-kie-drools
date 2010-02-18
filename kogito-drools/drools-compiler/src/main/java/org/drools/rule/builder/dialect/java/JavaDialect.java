@@ -31,6 +31,7 @@ import org.drools.compiler.PackageBuilder.ProcessInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.SrcErrorHandler;
+import org.drools.core.util.StringUtils;
 import org.drools.definition.process.Process;
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
@@ -80,7 +81,6 @@ import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
-import org.drools.util.StringUtils;
 
 public class JavaDialect
     implements

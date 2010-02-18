@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.ClassUtils;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.ClassUtils;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.

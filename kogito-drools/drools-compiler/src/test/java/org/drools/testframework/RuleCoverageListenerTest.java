@@ -9,6 +9,7 @@ import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
 import org.drools.common.ActivationNode;
+import org.drools.core.util.LinkedList;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -16,7 +17,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.LinkedList;
 
 public class RuleCoverageListenerTest extends TestCase {
 

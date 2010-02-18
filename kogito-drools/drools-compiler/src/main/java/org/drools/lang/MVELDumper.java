@@ -19,6 +19,7 @@ package org.drools.lang;
 import java.util.Iterator;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.core.util.ReflectiveVisitor;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -27,7 +28,6 @@ import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.util.ReflectiveVisitor;
 
 /**
  * 

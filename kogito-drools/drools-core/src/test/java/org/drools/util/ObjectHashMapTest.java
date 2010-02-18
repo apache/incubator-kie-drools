@@ -3,7 +3,10 @@ package org.drools.util;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.Entry;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
 public class ObjectHashMapTest extends TestCase {
     public void testChechExistsFalse() {

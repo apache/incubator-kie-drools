@@ -23,6 +23,7 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
+import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.MethodInfo;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -43,7 +44,6 @@ import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.MapBackedClassLoader;
-import org.drools.util.asm.ClassFieldInspector;
 
 /**
  * This utility class loads suggestion completion stuff for the package

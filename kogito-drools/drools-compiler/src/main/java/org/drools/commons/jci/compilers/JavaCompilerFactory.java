@@ -20,7 +20,7 @@ package org.drools.commons.jci.compilers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.util.ClassUtils;
+import org.drools.core.util.ClassUtils;
 
 
 /**

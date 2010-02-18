@@ -19,6 +19,8 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -30,8 +32,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
-import org.drools.util.DroolsStreamUtils;
-import org.drools.util.FileManager;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 

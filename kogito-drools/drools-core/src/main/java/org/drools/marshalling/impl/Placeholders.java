@@ -3,8 +3,8 @@ package org.drools.marshalling.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.util.AbstractHashTable;
-import org.drools.util.Entry;
+import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.Entry;
 
 public class Placeholders extends AbstractHashTable {
     private List<Object> ids;

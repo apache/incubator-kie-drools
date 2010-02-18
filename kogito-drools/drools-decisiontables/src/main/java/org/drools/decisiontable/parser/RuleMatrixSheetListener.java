@@ -19,12 +19,12 @@ package org.drools.decisiontable.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.util.StringUtils;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.template.model.Condition;
 import org.drools.template.model.Consequence;
 import org.drools.template.model.Rule;
 import org.drools.template.model.SnippetBuilder;
-import org.drools.util.StringUtils;
 
 /**
  * @author <a href="mailto:stevearoonie@gmail.com"> Steven Williams </a><a
