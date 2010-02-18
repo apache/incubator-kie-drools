@@ -86,7 +86,7 @@ public class ProcessInstanceInfo {
     private @Transient
     Environment                               env;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "processId")
+    @JoinColumn(name = "processInstanceId")
     @MapKey(name = "name")
     private Map<String, VariableInstanceInfo> variables          = new HashMap<String, VariableInstanceInfo>();
     private boolean                           externalVariables  = false;
