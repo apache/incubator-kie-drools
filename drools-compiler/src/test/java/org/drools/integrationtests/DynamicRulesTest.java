@@ -37,6 +37,7 @@ import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -46,7 +47,6 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.drools.util.DroolsStreamUtils;
 
 public class DynamicRulesTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

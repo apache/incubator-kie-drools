@@ -46,6 +46,8 @@ import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.xml.XmlPackageReader;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.process.Process;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
@@ -90,9 +92,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
-import org.drools.util.DroolsStreamUtils;
 import org.drools.xml.XmlChangeSetReader;
-import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
 /**

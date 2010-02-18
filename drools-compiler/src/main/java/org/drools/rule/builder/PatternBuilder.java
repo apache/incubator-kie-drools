@@ -32,6 +32,7 @@ import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
+import org.drools.core.util.StringUtils;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
@@ -83,7 +84,6 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.Constraint.ConstraintType;
-import org.drools.util.StringUtils;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 

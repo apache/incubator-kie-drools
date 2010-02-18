@@ -1,5 +1,7 @@
 package org.drools.util;
 
+import org.drools.core.util.ObjectHashMap;
+
 import junit.framework.TestCase;
 
 public class ObjectHashMapTest2 extends TestCase {
@@ -144,7 +146,7 @@ public class ObjectHashMapTest2 extends TestCase {
                      strval );
         }
         final long start = System.currentTimeMillis();
-        final org.drools.util.Iterator itr = map.iterator();
+        final org.drools.core.util.Iterator itr = map.iterator();
         Object val = null;
         while ( (val = itr.next()) != null ) {
             val.hashCode();

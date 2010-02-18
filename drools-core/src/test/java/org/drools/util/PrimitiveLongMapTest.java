@@ -18,6 +18,8 @@ package org.drools.util;
 
 import java.util.Collection;
 
+import org.drools.core.util.PrimitiveLongMap;
+
 import junit.framework.TestCase;
 
 public class PrimitiveLongMapTest extends TestCase {

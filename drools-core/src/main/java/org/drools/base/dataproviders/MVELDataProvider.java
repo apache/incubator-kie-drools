@@ -12,12 +12,12 @@ import java.util.Iterator;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
+import org.drools.core.util.ArrayIterator;
 import org.drools.rule.Declaration;
 import org.drools.WorkingMemory;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.ArrayIterator;
 import org.mvel2.MVEL;
 
 public class MVELDataProvider

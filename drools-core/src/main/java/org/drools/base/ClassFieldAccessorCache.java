@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.util.asm.ClassFieldInspector;
+import org.drools.core.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorCache {
 

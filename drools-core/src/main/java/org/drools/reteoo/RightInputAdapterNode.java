@@ -26,11 +26,11 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the

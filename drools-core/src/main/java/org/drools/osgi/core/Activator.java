@@ -29,6 +29,7 @@ public class Activator
         this.resourceReg = bc.registerService( new String[]{ResourceFactoryService.class.getName(), Service.class.getName()},
                                                new ResourceFactoryServiceImpl(),
                                                new Hashtable() );
+        
         this.kbaseReg = bc.registerService( new String[]{KnowledgeBaseFactoryService.class.getName(), Service.class.getName()},
                                             new KnowledgeBaseFactoryServiceImpl(),
                                             new Hashtable() );

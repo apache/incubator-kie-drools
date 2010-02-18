@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.drools.util.DroolsClassLoader;
+import org.drools.core.util.DroolsClassLoader;
 
 /**
  * A classloader that loads from a (dynamic) list of sub-classloaders.

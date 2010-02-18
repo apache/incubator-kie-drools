@@ -10,13 +10,13 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 
+import org.drools.core.util.JavaIteratorAdapter;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.AbstractHashTable.HashTableIterator;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.util.JavaIteratorAdapter;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.AbstractHashTable.HashTableIterator;
 
 public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /** Object-to-handle mapping. */

@@ -16,11 +16,11 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.core.util.FileManager;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.util.FileManager;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 

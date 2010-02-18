@@ -20,10 +20,10 @@ import java.util.Arrays;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.ArrayUtils;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.util.ArrayUtils;
 
 /**
  * A class to implement Multi-Field OR constraints, so user can do:

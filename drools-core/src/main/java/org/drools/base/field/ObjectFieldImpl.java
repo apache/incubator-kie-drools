@@ -27,8 +27,8 @@ import java.util.Collection;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.core.util.MathUtils;
 import org.drools.spi.FieldValue;
-import org.drools.util.MathUtils;
 
 public class ObjectFieldImpl
     implements

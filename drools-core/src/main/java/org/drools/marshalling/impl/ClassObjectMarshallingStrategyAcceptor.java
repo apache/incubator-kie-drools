@@ -3,8 +3,8 @@ package org.drools.marshalling.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.util.ClassUtils;
 import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
-import org.drools.util.ClassUtils;
 
 public class ClassObjectMarshallingStrategyAcceptor implements ObjectMarshallingStrategyAcceptor {
     public static final ClassObjectMarshallingStrategyAcceptor DEFAULT = new ClassObjectMarshallingStrategyAcceptor(new String[] { "*.*" } );

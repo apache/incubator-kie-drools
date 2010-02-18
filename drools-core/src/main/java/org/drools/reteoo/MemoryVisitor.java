@@ -7,12 +7,12 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.util.AbstractHashTable;
-import org.drools.util.Entry;
-import org.drools.util.ObjectHashSet;
-import org.drools.util.ReflectiveVisitor;
-import org.drools.util.RightTupleIndexHashTable;
-import org.drools.util.RightTupleList;
+import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.Entry;
+import org.drools.core.util.ObjectHashSet;
+import org.drools.core.util.ReflectiveVisitor;
+import org.drools.core.util.RightTupleIndexHashTable;
+import org.drools.core.util.RightTupleList;
 
 public class MemoryVisitor extends ReflectiveVisitor
     implements

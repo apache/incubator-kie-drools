@@ -1,7 +1,7 @@
 package org.drools.spi;
 
 import org.drools.concurrent.ExecutorService;
-import org.drools.util.ClassUtils;
+import org.drools.core.util.ClassUtils;
 
 /** 
  * Factory class that will return a ExecutorService based on the provided string className

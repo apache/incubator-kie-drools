@@ -9,9 +9,9 @@ import org.drools.RuleBaseFactory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.util.DroolsStreamUtils;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 18, 2008 Time: 1:22:50 PM To change this template use File |

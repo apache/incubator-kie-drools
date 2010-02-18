@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.LeftTuple;
 
 public class RightTupleListTest extends TestCase {

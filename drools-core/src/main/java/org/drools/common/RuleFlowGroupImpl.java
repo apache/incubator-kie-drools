@@ -22,11 +22,11 @@ import java.io.ObjectOutput;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.spi.Activation;
-import org.drools.util.Iterator;
-import org.drools.util.LinkedList;
 
 /**
  * Implementation of a <code>RuleFlowGroup</code> that collects activations

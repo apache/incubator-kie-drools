@@ -23,6 +23,7 @@ import java.util.Set;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
 import org.drools.WorkingMemory;
+import org.drools.core.util.ReflectiveVisitor;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.agent.ResourceDiffProducer;
@@ -31,7 +32,6 @@ import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.util.ReflectiveVisitor;
 
 /**
  *

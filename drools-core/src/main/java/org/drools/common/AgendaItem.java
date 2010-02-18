@@ -25,6 +25,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.Queue;
+import org.drools.core.util.Queueable;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.FactHandle;
@@ -32,9 +35,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.LinkedList;
-import org.drools.util.Queue;
-import org.drools.util.Queueable;
 
 /**
  * Item entry in the <code>Agenda</code>.

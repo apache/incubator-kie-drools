@@ -5,7 +5,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 
 public class RuleTemplateTest extends TestCase {
 	public void testSetContents() {

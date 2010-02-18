@@ -5,8 +5,8 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.drools.core.util.DateUtils;
 import org.drools.type.DateFormatsImpl;
-import org.drools.util.DateUtils;
 
 public class MVELDateCoercionTest extends TestCase {
 

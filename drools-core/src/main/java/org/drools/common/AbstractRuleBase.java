@@ -43,6 +43,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.util.ObjectHashSet;
 import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
@@ -59,7 +60,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.time.Calendar;
-import org.drools.util.ObjectHashSet;
 
 /**
  * Implementation of <code>RuleBase</code>.

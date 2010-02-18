@@ -32,6 +32,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LeftTupleList;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
@@ -40,8 +42,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.time.impl.Timer;
-import org.drools.util.Iterator;
-import org.drools.util.LeftTupleList;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a

@@ -22,10 +22,10 @@ import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.DoubleFieldImpl;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
+import org.drools.core.util.DateUtils;
+import org.drools.core.util.MathUtils;
 import org.drools.spi.FieldValue;
 import org.drools.type.DateFormats;
-import org.drools.util.DateUtils;
-import org.drools.util.MathUtils;
 
 public class FieldFactory {
     private static final FieldFactory INSTANCE = new FieldFactory();

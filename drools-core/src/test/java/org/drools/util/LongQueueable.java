@@ -1,5 +1,7 @@
 package org.drools.util;
 
+import org.drools.core.util.Queue;
+
 /*
  * Copyright 2005 JBoss Inc
  * 

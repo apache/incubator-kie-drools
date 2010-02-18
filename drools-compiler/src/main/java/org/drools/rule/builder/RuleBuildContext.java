@@ -26,6 +26,7 @@ import org.drools.base.EnabledBoolean;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
+import org.drools.core.util.DateUtils;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -34,7 +35,6 @@ import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.DeclarationScopeResolver;
-import org.drools.util.DateUtils;
 
 /**
  * A context for the current build

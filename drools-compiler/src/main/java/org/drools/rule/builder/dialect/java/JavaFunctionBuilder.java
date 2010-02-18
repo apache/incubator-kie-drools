@@ -13,11 +13,11 @@ import java.util.Map;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.FunctionError;
+import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.FunctionBuilder;
-import org.drools.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
 

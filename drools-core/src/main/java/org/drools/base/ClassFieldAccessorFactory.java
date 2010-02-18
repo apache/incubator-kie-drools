@@ -46,7 +46,7 @@ import org.drools.base.extractors.BaseShortClassFieldWriter;
 import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.util.asm.ClassFieldInspector;
+import org.drools.core.util.asm.ClassFieldInspector;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;

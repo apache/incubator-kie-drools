@@ -5,9 +5,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
-import org.drools.util.DroolsStreamUtils;
 
 public class HttpClientImpl
     implements

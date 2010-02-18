@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.DescrBuildError;
+import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.process.core.ContextResolver;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;

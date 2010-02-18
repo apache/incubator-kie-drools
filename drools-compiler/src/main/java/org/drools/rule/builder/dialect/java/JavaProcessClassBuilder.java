@@ -18,11 +18,11 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.Iterator;
 
+import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
-import org.drools.util.StringUtils;
 
 /**
  * @author etirelli

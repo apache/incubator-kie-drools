@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.drools.PropertiesConfiguration;
 import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 
 /**
  * drools.agent.scanResources = <true|false>

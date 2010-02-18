@@ -33,6 +33,8 @@ import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.ProcessInstance;
@@ -51,8 +53,6 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.spi.Tuple;
-import org.drools.util.ClassUtils;
-import org.drools.util.LinkedListNode;
 
 /**
  * Rule-firing Agenda.
@@ -87,7 +87,7 @@ public class DefaultAgenda
     /** Working memory of this Agenda. */
     private InternalWorkingMemory                               workingMemory;
 
-    private org.drools.util.LinkedList                          scheduledActivations;
+    private org.drools.core.util.LinkedList                          scheduledActivations;
 
     /** Items time-delayed. */
 
@@ -153,7 +153,7 @@ public class DefaultAgenda
         this.activationGroups = new HashMap<String, ActivationGroup>();
         this.ruleFlowGroups = new HashMap<String, RuleFlowGroup>();
         this.focusStack = new LinkedList<AgendaGroup>();
-        this.scheduledActivations = new org.drools.util.LinkedList();
+        this.scheduledActivations = new org.drools.core.util.LinkedList();
         this.agendaGroupFactory = rb.getConfiguration().getAgendaGroupFactory();
 
         if ( initMain ) {
@@ -264,7 +264,7 @@ public class DefaultAgenda
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         workingMemory = (InternalWorkingMemory) in.readObject();
-        scheduledActivations = (org.drools.util.LinkedList) in.readObject();
+        scheduledActivations = (org.drools.core.util.LinkedList) in.readObject();
         agendaGroups = (Map) in.readObject();
         activationGroups = (Map) in.readObject();
         ruleFlowGroups = (Map) in.readObject();
@@ -434,7 +434,7 @@ public class DefaultAgenda
                                          final AgendaItem item,
                                          Activation justifier) {
         if ( justifier != null ) {
-            final org.drools.util.LinkedList list = justifier.getLogicalDependencies();
+            final org.drools.core.util.LinkedList list = justifier.getLogicalDependencies();
             if ( list != null && !list.isEmpty() ) {
                 for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
                     final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
@@ -698,7 +698,7 @@ public class DefaultAgenda
         return (Activation[]) list.toArray( new Activation[list.size()] );
     }
 
-    public org.drools.util.LinkedList getScheduledActivationsLinkedList() {
+    public org.drools.core.util.LinkedList getScheduledActivationsLinkedList() {
         return this.scheduledActivations;
     }
 

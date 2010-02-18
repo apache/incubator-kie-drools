@@ -21,6 +21,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.core.util.BinaryHeapQueue;
+import org.drools.core.util.Queue;
+import org.drools.core.util.Queueable;
+
 import junit.framework.TestCase;
 
 public class BinaryHeapPriorityQueueTest extends TestCase {

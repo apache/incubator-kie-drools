@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
-import org.drools.util.DroolsStreamUtils;
 
 /**
  * This will monitor a file to a binary package.

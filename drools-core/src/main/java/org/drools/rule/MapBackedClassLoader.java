@@ -8,7 +8,7 @@ import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.util.DroolsClassLoader;
+import org.drools.core.util.DroolsClassLoader;
 
 public class MapBackedClassLoader extends ClassLoader
     implements

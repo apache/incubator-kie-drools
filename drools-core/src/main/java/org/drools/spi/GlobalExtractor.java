@@ -28,7 +28,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.util.MathUtils;
+import org.drools.core.util.MathUtils;
 
 /**
  * This is a global variable extractor used to get a global variable value

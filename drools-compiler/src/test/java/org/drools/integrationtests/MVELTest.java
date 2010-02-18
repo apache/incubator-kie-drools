@@ -31,13 +31,13 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.core.util.DateUtils;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.type.DateFormatsImpl;
-import org.drools.util.DateUtils;
 import org.mvel2.MVEL;
 
 public class MVELTest extends TestCase {

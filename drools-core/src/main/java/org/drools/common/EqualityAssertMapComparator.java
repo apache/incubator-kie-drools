@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
-import org.drools.util.AbstractHashTable.ObjectComparator;
+import org.drools.core.util.AbstractHashTable.ObjectComparator;
 
 public class EqualityAssertMapComparator
     implements

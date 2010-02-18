@@ -15,9 +15,9 @@ import java.io.Serializable;
 
 import junit.framework.TestCase;
 
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
-import org.drools.util.DroolsStreamUtils;
 import org.junit.Ignore;
 
 /**

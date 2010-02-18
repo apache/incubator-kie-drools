@@ -1,11 +1,11 @@
 package org.drools.reteoo.compiled;
 
 import org.drools.base.ClassFieldReader;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.*;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
 
 /**
  * This class is used for reading an {@link ObjectTypeNode} using callbacks.

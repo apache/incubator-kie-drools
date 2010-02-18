@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.DateUtils;
+import org.drools.core.util.MathUtils;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.rule.VariableRestriction.CharVariableContextEntry;
 import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
@@ -35,8 +37,6 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.DateUtils;
-import org.drools.util.MathUtils;
 
 /**
  * This class defines the default built in equality

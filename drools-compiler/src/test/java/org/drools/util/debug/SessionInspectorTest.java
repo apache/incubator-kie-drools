@@ -14,6 +14,9 @@ import org.drools.Worker;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.core.util.debug.SessionInspector;
+import org.drools.core.util.debug.SessionReporter;
+import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 

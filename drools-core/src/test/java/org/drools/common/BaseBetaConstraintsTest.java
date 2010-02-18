@@ -16,6 +16,14 @@ import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
+import org.drools.core.util.LeftTupleIndexHashTable;
+import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.RightTupleIndexHashTable;
+import org.drools.core.util.RightTupleList;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.reteoo.BetaMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -23,14 +31,6 @@ import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.LeftTupleIndexHashTable;
-import org.drools.util.LeftTupleList;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
-import org.drools.util.RightTupleIndexHashTable;
-import org.drools.util.RightTupleList;
-import org.drools.util.AbstractHashTable.FieldIndex;
-import org.drools.util.AbstractHashTable.Index;
 
 public abstract class BaseBetaConstraintsTest extends TestCase {
 

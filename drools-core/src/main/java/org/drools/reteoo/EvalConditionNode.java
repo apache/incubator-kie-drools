@@ -26,11 +26,11 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LeftTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
-import org.drools.util.Iterator;
-import org.drools.util.LeftTupleList;
 
 /**
  * Node which filters <code>ReteTuple</code>s.

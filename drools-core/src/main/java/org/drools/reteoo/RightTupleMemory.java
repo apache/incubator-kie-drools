@@ -1,7 +1,7 @@
 package org.drools.reteoo;
 
-import org.drools.util.Entry;
-import org.drools.util.Iterator;
+import org.drools.core.util.Entry;
+import org.drools.core.util.Iterator;
 
 public interface RightTupleMemory {
     public RightTuple getFirst(LeftTuple leftTuple);

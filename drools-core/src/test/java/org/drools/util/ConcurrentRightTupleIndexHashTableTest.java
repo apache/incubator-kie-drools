@@ -15,12 +15,17 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.ConcurrentHashTable;
+import org.drools.core.util.Entry;
+import org.drools.core.util.RightTupleIndexHashTable;
+import org.drools.core.util.RightTupleList;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class ConcurrentRightTupleIndexHashTableTest extends TestCase {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();

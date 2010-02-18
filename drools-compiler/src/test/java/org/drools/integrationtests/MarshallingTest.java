@@ -47,6 +47,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -65,7 +66,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.GlobalResolver;
-import org.drools.util.DroolsStreamUtils;
 
 public class MarshallingTest extends TestCase {
 
