@@ -66,9 +66,10 @@ public class Activator
                      "true" );
             activator.serviceRegistry.setProperties( dic );
 
-            ServiceRegistryImpl.getInstance().registerLocator( service.getClass().getInterfaces()[0],
-                                                               new BundleContextInstantiator( this.bc,
-                                                                                              ref ) );
+            ((ServiceRegistryImpl) bc.getService( regServiceRef )).registerLocator( service.getClass().getInterfaces()[0],
+                                                                                    new BundleContextInstantiator( this.bc,
+                                                                                                                   ref ) );
+
             return service;
         }
 
@@ -79,8 +80,21 @@ public class Activator
 
         public void removedService(ServiceReference ref,
                                    Object arg1) {
-            Service service = (Service) bc.getService( ref );
-            ServiceRegistryImpl.getInstance().unregisterLocator( service.getClass().getInterfaces()[0] );
+            Service service = (Service) this.bc.getService( ref );
+            System.out.println( "unregistering : " + service + " : " + service.getClass().getInterfaces()[0] );
+
+            Dictionary dic = new Hashtable();
+            ServiceReference regServiceRef = this.activator.serviceRegistry.getReference();
+
+            ((ServiceRegistryImpl) bc.getService( regServiceRef )).unregisterLocator( service.getClass().getInterfaces()[0] );
+
+            for ( String key : regServiceRef.getPropertyKeys() ) {
+                if ( !key.equals( service.getClass().getInterfaces()[0].getName() ) ) {
+                    dic.put( key,
+                             regServiceRef.getProperty( key ) );
+                }
+            }
+            activator.serviceRegistry.setProperties( dic );
         }
     }
 

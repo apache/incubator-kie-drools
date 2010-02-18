@@ -195,6 +195,16 @@ public class ServiceRegistryImpl
         public V call() throws Exception {
             return (V) newInstance( name );
         }
+        
+        static <T> T newInstance(String name) {
+            try {
+                Class<T> cls = (Class<T>) Class.forName( name );
+                return cls.newInstance();
+            } catch ( Exception e2 ) {
+                throw new IllegalArgumentException( "Unable to instantiate '" + name + "'",
+                                                    e2 );
+            }
+        }        
     }
 
     static class ReturnInstance<V>
@@ -211,14 +221,6 @@ public class ServiceRegistryImpl
         }
     }
 
-    static <T> T newInstance(String name) {
-        try {
-            Class<T> cls = (Class<T>) Class.forName( name );
-            return cls.newInstance();
-        } catch ( Exception e2 ) {
-            throw new IllegalArgumentException( "Unable to instantiate '" + name + "'",
-                                                e2 );
-        }
-    }
+
 
 }
