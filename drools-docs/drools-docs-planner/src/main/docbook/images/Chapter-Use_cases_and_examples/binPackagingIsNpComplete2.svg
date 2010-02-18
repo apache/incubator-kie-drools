@@ -296,7 +296,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.1866667"
      inkscape:cx="404.95622"
-     inkscape:cy="325.64126"
+     inkscape:cy="323.95587"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -329,7 +329,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -468,7 +468,7 @@
            y="360"
            style="font-size:32px" /></flowRegion><flowPara
          id="flowPara2986">There is no easy way to verify</flowPara><flowPara
-         id="flowPara2990">if there is an optimal solution.</flowPara></flowRoot>    <flowRoot
+         id="flowPara2990">if there is even a feasible solution.</flowPara></flowRoot>    <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,30.41212,506.72151)"
        style="font-size:16.29589844px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot3716-44-1"
