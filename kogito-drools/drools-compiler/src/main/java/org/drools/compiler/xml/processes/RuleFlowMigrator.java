@@ -48,13 +48,13 @@ public class RuleFlowMigrator
     /**
      * XSL file that transforms drools 4 .rfm ruleflow files to version 5
      */
-    private static final String  XSL_RFM_FROM_4_TO_5 = "/org/drools/xml/processes/RuleFlowFrom4To5.xsl";
+    private static final String  XSL_RFM_FROM_4_TO_5 = "/org/drools/compiler/xml/processes/RuleFlowFrom4To5.xsl";
     
     /**
      * XSL file that transforms drools 4 .rf (graphical) ruleflow files to 
      * version 5
      */
-    private static final String  XSL_RF_FROM_4_TO_5  = "/org/drools/xml/processes/RuleFlowGraphicalFrom4To5.xsl";
+    private static final String  XSL_RF_FROM_4_TO_5  = "/org/drools/compiler/xml/processes/RuleFlowGraphicalFrom4To5.xsl";
     
     /**
      * String containing namespace header for migrtated ruleflow files
