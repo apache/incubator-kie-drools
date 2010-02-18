@@ -1,6 +1,10 @@
 package org.drools.benchmark.manners
 
 
+import org.test.Person;
+import org.test.Context;
+import org.test.Guest;
+import org.test.Count;
 
 rule assignFirstSeat
     when
