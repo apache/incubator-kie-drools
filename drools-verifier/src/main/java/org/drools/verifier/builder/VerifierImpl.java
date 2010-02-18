@@ -202,7 +202,7 @@ public class VerifierImpl
                     }
                 } while ( line != null );
 
-                PackageDescr pkg = p.parse( resource.getInputStream() );
+                PackageDescr pkg = p.parse( drl.toString() );
 
                 addPackageDescr( pkg );
 
