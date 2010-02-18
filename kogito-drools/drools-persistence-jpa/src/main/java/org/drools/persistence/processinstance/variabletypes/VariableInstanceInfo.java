@@ -33,6 +33,7 @@ public class VariableInstanceInfo implements Serializable {
     private String name;
     private String persister;
 
+    private  Long processInstanceId;
     public Long getId() {
 		return id;
 	}
@@ -52,6 +53,16 @@ public class VariableInstanceInfo implements Serializable {
     public void setPersister(String persister) {
         this.persister = persister;
     }
+
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    
     
     public String toString() {
     	return getClass().getName() + " id=" + id + " name=" + name + " persister=" + persister;
