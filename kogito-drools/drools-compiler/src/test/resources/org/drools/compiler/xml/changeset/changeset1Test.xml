@@ -2,8 +2,8 @@
              xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
              xs:schemaLocation='http://drools.org/drools-5.0/composition drools-composition-4.0.xsd' >
     <add>
-	    <resource source='classpath:org/drools/xml/changeset/changeset1Test.drl' type='DRL' />
-	    <resource source='classpath:org/drools/xml/changeset/changeset2Test.drl' type='DRL' />
+	    <resource source='classpath:org/drools/compiler/xml/changeset/changeset1Test.drl' type='DRL' />
+	    <resource source='classpath:org/drools/compiler/xml/changeset/changeset2Test.drl' type='DRL' />
     </add>
     
     
