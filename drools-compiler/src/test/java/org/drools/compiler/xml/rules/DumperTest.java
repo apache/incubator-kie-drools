@@ -44,7 +44,7 @@ public class DumperTest extends TestCase {
     }
     
     public void testRoundTripCollectDrl() throws Exception {
-        DumperTestHelper.DrlFile( "../../integrationtests/test_Collect.drl" );
+        DumperTestHelper.DrlFile( "../../../integrationtests/test_Collect.drl" );
     }
     
     public void testRoundTripAccumulateDrl() throws Exception {
@@ -52,11 +52,11 @@ public class DumperTest extends TestCase {
     }
     
     public void testRoundTripExistsDrl() throws Exception {
-        DumperTestHelper.DrlFile( "../../integrationtests/test_exists.drl" );
+        DumperTestHelper.DrlFile( "../../../integrationtests/test_exists.drl" );
     }
 
     public void testRoundTripForallDrl() throws Exception {
-        DumperTestHelper.DrlFile( "../../integrationtests/test_Forall.drl" );
+        DumperTestHelper.DrlFile( "../../../integrationtests/test_Forall.drl" );
     }
 
     public void testRoundTripFromDrl() throws Exception {
