@@ -4,7 +4,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: javax.naming,javax.persistence,javax.transaction,org.h
  ibernate.annotations,org.hibernate.ejb,org.osgi.framework;version="1.
  5"
-Bnd-LastModified: 1266466425097
+Bnd-LastModified: 1266544751079
 Export-Package: org.drools.persistence.processinstance.persisters;uses
  :="org.drools.persistence.processinstance.variabletypes,javax.persist
  ence";version="5.1.0.SNAPSHOT",org.drools.persistence.session;uses:="

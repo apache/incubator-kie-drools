@@ -14,7 +14,7 @@ Import-Package: com.thoughtworks.xstream,com.thoughtworks.xstream.conv
  .impl;version="2.0",org.mvel2.optimizers;version="2.0",org.mvel2.temp
  lates;version="2.0",org.mvel2.util;version="2.0",org.osgi.framework;v
  ersion="1.5",org.w3c.dom,org.xml.sax,org.xml.sax.helpers
-Bnd-LastModified: 1266479982611
+Bnd-LastModified: 1266544742764
 Export-Package: org.drools.process.instance.context.swimlane;uses:="or
  g.drools.process.core.context.swimlane,org.drools.process.core,org.dr
  ools.process.instance.context";version="5.1.0.SNAPSHOT",org.drools.pr
@@ -293,7 +293,7 @@ Bundle-DocURL: http://www.jboss.org/
 Originally-Created-By: 1.5.0_21 (Sun Microsystems Inc.)
 Bundle-Vendor: JBoss Inc.
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.drools.core
+Bundle-SymbolicName: org.drools.core;singleton:=true
 Tool: Bnd-0.0.357
 Require-Bundle: org.drools.api;visibility:=reexport;bundle-version="5.
  1.0.SNAPSHOT"
