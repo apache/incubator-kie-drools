@@ -133,7 +133,7 @@ public class KnowledgeBaseFactory  {
     }
 
     
-    private static synchronized void setKnowledgeBaseServiceFactory(KnowledgeBaseFactoryService serviceFactory) {
+    public static synchronized void setKnowledgeBaseServiceFactory(KnowledgeBaseFactoryService serviceFactory) {
         KnowledgeBaseFactory.factoryService = serviceFactory;
     }
 
