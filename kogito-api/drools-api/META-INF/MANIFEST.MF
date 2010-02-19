@@ -8,7 +8,7 @@ Import-Package: com.sun.tools.xjc;resolution:=optional,com.thoughtwork
  tional,org.milyn;resolution:=optional,org.osgi.framework;resolution:=
  optional;version="1.5",org.osgi.util.tracker;resolution:=optional;ver
  sion="1.4",org.quartz;resolution:=optional
-Bnd-LastModified: 1266479976564
+Bnd-LastModified: 1266544737491
 Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command,org.drools
  .time,org.drools.event,org.drools,org.drools.runtime.process,org.droo
@@ -66,7 +66,7 @@ Bundle-DocURL: http://www.jboss.org/
 Originally-Created-By: 1.5.0_21 (Sun Microsystems Inc.)
 Bundle-Vendor: JBoss Inc.
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.drools.api
+Bundle-SymbolicName: org.drools.api;singleton:=true
 Tool: Bnd-0.0.357
 DynamicImport-Package: *
 
