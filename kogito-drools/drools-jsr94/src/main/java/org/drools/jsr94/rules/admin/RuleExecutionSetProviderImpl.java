@@ -38,7 +38,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.xml.SemanticModules;
-import org.drools.xml.XmlPackageReader;
+import org.drools.compiler.xml.XmlPackageReader;
 import org.w3c.dom.Element;
 
 /**
