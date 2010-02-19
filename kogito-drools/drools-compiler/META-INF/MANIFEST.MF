@@ -17,7 +17,7 @@ Import-Package: com.thoughtworks.xstream,com.thoughtworks.xstream.io,c
  2.optimizers;version="2.0",org.mvel2.templates;version="2.0",org.mvel
  2.util;version="2.0",org.osgi.framework;version="1.5",org.osgi.util.t
  racker;version="1.4",org.w3c.dom,org.xml.sax
-Bnd-LastModified: 1266478688327
+Bnd-LastModified: 1266544747756
 Export-Package: org.drools.builder.impl;uses:="org.drools.compiler";ve
  rsion="5.1.0.SNAPSHOT",org.drools.rule.builder;uses:="org.drools.comp
  iler,org.mvel2.compiler,org.mvel2,org.drools.rule.builder.dialect.mve
@@ -78,7 +78,7 @@ Bundle-DocURL: http://www.jboss.org/
 Originally-Created-By: 1.6.0_18 (Sun Microsystems Inc.)
 Bundle-Vendor: JBoss Inc.
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.drools.compiler
+Bundle-SymbolicName: org.drools.compiler;singleton:=true
 Tool: Bnd-0.0.357
 Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
 DynamicImport-Package: *

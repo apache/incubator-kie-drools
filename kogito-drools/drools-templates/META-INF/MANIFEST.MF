@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Created-By: 1.5.0_21 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: org.mvel2.templates;version="2.0"
-Bnd-LastModified: 1266466466789
+Bnd-LastModified: 1266544755572
 Export-Package: org.drools.template.jdbc;uses:="org.drools.template.pa
  rser";version="5.1.0.SNAPSHOT",org.drools.template;uses:="org.drools.
  template.parser,org.drools.template.objects";version="5.1.0.SNAPSHOT"
@@ -18,7 +18,7 @@ Bundle-DocURL: http://www.jboss.org/
 Originally-Created-By: 1.6.0_18 (Sun Microsystems Inc.)
 Bundle-Vendor: JBoss Inc.
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.drools.templates
+Bundle-SymbolicName: org.drools.templates;singleton:=true
 Tool: Bnd-0.0.357
 Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
 DynamicImport-Package: org.drools.*
