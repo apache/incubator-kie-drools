@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -47,6 +48,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
 
 /**
  * <code>RuleSet</code> loader.
@@ -107,13 +109,13 @@ public class ExtensibleXmlParser extends DefaultHandler {
     private final Map           namespaces                    = new HashMap();
 
     private EntityResolver      entityResolver;
-    
+
     private Document            document;
     private DocumentFragment    docFragment;
-    
+
     private ClassLoader         classLoader;
-    
-    private Map                 metaData                       = new HashMap();
+
+    private Map                 metaData                      = new HashMap();
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -198,17 +200,53 @@ public class ExtensibleXmlParser extends DefaultHandler {
     public Object read(final InputSource in) throws SAXException,
                                             IOException {
         if ( this.docFragment == null ) {
+            DocumentBuilderFactory f;            
             try {
-                this.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-            } catch ( ParserConfigurationException e ) {
-                throw new RuntimeException( "Unable to create new DOM Document" );
+                f =  DocumentBuilderFactory.newInstance();                
+            } catch ( FactoryConfigurationError e ) {
+                // obscure JDK1.5 bug where FactoryFinder in the JRE returns a null ClassLoader, so fall back to hard coded xerces.
+                // https://stg.network.org/bugzilla/show_bug.cgi?id=47169
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4633368
+                try {
+                    f = (DocumentBuilderFactory) Class.forName( "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl" ).newInstance();
+                } catch ( Exception e1 ) {
+                    throw new RuntimeException( "Unable to create new DOM Document",
+                                                e1 );
+                }
+            } catch ( Exception e ) {
+                throw new RuntimeException( "Unable to create new DOM Document",
+                                            e );
+            }
+            
+            try {
+                this.document = f.newDocumentBuilder().newDocument();
+            } catch ( Exception e ) {
+                throw new RuntimeException( "Unable to create new DOM Document",
+                                            e );
             }
             this.docFragment = this.document.createDocumentFragment();
         }
-        
+
         SAXParser localParser = null;
         if ( this.parser == null ) {
-            final SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParserFactory factory = null;
+            try {
+                factory = SAXParserFactory.newInstance();
+            } catch ( FactoryConfigurationError e) {
+                // obscure JDK1.5 bug where FactoryFinder in the JRE returns a null ClassLoader, so fall back to hard coded xerces.
+                // https://stg.network.org/bugzilla/show_bug.cgi?id=47169
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4633368                
+                try {
+                    factory = (SAXParserFactory) Class.forName( "org.apache.xerces.jaxp.SAXParserFactoryImpl" ).newInstance();
+                } catch ( Exception e1 ) {
+                    throw new RuntimeException( "Unable to create new DOM Document",
+                                                e1 );                   
+                }
+            } catch ( Exception e ) {
+                throw new RuntimeException( "Unable to create new DOM Document",
+                                            e );
+            }
+            
             factory.setNamespaceAware( true );
 
             final String isValidatingString = System.getProperty( "drools.schema.validating" );
@@ -253,7 +291,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
         if ( !localParser.isNamespaceAware() ) {
             throw new RuntimeException( "parser must be namespace-aware" );
         }
-        
+
         localParser.parse( in,
                            this );
 
@@ -266,7 +304,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     public Object getData() {
         return this.data;
-    }       
+    }
 
     public ClassLoader getClassLoader() {
         return classLoader;
@@ -275,7 +313,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
-    
+
     public Map getMetaData() {
         return this.metaData;
     }
@@ -335,7 +373,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         if ( handler == null ) {
             startElementBuilder( localName,
-                                attrs );
+                                 attrs );
             return;
         }
 
@@ -473,34 +511,33 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *            Tag attributes.
      */
     public void startElementBuilder(final String tagName,
-                                   final Attributes attrs) {        
+                                    final Attributes attrs) {
         this.characters = new StringBuilder();
-                
 
         final Element element = this.document.createElement( tagName );
-        
+
         //final DefaultConfiguration config = new DefaultConfiguration( tagName );        
 
         final int numAttrs = attrs.getLength();
 
         for ( int i = 0; i < numAttrs; ++i ) {
             element.setAttribute( attrs.getLocalName( i ),
-                                 attrs.getValue( i ) );
+                                  attrs.getValue( i ) );
         }
 
-//        // lets add the namespaces as attributes
-//        for ( final Iterator iter = this.namespaces.entrySet().iterator(); iter.hasNext(); ) {
-//            final Map.Entry entry = (Map.Entry) iter.next();
-//            String ns = (String) entry.getKey();
-//            final String value = (String) entry.getValue();
-//            if ( ns == null || ns.length() == 0 ) {
-//                ns = "xmlns";
-//            } else {
-//                ns = "xmlns:" + ns;
-//            }
-//            config.setAttribute( ns,
-//                                 value );
-//        }
+        //        // lets add the namespaces as attributes
+        //        for ( final Iterator iter = this.namespaces.entrySet().iterator(); iter.hasNext(); ) {
+        //            final Map.Entry entry = (Map.Entry) iter.next();
+        //            String ns = (String) entry.getKey();
+        //            final String value = (String) entry.getValue();
+        //            if ( ns == null || ns.length() == 0 ) {
+        //                ns = "xmlns";
+        //            } else {
+        //                ns = "xmlns:" + ns;
+        //            }
+        //            config.setAttribute( ns,
+        //                                 value );
+        //        }
 
         if ( this.configurationStack.isEmpty() ) {
             this.configurationStack.addLast( element );

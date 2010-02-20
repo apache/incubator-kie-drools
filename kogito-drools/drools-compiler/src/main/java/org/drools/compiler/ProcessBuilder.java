@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.FactoryConfigurationError;
+
 import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.compiler.xml.processes.RuleFlowMigrator;
 import org.drools.definition.process.Connection;
@@ -225,13 +227,16 @@ public class ProcessBuilder {
                 // @TODO could we maybe add something a bit more informative about what is wrong with the XML ?
                 this.errors.add( new RuleFlowLoadError( "unable to parse xml", null ) );
             }
+        } catch ( FactoryConfigurationError e1 ) {
+            this.errors.add( new RuleFlowLoadError( "FactoryConfigurationError ", e1.getException()) );
+        } catch ( Exception e2 ) {
+            this.errors.add( new RuleFlowLoadError( "unable to parse xml", e2 ) );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }
         reader.close();
     }
-
-    
+                                   
   
     /*************************************************************************
      * Converts a drools version 4 .rf or .rfm ruleflow to a version 5 .rf.
