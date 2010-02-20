@@ -2,6 +2,7 @@ package org.drools.builder;
 
 import java.util.Collection;
 
+import org.drools.KnowledgeBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.Resource;
 
@@ -139,6 +140,12 @@ public interface KnowledgeBuilder
      *     The Collection of KnowledgePackages
      */
     Collection<KnowledgePackage> getKnowledgePackages();
+    
+    /**
+     * Creates a new KnowledgeBase from the knowledge packages that have been added to
+     * this builder.  An exception is thrown if there are any errors.
+     */
+    KnowledgeBase newKnowledgeBase();
 
     /**
      * If errors occurred during the build process they are added here
