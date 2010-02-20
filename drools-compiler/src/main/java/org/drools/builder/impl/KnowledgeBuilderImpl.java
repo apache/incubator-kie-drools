@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
@@ -44,7 +47,20 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 		}
 		
 		return list;
-	}	
+	}
+	
+	public KnowledgeBase newKnowledgeBase() {
+		KnowledgeBuilderErrors errors = getErrors();
+		if (errors.size() > 0) {
+			for (KnowledgeBuilderError error: errors) {
+				System.err.println(error);
+			}
+			throw new IllegalArgumentException("Could not parse knowledge.");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(getKnowledgePackages());
+		return kbase;
+	}
 	
 	public boolean hasErrors() {
 	    return this.pkgBuilder.hasErrors();

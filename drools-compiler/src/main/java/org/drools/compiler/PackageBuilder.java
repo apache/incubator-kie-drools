@@ -88,7 +88,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.runtime.EnvironmentName;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
@@ -477,6 +476,10 @@ public class PackageBuilder {
                 addPackageFromBrl( resource );
             } else if ( ResourceType.DRF.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
+                addProcessFromXml( resource );
+            } else if ( ResourceType.BPMN2.equals( type ) ) {
+                ((InternalResource) resource).setResourceType( type );
+                BPMN2ProcessFactory.configurePackageBuilder(this);
                 addProcessFromXml( resource );
             } else if ( ResourceType.DTABLE.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );

@@ -2,6 +2,7 @@ package org.drools.vsm.remote;
 
 import java.util.Collection;
 
+import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.ResourceConfiguration;
@@ -127,5 +128,10 @@ public class KnowledgeBuilderRemoteClient
         
         
     }
+
+	public KnowledgeBase newKnowledgeBase() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
