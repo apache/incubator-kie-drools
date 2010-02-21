@@ -278,7 +278,7 @@ Require-Bundle: org.drools.api;visibility:=reexport;bundle-version="5.
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1266694473716
+Bnd-LastModified: 1266695717368
 Bundle-Activator: org.drools.osgi.core.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system
