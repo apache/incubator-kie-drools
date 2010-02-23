@@ -238,13 +238,14 @@ public class VerifierImpl
         for ( DrlRuleParser rData : pData.getRules() ) {
             VerifierRule rule = this.result.getVerifierData().getRuleByName( rData.getName() );
 
-            rule.getHeader().addAll( rData.getHeader() );
-            rule.getLhsRows().addAll( rData.getLhs() );
-            rule.getRhsRows().addAll( rData.getRhs() );
-            rule.setDescription( rData.getDescription() );
-            rule.getCommentMetadata().addAll( rData.getMetadata() );
-            rule.getOtherInfo().putAll( rData.getOtherInformation() );
-
+            if ( rule != null ) {
+                rule.getHeader().addAll( rData.getHeader() );
+                rule.getLhsRows().addAll( rData.getLhs() );
+                rule.getRhsRows().addAll( rData.getRhs() );
+                rule.setDescription( rData.getDescription() );
+                rule.getCommentMetadata().addAll( rData.getMetadata() );
+                rule.getOtherInfo().putAll( rData.getOtherInformation() );
+            }
         }
     }
 
