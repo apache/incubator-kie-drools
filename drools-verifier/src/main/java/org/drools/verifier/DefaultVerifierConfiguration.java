@@ -9,7 +9,6 @@ public class DefaultVerifierConfiguration extends VerifierConfigurationImpl {
         verifyingResources.put( ResourceFactory.newClassPathResource( "scope-knowledge-package.xml",
                                                                       getClass() ),
                                 ResourceType.CHANGE_SET );
-        //        verifyingResources.putAll( RuleLoader.basicRulesForFullKnowledgeBase( getClass() ) );
         verifyingScopes.add( VERIFYING_SCOPE_SINGLE_RULE );
         verifyingScopes.add( VERIFYING_SCOPE_DECISION_TABLE );
         verifyingScopes.add( VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
