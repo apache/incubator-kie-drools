@@ -19,4 +19,5 @@ public interface VerifierBuilder {
     boolean hasErrors();
 
     List<VerifierBuilderError> getErrors();
+
 }

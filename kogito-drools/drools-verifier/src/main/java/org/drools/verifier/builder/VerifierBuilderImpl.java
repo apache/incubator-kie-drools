@@ -3,6 +3,7 @@ package org.drools.verifier.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierConfigurationImpl;
@@ -38,4 +39,5 @@ public class VerifierBuilderImpl
     public boolean hasErrors() {
         return !errors.isEmpty();
     }
+
 }

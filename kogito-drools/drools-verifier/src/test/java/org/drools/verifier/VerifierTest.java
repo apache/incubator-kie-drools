@@ -1,6 +1,7 @@
 package org.drools.verifier;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.jar.JarInputStream;
@@ -8,7 +9,9 @@ import java.util.jar.JarInputStream;
 import junit.framework.TestCase;
 
 import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.ReaderResource;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.Field;

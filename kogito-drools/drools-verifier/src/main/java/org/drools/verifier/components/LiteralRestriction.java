@@ -46,9 +46,9 @@ public class LiteralRestriction extends Restriction
             throw new DataFormatException( "Value types did not match. Value type " + restriction.getValueType() + " was compared to " + valueType );
         }
 
-        if ( valueType == Field.DATE ) {
+        if ( Field.DATE.equals( valueType ) ) {
             return dateValue.compareTo( restriction.getDateValue() );
-        } else if ( valueType == Field.DOUBLE ) {
+        } else if ( Field.DOUBLE.equals( valueType ) ) {
             if ( doubleValue > restriction.getDoubleValue() ) {
                 return 1;
             } else if ( doubleValue < restriction.getDoubleValue() ) {
@@ -56,7 +56,7 @@ public class LiteralRestriction extends Restriction
             } else {
                 return 0;
             }
-        } else if ( valueType == Field.INT ) {
+        } else if ( Field.INT.equals( valueType ) ) {
             if ( intValue > restriction.getIntValue() ) {
                 return 1;
             } else if ( intValue < restriction.getIntValue() ) {
@@ -64,9 +64,15 @@ public class LiteralRestriction extends Restriction
             } else {
                 return 0;
             }
-        } else if ( valueType == Field.STRING ) {
+        } else if ( Field.BOOLEAN.equals( valueType ) ) {
+            if ( booleanValue == restriction.getBooleanValue() ) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } else if ( Field.STRING.equals( valueType ) ) {
             return stringValue.compareTo( restriction.getValueAsString() );
-        } else if ( valueType == Field.UNKNOWN ) {
+        } else if ( Field.UNKNOWN.equals( valueType ) ) {
             return 0;
         }
 
