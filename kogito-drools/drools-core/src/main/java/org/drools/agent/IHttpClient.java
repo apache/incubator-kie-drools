@@ -18,7 +18,7 @@ public interface IHttpClient {
 
     public LastUpdatedPing checkLastUpdated(URL url) throws IOException;
 
-    public Package fetchPackage(URL url) throws IOException,
+    public Package fetchPackage(URL url, String username, String password) throws IOException,
                                         ClassNotFoundException;
 
 }

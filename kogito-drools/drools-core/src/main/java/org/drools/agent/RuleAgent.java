@@ -79,7 +79,9 @@ public class RuleAgent {
     public static final String    URLS              = "url";
     public static final String    POLL_INTERVAL     = "poll";
     public static final String    CONFIG_NAME       = "name";              //name is optional
-
+    public static final String    USER_NAME       = "username"; 
+    public static final String    PASSWORD       = "password"; 
+   
     //this is needed for cold starting when BRMS is down (ie only for URL).
     public static final String    LOCAL_URL_CACHE   = "localCacheDir";
 
