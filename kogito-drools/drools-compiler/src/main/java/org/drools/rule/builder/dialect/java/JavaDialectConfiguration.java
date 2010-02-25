@@ -150,6 +150,8 @@ public class JavaDialectConfiguration
                 level = "1.5";
             } else if ( version.startsWith( "1.6" ) ) {
                 level = "1.6";
+            } else if ( version.startsWith( "1.7" ) ) {
+                level = "1.7";
             } else {
                 level = "1.5";
             }
