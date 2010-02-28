@@ -69,8 +69,6 @@ public class ServiceRegistryImpl
      */
     public synchronized void unregisterLocator(Class cls) {
         this.registry.remove( cls.getName() );
-        this.registry.put( cls.getName(),
-                           this.defaultServices.get( cls.getName() ) );
     }
     
     synchronized void registerInstance(Service service, Map map) {  
