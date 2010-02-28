@@ -55,13 +55,21 @@ public interface InternalFactHandle
      */
     public boolean isEvent();
     
-    public RightTuple getRightTuple();
+    public RightTuple getFirstRightTuple();
 
-    public void setRightTuple(RightTuple rightTuple);
+    public void setFirstRightTuple(RightTuple rightTuple);
+
+    public RightTuple getLastRightTuple();
+
+    public void setLastRightTuple(RightTuple rightTuple);    
+        
+    public void setFirstLeftTuple(LeftTuple leftTuple);
     
-    public void setLeftTuple(LeftTuple leftTuple);
+    public LeftTuple getFirstLeftTuple();
     
-    public LeftTuple getLeftTuple();
+    public void setLastLeftTuple(LeftTuple leftTuple);    
+    
+    public LeftTuple getLastLeftTuple();
     
     public WorkingMemoryEntryPoint getEntryPoint();
     

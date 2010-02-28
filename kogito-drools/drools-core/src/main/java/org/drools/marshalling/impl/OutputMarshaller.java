@@ -348,7 +348,7 @@ public class OutputMarshaller {
 
 //        context.out.println( "InitialFact LeftTuples Start" );
         InternalFactHandle handle = context.wm.getInitialFactHandle();
-        for ( LeftTuple leftTuple = getLeftTuple( handle.getLeftTuple() ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
+        for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
             stream.writeShort( PersisterEnums.LEFT_TUPLE );
 
             stream.writeInt( leftTuple.getLeftTupleSink().getId() );
@@ -365,12 +365,8 @@ public class OutputMarshaller {
                                         MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 //        context.out.println( "RightTuples Start" );
-
-        RightTuple rightTuple = handle.getRightTuple();
-        for ( RightTuple tempRightTuple = rightTuple; tempRightTuple != null; tempRightTuple = (RightTuple) tempRightTuple.getHandleNext() ) {
-            rightTuple = tempRightTuple;
-        }
-        for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandlePrevious() ) {
+        
+        for (RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
             stream.writeShort( PersisterEnums.RIGHT_TUPLE );
             writeRightTuple( rightTuple,
                              context );
@@ -396,7 +392,7 @@ public class OutputMarshaller {
         for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
             //InternalFactHandle handle = (InternalFactHandle) it.next();
 
-            for ( LeftTuple leftTuple = getLeftTuple( handle.getLeftTuple() ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
+            for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
                 stream.writeShort( PersisterEnums.LEFT_TUPLE );
 
                 stream.writeInt( leftTuple.getLeftTupleSink().getId() );
@@ -424,7 +420,7 @@ public class OutputMarshaller {
         switch ( sink.getType() ) {
             case NodeTypeEnums.JoinNode : {
 //                context.out.println( "JoinNode" );
-                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                     stream.writeShort( PersisterEnums.RIGHT_TUPLE );
                     stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                     stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
@@ -439,7 +435,7 @@ public class OutputMarshaller {
             }
             case NodeTypeEnums.EvalConditionNode : {
 //                context.out.println( "EvalConditionNode" );
-                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                     stream.writeShort( PersisterEnums.LEFT_TUPLE );
                     stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                     writeLeftTuple( childLeftTuple,
@@ -455,7 +451,7 @@ public class OutputMarshaller {
                     // is not blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
 
-                    for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
+                    for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
                         stream.writeShort( PersisterEnums.LEFT_TUPLE );
                         stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                         writeLeftTuple( childLeftTuple,
@@ -478,7 +474,7 @@ public class OutputMarshaller {
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_BLOCKED );
                     stream.writeInt( leftTuple.getBlocker().getFactHandle().getId() );
 
-                    for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
+                    for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
                         stream.writeShort( PersisterEnums.LEFT_TUPLE );
                         stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                         writeLeftTuple( childLeftTuple,
@@ -505,7 +501,7 @@ public class OutputMarshaller {
                 stream.writeBoolean( accctx.propagated );
 
                 // then we serialize all the propagated tuples
-                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                     if( leftTuple.getLeftTupleSink().getId() == childLeftTuple.getLeftTupleSink().getId()) {
                         // this is a matching record, so, associate the right tuples
 //                        context.out.println( "RightTuple(match) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
@@ -539,7 +535,7 @@ public class OutputMarshaller {
                 stream.writeBoolean( colctx.propagated );
 
                 // then we serialize all the propagated tuples
-                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                     if( leftTuple.getLeftTupleSink().getId() == childLeftTuple.getLeftTupleSink().getId()) {
                         // this is a matching record, so, associate the right tuples
 //                        context.out.println( "RightTuple(match) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
@@ -583,13 +579,6 @@ public class OutputMarshaller {
                 break;
             }
         }
-    }
-
-    public static LeftTuple getLeftTuple(LeftTuple leftTuple) {
-        for ( LeftTuple tempLeftTuple = leftTuple; tempLeftTuple != null; tempLeftTuple = (LeftTuple) tempLeftTuple.getLeftParentNext() ) {
-            leftTuple = tempLeftTuple;
-        }
-        return leftTuple;
     }
 
     public static void writeActivations(MarshallerWriteContext context) throws IOException {

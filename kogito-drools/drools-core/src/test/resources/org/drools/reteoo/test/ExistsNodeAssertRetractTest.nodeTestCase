@@ -1,0 +1,157 @@
+TestCase "Exists node assert/retract test case"
+
+Setup
+	ObjectTypeNode:
+	    otnLeft1, org.drools.Person;
+	LeftInputAdapterNode:
+	    lian1, otnLeft1;
+	ObjectTypeNode:
+	    otnRight1, org.drools.Person;
+	ObjectTypeNode:
+	    otnRight2, org.drools.Person;
+	Binding:
+	     p1, 0, org.drools.Person, age;
+	ExistsNode:
+	    exists1, lian1, otnRight1;
+	    age, !=, p1;
+	JoinNode:
+	    join2, exists1, otnRight2;
+	    age, !=, p1;
+	Facts:
+	    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),
+	    new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),
+	    new org.drools.Person('dave', 35), new org.drools.Person('bob', 36),
+	    new org.drools.Person('obi', 36), new org.drools.Person('han', 37);       
+
+Test "Exists node assert/retract test"	    
+	/**
+	 * check single left assertion and retraction
+	 */
+	assert:
+	    otnLeft1, [h0];
+	exists1:
+	    leftMemory, [[h0]];
+	join2:
+	    leftMemory, [];        
+	retract:
+	    otnLeft1, [h0];   
+	exists1:
+	    leftMemory, [];    
+	join2:
+	    leftMemory, [];    
+	     
+	/**    
+	 * check single right assertion and retraction
+	 */
+	assert:
+	    otnRight1, [h1];
+	exists1:
+	    rightMemory, [h1];
+	join2:
+	    leftMemory, [];        
+	retract:
+	    otnRight1, [h1]; 
+	exists1:
+	    rightMemory, [];       
+	    
+	/**        
+	 *  check single left then right assertion, where age != age (matches)
+	 */ 
+	assert:
+	    otnLeft1, [h0];  
+	exists1:
+	    leftMemory, [[h0]];  
+	    rightMemory, [];  
+	join2:
+	    leftMemory, []; 
+	assert:
+	    otnRight1, [h5];    // h5 is not equal, so it blocks, and thus h0 is propagated to join2
+	exists1:
+	    leftMemory, []; 
+	    rightMemory, [h5]; 
+	join2:
+	    leftMemory, [[h0]];         
+	retract:
+	    otnRight1, [h5];   // nothing blocks h0, so it's removed from join2
+	join2:
+	    leftMemory, [];   
+	retract:
+	    otnLeft1, [h0];     
+	exists1:
+	    leftMemory, [];  
+	    rightMemory, [];
+	join2:
+	    leftMemory, []; 
+	
+	   
+	/**        
+	 *  check single right then left assertion, where age != age (matches)
+	 */ 
+	assert:
+	    otnRight1, [h5]; 
+	exists1:
+	    leftMemory, [];  
+	    rightMemory, [h5];      
+	join2:
+	    leftMemory, [];      
+	assert:
+	    otnLeft1, [h0];      
+	exists1:
+	    leftMemory, []; // although it's inserted, you can't see it in the memory as h5 blocks it
+	    rightMemory, [h5];         
+	join2:
+	    leftMemory, [[h0]]; 
+	retract:
+	    otnRight1, [h5];
+	exists1:
+	    leftMemory, [[h0]]; // h5 no longer blocks, so put back in
+	    rightMemory, [];     
+	join2:
+	    leftMemory, []; 
+	retract:
+	    otnLeft1, [h0];     
+	exists1:
+	    leftMemory, [];  
+	    rightMemory, [];
+	join2:
+	    leftMemory, []; 
+	   
+	
+	/**    
+	 * assert two left and two right, with iterative retract and assert, age != age (not matches)
+	 */
+	assert:
+	    otnLeft1, [h0, h1];
+	exists1:
+	    leftMemory, [[h0], [h1]];  
+	    rightMemory, [];  
+	join2:
+	    leftMemory, [];      
+	assert:
+	    otnRight1, [h5];      
+	exists1:
+	    leftMemory, [];            //h0 and h1 are blocked, by h5, so removed  
+	    rightMemory, [h5, h6];  
+	join2:
+	    leftMemory, [[h0], [h1]];       
+	assert:
+	    otnRight1, [h6];    
+	exists1:
+	    leftMemory, [];            //h0 and h1 are still blocked
+	    rightMemory, [h5, h6];  
+	join2:
+	    leftMemory, [[h0], [h1]];  
+	retract:
+	    otnRight1, [h5];           // retract h5, the facts should still be blocked now by h6
+	exists1:
+	    leftMemory, [];            //h0 and h1 are still blocked
+	    rightMemory, [h6];  
+	join2:
+	    leftMemory, [[h0], [h1]];
+	retract:
+	    otnRight1, [h6];          // now there are no blockers          
+	exists1:
+	    leftMemory, [[h0], [h1]]; // both facts go back in
+	    rightMemory, [];  
+	join2:
+	    leftMemory, [];          // both facts propagate

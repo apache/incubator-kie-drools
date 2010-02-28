@@ -147,8 +147,10 @@ public class EventFactHandle extends DefaultFactHandle {
         clone.expired = expired;
         clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
-        clone.setLeftTuple( getLeftTuple() );
-        clone.setRightTuple( getRightTuple() );
+        clone.setFirstLeftTuple( getLastLeftTuple() );
+        clone.setLastLeftTuple( getLastLeftTuple() );
+        clone.setFirstRightTuple( getFirstRightTuple() );
+        clone.setLastRightTuple( getLastRightTuple() );
         clone.setObjectHashCode( getObjectHashCode() );
         return clone;
     }

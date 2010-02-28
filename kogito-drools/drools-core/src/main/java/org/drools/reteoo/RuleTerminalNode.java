@@ -21,25 +21,24 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.EventFactHandle;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LeftTupleList;
 import org.drools.event.rule.ActivationCancelledCause;
+import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.time.impl.Timer;
 
@@ -51,10 +50,9 @@ import org.drools.time.impl.Timer;
  *
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public final class RuleTerminalNode extends BaseNode
+public class RuleTerminalNode extends BaseNode
     implements
     LeftTupleSinkNode,
-    NodeMemory,
     TerminalNode,
     Externalizable {
     // ------------------------------------------------------------
@@ -163,27 +161,6 @@ public final class RuleTerminalNode extends BaseNode
     public void assertLeftTuple(final LeftTuple tuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        assertLeftTuple( tuple,
-                         context,
-                         workingMemory,
-                         true );
-
-    }
-
-    /**
-     * Assert a new <code>Tuple</code>.
-     *
-     * @param tuple
-     *            The <code>Tuple</code> being asserted.
-     * @param workingMemory
-     *            The working memory session.
-     * @throws AssertionException
-     *             If an error occurs while asserting.
-     */
-    public void assertLeftTuple(final LeftTuple tuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory,
-                                final boolean fireActivationCreated) {
         //check if the rule is effective
         if ( !this.rule.isEffective( workingMemory.getTimeMachine(),
                                      tuple,
@@ -193,13 +170,8 @@ public final class RuleTerminalNode extends BaseNode
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
-        // if the current Rule is no-loop and the origin rule is the same and its the same set of facts (tuple) then return
-        if ( context.getType() == PropagationContext.MODIFICATION ) {
-            if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getLeftTupleOrigin().equals( tuple ) ) {
-                agenda.increaseDormantActivations();
-                return;
-            }
-        } else if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
+        // if the current Rule is no-loop and the origin rule is the same then return
+        if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             agenda.increaseDormantActivations();
             return;
         }
@@ -211,19 +183,15 @@ public final class RuleTerminalNode extends BaseNode
                                                                                context,
                                                                                this.rule,
                                                                                this.subrule );
-            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
 
-            agenda.scheduleItem( item, workingMemory );
+            agenda.scheduleItem( item,
+                                 workingMemory );
             tuple.setActivation( item );
-
-            if ( this.tupleMemoryEnabled ) {
-                memory.getTupleMemory().add( tuple );
-            }
 
             item.setActivated( true );
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                           workingMemory );
-        } else {            
+        } else {
             if ( this.rule.getCalendars() != null ) {
                 // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
                 long timestamp = workingMemory.getSessionClock().getCurrentTime();
@@ -231,32 +199,26 @@ public final class RuleTerminalNode extends BaseNode
                     if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
                         return;
                     }
-                }            
+                }
             }
             // -----------------
             // Lazy instantiation and addition to the Agenda of AgendGroup
             // implementations
             // ----------------
-            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-
             final AgendaItem item = agenda.createAgendaItem( tuple,
                                                              rule.getSalience().getValue( tuple,
                                                                                           workingMemory ),
                                                              context,
                                                              this.rule,
                                                              this.subrule );
-
             item.setSequenence( this.sequence );
 
             tuple.setActivation( item );
-            memory.getTupleMemory().add( tuple );
 
             boolean added = agenda.addActivation( item );
 
-            item.setActivated( added );
-
-            // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
-            if ( added && fireActivationCreated ) {
+            if ( added ) {
+                item.setActivated( true );
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }
@@ -268,9 +230,6 @@ public final class RuleTerminalNode extends BaseNode
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-        memory.getTupleMemory().remove( leftTuple );
-
         final Activation activation = leftTuple.getActivation();
 
         // activation can be null if the LeftTuple previous propagated into a no-loop
@@ -278,21 +237,7 @@ public final class RuleTerminalNode extends BaseNode
             return;
         }
 
-        if ( activation.getLogicalDependencies() != null && !activation.getLogicalDependencies().isEmpty() ) {
-            context.addRetractedTuple( this.rule,
-                                       activation );
-        }
-
         if ( activation.isActivated() ) {
-            if ( context.getType() == PropagationContext.MODIFICATION ) {
-                // during a modify if we have either isLockOnActive or the activation has logical dependencies
-                // then we need to track retractions, so we know which are exising activations and which are truly new
-                if ( this.rule.isLockOnActive() ) {
-                    context.addRetractedTuple( this.rule,
-                                               activation );
-                }
-            }
-
             // on fact expiration, we don't remove the activation, but let it fire
             if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
                 EventFactHandle efh = (EventFactHandle) context.getFactHandleOrigin();
@@ -323,8 +268,91 @@ public final class RuleTerminalNode extends BaseNode
                                                  this.rule );
     }
 
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
+        if ( leftTuple != null ) {
+            leftTuple.reAdd(); //
+            // LeftTuple previously existed, so continue as modify
+            modifyLeftTuple( leftTuple,
+                             context,
+                             workingMemory );
+        } else {
+            // LeftTuple does not exist, so create and continue as assert
+            assertLeftTuple( new LeftTuple( factHandle,
+                                            this,
+                                            true ),
+                             context,
+                             workingMemory );
+        }
+    }
+
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        //check if the rule is effective
+        if ( !this.rule.isEffective( workingMemory.getTimeMachine(),
+                                     leftTuple,
+                                     workingMemory ) ) {
+            return;
+        }
+
+        AgendaItem item = (AgendaItem) leftTuple.getActivation();
+        if ( item.isActivated() ) {
+            // already activated, do nothing
+            return;
+        }
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        // if the current Rule is no-loop and the origin rule is the same then return
+        if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
+            agenda.increaseDormantActivations();
+            return;
+        }
+
+        final Timer timer = this.rule.getTimer();
+
+        if ( timer != null ) {
+            agenda.scheduleItem( (ScheduledAgendaItem) item,
+                                 workingMemory );
+            item.setActivated( true );
+
+            ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
+                                                                                          workingMemory );
+        } else {
+            if ( this.rule.getCalendars() != null ) {
+                // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
+                long timestamp = workingMemory.getSessionClock().getCurrentTime();
+                for ( String cal : this.rule.getCalendars() ) {
+                    if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
+                        return;
+                    }
+                }
+            }
+
+            item.setSalience( rule.getSalience().getValue( leftTuple,
+                                                           workingMemory ) ); // need to re-evaluate salience, as used fields may have changed
+            item.setPropagationContext( context ); // update the Propagation Context
+
+            boolean added = agenda.addActivation( item );
+
+            item.setActivated( added );
+
+            if ( added ) {
+                item.setActivated( true );
+                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
+                                                                                              workingMemory );
+            }
+        }
+
+        agenda.increaseActiveActivations();
+    }
+
     public String toString() {
-        return "[RuleTerminalNode("+this.getId()+"): rule=" + this.rule.getName() + "]";
+        return "[RuleTerminalNode(" + this.getId() + "): rule=" + this.rule.getName() + "]";
     }
 
     public void ruleAttached() {
@@ -358,51 +386,20 @@ public final class RuleTerminalNode extends BaseNode
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
-
-            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-            final Iterator it = memory.getTupleMemory().iterator();
-            for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                final Activation activation = leftTuple.getActivation();
-
-                if ( activation.isActivated() ) {
-                    activation.remove();
-                    ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                                    workingMemory,
-                                                                                                    ActivationCancelledCause.CLEAR );
-                }
-
-                final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                          PropagationContext.RULE_REMOVAL,
-                                                                                          null,
-                                                                                          null,
-                                                                                          null );
-                workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                                     propagationContext,
-                                                                                     this.rule );
-                leftTuple.unlinkFromLeftParent();
-                leftTuple.unlinkFromRightParent();
-            }
-
+        CleanupAdapter adapter = context.getCleanupAdapter();
+        context.setCleanupAdapter( new RTNCleanupAdapter( this ) );
+        this.tupleSource.remove( context,
+                                 builder,
+                                 this,
+                                 workingMemories );
+        for( InternalWorkingMemory workingMemory : workingMemories ) {
             workingMemory.executeQueuedActions();
-            workingMemory.clearNodeMemory( this );
         }
-
-        if ( !context.alreadyVisited( this.tupleSource ) ) {
-            this.tupleSource.remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        }
+        context.setCleanupAdapter( adapter );
     }
 
     public boolean isInUse() {
         return false;
-    }
-
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return new TerminalNodeMemory();
     }
 
     public boolean isLeftTupleMemoryEnabled() {
@@ -470,64 +467,38 @@ public final class RuleTerminalNode extends BaseNode
         return NodeTypeEnums.RuleTerminalNode;
     }
 
-    public static class TerminalNodeMemory
-        implements
-        Externalizable {
-        private static final long serialVersionUID = 400L;
-
-        //        private InternalAgendaGroup agendaGroup;
-        //
-        //        private ActivationGroup     activationGroup;
-        //
-        //        private RuleFlowGroup       ruleFlowGroup;
-
-        private LeftTupleList     tupleMemory;
-
-        public TerminalNodeMemory() {
-            this.tupleMemory = new LeftTupleList();
+    public static class RTNCleanupAdapter implements CleanupAdapter {
+        private RuleTerminalNode node;
+        
+        public RTNCleanupAdapter(RuleTerminalNode node) {
+            this.node = node;
         }
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            //            agendaGroup = (InternalAgendaGroup) in.readObject();
-            //            activationGroup = (ActivationGroup) in.readObject();
-            //            ruleFlowGroup = (RuleFlowGroup) in.readObject();
-            tupleMemory = (LeftTupleList) in.readObject();
+        public void cleanUp(final LeftTuple leftTuple,
+                            final InternalWorkingMemory workingMemory) {
+            if( leftTuple.getLeftTupleSink() != node ) {
+                return;
+            }
+            
+            final Activation activation = leftTuple.getActivation();
+
+            if ( activation.isActivated() ) {
+                activation.remove();
+                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                                                workingMemory,
+                                                                                                ActivationCancelledCause.CLEAR );
+            }
+
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RULE_REMOVAL,
+                                                                                      null,
+                                                                                      null,
+                                                                                      null );
+            workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
+                                                                                 propagationContext,
+                                                                                 node.getRule() );
+            leftTuple.unlinkFromLeftParent();
+            leftTuple.unlinkFromRightParent();
         }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            //            out.writeObject( agendaGroup );
-            //            out.writeObject( activationGroup );
-            //            out.writeObject( ruleFlowGroup );
-            out.writeObject( tupleMemory );
-        }
-
-        //        public InternalAgendaGroup getAgendaGroup() {
-        //            return this.agendaGroup;
-        //        }
-        //
-        //        public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
-        //            this.agendaGroup = agendaGroup;
-        //        }
-        //
-        //        public ActivationGroup getActivationGroup() {
-        //            return this.activationGroup;
-        //        }
-        //
-        //        public void setActivationGroup(final ActivationGroup activationGroup) {
-        //            this.activationGroup = activationGroup;
-        //        }
-
-        public LeftTupleList getTupleMemory() {
-            return this.tupleMemory;
-        }
-
-        //        public RuleFlowGroup getRuleFlowGroup() {
-        //            return this.ruleFlowGroup;
-        //        }
-        //
-        //        public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
-        //            this.ruleFlowGroup = ruleFlowGroup;
-        //        }
     }
 }

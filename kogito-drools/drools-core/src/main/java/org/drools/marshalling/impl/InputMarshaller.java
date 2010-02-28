@@ -63,7 +63,6 @@ import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.CollectNode.CollectContext;
 import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
@@ -422,7 +421,8 @@ public class InputMarshaller {
         ObjectInputStream stream = context.stream;
 
         while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
-            LeftTupleSink sink = (LeftTupleSink) context.sinks.get( stream.readInt() );
+            int nodeId = stream.readInt();
+            LeftTupleSink sink = (LeftTupleSink) context.sinks.get( nodeId );
             int factHandleId = stream.readInt();
             LeftTuple leftTuple = new LeftTuple( context.handles.get( factHandleId ),
                                                  sink,
@@ -498,7 +498,7 @@ public class InputMarshaller {
                     RightTuple rightTuple = context.rightTuples.get( key );
 
                     parentLeftTuple.setBlocker( rightTuple );
-                    rightTuple.setBlocked( parentLeftTuple );
+                    rightTuple.addBlocked( parentLeftTuple );
                 }
                 break;
             }
@@ -514,7 +514,7 @@ public class InputMarshaller {
                     RightTuple rightTuple = context.rightTuples.get( key );
 
                     parentLeftTuple.setBlocker( rightTuple );
-                    rightTuple.setBlocked( parentLeftTuple );
+                    rightTuple.addBlocked( parentLeftTuple );
 
                     while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
@@ -646,10 +646,6 @@ public class InputMarshaller {
                 break;
             }
             case NodeTypeEnums.RuleTerminalNode : {
-                RuleTerminalNode ruleTerminalNode = (RuleTerminalNode) sink;
-                TerminalNodeMemory memory = (TerminalNodeMemory) wm.getNodeMemory( ruleTerminalNode );
-                memory.getTupleMemory().add( parentLeftTuple );
-
                 int pos = context.terminalTupleMap.size();
                 context.terminalTupleMap.put( pos,
                                               parentLeftTuple );

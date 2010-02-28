@@ -58,18 +58,23 @@ public class JoinNodeTest extends DroolsTestCase {
         // create mock objects
         constraint = mockery.mock( BetaNodeFieldConstraint.class );
         final ContextEntry c = mockery.mock( ContextEntry.class );
-        
+
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).createContextEntry(); will(returnValue(c));
-            
-            allowing( c ).updateFromFactHandle( with(any(InternalWorkingMemory.class)), with(any(InternalFactHandle.class)) );
-            allowing( c ).updateFromTuple( with(any(InternalWorkingMemory.class)), with(any(LeftTuple.class)) );
-            allowing( c ).resetTuple();
-            allowing( c ).resetFactHandle();
-        }} );
-        
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).createContextEntry();
+                will( returnValue( c ) );
+
+                allowing( c ).updateFromFactHandle( with( any( InternalWorkingMemory.class ) ),
+                                                    with( any( InternalFactHandle.class ) ) );
+                allowing( c ).updateFromTuple( with( any( InternalWorkingMemory.class ) ),
+                                               with( any( LeftTuple.class ) ) );
+                allowing( c ).resetTuple();
+                allowing( c ).resetFactHandle();
+            }
+        } );
+
         this.rule = new Rule( "test-rule" );
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
@@ -111,11 +116,17 @@ public class JoinNodeTest extends DroolsTestCase {
 
     public void testAttach() throws Exception {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         final Field objectFfield = ObjectSource.class.getDeclaredField( "sink" );
         objectFfield.setAccessible( true );
@@ -151,11 +162,17 @@ public class JoinNodeTest extends DroolsTestCase {
 
     public void testMemory() {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
@@ -185,11 +202,17 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void testAssertTuple() throws Exception {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "cheese" );
@@ -219,7 +242,8 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
 
-        LeftTuple leftTuple = this.memory.getLeftTupleMemory().getFirst( (LeftTuple) null );
+        LeftTuple leftTuple = this.memory.getLeftTupleMemory().getFirst((LeftTuple) null );
+
         assertEquals( tuple0,
                       leftTuple );
         assertEquals( tuple1,
@@ -233,11 +257,17 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void testAssertTupleSequentialMode() throws Exception {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
@@ -288,7 +318,7 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.memory.getRightTupleMemory().size() );
 
         assertEquals( new LeftTuple( tuple0,
-                                     f0.getRightTuple(),
+                                     f0.getFirstRightTuple(),
                                      this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
@@ -301,11 +331,17 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void testAssertObject() throws Exception {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
 
@@ -346,11 +382,17 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void testAssertPropagations() throws Exception {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         // assert first right object
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
@@ -372,7 +414,7 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.sink.getAsserted().size() );
 
         assertEquals( new LeftTuple( tuple1,
-                                     f0.getRightTuple(),
+                                     f0.getFirstRightTuple(),
                                      this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
@@ -389,7 +431,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.sink.getAsserted().size() );
         assertEquals( new LeftTuple( tuple2,
-                                     f0.getRightTuple(),
+                                     f0.getFirstRightTuple(),
                                      this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 1 ))[0] );
@@ -407,11 +449,11 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add( ((Object[]) this.sink.getAsserted().get( 3 ))[0] );
 
         assertTrue( tuples.contains( new LeftTuple( tuple1,
-                                                    f3.getRightTuple(),
+                                                    f3.getFirstRightTuple(),
                                                     this.sink,
                                                     true ) ) );
         assertTrue( tuples.contains( new LeftTuple( tuple2,
-                                                    f3.getRightTuple(),
+                                                    f3.getFirstRightTuple(),
                                                     this.sink,
                                                     true ) ) );
     }
@@ -424,11 +466,17 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void testRetractTuple() throws Exception {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         // setup 2 tuples 3 fact handles
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
@@ -467,10 +515,10 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // Double check the item is in memory
         final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
-        assertTrue( memory.getRightTupleMemory().contains( f0.getRightTuple() ) );
+        assertTrue( memory.getRightTupleMemory().contains( f0.getFirstRightTuple() ) );
 
         // Retract an object, check propagations  and memory
-        this.node.retractRightTuple( f0.getRightTuple(),
+        this.node.retractRightTuple( f0.getFirstRightTuple(),
                                      this.context,
                                      this.workingMemory );
         assertLength( 2,
@@ -481,16 +529,16 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add( ((Object[]) this.sink.getRetracted().get( 1 ))[0] );
 
         assertTrue( tuples.contains( new LeftTuple( tuple1,
-                                                    f0.getRightTuple(),
+                                                    f0.getFirstRightTuple(),
                                                     this.sink,
                                                     true ) ) );
         assertTrue( tuples.contains( new LeftTuple( tuple1,
-                                                    f0.getRightTuple(),
+                                                    f0.getFirstRightTuple(),
                                                     this.sink,
                                                     true ) ) );
 
         // Now check the item  is no longer in memory
-        assertFalse( memory.getRightTupleMemory().contains( f0.getRightTuple() ) );
+        assertFalse( memory.getRightTupleMemory().contains( f0.getFirstRightTuple() ) );
 
         this.node.retractLeftTuple( tuple2,
                                     this.context,
@@ -503,22 +551,28 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add( ((Object[]) this.sink.getRetracted().get( 3 ))[0] );
 
         assertTrue( tuples.contains( new LeftTuple( tuple2,
-                                                    f3.getRightTuple(),
+                                                    f3.getFirstRightTuple(),
                                                     this.sink,
                                                     true ) ) );
         assertTrue( tuples.contains( new LeftTuple( tuple2,
-                                                    f4.getRightTuple(),
+                                                    f4.getFirstRightTuple(),
                                                     this.sink,
                                                     true ) ) );
     }
 
     public void testConstraintPropagations() throws Exception {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(false));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(false));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( false ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( false ) );
+            }
+        } );
 
         // assert first right object
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
@@ -540,7 +594,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getAsserted() );
 
-        this.node.retractRightTuple( f0.getRightTuple(),
+        this.node.retractRightTuple( f0.getFirstRightTuple(),
                                      this.context,
                                      this.workingMemory );
         assertLength( 0,
@@ -549,11 +603,17 @@ public class JoinNodeTest extends DroolsTestCase {
 
     public void testUpdateSink() {
         // set mock objects expectations
-        mockery.checking( new Expectations() {{
-            // allowed calls and return values
-            allowing( constraint ).isAllowedCachedLeft( with(any(ContextEntry.class)), with(any(InternalFactHandle.class)) ); will(returnValue(true));
-            allowing( constraint ).isAllowedCachedRight( with(any(LeftTuple.class)), with(any(ContextEntry.class)) ); will(returnValue(true));
-        }} );
+        mockery.checking( new Expectations() {
+            {
+                // allowed calls and return values
+                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
+                                                            with( any( InternalFactHandle.class ) ) );
+                will( returnValue( true ) );
+                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
+                                                             with( any( ContextEntry.class ) ) );
+                will( returnValue( true ) );
+            }
+        } );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );

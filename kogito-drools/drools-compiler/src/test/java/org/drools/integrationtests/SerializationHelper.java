@@ -81,6 +81,7 @@ public class SerializationHelper {
         // bytes should be the same.
         if ( !areByteArraysEqual( b1,
                                   b2 ) ) {
+            
             throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
         }
 
@@ -146,6 +147,7 @@ public class SerializationHelper {
 
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
+                System.out.println("Difference at "+i+": ["+b1[i]+"] != ["+b2[i]+"]");
                 return false;
             }
         }

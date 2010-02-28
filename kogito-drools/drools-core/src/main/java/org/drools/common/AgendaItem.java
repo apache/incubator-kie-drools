@@ -162,6 +162,10 @@ public class AgendaItem
     public PropagationContext getPropagationContext() {
         return this.context;
     }
+    
+    public void setPropagationContext(PropagationContext context) {
+        this.context = context;
+    }
 
     /**
      * Retrieve the rule.
@@ -183,6 +187,10 @@ public class AgendaItem
 
     public int getSalience() {
         return this.salience;
+    }
+    
+    public void setSalience(int salience) {
+        this.salience = salience;
     }
 
     public int getSequenence() {

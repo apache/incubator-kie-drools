@@ -85,20 +85,6 @@ public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.Working
     void update(org.drools.runtime.rule.FactHandle handle,
                 Object object) throws FactException;
 
-    /**
-     * 
-     * @param factHandle
-     */
-    public void modifyRetract(final org.drools.FactHandle factHandle);
-
-    /**
-     * 
-     * @param factHandle
-     * @param object
-     */
-    public void modifyInsert(final org.drools.FactHandle factHandle,
-                             final Object object);
-
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
 
 }

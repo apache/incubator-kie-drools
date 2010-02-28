@@ -19,10 +19,7 @@ public class LeftInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
                            StatefulKnowledgeSessionInfo info) {
         LeftInputAdapterNode an = (LeftInputAdapterNode) node;
         DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
-        final RightTupleList memory = (RightTupleList) info.getSession().getNodeMemory( an );
-        
-        ni.setMemoryEnabled( true );
-        ni.setFactMemorySize( memory.size() );
+        ni.setMemoryEnabled( false );
     }
 
 }

@@ -46,4 +46,11 @@ public class MockRightTupleSink
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }
+
+    public void modifyRightTuple(RightTuple rightTuple,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
 }

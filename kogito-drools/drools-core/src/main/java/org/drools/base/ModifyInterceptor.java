@@ -26,12 +26,6 @@ public class ModifyInterceptor
 
     public int doBefore(ASTNode node,
                         VariableResolverFactory factory) {
-        Object object = ((WithNode) node).getNestedStatement().getValue( null,
-                                                                         factory );
-
-        DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
-        KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
-        helper.modifyRetract( object );
         return 0;
     }
 
@@ -40,7 +34,7 @@ public class ModifyInterceptor
                        VariableResolverFactory factory) {
         DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
         KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
-        helper.modifyInsert( value );
+        helper.update( value );
         return 0;
     }
 }

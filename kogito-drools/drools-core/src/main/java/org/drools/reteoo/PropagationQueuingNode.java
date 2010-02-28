@@ -41,16 +41,19 @@ import org.drools.spi.PropagationContext;
  *
  * @author etirelli
  */
-public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNode, NodeMemory {
+public class PropagationQueuingNode extends ObjectSource
+    implements
+    ObjectSinkNode,
+    NodeMemory {
 
-    private static final long serialVersionUID = -615639068150958767L;
+    private static final long serialVersionUID        = -615639068150958767L;
 
     // should we make this one configurable?
-    private static final int PROPAGATION_SLICE_LIMIT = 1000;
+    private static final int  PROPAGATION_SLICE_LIMIT = 1000;
 
-    private ObjectSinkNode previousObjectSinkNode;
-    private ObjectSinkNode nextObjectSinkNode;
-    private PropagateAction action;
+    private ObjectSinkNode    previousObjectSinkNode;
+    private ObjectSinkNode    nextObjectSinkNode;
+    private PropagateAction   action;
 
     public PropagationQueuingNode() {
     }
@@ -64,9 +67,9 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
      * @param objectSource Node's object source
      * @param context
      */
-    public PropagationQueuingNode( final int id,
-                                   final ObjectSource objectSource,
-                                   final BuildContext context ) {
+    public PropagationQueuingNode(final int id,
+                                  final ObjectSource objectSource,
+                                  final BuildContext context) {
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
@@ -75,14 +78,15 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
         this.action = new PropagateAction( this );
     }
 
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
         super.readExternal( in );
         previousObjectSinkNode = (ObjectSinkNode) in.readObject();
         nextObjectSinkNode = (ObjectSinkNode) in.readObject();
         action = (PropagateAction) in.readObject();
     }
 
-    public void writeExternal( ObjectOutput out ) throws IOException {
+    public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( previousObjectSinkNode );
         out.writeObject( nextObjectSinkNode );
@@ -92,27 +96,26 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
     /**
      * @see org.drools.reteoo.ObjectSource#updateSink(org.drools.reteoo.ObjectSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
-    @Override
-    public void updateSink( ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory ) {
+    public void updateSink(ObjectSink sink,
+                           PropagationContext context,
+                           InternalWorkingMemory workingMemory) {
 
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory
-                .getNodeMemory( this );
+        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
 
         // this is just sanity code. We may remove it in the future, but keeping it for now.
-        if( !memory.isEmpty() ) {
-            throw new RuntimeDroolsException(
-                    "Error updating sink. Not safe to update sink as the PropagatingQueueingNode memory is not for node: " + this
-                            .toString() );
+        if ( !memory.isEmpty() ) {
+            throw new RuntimeDroolsException( "Error updating sink. Not safe to update sink as the PropagatingQueueingNode memory is not for node: " + this.toString() );
         }
 
         // as this node is simply a queue, ask object source to update the child sink directly
-        this.source.updateSink( sink, context, workingMemory );
+        this.source.updateSink( sink,
+                                context,
+                                workingMemory );
     }
 
     /**
      * @see org.drools.common.BaseNode#attach()
      */
-    @Override
     public void attach() {
         this.source.addObjectSink( this );
     }
@@ -120,24 +123,27 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
     /**
      * @see org.drools.common.BaseNode#attach(org.drools.common.InternalWorkingMemory[])
      */
-    @Override
-    public void attach( InternalWorkingMemory[] workingMemories ) {
+    public void attach(InternalWorkingMemory[] workingMemories) {
         attach();
         // this node does not require update, so nothing else to do.
     }
 
-    @Override
-    protected void doRemove( final RuleRemovalContext context, final ReteooBuilder builder, final BaseNode node,
-                             final InternalWorkingMemory[] workingMemories ) {
-        if( !node.isInUse() ) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
+        if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        if( !this.isInUse() ) {
-            for( int i = 0, length = workingMemories.length; i < length; i++ ) {
+        if ( !this.isInUse() ) {
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.source.remove( context, builder, this, workingMemories );
+        this.source.remove( context,
+                            builder,
+                            this,
+                            workingMemories );
     }
 
     /**
@@ -157,44 +163,64 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
     /**
      * @see org.drools.reteoo.ObjectSinkNode#setNextObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
      */
-    public void setNextObjectSinkNode( ObjectSinkNode next ) {
+    public void setNextObjectSinkNode(ObjectSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
     /**
      * @see org.drools.reteoo.ObjectSinkNode#setPreviousObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
      */
-    public void setPreviousObjectSinkNode( ObjectSinkNode previous ) {
+    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
-    }
-
-    /**
-     * @see org.drools.reteoo.ObjectSink#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
-     */
-    public void assertObject( InternalFactHandle factHandle, PropagationContext context,
-                              InternalWorkingMemory workingMemory ) {
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory
-                .getNodeMemory( this );
-        memory.addAction( new AssertAction( factHandle, context ) );
-
-        // if not queued yet, we need to queue it up
-        if( memory.isQueued().compareAndSet( false, true ) ) {
-            workingMemory.queueWorkingMemoryAction( this.action );
-        }
     }
 
     public boolean isObjectMemoryEnabled() {
         return true;
     }
 
-    public void retractObject( InternalFactHandle handle, PropagationContext context,
-                               InternalWorkingMemory workingMemory ) {
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory
-                .getNodeMemory( this );
-        memory.addAction( new RetractAction( handle, context ) );
+    /**
+     * @see org.drools.reteoo.ObjectSink#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     */
+    public void assertObject(InternalFactHandle factHandle,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
+        memory.addAction( new AssertAction( factHandle,
+                                            context ) );
 
         // if not queued yet, we need to queue it up
-        if( memory.isQueued().compareAndSet( false, true ) ) {
+        if ( memory.isQueued().compareAndSet( false,
+                                              true ) ) {
+            workingMemory.queueWorkingMemoryAction( this.action );
+        }
+    }
+
+    public void retractObject(InternalFactHandle handle,
+                              PropagationContext context,
+                              InternalWorkingMemory workingMemory) {
+        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
+        memory.addAction( new RetractAction( handle,
+                                             context ) );
+
+        // if not queued yet, we need to queue it up
+        if ( memory.isQueued().compareAndSet( false,
+                                              true ) ) {
+            workingMemory.queueWorkingMemoryAction( this.action );
+        }
+    }
+
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
+        memory.addAction( new ModifyAction( factHandle,
+                                            modifyPreviousTuples,
+                                            context ) );
+
+        // if not queued yet, we need to queue it up
+        if ( memory.isQueued().compareAndSet( false,
+                                              true ) ) {
             workingMemory.queueWorkingMemoryAction( this.action );
         }
     }
@@ -208,30 +234,32 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
      *
      * @param workingMemory
      */
-    public void propagateActions( InternalWorkingMemory workingMemory ) {
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory
-                .getNodeMemory( this );
+    public void propagateActions(InternalWorkingMemory workingMemory) {
+        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
 
         // first we clear up the action queued flag
-        memory.isQueued().compareAndSet( true, false );
+        memory.isQueued().compareAndSet( true,
+                                         false );
 
         // we limit the propagation to avoid a hang when this queue is never empty
         Action next = memory.getNext();
-        for( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNext(), counter++ ) {
-            next.execute( this.sink, workingMemory );
+        for ( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNext(), counter++ ) {
+            next.execute( this.sink,
+                          workingMemory );
         }
 
-        if( memory.hasNext() && memory.isQueued().compareAndSet( false, true )) {
+        if ( memory.hasNext() && memory.isQueued().compareAndSet( false,
+                                                                  true ) ) {
             // add action to the queue again.
             workingMemory.queueWorkingMemoryAction( this.action );
         }
     }
 
-    public void setObjectMemoryEnabled( boolean objectMemoryOn ) {
+    public void setObjectMemoryEnabled(boolean objectMemoryOn) {
         throw new UnsupportedOperationException( "PropagationQueueingNode must have its node memory enabled." );
     }
 
-    public Object createMemory( RuleBaseConfiguration config ) {
+    public Object createMemory(RuleBaseConfiguration config) {
         return new PropagationQueueingNodeMemory();
     }
 
@@ -240,14 +268,16 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
      *
      * @author etirelli
      */
-    public static class PropagationQueueingNodeMemory implements Externalizable {
+    public static class PropagationQueueingNodeMemory
+        implements
+        Externalizable {
 
-        private static final long serialVersionUID = 7372028632974484023L;
+        private static final long             serialVersionUID = 7372028632974484023L;
 
         private ConcurrentLinkedQueue<Action> queue;
 
         // "singleton" action - there is one of this for each node in each working memory
-        private AtomicBoolean isQueued;
+        private AtomicBoolean                 isQueued;
 
         public PropagationQueueingNodeMemory() {
             super();
@@ -255,12 +285,14 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
             this.isQueued = new AtomicBoolean( false );
         }
 
-        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        @SuppressWarnings("unchecked")
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
             queue = (ConcurrentLinkedQueue<Action>) in.readObject();
             isQueued = (AtomicBoolean) in.readObject();
         }
 
-        public void writeExternal( ObjectOutput out ) throws IOException {
+        public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( queue );
             out.writeObject( isQueued );
         }
@@ -269,7 +301,7 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
             return this.queue.isEmpty();
         }
 
-        public void addAction( Action action ) {
+        public void addAction(Action action) {
             this.queue.add( action );
         }
 
@@ -284,13 +316,15 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
         public AtomicBoolean isQueued() {
             return isQueued;
         }
-        
+
         public long getSize() {
             return this.queue.size();
         }
     }
 
-    private static abstract class Action implements Externalizable {
+    private static abstract class Action
+        implements
+        Externalizable {
 
         protected InternalFactHandle handle;
         protected PropagationContext context;
@@ -299,34 +333,42 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
 
         }
 
-        public Action( InternalFactHandle handle, PropagationContext context ) {
+        public Action(InternalFactHandle handle,
+                      PropagationContext context) {
             super();
             this.handle = handle;
             this.context = context;
         }
 
-        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
             handle = (InternalFactHandle) in.readObject();
             context = (PropagationContext) in.readObject();
         }
 
-        public void writeExternal( ObjectOutput out ) throws IOException {
+        public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( handle );
             out.writeObject( context );
         }
 
-        public abstract void execute( final ObjectSinkPropagator sink, final InternalWorkingMemory workingMemory );
+        public abstract void execute(final ObjectSinkPropagator sink,
+                                     final InternalWorkingMemory workingMemory);
     }
 
     private static class AssertAction extends Action {
         private static final long serialVersionUID = -8478488926430845209L;
 
-        public AssertAction( final InternalFactHandle handle, final PropagationContext context ) {
-            super( handle, context );
+        public AssertAction(final InternalFactHandle handle,
+                            final PropagationContext context) {
+            super( handle,
+                   context );
         }
 
-        public void execute( final ObjectSinkPropagator sink, final InternalWorkingMemory workingMemory ) {
-            sink.propagateAssertObject( this.handle, this.context, workingMemory );
+        public void execute(final ObjectSinkPropagator sink,
+                            final InternalWorkingMemory workingMemory) {
+            sink.propagateAssertObject( this.handle,
+                                        this.context,
+                                        workingMemory );
         }
     }
 
@@ -337,23 +379,49 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
 
         }
 
-        public RetractAction( final InternalFactHandle handle, final PropagationContext context ) {
-            super( handle, context );
+        public RetractAction(final InternalFactHandle handle,
+                             final PropagationContext context) {
+            super( handle,
+                   context );
         }
 
-        public void execute( final ObjectSinkPropagator sink, final InternalWorkingMemory workingMemory ) {
+        public void execute(final ObjectSinkPropagator sink,
+                            final InternalWorkingMemory workingMemory) {
 
-            for( RightTuple rightTuple = this.handle
-                    .getRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
-                rightTuple.getRightTupleSink().retractRightTuple( rightTuple, context, workingMemory );
+            for ( RightTuple rightTuple = this.handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+                rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
+                                                                  context,
+                                                                  workingMemory );
             }
-            this.handle.setRightTuple( null );
+            this.handle.setFirstRightTuple( null );
 
-            for( LeftTuple leftTuple = this.handle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple
-                    .getLeftParentNext() ) {
-                leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, context, workingMemory );
+            for ( LeftTuple leftTuple = this.handle.getLastLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+                                                               context,
+                                                               workingMemory );
             }
-            this.handle.setLeftTuple( null );
+            this.handle.setFirstLeftTuple( null );
+        }
+    }
+
+    private static class ModifyAction extends Action {
+        private static final long    serialVersionUID = -8478488926430845209L;
+        private ModifyPreviousTuples modifyPreviousTuples;
+
+        public ModifyAction(final InternalFactHandle handle,
+                            final ModifyPreviousTuples modifyPreviousTuples,
+                            final PropagationContext context) {
+            super( handle,
+                   context );
+            this.modifyPreviousTuples = modifyPreviousTuples;
+        }
+
+        public void execute(final ObjectSinkPropagator sink,
+                            final InternalWorkingMemory workingMemory) {
+            sink.propagateModifyObject( handle,
+                                        modifyPreviousTuples,
+                                        context,
+                                        workingMemory );
         }
     }
 
@@ -363,9 +431,11 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
      *
      * @author etirelli
      */
-    public static class PropagateAction implements WorkingMemoryAction {
+    public static class PropagateAction
+        implements
+        WorkingMemoryAction {
 
-        private static final long serialVersionUID = 6765029029501617115L;
+        private static final long      serialVersionUID = 6765029029501617115L;
 
         private PropagationQueuingNode node;
 
@@ -373,29 +443,31 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
 
         }
 
-        public PropagateAction( PropagationQueuingNode node ) {
+        public PropagateAction(PropagationQueuingNode node) {
             this.node = node;
         }
 
-        public PropagateAction( MarshallerReaderContext context ) throws IOException {
+        public PropagateAction(MarshallerReaderContext context) throws IOException {
             this.node = (PropagationQueuingNode) context.sinks.get( context.readInt() );
         }
 
-        public void write( MarshallerWriteContext context ) throws IOException {
-        	context.writeInt( WorkingMemoryAction.PropagateAction );
+        public void write(MarshallerWriteContext context) throws IOException {
+            context.writeInt( WorkingMemoryAction.PropagateAction );
             context.write( node.getId() );
         }
 
-        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
             node = (PropagationQueuingNode) in.readObject();
         }
 
-        public void writeExternal( ObjectOutput out ) throws IOException {
+        public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( node );
         }
 
-        public void execute( InternalWorkingMemory workingMemory ) {
+        public void execute(InternalWorkingMemory workingMemory) {
             this.node.propagateActions( workingMemory );
         }
     }
+
 }

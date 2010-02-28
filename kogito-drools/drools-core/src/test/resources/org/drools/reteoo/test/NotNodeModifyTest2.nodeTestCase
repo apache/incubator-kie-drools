@@ -1,0 +1,44 @@
+TestCase "Not Node modify"
+
+import org.drools.Person;
+import org.drools.Cheese;
+
+Setup
+	NotNode:
+	    not, mock, mock;
+	LeftTupleSink:
+	    sink, not;
+	Facts:
+	    new Person('darth', 35),  // h0 
+	    new Person('bobba', 35),  // h1
+	    new Cheese('stilton', 10); // h2
+	
+/**        
+ *  check single left, then right assertion, then modify right and still match
+ */ 
+Test "Not node modify right, still matches"    
+	assert:
+	    not, [[h0]];  
+	not:
+	    leftMemory, [[h0]];  
+	    rightMemory, [];  
+	sink:
+	    verify, assertLeft, count, 1; 
+	assert:
+	    not, [h2];
+	not:
+	    leftMemory, []; 
+	    rightMemory, [h2]; 
+	sink:
+	    verify, assertLeft, count, 1;
+	    verify, retractLeft, count, 1; 
+	modify:
+	    not, [h2];      
+	not:
+	    leftMemory, [];    
+	    rightMemory, [h2];
+	sink:
+	    verify, assertLeft, count, 1;
+	    verify, retractLeft, count, 1; 
+	    verify, modifyLeft, count, 0; // not node does not propagate a modify from the right  
+	    

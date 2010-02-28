@@ -814,9 +814,8 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals(2, temperatureList.size());
 
         
-        ((StatefulKnowledgeSessionImpl)session).session.modifyRetract( (org.drools.FactHandle) sensor1Handle);
         sensor1.setTemperature(150);
-        ((StatefulKnowledgeSessionImpl)session).session.modifyInsert( (org.drools.FactHandle) sensor1Handle, sensor1);
+        ((StatefulKnowledgeSessionImpl)session).session.update( (org.drools.FactHandle) sensor1Handle, sensor1);
         session.fireAllRules();
         
         temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter(Integer.class) ) );

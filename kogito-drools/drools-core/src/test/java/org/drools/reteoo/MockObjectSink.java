@@ -125,4 +125,19 @@ public class MockObjectSink
         // TODO Auto-generated method stub
         return NodeTypeEnums.JoinNode;
     }
+
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void modifyRightTuple(RightTuple rightTuple,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
 }

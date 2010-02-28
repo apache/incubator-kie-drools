@@ -2,6 +2,7 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.spi.PropagationContext;
@@ -93,6 +94,21 @@ public class UnificationNode extends LeftTupleSource
     public Object createMemory(RuleBaseConfiguration config) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

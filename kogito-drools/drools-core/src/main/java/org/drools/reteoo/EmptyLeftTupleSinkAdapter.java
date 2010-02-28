@@ -75,5 +75,49 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public int size() {
         return 0;
     }
+    
+    // related to true modify
+
+    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
+                                                   RightTuple parentRightTuple,
+                                                   PropagationContext context,
+                                                   InternalWorkingMemory workingMemory,
+                                                   boolean tupleMemoryEnabled) {
+        return null;
+    }
+
+    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
+                                                   LeftTuple parentLeftTuple,
+                                                   PropagationContext context,
+                                                   InternalWorkingMemory workingMemory,
+                                                   boolean tupleMemoryEnabled) {
+        return null;
+    }
+
+    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
+                                                    RightTuple parentRightTuple,
+                                                    PropagationContext context,
+                                                    InternalWorkingMemory workingMemory) {
+        return null;
+    }
+
+    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
+                                                    LeftTuple parentLeftTuple,
+                                                    PropagationContext context,
+                                                    InternalWorkingMemory workingMemory) {
+        return null;
+    }
+
+    public void propagateModifyChildLeftTuple(LeftTuple leftTuple,
+                                              PropagationContext context,
+                                              InternalWorkingMemory workingMemory,
+                                              boolean tupleMemoryEnabled) {
+    }
+
+    public void propagateModifyObject(InternalFactHandle factHandle,
+                                      ModifyPreviousTuples modifyPreviousTuples,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory) {
+    }
 
 }

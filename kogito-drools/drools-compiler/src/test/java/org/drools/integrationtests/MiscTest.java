@@ -91,8 +91,6 @@ import org.drools.Win;
 import org.drools.Worker;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.builder.KnowledgeBuilder;
@@ -119,9 +117,7 @@ import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.definition.KnowledgePackage;
-import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
-import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -2507,7 +2503,6 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
-        WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( session );
         List list = new ArrayList();
         session.setGlobal( "list",
                            list );
@@ -2660,13 +2655,15 @@ public class MiscTest extends TestCase {
         //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
+        List<String> results = (List<String>) workingMemory.getGlobal( "list" ); 
+        System.out.println(results);
         assertEquals( 5,
-                      ((List) workingMemory.getGlobal( "list" )).size() );
-        assertTrue( ((List) workingMemory.getGlobal( "list" )).contains( "first" ) );
-        assertTrue( ((List) workingMemory.getGlobal( "list" )).contains( "second" ) );
-        assertTrue( ((List) workingMemory.getGlobal( "list" )).contains( "third" ) );
-        assertTrue( ((List) workingMemory.getGlobal( "list" )).contains( "fourth" ) );
-        assertTrue( ((List) workingMemory.getGlobal( "list" )).contains( "fifth" ) );
+                      results.size() );
+        assertTrue( results.contains( "first" ) );
+        assertTrue( results.contains( "second" ) );
+        assertTrue( results.contains( "third" ) );
+        assertTrue( results.contains( "fourth" ) );
+        assertTrue( results.contains( "fifth" ) );
 
     }
 
@@ -3193,8 +3190,6 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg1 );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
-        logger.setFileName( "log_20080401" );
 
         try {
             final List orderedFacts = new ArrayList();
@@ -3219,7 +3214,6 @@ public class MiscTest extends TestCase {
                                      n.getIndex() );
             }
         } finally {
-            logger.writeToDisk();
         }
     }
 
@@ -5178,13 +5172,13 @@ public class MiscTest extends TestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         DefaultFactHandle handle = ( DefaultFactHandle ) ksession.insert( "hello" );
-        LeftTuple leftTuple = handle.getLeftTuple();
+        LeftTuple leftTuple = handle.getFirstLeftTuple();
         assertNotNull( leftTuple );
         assertNotNull( leftTuple.getLeftParentNext() );
         
         kbase.removeRule( "org.drools", "rule2" );
         
-        leftTuple = handle.getLeftTuple();
+        leftTuple = handle.getFirstLeftTuple();
         assertNotNull( leftTuple );
         assertNull( leftTuple.getLeftParentNext() );        
 
@@ -5958,9 +5952,6 @@ public class MiscTest extends TestCase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         try {
-            final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
-            logger.setFileName( "testLogger" );
-
             wm.fireAllRules();
 
             wm.insert( new Cheese( "a",
@@ -5970,7 +5961,6 @@ public class MiscTest extends TestCase {
 
             wm.fireAllRules();
 
-            //            logger.writeToDisk();
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "No exception should be raised " );

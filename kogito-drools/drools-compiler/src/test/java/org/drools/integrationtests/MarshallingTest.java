@@ -56,7 +56,6 @@ import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.marshalling.impl.RuleBaseNodes;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooStatefulSession;

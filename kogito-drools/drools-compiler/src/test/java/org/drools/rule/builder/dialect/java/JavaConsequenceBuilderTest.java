@@ -135,8 +135,12 @@ public class JavaConsequenceBuilderTest extends TestCase {
                                                   analysis,
                                                   (String) ruleDescr.getConsequence() );
 
-            String expected = " System.out.println(\"this is a test\");\n" + "{ org.drools.Cheese __obj__ = (org.drools.Cheese) ( $cheese );\n" + "modifyRetract( __obj__ );\n" + "__obj__.setPrice( 10 );\n" + "__obj__.setAge( age );\n"
-                              + "modifyInsert( __obj__ );}\n" + "System.out.println(\"we are done\");\n";
+            String expected = " System.out.println(\"this is a test\");\n" + 
+                              "{ org.drools.Cheese __obj__ = (org.drools.Cheese) ( $cheese );\n" + 
+                              "__obj__.setPrice( 10 );\n" + 
+                              "__obj__.setAge( age );\n" + 
+                              "update( __obj__ );}\n" + 
+                              "System.out.println(\"we are done\");\n";
 
             assertNotNull( context.getErrors().toString(),
                            fixed );

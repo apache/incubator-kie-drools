@@ -23,7 +23,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
@@ -296,122 +295,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
                       this.sink.getRetracted().size() );
         assertEquals( 1,
                       this.sink.getAsserted().size() );
-    }
-
-    /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
-     */
-    public void testAssertObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  null,
-                                                                                                                  null );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  null,
-                                                                                                                  null );
-
-        final LeftTuple tuple0 = new LeftTuple( f0,
-                                                null,
-                                                true );
-
-        // assert tuple, should add one to left memory
-        this.node.assertLeftTuple( tuple0,
-                                   this.context,
-                                   this.workingMemory );
-
-        // check memory 
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 1,
-                      this.sink.getAsserted().size() );
-        assertEquals( 0,
-                      this.accumulator.getMatchingObjects().size() );
-
-        this.node.assertObject( f0,
-                                this.context,
-                                this.workingMemory );
-        assertEquals( 1,
-                      this.memory.getRightTupleMemory().size() );
-        assertEquals( 2,
-                      this.sink.getAsserted().size() );
-        assertEquals( 1,
-                      this.accumulator.getMatchingObjects().size() );
-
-        this.node.assertObject( f1,
-                                this.context,
-                                this.workingMemory );
-
-        assertEquals( 2,
-                      this.memory.getRightTupleMemory().size() );
-        assertEquals( 3,
-                      this.sink.getAsserted().size() );
-        assertEquals( 2,
-                      this.accumulator.getMatchingObjects().size() );
-
-    }
-
-    /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#retractObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
-     */
-    public void testRetractObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  null,
-                                                                                                                  null );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  null,
-                                                                                                                  null );
-
-        final LeftTuple tuple0 = new LeftTuple( f0,
-                                                null,
-                                                true );
-
-        this.node.assertObject( f0,
-                                this.context,
-                                this.workingMemory );
-        this.node.assertObject( f1,
-                                this.context,
-                                this.workingMemory );
-        assertEquals( 2,
-                      this.memory.getRightTupleMemory().size() );
-
-        // assert tuple, should add one to left memory
-        this.node.assertLeftTuple( tuple0,
-                                   this.context,
-                                   this.workingMemory );
-
-        // check memory 
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 0,
-                      this.sink.getRetracted().size() );
-        assertEquals( 1,
-                      this.sink.getAsserted().size() );
-        assertEquals( 2,
-                      this.accumulator.getMatchingObjects().size() );
-
-        this.node.retractRightTuple( f1.getRightTuple(),
-                                     this.context,
-                                     this.workingMemory );
-        assertEquals( 1,
-                      this.memory.getRightTupleMemory().size() );
-        assertEquals( 1,
-                      this.sink.getRetracted().size() );
-        assertEquals( 2,
-                      this.sink.getAsserted().size() );
-        assertEquals( 1,
-                      this.accumulator.getMatchingObjects().size() );
-
-        this.node.retractRightTuple( f0.getRightTuple(),
-                                     this.context,
-                                     this.workingMemory );
-        assertEquals( 0,
-                      this.memory.getRightTupleMemory().size() );
-        assertEquals( 2,
-                      this.sink.getRetracted().size() );
-        assertEquals( 3,
-                      this.sink.getAsserted().size() );
-        assertEquals( 0,
-                      this.accumulator.getMatchingObjects().size() );
-
     }
 
     public void testMemory() {

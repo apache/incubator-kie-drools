@@ -9,7 +9,6 @@ when
 then
     results.add( $c );
     retract( $c );
-    modifyRetract( $p );
     $p.setStatus( "full" );
-    modifyInsert( $p );
+    update( $p );
 end

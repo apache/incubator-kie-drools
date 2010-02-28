@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.RuleBasePartitionId;
@@ -160,7 +161,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         
     }
 
-    @Override
     public void networkUpdated() {
         // TODO Auto-generated method stub
         
@@ -169,6 +169,21 @@ public class MockLeftTupleSink extends LeftTupleSource
     public short getType() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

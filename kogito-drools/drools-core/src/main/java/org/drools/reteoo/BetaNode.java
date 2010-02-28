@@ -30,7 +30,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.core.util.ConcurrentRightTupleList;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
@@ -59,7 +58,7 @@ public abstract class BetaNode extends LeftTupleSource
     ObjectSinkNode,
     RightTupleSink,
     NodeMemory {
-    
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------    
@@ -80,7 +79,7 @@ public abstract class BetaNode extends LeftTupleSource
     private ObjectSinkNode    previousObjectSinkNode;
     private ObjectSinkNode    nextObjectSinkNode;
 
-    protected boolean         objectMemory = true;   // hard coded to true
+    protected boolean         objectMemory               = true; // hard coded to true
     protected boolean         tupleMemoryEnabled;
     protected boolean         concurrentRightTupleMemory = false;
 
@@ -132,7 +131,7 @@ public abstract class BetaNode extends LeftTupleSource
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
-        
+
         super.readExternal( in );
     }
 
@@ -148,7 +147,7 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
-        
+
         super.writeExternal( out );
     }
 
@@ -162,7 +161,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
         return array;
     }
-    
+
     public Behavior[] getBehaviors() {
         return this.behavior.getBehaviors();
     }
@@ -180,8 +179,8 @@ public abstract class BetaNode extends LeftTupleSource
         this.leftInput.networkUpdated();
     }
 
-    public List getRules() {
-        final List list = new ArrayList();
+    public List<String> getRules() {
+        final List<String> list = new ArrayList<String>();
 
         final LeftTupleSink[] sinks = this.sink.getSinks();
         for ( int i = 0, length = sinks.length; i < length; i++ ) {
@@ -230,8 +229,9 @@ public abstract class BetaNode extends LeftTupleSource
         context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
+            
         }
-        if ( !this.isInUse() ) {
+        if ( !this.isInUse() || context.getCleanupAdapter() != null ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 BetaMemory memory = null;
                 Object object = workingMemories[i].getNodeMemory( this );
@@ -239,10 +239,8 @@ public abstract class BetaNode extends LeftTupleSource
                 // handle special cases for Collect and Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
                 if ( object instanceof CollectMemory ) {
-                    ((CollectNode) this).doRemove( workingMemories[i], ( CollectMemory ) object );
                     memory = (( CollectMemory )object).betaMemory;
                 } else if ( object instanceof AccumulateMemory ) {
-                    ((AccumulateNode) this).doRemove( workingMemories[i], ( AccumulateMemory ) object );
                     memory = (( AccumulateMemory )object).betaMemory;
                 } else {
                     memory = ( BetaMemory ) object;
@@ -250,33 +248,50 @@ public abstract class BetaNode extends LeftTupleSource
                 
                 Iterator it = memory.getLeftTupleMemory().iterator();
                 for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+                    if( context.getCleanupAdapter() != null ) {
+                        for( LeftTuple child = leftTuple.firstChild; child != null; child = child.getLeftParentNext() ) {
+                            if( child.getLeftTupleSink() == this ) {
+                                // this is a match tuple on collect and accumulate nodes, so just unlink it
+                                leftTuple.unlinkFromLeftParent();
+                                leftTuple.unlinkFromRightParent();
+                            } else {
+                                context.getCleanupAdapter().cleanUp( child, workingMemories[i] );
+                            }
+                        }
+                    }
                     leftTuple.unlinkFromLeftParent();
                     leftTuple.unlinkFromRightParent();
                 }
-                
-                it = memory.getRightTupleMemory().iterator();
-                for ( RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next() ) {
-                    if ( rightTuple.getBlocked() != null ) {
-                        // special case for a not, so unlink left tuple from here, as they aren't in the left memory
-                        for ( LeftTuple leftTuple = (LeftTuple)rightTuple.getBlocked(); leftTuple != null; ) {
-                            LeftTuple temp = leftTuple.getBlockedNext();
-          
-                            leftTuple.setBlocker( null );
-                            leftTuple.setBlockedPrevious( null );
-                            leftTuple.setBlockedNext( null );
-                            leftTuple.unlinkFromLeftParent();
-                            leftTuple = temp;
-                        }                        
-                    }
-                    
-                    if ( rightTuple.getRightTupleSink() == null ) {
-                        // special case for FromNode
-                        workingMemories[i].getFactHandleFactory().destroyFactHandle( rightTuple.getFactHandle() );
-                    }
-                    rightTuple.unlinkFromRightParent();
-                }                
-                workingMemories[i].clearNodeMemory( this );
+
+                // handle special cases for Collect and Accumulate to make sure they tidy up their specific data
+                // like destroying the local FactHandles
+                if ( object instanceof CollectMemory ) {
+                    ((CollectNode) this).doRemove( workingMemories[i], ( CollectMemory ) object );
+                } else if ( object instanceof AccumulateMemory ) {
+                    ((AccumulateNode) this).doRemove( workingMemories[i], ( AccumulateMemory ) object );
+                }
+
+                if( ! this.isInUse() ) {
+                    it = memory.getRightTupleMemory().iterator();
+                    for ( RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next() ) {
+                        if ( rightTuple.getBlocked() != null ) {
+                            // special case for a not, so unlink left tuple from here, as they aren't in the left memory
+                            for ( LeftTuple leftTuple = (LeftTuple)rightTuple.getBlocked(); leftTuple != null; ) {
+                                LeftTuple temp = leftTuple.getBlockedNext();
+              
+                                leftTuple.setBlocker( null );
+                                leftTuple.setBlockedPrevious( null );
+                                leftTuple.setBlockedNext( null );
+                                leftTuple.unlinkFromLeftParent();
+                                leftTuple = temp;
+                            }                        
+                        }
+                        rightTuple.unlinkFromRightParent();
+                    }                
+                    workingMemories[i].clearNodeMemory( this );
+                }
             }
+            context.setCleanupAdapter( null );
         }
         this.rightInput.remove( context,
                                 builder,
@@ -289,6 +304,46 @@ public abstract class BetaNode extends LeftTupleSource
                                    workingMemories );
         }
 
+    }
+
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
+        if ( rightTuple != null ) {
+            rightTuple.reAdd();
+            // RightTuple previously existed, so continue as modify
+            modifyRightTuple( rightTuple,
+                              context,
+                              workingMemory );
+        } else {
+            // RightTuple does not exist, so create and continue as assert
+            assertObject( factHandle,
+                          context,
+                          workingMemory );
+        }
+    }
+
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
+        if ( leftTuple != null ) {
+            leftTuple.reAdd(); //
+            // LeftTuple previously existed, so continue as modify
+            modifyLeftTuple( leftTuple,
+                             context,
+                             workingMemory );
+        } else {
+            // LeftTuple does not exist, so create and continue as assert
+            assertLeftTuple( new LeftTuple( factHandle,
+                                            this,
+                                            true ),
+                             context,
+                             workingMemory );
+        }
     }
 
     public boolean isObjectMemoryEnabled() {
@@ -306,18 +361,16 @@ public abstract class BetaNode extends LeftTupleSource
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
-    
-    
 
     public boolean isConcurrentRightTupleMemory() {
-		return concurrentRightTupleMemory;
-	}
+        return concurrentRightTupleMemory;
+    }
 
-	public void setConcurrentRightTupleMemory(boolean concurrentRightTupleMemory) {
-		this.concurrentRightTupleMemory = concurrentRightTupleMemory;
-	}
+    public void setConcurrentRightTupleMemory(boolean concurrentRightTupleMemory) {
+        this.concurrentRightTupleMemory = concurrentRightTupleMemory;
+    }
 
-	public String toString() {
+    public String toString() {
         return "[ " + this.getClass().getSimpleName() + "(" + this.id + ") ]";
     }
 
@@ -430,16 +483,16 @@ public abstract class BetaNode extends LeftTupleSource
     public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
-    
+
     public RightTuple createRightTuple(InternalFactHandle handle,
                                        RightTupleSink sink) {
         if ( !this.concurrentRightTupleMemory ) {
-            return new RightTuple(handle,
-                                  sink);
+            return new RightTuple( handle,
+                                   sink );
         } else {
-            return new ConcurrentRightTuple(handle,
-                                            sink);
+            return new ConcurrentRightTuple( handle,
+                                             sink );
         }
     }
-    
+
 }

@@ -8,8 +8,6 @@ public interface RightTupleMemory {
     
     public RightTuple getFirst(RightTuple rightTuple);
 
-    public RightTuple getLast(LeftTuple leftTuple);
-
     public void add(RightTuple rightTuple);
 
     public void remove(RightTuple rightTuple);

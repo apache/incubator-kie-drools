@@ -22,13 +22,7 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
                        Object object,
                        Rule rule,
                        Activation activation) throws FactException;
-    public void modifyRetract(final FactHandle factHandle,
-                              final Rule rule,
-                              final Activation activation);
-    public void modifyInsert(final FactHandle factHandle,
-                             final Object object,
-                             final Rule rule,
-                             final Activation activation);
+
     public EntryPoint getEntryPoint();
     public InternalWorkingMemory getInternalWorkingMemory();
 

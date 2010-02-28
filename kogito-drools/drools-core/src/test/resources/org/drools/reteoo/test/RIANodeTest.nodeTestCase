@@ -1,0 +1,65 @@
+TestCase "Right Input Adapter Node test case"
+
+import org.drools.Cheese;
+import org.drools.Person;
+
+Setup
+	RightInputAdapterNode:
+	    ria, mock;
+	BetaNodeStep:
+	    sink, mock, ria;
+	Facts:
+	    new Person('darth', 35, "brie"),     // h0     
+	    new Person('bobba', 36, 'stilton'),  // h1
+	    new Cheese('brie', 10),              // h2
+	    new Cheese('brie', 12);              // h3
+	
+/**
+ * check single left assertion and retraction
+ */
+Test "RIA assert/retract"	
+	assert:
+	    ria, [[h0, h2]];
+	ria:
+	    leftMemory, [[h0, h2]];
+	sink:
+	    verify, assertRight, count, 1;
+	    // since it is a right assert, the tuple is wrapped into a fact handle
+	    verify, assertRight, handle0.object.toFactHandles()[0], is( h0 );  
+	    verify, assertRight, handle0.object.toFactHandles()[1], is( h2 );
+	retract:
+	    ria, [[h0, h2]];   
+	ria:
+	    leftMemory, [];
+	sink:
+	    verify, retractRight, count, 1;
+	    
+/**    
+ * check single right assertion and retraction
+ */
+Test "RIA assert, modify, retract"
+	assert:
+	    ria, [[h0, h2]];
+	ria:
+	    leftMemory, [[h0, h2]];
+	sink:
+	    verify, assertRight, count, 1;
+	    // since it is a right assert, the tuple is wrapped into a fact handle
+	    verify, assertRight, handle0.object.toFactHandles()[0], is( h0 );  
+	    verify, assertRight, handle0.object.toFactHandles()[1], is( h2 );
+	modify:
+		ria, [[h0, h2]];
+	sink:
+	    verify, assertRight, count, 1; // still 1
+	    verify, modifyRight, count, 1;
+	    verify, modifyRight, handle0.object.toFactHandles()[0], is( h0 );  
+	    verify, modifyRight, handle0.object.toFactHandles()[1], is( h2 );
+	retract:
+	    ria, [[h0, h2]];   
+	ria:
+	    leftMemory, [];
+	sink:
+	    verify, assertRight, count, 1; // still 1
+	    verify, modifyRight, count, 1; // still 1
+	    verify, retractRight, count, 1;
+	

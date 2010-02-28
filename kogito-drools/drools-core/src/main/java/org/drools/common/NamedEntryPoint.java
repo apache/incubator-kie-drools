@@ -236,8 +236,6 @@ public class NamedEntryPoint
                                                                       object,
                                                                       this.wm );
 
-            propagationContext.clearRetractedTuples();
-
             this.wm.executeQueuedActions();
         } finally {
             this.wm.endOperation();
@@ -429,8 +427,6 @@ public class NamedEntryPoint
                                                                       originalObject,
                                                                       object,
                                                                       this.wm );
-
-            propagationContext.clearRetractedTuples();
 
             this.wm.executeQueuedActions();
         } finally {

@@ -24,13 +24,13 @@ public class ConcurrentRightTuple extends RightTuple {
         this.previous = new AtomicReference<Entry>();
         this.next = new AtomicReference<Entry>();
 
-        RightTuple currentFirst = handle.getRightTuple();
+        RightTuple currentFirst = handle.getFirstRightTuple();
         if ( currentFirst != null ) {
             currentFirst.setHandlePrevious( this );
             setHandleNext( currentFirst );
         }
 
-        handle.setRightTuple( this );
+        handle.setFirstRightTuple( this );
     }
 
     public RightTupleList getMemory() {

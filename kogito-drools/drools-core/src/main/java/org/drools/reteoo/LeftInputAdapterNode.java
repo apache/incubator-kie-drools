@@ -20,11 +20,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.core.util.RightTupleList;
@@ -43,19 +41,18 @@ import org.drools.spi.PropagationContext;
  */
 public class LeftInputAdapterNode extends LeftTupleSource
     implements
-    ObjectSinkNode,
-    NodeMemory {
+    ObjectSinkNode {
 
     /**
      *
      */
-    private static final long   serialVersionUID = 400L;
-    private ObjectSource        objectSource;
+    private static final long serialVersionUID = 400L;
+    private ObjectSource      objectSource;
 
-    private ObjectSinkNode previousRightTupleSinkNode;
-    private ObjectSinkNode nextRightTupleSinkNode;
-    
-    private boolean leftTupleMemoryEnabled;
+    private ObjectSinkNode    previousRightTupleSinkNode;
+    private ObjectSinkNode    nextRightTupleSinkNode;
+
+    private boolean           leftTupleMemoryEnabled;
 
     public LeftInputAdapterNode() {
 
@@ -144,14 +141,28 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                                          workingMemory,
                                                          this.leftTupleMemoryEnabled );
         } else {
-            workingMemory.addLIANodePropagation( new LIANodePropagation(this, factHandle, context) );
+            workingMemory.addLIANodePropagation( new LIANodePropagation( this,
+                                                                         factHandle,
+                                                                         context ) );
         }
+    }
+
+    public void modifyObject(InternalFactHandle factHandle,
+                             final ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        this.sink.propagateModifyObject( factHandle,
+                                         modifyPreviousTuples,
+                                         context,
+                                         workingMemory );
+
     }
 
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final RightTupleSinkAdapter adapter = new RightTupleSinkAdapter( sink, this.leftTupleMemoryEnabled );
+        final RightTupleSinkAdapter adapter = new RightTupleSinkAdapter( sink,
+                                                                         this.leftTupleMemoryEnabled );
         this.objectSource.updateSink( adapter,
                                       context,
                                       workingMemory );
@@ -164,11 +175,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
-        }
-        if ( !this.isInUse() ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                workingMemories[i].clearNodeMemory( this );
-            }
         }
         this.objectSource.remove( context,
                                   builder,
@@ -230,10 +236,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.objectSource.equals( other.objectSource );
     }
 
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return new RightTupleList();
-    }
-
     /**
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
@@ -244,9 +246,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
         implements
         ObjectSink {
         private LeftTupleSink sink;
-        private boolean leftTupleMemoryEnabled;
+        private boolean       leftTupleMemoryEnabled;
 
-        public RightTupleSinkAdapter(final LeftTupleSink sink, boolean leftTupleMemoryEnabled) {
+        public RightTupleSinkAdapter(final LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
             this.sink = sink;
             this.leftTupleMemoryEnabled = leftTupleMemoryEnabled;
         }
@@ -268,6 +271,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
 
+        public void modifyObject(InternalFactHandle factHandle,
+                                 ModifyPreviousTuples modifyPreviousTuples,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+        }
+
         public int getId() {
             return 0;
         }
@@ -276,15 +286,17 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return sink.getPartitionId();
         }
 
-        public void writeExternal( ObjectOutput out ) throws IOException {
+        public void writeExternal(ObjectOutput out) throws IOException {
             // this is a short living adapter class used only during an update operation, and
             // as so, no need for serialization code
         }
 
-        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
             // this is a short living adapter class used only during an update operation, and
             // as so, no need for serialization code
         }
+
     }
 
 }

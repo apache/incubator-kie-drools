@@ -627,5 +627,19 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             // TODO Auto-generated method stub
             return 0;
         }
+
+        public void modifyLeftTuple(LeftTuple leftTuple,
+                                    PropagationContext context,
+                                    InternalWorkingMemory workingMemory) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void modifyRightTuple(RightTuple rightTuple,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory) {
+            // TODO Auto-generated method stub
+            
+        }
     }
 }

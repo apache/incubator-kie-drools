@@ -373,14 +373,6 @@ public class StatefulKnowledgeSessionImpl
         ((AbstractWorkingMemory)this.session).update((org.drools.FactHandle)factHandle, object, rule, activation);
     }
 
-    public void modifyRetract(org.drools.FactHandle factHandle, Rule rule, Activation activation) {
-        ((AbstractWorkingMemory)this.session).modifyRetract(factHandle, rule, activation);
-    }
-
-    public void modifyInsert(org.drools.FactHandle factHandle, Object object, Rule rule, Activation activation) {
-        ((AbstractWorkingMemory)this.session).modifyInsert(factHandle, object, rule, activation);
-    }
-
     public EntryPoint getEntryPoint() {
         return session.getEntryPoint();
     }
