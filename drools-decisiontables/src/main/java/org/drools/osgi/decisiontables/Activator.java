@@ -9,6 +9,7 @@ import java.util.Hashtable;
 //import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
 //import org.drools.io.ResourceFactoryService;
 //import org.drools.io.impl.ResourceFactoryServiceImpl;
+import org.drools.Service;
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.decisiontable.DecisionTableProviderImpl;
 import org.osgi.framework.BundleActivator;
@@ -22,7 +23,7 @@ public class Activator
 
     public void start(BundleContext bc) throws Exception {
     	System.out.println( "registering decision tables drools services" );
-        this.kdtableReg = bc.registerService(  DecisionTableProvider.class.getName(),
+        this.kdtableReg = bc.registerService(  new String[]{ DecisionTableProvider.class.getName(), Service.class.getName()},
                                                new DecisionTableProviderImpl(),
                                                new Hashtable() );
         System.out.println( "drools decision tables services registered" );

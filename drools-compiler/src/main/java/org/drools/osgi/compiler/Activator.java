@@ -6,11 +6,14 @@ import java.util.Hashtable;
 import org.drools.Service;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl;
+import org.drools.compiler.BPMN2ProcessFactory;
+import org.drools.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.osgi.api.Activator.BundleContextInstantiator;
 import org.drools.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
@@ -30,7 +33,11 @@ public class Activator
                                                new Hashtable() );
 
         this.dtableTracker = new ServiceTracker( bc,
-                                                 DecisionTableProvider.class.getName(),
+                                                 bc.createFilter( "(|(" + 
+                                                                  Constants.OBJECTCLASS + "=" + 
+                                                                  DecisionTableProvider.class.getName() + ")(" + 
+                                                                  Constants.OBJECTCLASS + "=" + 
+                                                                  BPMN2ProcessProvider.class.getName() +") )"),
                                                  new DroolsServiceTracker( bc,
                                                                            this ) );
         this.dtableTracker.open();
@@ -57,7 +64,7 @@ public class Activator
 
         public Object addingService(ServiceReference ref) {
             Service service = (Service) this.bc.getService( ref );
-            System.out.println( "registering : " + service + " : " + service.getClass().getInterfaces()[0] );
+            System.out.println( "registering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
 
             Dictionary dic = new Hashtable();
             ServiceReference regServiceRef = this.activator.kbuilderReg.getReference();
@@ -84,6 +91,7 @@ public class Activator
                                    Object arg1) {
             Service service = (Service) bc.getService( ref );
             ServiceRegistryImpl.getInstance().unregisterLocator( service.getClass().getInterfaces()[0] );
+            System.out.println( "unregistering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );            
         }
     }
 

@@ -1,5 +1,8 @@
 package org.drools.compiler;
 
+import org.drools.KnowledgeBaseFactoryService;
+import org.drools.util.ServiceRegistryImpl;
+
 
 public class BPMN2ProcessFactory {
 
@@ -21,16 +24,9 @@ public class BPMN2ProcessFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void loadProvider() {
-		try {
-			// we didn't find anything in properties so lets try and us reflection
-			Class<BPMN2ProcessProvider> cls = (Class<BPMN2ProcessProvider>)
-				Class.forName("org.drools.bpmn2.BPMN2ProcessProviderImpl");
-			setBPMN2ProcessProvider(cls.newInstance());
-		} catch (Exception e2) {
-			throw new RuntimeException(
-				"Provider org.drools.bpmn2.BPMN2ProcessProviderImpl could not be set.", e2);
-		}
+	private static void loadProvider() {	    	    	    
+        ServiceRegistryImpl.getInstance().addDefault( BPMN2ProcessProvider.class,  "org.drools.bpmn2.BPMN2ProcessProviderImpl" );            
+        setBPMN2ProcessProvider(ServiceRegistryImpl.getInstance().get( BPMN2ProcessProvider.class ) );	    
 	}
 	
 }
