@@ -353,32 +353,7 @@ public class DefaultAgenda
 
             // do not add the activation if the rule is "lock-on-active" and the
             // AgendaGroup is active
-            // we must check the context to determine if its a new tuple or an
-            // exist re-activated tuple as part of the retract
-            if ( activation.getPropagationContext().getType() == PropagationContext.MODIFICATION ) {
-                if ( activation.getRule().isLockOnActive() && agendaGroup.isActive() ) {
-                    Activation justifier = activation.getPropagationContext().removeRetractedTuple( activation.getRule(),
-                                                                                                    (LeftTuple) activation.getTuple() );
-
-                    if ( justifier == null ) {
-                        // This rule is locked and active, do not allow new
-                        // tuples to activate
-                        return false;
-                    } else if ( activation.getRule().hasLogicalDependency() ) {
-                        copyLogicalDependencies( activation.getPropagationContext(),
-                                                 workingMemory,
-                                                 activation,
-                                                 justifier );
-                    }
-                } else if ( activation.getRule().hasLogicalDependency() ) {
-                    Activation justifier = activation.getPropagationContext().removeRetractedTuple( activation.getRule(),
-                                                                                                    (LeftTuple) activation.getTuple() );
-                    copyLogicalDependencies( activation.getPropagationContext(),
-                                             workingMemory,
-                                             activation,
-                                             justifier );
-                }
-            } else if ( activation.getRule().isLockOnActive() && agendaGroup.isActive() ) {
+            if ( activation.getRule().isLockOnActive() && agendaGroup.isActive() ) {
                 return false;
             }
 
@@ -389,36 +364,11 @@ public class DefaultAgenda
 
             // do not add the activation if the rule is "lock-on-active" and the
             // RuleFlowGroup is active
-            // we must check the context to determine if its a new tuple or an
-            // exist re-activated tuple as part of the retract
-            if ( activation.getPropagationContext().getType() == PropagationContext.MODIFICATION ) {
-                if ( activation.getRule().isLockOnActive() && rfg.isActive() ) {
-                    Activation justifier = activation.getPropagationContext().removeRetractedTuple( activation.getRule(),
-                                                                                                    (LeftTuple) activation.getTuple() );
-                    if ( justifier == null ) {
-                        // This rule is locked and active, do not allow new
-                        // tuples to activate
-                        return false;
-                    } else if ( activation.getRule().hasLogicalDependency() ) {
-                        copyLogicalDependencies( activation.getPropagationContext(),
-                                                 workingMemory,
-                                                 activation,
-                                                 justifier );
-                    }
-                } else if ( activation.getRule().hasLogicalDependency() ) {
-                    Activation justifier = activation.getPropagationContext().removeRetractedTuple( activation.getRule(),
-                                                                                                    (LeftTuple) activation.getTuple() );
-                    copyLogicalDependencies( activation.getPropagationContext(),
-                                             workingMemory,
-                                             activation,
-                                             justifier );
-                }
-            } else if ( activation.getRule().isLockOnActive() && rfg.isActive() ) {
+            if ( activation.getRule().isLockOnActive() && rfg.isActive() ) {
                 return false;
             }
 
             rfg.addActivation( activation );
-
         }
 
         // making sure we re-evaluate agenda in case we are waiting for activations
@@ -427,24 +377,6 @@ public class DefaultAgenda
         }
         return true;
 
-    }
-
-    private void copyLogicalDependencies(final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory,
-                                         final AgendaItem item,
-                                         Activation justifier) {
-        if ( justifier != null ) {
-            final org.drools.core.util.LinkedList list = justifier.getLogicalDependencies();
-            if ( list != null && !list.isEmpty() ) {
-                for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
-                    final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
-                    workingMemory.getTruthMaintenanceSystem().addLogicalDependency( handle,
-                                                                                    item,
-                                                                                    context,
-                                                                                    item.getRule() );
-                }
-            }
-        }
     }
 
     public void removeScheduleItem(final ScheduledAgendaItem item) {
@@ -958,8 +890,7 @@ public class DefaultAgenda
                                                                             this.workingMemory );
 
             if ( activation.getActivationGroupNode() != null ) {
-                // We know that this rule will cancel all other activatiosn in the
-                // group
+                // We know that this rule will cancel all other activations in the group
                 // so lets remove the information now, before the consequence fires
                 final ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
                 activationGroup.removeActivation( activation );

@@ -25,6 +25,8 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.common.InternalWorkingMemory;
+
 /**
  * This context class is used during rule removal to ensure
  * network consistency.
@@ -36,15 +38,17 @@ public class RuleRemovalContext
     implements
     Externalizable {
 
-    private Map visitedNodes;
+    private Map<Integer, LeftTupleSource> visitedNodes;
+    private CleanupAdapter cleanupAdapter;
 
     public RuleRemovalContext() {
-        this.visitedNodes = new HashMap();
+        this.visitedNodes = new HashMap<Integer, LeftTupleSource>();
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        visitedNodes = (Map) in.readObject();
+        visitedNodes = (Map<Integer, LeftTupleSource>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -75,5 +79,18 @@ public class RuleRemovalContext
 
     public void clear() {
         this.visitedNodes.clear();
+    }
+    
+    public void setCleanupAdapter(CleanupAdapter cleanupAdapter) {
+        this.cleanupAdapter = cleanupAdapter;
+    }
+
+    public CleanupAdapter getCleanupAdapter() {
+        return cleanupAdapter;
+    }
+
+    public static interface CleanupAdapter { 
+        public void cleanUp(final LeftTuple leftTuple,
+                            final InternalWorkingMemory workingMemory);
     }
 }

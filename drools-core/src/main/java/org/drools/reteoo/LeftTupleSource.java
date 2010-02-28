@@ -88,7 +88,7 @@ public abstract class LeftTupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addTupleSink(final LeftTupleSink tupleSink) {
+    public void addTupleSink(final LeftTupleSink tupleSink) {
         if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
             if( this.partitionsEnabled && ! this.partitionId.equals( tupleSink.getPartitionId() ) ) {
                 // if partitions are enabled and the next node belongs to a different partition,

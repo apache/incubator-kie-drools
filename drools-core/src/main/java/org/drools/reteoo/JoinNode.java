@@ -25,34 +25,9 @@ import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
 
 /**
- * <code>JoinNode</code> extends <code>BetaNode</code> to perform
- * <code>ReteTuple</code> and <code>FactHandle</code> joins. Tuples are
- * considered to be asserted from the left input and facts from the right input.
- * The <code>BetaNode</code> provides the BetaMemory to store assserted
- * ReteTuples and
- * <code>FactHandleImpl<code>s. Each fact handle is stored in the right memory as a key in a <code>HashMap</code>, the value is an <code>ObjectMatches</code>
- * instance which maintains a <code>LinkedList of <code>TuplesMatches - The tuples that are matched with the handle. the left memory is a <code>LinkedList</code>
- * of <code>ReteTuples</code> which maintains a <code>HashMa</code>, where the keys are the matching <code>FactHandleImpl</code>s and the value is
- * populated <code>TupleMatche</code>es, the keys are matched fact handles. <code>TupleMatch</code> maintains a <code>List</code> of resulting joins,
- * where there is joined <code>ReteTuple</code> per <code>TupleSink</code>.
- *
- *
- * The BetaNode provides
- * the BetaMemory which stores the
- *
- * @see BetaNode
- * @see ObjectMatches
- * @see TupleMatch
- * @see LeftTupleSink
- *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
 public class JoinNode extends BetaNode {
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------    
 
     /**
      *
@@ -79,24 +54,6 @@ public class JoinNode extends BetaNode {
         tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
-    /**
-     * Assert a new <code>ReteTuple</code>. The right input of
-     * <code>FactHandleInput</code>'s is iterated and joins attemped, via the
-     * binder, any successful bindings results in joined tuples being created
-     * and propaged. there is a joined tuple per TupleSink.
-     *
-     * @see LeftTuple
-     * @see ObjectMatches
-     * @see LeftTupleSink
-     * @see TupleMatch
-     *
-     * @param tuple
-     *            The <code>Tuple</code> being asserted.
-     * @param context
-     *            The <code>PropagationContext</code>
-     * @param workingMemory
-     *            The working memory seesion.
-     */
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
@@ -124,57 +81,6 @@ public class JoinNode extends BetaNode {
         this.constraints.resetTuple( memory.getContext() );
     }
 
-    //    public void assertLeftTuple(final LeftTuple leftTuple,
-    //                                RightTuple rightTuple,
-    //                                final PropagationContext context,
-    //                                final InternalWorkingMemory workingMemory) {
-    //        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-    //
-    //        if ( this.tupleMemoryEnabled ) {
-    //            memory.getLeftTupleMemory().add( leftTuple );
-    //        }
-    //
-    //        this.constraints.updateFromTuple( memory.getContext(),
-    //                                          workingMemory,
-    //                                          leftTuple );
-    //        if ( rightTuple == null ) {
-    //            rightTuple = memory.getRightTupleMemory().getFirst( leftTuple );
-    //        }
-    //        
-    //        boolean suspend = false;
-    //        for ( ;rightTuple != null && !suspend; rightTuple = (RightTuple) rightTuple.getNext() ) {
-    //            final InternalFactHandle handle = rightTuple.getFactHandle();
-    //            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
-    //                                                       handle ) ) {
-    //                this.sink.propagateAssertLeftTuple( leftTuple,
-    //                                                    rightTuple,
-    //                                                    context,
-    //                                                    workingMemory,
-    //                                                    this.tupleMemoryEnabled );
-    //            }
-    //        }
-    //
-    //        this.constraints.resetTuple( memory.getContext() );
-    //    }    
-
-    /**
-     * Assert a new <code>FactHandleImpl</code>. The left input of
-     * <code>ReteTuple</code>s is iterated and joins attemped, via the
-     * binder, any successful bindings results in joined tuples being created
-     * and propaged. there is a joined tuple per TupleSink.
-     *
-     * @see LeftTuple
-     * @see ObjectMatches
-     * @see LeftTupleSink
-     * @see TupleMatch
-     *
-     * @param factHandle
-     *            The <code>FactHandleImpl</code> being asserted.
-     * @param context
-     *            The <code>PropagationContext</code>
-     * @param workingMemory
-     *            The working memory seesion.
-     */
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
@@ -216,17 +122,6 @@ public class JoinNode extends BetaNode {
         this.constraints.resetFactHandle( memory.getContext() );
     }
 
-    /**
-     * Retract a FactHandleImpl. Iterates the referenced TupleMatches stored in
-     * the handle's ObjectMatches retracting joined tuples.
-     *
-     * @param handle
-     *            the <codeFactHandleImpl</code> being retracted
-     * @param context
-     *            The <code>PropagationContext</code>
-     * @param workingMemory
-     *            The working memory seesion.
-     */
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
@@ -236,35 +131,196 @@ public class JoinNode extends BetaNode {
                                     workingMemory );
         memory.getRightTupleMemory().remove( rightTuple );
 
-        if ( rightTuple.getBetaChildren() != null ) {
+        if ( rightTuple.firstChild != null ) {
             this.sink.propagateRetractRightTuple( rightTuple,
                                                   context,
                                                   workingMemory );
         }
     }
 
-    /**
-     * Retract a <code>ReteTuple</code>. Iterates the referenced
-     * <code>TupleMatche</code>'s stored in the tuples <code>Map</code>
-     * retracting all joined tuples.
-     *
-     * @param key
-     *            The tuple key.
-     * @param context
-     *            The <code>PropagationContext</code>
-     * @param workingMemory
-     *            The working memory seesion.
-     */
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getLeftTupleMemory().remove( leftTuple );
-        if ( leftTuple.getBetaChildren() != null ) {
+        if ( leftTuple.firstChild != null ) {
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
                                                  workingMemory );
         }
+    }
+
+    public void modifyRightTuple(final RightTuple rightTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        // WTD here
+        //                if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
+        //                                                 rightTuple,
+        //                                                 workingMemory ) ) {
+        //                    // destroy right tuple
+        //                    rightTuple.unlinkFromRightParent();
+        //                    return;
+        //                }
+
+        // Add and remove to make sure we are in the right bucket and at the end
+        // this is needed to fix for indexing and deterministic iteration
+        memory.getRightTupleMemory().remove( rightTuple );
+        memory.getRightTupleMemory().add( rightTuple );
+
+        LeftTuple childLeftTuple = rightTuple.firstChild;
+
+        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
+
+        LeftTuple leftTuple = leftMemory.getFirst( rightTuple );
+
+        this.constraints.updateFromFactHandle( memory.getContext(),
+                                               workingMemory,
+                                               rightTuple.getFactHandle() );
+
+        // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
+        if ( childLeftTuple != null && leftMemory.isIndexed() && leftTuple != leftMemory.getFirst( childLeftTuple.getLeftParent() ) ) {
+            // our index has changed, so delete all the previous propagations
+            this.sink.propagateRetractRightTuple( rightTuple,
+                                                  context,
+                                                  workingMemory );
+
+            childLeftTuple = null; // null so the next check will attempt matches for new bucket
+        }
+
+        // we can't do anything if LeftTupleMemory is empty
+        if ( leftTuple != null ) {
+            if ( childLeftTuple == null ) {
+                // either we are indexed and changed buckets or
+                // we had no children before, but there is a bucket to potentially match, so try as normal assert
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                    if ( this.constraints.isAllowedCachedRight( memory.getContext(),
+                                                                leftTuple ) ) {
+                        this.sink.propagateAssertLeftTuple( leftTuple,
+                                                            rightTuple,
+                                                            context,
+                                                            workingMemory,
+                                                            this.tupleMemoryEnabled );
+                    }
+                }
+            } else {
+                // in the same bucket, so iterate and compare
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                    if ( this.constraints.isAllowedCachedRight( memory.getContext(),
+                                                                leftTuple ) ) {
+                        if ( childLeftTuple != null && childLeftTuple.getLeftParent() != leftTuple ) {
+                            this.sink.propagateAssertLeftTuple( leftTuple,
+                                                                rightTuple,
+                                                                context,
+                                                                workingMemory,
+                                                                this.tupleMemoryEnabled );
+                        } else {
+                            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
+                            LeftTuple temp = childLeftTuple;
+                            childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
+                                                                                      leftTuple,
+                                                                                      context,
+                                                                                      workingMemory,
+                                                                                      this.tupleMemoryEnabled );
+                            // we must re-add this to ensure deterministic iteration
+                            temp.reAddRight();
+                        }
+                    } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
+                        childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
+                                                                                   leftTuple,
+                                                                                   context,
+                                                                                   workingMemory );
+                    }
+                    // else do nothing, was false before and false now.
+                }
+            }
+        }
+
+        this.constraints.resetFactHandle( memory.getContext() );
+    }
+
+    public void modifyLeftTuple(final LeftTuple leftTuple,
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        // Add and remove to make sure we are in the right bucket and at the end
+        // this is needed to fix for indexing and deterministic iteration
+        memory.getLeftTupleMemory().remove( leftTuple );
+        memory.getLeftTupleMemory().add( leftTuple );
+
+        this.constraints.updateFromTuple( memory.getContext(),
+                                          workingMemory,
+                                          leftTuple );
+        LeftTuple childLeftTuple = leftTuple.firstChild;
+
+        RightTupleMemory rightMemory = memory.getRightTupleMemory();
+
+        RightTuple rightTuple = rightMemory.getFirst( leftTuple );
+
+        // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
+        if ( childLeftTuple != null && rightMemory.isIndexed() && rightTuple != rightMemory.getFirst( childLeftTuple.getRightParent() ) ) {
+            // our index has changed, so delete all the previous propagations
+            this.sink.propagateRetractLeftTuple( leftTuple,
+                                                 context,
+                                                 workingMemory );
+
+            childLeftTuple = null; // null so the next check will attempt matches for new bucket
+        }
+
+        // we can't do anything if RightTupleMemory is empty
+        if ( rightTuple != null ) {
+            if ( childLeftTuple == null ) {
+                // either we are indexed and changed buckets or
+                // we had no children before, but there is a bucket to potentially match, so try as normal assert
+                for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                    final InternalFactHandle handle = rightTuple.getFactHandle();
+                    if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                                                               handle ) ) {
+                        this.sink.propagateAssertLeftTuple( leftTuple,
+                                                            rightTuple,
+                                                            context,
+                                                            workingMemory,
+                                                            this.tupleMemoryEnabled );
+                    }
+                }
+            } else {
+                // in the same bucket, so iterate and compare
+                for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                    final InternalFactHandle handle = rightTuple.getFactHandle();
+
+                    if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                                                               handle ) ) {
+                        if ( childLeftTuple != null && childLeftTuple.getRightParent() != rightTuple ) {
+                            this.sink.propagateAssertLeftTuple( leftTuple,
+                                                                rightTuple,
+                                                                context,
+                                                                workingMemory,
+                                                                this.tupleMemoryEnabled );
+                        } else {
+                            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
+                            LeftTuple temp = childLeftTuple;
+                            childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
+                                                                                      rightTuple,
+                                                                                      context,
+                                                                                      workingMemory,
+                                                                                      this.tupleMemoryEnabled );
+                            // we must re-add this to ensure deterministic iteration
+                            temp.reAddLeft();
+                        }
+                    } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
+                        childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
+                                                                                   rightTuple,
+                                                                                   context,
+                                                                                   workingMemory );
+                    }
+                    // else do nothing, was false before and false now.
+                }
+            }
+        }
+
+        this.constraints.resetTuple( memory.getContext() );
     }
 
     /* (non-Javadoc)

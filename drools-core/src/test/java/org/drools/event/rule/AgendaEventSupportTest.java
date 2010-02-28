@@ -187,20 +187,20 @@ public class AgendaEventSupportTest extends TestCase {
                     createdEvent.getActivation().getFactHandles().toArray()[0] );
         agendaList.clear();
 
-        // update results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable
+        // update should not result in cancelation+activation events
         cheddar.setPrice( 14 );
         ksession.update( cheddarHandle,
                          cheddar );
-        assertEquals( 2,
+        assertEquals( 0,
                       agendaList.size() );
-        cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
-        assertEquals( ActivationCancelledCause.WME_MODIFY, cancelledEvent.getCause() );
-        assertSame( cheddarHandle,
-                    cancelledEvent.getActivation().getFactHandles().toArray()[0] );
-        createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );
-        assertSame( cheddarHandle,
-                    createdEvent.getActivation().getFactHandles().toArray()[0] );
-        agendaList.clear();
+        //cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
+        //assertEquals( ActivationCancelledCause.WME_MODIFY, cancelledEvent.getCause() );
+//        assertSame( cheddarHandle,
+//                    cancelledEvent.getActivation().getFactHandles().toArray()[0] );
+//        createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );
+//        assertSame( cheddarHandle,
+//                    createdEvent.getActivation().getFactHandles().toArray()[0] );
+//        agendaList.clear();
 
         // retract results in a ActivationCancelledEvent, note the object is not resolveable now as it no longer exists
         ksession.retract( cheddarHandle );

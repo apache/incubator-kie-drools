@@ -535,9 +535,8 @@ public class ExecutionFlowControlTest extends TestCase {
                       session.getAgenda().getFocusName() );
 
         // on the fifth day God created the birds and sea creatures
-        session.modifyRetract( handles[0][0] );
         cells[0][0].setState( Cell.LIVE );
-        session.modifyInsert( handles[0][0],
+        session.update( handles[0][0],
                               cells[0][0] );
         session.setFocus( "birth" );
         session.setFocus( "calculate" );
@@ -552,9 +551,8 @@ public class ExecutionFlowControlTest extends TestCase {
                       session.getAgenda().getFocusName() );
 
         // on the sixth day God created the animals that walk over the land and the Man
-        session.modifyRetract( handles[1][1] );
         cells[1][1].setState( Cell.LIVE );
-        session.modifyInsert( handles[1][1],
+        session.update( handles[1][1],
                               cells[1][1] );
         session.setFocus( "calculate" );
         session.fireAllRules( 100 );
@@ -589,9 +587,8 @@ public class ExecutionFlowControlTest extends TestCase {
                       session.getAgenda().getFocusName() );
 
         // on the seventh day, while God rested, man start killing them all
-        session.modifyRetract( handles[0][0] );
         cells[0][0].setState( Cell.DEAD );
-        session.modifyInsert( handles[0][0],
+        session.update( handles[0][0],
                               cells[0][0] );
         session.setFocus( "calculate" );
         session.fireAllRules( 100 );
@@ -827,10 +824,10 @@ public class ExecutionFlowControlTest extends TestCase {
                    item.getRule(),
                    item );
 
-        // the two of the three tuples should re-activate
-        assertEquals( 5,
-                      created.size() );
+        // with true modify, no reactivations should be triggered
         assertEquals( 3,
+                      created.size() );
+        assertEquals( 0,
                       cancelled.size() );
     }
 

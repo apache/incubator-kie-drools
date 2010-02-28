@@ -54,6 +54,13 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
                                        final InternalWorkingMemory workingMemory,
                                        final boolean useHash) {
     }
+    
+    public void propagateModifyObject(InternalFactHandle factHandle,
+                                      ModifyPreviousTuples modifyPreviousTuples,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory) {
+
+    }    
 
     public BaseNode getMatchingNode(BaseNode candidate) {
         return null;
@@ -70,5 +77,7 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
     public boolean equals(Object obj) {
         return obj instanceof EmptyObjectSinkAdapter;
     }
+
+
 
 }

@@ -37,4 +37,9 @@ public interface ObjectSink
     public void assertObject(InternalFactHandle factHandle,
                              PropagationContext propagationContext,
                              InternalWorkingMemory workingMemory);
+
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory);
 }

@@ -250,12 +250,11 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.update( tuple.get( countDeclaration ),
                                    count );
 
-                    drools.modifyRetract( context );;
                     context.setState( Context.ASSIGN_SEATS );
                     //                    drools.update( tuple.get( contextDeclaration ),
                     //                            context );
 
-                    drools.modifyInsert( context );
+                    drools.update( context );
 
                     //                    System.err.println( "assign first seat :  " + seating + " : " + path );
 
@@ -794,13 +793,12 @@ public abstract class BaseMannersTest extends TestCase {
                     Context context = (Context) drools.get( contextDeclaration );
                     Seating seating = (Seating) drools.get( seatingDeclaration );
 
-                    drools.modifyRetract( seating );
                     seating.setPathDone( true );
 
                     //                    if ( seating.getId() == 6 ) {
                     //                        System.err.println( "pause" );
                     //                    }
-                    drools.modifyInsert( seating );
+                    drools.update( seating );
 
                     context.setState( Context.CHECK_DONE );
                     drools.update( tuple.get( contextDeclaration ),

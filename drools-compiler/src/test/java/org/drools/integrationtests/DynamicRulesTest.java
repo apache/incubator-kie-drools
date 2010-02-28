@@ -172,7 +172,6 @@ public class DynamicRulesTest extends TestCase {
         final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-        // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
         RuleBase ruleBase = getRuleBase();
         reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
         ruleBase.addPackage( pkg );

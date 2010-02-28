@@ -119,7 +119,7 @@ public abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to receive propagated
      *            <code>FactHandleImpl</code>.
      */
-    protected void addObjectSink(final ObjectSink objectSink) {
+    public void addObjectSink(final ObjectSink objectSink) {
         if ( this.sink instanceof EmptyObjectSinkAdapter ) {
             if( this.partitionsEnabled && ! this.getPartitionId().equals( objectSink.getPartitionId() ) ) {
                 // if partitions are enabled and the next node belongs to a different partition,

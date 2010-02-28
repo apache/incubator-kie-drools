@@ -36,27 +36,29 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     //                                                                                                      "3" ) );
 
     private static final long serialVersionUID = 400L;
-    ObjectSinkNodeList otherSinks;
-    ObjectSinkNodeList hashableSinks;
+    ObjectSinkNodeList        otherSinks;
+    ObjectSinkNodeList        hashableSinks;
 
-    LinkedList hashedFieldIndexes;
+    LinkedList                hashedFieldIndexes;
 
-    ObjectHashMap hashedSinkMap;
+    ObjectHashMap             hashedSinkMap;
 
-    private int alphaNodeHashingThreshold;
+    private int               alphaNodeHashingThreshold;
 
     public CompositeObjectSinkAdapter() {
-        this(null, 3);
+        this( null,
+              3 );
     }
 
-    public CompositeObjectSinkAdapter(final RuleBasePartitionId partitionId, final int alphaNodeHashingThreshold) {
-        super(partitionId);
+    public CompositeObjectSinkAdapter(final RuleBasePartitionId partitionId,
+                                      final int alphaNodeHashingThreshold) {
+        super( partitionId );
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        super.readExternal(in);
+                                            ClassNotFoundException {
+        super.readExternal( in );
         otherSinks = (ObjectSinkNodeList) in.readObject();
         hashableSinks = (ObjectSinkNodeList) in.readObject();
         hashedFieldIndexes = (LinkedList) in.readObject();
@@ -65,12 +67,12 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(otherSinks);
-        out.writeObject(hashableSinks);
-        out.writeObject(hashedFieldIndexes);
-        out.writeObject(hashedSinkMap);
-        out.writeInt(alphaNodeHashingThreshold);
+        super.writeExternal( out );
+        out.writeObject( otherSinks );
+        out.writeObject( hashableSinks );
+        out.writeObject( hashedFieldIndexes );
+        out.writeObject( hashedSinkMap );
+        out.writeInt( alphaNodeHashingThreshold );
     }
 
     public ObjectSinkNodeList getOthers() {
@@ -86,74 +88,78 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public void addObjectSink(final ObjectSink sink) {
-        if (sink instanceof AlphaNode) {
+        if ( sink instanceof AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-            if (fieldConstraint instanceof LiteralConstraint) {
+            if ( fieldConstraint instanceof LiteralConstraint ) {
                 final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 final Evaluator evaluator = literalConstraint.getEvaluator();
 
-                if (evaluator.getOperator() == Operator.EQUAL &&
-                        literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE) {
+                if ( evaluator.getOperator() == Operator.EQUAL && literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE ) {
                     final InternalReadAccessor readAccessor = literalConstraint.getFieldExtractor();
                     final int index = readAccessor.getIndex();
-                    final FieldIndex fieldIndex = registerFieldIndex(index, readAccessor);
+                    final FieldIndex fieldIndex = registerFieldIndex( index,
+                                                                      readAccessor );
 
-                    if (fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0) {
-                        if (!fieldIndex.isHashed()) {
-                            hashSinks(fieldIndex);
+                    if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0 ) {
+                        if ( !fieldIndex.isHashed() ) {
+                            hashSinks( fieldIndex );
                         }
                         final FieldValue value = literalConstraint.getField();
                         // no need to check, we know  the sink  does not exist
-                        this.hashedSinkMap.put(new HashKey(index, value, fieldIndex.getFieldExtractor()),
-                                alphaNode, false);
+                        this.hashedSinkMap.put( new HashKey( index,
+                                                             value,
+                                                             fieldIndex.getFieldExtractor() ),
+                                                alphaNode,
+                                                false );
                     } else {
-                        if (this.hashableSinks == null) {
+                        if ( this.hashableSinks == null ) {
                             this.hashableSinks = new ObjectSinkNodeList();
                         }
-                        this.hashableSinks.add(alphaNode);
+                        this.hashableSinks.add( alphaNode );
                     }
                     return;
                 }
             }
         }
 
-        if (this.otherSinks == null) {
+        if ( this.otherSinks == null ) {
             this.otherSinks = new ObjectSinkNodeList();
         }
 
-        this.otherSinks.add((ObjectSinkNode) sink);
+        this.otherSinks.add( (ObjectSinkNode) sink );
     }
 
     public void removeObjectSink(final ObjectSink sink) {
-        if (sink instanceof AlphaNode) {
+        if ( sink instanceof AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-            if (fieldConstraint instanceof LiteralConstraint) {
+            if ( fieldConstraint instanceof LiteralConstraint ) {
                 final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 final Evaluator evaluator = literalConstraint.getEvaluator();
                 final FieldValue value = literalConstraint.getField();
 
-                if (evaluator.getOperator() == Operator.EQUAL &&
-                        literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE) {
+                if ( evaluator.getOperator() == Operator.EQUAL && literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE ) {
                     final InternalReadAccessor fieldAccessor = literalConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
-                    final FieldIndex fieldIndex = unregisterFieldIndex(index);
+                    final FieldIndex fieldIndex = unregisterFieldIndex( index );
 
-                    if (fieldIndex.isHashed()) {
-                        HashKey hashKey = new HashKey(index, value, fieldAccessor);
-                        this.hashedSinkMap.remove(hashKey);
-                        if (fieldIndex.getCount() <= this.alphaNodeHashingThreshold - 1) {
+                    if ( fieldIndex.isHashed() ) {
+                        HashKey hashKey = new HashKey( index,
+                                                       value,
+                                                       fieldAccessor );
+                        this.hashedSinkMap.remove( hashKey );
+                        if ( fieldIndex.getCount() <= this.alphaNodeHashingThreshold - 1 ) {
                             // we have less than three so unhash
-                            unHashSinks(fieldIndex);
+                            unHashSinks( fieldIndex );
                         }
                     } else {
-                        this.hashableSinks.remove(alphaNode);
+                        this.hashableSinks.remove( alphaNode );
                     }
 
-                    if (this.hashableSinks != null && this.hashableSinks.isEmpty()) {
+                    if ( this.hashableSinks != null && this.hashableSinks.isEmpty() ) {
                         this.hashableSinks = null;
                     }
 
@@ -162,15 +168,15 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             }
         }
 
-        this.otherSinks.remove((ObjectSinkNode) sink);
+        this.otherSinks.remove( (ObjectSinkNode) sink );
 
-        if (this.otherSinks.isEmpty()) {
+        if ( this.otherSinks.isEmpty() ) {
             this.otherSinks = null;
         }
     }
 
     void hashSinks(final FieldIndex fieldIndex) {
-        if (this.hashedSinkMap == null) {
+        if ( this.hashedSinkMap == null ) {
             this.hashedSinkMap = new ObjectHashMap();
         }
 
@@ -179,7 +185,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         ObjectSinkNode currentSink = this.hashableSinks.getFirst();
 
-        while (currentSink != null) {
+        while ( currentSink != null ) {
             final AlphaNode alphaNode = (AlphaNode) currentSink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
             final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
@@ -190,20 +196,23 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
             // only alpha nodes that have an Operator.EQUAL are in hashableSinks, so only check if it is
             // the right field index
-            if (index == literalConstraint.getFieldExtractor().getIndex()) {
+            if ( index == literalConstraint.getFieldExtractor().getIndex() ) {
                 final FieldValue value = literalConstraint.getField();
-                this.hashedSinkMap.put(new HashKey(index, value, fieldReader), alphaNode);
+                this.hashedSinkMap.put( new HashKey( index,
+                                                     value,
+                                                     fieldReader ),
+                                        alphaNode );
 
                 // remove the alpha from the possible candidates of hashable sinks since it is now hashed
-                hashableSinks.remove(alphaNode);
+                hashableSinks.remove( alphaNode );
             }
         }
 
-        if (this.hashableSinks.isEmpty()) {
+        if ( this.hashableSinks.isEmpty() ) {
             this.hashableSinks = null;
         }
 
-        fieldIndex.setHashed(true);
+        fieldIndex.setHashed( true );
     }
 
     void unHashSinks(final FieldIndex fieldIndex) {
@@ -214,34 +223,36 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         final Iterator iter = this.hashedSinkMap.newIterator();
         ObjectHashMap.ObjectEntry entry = (ObjectHashMap.ObjectEntry) iter.next();
 
-        while(entry != null){
+        while ( entry != null ) {
             final AlphaNode alphaNode = (AlphaNode) entry.getValue();
-            final LiteralConstraint literalConstraint = (LiteralConstraint)alphaNode.getConstraint();
+            final LiteralConstraint literalConstraint = (LiteralConstraint) alphaNode.getConstraint();
 
             // only alpha nodes that have an Operator.EQUAL are in sinks, so only check if it is
             // the right field index
-            if (index == literalConstraint.getFieldExtractor().getIndex()) {
+            if ( index == literalConstraint.getFieldExtractor().getIndex() ) {
                 final FieldValue value = literalConstraint.getField();
-                if (this.hashableSinks == null) {
+                if ( this.hashableSinks == null ) {
                     this.hashableSinks = new ObjectSinkNodeList();
                 }
-                this.hashableSinks.add(alphaNode);
+                this.hashableSinks.add( alphaNode );
 
-                unhashedSinks.add(new HashKey(index, value, fieldIndex.getFieldExtractor()));
+                unhashedSinks.add( new HashKey( index,
+                                                value,
+                                                fieldIndex.getFieldExtractor() ) );
             }
 
             entry = (ObjectHashMap.ObjectEntry) iter.next();
         }
 
-        for(HashKey hashKey : unhashedSinks) {
-            this.hashedSinkMap.remove(hashKey);
+        for ( HashKey hashKey : unhashedSinks ) {
+            this.hashedSinkMap.remove( hashKey );
         }
 
-        if (this.hashedSinkMap.isEmpty()) {
+        if ( this.hashedSinkMap.isEmpty() ) {
             this.hashedSinkMap = null;
         }
 
-        fieldIndex.setHashed(false);
+        fieldIndex.setHashed( false );
     }
 
     /**
@@ -257,21 +268,23 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         FieldIndex fieldIndex = null;
 
         // is linkedlist null, if so create and add
-        if (this.hashedFieldIndexes == null) {
+        if ( this.hashedFieldIndexes == null ) {
             this.hashedFieldIndexes = new LinkedList();
-            fieldIndex = new FieldIndex(index, fieldExtractor);
-            this.hashedFieldIndexes.add(fieldIndex);
+            fieldIndex = new FieldIndex( index,
+                                         fieldExtractor );
+            this.hashedFieldIndexes.add( fieldIndex );
         }
 
         // still null, so see if it already exists
-        if (fieldIndex == null) {
-            fieldIndex = findFieldIndex(index);
+        if ( fieldIndex == null ) {
+            fieldIndex = findFieldIndex( index );
         }
 
         // doesn't exist so create it
-        if (fieldIndex == null) {
-            fieldIndex = new FieldIndex(index, fieldExtractor);
-            this.hashedFieldIndexes.add(fieldIndex);
+        if ( fieldIndex == null ) {
+            fieldIndex = new FieldIndex( index,
+                                         fieldExtractor );
+            this.hashedFieldIndexes.add( fieldIndex );
         }
 
         fieldIndex.increaseCounter();
@@ -280,15 +293,15 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     private FieldIndex unregisterFieldIndex(final int index) {
-        final FieldIndex fieldIndex = findFieldIndex(index);
+        final FieldIndex fieldIndex = findFieldIndex( index );
         fieldIndex.decreaseCounter();
 
         // if the fieldcount is 0 then remove it from the linkedlist
-        if (fieldIndex.getCount() == 0) {
-            this.hashedFieldIndexes.remove(fieldIndex);
+        if ( fieldIndex.getCount() == 0 ) {
+            this.hashedFieldIndexes.remove( fieldIndex );
 
             // if the linkedlist is empty then null it
-            if (this.hashedFieldIndexes.isEmpty()) {
+            if ( this.hashedFieldIndexes.isEmpty() ) {
                 this.hashedFieldIndexes = null;
             }
         }
@@ -297,8 +310,8 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     private FieldIndex findFieldIndex(final int index) {
-        for (FieldIndex node = (FieldIndex) this.hashedFieldIndexes.getFirst(); node != null; node = (FieldIndex) node.getNext()) {
-            if (node.getIndex() == index) {
+        for ( FieldIndex node = (FieldIndex) this.hashedFieldIndexes.getFirst(); node != null; node = (FieldIndex) node.getNext() ) {
+            if ( node.getIndex() == index ) {
                 return node;
             }
         }
@@ -314,34 +327,93 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         // Iterates the FieldIndex collection, which tells you if particularly field is hashed or not
         // if the field is hashed then it builds the hashkey to return the correct sink for the current objects slot's
         // value, one object may have multiple fields indexed.
-        if (this.hashedFieldIndexes != null) {
+        if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed
-            for (FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext()) {
-                if (!fieldIndex.isHashed()) {
+            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+                if ( !fieldIndex.isHashed() ) {
                     continue;
                 }
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
                 final int index = fieldIndex.getIndex();
-                final HashKey hashKey = new HashKey(index,  object, fieldIndex.getFieldExtractor());
-                final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get(hashKey);
-                if (sink != null) {
-                    // The sink exists so propagate
-                    doPropagateAssertObject(factHandle, context, workingMemory, sink);
+                final HashKey hashKey = new HashKey( index,
+                                                     object,
+                                                     fieldIndex.getFieldExtractor() );
+                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
+                if ( sink != null ) {
+                    // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
+                    sink.getSinkPropagator().propagateAssertObject( factHandle, context, workingMemory );
                 }
             }
         }
 
         // propagate unhashed
-        if (this.hashableSinks != null) {
-            for (ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
-                doPropagateAssertObject(factHandle, context, workingMemory, sink);
+        if ( this.hashableSinks != null ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                doPropagateAssertObject( factHandle,
+                                         context,
+                                         workingMemory,
+                                         sink );
             }
         }
 
-        if (this.otherSinks != null) {
+        if ( this.otherSinks != null ) {
             // propagate others
-            for (ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
-                doPropagateAssertObject(factHandle, context, workingMemory, sink);
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                doPropagateAssertObject( factHandle,
+                                         context,
+                                         workingMemory,
+                                         sink );
+            }
+        }
+    }
+
+    public void propagateModifyObject(final InternalFactHandle factHandle,
+                                      final ModifyPreviousTuples modifyPreviousTuples,
+                                      final PropagationContext context,
+                                      final InternalWorkingMemory workingMemory) {
+        final Object object = factHandle.getObject();
+
+        // Iterates the FieldIndex collection, which tells you if particularly field is hashed or not
+        // if the field is hashed then it builds the hashkey to return the correct sink for the current objects slot's
+        // value, one object may have multiple fields indexed.
+        if ( this.hashedFieldIndexes != null ) {
+            // Iterate the FieldIndexes to see if any are hashed
+            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+                if ( !fieldIndex.isHashed() ) {
+                    continue;
+                }
+                // this field is hashed so set the existing hashKey and see if there is a sink for it
+                final int index = fieldIndex.getIndex();
+                final HashKey hashKey = new HashKey( index,
+                                                     object,
+                                                     fieldIndex.getFieldExtractor() );
+                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
+                if ( sink != null ) {
+                    // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
+                    sink.getSinkPropagator().propagateModifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+                }
+            }
+        }
+
+        // propagate unhashed
+        if ( this.hashableSinks != null ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                doPropagateModifyObject( factHandle,
+                                         modifyPreviousTuples,
+                                         context,
+                                         workingMemory,
+                                         sink );
+            }
+        }
+
+        if ( this.otherSinks != null ) {
+            // propagate others
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                doPropagateModifyObject( factHandle,
+                                         modifyPreviousTuples,
+                                         context,
+                                         workingMemory,
+                                         sink );
             }
         }
     }
@@ -355,35 +427,48 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
      * @param workingMemory
      * @param sink
      */
-    protected void doPropagateAssertObject(InternalFactHandle factHandle, PropagationContext context,
-                                           InternalWorkingMemory workingMemory, ObjectSink sink) {
-        sink.assertObject(factHandle,
-                context,
-                workingMemory);
+    protected void doPropagateAssertObject(InternalFactHandle factHandle,
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory,
+                                           ObjectSink sink) {
+        sink.assertObject( factHandle,
+                           context,
+                           workingMemory );
+    }
+
+    protected void doPropagateModifyObject(InternalFactHandle factHandle,
+                                           final ModifyPreviousTuples modifyPreviousTuples,
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory,
+                                           ObjectSink sink) {
+        sink.modifyObject( factHandle,
+                           modifyPreviousTuples,
+                           context,
+                           workingMemory );
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
-        if (this.otherSinks != null) {
-            for (ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
-                if (candidate.equals(sink)) {
+        if ( this.otherSinks != null ) {
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                if ( candidate.equals( sink ) ) {
                     return (BaseNode) sink;
                 }
             }
         }
 
-        if (this.hashableSinks != null) {
-            for (ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
-                if (candidate.equals(sink)) {
+        if ( this.hashableSinks != null ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                if ( candidate.equals( sink ) ) {
                     return (BaseNode) sink;
                 }
             }
         }
 
-        if (this.hashedSinkMap != null) {
+        if ( this.hashedSinkMap != null ) {
             final Iterator it = this.hashedSinkMap.newIterator();
-            for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectSink sink = (ObjectSink) entry.getValue();
-                if (candidate.equals(sink)) {
+                if ( candidate.equals( sink ) ) {
                     return (BaseNode) sink;
                 }
             }
@@ -395,21 +480,21 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         ObjectSink[] sinks = new ObjectSink[size()];
         int at = 0;
 
-        if (this.otherSinks != null) {
-            for (ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
+        if ( this.otherSinks != null ) {
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sinks[at++] = sink;
             }
         }
 
-        if (this.hashableSinks != null) {
-            for (ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
+        if ( this.hashableSinks != null ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sinks[at++] = sink;
             }
         }
 
-        if (this.hashedSinkMap != null) {
+        if ( this.hashedSinkMap != null ) {
             final Iterator it = this.hashedSinkMap.newIterator();
-            for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 sinks[at++] = (ObjectSink) entry.getValue();
             }
         }
@@ -417,32 +502,30 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public int size() {
-        return (this.otherSinks != null ? this.otherSinks.size() : 0) +
-                (this.hashableSinks != null ? this.hashableSinks.size() : 0) +
-                (this.hashedSinkMap != null ? this.hashedSinkMap.size() : 0);
+        return (this.otherSinks != null ? this.otherSinks.size() : 0) + (this.hashableSinks != null ? this.hashableSinks.size() : 0) + (this.hashedSinkMap != null ? this.hashedSinkMap.size() : 0);
     }
 
     public static class HashKey
-            implements
-            Externalizable {
+        implements
+        Externalizable {
         private static final long serialVersionUID = 400L;
 
-        private static final byte OBJECT = 1;
-        private static final byte LONG = 2;
-        private static final byte DOUBLE = 3;
-        private static final byte BOOL = 4;
+        private static final byte OBJECT           = 1;
+        private static final byte LONG             = 2;
+        private static final byte DOUBLE           = 3;
+        private static final byte BOOL             = 4;
 
-        private int index;
+        private int               index;
 
-        private byte type;
-        private Object ovalue;
-        private long lvalue;
-        private boolean bvalue;
-        private double dvalue;
+        private byte              type;
+        private Object            ovalue;
+        private long              lvalue;
+        private boolean           bvalue;
+        private double            dvalue;
 
-        private boolean isNull;
+        private boolean           isNull;
 
-        private int hashCode;
+        private int               hashCode;
 
         public HashKey() {
         }
@@ -450,21 +533,21 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         public HashKey(final int index,
                        final FieldValue value,
                        final InternalReadAccessor extractor) {
-            this.setValue(index,
-                    extractor,
-                    value);
+            this.setValue( index,
+                           extractor,
+                           value );
         }
 
         public HashKey(final int index,
                        final Object value,
                        final InternalReadAccessor extractor) {
-            this.setValue(index,
-                    value,
-                    extractor);
+            this.setValue( index,
+                           value,
+                           extractor );
         }
 
         public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
+                                                ClassNotFoundException {
             index = in.readInt();
             type = in.readByte();
             ovalue = in.readObject();
@@ -476,14 +559,14 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(index);
-            out.writeByte(type);
-            out.writeObject(ovalue);
-            out.writeLong(lvalue);
-            out.writeBoolean(bvalue);
-            out.writeDouble(dvalue);
-            out.writeBoolean(isNull);
-            out.writeInt(hashCode);
+            out.writeInt( index );
+            out.writeByte( type );
+            out.writeObject( ovalue );
+            out.writeLong( lvalue );
+            out.writeBoolean( bvalue );
+            out.writeDouble( dvalue );
+            out.writeBoolean( isNull );
+            out.writeInt( hashCode );
         }
 
         public int getIndex() {
@@ -496,40 +579,45 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             this.index = index;
             final ValueType vtype = extractor.getValueType();
 
-            isNull = extractor.isNullValue(null, value);
+            isNull = extractor.isNullValue( null,
+                                            value );
 
-            if (vtype.isBoolean()) {
+            if ( vtype.isBoolean() ) {
                 this.type = BOOL;
-                if (!isNull) {
-                    this.bvalue = extractor.getBooleanValue(null, value);
-                    this.setHashCode(this.bvalue ? 1231 : 1237);
+                if ( !isNull ) {
+                    this.bvalue = extractor.getBooleanValue( null,
+                                                             value );
+                    this.setHashCode( this.bvalue ? 1231 : 1237 );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
-            } else if (vtype.isIntegerNumber() || vtype.isChar()) {
+            } else if ( vtype.isIntegerNumber() || vtype.isChar() ) {
                 this.type = LONG;
-                if (!isNull) {
-                    this.lvalue = extractor.getLongValue(null, value);
-                    this.setHashCode((int) (this.lvalue ^ (this.lvalue >>> 32)));
+                if ( !isNull ) {
+                    this.lvalue = extractor.getLongValue( null,
+                                                          value );
+                    this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
-            } else if (vtype.isFloatNumber()) {
+            } else if ( vtype.isFloatNumber() ) {
                 this.type = DOUBLE;
-                if (!isNull) {
-                    this.dvalue = extractor.getDoubleValue(null, value);
-                    final long temp = Double.doubleToLongBits(this.dvalue);
-                    this.setHashCode((int) (temp ^ (temp >>> 32)));
+                if ( !isNull ) {
+                    this.dvalue = extractor.getDoubleValue( null,
+                                                            value );
+                    final long temp = Double.doubleToLongBits( this.dvalue );
+                    this.setHashCode( (int) (temp ^ (temp >>> 32)) );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
             } else {
                 this.type = OBJECT;
-                if (!isNull) {
-                    this.ovalue = extractor.getValue(null, value);
-                    this.setHashCode(this.ovalue != null ? this.ovalue.hashCode() : 0);
+                if ( !isNull ) {
+                    this.ovalue = extractor.getValue( null,
+                                                      value );
+                    this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
             }
         }
@@ -542,38 +630,38 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             this.isNull = value.isNull();
             final ValueType vtype = extractor.getValueType();
 
-            if (vtype.isBoolean()) {
+            if ( vtype.isBoolean() ) {
                 this.type = BOOL;
-                if (!isNull) {
+                if ( !isNull ) {
                     this.bvalue = value.getBooleanValue();
-                    this.setHashCode(this.bvalue ? 1231 : 1237);
+                    this.setHashCode( this.bvalue ? 1231 : 1237 );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
-            } else if (vtype.isIntegerNumber()) {
+            } else if ( vtype.isIntegerNumber() ) {
                 this.type = LONG;
-                if (!isNull) {
+                if ( !isNull ) {
                     this.lvalue = value.getLongValue();
-                    this.setHashCode((int) (this.lvalue ^ (this.lvalue >>> 32)));
+                    this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
-            } else if (vtype.isFloatNumber()) {
+            } else if ( vtype.isFloatNumber() ) {
                 this.type = DOUBLE;
-                if (!isNull) {
+                if ( !isNull ) {
                     this.dvalue = value.getDoubleValue();
-                    final long temp = Double.doubleToLongBits(this.dvalue);
-                    this.setHashCode((int) (temp ^ (temp >>> 32)));
+                    final long temp = Double.doubleToLongBits( this.dvalue );
+                    this.setHashCode( (int) (temp ^ (temp >>> 32)) );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
             } else {
                 this.type = OBJECT;
-                if (!isNull) {
+                if ( !isNull ) {
                     this.ovalue = value.getValue();
-                    this.setHashCode(this.ovalue != null ? this.ovalue.hashCode() : 0);
+                    this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
                 } else {
-                    this.setHashCode(0);
+                    this.setHashCode( 0 );
                 }
             }
         }
@@ -587,45 +675,45 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         }
 
         public boolean getBooleanValue() {
-            switch (this.type) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue;
-                case OBJECT:
-                    if (this.ovalue == null) {
+                case OBJECT :
+                    if ( this.ovalue == null ) {
                         return false;
-                    } else if (this.ovalue instanceof Boolean) {
+                    } else if ( this.ovalue instanceof Boolean ) {
                         return ((Boolean) this.ovalue).booleanValue();
-                    } else if (this.ovalue instanceof String) {
-                        return Boolean.valueOf((String) this.ovalue).booleanValue();
+                    } else if ( this.ovalue instanceof String ) {
+                        return Boolean.valueOf( (String) this.ovalue ).booleanValue();
                     } else {
-                        throw new ClassCastException("Can't convert " + this.ovalue.getClass() + " to a boolean value.");
+                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a boolean value." );
                     }
-                case LONG:
-                    throw new ClassCastException("Can't convert long to a boolean value.");
-                case DOUBLE:
-                    throw new ClassCastException("Can't convert double to a boolean value.");
+                case LONG :
+                    throw new ClassCastException( "Can't convert long to a boolean value." );
+                case DOUBLE :
+                    throw new ClassCastException( "Can't convert double to a boolean value." );
 
             }
             return false;
         }
 
         public long getLongValue() {
-            switch (this.type) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue ? 1 : 0;
-                case OBJECT:
-                    if (this.ovalue == null) {
+                case OBJECT :
+                    if ( this.ovalue == null ) {
                         return 0;
-                    } else if (this.ovalue instanceof Number) {
+                    } else if ( this.ovalue instanceof Number ) {
                         return ((Number) this.ovalue).longValue();
-                    } else if (this.ovalue instanceof String) {
-                        return Long.parseLong((String) this.ovalue);
+                    } else if ( this.ovalue instanceof String ) {
+                        return Long.parseLong( (String) this.ovalue );
                     } else {
-                        throw new ClassCastException("Can't convert " + this.ovalue.getClass() + " to a long value.");
+                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a long value." );
                     }
-                case LONG:
+                case LONG :
                     return this.lvalue;
-                case DOUBLE:
+                case DOUBLE :
                     return (long) this.dvalue;
 
             }
@@ -633,37 +721,37 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         }
 
         public double getDoubleValue() {
-            switch (this.type) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue ? 1 : 0;
-                case OBJECT:
-                    if (this.ovalue == null) {
+                case OBJECT :
+                    if ( this.ovalue == null ) {
                         return 0;
-                    } else if (this.ovalue instanceof Number) {
+                    } else if ( this.ovalue instanceof Number ) {
                         return ((Number) this.ovalue).doubleValue();
-                    } else if (this.ovalue instanceof String) {
-                        return Double.parseDouble((String) this.ovalue);
+                    } else if ( this.ovalue instanceof String ) {
+                        return Double.parseDouble( (String) this.ovalue );
                     } else {
-                        throw new ClassCastException("Can't convert " + this.ovalue.getClass() + " to a double value.");
+                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a double value." );
                     }
-                case LONG:
+                case LONG :
                     return this.lvalue;
-                case DOUBLE:
+                case DOUBLE :
                     return this.dvalue;
             }
             return 0;
         }
 
         public Object getObjectValue() {
-            switch (this.type) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue ? Boolean.TRUE : Boolean.FALSE;
-                case OBJECT:
+                case OBJECT :
                     return this.ovalue;
-                case LONG:
-                    return new Long(this.lvalue);
-                case DOUBLE:
-                    return new Double(this.dvalue);
+                case LONG :
+                    return new Long( this.lvalue );
+                case DOUBLE :
+                    return new Double( this.dvalue );
             }
             return null;
         }
@@ -675,23 +763,23 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         public boolean equals(final Object object) {
             final HashKey other = (HashKey) object;
 
-            if (this.isNull) {
+            if ( this.isNull ) {
                 return (other.isNull);
             }
 
-            switch (this.type) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return (this.index == other.index) && (this.bvalue == other.getBooleanValue());
-                case LONG:
+                case LONG :
                     return (this.index == other.index) && (this.lvalue == other.getLongValue());
-                case DOUBLE:
+                case DOUBLE :
                     return (this.index == other.index) && (this.dvalue == other.getDoubleValue());
-                case OBJECT:
+                case OBJECT :
                     final Object otherValue = other.getObjectValue();
-                    if ((this.ovalue != null) && (this.ovalue instanceof Number) && (otherValue instanceof Number)) {
+                    if ( (this.ovalue != null) && (this.ovalue instanceof Number) && (otherValue instanceof Number) ) {
                         return (this.index == other.index) && (((Number) this.ovalue).doubleValue() == ((Number) otherValue).doubleValue());
                     }
-                    return (this.index == other.index) && (this.ovalue == null ? otherValue == null : this.ovalue.equals(otherValue));
+                    return (this.index == other.index) && (this.ovalue == null ? otherValue == null : this.ovalue.equals( otherValue ));
             }
             return false;
         }
@@ -699,29 +787,30 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public static class FieldIndex
-            implements
-            LinkedListNode {
-        private static final long serialVersionUID = 400L;
-        private int index;
+        implements
+        LinkedListNode {
+        private static final long    serialVersionUID = 400L;
+        private int                  index;
         private InternalReadAccessor fieldExtactor;
 
-        private int count;
+        private int                  count;
 
-        private boolean hashed;
+        private boolean              hashed;
 
-        private LinkedListNode previous;
-        private LinkedListNode next;
+        private LinkedListNode       previous;
+        private LinkedListNode       next;
 
         public FieldIndex() {
         }
 
-        public FieldIndex(final int index, final InternalReadAccessor fieldExtractor) {
+        public FieldIndex(final int index,
+                          final InternalReadAccessor fieldExtractor) {
             this.index = index;
             this.fieldExtactor = fieldExtractor;
         }
 
         public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
+                                                ClassNotFoundException {
             index = in.readInt();
             fieldExtactor = (InternalReadAccessor) in.readObject();
             count = in.readInt();
@@ -731,12 +820,12 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(index);
-            out.writeObject(fieldExtactor);
-            out.writeInt(count);
-            out.writeBoolean(hashed);
-            out.writeObject(previous);
-            out.writeObject(next);
+            out.writeInt( index );
+            out.writeObject( fieldExtactor );
+            out.writeInt( count );
+            out.writeBoolean( hashed );
+            out.writeObject( previous );
+            out.writeObject( next );
         }
 
         public InternalReadAccessor getFieldExtractor() {

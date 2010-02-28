@@ -45,13 +45,4 @@ public interface InternalWorkingMemoryActions
     public org.drools.FactHandle insertLogical(Object object,
                                     boolean dynamic) throws FactException;
 
-    public void modifyRetract(final FactHandle factHandle,
-                              final Rule rule,
-                              final Activation activation);
-
-    public void modifyInsert(final FactHandle factHandle,
-                             final Object object,
-                             final Rule rule,
-                             final Activation activation);
-
 }

@@ -24,7 +24,7 @@ public interface LeftTupleSinkPropagator
     public void createAndPropagateAssertLeftTuple(InternalFactHandle factHandle,
                                                   PropagationContext context,
                                                   InternalWorkingMemory workingMemory,
-                                                  boolean leftTupleWorkingMemoryEnabled );
+                                                  boolean leftTupleWorkingMemoryEnabled);
 
     public void propagateRetractLeftTuple(LeftTuple tuple,
                                           PropagationContext context,
@@ -60,5 +60,39 @@ public interface LeftTupleSinkPropagator
     //                                    final TupleSink sink);
 
     public int size();
+    
+    // related to true modify
+    
+    public void propagateModifyObject(InternalFactHandle factHandle,
+                                      ModifyPreviousTuples modifyPreviousTuples,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory);    
+
+    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
+                                                   RightTuple parentRightTuple,
+                                                   PropagationContext context,
+                                                   InternalWorkingMemory workingMemory,
+                                                   boolean tupleMemoryEnabled);
+
+    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
+                                                   LeftTuple parentLeftTuple,
+                                                   PropagationContext context,
+                                                   InternalWorkingMemory workingMemory,
+                                                   boolean tupleMemoryEnabled);
+    
+    public void propagateModifyChildLeftTuple(LeftTuple leftTuple,
+                                              PropagationContext context,
+                                              InternalWorkingMemory workingMemory,
+                                              boolean tupleMemoryEnabled);    
+
+    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
+                                                    RightTuple parentRightTuple,
+                                                    PropagationContext context,
+                                                    InternalWorkingMemory workingMemory);
+
+    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
+                                                    LeftTuple parentLeftTuple,
+                                                    PropagationContext context,
+                                                    InternalWorkingMemory workingMemory);
 
 }

@@ -59,9 +59,9 @@ rule "reversing done" salience -10
         $stage: Stage ( value == Stage.DUPLICATE )
         not ( Line() )
 	then
-	    modifyRetract( $stage );
-        $stage.setValue ( Stage.DETECT_JUNCTIONS );
-        modifyInsert( $stage );
+	    modify( $stage ) {
+            setValue( Stage.DETECT_JUNCTIONS );
+        }
     	//sysout.println("reversing done");
 end
 

@@ -1,0 +1,137 @@
+TestCase "Accumulate Node modify test case"
+
+import org.drools.Cheese;
+import org.drools.Person;
+
+Setup
+	Binding:
+	    $likes, 0, Person, likes;
+	    $price, 1, Cheese, price;
+	AccumulateNode:
+	    acc, mock, mock, Cheese, $price;
+	    source, type, ==, $likes;
+	    result, intValue, >, 10;
+	LeftTupleSink:
+	    sink, acc;
+	Facts:
+	    new Person('darth', 35, "brie"),     // h0     
+	    new Person('bobba', 36, 'stilton'),  // h1
+	    new Cheese('brie', 10),              // h2
+	    new Cheese('brie', 12),              // h3
+	    new Cheese('stilton', 15),           // h4
+	    new Cheese('brie', 12);              // h5
+
+/**    
+ * insert one left and try modify
+ */    
+Test "accumulate modify test"	     
+	assert:
+	    acc, [[h0]];
+	    acc, [h3];
+	acc:
+	    leftMemory, [[h0]];
+	    rightMemory, [h3];    
+    sink:
+	    verify, assertLeft, count, 1;
+	    verify, assertLeft, tuple0[0], is(h0);
+	    verify, assertLeft, tuple0[1].object == 12;
+	    verify, modifyLeft, count, 0;
+	modify:
+	    acc, [[h0]];
+    sink:
+	    verify, assertLeft, count, 1; // still 1
+	    verify, modifyLeft, count, 1; // modify was propagated
+	    verify, modifyLeft, tuple0[0], is( h0 );
+	    verify, modifyLeft, tuple0[1].object == 12;
+	    
+/**      
+ * test left modifications
+ */
+ Test "accumulate modify left tuple"
+	assert:
+	    acc, [[h0]];
+	    acc, [h2, h3, h4, h5];
+	acc:
+	    leftMemory, [[h0]];
+	    rightMemory, [h2, h3, h5];    
+	    rightMemory, [h4];     
+	sink:
+	    verify, assertLeft, count, 1; // only for h0
+	    verify, modifyLeft, count, 1; // for the sum h2+h3+h5
+	    verify, modifyLeft, tuple0[1].object == 34;
+	With:
+	    h0, likes = "stilton";
+	modify:
+	    acc, [[h0]];
+	sink:
+	    verify, assertLeft, count, 1; // still 1
+	    verify, modifyLeft, count, 2; // modify was propagated
+	    verify, modifyLeft, tuple1[1].object == 15; // it now matches "stilton"
+	    verify, retractLeft, count, 0; // just in case
+	With:
+	    h0, likes = "muzzarella";
+	modify:
+	    acc, [[h0]];
+	sink:
+	    verify, assertLeft, count, 1; // still 1
+	    verify, modifyLeft, count, 2; // still 2
+	    verify, retractLeft, count, 1; // matches nothing now ("muzzarella")
+	With:
+	    h0, likes = "brie";
+	modify:
+	    acc, [[h0]];
+	sink:
+	    verify, assertLeft, count, 2; // since a new match happened, propagate as assert
+	    verify, assertLeft, tuple1[1].object == 34; // it now matches "brie"
+	    verify, modifyLeft, count, 2; // still 2
+	    verify, retractLeft, count, 1; // still 1
+	  
+/**      
+ * test right modifications
+ */
+ Test "accumulate modify right object"
+	assert:
+	    acc, [[h0]];
+	    acc, [h2, h3, h4, h5];
+	acc:
+	    leftMemory, [[h0]];
+	    rightMemory, [h2, h3, h5];    
+	    rightMemory, [h4];     
+	sink:
+	    verify, assertLeft, count, 1; // only for h0
+	    verify, modifyLeft, count, 1; // for the sum h2+h3+h5
+	    verify, modifyLeft, tuple0[1].object, is( 34.0 );
+	With:
+	    h3, price = 50;
+	modify:
+	    acc, [h3];
+	sink:
+	    verify, assertLeft, count, 1; // still 1
+	    verify, modifyLeft, count, 2; // modify was propagated
+	    verify, modifyLeft, tuple1[1].object, is( 72.0 ); 
+	    verify, retractLeft, count, 0; // just in case
+	With:
+	    h5, type = "muzzarella";
+	    h3, type = "muzzarella";
+	modify:
+	    acc, [h5, h3];
+	acc:
+	    rightMemory, [h2];
+	    rightMemory, [h5, h3];
+	    rightMemory, [h4];
+	    leftMemory, [[h0]];
+	sink:
+	    verify, assertLeft, count, 1; // still 1
+	    verify, modifyLeft, count, 3; // modified h5
+	    verify, retractLeft, count, 1; // modified h3
+	    verify, retractLeft, tuple0[1].object, is( 10.0 );
+	With:
+	    h0, likes = "stilton";
+	modify:
+	    acc, [[h0]];
+	sink:
+	    verify, assertLeft, count, 2; // since a new match happened, propagate as assert
+	    verify, assertLeft, tuple1[1].object, is( 15.0 ); // it now matches "brie"
+	    verify, modifyLeft, count, 3; // still 3
+	    verify, retractLeft, count, 1; // still 1
+	  

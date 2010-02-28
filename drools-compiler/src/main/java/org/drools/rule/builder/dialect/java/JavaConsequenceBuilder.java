@@ -252,8 +252,6 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         consequence.append( ") " );
         consequence.append( d.getModifyExpression() );
         consequence.append( "; " );
-        // adding the modifyRetract call:
-        consequence.append( "modifyRetract( __obj__ ); " );
         
         // the following is a hack to preserve line breaks.
         String originalBlock = originalCode.substring( d.getStart() - 1,
@@ -288,7 +286,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         // adding the modifyInsert call:
         addLineBreaks( consequence,
                        originalBlock.substring( end ) );
-        consequence.append( "modifyInsert( __obj__ ); }" );
+        consequence.append( "update( __obj__ ); }" );
     }
 
     /**

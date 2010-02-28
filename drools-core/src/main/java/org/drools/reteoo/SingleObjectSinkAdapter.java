@@ -14,13 +14,14 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     private static final long serialVersionUID = 873985743021L;
 
-    protected ObjectSink        sink;
+    protected ObjectSink      sink;
 
     public SingleObjectSinkAdapter() {
         super( null );
     }
 
-    public SingleObjectSinkAdapter(final RuleBasePartitionId partitionId, final ObjectSink sink) {
+    public SingleObjectSinkAdapter(final RuleBasePartitionId partitionId,
+                                   final ObjectSink sink) {
         super( partitionId );
         this.sink = sink;
     }
@@ -44,9 +45,19 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
                                 workingMemory );
     }
 
+    public void propagateModifyObject(InternalFactHandle factHandle,
+                                            ModifyPreviousTuples modifyPreviousTuples,
+                                            PropagationContext context,
+                                            InternalWorkingMemory workingMemory) {
+        this.sink.modifyObject( factHandle,
+                                       modifyPreviousTuples,
+                                       context,
+                                       workingMemory );
+    }
+
     public BaseNode getMatchingNode(BaseNode candidate) {
-        if (candidate.equals(sink)) {
-            return (BaseNode)sink;
+        if ( candidate.equals( sink ) ) {
+            return (BaseNode) sink;
         }
         return null;
     }

@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
@@ -54,11 +55,11 @@ public class EvalConditionNode extends LeftTupleSource
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    
+
     /**
     *
     */
-   private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
     /** The semantic <code>Test</code>. */
     private EvalCondition     condition;
@@ -204,6 +205,68 @@ public class EvalConditionNode extends LeftTupleSource
                                              workingMemory );
     }
 
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
+        if ( leftTuple != null ) {
+            leftTuple.reAdd(); //
+            // LeftTuple previously existed, so continue as modify
+            modifyLeftTuple( leftTuple,
+                             context,
+                             workingMemory );
+        } else {
+            // LeftTuple does not exist, so create and continue as assert
+            assertLeftTuple( new LeftTuple( factHandle,
+                                            this,
+                                            true ),
+                             context,
+                             workingMemory );
+        }
+    }
+
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
+        boolean wasPropagated = false;
+
+        if ( memory.tupleMemory.contains( leftTuple ) ) {
+            memory.tupleMemory.remove( leftTuple );
+            wasPropagated = true;
+        }
+        final boolean allowed = this.condition.isAllowed( leftTuple,
+                                                          workingMemory,
+                                                          memory.context );
+
+        if ( allowed ) {
+            // re-add tuple to the end of the list
+            memory.tupleMemory.add( leftTuple );
+            if ( wasPropagated ) {
+                // modify
+                this.sink.propagateModifyChildLeftTuple( leftTuple,
+                                                         context,
+                                                         workingMemory,
+                                                         this.tupleMemoryEnabled );
+            } else {
+                // assert
+                this.sink.propagateAssertLeftTuple( leftTuple,
+                                                    context,
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled );
+            }
+        } else {
+            if( wasPropagated ) {
+                // retract
+                this.sink.propagateRetractLeftTuple( leftTuple,
+                                                     context,
+                                                     workingMemory );
+            }
+            // else do nothing
+        }
+    }
+
     /**
      * Produce a debug string.
      *
@@ -261,19 +324,19 @@ public class EvalConditionNode extends LeftTupleSource
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
-        
+
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                EvalMemory memory = ( EvalMemory ) workingMemories[i].getNodeMemory( this );
+                EvalMemory memory = (EvalMemory) workingMemories[i].getNodeMemory( this );
                 Iterator it = memory.getLeftTupleMemory().iterator();
                 for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
                     leftTuple.unlinkFromLeftParent();
                     leftTuple.unlinkFromRightParent();
-                }              
+                }
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        
+
         if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,
@@ -325,10 +388,10 @@ public class EvalConditionNode extends LeftTupleSource
     public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
-    
+
     public short getType() {
         return NodeTypeEnums.EvalConditionNode;
-    }     
+    }
 
     public static class EvalMemory
         implements

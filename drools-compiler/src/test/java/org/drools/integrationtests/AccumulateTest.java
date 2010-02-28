@@ -14,8 +14,6 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.OuterClass;
@@ -26,17 +24,12 @@ import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.runtime.StatefulKnowledgeSession;
 
 public class AccumulateTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -619,7 +612,7 @@ public class AccumulateTest extends TestCase {
         wm.update( cheeseryHandle,
                    cheesery );
         wm.fireAllRules();
-
+        
         // no fire
         Assert.assertEquals( 1,
                              results.size() );

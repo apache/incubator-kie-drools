@@ -16,14 +16,27 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
-import org.drools.common.*;
+import org.drools.common.AbstractRuleBase;
+import org.drools.common.BaseNode;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.EventFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
+import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.compiled.CompiledNetwork;
 import org.drools.rule.Declaration;
@@ -37,11 +50,6 @@ import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
 import org.drools.time.impl.PointInTimeTrigger;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -61,10 +69,10 @@ import java.io.ObjectOutput;
  * @see Rete
  */
 public class ObjectTypeNode extends ObjectSource
-        implements
-        ObjectSink,
-        Externalizable,
-        NodeMemory
+    implements
+    ObjectSink,
+    Externalizable,
+    NodeMemory
 
 {
     // ------------------------------------------------------------
@@ -74,22 +82,22 @@ public class ObjectTypeNode extends ObjectSource
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long   serialVersionUID = 400L;
 
     /**
      * The <code>ObjectType</code> semantic module.
      */
-    private ObjectType objectType;
+    private ObjectType          objectType;
 
-    private boolean skipOnModify = false;
+    private boolean             skipOnModify     = false;
 
-    private boolean objectMemoryEnabled;
+    private boolean             objectMemoryEnabled;
 
-    private long expirationOffset = -1;
+    private long                expirationOffset = -1;
 
-    private transient ExpireJob job = new ExpireJob();
+    private transient ExpireJob job              = new ExpireJob();
 
-    private CompiledNetwork compiledNetwork;
+    private CompiledNetwork     compiledNetwork;
 
     public ObjectTypeNode() {
 
@@ -106,24 +114,24 @@ public class ObjectTypeNode extends ObjectSource
                           final EntryPointNode source,
                           final ObjectType objectType,
                           final BuildContext context) {
-        super(id,
-                context.getPartitionId(),
-                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
-                source,
-                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold());
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               source,
+               context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
-        setObjectMemoryEnabled(context.isObjectTypeNodeMemoryEnabled());
+        setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        super.readExternal(in);
+                                            ClassNotFoundException {
+        super.readExternal( in );
         objectType = (ObjectType) in.readObject();
 
         // this is here as not all objectTypeNodes used ClassObjectTypes in packages (i.e. rules with those nodes did not exist yet)
         // and thus have no wiring targets
-        if (objectType instanceof ClassObjectType) {
-            objectType = ((AbstractRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType((ClassObjectType) objectType);
+        if ( objectType instanceof ClassObjectType ) {
+            objectType = ((AbstractRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
         }
 
         skipOnModify = in.readBoolean();
@@ -131,10 +139,10 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(objectType);
-        out.writeBoolean(skipOnModify);
-        out.writeBoolean(objectMemoryEnabled);
+        super.writeExternal( out );
+        out.writeObject( objectType );
+        out.writeBoolean( skipOnModify );
+        out.writeBoolean( objectMemoryEnabled );
     }
 
     /**
@@ -147,13 +155,13 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public boolean isAssignableFrom(final ObjectType objectType) {
-        return this.objectType.isAssignableFrom(objectType);
+        return this.objectType.isAssignableFrom( objectType );
     }
 
     public void setCompiledNetwork(CompiledNetwork compiledNetwork) {
         this.compiledNetwork = compiledNetwork;
 
-        this.compiledNetwork.setObjectTypeNode(this);
+        this.compiledNetwork.setObjectTypeNode( this );
     }
 
     /**
@@ -168,36 +176,37 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-//        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0) {
-//            // we do this after the shadowproxy update, just so that its up to date for the future
-//            return;
-//        }
-
-        if (this.objectMemoryEnabled) {
-            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory(this);
-            memory.add(factHandle,
-                    false);
+        if ( this.objectMemoryEnabled ) {
+            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
+            memory.add( factHandle,
+                        false );
         }
-        if (compiledNetwork != null) {
-            compiledNetwork.assertObject(factHandle, context, workingMemory);
+        if ( compiledNetwork != null ) {
+            compiledNetwork.assertObject( factHandle,
+                                          context,
+                                          workingMemory );
         } else {
-            this.sink.propagateAssertObject(factHandle, context, workingMemory);
+            this.sink.propagateAssertObject( factHandle,
+                                             context,
+                                             workingMemory );
         }
 
-        if (this.expirationOffset >= 0) {
+        if ( this.expirationOffset >= 0 ) {
             // schedule expiration
-            WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction(factHandle,
-                    this);
+            WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction( factHandle,
+                                                                                      this );
             TimerService clock = workingMemory.getTimerService();
 
-            long nextTimestamp = Math.max(clock.getCurrentTime() + this.expirationOffset,
-                    ((EventFactHandle) factHandle).getStartTimestamp() + this.expirationOffset);
-            JobContext jobctx = new ExpireJobContext(expire,
-                    workingMemory);
-            JobHandle handle = clock.scheduleJob(job,
-                    jobctx,
-                    new PointInTimeTrigger(nextTimestamp, null, null));
-            jobctx.setJobHandle(handle);
+            long nextTimestamp = Math.max( clock.getCurrentTime() + this.expirationOffset,
+                                           ((EventFactHandle) factHandle).getStartTimestamp() + this.expirationOffset );
+            JobContext jobctx = new ExpireJobContext( expire,
+                                                      workingMemory );
+            JobHandle handle = clock.scheduleJob( job,
+                                                  jobctx,
+                                                  new PointInTimeTrigger( nextTimestamp,
+                                                                          null,
+                                                                          null ) );
+            jobctx.setJobHandle( handle );
         }
 
     }
@@ -213,40 +222,59 @@ public class ObjectTypeNode extends ObjectSource
     public void retractObject(final InternalFactHandle factHandle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-
-//        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0) {
-//            return;
-//        }
-
-        if (this.objectMemoryEnabled) {
-            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory(this);
-            memory.remove(factHandle);
+        if ( this.objectMemoryEnabled ) {
+            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
+            memory.remove( factHandle );
         }
 
-        for (RightTuple rightTuple = factHandle.getRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext()) {
-            rightTuple.getRightTupleSink().retractRightTuple(rightTuple,
-                    context,
-                    workingMemory);
+        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+            rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
+                                                              context,
+                                                              workingMemory );
         }
-        factHandle.setRightTuple(null);
+        factHandle.setFirstRightTuple( null );
+        factHandle.setLastRightTuple( null );
 
-        for (LeftTuple leftTuple = factHandle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext()) {
-            leftTuple.getLeftTupleSink().retractLeftTuple(leftTuple,
-                    context,
-                    workingMemory);
+        for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+                                                           context,
+                                                           workingMemory );
         }
-        factHandle.setLeftTuple(null);
+        factHandle.setFirstLeftTuple( null );
+        factHandle.setLastLeftTuple( null );
+    }
+
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        if ( this.skipOnModify && context.getDormantActivations() == 0 ) {
+            // we do this after the shadowproxy update, just so that its up to date for the future
+            return;
+        }
+
+        if ( compiledNetwork != null ) {
+            compiledNetwork.modifyObject( factHandle,
+                                          modifyPreviousTuples,
+                                          context,
+                                          workingMemory );
+        } else {
+            this.sink.propagateModifyObject( factHandle,
+                                             modifyPreviousTuples,
+                                             context,
+                                             workingMemory );
+        }
     }
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory(this);
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
         Iterator it = memory.iterator();
-        for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-            sink.assertObject((InternalFactHandle) entry.getValue(),
-                    context,
-                    workingMemory);
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            sink.assertObject( (InternalFactHandle) entry.getValue(),
+                               context,
+                               workingMemory );
         }
     }
 
@@ -254,7 +282,7 @@ public class ObjectTypeNode extends ObjectSource
      * Rete needs to know that this ObjectTypeNode has been added
      */
     public void attach() {
-        this.source.addObjectSink(this);
+        this.source.addObjectSink( this );
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -263,22 +291,23 @@ public class ObjectTypeNode extends ObjectSource
         // we need to call updateSink on Rete, because someone
         // might have already added facts matching this ObjectTypeNode
         // to working memories
-        for (int i = 0, length = workingMemories.length; i < length; i++) {
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
-            final PropagationContextImpl propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
-                    PropagationContext.RULE_ADDITION,
-                    null,
-                    null,
-                    null);
-            propagationContext.setEntryPoint(((EntryPointNode) this.source).getEntryPoint());
-            this.source.updateSink(this,
-                    propagationContext,
-                    workingMemory);
+            final PropagationContextImpl propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                          PropagationContext.RULE_ADDITION,
+                                                                                          null,
+                                                                                          null,
+                                                                                          null );
+            propagationContext.setEntryPoint( ((EntryPointNode) this.source).getEntryPoint() );
+            this.source.updateSink( this,
+                                    propagationContext,
+                                    workingMemory );
         }
     }
 
     public void networkUpdated() {
-        this.skipOnModify = canSkipOnModify(this.sink.getSinks(), true);
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks(),
+                                             true );
     }
 
     /**
@@ -292,18 +321,37 @@ public class ObjectTypeNode extends ObjectSource
                        ReteooBuilder builder,
                        BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
-        doRemove(context,
-                builder,
-                node,
-                workingMemories);
+        doRemove( context,
+                  builder,
+                  node,
+                  workingMemories );
     }
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if (!node.isInUse()) {
-            removeObjectSink((ObjectSink) node);
+        if( context.getCleanupAdapter() != null ) {
+            for( InternalWorkingMemory workingMemory : workingMemories ) {
+                CleanupAdapter adapter = context.getCleanupAdapter();
+                final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
+                Iterator it = memory.iterator();
+                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                    InternalFactHandle handle = (InternalFactHandle) entry.getValue();
+                    for( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
+                        adapter.cleanUp( leftTuple, workingMemory );
+                    }
+                }
+            }
+            context.setCleanupAdapter( null );
+        }
+        if ( !node.isInUse() ) {
+            removeObjectSink( (ObjectSink) node );
+        }
+        if ( ! this.isInUse() ) {
+            for( InternalWorkingMemory workingMemory : workingMemories ) {
+                workingMemory.clearNodeMemory( this );
+            }
         }
     }
 
@@ -336,17 +384,17 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public boolean equals(final Object object) {
-        if (this == object) {
+        if ( this == object ) {
             return true;
         }
 
-        if (object == null || !(object instanceof ObjectTypeNode)) {
+        if ( object == null || !(object instanceof ObjectTypeNode) ) {
             return false;
         }
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
-        return this.objectType.equals(other.objectType) && this.source.equals(other.source);
+        return this.objectType.equals( other.objectType ) && this.source.equals( other.source );
     }
 
     /**
@@ -356,21 +404,24 @@ public class ObjectTypeNode extends ObjectSource
      * @param sinks
      * @return
      */
-    private boolean canSkipOnModify(final Sink[] sinks, final boolean rootCall) {
+    private boolean canSkipOnModify(final Sink[] sinks,
+                                    final boolean rootCall) {
         // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
         boolean hasConstraints = false;
-        for (int i = 0; i < sinks.length && !hasConstraints; i++) {
-            if (sinks[i] instanceof AlphaNode || sinks[i] instanceof AccumulateNode || sinks[i] instanceof CollectNode || sinks[i] instanceof FromNode) {
+        for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
+            if ( sinks[i] instanceof AlphaNode || sinks[i] instanceof AccumulateNode || sinks[i] instanceof CollectNode || sinks[i] instanceof FromNode ) {
                 hasConstraints = true;
-            } else if (sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0) {
-                hasConstraints = rootCall || this.usesDeclaration(((BetaNode) sinks[i]).getConstraints());
-            } else if (sinks[i] instanceof EvalConditionNode) {
-                hasConstraints = this.usesDeclaration(((EvalConditionNode) sinks[i]).getCondition());
+            } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
+                hasConstraints = rootCall || this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
+            } else if ( sinks[i] instanceof EvalConditionNode ) {
+                hasConstraints = this.usesDeclaration( ((EvalConditionNode) sinks[i]).getCondition() );
             }
-            if (!hasConstraints && sinks[i] instanceof ObjectSource) {
-                hasConstraints = !this.canSkipOnModify(((ObjectSource) sinks[i]).getSinkPropagator().getSinks(), false);
-            } else if (!hasConstraints && sinks[i] instanceof LeftTupleSource) {
-                hasConstraints = !this.canSkipOnModify(((LeftTupleSource) sinks[i]).getSinkPropagator().getSinks(), false);
+            if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
+                hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks(),
+                                                        false );
+            } else if ( !hasConstraints && sinks[i] instanceof LeftTupleSource ) {
+                hasConstraints = !this.canSkipOnModify( ((LeftTupleSource) sinks[i]).getSinkPropagator().getSinks(),
+                                                        false );
             }
         }
 
@@ -380,8 +431,8 @@ public class ObjectTypeNode extends ObjectSource
 
     private boolean usesDeclaration(final Constraint[] constraints) {
         boolean usesDecl = false;
-        for (int i = 0; !usesDecl && i < constraints.length; i++) {
-            usesDecl = this.usesDeclaration(constraints[i]);
+        for ( int i = 0; !usesDecl && i < constraints.length; i++ ) {
+            usesDecl = this.usesDeclaration( constraints[i] );
         }
         return usesDecl;
     }
@@ -389,7 +440,7 @@ public class ObjectTypeNode extends ObjectSource
     private boolean usesDeclaration(final Constraint constraint) {
         boolean usesDecl = false;
         final Declaration[] declarations = constraint.getRequiredDeclarations();
-        for (int j = 0; !usesDecl && j < declarations.length; j++) {
+        for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
             usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
         }
         return usesDecl;
@@ -398,7 +449,7 @@ public class ObjectTypeNode extends ObjectSource
     private boolean usesDeclaration(final EvalCondition condition) {
         boolean usesDecl = false;
         final Declaration[] declarations = condition.getRequiredDeclarations();
-        for (int j = 0; !usesDecl && j < declarations.length; j++) {
+        for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
             usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
         }
         return usesDecl;
@@ -417,35 +468,35 @@ public class ObjectTypeNode extends ObjectSource
 
     public void setExpirationOffset(long expirationOffset) {
         this.expirationOffset = expirationOffset;
-        if (!this.objectType.getValueType().equals(ValueType.QUERY_TYPE)) {
-            if (this.expirationOffset > 0) {
+        if ( !this.objectType.getValueType().equals( ValueType.QUERY_TYPE ) ) {
+            if ( this.expirationOffset > 0 ) {
                 // override memory enabled settings
-                this.setObjectMemoryEnabled(true);
-            } else if (this.expirationOffset == 0) {
+                this.setObjectMemoryEnabled( true );
+            } else if ( this.expirationOffset == 0 ) {
                 // disable memory
-                this.setObjectMemoryEnabled(false);
+                this.setObjectMemoryEnabled( false );
             }
         }
     }
 
     private static class ExpireJob
-            implements
-            Job {
+        implements
+        Job {
 
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
-            context.workingMemory.queueWorkingMemoryAction(context.expireAction);
+            context.workingMemory.queueWorkingMemoryAction( context.expireAction );
         }
 
     }
 
     private static class ExpireJobContext
-            implements
-            JobContext,
-            Externalizable {
+        implements
+        JobContext,
+        Externalizable {
         public WorkingMemoryReteExpireAction expireAction;
-        public InternalWorkingMemory workingMemory;
-        public JobHandle handle;
+        public InternalWorkingMemory         workingMemory;
+        public JobHandle                     handle;
 
         /**
          * @param workingMemory
@@ -468,7 +519,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
+                                                ClassNotFoundException {
             //this.behavior = (O)
         }
 

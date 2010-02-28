@@ -295,4 +295,11 @@ public class ClassTypeResolver
         return clz.getName();
 
     }
+    
+    public void clearImports() {
+        if( this.imports != Collections.EMPTY_SET) {
+            this.imports.clear();
+            this.cachedImports.clear();
+        }
+    }
 }

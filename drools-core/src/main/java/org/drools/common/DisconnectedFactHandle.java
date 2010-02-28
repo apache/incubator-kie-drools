@@ -68,7 +68,7 @@ public class DisconnectedFactHandle
         return this.recency;
     }
 
-    public LeftTuple getLeftTuple() {
+    public LeftTuple getLastLeftTuple() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
@@ -111,7 +111,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public void setLeftTuple(LeftTuple leftTuple) {
+    public void setFirstLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
@@ -138,6 +138,36 @@ public class DisconnectedFactHandle
     @XmlAttribute(name="external-form")
     public String getExternalForm() {
     	return toExternalForm();
+    }
+
+    
+    public LeftTuple getFirstLeftTuple() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    
+    public RightTuple getFirstRightTuple() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    
+    public RightTuple getLastRightTuple() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    
+    public void setFirstRightTuple(RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    
+    public void setLastLeftTuple(LeftTuple leftTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    
+    public void setLastRightTuple(RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
 }

@@ -50,8 +50,12 @@ public class DefaultFactHandle
     private Object                  object;
     private EqualityKey             key;
     private int                     objectHashCode;
-    private RightTuple              rightTuple;
-    private LeftTuple               leftTuple;
+    
+    public RightTuple              firstRightTuple;
+    public RightTuple              lastRightTuple;
+    
+    public LeftTuple                firstLeftTuple;
+    public LeftTuple                lastLeftTuple;
     private WorkingMemoryEntryPoint entryPoint;
 
     // ----------------------------------------------------------------------
@@ -205,20 +209,36 @@ public class DefaultFactHandle
         return false;
     }
 
-    public RightTuple getRightTuple() {
-        return rightTuple;
+    public RightTuple getFirstRightTuple() {
+        return this.firstRightTuple;
     }
 
-    public void setRightTuple(RightTuple rightTuple) {
-        this.rightTuple = rightTuple;
+    public void setFirstRightTuple(RightTuple firstRightTuple) {
+        this.firstRightTuple = firstRightTuple;
+    }
+    
+    public RightTuple getLastRightTuple() {
+        return this.lastRightTuple;
     }
 
-    public void setLeftTuple(LeftTuple leftTuple) {
-        this.leftTuple = leftTuple;
+    public void setLastRightTuple(RightTuple lastRightTuple) {
+        this.lastRightTuple = lastRightTuple;
+    }    
+
+    public void setFirstLeftTuple(LeftTuple firstLeftTuple) {
+        this.firstLeftTuple = firstLeftTuple;
     }
 
-    public LeftTuple getLeftTuple() {
-        return this.leftTuple;
+    public LeftTuple getFirstLeftTuple() {
+        return this.firstLeftTuple;
+    }
+    
+    public void setLastLeftTuple(LeftTuple lastLeftTuple) {
+        this.lastLeftTuple = lastLeftTuple;
+    }
+
+    public LeftTuple getLastLeftTuple() {
+        return this.lastLeftTuple;
     }
 
     public WorkingMemoryEntryPoint getEntryPoint() {
@@ -233,8 +253,12 @@ public class DefaultFactHandle
         DefaultFactHandle clone =  new DefaultFactHandle(this.id, this.object, this.recency);
         clone.entryPoint = this.entryPoint;
         clone.key = this.key;
-        clone.leftTuple = this.leftTuple;
-        clone.rightTuple = this.rightTuple;
+        clone.firstLeftTuple = this.firstLeftTuple;
+        clone.lastLeftTuple = this.lastLeftTuple;
+        
+        clone.firstRightTuple = this.firstRightTuple;
+        clone.lastRightTuple = this.lastRightTuple;
+        
         clone.objectHashCode = this.objectHashCode;
         return clone;
     }

@@ -172,40 +172,6 @@ public class DefaultKnowledgeHelper
         retract( handle );
     }
 
-    public void modifyRetract(final Object object) {
-        FactHandle handle = getFactHandle( object );
-        if ( handle == null ) {
-            throw new FactException( "Modify error: handle not found for object: " + object + ". Is it in the working memory?" );
-        }
-        modifyRetract( handle );
-    }
-
-    public void modifyRetract(final FactHandle factHandle) {
-        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)factHandle).getEntryPoint())
-                        .modifyRetract( factHandle,
-                                          rule,
-                                          activation );
-    }
-
-    public void modifyInsert(final Object object) {
-        FactHandle handle = getFactHandle( object );
-        if ( handle == null ) {
-            throw new FactException( "Modify error: handle not found for object: " + object + ". Is it in the working memory?" );
-        }
-        modifyInsert( handle,
-                      object );
-    }
-
-    public void modifyInsert(final FactHandle factHandle,
-                             final Object object) {
-        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)factHandle).getEntryPoint())
-                            .modifyInsert( factHandle,
-                                         object,
-                                         rule,
-                                         activation );
-        this.getIdentityMap().put(object, factHandle);
-    }
-
     public Rule getRule() {
         return this.rule;
     }

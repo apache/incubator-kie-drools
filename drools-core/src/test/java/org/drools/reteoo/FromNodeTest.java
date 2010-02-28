@@ -315,18 +315,18 @@ public class FromNodeTest extends TestCase {
         assertEquals( 1,
                       memory.betaMemory.getLeftTupleMemory().size() );
         assertNull( memory.betaMemory.getRightTupleMemory() );
-        RightTuple rightTuple2 = tuple.getBetaChildren().getRightParent();
-        RightTuple rightTuple1= tuple.getBetaChildren().getLeftParentNext().getRightParent();
+        RightTuple rightTuple2 = tuple.firstChild.getRightParent();
+        RightTuple rightTuple1= tuple.firstChild.getLeftParentNext().getRightParent();
         assertFalse( rightTuple1.equals( rightTuple2 ) );
-        assertNull( tuple.getBetaChildren().getLeftParentNext().getLeftParentNext() );
+        assertNull( tuple.firstChild.getLeftParentNext().getLeftParentNext() );
 
 
         final InternalFactHandle handle2 = rightTuple2.getFactHandle();
         final InternalFactHandle handle1 = rightTuple1.getFactHandle();
         assertEquals( handle1.getObject(),
-                      cheese1 );
-        assertEquals( handle2.getObject(),
                       cheese2 );
+        assertEquals( handle2.getObject(),
+                      cheese1 );
 
         from.retractLeftTuple( tuple,
                            context,

@@ -13,7 +13,7 @@ public interface ObjectSinkPropagator
     Externalizable {
 
     public RuleBasePartitionId getPartitionId();
-    
+
     public void propagateAssertObject(InternalFactHandle factHandle,
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory);
@@ -23,4 +23,10 @@ public interface ObjectSinkPropagator
     public ObjectSink[] getSinks();
 
     public int size();
+
+    public void propagateModifyObject(InternalFactHandle factHandle,
+                                      ModifyPreviousTuples modifyPreviousTuples,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory);
+
 }

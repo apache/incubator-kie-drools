@@ -38,14 +38,6 @@ public interface PropagationContext
 
     public int getDormantActivations();
 
-    public void addRetractedTuple(Rule rule,
-                                  Activation activation);
-
-    public Activation removeRetractedTuple(Rule rule,
-                                           LeftTuple tuple);
-
-    public void clearRetractedTuples();
-
     public void releaseResources();
 
     public EntryPoint getEntryPoint();

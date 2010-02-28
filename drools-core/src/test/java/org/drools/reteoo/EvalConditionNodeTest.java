@@ -29,24 +29,25 @@ import org.drools.spi.PropagationContext;
 public class EvalConditionNodeTest extends DroolsTestCase {
     private PropagationContext  context;
     private ReteooWorkingMemory workingMemory;
-    private ReteooRuleBase ruleBase;
-    private BuildContext buildContext;    
+    private ReteooRuleBase      ruleBase;
+    private BuildContext        buildContext;
 
     public EvalConditionNodeTest(final String name) {
         super( name );
     }
 
     public void setUp() {
-        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
-        
+        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase,
+                                              ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
+
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null,
                                                    null );
 
-        this.workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
+        this.workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
     }
 
     public void testAttach() throws Exception {
@@ -107,24 +108,26 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final LeftTuple tuple0 = new LeftTuple( f0, sink,
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                sink,
                                                 true );
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
+                              this.context,
+                              this.workingMemory );
 
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final LeftTuple tuple1 = new LeftTuple( f1, sink,
+        final LeftTuple tuple1 = new LeftTuple( f1,
+                                                sink,
                                                 true );
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
+                              this.context,
+                              this.workingMemory );
 
         // Check memory was populated
         final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
@@ -155,25 +158,27 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final LeftTuple tuple0 = new LeftTuple( f0, sink,
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                sink,
                                                 true );
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
+                              this.context,
+                              this.workingMemory );
 
         // we create and retract two tuples, checking the linkedtuples is null for JBRULES-246 "NPE on retract()"        
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final LeftTuple tuple1 = new LeftTuple( f1, sink,
+        final LeftTuple tuple1 = new LeftTuple( f1,
+                                                sink,
                                                 true );
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
+                              this.context,
+                              this.workingMemory );
 
         // Check memory was populated
         final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
@@ -189,8 +194,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         // Now test that the fact is retracted correctly
         node.retractLeftTuple( tuple0,
-                           this.context,
-                           this.workingMemory );
+                               this.context,
+                               this.workingMemory );
 
         // Now test that the fact is retracted correctly
         assertEquals( 1,
@@ -204,8 +209,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         // Now test that the fact is retracted correctly
         node.retractLeftTuple( tuple1,
-                           this.context,
-                           this.workingMemory );
+                               this.context,
+                               this.workingMemory );
 
         // Now test that the fact is retracted correctly
         assertEquals( 0,
@@ -231,24 +236,26 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final LeftTuple tuple0 = new LeftTuple( f0, sink,
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                sink,
                                                 true );
 
         // Tuple should fail and not propagate
         node.assertLeftTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
+                              this.context,
+                              this.workingMemory );
 
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final LeftTuple tuple1 = new LeftTuple( f1, sink,
+        final LeftTuple tuple1 = new LeftTuple( f1,
+                                                sink,
                                                 true );
 
         // Tuple should fail and not propagate 
         node.assertLeftTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
+                              this.context,
+                              this.workingMemory );
 
         // Check memory was not populated
         final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
@@ -288,12 +295,13 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "string0" );
 
-        final LeftTuple tuple1 = new LeftTuple( f0, sink1,
+        final LeftTuple tuple1 = new LeftTuple( f0,
+                                                sink1,
                                                 true );
 
         node.assertLeftTuple( tuple1,
-                          this.context,
-                          workingMemory );
+                              this.context,
+                              workingMemory );
 
         assertLength( 1,
                       sink1.getAsserted() );
@@ -312,7 +320,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         assertLength( 1,
                       sink2.getAsserted() );
     }
-    
+
     /**
      * If a eval allows an incoming Object, then the Object MUST be
      * propagated. This tests that the memory is updated
@@ -321,18 +329,18 @@ public class EvalConditionNodeTest extends DroolsTestCase {
      */
     public void testDoRemove() throws FactException {
         final MockEvalCondition eval = new MockEvalCondition( true );
-        
+
         final EvalConditionNode parent = new EvalConditionNode( 1,
-                                                              new MockTupleSource( 15 ),
-                                                              eval,
-                                                              buildContext );
+                                                                new MockTupleSource( 15 ),
+                                                                eval,
+                                                                buildContext );
 
         // Create a test node that always returns false 
         final EvalConditionNode node = new EvalConditionNode( 2,
                                                               parent,
                                                               eval,
                                                               buildContext );
-        
+
         parent.addTupleSink( node );
 
         final MockLeftTupleSink sink = new MockLeftTupleSink();
@@ -341,13 +349,19 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final LeftTuple tuple0 = new LeftTuple( f0, sink,
+        // an eval node always has at least a LIAN before it, so, tuples that reach it 
+        // always have at least one tuple parent
+        final LeftTuple parentTuple = new LeftTuple( f0,
+                                                     null,
+                                                     true );
+        final LeftTuple tuple0 = new LeftTuple( parentTuple,
+                                                sink,
                                                 true );
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
+                              this.context,
+                              this.workingMemory );
 
         // Check memory was populated
         EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
@@ -360,18 +374,21 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // make sure assertions were propagated
         assertEquals( 1,
                       sink.getAsserted().size() );
-        
+
         RuleRemovalContext removalContext = new RuleRemovalContext();
-        InternalWorkingMemory[] workingMemories = new InternalWorkingMemory[] { this.workingMemory};
-        
+        InternalWorkingMemory[] workingMemories = new InternalWorkingMemory[]{this.workingMemory};
+
         // This use to throw ClassCastException JBRULES-1719
-        node.remove( removalContext, this.ruleBase.getReteooBuilder(), sink,  workingMemories);       
-        
+        node.remove( removalContext,
+                     this.ruleBase.getReteooBuilder(),
+                     sink,
+                     workingMemories );
+
         memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
 
         assertEquals( 0,
                       memory.tupleMemory.size() );
 
         assertFalse( memory.tupleMemory.contains( tuple0 ) );
-    }    
+    }
 }

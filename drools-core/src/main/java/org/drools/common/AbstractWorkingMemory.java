@@ -81,6 +81,7 @@ import org.drools.reteoo.InitialFactHandle;
 import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ModifyPreviousTuples;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
@@ -962,8 +963,7 @@ public abstract class AbstractWorkingMemory
                         // lets see if the object is already logical asserted
                         key = this.tms.get( object );
                     } else {
-                        // Object is already asserted, so check and possibly correct
-                        // its
+                        // Object is already asserted, so check and possibly correct its
                         // status and then return the handle
                         key = handle.getEqualityKey();
 
@@ -973,13 +973,11 @@ public abstract class AbstractWorkingMemory
                         }
 
                         if ( !logical ) {
-                            // this object was previously justified, so we have to
-                            // override it to stated
+                            // this object was previously justified, so we have to override it to stated
                             key.setStatus( EqualityKey.STATED );
                             this.tms.removeLogicalDependencies( handle );
                         } else {
-                            // this was object is already justified, so just add new
-                            // logical dependency
+                            // this was object is already justified, so just add new logical dependency
                             this.tms.addLogicalDependency( handle,
                                                            activation,
                                                            activation.getPropagationContext(),
@@ -1008,9 +1006,7 @@ public abstract class AbstractWorkingMemory
                         }
                     } else if ( !logical ) {
                         if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                            // Its previous justified, so switch to stated and
-                            // remove
-                            // logical dependencies
+                            // Its previous justified, so switch to stated and remove logical dependencies
                             final InternalFactHandle justifiedHandle = key.getFactHandle();
                             this.tms.removeLogicalDependencies( justifiedHandle );
 
@@ -1053,17 +1049,14 @@ public abstract class AbstractWorkingMemory
 
                     } else {
                         if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                            // only add as logical dependency if this wasn't
-                            // previously
-                            // stated
+                            // only add as logical dependency if this wasn't previously stated
                             this.tms.addLogicalDependency( key.getFactHandle(),
                                                            activation,
                                                            activation.getPropagationContext(),
                                                            rule );
                             return key.getFactHandle();
                         } else {
-                            // You cannot justify a previously stated equality equal
-                            // object, so return null
+                            // You cannot justify a previously stated equality equal object, so return null
                             return null;
                         }
                     }
@@ -1077,8 +1070,7 @@ public abstract class AbstractWorkingMemory
 
                 }
 
-                // if the dynamic parameter is true or if the
-                // user declared the fact type with the meta tag:
+                // if the dynamic parameter is true or if the user declared the fact type with the meta tag:
                 // @propertyChangeSupport
                 if ( dynamic || typeConf.isDynamic() ) {
                     addPropertyChangeListener( object );
@@ -1291,162 +1283,6 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public void modifyRetract(final FactHandle factHandle) {
-        modifyRetract( factHandle,
-                       null,
-                       null );
-    }
-
-    public void modifyRetract(final FactHandle factHandle,
-                              final Rule rule,
-                              final Activation activation) {
-        try {
-            this.ruleBase.readLock();
-            this.lock.lock();
-            startOperation();
-            this.ruleBase.executeQueuedActions();
-
-            InternalFactHandle handle = (InternalFactHandle) factHandle;
-
-            // the handle might have been disconnected, so reconnect if it has
-            if ( factHandle instanceof DisconnectedFactHandle ) {
-                handle = this.objectStore.reconnect( handle );
-            }
-
-            if ( handle.getId() == -1 || ( handle.isEvent() && ((EventFactHandle)handle).isExpired() ) ) {
-                // the handle is invalid, most likely already retracted, so
-                // return
-                return;
-            }
-
-            if ( activation != null ) {
-                // release resources so that they can be GC'ed
-                activation.getPropagationContext().releaseResources();
-            }
-            // Nowretract any trace of the original fact
-            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.MODIFICATION,
-                                                                                      rule,
-                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
-                                                                                      handle,
-                                                                                      this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations(),
-                                                                                      entryPoint );
-
-            modifyContexts.put( handle,
-                                propagationContext );
-
-            this.entryPointNode.retractObject( handle,
-                                               propagationContext,
-                                               this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                                   handle.getObject() ),
-                                               this );
-
-            if ( this.maintainTms ) {
-
-                // the hashCode and equality has changed, so we must update the
-                // EqualityKey
-                EqualityKey key = handle.getEqualityKey();
-                if ( key != null ) {
-                    key.removeFactHandle( handle );
-
-                    // If the equality key is now empty, then remove it
-                    if ( key.isEmpty() ) {
-                        this.tms.remove( key );
-                    }
-                }
-            }
-        } finally {
-            endOperation();
-            this.lock.unlock();
-            this.ruleBase.readUnlock();
-        }
-    }
-
-    public void modifyInsert(final FactHandle factHandle,
-                             final Object object) {
-        modifyInsert( factHandle,
-                      object,
-                      null,
-                      null );
-    }
-
-    public void modifyInsert(final FactHandle factHandle,
-                             final Object object,
-                             final Rule rule,
-                             final Activation activation) {
-        try {
-            this.ruleBase.readLock();
-            this.lock.lock();
-            startOperation();
-            this.ruleBase.executeQueuedActions();
-
-            InternalFactHandle handle = (InternalFactHandle) factHandle;
-
-            if ( handle.getId() == -1 || ( handle.isEvent() && ((EventFactHandle)handle).isExpired() ) ) {
-                // the handle is invalid, most likely already retracted, so
-                // return
-                return;
-            }
-
-            // the handle might have been disconnected, so reconnect if it has
-            if ( factHandle instanceof DisconnectedFactHandle ) {
-                handle = this.objectStore.reconnect( handle );
-            }
-
-            final Object originalObject = handle.getObject();
-
-            if ( this.maintainTms ) {
-                if ( handle.getEqualityKey() != null ) {
-                    int status = handle.getEqualityKey().getStatus();
-
-                    // now use an existing EqualityKey, if it exists, else create a
-                    // new one
-                    EqualityKey key = this.tms.get( object );
-                    if ( key == null ) {
-                        key = new EqualityKey( handle,
-                                               status );
-                        this.tms.put( key );
-                    } else {
-                        key.addFactHandle( handle );
-                    }
-
-                    handle.setEqualityKey( key );
-                }
-            }
-
-            this.handleFactory.increaseFactHandleRecency( handle );
-
-            if ( activation != null ) {
-                // release resources so that they can be GC'ed
-                activation.getPropagationContext().releaseResources();
-            }
-            // Now retract any trace of the original fact
-            final PropagationContext propagationContext = this.modifyContexts.remove( handle );
-
-            this.entryPointNode.assertObject( handle,
-                                              propagationContext,
-                                              this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                                  object ),
-                                              this );
-
-            this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
-                                                              factHandle,
-                                                              originalObject,
-                                                              object,
-                                                              this );
-
-            propagationContext.clearRetractedTuples();
-
-            executeQueuedActions();
-
-        } finally {
-            endOperation();
-            this.lock.unlock();
-            this.ruleBase.readUnlock();
-        }
-    }
-
     public void update(final org.drools.runtime.rule.FactHandle handle,
                        final Object object) throws FactException {
         update( (org.drools.FactHandle) handle,
@@ -1487,8 +1323,7 @@ public abstract class AbstractWorkingMemory
                 factHandle = this.objectStore.reconnect( factHandle );
             }
 
-            // only needed if we maintain tms, but either way we must get it
-            // before we do the retract
+            // only needed if we maintain tms, but either way we must get it before we do the retract
             int status = -1;
             if ( this.maintainTms ) {
                 status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
@@ -1497,9 +1332,7 @@ public abstract class AbstractWorkingMemory
             final Object originalObject = handle.getObject();
 
             if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle)handle).isExpired()) ) {
-                // the handle is invalid, most likely already retracted, so
-                // return
-                // and we cannot assert a null object
+                // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
                 return;
             }
 
@@ -1507,23 +1340,6 @@ public abstract class AbstractWorkingMemory
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
-            // Nowretract any trace of the original fact
-            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.MODIFICATION,
-                                                                                      rule,
-                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
-                                                                                      handle,
-                                                                                      this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations(),
-                                                                                      entryPoint );
-
-            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                          object );
-
-            this.entryPointNode.retractObject( handle,
-                                               propagationContext,
-                                               typeConf,
-                                               this );
 
             if ( originalObject != object || !AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
                 this.objectStore.removeHandle( handle );
@@ -1546,8 +1362,7 @@ public abstract class AbstractWorkingMemory
                     this.tms.remove( key );
                 }
 
-                // now use an existing EqualityKey, if it exists, else create a
-                // new one
+                // now use an existing EqualityKey, if it exists, else create a new one
                 key = this.tms.get( object );
                 if ( key == null ) {
                     key = new EqualityKey( handle,
@@ -1562,7 +1377,19 @@ public abstract class AbstractWorkingMemory
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
-            this.entryPointNode.assertObject( handle,
+            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
+                                                                                      PropagationContext.MODIFICATION,
+                                                                                      rule,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
+                                                                                      this.agenda.getActiveActivations(),
+                                                                                      this.agenda.getDormantActivations(),
+                                                                                      entryPoint );
+
+            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                          object );
+           
+            this.entryPointNode.modifyObject( handle,
                                               propagationContext,
                                               typeConf,
                                               this );
@@ -1572,8 +1399,6 @@ public abstract class AbstractWorkingMemory
                                                               originalObject,
                                                               object,
                                                               this );
-
-            propagationContext.clearRetractedTuples();
 
             executeQueuedActions();
         } finally {

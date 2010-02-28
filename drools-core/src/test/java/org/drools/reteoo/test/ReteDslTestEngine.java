@@ -1,64 +1,102 @@
 package org.drools.reteoo.test;
 
-import java.beans.IntrospectionException;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.FactHandle;
+import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRReaderStream;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.tree.Tree;
 import org.drools.RuleBaseConfiguration;
-import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.base.evaluators.Operator;
-import org.drools.command.Context;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.SingleBetaConstraints;
-import org.drools.core.util.StringUtils;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.CollectNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.MockLeftTupleSink;
-import org.drools.reteoo.MockObjectSource;
-import org.drools.reteoo.MockTupleSource;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.ModifyPreviousTuples;
 import org.drools.reteoo.ObjectSink;
-import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
-import org.drools.reteoo.TupleSourceTest;
-import org.drools.reteoo.ReteooBuilder.IdGenerator;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.Sink;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.BehaviorManager;
-import org.drools.rule.Declaration;
-import org.drools.rule.Package;
-import org.drools.rule.Pattern;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Evaluator;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.reteoo.test.dsl.AccumulateNodeStep;
+import org.drools.reteoo.test.dsl.BetaNodeStep;
+import org.drools.reteoo.test.dsl.BindingStep;
+import org.drools.reteoo.test.dsl.CollectNodeStep;
+import org.drools.reteoo.test.dsl.DSLMock;
+import org.drools.reteoo.test.dsl.DslStep;
+import org.drools.reteoo.test.dsl.ExistsNodeStep;
+import org.drools.reteoo.test.dsl.FactsStep;
+import org.drools.reteoo.test.dsl.JoinNodeStep;
+import org.drools.reteoo.test.dsl.LeftInputAdapterNodeStep;
+import org.drools.reteoo.test.dsl.LeftTupleSinkStep;
+import org.drools.reteoo.test.dsl.MockitoHelper;
+import org.drools.reteoo.test.dsl.NodeTestCase;
+import org.drools.reteoo.test.dsl.NodeTestCaseResult;
+import org.drools.reteoo.test.dsl.NodeTestDef;
+import org.drools.reteoo.test.dsl.NotNodeStep;
+import org.drools.reteoo.test.dsl.ObjectTypeNodeStep;
+import org.drools.reteoo.test.dsl.RIANodeStep;
+import org.drools.reteoo.test.dsl.ReteTesterHelper;
+import org.drools.reteoo.test.dsl.RuleTerminalNodeStep;
+import org.drools.reteoo.test.dsl.Step;
+import org.drools.reteoo.test.dsl.WithStep;
+import org.drools.reteoo.test.dsl.NodeTestCaseResult.NodeTestResult;
+import org.drools.reteoo.test.dsl.NodeTestCaseResult.Result;
+import org.drools.reteoo.test.parser.NodeTestDSLLexer;
+import org.drools.reteoo.test.parser.NodeTestDSLParser;
+import org.drools.reteoo.test.parser.NodeTestDSLTree;
+import org.drools.reteoo.test.parser.NodeTestDSLParser.compilation_unit_return;
 import org.drools.spi.PropagationContext;
+import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runner.notification.StoppedByUserException;
 import org.mvel2.MVEL;
 
 public class ReteDslTestEngine {
+
+    private static final String OBJECT_TYPE_NODE         = "ObjectTypeNode";
+    private static final String LEFT_INPUT_ADAPTER_NODE  = "LeftInputAdapterNode";
+    private static final String BINDING                  = "Binding";
+    private static final String JOIN_NODE                = "JoinNode";
+    private static final String NOT_NODE                 = "NotNode";
+    private static final String EXISTS_NODE              = "ExistsNode";
+    private static final String COLLECT_NODE             = "CollectNode";
+    private static final String ACCUMULATE_NODE          = "AccumulateNode";
+    private static final String RULE_TERMINAL_NODE       = "RuleTerminalNode";
+    private static final String WITH                     = "With";
+    private static final String FACTS                    = "Facts";
+    private static final String RIGHT_INPUT_ADAPTER_NODE = "RightInputAdapterNode";
+    private static final String LEFT_TUPLE_SINK_STEP     = "LeftTupleSink";
+    private static final String BETA_NODE_STEP           = "BetaNodeStep";
 
     private ReteTesterHelper    reteTesterHelper;
     private Map<String, Object> steps;
@@ -69,20 +107,97 @@ public class ReteDslTestEngine {
 
         this.steps = new HashMap<String, Object>();
 
-        this.steps.put( "ObjectTypeNode",
+        this.steps.put( OBJECT_TYPE_NODE,
                         new ObjectTypeNodeStep( this.reteTesterHelper ) );
-        this.steps.put( "LeftInputAdapterNode",
+        this.steps.put( LEFT_INPUT_ADAPTER_NODE,
                         new LeftInputAdapterNodeStep( this.reteTesterHelper ) );
-        this.steps.put( "Binding",
+        this.steps.put( BINDING,
                         new BindingStep( this.reteTesterHelper ) );
-        this.steps.put( "JoinNode",
+        this.steps.put( JOIN_NODE,
                         new JoinNodeStep( this.reteTesterHelper ) );
-        this.steps.put( "Facts",
+        this.steps.put( NOT_NODE,
+                        new NotNodeStep( this.reteTesterHelper ) );
+        this.steps.put( EXISTS_NODE,
+                        new ExistsNodeStep( this.reteTesterHelper ) );
+        this.steps.put( COLLECT_NODE,
+                        new CollectNodeStep( this.reteTesterHelper ) );
+        this.steps.put( ACCUMULATE_NODE,
+                        new AccumulateNodeStep( this.reteTesterHelper ) );
+        this.steps.put( RULE_TERMINAL_NODE,
+                        new RuleTerminalNodeStep( this.reteTesterHelper ) );
+        this.steps.put( RIGHT_INPUT_ADAPTER_NODE,
+                        new RIANodeStep( this.reteTesterHelper ) );
+        this.steps.put( FACTS,
                         new FactsStep( this.reteTesterHelper ) );
+        this.steps.put( WITH,
+                        new WithStep( this.reteTesterHelper ) );
+        this.steps.put( LEFT_TUPLE_SINK_STEP,
+                        new LeftTupleSinkStep( this.reteTesterHelper ) );
+        this.steps.put( BETA_NODE_STEP,
+                        new BetaNodeStep( this.reteTesterHelper ) );
     }
 
-    public Map run(List<DslStep> steps) {
-        Map context = new HashMap();
+    public NodeTestCaseResult run(NodeTestCase testCase,
+                                  RunNotifier notifier) {
+        if ( testCase == null || testCase.hasErrors() ) {
+            throw new IllegalArgumentException( "Impossible to execute test case due to existing errors: " + testCase.getErrors() );
+        }
+        if ( notifier == null ) {
+            notifier = EmptyNotifier.INSTANCE;
+        }
+        this.reteTesterHelper.addImports( testCase.getImports() );
+        NodeTestCaseResult result = new NodeTestCaseResult( testCase );
+        for ( NodeTestDef test : testCase.getTests() ) {
+            notifier.fireTestStarted( test.getDescription() );
+            NodeTestResult testResult = run( testCase,
+                                             test );
+            switch ( testResult.result ) {
+                case SUCCESS :
+                    notifier.fireTestFinished( test.getDescription() );
+                    break;
+                case ERROR :
+                case FAILURE :
+                    notifier.fireTestFailure( new Failure( test.getDescription(),
+                                                           new AssertionError( testResult.errorMsgs ) ) );
+                    break;
+            }
+            result.add( testResult );
+        }
+        return result;
+    }
+
+    private NodeTestResult run(NodeTestCase testCase,
+                               NodeTestDef test) {
+        Map<String, Object> context = createContext( testCase );
+        NodeTestResult result = new NodeTestResult( test,
+                                                    Result.NOT_EXECUTED,
+                                                    context,
+                                                    new LinkedList<String>() );
+        try {
+            // run setup
+            run( context,
+                 testCase.getSetup(),
+                 result );
+            // run test
+            run( context,
+                 test.getSteps(),
+                 result );
+            // run tearDown
+            run( context,
+                 testCase.getTearDown(),
+                 result );
+            result.result = Result.SUCCESS;
+        } catch ( Exception e ) {
+            result.result = Result.ERROR;
+            result.errorMsgs.add( e.getMessage() );
+        }
+        return result;
+    }
+
+    private Map<String, Object> createContext(NodeTestCase testCase) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put( "TestCase",
+                     testCase );
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
 
@@ -98,7 +213,13 @@ public class ReteDslTestEngine {
         InternalWorkingMemory wm = (InternalWorkingMemory) rbase.newStatefulSession( true );
         context.put( "WorkingMemory",
                      wm );
+        return context;
+    }
 
+    public Map<String, Object> run(Map<String, Object> context,
+                                   List<DslStep> steps,
+                                   NodeTestResult result) {
+        InternalWorkingMemory wm = (InternalWorkingMemory) context.get( "WorkingMemory" );
         for ( DslStep step : steps ) {
             String name = step.getName();
             Object object = this.steps.get( name );
@@ -106,160 +227,307 @@ public class ReteDslTestEngine {
                 Step stepImpl = (Step) object;
                 try {
                     stepImpl.execute( context,
-                                      step.getCommands().toArray( new String[0] ) );
+                                      step.getCommands() );
                 } catch ( Exception e ) {
                     throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
                                                         e );
                 }
             } else if ( "assert".equals( name.trim() ) ) {
-                assertObject(step, context, wm);
-            }  else if ( "retract".equals( name.trim() ) ) {
-                retractObject(step, context, wm);
+                assertObject( step,
+                              context,
+                              wm );
+            } else if ( "retract".equals( name.trim() ) ) {
+                retractObject( step,
+                               context,
+                               wm );
+            } else if ( "modify".equals( name.trim() ) ) {
+                modifyObject( step,
+                              context,
+                              wm );
             } else {
                 Object node = context.get( name.trim() );
-                if ( name == null ) {
-                    throw new IllegalArgumentException( "line " + step.getLine() + ": step " + name + " does not exist" );    
+                if ( node == null ) {
+                    throw new IllegalArgumentException( "line " + step.getLine() + ": step " + name + " does not exist" );
                 }
-                
-                if ( node instanceof BetaNode ) {
-                    BetaNode betaNode = (BetaNode) node;
-                    betaNode( step, betaNode, context, wm );
+
+                if ( node instanceof DSLMock ) {
+                    // it is a mock
+                    MockitoHelper.process( step,
+                                           (LeftTupleSink) node,
+                                           context,
+                                           wm );
+                } else if ( node instanceof BetaNode ) {
+                    betaNode( step,
+                              (BetaNode) node,
+                              context,
+                              wm );
+                } else if ( node instanceof RightInputAdapterNode ) {
+                    riaNode( step,
+                             (RightInputAdapterNode) node,
+                             context,
+                             wm );
+                } else if ( node instanceof RuleTerminalNode ) {
+                    ruleTerminalNode( step,
+                                      (RuleTerminalNode) node,
+                                      context,
+                                      wm );
                 } else {
                     throw new IllegalArgumentException( "line " + step.getLine() + ": unknown node " + node );
-                }                                
+                }
             }
         }
 
         return context;
     }
-    
-    private void betaNode(DslStep step, BetaNode node, Map context, InternalWorkingMemory wm) {
-        try {            
-            String[] cmds = step.getCommands().toArray( new String[0] );
+
+    private void betaNode(DslStep step,
+                          BetaNode node,
+                          Map<String, Object> context,
+                          InternalWorkingMemory wm) {
+        try {
+            List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
-            
-            
-            BetaMemory memory = (BetaMemory) wm.getNodeMemory( node );
-            for ( String cmd : cmds ) {
-                if ( cmd.trim().startsWith( "leftMemory" ) ) {                    
-                    int pos = cmd.indexOf( "[" );
-                    String nodeName = cmd.substring( 0,
-                                                     pos ).trim();
-                    String args = cmd.substring( pos ).trim();
+
+            BetaMemory memory = null;
+            if ( node instanceof CollectNode ) {
+                CollectMemory colmem = (CollectMemory) wm.getNodeMemory( node );
+                memory = colmem.betaMemory;
+            } else if ( node instanceof AccumulateNode ) {
+                AccumulateMemory accmem = (AccumulateMemory) wm.getNodeMemory( node );
+                memory = accmem.betaMemory;
+            } else {
+                memory = (BetaMemory) wm.getNodeMemory( node );
+            }
+            for ( String[] cmd : cmds ) {
+                if ( cmd[0].equals( "leftMemory" ) ) {
+                    String args = cmd[1];
                     String listString = args.replaceAll( "h(\\d+)",
                                                          "h[$1]" );
-                    Map vars = new HashMap();
+                    Map<String, Object> vars = new HashMap<String, Object>();
                     vars.put( "h",
                               handles );
-                    List expectedLeftTuples = (List) MVEL.eval( listString,
-                                                  vars );                    
-                    
+                    List< ? > expectedLeftTuples = (List< ? >) MVEL.eval( listString,
+                                                                          vars );
+
                     LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
-                    List actualLeftTuples = null;
-                    
+                    if ( expectedLeftTuples.isEmpty() && leftMemory.size() != 0 ) {
+                        throw new AssertionError( "line " + step.getLine() + ": left Memory expected [] actually " + leftMemory );
+                    } else if ( expectedLeftTuples.isEmpty() && leftMemory.size() == 0 ) {
+                        return;
+                    }
+
                     // we always lookup from the first element, in case it's indexed
                     List<InternalFactHandle> first = (List<InternalFactHandle>) expectedLeftTuples.get( 0 );
-                    LeftTuple firstTuple = new LeftTuple(first.get( 0 ), null, false);
+                    LeftTuple firstTuple = new LeftTuple( first.get( 0 ),
+                                                          null,
+                                                          false );
                     for ( int i = 1; i < first.size(); i++ ) {
-                        firstTuple = new LeftTuple(firstTuple, null, false);
+                        firstTuple = new LeftTuple( firstTuple,
+                                                    null,
+                                                    false );
                     }
-                    
+
                     List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
-                    
+
                     for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( firstTuple ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
                         leftTuples.add( leftTuple );
                     }
-                    actualLeftTuples = new ArrayList( leftTuples.size() );
+                    List<List<InternalFactHandle>> actualLeftTuples = new ArrayList<List<InternalFactHandle>>( leftTuples.size() );
                     for ( LeftTuple leftTuple : leftTuples ) {
                         List<InternalFactHandle> tupleHandles = Arrays.asList( leftTuple.toFactHandles() );
-                        actualLeftTuples.add( tupleHandles );                        
-                    }  
-                    
-                    if ( !expectedLeftTuples.equals( actualLeftTuples ) ) {
-                        throw new AssertionError( "line " + step.getLine() + ": left Memory expected " + expectedLeftTuples + " actually " + actualLeftTuples);
+                        actualLeftTuples.add( tupleHandles );
                     }
-                                           
-                } else if ( cmd.trim().startsWith( "rightMemory" ) ) {
-                    int pos = cmd.indexOf( "[" );
-                    String nodeName = cmd.substring( 0,
-                                                     pos ).trim();
-                    String args = cmd.substring( pos ).trim();
+
+                    if ( !expectedLeftTuples.equals( actualLeftTuples ) ) {
+                        throw new AssertionError( "line " + step.getLine() + ": left Memory expected " + expectedLeftTuples + " actually " + actualLeftTuples );
+                    }
+
+                } else if ( cmd[0].equals( "rightMemory" ) ) {
+                    String args = cmd[1];
                     String listString = args.replaceAll( "h(\\d+)",
                                                          "h[$1]" );
-                    Map vars = new HashMap();
+                    Map<String, Object> vars = new HashMap<String, Object>();
                     vars.put( "h",
                               handles );
-                    List expectedFactHandles = (List) MVEL.eval( listString,
-                                                  vars );                    
-                    
-                    RightTupleMemory rightMemory = memory.getRightTupleMemory();  
-                    
-                    InternalFactHandle first = ( InternalFactHandle ) expectedFactHandles.get( 0 );
-                    List<RightTuple> actualRightTuples = new ArrayList();
-                    for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( first.getRightTuple() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                    List< ? > expectedFactHandles = (List< ? >) MVEL.eval( listString,
+                                                                           vars );
+
+                    RightTupleMemory rightMemory = memory.getRightTupleMemory();
+
+                    if ( expectedFactHandles.isEmpty() && rightMemory.size() != 0 ) {
+                        throw new AssertionError( "line " + step.getLine() + ": right Memory expected [] actually " + rightMemory );
+                    } else if ( expectedFactHandles.isEmpty() && rightMemory.size() == 0 ) {
+                        return;
+                    }
+
+                    RightTuple first = new RightTuple( (InternalFactHandle) expectedFactHandles.get( 0 ) );
+                    List<RightTuple> actualRightTuples = new ArrayList<RightTuple>();
+                    for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( first ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
                         actualRightTuples.add( rightTuple );
                     }
-                    
+
                     if ( expectedFactHandles.size() != actualRightTuples.size() ) {
-                        throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + actualRightTuples + " actually " + actualRightTuples);
+                        throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + expectedFactHandles + " actually " + actualRightTuples );
                     }
-                    
+
                     for ( int i = 0, length = actualRightTuples.size(); i < length; i++ ) {
-                        if ( expectedFactHandles.get(i) != actualRightTuples.get( i ).getFactHandle() ) {
-                            throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + actualRightTuples + " actually " + actualRightTuples);
+                        if ( expectedFactHandles.get( i ) != actualRightTuples.get( i ).getFactHandle() ) {
+                            throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + expectedFactHandles + " actually " + actualRightTuples );
                         }
                     }
-                    
+
                 } else {
-                    throw new IllegalArgumentException( "line " + step.getLine() + ": command does not exist " + cmd.trim() );                    
+                    throw new IllegalArgumentException( "line " + step.getLine() + ": command does not exist " + Arrays.toString( cmd ) );
                 }
             }
         } catch ( Exception e ) {
             throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
                                                 e );
-        }            
+        }
     }
-    
-    private void assertObject(DslStep step, Map context, InternalWorkingMemory wm) {
+
+    private void riaNode(DslStep step,
+                         RightInputAdapterNode node,
+                         Map<String, Object> context,
+                         InternalWorkingMemory wm) {
         try {
-            String[] cmds = step.getCommands().toArray( new String[0] );
+            List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
-            for ( String cmd : cmds ) {
+
+            final ObjectHashMap memory = (ObjectHashMap) wm.getNodeMemory( node );
+            for ( String[] cmd : cmds ) {
+                if ( cmd[0].equals( "leftMemory" ) ) {
+                    String args = cmd[1];
+                    String listString = args.replaceAll( "h(\\d+)",
+                                                         "h[$1]" );
+                    Map<String, Object> vars = new HashMap<String, Object>();
+                    vars.put( "h",
+                              handles );
+                    List< ? > expectedLeftTuples = (List< ? >) MVEL.eval( listString,
+                                                                          vars );
+
+                    if ( expectedLeftTuples.isEmpty() && memory.size() != 0 ) {
+                        throw new AssertionError( "line " + step.getLine() + ": left Memory expected [] actually " + memory );
+                    } else if ( expectedLeftTuples.isEmpty() && memory.size() == 0 ) {
+                        return;
+                    }
+
+                    // create expected tuples
+                    List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
+                    for ( List<InternalFactHandle> tlist : (List<List<InternalFactHandle>>) expectedLeftTuples ) {
+                        LeftTuple tuple = new LeftTuple( tlist.get( 0 ),
+                                                         null,
+                                                         false );
+                        for ( int i = 1; i < tlist.size(); i++ ) {
+                            tuple = new LeftTuple( tuple,
+                                                   new RightTuple( tlist.get( i ) ),
+                                                   null,
+                                                   false );
+                        }
+                        leftTuples.add( tuple );
+
+                    }
+
+                    // get actual tuples
+                    final List<LeftTuple> actualTuples = new ArrayList<LeftTuple>();
+                    final Iterator it = memory.iterator();
+                    for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                        actualTuples.add( (LeftTuple) entry.getKey() );
+                    }
+
+                    // iterate over expected tuples and compare with actual tuples 
+                    for ( LeftTuple tuple : leftTuples ) {
+                        if ( !actualTuples.remove( tuple ) ) {
+                            throw new AssertionError( "line " + step.getLine() + ": left Memory expected " + tuple + " not found in memory." );
+                        }
+                    }
+                    if ( !actualTuples.isEmpty() ) {
+                        throw new AssertionError( "line " + step.getLine() + ": left Memory unexpected tuples in the node memory " + actualTuples );
+                    }
+                } else {
+                    throw new IllegalArgumentException( "line " + step.getLine() + ": command does not exist " + Arrays.toString( cmd ) );
+                }
+            }
+        } catch ( Exception e ) {
+            throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
+                                                e );
+        }
+    }
+
+    private void ruleTerminalNode(DslStep step,
+                                  RuleTerminalNode node,
+                                  Map<String, Object> context,
+                                  InternalWorkingMemory wm) {
+        try {
+            List<String[]> cmds = step.getCommands();
+            //List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
+
+            for ( String[] cmd : cmds ) {
+                throw new IllegalArgumentException( "line " + step.getLine() + ": command does not exist " + Arrays.toString( cmd ) );
+            }
+        } catch ( Exception e ) {
+            throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
+                                                e );
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertObject(DslStep step,
+                              Map<String, Object> context,
+                              InternalWorkingMemory wm) {
+        try {
+            List<String[]> cmds = step.getCommands();
+            List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
+            for ( String[] cmd : cmds ) {
                 try {
-                    int pos = cmd.indexOf( "[" );
-                    String nodeName = cmd.substring( 0,
-                                                     pos ).trim();
-                    ObjectTypeNode sink = (ObjectTypeNode) context.get( nodeName );
+                    String nodeName = cmd[0];
+                    Sink sink = (Sink) context.get( nodeName );
                     if ( sink == null ) {
                         throw new IllegalArgumentException( "line " + step.getLine() + ": node " + nodeName + " does not exist" );
                     }
 
-                    String args = cmd.substring( pos ).trim();
-                    String listString = args.replaceAll( "h(\\d+)",
-                                                         "h[$1]" );
-                    Map vars = new HashMap();
+                    Map<String, Object> vars = new HashMap<String, Object>();
                     vars.put( "h",
                               handles );
-                    List<InternalFactHandle> list = (List<InternalFactHandle>) MVEL.eval( listString,
-                                                                                          vars );
+                    String args = cmd[1];
+                    String listString = args.replaceAll( "h(\\d+)",
+                                                         "h[$1]" );
+                    List< ? > list = (List< ? >) MVEL.eval( listString,
+                                                            vars );
                     if ( list == null ) {
-                        throw new IllegalArgumentException( cmd.trim() + " does not specify an existing fact handle" );
+                        throw new IllegalArgumentException( cmd + " does not specify an existing fact handle" );
                     }
 
-                    for ( InternalFactHandle handle : list ) {
-                        if ( handle == null ) {
-                            throw new IllegalArgumentException( cmd.trim() + " does not specify an existing fact handle" );
+                    for ( Object element : list ) {
+                        if ( element == null ) {
+                            throw new IllegalArgumentException( cmd + " does not specify an existing fact handle" );
                         }
 
-                        PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                  PropagationContext.ASSERTION,
-                                                                                  null,
-                                                                                  null,
-                                                                                  handle );
-                        sink.assertObject( handle,
-                                           pContext,
-                                           wm );
+                        if ( element instanceof InternalFactHandle ) {
+                            InternalFactHandle handle = (InternalFactHandle) element;
+                            PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.ASSERTION,
+                                                                                      null,
+                                                                                      null,
+                                                                                      handle );
+                            ((ObjectSink) sink).assertObject( handle,
+                                                              pContext,
+                                                              wm );
+                        } else {
+                            List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
+                            LeftTuple tuple = createTuple( context,
+                                                           tlist );
+                            PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.ASSERTION,
+                                                                                      null,
+                                                                                      tuple,
+                                                                                      null );
+                            ((LeftTupleSink) sink).assertLeftTuple( tuple,
+                                                                    pContext,
+                                                                    wm );
+                        }
+
                     }
                 } catch ( Exception e ) {
                     throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute command " + cmd,
@@ -270,49 +538,118 @@ public class ReteDslTestEngine {
         } catch ( Exception e ) {
             throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
                                                 e );
-        }        
+        }
     }
-    
-    private void retractObject(DslStep step, Map context, InternalWorkingMemory wm) {
+
+    private LeftTuple createTuple(Map<String, Object> context,
+                                  List<InternalFactHandle> tlist) {
+        LeftTuple tuple = null;
+        String id = getTupleId( tlist );
+        for ( InternalFactHandle handle : tlist ) {
+            if ( tuple == null ) {
+                tuple = new LeftTuple( handle,
+                                       null,
+                                       false ); // do not keep generated tuples on the handle list
+            } else {
+                tuple = new LeftTuple( tuple,
+                                       new RightTuple( handle ),
+                                       null,
+                                       true );
+            }
+        }
+        context.put( id,
+                     tuple );
+        return tuple;
+    }
+
+    private String getTupleId(List<InternalFactHandle> tlist) {
+        StringBuilder id = new StringBuilder();
+        id.append( "T." );
+        for ( InternalFactHandle handle : tlist ) {
+            id.append( handle.getId() );
+            id.append( "." );
+        }
+        return id.toString();
+    }
+
+    private void retractObject(DslStep step,
+                               Map<String, Object> context,
+                               InternalWorkingMemory wm) {
         try {
-            String[] cmds = step.getCommands().toArray( new String[0] );
+            List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
-            for ( String cmd : cmds ) {
+            for ( String[] cmd : cmds ) {
                 try {
-                    int pos = cmd.indexOf( "[" );
-                    String nodeName = cmd.substring( 0,
-                                                     pos ).trim();
-                    ObjectTypeNode sink = (ObjectTypeNode) context.get( nodeName );
+                    String nodeName = cmd[0];
+                    Sink sink = (Sink) context.get( nodeName );
                     if ( sink == null ) {
                         throw new IllegalArgumentException( "line " + step.getLine() + ": node " + nodeName + " does not exist" );
                     }
 
-                    String args = cmd.substring( pos ).trim();
+                    String args = cmd[1];
                     String listString = args.replaceAll( "h(\\d+)",
                                                          "h[$1]" );
-                    Map vars = new HashMap();
+                    Map<String, Object> vars = new HashMap<String, Object>();
                     vars.put( "h",
                               handles );
-                    List<InternalFactHandle> list = (List<InternalFactHandle>) MVEL.eval( listString,
-                                                                                          vars );
+                    List< ? > list = (List< ? >) MVEL.eval( listString,
+                                                            vars );
                     if ( list == null ) {
-                        throw new IllegalArgumentException( cmd.trim() + " does not specify an existing fact handle" );
+                        throw new IllegalArgumentException( Arrays.toString( cmd ) + " does not specify an existing fact handle" );
                     }
 
-                    for ( InternalFactHandle handle : list ) {
-                        if ( handle == null ) {
-                            throw new IllegalArgumentException( cmd.trim() + " does not specify an existing fact handle" );
+                    for ( Object element : list ) {
+                        if ( element == null ) {
+                            throw new IllegalArgumentException( Arrays.toString( cmd ) + " does not specify an existing fact handle" );
                         }
 
-                        PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                  PropagationContext.RETRACTION,
-                                                                                  null,
-                                                                                  null,
-                                                                                  handle );
-                        sink.retractObject( handle, pContext, wm );
+                        if ( element instanceof InternalFactHandle ) {
+                            InternalFactHandle handle = (InternalFactHandle) element;
+                            PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RETRACTION,
+                                                                                      null,
+                                                                                      null,
+                                                                                      handle );
+                            if ( sink instanceof ObjectTypeNode ) {
+                                ((ObjectTypeNode) sink).retractObject( handle,
+                                                                       pContext,
+                                                                       wm );
+                            } else {
+                                for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+                                    rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
+                                                                                      pContext,
+                                                                                      wm );
+                                }
+                                handle.setFirstRightTuple( null );
+                                handle.setLastRightTuple( null );
+                                for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                                    leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+                                                                                   pContext,
+                                                                                   wm );
+                                }
+                                handle.setFirstLeftTuple( null );
+                                handle.setLastLeftTuple( null );
+                            }
+                        } else {
+                            List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
+                            String id = getTupleId( tlist );
+                            LeftTuple tuple = (LeftTuple) context.remove( id );
+                            if ( tuple == null ) {
+                                throw new IllegalArgumentException( "Tuple not found: " + id + " : " + tlist.toString() );
+                            }
+                            PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RETRACTION,
+                                                                                      null,
+                                                                                      tuple,
+                                                                                      null );
+                            ((LeftTupleSink) sink).retractLeftTuple( tuple,
+                                                                     pContext,
+                                                                     wm );
+                        }
+
                     }
                 } catch ( Exception e ) {
-                    throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute command " + cmd,
+                    throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute command " + Arrays.toString( cmd ),
                                                         e );
 
                 }
@@ -320,481 +657,178 @@ public class ReteDslTestEngine {
         } catch ( Exception e ) {
             throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
                                                 e );
-        }        
+        }
     }
 
-    public static List<DslStep> buildDslCommands(Reader reader) {
+    private void modifyObject(DslStep step,
+                              Map<String, Object> context,
+                              InternalWorkingMemory wm) {
         try {
-            int commandIndentPos = 0;
-
-            DslStep dslCommand = null;
-            List<DslStep> commands = new ArrayList<DslStep>();
-            StringBuilder cmdContent = null;
-            List<String> cmds = null;
-
-            List<String> lines = chunkReader( reader );
-            int lineCount = 1;
-
-            for ( String line : lines ) {
-                if ( StringUtils.isEmpty( line ) ) {
-                    lineCount++;
-                    continue;
-                }
-
-                if ( line.charAt( 0 ) != ' ' ) {
-                    // finish of the last command
-                    if ( dslCommand != null ) {
-                        // existing dslCommand, so add arguments before starting again
-                        cmds.add( cmdContent.toString() );
-                    }
-
-                    // start of new command
-                    cmds = new ArrayList<String>();
-                    dslCommand = new DslStep( lineCount,
-                                              line.trim(),
-                                              cmds );
-                    commands.add( dslCommand );
-                    commandIndentPos = 0;
-                } else {
-                    if ( commandIndentPos == 0 ) {
-                        commandIndentPos = indentPos( line );
-                        cmdContent = new StringBuilder();
-                        cmdContent.append( line.trim() );
-                    } else {
-                        if ( indentPos( line ) > commandIndentPos ) {
-                            cmdContent.append( line.trim() );
-                        } else {
-                            cmds.add( cmdContent.toString() );
-
-                            cmdContent = new StringBuilder();
-                            cmdContent.append( line.trim() );
-                            commandIndentPos = indentPos( line );
-                        }
-                    }
-                }
-                lineCount++;
-            }
-
-            // finish of the last command
-            if ( dslCommand != null ) {
-                // existing dslCommand, so add arguments before starting again
-                cmds.add( cmdContent.toString() );
-            }
-
-            return commands;
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    public static int indentPos(String line) {
-        int i;
-        for ( i = 0; i < line.length() && line.charAt( i ) == ' '; i++ ) {
-            // iterate to first char
-        }
-
-        return i;
-    }
-
-    /**
-     * This chunks the reader into a List<String> it removes single line and block comements
-     * while preserving spacing.
-     */
-    public static List<String> chunkReader(Reader reader) {
-        List<String> lines = new ArrayList<String>();
-        BufferedReader bReader = null;
-        if ( !(reader instanceof BufferedReader) ) {
-            bReader = new BufferedReader( reader );
-        }
-        String line;
-        int pos;
-        boolean blockComment = false;
-        try {
-            while ( (line = bReader.readLine()) != null ) {
-                if ( !blockComment ) {
-                    pos = line.indexOf( "/*" );
-                    if ( pos != -1 ) {
-                        int endPos = line.indexOf( "*/" );
-                        if ( endPos != -1 ) {
-                            // we end the block commend on the same time
-                            blockComment = false;
-                        } else {
-                            // replace line till end
-                            blockComment = true;
-                        }
-
-                        line = line.substring( 0,
-                                               pos ).concat( StringUtils.repeat( " ",
-                                                                                 line.length() - pos ) );
-                    } else {
-                        // no block comment, so see if single line comment
-                        pos = line.indexOf( "//" );
-                        if ( pos != -1 ) {
-                            // we have a single line comment
-                            line = line.substring( 0,
-                                                   pos ).concat( StringUtils.repeat( " ",
-                                                                                     line.length() - pos ) );
-                        }
-                    }
-                } else {
-                    // we are in a block comment, replace all text until end of block
-                    pos = line.indexOf( "*/" );
-                    if ( pos != -1 ) {
-                        line = StringUtils.repeat( " ",
-                                                   pos + 2 ).concat( line.substring( pos + 2,
-                                                                                     line.length() ) );
-                        blockComment = false;
-                    } else {
-                        line = StringUtils.repeat( " ",
-                                                   line.length() );
-                    }
-                }
-                lines.add( line );
-            }
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
-
-        return lines;
-    }
-
-    public static class DslStep {
-        private int          line;
-
-        private String       name;
-        private List<String> commands;
-
-        public DslStep(int line,
-                       String name,
-                       List<String> commands) {
-            this.line = line;
-            this.name = name;
-            this.commands = commands;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getLine() {
-            return line;
-        }
-
-        public List<String> getCommands() {
-            return commands;
-        }
-
-        public String toString() {
-            return line + " : " + name + " : " + commands;
-        }
-
-    }
-
-    public static interface Step {
-        public void execute(Map context,
-                            String[] args);
-    }
-
-    public static class ObjectTypeNodeStep
-        implements
-        Step {
-
-        private ReteTesterHelper reteTesterHelper;
-
-        public ObjectTypeNodeStep(ReteTesterHelper reteTesterHelper) {
-            this.reteTesterHelper = reteTesterHelper;
-        }
-
-        public void execute(Map context,
-                            String[] args) {
-            BuildContext buildContext = (BuildContext) context.get( "BuildContext" );
-            String name;
-            String type;
-
-            if ( args.length == 1 ) {
-                String[] c = args[0].split( "," );
-                name = c[0].trim();
-                type = c[1].trim();
-            } else {
-                throw new IllegalArgumentException( "Cannot arguments " + Arrays.asList( args ) );
-            }
-            ObjectTypeNode otn;
-            try {
-                EntryPointNode epn = new EntryPointNode( buildContext.getNextId(),
-                                                         buildContext.getRuleBase().getRete(),
-                                                         buildContext );
-                epn.attach();
-
-                otn = new ObjectTypeNode( buildContext.getNextId(),
-                                          epn,
-                                          new ClassObjectType( Class.forName( type ) ),
-                                          buildContext );
-                // we don't attach, as we want to manually propagate and not
-                // have the working memory propagate
-                //otn.attach();
-            } catch ( ClassNotFoundException e ) {
-                throw new IllegalArgumentException( "Cannot create OTN " + Arrays.asList( args,
-                                                                                          e ) );
-            }
-            context.put( name,
-                         otn );
-        }
-
-    }
-
-    public static class LeftInputAdapterNodeStep
-        implements
-        Step {
-
-        private ReteTesterHelper reteTesterHelper;
-
-        public LeftInputAdapterNodeStep(ReteTesterHelper reteTesterHelper) {
-            this.reteTesterHelper = reteTesterHelper;
-        }
-
-        public void execute(Map context,
-                            String[] args) {
-            BuildContext buildContext = (BuildContext) context.get( "BuildContext" );
-            String name;
-            String source;
-
-            if ( args.length == 1 ) {
-                String[] c = args[0].split( "," );
-                name = c[0].trim();
-                source = c[1].trim();
-            } else {
-                throw new IllegalArgumentException( "Cannot arguments " + Arrays.asList( args ) );
-            }
-            ObjectTypeNode otn = (ObjectTypeNode) context.get( source );
-
-            LeftInputAdapterNode liaNode = new LeftInputAdapterNode( buildContext.getNextId(),
-                                                                     otn,
-                                                                     buildContext );
-            liaNode.attach();
-            context.put( name,
-                         liaNode );
-        }
-    }
-
-    public static class BindingStep
-        implements
-        Step {
-
-        private ReteTesterHelper reteTesterHelper;
-
-        public BindingStep(ReteTesterHelper reteTesterHelper) {
-            this.reteTesterHelper = reteTesterHelper;
-        }
-
-        public void execute(Map context,
-                            String[] args) {
-            BuildContext buildContext = (BuildContext) context.get( "BuildContext" );
-            String name;
-            String index;
-            String type;
-            String field;
-
-            if ( args.length != 0 ) {
-                String[] c = args[0].split( "," );
-                if ( c.length == 3 ) {
-                    // TODO
-                    throw new IllegalArgumentException( "Cannot create Binding " + Arrays.asList( args ) );
-                } else {
-                    name = c[0].trim();
-                    index = c[1].trim();
-                    type = c[2].trim();
-                    field = c[3].trim();
-
-                    try {
-                        Pattern pattern = new Pattern( Integer.parseInt( index ),
-                                                       new ClassObjectType( Class.forName( type ) ) );
-
-                        final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
-                        ClassFieldAccessorStore store = (ClassFieldAccessorStore) context.get( "ClassFieldAccessorStore" );
-
-                        final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                                field,
-                                                                                getClass().getClassLoader() );
-
-                        Declaration declr = new Declaration( name,
-                                                             extractor,
-                                                             pattern );
-                        context.put( name,
-                                     declr );
-                    } catch ( Exception e ) {
-                        throw new IllegalArgumentException( "Cannot create Binding " + Arrays.asList( args,
-                                                                                                      e ) );
-                    }
-                }
-
-            } else {
-                throw new IllegalArgumentException( "Cannot arguments " + Arrays.asList( args ) );
-            }
-        }
-    }
-
-    public static class JoinNodeStep
-        implements
-        Step {
-
-        private ReteTesterHelper reteTesterHelper;
-
-        public JoinNodeStep(ReteTesterHelper reteTesterHelper) {
-            this.reteTesterHelper = reteTesterHelper;
-        }
-
-        public void execute(Map context,
-                            String[] args) {
-            BuildContext buildContext = (BuildContext) context.get( "BuildContext" );
-
-            if ( args.length != 0 ) {
-                String[] a = args[0].split( "," );
-                String name = a[0].trim();
-                String leftInput = a[1].trim();
-                String rightInput = a[2].trim();
-
-                LeftTupleSource leftTupleSource;
-                if ( "mock".equals( leftInput ) ) {
-                    leftTupleSource = new MockTupleSource( buildContext.getNextId() );
-                } else {
-                    leftTupleSource = (LeftTupleSource) context.get( leftInput );
-                }
-
-                ObjectSource rightObjectSource;
-                if ( "mock".equals( rightInput ) ) {
-                    rightObjectSource = new MockObjectSource( buildContext.getNextId() );
-                } else {
-                    rightObjectSource = (ObjectSource) context.get( rightInput );
-                }
-
-                a = args[1].split( "," );
-                String fieldName = a[0].trim();
-                String operator = a[1].trim();
-                String var = a[2].trim();
-
-                Declaration declr = (Declaration) context.get( var );
-
-                //                Pattern pattern = new Pattern(Integer.parseInt( index )) ;
-                //                ObjectType objectType = new ClassObjectType( )
-                //                
-
-                BetaNodeFieldConstraint betaConstraint;
+            List<String[]> cmds = step.getCommands();
+            List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
+            for ( String[] cmd : cmds ) {
                 try {
-                    betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( declr.getPattern(),
-                                                                                       fieldName,
-                                                                                       declr,
-                                                                                       operator );
-                } catch ( IntrospectionException e ) {
-                    throw new IllegalArgumentException();
-                }
-
-                SingleBetaConstraints constraints = new SingleBetaConstraints( betaConstraint,
-                                                                               buildContext.getRuleBase().getConfiguration() );
-
-                JoinNode joinNode = new JoinNode( buildContext.getNextId(),
-                                                  leftTupleSource,
-                                                  rightObjectSource,
-                                                  constraints,
-                                                  BehaviorManager.NO_BEHAVIORS,
-                                                  buildContext );
-                joinNode.attach();
-                context.put( name,
-                             joinNode );
-
-            } else {
-                throw new IllegalArgumentException( "Cannot arguments " + args );
-
-            }
-        }
-    }
-
-    public static class FactsStep
-        implements
-        Step {
-
-        private ReteTesterHelper reteTesterHelper;
-
-        public FactsStep(ReteTesterHelper reteTesterHelper) {
-            this.reteTesterHelper = reteTesterHelper;
-        }
-
-        public void execute(Map context,
-                            String[] args) {
-            BuildContext buildContext = (BuildContext) context.get( "BuildContext" );
-
-            if ( args.length >= 1 ) {
-
-                WorkingMemory wm = (WorkingMemory) context.get( "WorkingMemory" );
-                List handles = (List) context.get( "Handles" );
-                if ( handles == null ) {
-                    handles = new ArrayList();
-                    context.put( "Handles",
-                                 handles );
-                }
-
-                for ( String arg : args ) {
-                    String[] elms = arg.split( "," );
-                    for ( String elm : elms ) {
-                        FactHandle handle = wm.insert( MVEL.eval( elm ) );
-                        handles.add( handle );
+                    String nodeName = cmd[0];
+                    Sink sink = (Sink) context.get( nodeName );
+                    if ( sink == null ) {
+                        throw new IllegalArgumentException( "line " + step.getLine() + ": node " + nodeName + " does not exist" );
                     }
+
+                    String args = cmd[1];
+                    String listString = args.replaceAll( "h(\\d+)",
+                                                         "h[$1]" );
+                    Map<String, Object> vars = new HashMap<String, Object>();
+                    vars.put( "h",
+                              handles );
+                    List< ? > list = (List< ? >) MVEL.eval( listString,
+                                                            vars );
+                    if ( list == null ) {
+                        throw new IllegalArgumentException( Arrays.toString( cmd ) + " does not specify an existing fact handle" );
+                    }
+
+                    for ( Object element : list ) {
+                        if ( element == null ) {
+                            throw new IllegalArgumentException( Arrays.toString( cmd ) + " does not specify an existing fact handle" );
+                        }
+
+                        if ( element instanceof InternalFactHandle ) {
+                            InternalFactHandle handle = (InternalFactHandle) element;
+                            PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.MODIFICATION,
+                                                                                      null,
+                                                                                      null,
+                                                                                      handle );
+                            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.getFirstLeftTuple(),
+                                                                                                  handle.getFirstRightTuple() );
+                            handle.setFirstLeftTuple( null );
+                            handle.setFirstRightTuple( null );
+                            handle.setLastLeftTuple( null );
+                            handle.setLastRightTuple( null );
+                            ((ObjectSink) sink).modifyObject( handle,
+                                                              modifyPreviousTuples,
+                                                              pContext,
+                                                              wm );
+                            modifyPreviousTuples.retractTuples( pContext,
+                                                                wm );
+                        } else {
+                            List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
+                            String id = getTupleId( tlist );
+                            LeftTuple tuple = (LeftTuple) context.get( id );
+                            if ( tuple == null ) {
+                                throw new IllegalArgumentException( "Tuple not found: " + id + " : " + tlist.toString() );
+                            }
+                            PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.MODIFICATION,
+                                                                                      null,
+                                                                                      tuple,
+                                                                                      null );
+                            ((LeftTupleSink) sink).modifyLeftTuple( tuple,
+                                                                    pContext,
+                                                                    wm );
+                        }
+                    }
+                } catch ( Exception e ) {
+                    throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute command " + cmd,
+                                                        e );
                 }
-
-            } else {
-                throw new IllegalArgumentException( "Cannot arguments " + Arrays.asList( args ) );
             }
+        } catch ( Exception e ) {
+            throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
+                                                e );
         }
     }
 
-    public static class ReteTesterHelper {
+    public static NodeTestCase compile(final Reader reader) throws IOException {
+        NodeTestDSLParser parser = getParser( reader );
+        return compile( parser );
+    }
 
-        private Package                 pkg;
-        private ClassFieldAccessorStore store;
-        private EvaluatorRegistry       registry = new EvaluatorRegistry();
+    public static NodeTestCase compile(final InputStream is) throws IOException {
+        NodeTestDSLParser parser = getParser( is );
+        return compile( parser );
+    }
 
-        public ReteTesterHelper() {
-            this.pkg = new Package( "org.drools.examples.manners" );
-            this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
-            this.store = this.pkg.getClassFieldAccessorStore();
-            this.store.setEagerWire( true );
-        }
+    public static NodeTestCase compile(final String source) throws IOException {
+        NodeTestDSLParser parser = getParser( source );
+        return compile( parser );
+    }
 
-        public Package getPkg() {
-            return pkg;
-        }
-
-        public ClassFieldAccessorStore getStore() {
-            return store;
-        }
-
-        public EvaluatorRegistry getRegistry() {
-            return registry;
-        }
-
-        public BetaNodeFieldConstraint getBoundVariableConstraint(final Pattern pattern,
-                                                                  final String fieldName,
-                                                                  final Declaration declaration,
-                                                                  final String evaluatorString) throws IntrospectionException {
-            final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
-
-            final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                    fieldName,
-                                                                    getClass().getClassLoader() );
-
-            Evaluator evaluator = getEvaluator( clazz,
-                                                evaluatorString );
-
-            return new VariableConstraint( extractor,
-                                           declaration,
-                                           evaluator );
-        }
-
-        public Evaluator getEvaluator(Class cls,
-                                      String operator) {
-            return registry.getEvaluator( ValueType.determineValueType( cls ),
-                                          Operator.determineOperator( operator,
-                                                                      false ) );
+    private static NodeTestCase compile(final NodeTestDSLParser parser) {
+        try {
+            compilation_unit_return cur = parser.compilation_unit();
+            if ( parser.hasErrors() ) {
+                NodeTestCase result = new NodeTestCase();
+                result.setErrors( parser.getErrorMessages() );
+                return result;
+            }
+            NodeTestCase testCase = walk( parser.getTokenStream(),
+                                          (CommonTree) cur.getTree() );
+            return testCase;
+        } catch ( RecognitionException e ) {
+            NodeTestCase result = new NodeTestCase();
+            result.setErrors( Collections.singletonList( e.getMessage() ) );
+            return result;
         }
     }
 
+    private static NodeTestCase walk(TokenStream tokenStream,
+                                     Tree resultTree) throws RecognitionException {
+        CommonTreeNodeStream nodes = new CommonTreeNodeStream( resultTree );
+        // AST nodes have payload that point into token stream
+        nodes.setTokenStream( tokenStream );
+        // Create a tree walker attached to the nodes stream
+        NodeTestDSLTree walker = new NodeTestDSLTree( nodes );
+        walker.compilation_unit();
+        return walker.getTestCase();
+    }
+
+    private static NodeTestDSLParser getParser(final Reader reader) throws IOException {
+        NodeTestDSLLexer lexer = new NodeTestDSLLexer( new ANTLRReaderStream( reader ) );
+        NodeTestDSLParser parser = new NodeTestDSLParser( new CommonTokenStream( lexer ) );
+        return parser;
+    }
+
+    private static NodeTestDSLParser getParser(final InputStream is) throws IOException {
+        NodeTestDSLLexer lexer = new NodeTestDSLLexer( new ANTLRInputStream( is ) );
+        NodeTestDSLParser parser = new NodeTestDSLParser( new CommonTokenStream( lexer ) );
+        return parser;
+    }
+
+    private static NodeTestDSLParser getParser(final String source) throws IOException {
+        NodeTestDSLLexer lexer = new NodeTestDSLLexer( new ANTLRStringStream( source ) );
+        NodeTestDSLParser parser = new NodeTestDSLParser( new CommonTokenStream( lexer ) );
+        return parser;
+    }
+
+    public static class EmptyNotifier extends RunNotifier {
+        public static final EmptyNotifier INSTANCE = new EmptyNotifier();
+
+        @Override
+        public void fireTestAssumptionFailed(Failure failure) {
+        }
+
+        @Override
+        public void fireTestFailure(Failure failure) {
+        }
+
+        @Override
+        public void fireTestFinished(Description description) {
+        }
+
+        @Override
+        public void fireTestIgnored(Description description) {
+        }
+
+        @Override
+        public void fireTestRunFinished(org.junit.runner.Result result) {
+        }
+
+        @Override
+        public void fireTestRunStarted(Description description) {
+        }
+
+        @Override
+        public void fireTestStarted(Description description) throws StoppedByUserException {
+        }
+    }
 }

@@ -21,7 +21,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.LinkedList;
 
-import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.DisconnectedFactHandle;
@@ -284,6 +283,21 @@ public final class QueryTerminalNode extends BaseNode
     
     public short getType() {
         return NodeTypeEnums.QueryTerminalNode;
+    }
+
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
     } 
 
 }

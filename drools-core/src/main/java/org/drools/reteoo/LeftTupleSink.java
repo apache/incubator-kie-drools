@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import java.io.Externalizable;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
@@ -58,4 +59,13 @@ public interface LeftTupleSink
     public boolean isLeftTupleMemoryEnabled();
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled);
+    
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory);    
+
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory);
 }
