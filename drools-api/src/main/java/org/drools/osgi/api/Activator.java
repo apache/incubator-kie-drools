@@ -54,7 +54,7 @@ public class Activator
 
         public Object addingService(ServiceReference ref) {
             Service service = (Service) this.bc.getService( ref );
-            System.out.println( "registering : " + service + " : " + service.getClass().getInterfaces()[0] );
+            System.out.println( "registering api : " + service + " : " + service.getClass().getInterfaces()[0] );
 
             Dictionary dic = new Hashtable();
             ServiceReference regServiceRef = this.activator.serviceRegistry.getReference();

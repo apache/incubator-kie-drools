@@ -152,7 +152,13 @@ public class ServiceRegistryImpl
                                                     e );
             }
         } else {
-            throw new IllegalArgumentException( "Unable to locate a service for Class '" + (cls != null ? cls.getName() : null) + "'" );
+            cal = this.defaultServices.get( cls.getName() );
+            try {
+                return cls.cast( cal.call() );
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate service for Class '" + (cls != null ? cls.getName() : null) + "'",
+                                                    e );
+            }            
         }
     }
 
@@ -169,16 +175,13 @@ public class ServiceRegistryImpl
         addDefault(  SystemEventListenerService.class,
                      "org.drools.impl.SystemEventListenerServiceImpl" );
         
-        
 //        addDefault( SystemE.class,
 //        "org.drools.io.impl.ResourceFactoryServiceImpl" );        
     }
 
-    private void addDefault(Class cls,
-                            String impl) {
+    public synchronized void addDefault(Class cls,
+                           String impl) {
         ReflectionInstantiator<Service> resourceRi = new ReflectionInstantiator<Service>( impl );
-        registry.put( cls.getName(),
-                      resourceRi );
         defaultServices.put( cls.getName(),
                              resourceRi );
     }

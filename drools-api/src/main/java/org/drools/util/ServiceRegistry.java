@@ -16,5 +16,8 @@ public interface ServiceRegistry extends Service {
 //  public void unregisterInstance(Service service);    
     
     public <T> T get(Class<T> cls);
+    
+    public void addDefault(Class cls,
+                           String impl);
 
 }
