@@ -16,6 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.beans.IntrospectionException;
 
 import junit.framework.Assert;
@@ -30,7 +34,6 @@ import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
@@ -38,12 +41,8 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
 
 public class NotNodeTest extends DroolsTestCase {
-    private final Mockery   mockery = new Mockery();
-
     Rule                    rule;
     PropagationContext      context;
     ReteooWorkingMemory     workingMemory;
@@ -61,24 +60,10 @@ public class NotNodeTest extends DroolsTestCase {
      */
     public void setUp() throws IntrospectionException {
         // create mock objects
-        constraint = mockery.mock( BetaNodeFieldConstraint.class );
-        final ContextEntry c = mockery.mock( ContextEntry.class );
-
-        // set mock objects expectations
-        mockery.checking( new Expectations() {
-            {
-                // allowed calls and return values
-                allowing( constraint ).createContextEntry();
-                will( returnValue( c ) );
-
-                allowing( c ).updateFromFactHandle( with( any( InternalWorkingMemory.class ) ),
-                                                    with( any( InternalFactHandle.class ) ) );
-                allowing( c ).updateFromTuple( with( any( InternalWorkingMemory.class ) ),
-                                               with( any( LeftTuple.class ) ) );
-                allowing( c ).resetTuple();
-                allowing( c ).resetFactHandle();
-            }
-        } );
+        constraint = mock( BetaNodeFieldConstraint.class );
+        final ContextEntry c = mock( ContextEntry.class );
+        
+        when( constraint.createContextEntry() ).thenReturn(c);
 
         this.rule = new Rule( "test-rule" );
         this.context = new PropagationContextImpl( 0,
@@ -124,19 +109,8 @@ public class NotNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void testNotStandard() throws FactException {
-        // set mock objects expectations
-        mockery.checking( new Expectations() {
-            {
-                // allowed calls and return values
-                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
-                                                            with( any( InternalFactHandle.class ) ) );
-                will( returnValue( true ) );
-                
-                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
-                                                             with( any( ContextEntry.class ) ) );
-                will( returnValue( true ) );
-            }
-        } );
+        when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
@@ -238,19 +212,8 @@ public class NotNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void testNotWithConstraints() throws FactException {
-        // set mock objects expectations
-        mockery.checking( new Expectations() {
-            {
-                // allowed calls and return values
-                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
-                                                            with( any( InternalFactHandle.class ) ) );
-                will( returnValue( false ) );
-                
-                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
-                                                             with( any( ContextEntry.class ) ) );
-                will( returnValue( false ) );
-            }
-        } );
+        when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(false);
+        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(false);
 
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
@@ -317,19 +280,8 @@ public class NotNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void TestNotMemoryManagement() throws FactException {
-        // set mock objects expectations
-        mockery.checking( new Expectations() {
-            {
-                // allowed calls and return values
-                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
-                                                            with( any( InternalFactHandle.class ) ) );
-                will( returnValue( true ) );
-                
-                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
-                                                             with( any( ContextEntry.class ) ) );
-                will( returnValue( true ) );
-            }
-        } );
+        when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         try {
             // assert tuple
@@ -402,19 +354,8 @@ public class NotNodeTest extends DroolsTestCase {
     }
 
     public void testGetConstraints_ReturnsNullEvenWithEmptyBinder() {
-        // set mock objects expectations
-        mockery.checking( new Expectations() {
-            {
-                // allowed calls and return values
-                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
-                                                            with( any( InternalFactHandle.class ) ) );
-                will( returnValue( true ) );
-                
-                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
-                                                             with( any( ContextEntry.class ) ) );
-                will( returnValue( true ) );
-            }
-        } );
+        when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         final BetaConstraints nullConstraints = EmptyBetaConstraints.getInstance();
 
@@ -439,19 +380,8 @@ public class NotNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void testAssertTupleSequentialMode() throws Exception {
-        // set mock objects expectations
-        mockery.checking( new Expectations() {
-            {
-                // allowed calls and return values
-                allowing( constraint ).isAllowedCachedLeft( with( any( ContextEntry.class ) ),
-                                                            with( any( InternalFactHandle.class ) ) );
-                will( returnValue( true ) );
-                
-                allowing( constraint ).isAllowedCachedRight( with( any( LeftTuple.class ) ),
-                                                             with( any( ContextEntry.class ) ) );
-                will( returnValue( true ) );
-            }
-        } );
+        when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );

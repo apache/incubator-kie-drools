@@ -16,6 +16,11 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -153,13 +158,9 @@ import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.ObjectType;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
-
-    private final Mockery context = new Mockery();
 
     protected RuleBase getRuleBase() throws Exception {
 
@@ -7274,13 +7275,7 @@ public class MiscTest extends TestCase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         // creating listener as a jmock proxy
-        final org.drools.event.rule.WorkingMemoryEventListener wmeListener = context.mock( org.drools.event.rule.WorkingMemoryEventListener.class );
-
-        context.checking( new Expectations() {
-            {
-                exactly( 2 ).of( wmeListener ).objectInserted( with( any( org.drools.event.rule.ObjectInsertedEvent.class ) ) );
-            }
-        } );
+        final org.drools.event.rule.WorkingMemoryEventListener wmeListener = mock( org.drools.event.rule.WorkingMemoryEventListener.class );
 
         ksession.addEventListener( wmeListener );
 
@@ -7295,7 +7290,7 @@ public class MiscTest extends TestCase {
         // since it is no longer listening.
         ksession.insert( new Cheese( "brie" ) );
 
-        context.assertIsSatisfied();
+        verify( wmeListener, times(2) ).objectInserted( any( org.drools.event.rule.ObjectInsertedEvent.class ) );
     }
     
     public void testInsert() throws Exception {
