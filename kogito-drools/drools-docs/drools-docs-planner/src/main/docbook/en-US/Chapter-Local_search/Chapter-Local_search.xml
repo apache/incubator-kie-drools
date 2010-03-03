@@ -145,15 +145,12 @@
 
     <programlisting>    public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
-        workingMemory.modifyRetract(queenHandle); // before changes are made
         queen.setY(toY);
-        workingMemory.modifyInsert(queenHandle, queen); // after changes are made
+        workingMemory.update(queenHandle, queen); // after changes are made
     }</programlisting>
 
-    <para>Drools Planner disables shadow facts for increased performance, so you cannot use the
-    <literal>workingMemory.update(FactHandle, Object)</literal> method, instead you need to call the
-    <literal>workingMemory.modifyRetract(FactHandle)</literal> method before modifying the fact and the
-    <literal>workingMemory.modifyInsert(FactHandle, Object)</literal> method after modifying the fact. Note that you can
+    <para>You need to call the
+    <literal>workingMemory.update(FactHandle, Object)</literal> method after modifying the fact. Note that you can
     alter multiple facts in a single move and effectively create a big move (also known as a coarse-grained
     move).</para>
 
