@@ -16,6 +16,10 @@
 
 package org.drools.rule.builder.dialect.java;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -34,7 +38,6 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
-import org.drools.guvnor.client.modeldriven.brl.FieldConstraint;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
@@ -44,32 +47,20 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.LiteralConstraint;
-import org.drools.rule.LiteralRestriction;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.time.TimeUtils;
-import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.type.DateFormatsImpl;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 
 /**
  * @author etirelli
  *
  */
 public class RuleBuilderTest extends TestCase {
-    // mock factory
-    private Mockery mockery = new Mockery() {
-                                {
-                                    // need to set this to be able to mock concrete classes
-                                    setImposteriser( ClassImposteriser.INSTANCE );
-                                }
-                            };
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -158,8 +149,8 @@ public class RuleBuilderTest extends TestCase {
 
     public void testBuildAttributes() throws Exception {
         // creates mock objects
-        final RuleBuildContext context = mockery.mock( RuleBuildContext.class );
-        final Rule rule = mockery.mock( Rule.class );
+        final RuleBuildContext context = mock( RuleBuildContext.class );
+        final Rule rule = mock( Rule.class );
 
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
@@ -195,41 +186,32 @@ public class RuleBuilderTest extends TestCase {
                                               new DateFormatsImpl() ) );
 
         // defining expectations on the mock object
-        mockery.checking( new Expectations() {
-            {
-                // return values for the context
-                allowing( context ).getRule(); will( returnValue( rule ) );
-                allowing( context ).getRuleDescr(); will( returnValue( ruleDescr ) );
-                allowing( context ).getPackageBuilder(); will( returnValue( new PackageBuilder() ) );
-
-                // expected values for the rule object
-                oneOf( rule ).setNoLoop( true );
-                oneOf( rule ).setAutoFocus( false );
-                oneOf( rule ).setAgendaGroup( "my agenda" );
-                oneOf( rule ).setActivationGroup( "my activation" );
-                oneOf( rule ).setRuleFlowGroup( "mygroup" );
-                oneOf( rule ).setLockOnActive( true );
-                oneOf( rule ).setEnabled( EnabledBoolean.ENABLED_FALSE );
-                oneOf( rule ).setTimer( new IntervalTimer( null , null, -1, TimeUtils.parseTimeString( "60" ), 0 ) );
-                oneOf( rule ).setCalendars( new String[] { "cal1" } );
-                oneOf( rule ).setDateEffective( effective );
-                oneOf( rule ).setDateExpires( expires );
-            }
-        } );
-
+        when( context.getRule() ).thenReturn(rule);
+        when( context.getRuleDescr() ).thenReturn(ruleDescr);
+        when( context.getPackageBuilder() ).thenReturn(new PackageBuilder());
+        
         // calling the build method
         RuleBuilder builder = new RuleBuilder();
         builder.buildAttributes( context );
 
         // check expectations
-        mockery.assertIsSatisfied();
-
+        verify( rule ).setNoLoop(true);
+        verify( rule ).setAutoFocus(false);
+        verify( rule ).setAgendaGroup("my agenda");
+        verify( rule ).setActivationGroup( "my activation" );
+        verify( rule ).setRuleFlowGroup( "mygroup" );
+        verify( rule ).setLockOnActive( true );
+        verify( rule ).setEnabled( EnabledBoolean.ENABLED_FALSE );
+        verify( rule ).setTimer( new IntervalTimer( null , null, -1, TimeUtils.parseTimeString( "60" ), 0 ) );
+        verify( rule ).setCalendars( new String[] { "cal1" } );
+        verify( rule ).setDateEffective( effective );
+        verify( rule ).setDateExpires( expires );
     }
 
     public void testBuildDurationExpression() throws Exception {
         // creates mock objects
-        final RuleBuildContext context = mockery.mock( RuleBuildContext.class );
-        final Rule rule = mockery.mock( Rule.class );
+        final RuleBuildContext context = mock( RuleBuildContext.class );
+        final Rule rule = mock( Rule.class );
 
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
@@ -239,25 +221,16 @@ public class RuleBuilderTest extends TestCase {
                                                     "[\"cal1\", \"cal2\"]" ) ); 
         
         // defining expectations on the mock object
-        mockery.checking( new Expectations() {
-            {
-                // return values for the context
-                allowing( context ).getRule(); will( returnValue( rule ) );
-                allowing( context ).getRuleDescr(); will( returnValue( ruleDescr ) );
-
-                // expected values for the rule object
-                oneOf( rule ).setTimer( new IntervalTimer( null , null, -1, TimeUtils.parseTimeString( "1h30m" ), 0 ) );
-                oneOf( rule ).setCalendars( new String[] { "cal1", "cal2" } );
-            }
-        } );
+        when( context.getRule() ).thenReturn(rule);
+        when( context.getRuleDescr() ).thenReturn(ruleDescr);
 
         // calling the build method
         RuleBuilder builder = new RuleBuilder();
         builder.buildAttributes( context );
 
         // check expectations
-        mockery.assertIsSatisfied();
-
+        verify( rule ).setTimer( new IntervalTimer( null , null, -1, TimeUtils.parseTimeString( "1h30m" ), 0 ) );
+        verify( rule ).setCalendars( new String[] { "cal1", "cal2" } );
     }
     
     public void testBuildBigDecimalLiteralConstraint() throws Exception {

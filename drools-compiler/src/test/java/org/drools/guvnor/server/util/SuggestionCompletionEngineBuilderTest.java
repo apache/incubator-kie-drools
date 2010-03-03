@@ -5,12 +5,10 @@ import junit.framework.TestCase;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.lang.dsl.AbstractDSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingEntry;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
+import static org.mockito.Mockito.*;
 
 public class SuggestionCompletionEngineBuilderTest extends TestCase {
     SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
-    Mockery context = new Mockery();
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -33,29 +31,27 @@ public class SuggestionCompletionEngineBuilderTest extends TestCase {
     }
 
     public void testAddSentenceMultipleTypes() {
-        final DSLMappingEntry mapping1 = context.mock(DSLMappingEntry.class, "mapping1");
-        final DSLMappingEntry mapping2 = context.mock(DSLMappingEntry.class, "mapping2");
-        final DSLMappingEntry mapping3 = context.mock(DSLMappingEntry.class, "mapping3");
-        final DSLMappingEntry mapping4 = context.mock(DSLMappingEntry.class, "mapping4");
+        final DSLMappingEntry mapping1 = mock(DSLMappingEntry.class, "mapping1");
+        final DSLMappingEntry mapping2 = mock(DSLMappingEntry.class, "mapping2");
+        final DSLMappingEntry mapping3 = mock(DSLMappingEntry.class, "mapping3");
+        final DSLMappingEntry mapping4 = mock(DSLMappingEntry.class, "mapping4");
         
-        context.checking( new Expectations() {{
-            // setting expectations for entry1
-            allowing(mapping1).getSection(); will(returnValue(DSLMappingEntry.CONDITION ));
-            allowing(mapping1).getMappingKey(); will(returnValue("cond"));
-            
-            // setting expectations for entry2
-            allowing(mapping2).getSection(); will(returnValue(DSLMappingEntry.CONSEQUENCE ));
-            allowing(mapping2).getMappingKey(); will(returnValue("cons"));
+        
+        // setting expectations for entry1
+        when(mapping1.getSection()).thenReturn(DSLMappingEntry.CONDITION );
+        when(mapping1.getMappingKey()).thenReturn("cond");
+        
+        // setting expectations for entry2
+        when(mapping2.getSection()).thenReturn(DSLMappingEntry.CONSEQUENCE );
+        when(mapping2.getMappingKey()).thenReturn("cons");
 
-            // setting expectations for entry3
-            allowing(mapping3).getSection(); will(returnValue(DSLMappingEntry.ANY ));
-            allowing(mapping3).getMappingKey(); will(returnValue("any"));
-            
-            // setting expectations for entry4
-            allowing(mapping4).getSection(); will(returnValue(DSLMappingEntry.KEYWORD ));
-            allowing(mapping4).getMappingKey(); will(returnValue("key"));
-        }}
-        );
+        // setting expectations for entry3
+        when(mapping3.getSection()).thenReturn(DSLMappingEntry.ANY );
+        when(mapping3.getMappingKey()).thenReturn("any");
+        
+        // setting expectations for entry4
+        when(mapping4.getSection()).thenReturn(DSLMappingEntry.KEYWORD );
+        when(mapping4.getMappingKey()).thenReturn("key");
         
         this.builder.addDSLMapping(mapping1);
         this.builder.addDSLMapping(mapping2);
