@@ -38,6 +38,7 @@ public class ConstraintImpl implements Constraint, Serializable {
     private int                priority;
     private String             dialect = "mvel";
     private String             type = "rule";
+    private boolean            isDefault = false;
 
     public String getConstraint() {
         return this.constraint;
@@ -83,7 +84,15 @@ public class ConstraintImpl implements Constraint, Serializable {
         this.type = type;
     }
 
-    public void setMetaData(String name, Object value) {
+    public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	public void setMetaData(String name, Object value) {
         this.metaData.put(name, value);
     }
     

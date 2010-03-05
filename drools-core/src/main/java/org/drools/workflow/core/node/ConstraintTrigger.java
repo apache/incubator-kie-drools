@@ -8,6 +8,7 @@ public class ConstraintTrigger extends Trigger implements Constrainable {
 	private static final long serialVersionUID = 4L;
 
 	private String constraint;
+	private String header;
 
 	public String getConstraint() {
 		return constraint;
@@ -17,7 +18,15 @@ public class ConstraintTrigger extends Trigger implements Constrainable {
 		this.constraint = constraint;
 	}
 
-    public void addConstraint(ConnectionRef connection, Constraint constraint) {
+    public String getHeader() {
+		return header;
+	}
+
+	public void setHeader(String header) {
+		this.header = header;
+	}
+
+	public void addConstraint(ConnectionRef connection, Constraint constraint) {
     	if (connection != null) {
     		throw new IllegalArgumentException(
 				"A constraint trigger only accepts one simple constraint");

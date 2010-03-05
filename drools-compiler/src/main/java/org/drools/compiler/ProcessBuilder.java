@@ -230,6 +230,7 @@ public class ProcessBuilder {
         } catch ( FactoryConfigurationError e1 ) {
             this.errors.add( new RuleFlowLoadError( "FactoryConfigurationError ", e1.getException()) );
         } catch ( Exception e2 ) {
+        	e2.printStackTrace();
             this.errors.add( new RuleFlowLoadError( "unable to parse xml", e2 ) );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
@@ -392,6 +393,7 @@ public class ProcessBuilder {
                                              ConstraintTrigger trigger) {
         String result = 
         	"rule \"RuleFlow-Start-" + process.getId() + "\" \n" + 
+        	(trigger.getHeader() == null ? "" : "        " + trigger.getHeader() + " \n") + 
         	"    when\n" + 
         	"        " + trigger.getConstraint() + "\n" + 
         	"    then\n";

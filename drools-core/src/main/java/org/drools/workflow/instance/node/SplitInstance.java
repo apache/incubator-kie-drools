@@ -58,7 +58,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 for ( final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext(); ) {
                     final Connection connection = (Connection) iterator.next();
                     ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
-                    if ( constraint != null && constraint.getPriority() < priority ) {
+                    if ( constraint != null && constraint.getPriority() < priority && !constraint.isDefault()) {
                         if ( constraint.evaluate( this,
                                                   connection,
                                                   constraint ) ) {
@@ -69,7 +69,17 @@ public class SplitInstance extends NodeInstanceImpl {
                 }
                 ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if ( selected == null ) {
-                    throw new IllegalArgumentException( "XOR split could not find at least one valid outgoing connection for split " + getSplit().getName() );
+                	for ( final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext(); ) {
+                        final Connection connection = (Connection) iterator.next();
+                        ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
+                        if ( constraint.isDefault() ) {
+                            selected = connection;
+                            break;
+                        }
+                    }
+                }
+                if ( selected == null ) {
+                	throw new IllegalArgumentException( "XOR split could not find at least one valid outgoing connection for split " + getSplit().getName() );
                 }
                 triggerConnection(selected);
                 break;
@@ -87,11 +97,15 @@ public class SplitInstance extends NodeInstanceImpl {
                         ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
     
                         if ( constraint != null  
-                                && constraint.getPriority() < priority ) {
+                                && constraint.getPriority() < priority
+                                && !constraint.isDefault() ) {
                             priority = constraint.getPriority();
                             selectedConnection = connection;
                             selectedConstraint = constraint;
                         }
+                    }
+                    if (selectedConstraint == null) {
+                    	break;
                     }
                     if (selectedConstraint.evaluate( this,
                                                      selectedConnection,
@@ -100,6 +114,17 @@ public class SplitInstance extends NodeInstanceImpl {
                         found = true;
                     }
                     outgoingCopy.remove(selectedConnection);
+                }
+                if ( !found ) {
+                	for ( final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext(); ) {
+                        final Connection connection = (Connection) iterator.next();
+                        ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
+                        if ( constraint.isDefault() ) {
+                        	triggerConnection(connection);
+                        	found = true;
+                            break;
+                        }
+                    }
                 }
                 if ( !found ) {
                     throw new IllegalArgumentException( "OR split could not find at least one valid outgoing connection for split " + getSplit().getName() );

@@ -49,6 +49,7 @@ public class ReturnValueConstraintEvaluator
     private int               priority;
     private String            dialect;
     private String            type;
+    private boolean           isDefault = false;
 
     public ReturnValueConstraintEvaluator() {
     }
@@ -99,7 +100,15 @@ public class ReturnValueConstraintEvaluator
         this.type = type;
     }
 
-    public void wire(Object object) {
+    public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	public void wire(Object object) {
         setEvaluator( (ReturnValueEvaluator) object );
     }
 
