@@ -94,6 +94,10 @@ public interface Constraint {
      */
     void setDialect(String dialect);
     
+    public boolean isDefault();
+
+	public void setDefault(boolean isDefault);
+	
     void setMetaData(String name, Object value);
     
     Object getMetaData(String name);

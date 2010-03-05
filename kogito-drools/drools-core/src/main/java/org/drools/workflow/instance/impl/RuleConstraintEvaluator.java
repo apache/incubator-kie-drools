@@ -40,7 +40,8 @@ public class RuleConstraintEvaluator implements Constraint,
     private String             constraint;
     private int                priority;
     private String             dialect;
-    private String             type;       
+    private String             type;
+    private boolean            isDefault;
     
     public String getConstraint() {
         return this.constraint;
@@ -86,7 +87,15 @@ public class RuleConstraintEvaluator implements Constraint,
         this.type = type;
     }
     
-    public boolean evaluate(SplitInstance instance,
+    public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	public boolean evaluate(SplitInstance instance,
                             Connection connection,
                             Constraint constraint) {
         WorkflowProcessInstance processInstance = instance.getProcessInstance();
