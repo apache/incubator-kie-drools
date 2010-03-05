@@ -19,11 +19,11 @@
         <listitem>Events
           <itemizedlist>
             <listitem>Start Event (None, Conditional, Signal)</listitem>
-            <listitem>End Event (None, Terminate, Error, Escalation, Signal)</listitem>
-            <listitem>Intermediate Catch Event (Signal, Timer)</listitem>
-            <listitem>Intermediate Throw Event (None, Signal)</listitem>
+            <listitem>End Event (None, Terminate, Error, Escalation, Signal, Message)</listitem>
+            <listitem>Intermediate Catch Event (Signal, Timer, Conditional, Message)</listitem>
+            <listitem>Intermediate Throw Event (None, Signal, Escalation, Message)</listitem>
             <listitem>Non-interrupting Boundary Event (Escalation, Timer)</listitem>
-            <listitem>Interrupting Boundary Event ()</listitem>
+            <listitem>Interrupting Boundary Event (Escalation, Error, Timer)</listitem>
           </itemizedlist>
         </listitem>
         <listitem>Activities
