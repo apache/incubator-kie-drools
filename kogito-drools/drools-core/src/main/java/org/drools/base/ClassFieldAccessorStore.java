@@ -232,7 +232,7 @@ public class ClassFieldAccessorStore
     public ClassObjectType getClassObjectType(final ClassObjectType objectType,
                                               final AcceptsClassObjectType target) {
         return getClassObjectType( objectType,
-                                   false,
+                                   objectType.isEvent(),
                                    target );
     }
 
