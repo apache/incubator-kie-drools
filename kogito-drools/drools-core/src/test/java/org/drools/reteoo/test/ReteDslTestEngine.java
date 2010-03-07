@@ -52,6 +52,7 @@ import org.drools.reteoo.test.dsl.BindingStep;
 import org.drools.reteoo.test.dsl.CollectNodeStep;
 import org.drools.reteoo.test.dsl.DSLMock;
 import org.drools.reteoo.test.dsl.DslStep;
+import org.drools.reteoo.test.dsl.EvalNodeStep;
 import org.drools.reteoo.test.dsl.ExistsNodeStep;
 import org.drools.reteoo.test.dsl.FactsStep;
 import org.drools.reteoo.test.dsl.JoinNodeStep;
@@ -92,6 +93,7 @@ public class ReteDslTestEngine {
     private static final String COLLECT_NODE             = "CollectNode";
     private static final String ACCUMULATE_NODE          = "AccumulateNode";
     private static final String RULE_TERMINAL_NODE       = "RuleTerminalNode";
+    private static final String EVAL_NODE                = "EvalNode";
     private static final String WITH                     = "With";
     private static final String FACTS                    = "Facts";
     private static final String RIGHT_INPUT_ADAPTER_NODE = "RightInputAdapterNode";
@@ -125,6 +127,8 @@ public class ReteDslTestEngine {
                         new AccumulateNodeStep( this.reteTesterHelper ) );
         this.steps.put( RULE_TERMINAL_NODE,
                         new RuleTerminalNodeStep( this.reteTesterHelper ) );
+        this.steps.put( EVAL_NODE,
+                        new EvalNodeStep( this.reteTesterHelper ) );
         this.steps.put( RIGHT_INPUT_ADAPTER_NODE,
                         new RIANodeStep( this.reteTesterHelper ) );
         this.steps.put( FACTS,

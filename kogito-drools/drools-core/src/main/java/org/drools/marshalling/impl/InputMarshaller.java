@@ -463,8 +463,6 @@ public class InputMarshaller {
 
             }
             case NodeTypeEnums.EvalConditionNode : {
-                final EvalMemory memory = (EvalMemory) context.wm.getNodeMemory( (EvalConditionNode) sink );
-                memory.tupleMemory.add( parentLeftTuple );
                 while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                     LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
                     LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,

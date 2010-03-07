@@ -84,7 +84,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( node );
 
-        assertNotNull( memory.tupleMemory );
+        assertNotNull( memory );
     }
 
     /**
@@ -129,15 +129,6 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                               this.context,
                               this.workingMemory );
 
-        // Check memory was populated
-        final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 2,
-                      memory.tupleMemory.size() );
-
-        assertTrue( memory.tupleMemory.contains( tuple0 ) );
-        assertTrue( memory.tupleMemory.contains( tuple1 ) );
-
         // make sure assertions were propagated
         assertEquals( 2,
                       sink.getAsserted().size() );
@@ -180,14 +171,6 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                               this.context,
                               this.workingMemory );
 
-        // Check memory was populated
-        final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 2,
-                      memory.tupleMemory.size() );
-        assertTrue( memory.tupleMemory.contains( tuple0 ) );
-        assertTrue( memory.tupleMemory.contains( tuple1 ) );
-
         // make sure assertions were propagated
         assertEquals( 2,
                       sink.getAsserted().size() );
@@ -197,12 +180,6 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
 
-        // Now test that the fact is retracted correctly
-        assertEquals( 1,
-                      memory.tupleMemory.size() );
-
-        assertTrue( memory.tupleMemory.contains( tuple1 ) );
-
         // make sure retractions were propagated
         assertEquals( 1,
                       sink.getRetracted().size() );
@@ -211,10 +188,6 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         node.retractLeftTuple( tuple1,
                                this.context,
                                this.workingMemory );
-
-        // Now test that the fact is retracted correctly
-        assertEquals( 0,
-                      memory.tupleMemory.size() );
 
         // make sure retractions were propagated
         assertEquals( 2,
@@ -260,65 +233,11 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Check memory was not populated
         final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
 
-        assertEquals( 0,
-                      memory.tupleMemory.size() );
-
         // test no propagations
         assertEquals( 0,
                       sink.getAsserted().size() );
         assertEquals( 0,
                       sink.getRetracted().size() );
-    }
-
-    public void testUpdateWithMemory() throws FactException {
-        // If no child nodes have children then we need to re-process the left
-        // and right memories
-        // as a joinnode does not store the resulting tuples
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-
-        // Creat the object source so we can detect the alphaNode telling it to
-        // propate its contents
-        //final MockTupleSource source = new MockTupleSource( 1 );
-
-        /* Create a test node that always returns true */
-        final EvalConditionNode node = new EvalConditionNode( 1,
-                                                              new MockTupleSource( 15 ),
-                                                              new MockEvalCondition( true ),
-                                                              buildContext );
-
-        // Add the first tuple sink and assert a tuple and object
-        // The sink has no memory
-        final MockLeftTupleSink sink1 = new MockLeftTupleSink( 2 );
-        node.addTupleSink( sink1 );
-
-        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
-                                                            "string0" );
-
-        final LeftTuple tuple1 = new LeftTuple( f0,
-                                                sink1,
-                                                true );
-
-        node.assertLeftTuple( tuple1,
-                              this.context,
-                              workingMemory );
-
-        assertLength( 1,
-                      sink1.getAsserted() );
-
-        // Add the new sink, this should be updated from the re-processed
-        // joinnode memory
-        final MockLeftTupleSink sink2 = new MockLeftTupleSink( 3 );
-        node.addTupleSink( sink2 );
-        assertLength( 0,
-                      sink2.getAsserted() );
-
-        node.updateSink( sink2,
-                         this.context,
-                         workingMemory );
-
-        assertLength( 1,
-                      sink2.getAsserted() );
     }
 
     /**
@@ -363,14 +282,6 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                               this.context,
                               this.workingMemory );
 
-        // Check memory was populated
-        EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 1,
-                      memory.tupleMemory.size() );
-
-        assertTrue( memory.tupleMemory.contains( tuple0 ) );
-
         // make sure assertions were propagated
         assertEquals( 1,
                       sink.getAsserted().size() );
@@ -383,12 +294,5 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                      this.ruleBase.getReteooBuilder(),
                      sink,
                      workingMemories );
-
-        memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 0,
-                      memory.tupleMemory.size() );
-
-        assertFalse( memory.tupleMemory.contains( tuple0 ) );
     }
 }
