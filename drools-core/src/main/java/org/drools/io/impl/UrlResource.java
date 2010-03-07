@@ -26,8 +26,6 @@ import org.drools.core.util.StringUtils;
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 
-import com.sun.net.ssl.HttpsURLConnection;
-
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
  *
