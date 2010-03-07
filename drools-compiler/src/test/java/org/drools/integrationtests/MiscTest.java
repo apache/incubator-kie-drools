@@ -1559,10 +1559,16 @@ public class MiscTest extends TestCase {
     public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
 

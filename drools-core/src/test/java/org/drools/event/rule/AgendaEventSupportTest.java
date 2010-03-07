@@ -110,6 +110,11 @@ public class AgendaEventSupportTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+
+            public String getName() {
+                // TODO Auto-generated method stub
+                return null;
+            }
         } );
         pkg.addRule( rule );
 

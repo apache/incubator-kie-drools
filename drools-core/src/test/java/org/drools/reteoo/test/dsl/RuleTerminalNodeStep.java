@@ -63,6 +63,10 @@ public class RuleTerminalNodeStep
                                      WorkingMemory workingMemory) throws Exception {
 
                 }
+                
+                public String getName() {
+                    return "default";
+                }
             };
 
             rule.setConsequence( consequence );

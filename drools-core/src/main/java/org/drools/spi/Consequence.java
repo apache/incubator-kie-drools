@@ -28,6 +28,9 @@ import org.drools.WorkingMemory;
 public interface Consequence
     extends
     Invoker {
+    
+    String getName();
+    
     /**
      * Execute the consequence for the supplied matching <code>Tuple</code>.
      * 

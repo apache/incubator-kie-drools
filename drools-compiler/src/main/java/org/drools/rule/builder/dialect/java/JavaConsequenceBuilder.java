@@ -53,12 +53,12 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
-    public void build(final RuleBuildContext context) {
+    public void build(final RuleBuildContext context, String consequenceName) {
 
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
-        final String className = "consequence";
+        final String className = consequenceName + "Consequence";
 
         final RuleDescr ruleDescr = context.getRuleDescr();
 
@@ -75,7 +75,8 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         String fixedConsequence = this.fixBlockDescr( context,
                                                       (JavaAnalysisResult) analysis,
-                                                      (String) ruleDescr.getConsequence() );
+                                                      ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName )
+                                                       );
 
         if ( fixedConsequence == null ) {
             // not possible to rewrite the modify blocks
@@ -98,6 +99,8 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                                declarations,
                                                                null,
                                                                (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+        
+        map.put( "consequenceName", consequenceName );
 
         // Must use the rule declarations, so we use the same order as used in the generated invoker
         final List list = Arrays.asList( context.getRule().getDeclarations() );

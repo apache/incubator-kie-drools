@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -27,17 +28,22 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.mvel2.ParserContext;
@@ -88,7 +94,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         context.setDeclarationResolver( declarationResolver );
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        builder.build( context );
+        builder.build( context, "default" );
 
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
@@ -164,7 +170,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         context.setDeclarationResolver( declarationResolver );
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        builder.build( context );
+        builder.build( context, "default" );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -314,4 +320,99 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
     }
     
+    private RuleBuildContext        context;
+    private RuleDescr               ruleDescr;
+    private MVELConsequenceBuilder  builder;
+    
+    private void setupTest(String consequence, Map<String, Object> namedConsequences) {
+        builder = new MVELConsequenceBuilder();
+
+        Package pkg = new Package( "org.drools" );
+        pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );        
+
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        PackageBuilder pkgBuilder = new PackageBuilder( pkg,
+                                                        conf );
+
+        ruleDescr = new RuleDescr( "test consequence builder" );
+        ruleDescr.setConsequence( consequence );
+        ruleDescr.addAttribute( new AttributeDescr("dialect", "mvel") );
+        
+        for ( Entry<String, Object> entry : namedConsequences.entrySet() ) {
+            ruleDescr.getNamedConsequences().put( entry.getKey(), entry.getValue() );
+        }
+
+        Rule rule = new Rule( ruleDescr.getName() );
+        rule.addPattern( new Pattern( 0,
+                                      new ClassObjectType( Cheese.class ),
+                                      "$cheese" ) );
+
+        PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
+        DialectCompiletimeRegistry reg = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        context = new RuleBuildContext( pkgBuilder,
+                                        ruleDescr,
+                                        reg,
+                                        pkg,
+                                        reg.getDialect( pkgRegistry.getDialect() ) );
+        context.getBuildStack().push( rule.getLhs() );
+        
+        context.getDialect().getConsequenceBuilder().build( context, "default" );
+        for ( String name : namedConsequences.keySet() ) {
+            context.getDialect().getConsequenceBuilder().build( context, name );    
+        }
+        
+        context.getDialect().addRule( context );
+        pkgRegistry.getPackage().addRule( context.getRule() );
+        pkgBuilder.compileAll();
+        pkgBuilder.reloadAll();         
+    }
+    
+
+    public void testDefaultConsequenceCompilation() {
+        String consequence = " System.out.println(\"this is a test\");\n ";
+        setupTest( consequence, new HashMap<String, Object>() );       
+        assertNotNull( context.getRule().getConsequence() );
+        assertTrue( context.getRule().getNamedConsequences().isEmpty() );
+        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );    	
+    }
+    
+    public void testDefaultConsequenceWithSingleNamedConsequenceCompilation() {
+        String defaultCon = " System.out.println(\"this is a test\");\n ";
+        
+        Map<String, Object> namedConsequences = new HashMap<String, Object>(); 
+        String name1 =  " System.out.println(\"this is a test name1\");\n ";
+        namedConsequences.put( "name1", name1 );
+        
+        setupTest( defaultCon, namedConsequences);       
+        assertEquals( 1, context.getRule().getNamedConsequences().size() );
+        
+        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );        
+        
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );   
+        
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
+    }     
+    
+    public void testDefaultConsequenceWithMultipleNamedConsequenceCompilation() {
+        String defaultCon = " System.out.println(\"this is a test\");\n ";
+        
+        Map<String, Object> namedConsequences = new HashMap<String, Object>(); 
+        String name1 =  " System.out.println(\"this is a test name1\");\n ";
+        namedConsequences.put( "name1", name1 );
+        String name2 =  " System.out.println(\"this is a test name2\");\n ";
+        namedConsequences.put( "name2", name2 );        
+        
+        setupTest( defaultCon, namedConsequences);       
+        assertEquals( 2, context.getRule().getNamedConsequences().size() );
+        
+        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );        
+        
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );   
+        
+        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof MVELConsequence );     
+        
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );
+        assertNotSame(  context.getRule().getNamedConsequences().get( "name1"), context.getRule().getNamedConsequences().get( "name2" ) );
+    }       
 }

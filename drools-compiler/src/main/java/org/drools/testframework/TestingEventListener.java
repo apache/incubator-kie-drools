@@ -191,5 +191,9 @@ class NilConsequence implements Consequence {
     public void writeExternal(ObjectOutput out) throws IOException {
 
     }
+    
+    public String getName() {
+        return "default";
+    }    
 }
 

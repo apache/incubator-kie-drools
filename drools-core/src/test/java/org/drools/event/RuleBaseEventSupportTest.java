@@ -107,6 +107,10 @@ public class RuleBaseEventSupportTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         } );
 
         final Rule rule2 = new Rule( "test2" );
@@ -137,6 +141,10 @@ public class RuleBaseEventSupportTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         } );
 
         pkg = new Package( "org.drools.test1" );

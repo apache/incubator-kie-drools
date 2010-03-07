@@ -84,6 +84,10 @@ public class CrossProductTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         } );
 
         this.pkg = new Package( "org.drools" );

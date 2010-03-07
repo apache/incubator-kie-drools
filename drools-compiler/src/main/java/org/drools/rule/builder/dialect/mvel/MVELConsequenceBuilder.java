@@ -7,6 +7,7 @@ import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ConsequenceBuilder;
@@ -72,14 +73,19 @@ public class MVELConsequenceBuilder
 
     }
 
-    public void build(final RuleBuildContext context) {
+    public void build(final RuleBuildContext context, String consequenceName) {
+    	 
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
+            
+            final RuleDescr ruleDescr = context.getRuleDescr();
+            
+            String text = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
 
-            String text = processMacros( (String) context.getRuleDescr().getConsequence() );
+            text = processMacros( text );
 
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     context.getRuleDescr(),
@@ -98,7 +104,12 @@ public class MVELConsequenceBuilder
 
             MVELConsequence expr = new MVELConsequence( unit,
                                                         dialect.getId() );
-            context.getRule().setConsequence( expr );
+            
+            if ( "default".equals( consequenceName ) ) {
+            	context.getRule().setConsequence( expr );
+            } else {
+            	context.getRule().getNamedConsequences().put(consequenceName, expr);
+            }
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );            
             data.addCompileable( context.getRule(),
