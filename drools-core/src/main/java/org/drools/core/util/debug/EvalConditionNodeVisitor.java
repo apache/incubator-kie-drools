@@ -3,8 +3,6 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.common.NetworkNode;
-import org.drools.reteoo.EvalConditionNode;
-import org.drools.reteoo.EvalConditionNode.EvalMemory;
 
 public class EvalConditionNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -17,16 +15,8 @@ public class EvalConditionNodeVisitor extends AbstractNetworkNodeVisitor {
     protected void doVisit(NetworkNode node,
                            Stack<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
-        EvalConditionNode ecn = (EvalConditionNode) node;
         DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
-        final EvalMemory memory = (EvalMemory) info.getSession().getNodeMemory( ecn );
-        
-        ni.setMemoryEnabled( ecn.isLeftTupleMemoryEnabled() );
-        
-        if( ecn.isLeftTupleMemoryEnabled() ) {
-            ni.setTupleMemorySize( memory.getLeftTupleMemory().size() );
-        }
-
+        ni.setMemoryEnabled( false );
     }
 
 }

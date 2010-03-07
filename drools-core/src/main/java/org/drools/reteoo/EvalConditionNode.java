@@ -27,8 +27,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.LeftTupleList;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
@@ -183,10 +182,6 @@ public class EvalConditionNode extends LeftTupleSource
                                                           memory.context );
 
         if ( allowed ) {
-            if ( this.tupleMemoryEnabled ) {
-                memory.tupleMemory.add( leftTuple );
-            }
-
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
                                                 workingMemory,
@@ -197,12 +192,11 @@ public class EvalConditionNode extends LeftTupleSource
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
-
-        memory.tupleMemory.remove( leftTuple );
-        this.sink.propagateRetractLeftTuple( leftTuple,
-                                             context,
-                                             workingMemory );
+        if ( leftTuple.firstChild != null ) {
+            this.sink.propagateRetractLeftTuple( leftTuple,
+                                                 context,
+                                                 workingMemory );
+        }
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
@@ -230,19 +224,13 @@ public class EvalConditionNode extends LeftTupleSource
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
-        boolean wasPropagated = false;
+        boolean wasPropagated = leftTuple.firstChild != null;
 
-        if ( memory.tupleMemory.contains( leftTuple ) ) {
-            memory.tupleMemory.remove( leftTuple );
-            wasPropagated = true;
-        }
         final boolean allowed = this.condition.isAllowed( leftTuple,
                                                           workingMemory,
                                                           memory.context );
 
         if ( allowed ) {
-            // re-add tuple to the end of the list
-            memory.tupleMemory.add( leftTuple );
             if ( wasPropagated ) {
                 // modify
                 this.sink.propagateModifyChildLeftTuple( leftTuple,
@@ -257,7 +245,7 @@ public class EvalConditionNode extends LeftTupleSource
                                                     this.tupleMemoryEnabled );
             }
         } else {
-            if( wasPropagated ) {
+            if ( wasPropagated ) {
                 // retract
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      context,
@@ -295,8 +283,7 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new EvalMemory( this.tupleMemoryEnabled,
-                               this.condition.createContext() );
+        return new EvalMemory( this.condition.createContext() );
     }
 
     /* (non-Javadoc)
@@ -305,15 +292,12 @@ public class EvalConditionNode extends LeftTupleSource
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-
-        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
-
-        final Iterator it = memory.tupleMemory.iterator();
-        for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
-            sink.assertLeftTuple( tuple,
-                                  context,
-                                  workingMemory );
-        }
+        final LeftTupleSinkUpdateAdapter adapter = new LeftTupleSinkUpdateAdapter( this,
+                                                                                   sink,
+                                                                                   condition );
+        this.tupleSource.updateSink( adapter,
+                                     context,
+                                     workingMemory );
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -327,12 +311,6 @@ public class EvalConditionNode extends LeftTupleSource
 
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                EvalMemory memory = (EvalMemory) workingMemories[i].getNodeMemory( this );
-                Iterator it = memory.getLeftTupleMemory().iterator();
-                for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                    leftTuple.unlinkFromLeftParent();
-                    leftTuple.unlinkFromRightParent();
-                }
                 workingMemories[i].clearNodeMemory( this );
             }
         }
@@ -399,35 +377,111 @@ public class EvalConditionNode extends LeftTupleSource
 
         private static final long serialVersionUID = -2754669682742843929L;
 
-        public LeftTupleList      tupleMemory;
         public Object             context;
 
         public EvalMemory() {
 
         }
 
-        public LeftTupleList getLeftTupleMemory() {
-            return this.tupleMemory;
-        }
-
-        public EvalMemory(final boolean tupleMemoryEnabled,
-                          final Object context) {
+        public EvalMemory(final Object context) {
             this.context = context;
-            if ( tupleMemoryEnabled ) {
-                this.tupleMemory = new LeftTupleList();
-            }
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            tupleMemory = (LeftTupleList) in.readObject();
             context = in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( tupleMemory );
             out.writeObject( context );
         }
+    }
+
+    /**
+     * Used with the updateSink method, so that the parent LeftTupleSource
+     * can  update the  TupleSink
+     */
+    private static class LeftTupleSinkUpdateAdapter
+        implements
+        LeftTupleSink {
+        private final EvalConditionNode node;
+        private final LeftTupleSink     sink;
+        private final EvalCondition     constraint;
+
+        public LeftTupleSinkUpdateAdapter(final EvalConditionNode node,
+                                          final LeftTupleSink sink,
+                                          final EvalCondition constraint) {
+            this.node = node;
+            this.sink = sink;
+            this.constraint = constraint;
+        }
+
+        public void assertLeftTuple(final LeftTuple leftTuple,
+                                    final PropagationContext context,
+                                    final InternalWorkingMemory workingMemory) {
+
+            final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( node );
+
+            final boolean allowed = this.constraint.isAllowed( leftTuple,
+                                                               workingMemory,
+                                                               memory.context );
+
+            if ( allowed ) {
+                final LeftTuple tuple = new LeftTuple( leftTuple,
+                                                       this.sink,
+                                                       false );
+                this.sink.assertLeftTuple( tuple,
+                                           context,
+                                           workingMemory );
+            }
+        }
+
+        public short getType() {
+            return 0;
+        }
+
+        public boolean isLeftTupleMemoryEnabled() {
+            return false;
+        }
+
+        public void modifyLeftTuple(InternalFactHandle factHandle,
+                                    ModifyPreviousTuples modifyPreviousTuples,
+                                    PropagationContext context,
+                                    InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
+        }
+
+        public void modifyLeftTuple(LeftTuple leftTuple,
+                                    PropagationContext context,
+                                    InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
+        }
+
+        public void retractLeftTuple(LeftTuple leftTuple,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
+        }
+
+        public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
+        }
+
+        public void readExternal(ObjectInput arg0) throws IOException,
+                                                  ClassNotFoundException {
+        }
+
+        public void writeExternal(ObjectOutput arg0) throws IOException {
+        }
+
+        public int getId() {
+            return 0;
+        }
+
+        public RuleBasePartitionId getPartitionId() {
+            return sink.getPartitionId();
+        }
+
     }
 
 }
