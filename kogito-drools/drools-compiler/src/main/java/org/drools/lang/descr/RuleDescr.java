@@ -43,6 +43,7 @@ public class RuleDescr extends BaseDescr
 
     private AndDescr                    lhs;
     private Object                      consequence;
+    private Map<String, Object>         namedConsequence;
     private int                         consequenceLine;
     private int                         consequencePattern;
     private int                         offset;
@@ -65,6 +66,7 @@ public class RuleDescr extends BaseDescr
         this.documentation = documentation;
         this.metaAttributes = new LinkedHashMap<String, String>();
         this.attributes = new LinkedHashMap<String, AttributeDescr>();
+        this.namedConsequence = new HashMap<String, Object>();
     }
 
     @SuppressWarnings("unchecked")
@@ -76,6 +78,7 @@ public class RuleDescr extends BaseDescr
         parentName = (String) in.readObject();
         documentation = (String) in.readObject();
         consequence = in.readObject();
+        namedConsequence = (Map<String, Object>) in.readObject();
         lhs = (AndDescr) in.readObject();
         consequenceLine = in.readInt();
         consequencePattern = in.readInt();
@@ -92,6 +95,7 @@ public class RuleDescr extends BaseDescr
         out.writeObject( parentName );
         out.writeObject( documentation );
         out.writeObject( consequence );
+        out.writeObject( namedConsequence );
         out.writeObject( lhs );
         out.writeInt( consequenceLine );
         out.writeInt( consequencePattern );
@@ -199,6 +203,10 @@ public class RuleDescr extends BaseDescr
 
     public void setConsequence(final Object consequence) {
         this.consequence = consequence;
+    }
+    
+    public Map<String, Object> getNamedConsequences() {
+        return this.namedConsequence;
     }
 
     public void setConsequenceLocation(final int line,

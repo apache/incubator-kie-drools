@@ -325,6 +325,12 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
 {
     private static final long serialVersionUID  = 400L;
 
+	private final String consequenceName = "@{consequenceName}";		
+		    
+    public String getName() {
+        return this.consequenceName;
+    }
+
     public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
                          org.drools.WorkingMemory workingMemory) throws Exception {
 

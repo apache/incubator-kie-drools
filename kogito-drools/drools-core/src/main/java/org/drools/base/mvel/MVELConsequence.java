@@ -94,5 +94,9 @@ public class MVELConsequence implements Consequence, MVELCompileable,
 	public Serializable getCompExpr() {
 		return expr;
 	}
+	
+    public String getName() {
+        return "default";
+    }	
 
 }

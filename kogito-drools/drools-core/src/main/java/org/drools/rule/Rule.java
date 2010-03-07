@@ -95,6 +95,8 @@ public class Rule
     /** Consequence. */
     private Consequence       consequence;
     
+    private Map<String, Consequence> namedConsequence;
+    
     /** Timer semantics that controls the firing of a rule */
     private Timer             timer;
 
@@ -143,8 +145,10 @@ public class Rule
 
         if ( this.consequence instanceof CompiledInvoker ) {
             out.writeObject( null );
+            out.writeObject( null );
         } else {
-            out.writeObject(this.consequence);   
+            out.writeObject(this.consequence); 
+            out.writeObject( this.namedConsequence );
         } 
         out.writeObject(timer);
         out.writeLong(loadOrder);
@@ -176,6 +180,7 @@ public class Rule
         metaAttributes = (Map<String,String>)in.readObject();
         
         consequence = (Consequence)in.readObject();
+        namedConsequence = (Map<String, Consequence>) in.readObject();
         timer = (Timer)in.readObject();
         loadOrder   = in.readLong();
         noLoop = in.readBoolean();
@@ -557,7 +562,13 @@ public class Rule
         } else if( object instanceof Enabled ) {
         	setEnabled(( Enabled) object);
         } else {
-            setConsequence( (Consequence) object );
+            Consequence c = (Consequence) object;
+            if ( "default".equals( c.getName() ) ) {
+                setConsequence( c );    
+            } else {
+                getNamedConsequences().put( c.getName(), c );
+            }
+            
         }
     }
 
@@ -581,6 +592,14 @@ public class Rule
      */
     public Consequence getConsequence() {
         return this.consequence;
+    }
+    
+    public Map<String, Consequence> getNamedConsequences() {
+        if ( this.namedConsequence == null ) {
+            this.namedConsequence = new HashMap<String, Consequence>();
+        }
+        
+        return this.namedConsequence;
     }
 
     public long getLoadOrder() {

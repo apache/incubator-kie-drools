@@ -89,6 +89,10 @@ public class RuleFlowGroupTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         // create a rule for each rule flow groups
@@ -369,6 +373,10 @@ public class RuleFlowGroupTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         // create a rule for each rule flow groups

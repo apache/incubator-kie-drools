@@ -278,6 +278,9 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
             throw new UnsupportedOperationException("You should never call this method!!");
         }
 
+        public String getName() {
+            return "default";
+        }        
     }
 
 }

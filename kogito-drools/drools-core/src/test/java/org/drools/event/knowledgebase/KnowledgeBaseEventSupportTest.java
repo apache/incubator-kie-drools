@@ -111,6 +111,10 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         } );
 
         final Rule rule2 = new Rule( "test2" );
@@ -141,6 +145,10 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         } );
 
         pkg = new KnowledgePackageImp( new Package( "org.drools.test1" ) );

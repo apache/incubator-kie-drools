@@ -272,6 +272,10 @@ public abstract class BaseMannersTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );
@@ -564,6 +568,10 @@ public abstract class BaseMannersTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );
@@ -717,6 +725,10 @@ public abstract class BaseMannersTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );
@@ -818,6 +830,10 @@ public abstract class BaseMannersTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );
@@ -919,6 +935,10 @@ public abstract class BaseMannersTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );
@@ -992,6 +1012,10 @@ public abstract class BaseMannersTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );
@@ -1054,6 +1078,10 @@ public abstract class BaseMannersTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );

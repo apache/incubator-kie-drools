@@ -476,7 +476,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         implements
         ConsequenceBuilder {
 
-        public void build(RuleBuildContext context) {
+        public void build(RuleBuildContext context, String name) {
             context.getRuleDescr().setConsequence( "consequence was built" );
         }
 

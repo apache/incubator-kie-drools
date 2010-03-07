@@ -41,6 +41,10 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
             public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         });
         pkg.addRule(rule);
 

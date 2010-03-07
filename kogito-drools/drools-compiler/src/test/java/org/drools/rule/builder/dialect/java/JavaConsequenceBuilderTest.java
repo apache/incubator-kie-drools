@@ -1,7 +1,9 @@
 package org.drools.rule.builder.dialect.java;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import junit.framework.TestCase;
 
@@ -18,6 +20,8 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
 
 public class JavaConsequenceBuilderTest extends TestCase {
 
@@ -33,7 +37,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         super.tearDown();
     }
 
-    private void setupTest(String consequence) {
+    private void setupTest(String consequence, Map<String, Object> namedConsequences) {
         builder = new JavaConsequenceBuilder();
 
         Package pkg = new Package( "org.drools" );
@@ -45,6 +49,10 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
         ruleDescr = new RuleDescr( "test consequence builder" );
         ruleDescr.setConsequence( consequence );
+        
+        for ( Entry<String, Object> entry : namedConsequences.entrySet() ) {
+            ruleDescr.getNamedConsequences().put( entry.getKey(), entry.getValue() );
+        }
 
         Rule rule = new Rule( ruleDescr.getName() );
         rule.addPattern( new Pattern( 0,
@@ -59,11 +67,21 @@ public class JavaConsequenceBuilderTest extends TestCase {
                                         pkg,
                                         reg.getDialect( pkgRegistry.getDialect() ) );
         context.getBuildStack().push( rule.getLhs() );
+        
+        context.getDialect().getConsequenceBuilder().build( context, "default" );
+        for ( String name : namedConsequences.keySet() ) {
+            context.getDialect().getConsequenceBuilder().build( context, name );    
+        }
+        
+        context.getDialect().addRule( context );
+        pkgRegistry.getPackage().addRule( context.getRule() );
+        pkgBuilder.compileAll();
+        pkgBuilder.reloadAll();         
     }
 
     public void testFixExitPointsReferences() {
         String consequence = " System.out.println(\"this is a test\");\n " + " exitPoints[\"foo\"].insert( new Cheese() );\n " + " System.out.println(\"we are done with exitPoints\");\n ";
-        setupTest( consequence );
+        setupTest( consequence, new HashMap<String, Object>() );
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
@@ -94,7 +112,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
     public void testFixEntryPointsReferences() {
         String consequence = " System.out.println(\"this is a test\");\n " + " entryPoints[\"foo\"].insert( new Cheese() );\n " + " System.out.println(\"we are done with entryPoints\");\n ";
-        setupTest( consequence );
+        setupTest( consequence, new HashMap<String, Object>() );
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
@@ -125,7 +143,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
     public void testFixModifyBlocks() {
         String consequence = " System.out.println(\"this is a test\");\n " + " modify( $cheese ) { setPrice( 10 ), setAge( age ) }\n " + " System.out.println(\"we are done\");\n ";
-        setupTest( consequence );
+        setupTest( consequence, new HashMap<String, Object>() );
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
@@ -168,7 +186,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
                              " // just in case, one more call: \n" +
                              " insert( $abc );\n"
                              ;
-        setupTest( consequence );
+        setupTest( consequence, new HashMap<String, Object>() );
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
@@ -204,6 +222,60 @@ public class JavaConsequenceBuilderTest extends TestCase {
         }
 
     }
+    
+    public void testDefaultConsequenceCompilation() {
+        String consequence = " System.out.println(\"this is a test\");\n ";
+        setupTest( consequence, new HashMap<String, Object>() );       
+        assertNotNull( context.getRule().getConsequence() );
+        assertTrue( context.getRule().getNamedConsequences().isEmpty() );
+        assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
+        assertTrue( context.getRule().getConsequence() instanceof Consequence );
+    }
+    
+    public void testDefaultConsequenceWithSingleNamedConsequenceCompilation() {
+        String defaultCon = " System.out.println(\"this is a test\");\n ";
+        
+        Map<String, Object> namedConsequences = new HashMap<String, Object>(); 
+        String name1 =  " System.out.println(\"this is a test name1\");\n ";
+        namedConsequences.put( "name1", name1 );
+        
+        setupTest( defaultCon, namedConsequences);       
+        assertEquals( 1, context.getRule().getNamedConsequences().size() );
+        
+        assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
+        assertTrue( context.getRule().getConsequence() instanceof Consequence );        
+        
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof CompiledInvoker );
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof Consequence );   
+        
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
+    }    
+    
+    public void testDefaultConsequenceWithMultipleNamedConsequenceCompilation() {
+        String defaultCon = " System.out.println(\"this is a test\");\n ";
+        
+        Map<String, Object> namedConsequences = new HashMap<String, Object>(); 
+        String name1 =  " System.out.println(\"this is a test name1\");\n ";
+        namedConsequences.put( "name1", name1 );
+        String name2 =  " System.out.println(\"this is a test name2\");\n ";
+        namedConsequences.put( "name2", name2 );        
+        
+        setupTest( defaultCon, namedConsequences);       
+        assertEquals( 2, context.getRule().getNamedConsequences().size() );
+        
+        assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
+        assertTrue( context.getRule().getConsequence() instanceof Consequence );        
+        
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof CompiledInvoker );
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof Consequence );   
+        
+        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof CompiledInvoker );
+        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof Consequence );         
+        
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );
+        assertNotSame(  context.getRule().getNamedConsequences().get( "name1"), context.getRule().getNamedConsequences().get( "name2" ) );
+    }    
 
     private void assertEqualsIgnoreSpaces(String expected,
                                           String fixed) {

@@ -93,6 +93,10 @@ public class ReteooRuleBuilderTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+            
+            public String getName() {
+                return "default";
+            }            
         };
 
         rule.setConsequence( consequence );

@@ -92,7 +92,11 @@ public class RuleBuilder {
         if ( !(ruleDescr instanceof QueryDescr) ) {
             // do not build the consequence if we have a query
 
-            context.getDialect().getConsequenceBuilder().build( context );
+            context.getDialect().getConsequenceBuilder().build( context, "default" );
+            
+            for ( String name : ruleDescr.getNamedConsequences().keySet() ) {
+                context.getDialect().getConsequenceBuilder().build( context, name );    
+            }
         }
 
     }
