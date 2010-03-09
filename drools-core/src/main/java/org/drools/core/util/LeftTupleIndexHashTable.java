@@ -100,7 +100,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     }
     
     public LeftTuple getFirst(final LeftTuple leftTuple) {
-        final LeftTupleList bucket = getOrCreate( leftTuple );
+        final LeftTupleList bucket = get( leftTuple );
         if ( bucket != null ) {
             return bucket.getFirst( ( LeftTuple ) null );
         } else {
@@ -324,6 +324,24 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
             if ( this.size++ >= this.threshold ) {
                 resize( 2 * this.table.length );
             }
+        }
+        return entry;
+    }
+
+    private LeftTupleList get(final LeftTuple tuple) {
+        final int hashCode = this.index.hashCodeOf( tuple );
+
+        final int index = indexOf( hashCode,
+                                   this.table.length );
+        LeftTupleList entry = (LeftTupleList) this.table[index];
+
+        // search to find an existing entry
+        while ( entry != null ) {
+            if ( entry.matches( tuple,
+                                hashCode ) ) {
+                return entry;
+            }
+            entry = (LeftTupleList) entry.next;
         }
         return entry;
     }

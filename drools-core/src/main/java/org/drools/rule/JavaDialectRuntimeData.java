@@ -222,8 +222,9 @@ public class JavaDialectRuntimeData
             removeClasses( rule.getLhs() );
 
             // Now remove the rule class - the name is a subset of the consequence name
+            String sufix = StringUtils.ucFirst( rule.getConsequence().getName() )+"ConsequenceInvoker";
             remove( consequenceName.substring( 0,
-                                               consequenceName.indexOf( "ConsequenceInvoker" ) ) );
+                                               consequenceName.indexOf( sufix ) ) );
         }
     }
 
