@@ -167,6 +167,11 @@ public class PatternBuilder
                                    objectType,
                                    patternDescr.getIdentifier(),
                                    patternDescr.isInternalFact() );
+            if ( objectType instanceof ClassObjectType ) {
+                // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
+                context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
+                                                                                  (PatternExtractor) pattern.getDeclaration().getExtractor() );
+            }
         } else {
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
