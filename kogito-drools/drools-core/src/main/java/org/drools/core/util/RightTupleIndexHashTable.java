@@ -93,7 +93,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
     }
     
     public RightTuple getFirst(final RightTuple rightTuple) {
-        final RightTupleList bucket = getOrCreate( rightTuple.getFactHandle().getObject() );
+        final RightTupleList bucket = get( rightTuple.getFactHandle().getObject() );
         if ( bucket != null ) {
             return bucket.getFirst( ( RightTuple ) null );
         } else {
@@ -345,6 +345,21 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         return entry;
     }
 
+    private RightTupleList get(final Object object) {
+        final int hashCode = this.index.hashCodeOf( object );
+        final int index = indexOf( hashCode,
+                                   this.table.length );
+        RightTupleList entry = (RightTupleList) this.table[index];
+        while ( entry != null ) {
+            if ( entry.matches( object,
+                                hashCode ) ) {
+                return entry;
+            }
+            entry = (RightTupleList) entry.next;
+        }
+        return entry;
+    }
+    
     public int size() {
         return this.factSize;
     }
