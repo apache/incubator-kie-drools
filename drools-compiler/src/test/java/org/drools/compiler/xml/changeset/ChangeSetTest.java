@@ -103,4 +103,38 @@ public class ChangeSetTest extends TestCase {
         assertTrue( list.containsAll( Arrays.asList( new String[]{"rule1", "rule2"} ) ) );
     }
 
+    public void testBasicAuthentication() throws SAXException,
+                               IOException {
+
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        XmlChangeSetReader xmlReader = new XmlChangeSetReader( conf.getSemanticModules() );
+
+        String str = "";
+        str += "<change-set ";
+        str += "xmlns='http://drools.org/drools-5.0/change-set' ";
+        str += "xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' ";
+        str += "xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        str += "    <add> ";
+        str += "        <resource source='http://localhost:8081/jboss-brms/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST' type='PKG' basicAuthentication='enabled' username='admin' password='pwd'/>";
+        str += "    </add> ";        
+        str += "</change-set>";
+
+        StringReader reader = new StringReader( str );
+        ChangeSet changeSet = xmlReader.read( reader );
+
+        assertEquals( 1,
+                      changeSet.getResourcesAdded().size() );
+        UrlResource resource = ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 0 );
+        assertNull( resource.getConfiguration() );
+        assertEquals( "http://localhost:8081/jboss-brms/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST",
+                      resource.getURL().toString() );
+        assertEquals( "enabled", resource.getBasicAuthentication() );
+        assertEquals( "admin", resource.getUsername() );
+        assertEquals( "pwd", resource.getPassword() );
+        assertEquals( ResourceType.PKG,
+                      resource.getResourceType() );
+    }
+
+
+    
 }

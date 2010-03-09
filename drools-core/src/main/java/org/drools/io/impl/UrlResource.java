@@ -26,6 +26,8 @@ import org.drools.core.util.StringUtils;
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 
+import sun.misc.BASE64Encoder;
+
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
  *
@@ -46,6 +48,9 @@ public class UrlResource extends BaseResource
     private URL  url;
     private long lastRead = -1;
     private static final String DROOLS_RESOURCE_URLCACHE = "drools.resource.urlcache";
+    private String basicAuthentication = "disabled";
+    private String username = "";
+    private String password = "";
 
     public UrlResource() {
 
@@ -75,7 +80,31 @@ public class UrlResource extends BaseResource
         this.url = (URL) in.readObject();
     }
 
-    /**
+    public String getBasicAuthentication() {
+		return basicAuthentication;
+	}
+
+	public void setBasicAuthentication(String basicAuthentication) {
+		this.basicAuthentication = basicAuthentication;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
      * This implementation opens an InputStream for the given URL.
      * It sets the "UseCaches" flag to <code>false</code>,
      * mainly to avoid jar file locking on Windows.
@@ -149,6 +178,21 @@ public class UrlResource extends BaseResource
     private InputStream grabStream() throws IOException {
         URLConnection con = this.url.openConnection();
         con.setUseCaches( false );
+
+        if ( con instanceof HttpURLConnection) {
+            //((HttpURLConnection) con).setRequestMethod( "GET" );
+            boolean useBasicAuth = true;
+            if ("enabled".equalsIgnoreCase(basicAuthentication)) {
+				BASE64Encoder enc = new sun.misc.BASE64Encoder();
+				String userpassword = username + ":" + password;
+				String encodedAuthorization = enc.encode(userpassword
+						.getBytes());
+				((HttpURLConnection) con).setRequestProperty("Authorization",
+						"Basic " + encodedAuthorization);
+			}
+
+        }
+
         return con.getInputStream();
     }
 
@@ -194,7 +238,7 @@ public class UrlResource extends BaseResource
             long lm = grabLastMod();
             //try the cache.
             if (lm == 0 && cacheFileExists()) {
-                //OK we will return it from the local cached copy, as remote one isn't available.. 
+                //OK we will return it from the local cached copy, as remote one isn't available..
                 return getCacheFile().lastModified();
             }
             return lm;
@@ -268,7 +312,7 @@ public class UrlResource extends BaseResource
                 return resources;
             }
         } catch ( Exception e ) {
-            // swallow as we'll throw an exception anyway            
+            // swallow as we'll throw an exception anyway
         }
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
     }

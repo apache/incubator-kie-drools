@@ -44,6 +44,10 @@ public class ResourceHandler extends BaseAbstractHandler
         
         String src = attrs.getValue( "source" );
         String type = attrs.getValue( "type" );
+        String basicAuthentication = attrs.getValue( "basicAuthentication" );
+        String username = attrs.getValue( "username" );
+        String password = attrs.getValue( "password" );
+
         
         emptyAttributeCheck( localName,
                              "source",
@@ -60,6 +64,9 @@ public class ResourceHandler extends BaseAbstractHandler
             resource = new ClassPathResource( src.substring( src.indexOf( ':' ) + 1 ), ( Class ) parser.getMetaData().get( "clazz" ), parser.getClassLoader() );
         } else {
             resource = new UrlResource( src );
+            ((UrlResource)resource).setBasicAuthentication(basicAuthentication);
+            ((UrlResource)resource).setUsername(username);
+            ((UrlResource)resource).setPassword(password);           
         }
         
         resource.setResourceType( ResourceType.getResourceType( type ) );
