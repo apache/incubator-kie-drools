@@ -33,6 +33,9 @@
       <xsd:attribute name="source" use="required" type="xsd:anyURI"/>
       <!-- for example, DRL, or PKG -->
       <xsd:attribute name="type" use="required" type="xsd:string"/>
+      <xsd:attribute name="basicAuthentication" type="xsd:string"/>
+      <xsd:attribute name="username" type="xsd:string"/>
+      <xsd:attribute name="password" type="xsd:string"/>
     </xsd:complexType>
     
   </xsd:element>
