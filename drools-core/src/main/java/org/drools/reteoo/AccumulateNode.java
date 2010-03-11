@@ -861,7 +861,7 @@ public class AccumulateNode extends BetaNode {
         matchings[0] = getFirstMatch( parent,
                                       accctx,
                                       isUpdatingSink );
-        matchings[1] = parent.lastChild;
+        matchings[1] = matchings[0] != null ? parent.lastChild : null;
 
         // update the tuple for the actual propagations
         if ( matchings[0] != null ) {
