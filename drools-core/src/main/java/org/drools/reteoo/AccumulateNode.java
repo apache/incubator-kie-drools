@@ -577,12 +577,11 @@ public class AccumulateNode extends BetaNode {
             this.resultBinder.resetTuple( memory.resultsContext );
         }
 
-        // temporarily break the linked list to avoid wrong interactions
-        LeftTuple[] matchings = splitList( leftTuple,
-                                           accctx,
-                                           false );
-
         if ( accctx.propagated == true ) {
+            // temporarily break the linked list to avoid wrong interactions
+            LeftTuple[] matchings = splitList( leftTuple,
+                                               accctx,
+                                               false );
             if ( isAllowed ) {
                 // modify 
                 if ( ActivitySource.LEFT.equals( source ) ) {
@@ -605,21 +604,25 @@ public class AccumulateNode extends BetaNode {
                                                      workingMemory );
                 accctx.propagated = false;
             }
-        } else {
-            if ( isAllowed ) {
-                // assert
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    accctx.result,
-                                                    context,
-                                                    workingMemory,
-                                                    this.tupleMemoryEnabled );
-                accctx.propagated = true;
-            }
+            // restore the matchings list
+            restoreList( leftTuple,
+                         matchings );
+        } else if ( isAllowed ) {
+            // temporarily break the linked list to avoid wrong interactions
+            LeftTuple[] matchings = splitList( leftTuple,
+                                               accctx,
+                                               false );
+            // assert
+            this.sink.propagateAssertLeftTuple( leftTuple,
+                                                accctx.result,
+                                                context,
+                                                workingMemory,
+                                                this.tupleMemoryEnabled );
+            accctx.propagated = true;
+            // restore the matchings list
+            restoreList( leftTuple,
+                         matchings );
         }
-
-        // restore the matchings list
-        restoreList( leftTuple,
-                     matchings );
 
     }
 
