@@ -22,10 +22,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -50,7 +50,6 @@ import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.hibernate.annotations.CollectionOfElements;
 
 @Entity
@@ -60,6 +59,7 @@ public class ProcessInstanceInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "InstanceId")
     private Long                              processInstanceId;
 
     @Version
@@ -80,6 +80,8 @@ public class ProcessInstanceInfo {
 //  @JoinColumn(name = "processInstanceId")
 //  private Set<EventType>                    eventTypes         = new HashSet<EventType>();    
     private @CollectionOfElements
+
+    @JoinTable(name = "EventTypes", joinColumns = @JoinColumn(name = "InstanceId"))
     Set<String>                               eventTypes         = new HashSet<String>();
     private @Transient
     ProcessInstance                           processInstance;
