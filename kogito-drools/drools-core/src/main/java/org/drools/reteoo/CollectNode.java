@@ -546,12 +546,12 @@ public class CollectNode extends BetaNode {
             this.resultsBinder.resetTuple( memory.resultsContext );
         }
 
-        // temporarily break the linked list to avoid wrong interactions
-        LeftTuple[] matchings = splitList( leftTuple,
-                                           colctx,
-                                           false );
-
         if ( colctx.propagated == true ) {
+            // temporarily break the linked list to avoid wrong interactions
+            LeftTuple[] matchings = splitList( leftTuple,
+                                               colctx,
+                                               false );
+
             if ( isAllowed ) {
                 // modify 
                 if ( ActivitySource.LEFT.equals( source ) ) {
@@ -574,21 +574,26 @@ public class CollectNode extends BetaNode {
                                                      workingMemory );
                 colctx.propagated = false;
             }
-        } else {
-            if ( isAllowed ) {
-                // assert
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    colctx.resultTuple,
-                                                    context,
-                                                    workingMemory,
-                                                    this.tupleMemoryEnabled );
-                colctx.propagated = true;
-            }
-        }
+            // restore the matchings list
+            restoreList( leftTuple,
+                         matchings );
+        } else if ( isAllowed ) {
+            // temporarily break the linked list to avoid wrong interactions
+            LeftTuple[] matchings = splitList( leftTuple,
+                                               colctx,
+                                               false );
 
-        // restore the matchings list
-        restoreList( leftTuple,
-                     matchings );
+            // assert
+            this.sink.propagateAssertLeftTuple( leftTuple,
+                                                colctx.resultTuple,
+                                                context,
+                                                workingMemory,
+                                                this.tupleMemoryEnabled );
+            colctx.propagated = true;
+            // restore the matchings list
+            restoreList( leftTuple,
+                         matchings );
+        }
     }
 
     /**
