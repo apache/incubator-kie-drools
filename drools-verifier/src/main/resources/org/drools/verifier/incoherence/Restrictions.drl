@@ -15,6 +15,8 @@ import org.drools.verifier.data.VerifierReport;
 
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.drools.base.evaluators.Operator;
 
@@ -56,11 +58,15 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 
 		$p :Pattern( guid matches $pp.patternGuid )
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+	
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -102,11 +108,15 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
 		$p :Pattern( guid matches $pp.patternGuid )
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -148,11 +158,15 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
 		$p :Pattern( guid matches $pp.patternGuid )
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -194,11 +208,15 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
 		$p :Pattern( guid matches $pp.patternGuid )
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -240,11 +258,15 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
 		$p :Pattern( guid matches $pp.patternGuid )
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -287,11 +309,15 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 
 		$p :Pattern( guid matches $pp.patternGuid )
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -331,11 +357,15 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 
 		$p :Pattern( guid matches $pp.patternGuid )
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,

@@ -1,59 +1,94 @@
 package org.drools.verifier.report.components;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * 
  * @author Toni Rikkola
  */
 public class VerifierMessage extends VerifierMessageBase {
-	private static final long serialVersionUID = 9190003495068712452L;
+    private static final long         serialVersionUID = 9190003495068712452L;
 
-	protected final Collection<Cause> causes;
+    protected final Collection<Cause> causes;
 
-	public VerifierMessage(Severity severity, MessageType messageType,
-			Cause faulty, String message, Collection<Cause> causes) {
-		super(severity, messageType, faulty, message);
+    public VerifierMessage(Map<String, String> impactedRules,
+                           Severity severity,
+                           MessageType messageType,
+                           Cause faulty,
+                           String message,
+                           Collection<Cause> causes) {
+        super( impactedRules,
+               severity,
+               messageType,
+               faulty,
+               message );
 
-		this.causes = causes;
-	}
+        this.causes = causes;
+    }
 
-	public VerifierMessage(Severity severity, MessageType messageType,
-			Cause faulty, String message) {
-		super(severity, messageType, faulty, message);
+    public VerifierMessage(Map<String, String> impactedRules,
+                           Severity severity,
+                           MessageType messageType,
+                           Cause faulty,
+                           String message,
+                           Cause cause) {
+        super( impactedRules,
+               severity,
+               messageType,
+               faulty,
+               message );
 
-		this.causes = Collections.emptyList();
-	}
+        Collection<Cause> causes = new ArrayList<Cause>();
+        causes.add( cause );
 
-	public Collection<Cause> getCauses() {
-		return causes;
-	}
+        this.causes = causes;
+    }
 
-	@Override
-	public String toString() {
-		StringBuffer str = new StringBuffer(severity.getSingular());
+    public VerifierMessage(Map<String, String> impactedRules,
+                           Severity severity,
+                           MessageType messageType,
+                           Cause faulty,
+                           String message) {
+        super( impactedRules,
+               severity,
+               messageType,
+               faulty,
+               message );
 
-		str.append(" id = ");
-		str.append(id);
-		str.append(":\n");
+        this.causes = Collections.emptyList();
+    }
 
-		if (faulty != null) {
-			str.append("faulty : ");
-			str.append(faulty);
-			str.append(", ");
-		}
+    public Collection<Cause> getCauses() {
+        return causes;
+    }
 
-		str.append(message);
-		str.append(" \n\tCauses are [ \n");
+    @Override
+    public String toString() {
+        StringBuffer str = new StringBuffer( severity.getSingular() );
 
-		for (Cause cause : causes) {
-			str.append("\t\t");
-			str.append(cause);
-			str.append("\n");
-		}
-		str.append("\t]");
+        str.append( " id = " );
+        str.append( id );
+        str.append( ":\n" );
 
-		return str.toString();
-	}
+        if ( faulty != null ) {
+            str.append( "faulty : " );
+            str.append( faulty );
+            str.append( ", " );
+        }
+
+        str.append( message );
+        str.append( " \n\tCauses are [ \n" );
+
+        for ( Cause cause : causes ) {
+            str.append( "\t\t" );
+            str.append( cause );
+            str.append( "\n" );
+        }
+        str.append( "\t]" );
+
+        return str.toString();
+    }
 }

@@ -20,6 +20,9 @@ import org.drools.verifier.report.components.MessageType;
 
 import org.drools.verifier.data.VerifierReport;
 
+import java.util.Map;
+import java.util.HashMap;
+
 global VerifierReport result;
 
 
@@ -38,7 +41,7 @@ rule "Pattern possibility that is always true"
 			)
 		)
 	then 
-		insert( new AlwaysTrue( $pp ));
+		insert( new AlwaysTrue( $pp , a, b ));
 end
 /*
 #
@@ -112,7 +115,11 @@ rule "Pattern that is always true"
 		
 		$r :VerifierRule( guid matches $p.ruleGuid )
 	then 
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.NOTE,
 								MessageType.ALWAYS_TRUE,
 								$p,

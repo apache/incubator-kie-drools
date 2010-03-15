@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
@@ -45,6 +46,13 @@ abstract public class TestBase extends TestCase {
         builder.addPackageFromDrl( source );
 
         Package pkg = builder.getPackage();
+
+        if ( builder.hasErrors() ) {
+            for ( KnowledgeBuilderError error : builder.getErrors() ) {
+                System.out.println( error.getMessage() );
+            }
+            fail( "Builder has errors" );
+        }
 
         assertTrue( "Package was null.",
                     pkg != null );

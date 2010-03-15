@@ -1,0 +1,45 @@
+#created on: 25-Feb-2010
+package org.drools.verifier.overlaps
+
+#list any import classes here.
+
+
+
+#declare any global variables here
+
+
+
+
+rule "Overlap I"
+	
+	when
+		Person( 
+			age > 10, 
+			age > 1 
+		)
+	then
+	 
+end
+
+rule "Overlap II"
+	when
+		Monkey( hasBanana == true )
+		Monkey( hasBanana == true )
+	then 
+		
+end
+/*
+rule "Overlap III A"
+	when
+		Player( position < 10 )
+	then 
+		
+end
+
+rule "Overlap III B"
+	when
+		Player( position == 1 )
+	then 
+		
+end
+*/

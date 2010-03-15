@@ -3,8 +3,6 @@ package org.drools.verifier.components;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.verifier.report.components.CauseType;
-
 /**
  * Instance of this class represents a possible combination of Constraints under
  * one Pattern. Each possibility returns true if all the Constraints in the
@@ -47,10 +45,6 @@ public class SubPattern extends PatternComponent
 
     public boolean isPatternForall() {
         return pattern.isPatternForall();
-    }
-
-    public CauseType getCauseType() {
-        return CauseType.SUB_PATTERN;
     }
 
     public void setPattern(Pattern pattern) {

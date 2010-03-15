@@ -12,7 +12,7 @@ import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierData;
-import org.drools.verifier.report.components.RangeCheckCause;
+import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -23,11 +23,11 @@ class MissingRangesReportVisitor extends ReportVisitor {
 
     public static Collection<String> visitRestrictionsCollection(String sourceFolder,
                                                                  Collection<Restriction> restrictions,
-                                                                 Collection<RangeCheckCause> causes) {
+                                                                 Collection<MissingRange> causes) {
         Multimap<Object, DataRow> dt = new TreeMultimap<Object, DataRow>();
         Collection<String> stringRows = new ArrayList<String>();
 
-        for ( RangeCheckCause cause : causes ) {
+        for ( MissingRange cause : causes ) {
             dt.put( cause.getValueAsObject(),
                     new DataRow( null,
                                  null,
@@ -102,13 +102,13 @@ class MissingRangesReportVisitor extends ReportVisitor {
 
     public static String visitRanges(String sourceFolder,
                                      Collection<Restriction> restrictions,
-                                     Collection<RangeCheckCause> causes) {
+                                     Collection<MissingRange> collection) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         map.put( "lines",
                  visitRestrictionsCollection( sourceFolder,
                                               restrictions,
-                                              causes ) );
+                                              collection ) );
 
         String myTemplate = readFile( "ranges.htm" );
 
@@ -159,7 +159,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
         map.put( "ranges",
                  visitRanges( UrlFactory.THIS_FOLDER,
                               restrictions,
-                              message.getCauses() ) );
+                              message.getMissingRanges() ) );
 
         String myTemplate = readFile( "missingRange.htm" );
 

@@ -24,4 +24,7 @@ public interface Consequence
 
     public ConsequenceType getConsequenceType();
 
+    public String getRuleGuid();
+    
+    public String getRuleName();
 }

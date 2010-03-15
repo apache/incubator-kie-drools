@@ -2,80 +2,99 @@ package org.drools.verifier.report.components;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
  * @author Toni Rikkola
  */
-abstract public class VerifierMessageBase implements Serializable,
-		Comparable<VerifierMessageBase> {
-	private static final long serialVersionUID = 9190003495068712452L;
+abstract public class VerifierMessageBase
+    implements
+    Serializable,
+    Comparable<VerifierMessageBase> {
+    private static final long   serialVersionUID = 9190003495068712452L;
 
-	private static int index = 0;
+    private static int          index            = 0;
 
-	protected final Severity severity;
-	protected final MessageType messageType;
+    // <guid,rule name>
+    private Map<String, String> impactedRules    = new HashMap<String, String>();
 
-	protected final int id = index++;
-	protected final Cause faulty;
-	protected final String message;
+    protected final Severity    severity;
+    protected final MessageType messageType;
 
-	public int compareTo(VerifierMessageBase o) {
-		if (id == o.getId()) {
-			return 0;
-		}
+    protected final int         id               = index++;
+    protected final Cause       faulty;
+    protected final String      message;
 
-		return (id > o.getId() ? 1 : -1);
-	}
+    public int compareTo(VerifierMessageBase o) {
+        if ( id == o.getId() ) {
+            return 0;
+        }
 
-	protected VerifierMessageBase(Severity severity, MessageType messageType,
-			Cause faulty, String message) {
-		this.severity = severity;
-		this.messageType = messageType;
-		this.faulty = faulty;
-		this.message = message;
-	}
+        return (id > o.getId() ? 1 : -1);
+    }
 
-	public int getId() {
-		return id;
-	}
+    protected VerifierMessageBase(Map<String, String> impactedRules,
+                                  Severity severity,
+                                  MessageType messageType,
+                                  Cause faulty,
+                                  String message) {
+        this.impactedRules = impactedRules;
+        this.severity = severity;
+        this.messageType = messageType;
+        this.faulty = faulty;
+        this.message = message;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Cause getFaulty() {
-		return faulty;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public MessageType getMessageType() {
-		return messageType;
-	}
+    public Cause getFaulty() {
+        return faulty;
+    }
 
-	public Severity getSeverity() {
-		return severity;
-	}
+    public MessageType getMessageType() {
+        return messageType;
+    }
 
-	@Override
-	public String toString() {
-		StringBuffer str = new StringBuffer(severity.singular);
+    public Severity getSeverity() {
+        return severity;
+    }
 
-		str.append(" id = ");
-		str.append(id);
-		str.append(":\n");
+    @Override
+    public String toString() {
+        StringBuffer str = new StringBuffer( severity.singular );
 
-		if (faulty != null) {
-			str.append("faulty : ");
-			str.append(faulty);
-			str.append(", ");
-		}
+        str.append( " id = " );
+        str.append( id );
+        str.append( ":\n" );
 
-		str.append(message);
+        if ( faulty != null ) {
+            str.append( "faulty : " );
+            str.append( faulty );
+            str.append( ", " );
+        }
 
-		str.append("\t]");
+        str.append( message );
 
-		return str.toString();
-	}
+        str.append( "\t]" );
 
-	public abstract Collection<? extends Cause> getCauses();
+        return str.toString();
+    }
+
+    public void setImpactedRules(Map<String, String> impactedRules) {
+        this.impactedRules = impactedRules;
+    }
+
+    public Map<String, String> getImpactedRules() {
+        return impactedRules;
+    }
+
+    public abstract Collection<Cause> getCauses();
 }

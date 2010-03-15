@@ -16,9 +16,11 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
+
+import java.util.Map;
+import java.util.HashMap;
 
 
 #
@@ -32,21 +34,26 @@ import org.drools.verifier.report.components.MessageType;
 rule "Find redundant restrictions from pattern possibilities"
 	salience -100
 	when
-		$r :Redundancy(
-			items[0].causeType == CauseType.RESTRICTION
-		)
+		$r :Redundancy()
 
 		$pp :SubPattern(
 			items contains $r.items[0],
 			items contains $r.items[1]
 		)
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $pp.getRuleGuid(), $pp.getRuleName());
+		
 		Collection causes = new ArrayList();
 		causes.addAll( $r.getItems() );
 
 		result.add(new VerifierMessage(
-						Severity.NOTE, MessageType.REDUNDANCY,
-						$r, "Same restriction exists twice.", causes ) );
+						impactedRules,
+						Severity.NOTE, 
+						MessageType.REDUNDANCY,
+						$r, 
+						"Same restriction exists twice.", 
+						causes ) );
 end
 
 #
@@ -58,20 +65,25 @@ end
 rule "Find redundant pattern possibilities from rule possibilities"
 	salience -100
 	when
-		$r :Redundancy(
-			items[0].causeType == CauseType.SUB_PATTERN
-		)
+		$r :Redundancy()
 
-		SubRule(
+		$sr :SubRule(
 			items contains $r.items[0],
 			items contains $r.items[1]
 		)
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $sr.getRuleGuid(), $sr.getRuleName());
+		
 		Collection causes = new ArrayList();
 		causes.addAll( $r.getItems() );
 
 		result.add(new VerifierMessage(
-						Severity.NOTE, MessageType.REDUNDANCY,
-						$r, "Two pattern possibilities with redundant restrictions exists twice in the same rule.", causes ) );
+						impactedRules,
+						Severity.NOTE, 
+						MessageType.REDUNDANCY,
+						$r, 
+						"Two pattern possibilities with redundant restrictions exists twice in the same rule.", 
+						causes ) );
 end
 

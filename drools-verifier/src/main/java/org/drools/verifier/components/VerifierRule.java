@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.drools.verifier.components.Consequence.ConsequenceType;
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 /**
  *
@@ -39,10 +38,6 @@ public class VerifierRule extends RuleComponent
     private Collection<String>        commentMetadata = new ArrayList<String>();
 
     private Map<String, List<String>> otherInfo       = new HashMap<String, List<String>>();
-
-    public CauseType getCauseType() {
-        return CauseType.RULE;
-    }
 
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;

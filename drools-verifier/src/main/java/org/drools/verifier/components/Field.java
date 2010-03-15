@@ -1,7 +1,6 @@
 package org.drools.verifier.components;
 
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 /**
  * 
@@ -28,10 +27,6 @@ public class Field extends RuleComponent
 
     public VerifierComponentType getVerifierComponentType() {
         return VerifierComponentType.FIELD;
-    }
-
-    public CauseType getCauseType() {
-        return CauseType.FIELD;
     }
 
     public String getName() {

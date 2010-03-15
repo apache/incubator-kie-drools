@@ -1,7 +1,6 @@
 package org.drools.verifier.components;
 
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 /**
  *
@@ -18,10 +17,6 @@ public class Constraint extends PatternComponent
 
     public VerifierComponentType getVerifierComponentType() {
         return VerifierComponentType.CONSTRAINT;
-    }
-
-    public CauseType getCauseType() {
-        return CauseType.CONSTRAINT;
     }
 
     public int getLineNumber() {

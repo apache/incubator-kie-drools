@@ -1,13 +1,16 @@
 package org.drools.verifier.data;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.report.components.Cause;
 
 public abstract class VerifierComponent
     implements
-    Comparable<VerifierComponent> {
+    Comparable<VerifierComponent>,
+    Cause {
 
     static class GuidFactory {
 
@@ -41,5 +44,9 @@ public abstract class VerifierComponent
 
     public int compareTo(VerifierComponent another) {
         return this.guid.compareTo( another.getGuid() );
+    }
+
+    public Collection<Cause> getCauses() {
+        return null;
     }
 }

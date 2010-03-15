@@ -16,7 +16,6 @@ import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 public class OppositeRestrictionsTest extends OppositesBase {
 
@@ -66,7 +65,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createOppositesMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -112,7 +111,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createOppositesMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -148,7 +147,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createOppositesMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -184,7 +183,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createOppositesMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -220,7 +219,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createOppositesMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -308,7 +307,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createOppositesMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,

@@ -2,7 +2,6 @@ package org.drools.verifier.components;
 
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 /**
  * 
@@ -33,10 +32,6 @@ public abstract class Restriction extends PatternComponent
     private String     fieldGuid;
 
     protected Operator operator;
-
-    public CauseType getCauseType() {
-        return CauseType.RESTRICTION;
-    }
 
     public abstract RestrictionType getRestrictionType();
 

@@ -53,13 +53,13 @@ public class EquivalentRulesTest extends TestCase {
         for ( VerifierMessageBase message : warnings ) {
             //            System.out.println( message );
             if ( message.getMessageType().equals( MessageType.EQUIVALANCE ) ) {
-                //                System.out.println( message );
+//                                System.out.println( message );
                 counter++;
             }
         }
 
         // Has at least one item.
-        assertEquals( 2,
+        assertEquals( 1,
                       counter );
 
         verifier.dispose();
