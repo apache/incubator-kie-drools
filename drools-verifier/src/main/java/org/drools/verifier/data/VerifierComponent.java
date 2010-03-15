@@ -1,6 +1,7 @@
 package org.drools.verifier.data;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +48,6 @@ public abstract class VerifierComponent
     }
 
     public Collection<Cause> getCauses() {
-        return null;
+        return Collections.emptyList();
     }
 }

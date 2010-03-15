@@ -55,18 +55,35 @@ public class CauseTest extends TestCase {
 
         VerifierMessage message = (VerifierMessage) redundancyWarnings.toArray()[0];
 
+        //        System.out.println( message );
+
         assertEquals( 2,
                       message.getImpactedRules().size() );
 
         assertTrue( message.getImpactedRules().values().contains( "Your First Rule" ) );
         assertTrue( message.getImpactedRules().values().contains( "Your Second Rule" ) );
 
-        // TODO: Test causes
         Cause[] causes = message.getCauses().toArray( new Cause[message.getCauses().size()] );
 
         assertEquals( 1,
                       causes.length );
-        causes = causes[0].getCauses().toArray( new Cause[message.getCauses().size()] );
+        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+
+        assertEquals( 2,
+                      causes.length );
+
+        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+
+        assertEquals( 1,
+                      causes.length );
+
+        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+
+        assertEquals( 1,
+                      causes.length );
+
+        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+
         assertEquals( 2,
                       causes.length );
 

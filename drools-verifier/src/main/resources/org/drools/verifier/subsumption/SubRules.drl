@@ -36,11 +36,21 @@ rule "Find subsumptant sub rules"
 				right memberOf $subRule2.items
 			)
 		)
-#		not Subsumption(
-#				left memberOf $subRule1.items,
-#				right not memberOf $subRule2.items
-#		)
+		
+		$causes : ArrayList()
+        	from collect( 
+              	Subsumption(
+      				left memberOf $subRule1.items,  			
+          			right memberOf $subRule2.items
+              	) 
+            )
 	then
-		insert( new Subsumption( $subRule1, $subRule2 ) );
+		insert( 
+			new Subsumption( 
+				$subRule1, 
+				$subRule2,
+				$causes 
+			) 
+		);
 end
 
