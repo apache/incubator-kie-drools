@@ -119,7 +119,7 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
 						impactedRules,
 						Severity.WARNING, 
 						MessageType.EQUIVALANCE,
-						$left, 
+						null, 
 						"Rule is equivalent to rule " + $right.getRuleName() + ".", 
 						equivalence ) );
 end
@@ -186,7 +186,7 @@ rule "Find redundant rules" extends "Find redundant LHS"
 						impactedRules,
 						Severity.WARNING, 
 						MessageType.REDUNDANCY,
-						$left, 
+						null, 
 						"Rules " + $right.getRuleName() + " and.", 
 						redundancy ) );
 end
@@ -231,14 +231,13 @@ rule "Find subsumptant rule possibilities from different rules"
 		impactedRules.put( $right.getGuid(), $right.getRuleName());
 		
 		Collection causes = new ArrayList();
-		causes.add( $subsumption.getLeft() );
-		causes.add( $subsumption.getRight() );
+		causes.add( $subsumption );
 
 		result.add(new VerifierMessage(
 						impactedRules,
 						Severity.WARNING, 
 						MessageType.SUBSUMPTION,
-						$subsumption, 
+						null, 
 						"Rules are subsumptant.", 
 						causes ) );
 end

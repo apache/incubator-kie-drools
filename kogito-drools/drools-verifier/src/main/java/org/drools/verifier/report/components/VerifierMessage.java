@@ -73,22 +73,50 @@ public class VerifierMessage extends VerifierMessageBase {
         str.append( id );
         str.append( ":\n" );
 
+        if ( !getImpactedRules().isEmpty() ) {
+            str.append( "Impacted rules:\n" );
+            for ( String ruleName : getImpactedRules().values() ) {
+                str.append( "    -" + ruleName + "\n" );
+            }
+        }
+
         if ( faulty != null ) {
             str.append( "faulty : " );
             str.append( faulty );
-            str.append( ", " );
+            str.append( "\n" );
         }
 
         str.append( message );
-        str.append( " \n\tCauses are [ \n" );
-
-        for ( Cause cause : causes ) {
-            str.append( "\t\t" );
-            str.append( cause );
-            str.append( "\n" );
-        }
-        str.append( "\t]" );
+        str.append( " \n\tCause trace: \n" );
+        str.append( printCauses( 8,
+                                 causes ) );
 
         return str.toString();
     }
+
+    private StringBuffer printCauses(int spaces,
+                                     Collection<Cause> causes) {
+
+        StringBuffer buffer = new StringBuffer();
+
+        for ( Cause cause : causes ) {
+            for ( int i = 0; i < spaces; i++ ) {
+                buffer.append( " " );
+            }
+            buffer.append( cause.toString() );
+            buffer.append( "\n" );
+
+            Collection<Cause> childCauses = cause.getCauses();
+            if ( childCauses == null ) {
+                System.out.println( cause );
+            }
+            if ( !childCauses.isEmpty() ) {
+                buffer.append( printCauses( spaces * 2,
+                                            childCauses ) );
+            }
+        }
+
+        return buffer;
+    }
+
 }

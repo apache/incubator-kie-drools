@@ -25,7 +25,9 @@ public class Equivalence
                        VerifierComponent second) {
         items.add( first );
         items.add( second );
-        this.causes = Collections.emptyList();
+        this.causes = new ArrayList<Cause>();
+        causes.add( first );
+        causes.add( second );
     }
 
     public Equivalence(VerifierComponent first,

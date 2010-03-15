@@ -2,8 +2,6 @@ package org.drools.verifier.report.components;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import org.drools.verifier.data.VerifierComponent;
 
@@ -32,7 +30,9 @@ public class Subsumption
                        VerifierComponent right) {
         this.left = left;
         this.right = right;
-        this.causes = Collections.emptyList();
+        this.causes = new ArrayList<Cause>();
+        causes.add( left );
+        causes.add( right );
     }
 
     public Subsumption(VerifierComponent left,

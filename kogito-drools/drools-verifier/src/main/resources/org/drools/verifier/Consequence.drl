@@ -31,6 +31,6 @@ rule "No action - possibly commented out"
 								impactedRules,
 								Severity.WARNING,
 								MessageType.MISSING_COMPONENT,
-								$r,
+								null,
 								$r + " has no RHS." ) );
 end

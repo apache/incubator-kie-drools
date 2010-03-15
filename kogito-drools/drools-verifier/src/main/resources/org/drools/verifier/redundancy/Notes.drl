@@ -51,7 +51,7 @@ rule "Find redundant restrictions from pattern possibilities"
 						impactedRules,
 						Severity.NOTE, 
 						MessageType.REDUNDANCY,
-						$r, 
+						null, 
 						"Same restriction exists twice.", 
 						causes ) );
 end
@@ -82,7 +82,7 @@ rule "Find redundant pattern possibilities from rule possibilities"
 						impactedRules,
 						Severity.NOTE, 
 						MessageType.REDUNDANCY,
-						$r, 
+						null, 
 						"Two pattern possibilities with redundant restrictions exists twice in the same rule.", 
 						causes ) );
 end
