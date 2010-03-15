@@ -23,6 +23,9 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.data.VerifierReport;
 
+import java.util.Map;
+import java.util.HashMap;
+
 #declare any global variables here
 global VerifierReport result;
 
@@ -83,10 +86,14 @@ rule "Optimise restrictions inside operator"
 			guid == $sp.patternGuid
 		)
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $pattern.getRuleGuid(), $pattern.getRuleName());
+	
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
 								$pattern,
@@ -157,10 +164,14 @@ rule "Optimise restrictions inside constraint"
 			guid == $r1.patternGuid
 		)
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $pattern.getGuid(), $pattern.getRuleName());
+	
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
 								$pattern,
@@ -199,10 +210,14 @@ rule "Optimise predicates inside operator"
 			guid == $predicate.ruleGuid
 		)
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $rule.getGuid(), $rule.getRuleName());
+	
 		Collection list = new ArrayList();
 		list.add( $predicate );
 		list.add( $other );
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
 								$rule,

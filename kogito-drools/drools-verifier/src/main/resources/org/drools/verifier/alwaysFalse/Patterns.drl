@@ -17,6 +17,9 @@ import org.drools.verifier.report.components.VerifierMessage;
 
 import org.drools.verifier.data.VerifierReport;
 
+import java.util.Map;
+import java.util.HashMap;
+
 global VerifierReport result;
 
 #
@@ -54,8 +57,12 @@ rule "Pattern that is always false"
 		
 		$r :VerifierRule( guid == $p.ruleGuid )
 	then 
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $r.getGuid(), $r.getRuleName());
+	
 		# Report an error
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.ERROR,
 								MessageType.ALWAYS_FALSE,
 								$p,

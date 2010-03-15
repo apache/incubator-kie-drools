@@ -5,7 +5,9 @@ import org.drools.verifier.components.Field;
 
 public abstract class MissingRange
     implements
-    Comparable<MissingRange> {
+    Comparable<MissingRange>,
+    Reason,
+    Cause {
 
     private static int       index = 0;
     protected final String   guid  = String.valueOf( index++ );
@@ -17,6 +19,10 @@ public abstract class MissingRange
                         Operator operator) {
         this.field = field;
         this.operator = operator;
+    }
+
+    public ReasonType getReasonType() {
+        return ReasonType.MISSING_VALUE;
     }
 
     /**
@@ -58,4 +64,9 @@ public abstract class MissingRange
     public Operator getOperator() {
         return operator;
     }
+
+    public abstract Object getValueAsObject();
+
+    public abstract String getValueAsString();
+
 }

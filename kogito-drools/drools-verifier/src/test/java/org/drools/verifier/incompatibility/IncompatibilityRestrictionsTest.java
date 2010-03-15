@@ -15,7 +15,6 @@ import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
@@ -63,7 +62,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createIncompatibilityMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -121,7 +120,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createIncompatibilityMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -179,7 +178,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createIncompatibilityMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,
@@ -245,7 +244,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         StatelessSessionResult sessionResult = session.executeWithResults( data );
 
-        Map<Cause, Set<Cause>> map = createIncompatibilityMap( CauseType.RESTRICTION,
+        Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
         assertTrue( (TestBase.causeMapContains( map,

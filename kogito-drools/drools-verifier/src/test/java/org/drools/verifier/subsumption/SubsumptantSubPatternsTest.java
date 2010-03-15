@@ -12,7 +12,8 @@ import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
-import org.drools.verifier.report.components.CauseType;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
 
 public class SubsumptantSubPatternsTest extends TestCase {
@@ -34,14 +35,18 @@ public class SubsumptantSubPatternsTest extends TestCase {
         assertFalse( verifier.hasErrors() );
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        if ( !noProblems ) {
+            for ( VerifierError error : verifier.getErrors() ) {
+                System.out.println( error.getMessage() );
+            }
+        }
 
         Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
 
         int count = 0;
         for ( Object object : subsumptionList ) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((Subsumption) object).getLeft().getCauseType().equals( CauseType.SUB_PATTERN ) ) {
+            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
                 //                System.out.println( " ** " + ((SubPattern) ((Subsumption) object).getLeft()).getItems() + " - " + ((SubPattern) ((Subsumption) object).getRight()).getItems() );
                 count++;
             }
@@ -80,7 +85,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
         int count = 0;
         for ( Object object : subsumptionList ) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((Subsumption) object).getLeft().getCauseType().equals( CauseType.SUB_PATTERN ) ) {
+            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
                 count++;
             }
         }
@@ -118,7 +123,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
         int count = 0;
         for ( Object object : subsumptionList ) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((Subsumption) object).getLeft().getCauseType().equals( CauseType.SUB_PATTERN ) ) {
+            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
                 count++;
             }
         }
@@ -156,7 +161,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
         int count = 0;
         for ( Object object : subsumptionList ) {
             System.out.println( " * " + ((Subsumption) object) );
-            if ( ((Subsumption) object).getLeft().getCauseType().equals( CauseType.SUB_PATTERN ) ) {
+            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
                 count++;
             }
         }
@@ -194,7 +199,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
         int count = 0;
         for ( Object object : subsumptionList ) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((Subsumption) object).getLeft().getCauseType().equals( CauseType.SUB_PATTERN ) ) {
+            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
                 count++;
             }
         }

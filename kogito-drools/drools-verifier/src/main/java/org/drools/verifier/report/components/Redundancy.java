@@ -1,14 +1,20 @@
 package org.drools.verifier.report.components;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.drools.verifier.data.VerifierComponent;
+
 /**
- * Presents a redundancy between two Causes. The link between them can be WEAK
- * or STRONG.
+ * Object type that indicates a redundancy between two objects.
  * 
- * WEAK redundancy is for example two VerifierRules, but not their rule
- * possibilities. STRONG redundancy includes possibilities.
+ * Redundancy happens when all the possible values satisfy both objects.
+ * 
+ * Example:
+ * A: x == 10
+ * B: x == 10
  * 
  * @author Toni Rikkola
  */
@@ -16,32 +22,35 @@ public class Redundancy
     implements
     Cause {
 
-    private static int        index = 0;
+    private final List<VerifierComponent> items = new ArrayList<VerifierComponent>( 2 );
 
-    private final String      guid  = String.valueOf( index++ );
+    private final Collection<Cause>       causes;
 
-    private final List<Cause> items = new ArrayList<Cause>( 2 );
-
-    public Redundancy(Cause first,
-                      Cause second) {
+    public Redundancy(VerifierComponent first,
+                      VerifierComponent second) {
         items.add( first );
         items.add( second );
+        this.causes = Collections.emptyList();
     }
 
-    public String getGuid() {
-        return guid;
+    public Redundancy(VerifierComponent first,
+                      VerifierComponent second,
+                      Collection<Cause> causes) {
+        items.add( first );
+        items.add( second );
+        this.causes = causes;
     }
 
-    public CauseType getCauseType() {
-        return CauseType.REDUNDANCY;
-    }
-
-    public List<Cause> getItems() {
+    public List<VerifierComponent> getItems() {
         return items;
     }
 
     @Override
     public String toString() {
         return "Redundancy between: (" + items.get( 0 ) + ") and (" + items.get( 1 ) + ").";
+    }
+
+    public Collection<Cause> getCauses() {
+        return causes;
     }
 }

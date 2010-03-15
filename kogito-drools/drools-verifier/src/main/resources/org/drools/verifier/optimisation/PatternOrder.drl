@@ -17,6 +17,9 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.data.VerifierReport;
 
+import java.util.Map;
+import java.util.HashMap;
+
 #declare any global variables here
 global VerifierReport result;
 
@@ -53,10 +56,14 @@ rule "Optimise evals inside pattern"
 			guid matches $eval.ruleGuid
 		)
 	then	
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $rule.getGuid(), $rule.getRuleName());
+	
 		Collection list = new ArrayList();
 		list.add( $eval );
 		list.add( $other );
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
 								$rule,

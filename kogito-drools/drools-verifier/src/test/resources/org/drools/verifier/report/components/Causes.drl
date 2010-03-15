@@ -1,0 +1,27 @@
+#created on: 25-Feb-2010
+package org.drools.verifier.report.components
+
+#list any import classes here.
+
+
+
+#declare any global variables here
+
+
+
+
+rule "Your First Rule"
+	when
+		Person( name == "Toni" )
+	then 
+        System.out.println( "*******************" );
+		
+end
+
+rule "Your Second Rule"
+	when
+		Person( name == "Toni" )
+	then 
+        System.out.println( "*******************" );
+		
+end

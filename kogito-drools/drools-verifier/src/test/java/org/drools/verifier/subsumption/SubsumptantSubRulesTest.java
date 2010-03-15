@@ -12,7 +12,8 @@ import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
-import org.drools.verifier.report.components.CauseType;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
 
 public class SubsumptantSubRulesTest extends TestCase {
@@ -41,7 +42,7 @@ public class SubsumptantSubRulesTest extends TestCase {
         int count = 0;
         for ( Object object : subsumptionList ) {
             //                        System.out.println( " * " + ((Subsumption) object) );
-            if ( ((Subsumption) object).getLeft().getCauseType().equals( CauseType.SUB_RULE ) ) {
+            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_RULE ) ) {
                 //                System.out.println( " ** " + ((SubRule) ((Subsumption) object).getLeft()).getItems() + " - " + ((SubRule) ((Subsumption) object).getRight()).getItems() );
                 count++;
             }

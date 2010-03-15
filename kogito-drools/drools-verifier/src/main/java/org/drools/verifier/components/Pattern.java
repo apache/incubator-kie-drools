@@ -1,7 +1,6 @@
 package org.drools.verifier.components;
 
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 /**
  *
@@ -21,10 +20,6 @@ public class Pattern extends PatternComponent
     private boolean               isPatternNot     = false;
     private boolean               isPatternExists  = false;
     private boolean               isPatternForall  = false;
-
-    public CauseType getCauseType() {
-        return CauseType.PATTERN;
-    }
 
     public boolean isPatternNot() {
         return isPatternNot;

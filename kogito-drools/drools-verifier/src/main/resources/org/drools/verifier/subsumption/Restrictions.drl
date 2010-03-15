@@ -7,7 +7,9 @@ import org.drools.verifier.components.Field;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.report.components.Subsumption;
 
+import org.drools.verifier.data.VerifierReport;
 
+global VerifierReport result;
 
 #
 # Fires when two restrictions are subsumptant.

@@ -1,7 +1,6 @@
 package org.drools.verifier.components;
 
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 
 /**
  *
@@ -13,10 +12,6 @@ public class VerifierEvalDescr extends RuleComponent
 
     private String content;
     private String classMethodName;
-
-    public CauseType getCauseType() {
-        return CauseType.EVAL;
-    }
 
     public String getClassMethodName() {
         return classMethodName;

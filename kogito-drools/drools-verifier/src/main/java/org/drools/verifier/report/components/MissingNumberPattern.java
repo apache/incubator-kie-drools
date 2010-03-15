@@ -2,6 +2,7 @@ package org.drools.verifier.report.components;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Locale;
 
 import org.drools.base.evaluators.Operator;
@@ -13,7 +14,6 @@ import org.drools.verifier.components.Field;
  */
 public class MissingNumberPattern extends MissingRange
     implements
-    RangeCheckCause,
     Comparable<MissingRange> {
 
     private final String valueType;
@@ -22,10 +22,6 @@ public class MissingNumberPattern extends MissingRange
 
     public int compareTo(MissingRange another) {
         return super.compareTo( another );
-    }
-
-    public CauseType getCauseType() {
-        return CauseType.RANGE_CHECK_CAUSE;
     }
 
     public MissingNumberPattern(Field field,
@@ -81,5 +77,9 @@ public class MissingNumberPattern extends MissingRange
     @Override
     public String toString() {
         return "Missing restriction " + operator + " " + value;
+    }
+
+    public Collection<Cause> getCauses() {
+        return null;
     }
 }

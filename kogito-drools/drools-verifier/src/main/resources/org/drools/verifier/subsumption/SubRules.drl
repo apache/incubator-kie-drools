@@ -9,7 +9,6 @@ import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
-import org.drools.verifier.report.components.CauseType;
 
 
 #declare any global variables here

@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
-import org.drools.verifier.report.components.RangeCheckCause;
+import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
@@ -75,8 +75,8 @@ class VerifierReportImpl
         return gapsByFieldId.get( fieldId );
     }
 
-    public Collection<RangeCheckCause> getRangeCheckCauses() {
-        Collection<RangeCheckCause> result = new ArrayList<RangeCheckCause>();
+    public Collection<MissingRange> getRangeCheckCauses() {
+        Collection<MissingRange> result = new ArrayList<MissingRange>();
 
         result.addAll( gapsById.values() );
         result.addAll( missingNumberPatternsById.values() );
@@ -93,8 +93,8 @@ class VerifierReportImpl
                                             missingNumberPattern );
     }
 
-    public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(String id) {
-        Collection<RangeCheckCause> result = new ArrayList<RangeCheckCause>();
+    public Collection<MissingRange> getRangeCheckCausesByFieldId(String id) {
+        Collection<MissingRange> result = new ArrayList<MissingRange>();
 
         result.addAll( gapsByFieldId.get( id ) );
 
@@ -115,13 +115,4 @@ class VerifierReportImpl
         return this.data;
     }
 
-    public Collection<Gap> getGapsByFieldId(int fieldId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(int id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

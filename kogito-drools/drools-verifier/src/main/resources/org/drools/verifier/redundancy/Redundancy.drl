@@ -10,7 +10,9 @@ package org.drools.verifier.redundancy
 #import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
+import org.drools.verifier.data.VerifierReport;
 
+global VerifierReport result;
 
 #
 # If two objects are subsumptant to each others that makes them redundant.
@@ -25,7 +27,6 @@ rule "Find redundancy"
 		$sub :Subsumption( )
 		
 		Subsumption(
-			guid != $sub.guid,
 			left == $sub.right,
 			right == $sub.left
 		)

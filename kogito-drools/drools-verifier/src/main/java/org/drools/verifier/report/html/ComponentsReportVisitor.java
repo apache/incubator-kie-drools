@@ -12,7 +12,7 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReport;
-import org.drools.verifier.report.components.RangeCheckCause;
+import org.drools.verifier.report.components.MissingRange;
 import org.mvel2.templates.TemplateRuntime;
 
 class ComponentsReportVisitor extends ReportVisitor {
@@ -130,7 +130,7 @@ class ComponentsReportVisitor extends ReportVisitor {
                  rules );
 
         if ( field.getFieldType() == Field.DOUBLE || field.getFieldType() == Field.DATE || field.getFieldType() == Field.INT ) {
-            Collection<RangeCheckCause> causes = result.getRangeCheckCausesByFieldId( field.getGuid() );
+            Collection<MissingRange> causes = result.getRangeCheckCausesByFieldId( field.getGuid() );
             Collection<Restriction> restrictions = data.getRestrictionsByFieldGuid( field.getGuid() );
             map.put( "ranges",
                      "Ranges:" + MissingRangesReportVisitor.visitRanges( UrlFactory.PREVIOUS_FOLDER,

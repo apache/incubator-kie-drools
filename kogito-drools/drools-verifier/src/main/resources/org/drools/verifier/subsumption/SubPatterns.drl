@@ -9,11 +9,13 @@ import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.Source;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
-import org.drools.verifier.report.components.CauseType;
 
+import org.drools.verifier.data.VerifierReport;
+
+import java.util.ArrayList;
 
 #declare any global variables here
-
+global VerifierReport result
 
 #
 # Fires when two pattern possibilities are subsumptant.
@@ -40,9 +42,7 @@ rule "Find subsumptant sub patterns, subsumptant source"
 			patternForall == $subPattern1.patternForall 
 		)
 		# Check if sources are equal or subsumptant 
-		$sourceSubsumption :Subsumption(
-			left.causeType == CauseType.SOURCE
-		)
+		$sourceSubsumption :Subsumption()
 		Source(
 			guid == $subPattern1.sourceGuid,
 			verifierComponentType == $subPattern1.sourceType,
@@ -64,12 +64,22 @@ rule "Find subsumptant sub patterns, subsumptant source"
 				right memberOf $subPattern2.items
 			)
 		)
-#		not Subsumption(
-#				left memberOf $subPattern1.items,
-#				right not memberOf $subPattern2.items
-#		)
+		
+		$causes : ArrayList()
+        	from collect( 
+              	Subsumption(
+      				left memberOf $subPattern1.items,  			
+          			right memberOf $subPattern2.items
+              	) 
+            )
 	then
-		insert( new Subsumption( $subPattern1, $subPattern2 ) );
+		insert( 
+			new Subsumption( 
+				$subPattern1, 
+				$subPattern2, 
+				$causes 
+			) 
+		);
 end
 
 #
@@ -112,10 +122,20 @@ rule "Find subsumptant sub patterns, same source"
 				right memberOf $subPattern2.items
 			)
 		)
-#		not Subsumption(
-#				left memberOf $subPattern1.items,
-#				right not memberOf $subPattern2.items
-#		)
+		
+		$causes : ArrayList()
+        	from collect( 
+              	Subsumption(
+      				left memberOf $subPattern1.items,  			
+          			right memberOf $subPattern2.items
+              	) 
+            )
 	then
-		insert( new Subsumption( $subPattern1, $subPattern2 ) );
+		insert( 
+			new Subsumption( 
+				$subPattern1, 
+				$subPattern2,
+				$causes 
+			) 
+		);
 end

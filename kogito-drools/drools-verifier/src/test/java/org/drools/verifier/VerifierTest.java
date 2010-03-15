@@ -51,7 +51,7 @@ public class VerifierTest extends TestCase {
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 6,
                       result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 5,
+        assertEquals( 1,
                       result.getBySeverity( Severity.NOTE ).size() );
 
     }
@@ -186,6 +186,12 @@ public class VerifierTest extends TestCase {
 
         boolean works = verifier.fireAnalysis();
 
+        if ( !works ) {
+            for ( VerifierError error : verifier.getErrors() ) {
+                System.out.println( error.getMessage() );
+            }
+            fail( "Could not run verifier" );
+        }
         assertTrue( works );
 
         VerifierReport result = verifier.getResult();

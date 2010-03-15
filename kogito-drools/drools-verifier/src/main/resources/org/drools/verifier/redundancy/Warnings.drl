@@ -16,13 +16,18 @@ import org.drools.verifier.components.Consequence;
 
 import org.drools.verifier.data.VerifierReport;
 
+import org.drools.verifier.components.RuleComponent;
 import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.Equivalence;
 import org.drools.verifier.report.components.Subsumption;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.CauseType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
+
+import java.util.Map;
+import java.util.HashMap;
+
 
 
 rule "Find redundant LHS"
@@ -34,7 +39,6 @@ rule "Find redundant LHS"
 		$right :VerifierRule( 
 			guid != $left.guid 
 		)
-		
 		
 		$leftSubRules : ArrayList() 
 			from collect( 
@@ -72,7 +76,15 @@ rule "Find redundant LHS"
 end
 
 rule "Find equivalent Rules" extends "Find redundant LHS"
+	# This rule needs to fire after "Find redundant rules"
+	# or the not Reduncancy( ... ) does not check correctly.
+	salience -1
 	when
+		
+		not Equivalence(
+			items contains $left,
+			items contains $right
+		)
 		
 		# RHS should not be redundant		
 		$leftConsequence : Consequence(
@@ -87,14 +99,29 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
 			items contains $leftConsequence,
 			items contains $rightConsequence
 		)
+		
+		$causes : ArrayList()
+        	from collect( 
+              	Subsumption( 
+              		left memberOf $rightSubRules, 
+              		right memberOf $leftSubRules 
+              	) 
+            )
 	then
-		Collection causes = new ArrayList();
-		causes.add( $left );
-		causes.add( $right );
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $leftConsequence.getRuleGuid(), $leftConsequence.getRuleName());
+		impactedRules.put( $rightConsequence.getRuleGuid(), $rightConsequence.getRuleName());
+
+		Equivalence equivalence = new Equivalence( $left, $right, $causes );
+		insert( equivalence );
 
 		result.add(new VerifierMessage(
-						Severity.WARNING, MessageType.EQUIVALANCE,
-						$left, "Rule is equivalent to rule " + $right.getRuleName() + ".", causes ) );
+						impactedRules,
+						Severity.WARNING, 
+						MessageType.EQUIVALANCE,
+						$left, 
+						"Rule is equivalent to rule " + $right.getRuleName() + ".", 
+						equivalence ) );
 end
 
 
@@ -113,8 +140,13 @@ end
 #
 rule "Find redundant rules" extends "Find redundant LHS"
 	when
-	
-		# RHS need to be redundant		
+		
+		not Redundancy(
+			items contains $left,
+			items contains $right
+		)
+		
+		# RHS needs to be redundant		
 		$leftConsequence : Consequence(
 			guid == $left.consequenceGuid,
 			consequenceType == $left.consequenceType
@@ -128,14 +160,35 @@ rule "Find redundant rules" extends "Find redundant LHS"
 			items contains $rightConsequence
 		)
 
+		$causes : ArrayList()
+        	from collect( 
+              	Subsumption( 
+              		(
+              			left memberOf $rightSubRules 
+              			&& 
+              			right memberOf $leftSubRules
+              		) || (
+	              		right memberOf $rightSubRules
+	              		&& 
+    	          		left memberOf $leftSubRules 
+              		) 
+              	) 
+            )
 	then
-		Collection causes = new ArrayList();
-		causes.add( $left );
-		causes.add( $right );
-
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $leftConsequence.getRuleGuid(), $leftConsequence.getRuleName());
+		impactedRules.put( $rightConsequence.getRuleGuid(), $rightConsequence.getRuleName());
+		
+		Redundancy redundancy = new Redundancy( $left, $right, $causes );
+		insert( redundancy );
+		
 		result.add(new VerifierMessage(
-						Severity.WARNING, MessageType.REDUNDANCY,
-						$left, "Rule is redundant to rule " + $right.getRuleName() + ".", causes ) );
+						impactedRules,
+						Severity.WARNING, 
+						MessageType.REDUNDANCY,
+						$left, 
+						"Rules " + $right.getRuleName() + " and.", 
+						redundancy ) );
 end
 
 
@@ -156,24 +209,37 @@ rule "Find subsumptant rule possibilities from different rules"
 	@verifying_scopes(knowledge-package, decision-table)
 	salience -100
 	when
-		$subsumption:Subsumption(
-			left.causeType == CauseType.SUB_RULE
+		$left :VerifierRule()
+		$right :VerifierRule( 
+			guid != $left.guid 
+		)
+		
+		$subsumption :Subsumption(
+			left == $left,
+			right == $right
 		)
 		
 		# No redundacy
 		not Subsumption(
-			left.causeType == CauseType.SUB_RULE,
 			left == $subsumption.right,
 			right == $subsumption.left
 		)
 
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $left.getGuid(), $left.getRuleName());
+		impactedRules.put( $right.getGuid(), $right.getRuleName());
+		
 		Collection causes = new ArrayList();
 		causes.add( $subsumption.getLeft() );
 		causes.add( $subsumption.getRight() );
 
 		result.add(new VerifierMessage(
-						Severity.WARNING, MessageType.SUBSUMPTION,
-						$subsumption, "Rules are subsumptant.", causes ) );
+						impactedRules,
+						Severity.WARNING, 
+						MessageType.SUBSUMPTION,
+						$subsumption, 
+						"Rules are subsumptant.", 
+						causes ) );
 end
 

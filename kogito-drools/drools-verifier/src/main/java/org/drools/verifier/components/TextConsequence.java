@@ -1,7 +1,5 @@
 package org.drools.verifier.components;
 
-import org.drools.verifier.report.components.CauseType;
-
 public class TextConsequence extends RuleComponent
     implements
     Consequence {
@@ -10,10 +8,6 @@ public class TextConsequence extends RuleComponent
 
     public ConsequenceType getConsequenceType() {
         return ConsequenceType.TEXT;
-    }
-
-    public CauseType getCauseType() {
-        return CauseType.CONSEQUENCE;
     }
 
     public void setText(String text) {
@@ -26,5 +20,9 @@ public class TextConsequence extends RuleComponent
 
     public VerifierComponentType getVerifierComponentType() {
         return VerifierComponentType.CONSEQUENCE;
+    }
+
+    public String toString() {
+        return "TextConsequence: {\n" + text + "\n";
     }
 }

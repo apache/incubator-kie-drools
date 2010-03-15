@@ -1,8 +1,6 @@
 #created on: 18.12.2009
 package org.drools.verifier
 
-global VerifierReport result;
-
 import java.util.ArrayList;
 
 import org.drools.verifier.data.VerifierReport;
@@ -13,14 +11,22 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.MessageType;
 
+import java.util.HashMap;
+
+global VerifierReport result;
+
 rule "Single"
 	@verifying_scopes(single-rule)
 	when
 		$a :VerifierRule()
 	then 
 		result.add(new VerifierMessage(
-						Severity.NOTE, MessageType.EQUIVALANCE,
-						$a, "", new ArrayList() ) );
+						new HashMap<String,String>(),
+						Severity.NOTE, 
+						MessageType.EQUIVALANCE,
+						$a, 
+						"", 
+						new ArrayList() ) );
 end
 
 rule "single or dtable"
@@ -29,8 +35,12 @@ rule "single or dtable"
 		$a :VerifierRule()
 	then 
 		result.add(new VerifierMessage(
-						Severity.NOTE, MessageType.EQUIVALANCE,
-						$a, "", new ArrayList() ) );
+						new HashMap<String,String>(),
+						Severity.NOTE, 
+						MessageType.EQUIVALANCE,
+						$a, 
+						"", 
+						new ArrayList() ) );
 end
 
 rule "no verifying scope set"
@@ -38,6 +48,10 @@ rule "no verifying scope set"
 		$a :VerifierRule()
 	then 
 		result.add(new VerifierMessage(
-						Severity.NOTE, MessageType.EQUIVALANCE,
-						$a, "", new ArrayList() ) );
+						new HashMap<String,String>(),
+						Severity.NOTE, 
+						MessageType.EQUIVALANCE,
+						$a, 
+						"", 
+						new ArrayList() ) );
 end

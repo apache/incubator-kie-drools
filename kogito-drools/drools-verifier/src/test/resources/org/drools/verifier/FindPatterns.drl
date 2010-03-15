@@ -8,6 +8,8 @@ import org.drools.verifier.report.components.MessageType;
 
 import org.drools.verifier.data.VerifierReport;
 
+import java.util.HashMap;
+
 global VerifierReport result;
 
 
@@ -17,6 +19,7 @@ rule "Find patterns"
 		$p :Pattern( )
 	then
 		result.add( new VerifierMessage(
+							new HashMap<String,String>(),
 							Severity.NOTE,
 							MessageType.NOT_SPECIFIED,
 							$p,

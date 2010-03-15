@@ -14,6 +14,9 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.data.VerifierReport;
 
+import java.util.Map;
+import java.util.HashMap;
+
 
 
 #declare any global variables here
@@ -84,6 +87,7 @@ rule "Missing restriction in LiteralRestrictions"
 		)
 	then
 		result.add( new VerifierMessage(
+								new HashMap<String, String>(),
 								Severity.WARNING,
 								MessageType.MISSING_EQUALITY,
 								$r,
@@ -215,6 +219,7 @@ rule "Missing restriction in VariableRestrictions"
 		)
 	then
 		result.add( new VerifierMessage(
+								new HashMap<String, String>(),
 								Severity.WARNING,
 								MessageType.MISSING_EQUALITY,
 								$r,

@@ -1,45 +1,51 @@
 package org.drools.verifier.report.components;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
+ * Object type that indicates an incompatibility between two objects.
  * 
- * Two causes are incompatible.
- * <p>
- * For example: Restrictions (a > b) and (a == b)
+ * Incompatibility happens when there is no value that would satisfy both objects.
+ * 
+ * 
+ * Example: 
+ * A: x > 10
+ * B: x == 100
  * 
  * @author Toni Rikkola
  */
-public class Incompatibility implements Cause {
+public class Incompatibility
+    implements
+    Cause {
 
-	private static int index = 0;
+    private final Cause  left;
+    private final Cause  right;
 
-	private final String guid = String.valueOf( index++ );
+    public Incompatibility(Cause left,
+                           Cause right) {
+        this.left = left;
+        this.right = right;
+    }
 
-	private final Cause left;
-	private final Cause right;
+    public Cause getLeft() {
+        return left;
+    }
 
-	public Incompatibility(Cause left, Cause right) {
-		this.left = left;
-		this.right = right;
-	}
+    public Cause getRight() {
+        return right;
+    }
 
-	public String getGuid() {
-		return guid;
-	}
+    @Override
+    public String toString() {
+        return "(" + getLeft() + ") and (" + getRight() + ") are incompatible.";
+    }
 
-	public CauseType getCauseType() {
-		return CauseType.INCOMPATIBLE;
-	}
-
-	public Cause getLeft() {
-		return left;
-	}
-
-	public Cause getRight() {
-		return right;
-	}
-
-	@Override
-	public String toString() {
-		return "(" + getLeft() + ") and (" + getRight() + ") are incompatible.";
-	}
+    public Collection<Cause> getCauses() {
+        List<Cause> list = new ArrayList<Cause>();
+        list.add( left );
+        list.add( right );
+        return list;
+    }
 }

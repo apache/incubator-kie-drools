@@ -9,6 +9,9 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 
+import java.util.Map;
+import java.util.HashMap;
+
 #declare any global variables here
 global VerifierReport result;
 
@@ -21,7 +24,11 @@ rule "No action - possibly commented out"
 			guid matches $c.ruleGuid
 		)
 	then
+		Map<String,String> impactedRules = new HashMap<String,String>();
+		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		
 		result.add( new VerifierMessage(
+								impactedRules,
 								Severity.WARNING,
 								MessageType.MISSING_COMPONENT,
 								$r,

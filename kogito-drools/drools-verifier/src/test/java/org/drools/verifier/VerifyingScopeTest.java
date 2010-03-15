@@ -40,7 +40,13 @@ public class VerifyingScopeTest extends TestCase {
 
         boolean works = verifier.fireAnalysis();
 
-        assertTrue( works );
+        if ( !works ) {
+            for ( VerifierError error : verifier.getErrors() ) {
+                System.out.println( error.getMessage() );
+            }
+
+            fail( "Error when building in verifier" );
+        }
 
         VerifierReport result = verifier.getResult();
         assertNotNull( result );

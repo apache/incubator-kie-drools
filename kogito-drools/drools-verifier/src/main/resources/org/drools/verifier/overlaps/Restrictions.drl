@@ -1,5 +1,5 @@
 #created on: 2.2.2008
-package org.drools.verifier.overlaps.restrictions
+package org.drools.verifier.overlaps
 
 #list any import classes here.
 import java.util.Collection;
@@ -10,10 +10,9 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.components.LiteralRestriction;
 
 import org.drools.verifier.report.components.Subsumption;
-import org.drools.verifier.report.components.VerifierMessage;
-import org.drools.verifier.report.components.CauseType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
+import org.drools.verifier.report.components.Overlap;
 
 #declare any global variables here
 global VerifierReport result;
@@ -33,18 +32,19 @@ global VerifierReport result;
 rule "Find overlapping restrictions"
 	when
 		# There is subsumption between two restrictions
-		$subsumption :Subsumption(
-			left.causeType == CauseType.RESTRICTION,
-			$leftGuid :left.guid,
-			$rightGuid :right.guid
+		
+		$left :LiteralRestriction()
+		$right :LiteralRestriction(
+			guid != $left.guid
 		)
 		
-		$left :LiteralRestriction(
-			guid matches $leftGuid
+		$subsumption :Subsumption(
+			left.guid == $left.guid,
+			left.verifierComponentType == $left.verifierComponentType,
+			right.guid == $right.guid,
+			right.verifierComponentType == $right.verifierComponentType
 		)
-		$right :LiteralRestriction(
-			guid matches $rightGuid
-		)
+		
 		# There is no restriction between these two restrictions.
 		not	$center :LiteralRestriction(
 				fieldGuid matches $left.fieldGuid,
@@ -52,14 +52,6 @@ rule "Find overlapping restrictions"
 				eval( $center.compareValues( $right ) == -1 )
 		)
 	then 
-		Collection causes = new ArrayList();
-		causes.add( $left );
-		causes.add( $right );
-
-		String message = "Restriction " + $left + " overlaps " + $right + ".";
-
-		result.add(new VerifierMessage(
-						Severity.NOTE, MessageType.OVERLAP,
-						$subsumption, message, causes ) );
-
+		insert( new Overlap( $left, $right ) );
 end
+

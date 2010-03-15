@@ -48,7 +48,7 @@ public class WarningsTest extends TestBase {
             }
         }
 
-        assertEquals( 2,
+        assertEquals( 1,
                       counter );
 
         verifier.dispose();

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
-import org.drools.verifier.report.components.RangeCheckCause;
+import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
@@ -24,11 +24,9 @@ public interface VerifierReport {
 
     public VerifierData getVerifierData();
 
-    public Collection<RangeCheckCause> getRangeCheckCauses();
+    public Collection<MissingRange> getRangeCheckCauses();
 
-    public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(int id);
-
-    public Collection<Gap> getGapsByFieldId(int fieldId);
+    public Collection<Gap> getGapsByFieldId(String fieldId);
 
     public void add(VerifierMessageBase note);
 
@@ -41,6 +39,6 @@ public interface VerifierReport {
      */
     public Collection<VerifierMessageBase> getBySeverity(Severity severity);
 
-    public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(String guid);
+    public Collection<MissingRange> getRangeCheckCausesByFieldId(String guid);
 
 }

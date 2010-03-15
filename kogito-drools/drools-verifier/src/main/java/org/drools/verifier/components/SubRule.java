@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.verifier.components.Consequence.ConsequenceType;
-import org.drools.verifier.report.components.CauseType;
 
 /**
  * Instance of this class represents a possible combination of
@@ -24,10 +23,6 @@ public class SubRule extends RuleComponent
     private Set<RuleComponent> items            = new HashSet<RuleComponent>();
 
     private VerifierRule       rule;
-
-    public CauseType getCauseType() {
-        return CauseType.SUB_RULE;
-    }
 
     public Set<RuleComponent> getItems() {
         return items;
