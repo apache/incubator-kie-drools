@@ -341,6 +341,9 @@ public class PackageBuilder {
         DefaultExpander expander = getDslExpander();
 
         try {
+        	if (expander == null) {
+        		expander = new DefaultExpander();
+        	}
             String str = expander.expand( resource.getReader() );
             if ( expander.hasErrors() ) {
                 this.results.addAll( expander.getErrors() );
@@ -368,10 +371,15 @@ public class PackageBuilder {
         DefaultExpander expander = getDslExpander();
 
         try {
-            String str = expander.expand( new StringReader( drl ) );
-            if ( expander.hasErrors() ) {
-                this.results.addAll( expander.getErrors() );
-            }
+        	String str;
+        	if (expander != null) {
+        		str = expander.expand( new StringReader( drl ) );
+                if ( expander.hasErrors() ) {
+                    this.results.addAll( expander.getErrors() );
+                }
+        	} else {
+        		str = drl;
+        	}
 
             final PackageDescr pkg = parser.parse( str );
             this.results.addAll( parser.getErrors() );
@@ -1233,7 +1241,7 @@ public class PackageBuilder {
     public DefaultExpander getDslExpander() {
         DefaultExpander expander = new DefaultExpander();
         if ( this.dslFiles == null || this.dslFiles.isEmpty() ) {
-            return expander;
+            return null;
         }
         for ( DSLMappingFile file : this.dslFiles ) {
             expander.addDSLMapping( file.getMapping() );
