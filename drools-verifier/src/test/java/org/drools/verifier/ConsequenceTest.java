@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
@@ -46,8 +45,8 @@ public class ConsequenceTest extends TestBase {
         while ( iter.hasNext() ) {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
-                VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                VerifierMessage message = (VerifierMessage) o;
+                rulesThatHadErrors.addAll( message.getImpactedRules().values() );
             }
         }
 

@@ -2,6 +2,7 @@ package org.drools.verifier.redundancy;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -11,6 +12,7 @@ import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
+import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
@@ -52,7 +54,12 @@ public class NotesTest extends TestBase {
                       notes.size() );
 
         VerifierMessageBase note = notes.iterator().next();
-        assertTrue( note.getFaulty().equals( redundancy ) );
+        Iterator<Cause> causes = note.getCauses().iterator();
+
+        assertEquals( left,
+                      causes.next() );
+        assertEquals( right,
+                      causes.next() );
     }
 
     public void testRedundantPatternPossibilitiesInRulePossibilities() throws Exception {
@@ -90,6 +97,11 @@ public class NotesTest extends TestBase {
                       notes.size() );
 
         VerifierMessageBase note = notes.iterator().next();
-        assertTrue( note.getFaulty().equals( redundancy ) );
+        Iterator<Cause> causes = note.getCauses().iterator();
+
+        assertEquals( left,
+                      causes.next() );
+        assertEquals( right,
+                      causes.next() );
     }
 }
