@@ -3,28 +3,29 @@ package org.drools.verifier.misc;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 public class DrlPackageDataTest extends TestCase {
-    public void testHandleDrl() {
+    public void testHandleDrl() throws ParseException {
 
-        String rule1 = "";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
-        rule1 += "rule rule2\n";
-        rule1 += "when\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
+        String drl = "";
+        drl += "package org.drools.test\n";
+        drl += "global java.util.List list\n";
+        drl += "rule rule1\n";
+        drl += "when\n";
+        drl += "then\n";
+        drl += "list.add( drools.getRule().getName() );\n";
+        drl += "end\n";
+        drl += "rule rule2\n";
+        drl += "when\n";
+        drl += "then\n";
+        drl += "list.add( drools.getRule().getName() );\n";
+        drl += "end\n";
 
-        DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( rule1 );
+        DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( drl );
 
         assertEquals( "org.drools.test",
                       s.getName() );
@@ -35,7 +36,8 @@ public class DrlPackageDataTest extends TestCase {
 
     }
 
-    public void testHandleDrl2() throws IOException {
+    public void testHandleDrl2() throws IOException,
+                                ParseException {
         BufferedReader in = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "DrlPackageTestData.drl" ) ) );
         String rule = "";
         String str;
@@ -58,26 +60,48 @@ public class DrlPackageDataTest extends TestCase {
 
     }
 
-    public void testHandleDrlWithComments() {
+    public void testHandleDrlNoPackageData() {
 
-        String rule1 = "";
-        rule1 += "# important information\n";
-        rule1 += "# about this package\n";
-        rule1 += "# it contains some rules\n";
-        rule1 += "package org.drools.test\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "	when\n";
-        rule1 += "	then\n";
-        rule1 += "		list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
-        rule1 += "rule rule2\n";
-        rule1 += "	when\n";
-        rule1 += "	then\n";
-        rule1 += "		list.add( drools.getRule().getName() );\n";
-        rule1 += "end\n";
+        String drl = "";
+        drl += "rule rule1\n";
+        drl += "    when\n";
+        drl += "    then\n";
+        drl += "        list.add( drools.getRule().getName() );\n";
+        drl += "end\n";
 
-        DrlPackageParser data = DrlPackageParser.findPackageDataFromDrl( rule1 );
+        boolean exception = false;
+        try {
+            DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( drl );
+        } catch ( ParseException e ) {
+            // Test works
+            exception = true;
+        }
+
+        if ( !exception ) {
+            fail( "Should have thrown a ParseException." );
+        }
+    }
+
+    public void testHandleDrlWithComments() throws ParseException {
+
+        String drl = "";
+        drl += "# important information\n";
+        drl += "# about this package\n";
+        drl += "# it contains some rules\n";
+        drl += "package org.drools.test\n";
+        drl += "global java.util.List list\n";
+        drl += "rule rule1\n";
+        drl += "	when\n";
+        drl += "	then\n";
+        drl += "		list.add( drools.getRule().getName() );\n";
+        drl += "end\n";
+        drl += "rule rule2\n";
+        drl += "	when\n";
+        drl += "	then\n";
+        drl += "		list.add( drools.getRule().getName() );\n";
+        drl += "end\n";
+
+        DrlPackageParser data = DrlPackageParser.findPackageDataFromDrl( drl );
 
         assertEquals( "org.drools.test",
                       data.getName() );

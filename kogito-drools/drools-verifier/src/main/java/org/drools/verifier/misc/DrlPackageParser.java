@@ -1,5 +1,6 @@
 package org.drools.verifier.misc;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public class DrlPackageParser {
         this.otherInformation = otherInformation;
     }
 
-    public static DrlPackageParser findPackageDataFromDrl(String drl) {
+    public static DrlPackageParser findPackageDataFromDrl(String drl) throws ParseException {
 
         // Remove block comments
         int start = drl.indexOf( "/*" );
@@ -56,7 +57,13 @@ public class DrlPackageParser {
         final Matcher m = finder.matcher( drl );
         m.find();
 
-        String packageNameRow = m.group( 2 );
+        String packageNameRow;
+        try {
+            packageNameRow = m.group( 2 );
+        } catch ( IllegalStateException e ) {
+            throw new ParseException( "DRL string contained no package data.",
+                                      0 );
+        }
 
         int indexOfPackage = packageNameRow.indexOf( "package" );
         String packageName = packageNameRow.substring( indexOfPackage + "package".length() ).trim();
