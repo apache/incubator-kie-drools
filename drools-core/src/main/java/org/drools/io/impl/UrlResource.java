@@ -26,7 +26,8 @@ import org.drools.core.util.StringUtils;
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
+
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
@@ -180,15 +181,11 @@ public class UrlResource extends BaseResource
         con.setUseCaches( false );
 
         if ( con instanceof HttpURLConnection) {
-            //((HttpURLConnection) con).setRequestMethod( "GET" );
-            boolean useBasicAuth = true;
             if ("enabled".equalsIgnoreCase(basicAuthentication)) {
-				BASE64Encoder enc = new sun.misc.BASE64Encoder();
+            	Base64 enc = new Base64();
 				String userpassword = username + ":" + password;
-				String encodedAuthorization = enc.encode(userpassword
-						.getBytes());
 				((HttpURLConnection) con).setRequestProperty("Authorization",
-						"Basic " + encodedAuthorization);
+						"Basic " + enc.encode(userpassword.getBytes()));
 			}
 
         }
