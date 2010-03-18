@@ -2,6 +2,7 @@ package org.drools.verifier.builder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarInputStream;
@@ -226,16 +227,20 @@ public class VerifierImpl
      */
     private void addDrlData(String drl) {
 
-        DrlPackageParser pData = DrlPackageParser.findPackageDataFromDrl( drl );
+        List<DrlRuleParser> rules;
 
-        RulePackage rPackage = this.result.getVerifierData().getPackageByName( pData.getName() );
+        try {
+            DrlPackageParser pData = addDrlPackageData( drl );
+            rules = pData.getRules();
+        } catch ( ParseException e ) {
+            rules = DrlRuleParser.findRulesDataFromDrl( drl );
+        }
 
-        rPackage.getGlobals().addAll( pData.getGlobals() );
-        rPackage.setDescription( pData.getDescription() );
-        rPackage.getMetadata().addAll( pData.getMetadata() );
-        rPackage.getOtherInfo().putAll( pData.getOtherInformation() );
+        addDrlRulesData( rules );
+    }
 
-        for ( DrlRuleParser rData : pData.getRules() ) {
+    private void addDrlRulesData(List<DrlRuleParser> rules) {
+        for ( DrlRuleParser rData : rules ) {
             VerifierRule rule = this.result.getVerifierData().getRuleByName( rData.getName() );
 
             if ( rule != null ) {
@@ -247,6 +252,19 @@ public class VerifierImpl
                 rule.getOtherInfo().putAll( rData.getOtherInformation() );
             }
         }
+    }
+
+    private DrlPackageParser addDrlPackageData(String drl) throws ParseException {
+        DrlPackageParser pData = DrlPackageParser.findPackageDataFromDrl( drl );
+
+        RulePackage rPackage = this.result.getVerifierData().getPackageByName( pData.getName() );
+
+        rPackage.getGlobals().addAll( pData.getGlobals() );
+        rPackage.setDescription( pData.getDescription() );
+        rPackage.getMetadata().addAll( pData.getMetadata() );
+        rPackage.getOtherInfo().putAll( pData.getOtherInformation() );
+
+        return pData;
     }
 
     public List<VerifierError> getErrors() {

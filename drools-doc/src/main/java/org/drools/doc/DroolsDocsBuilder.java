@@ -2,16 +2,15 @@ package org.drools.doc;
 
 import java.io.OutputStream;
 import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
@@ -24,7 +23,6 @@ import com.lowagie.text.pdf.PdfWriter;
 public class DroolsDocsBuilder {
 
     protected final String currentDate = getFormatter().format( new Date() );
-    
 
     protected static Format getFormatter() {
         return new SimpleDateFormat( getDateFormatMask() );
@@ -32,15 +30,15 @@ public class DroolsDocsBuilder {
 
     private final DrlPackageParser packageData;
 
-    public DroolsDocsBuilder(String packageDrl) {
+    public DroolsDocsBuilder(String packageDrl) throws ParseException {
         this.packageData = DrlPackageParser.findPackageDataFromDrl( packageDrl );
     }
-    
+
     protected DroolsDocsBuilder(DrlPackageParser packageData) {
         this.packageData = packageData;
     }
 
-    public static DroolsDocsBuilder getInstance(String packageDrl) {
+    public static DroolsDocsBuilder getInstance(String packageDrl) throws ParseException {
         return new DroolsDocsBuilder( packageDrl );
     }
 
@@ -80,8 +78,8 @@ public class DroolsDocsBuilder {
 
             for ( DrlRuleParser ruleData : packageData.getRules() ) {
                 DroolsDocsComponentFactory.newRulePage( document,
-                                                           packageData.getName(),
-                                                           ruleData );
+                                                        packageData.getName(),
+                                                        ruleData );
             }
 
         } catch ( DocumentException de ) {
