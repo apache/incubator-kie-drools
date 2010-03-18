@@ -9,7 +9,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 public class HttpClientImpl
     implements
@@ -49,10 +49,9 @@ public class HttpClientImpl
         try {
             httpCon.setRequestMethod( "GET" );
 
-            BASE64Encoder enc = new sun.misc.BASE64Encoder();
+        	Base64 enc = new Base64();
             String userpassword = username + ":" + password;
-            String encodedAuthorization = enc.encode( userpassword.getBytes() );
-            httpCon.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
+            httpCon.setRequestProperty("Authorization", "Basic " + enc.encode(userpassword.getBytes()));
             
             Object o = DroolsStreamUtils.streamIn( httpCon.getInputStream() );
 
