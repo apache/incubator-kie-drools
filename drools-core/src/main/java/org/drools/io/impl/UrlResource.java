@@ -182,10 +182,11 @@ public class UrlResource extends BaseResource
 
         if ( con instanceof HttpURLConnection) {
             if ("enabled".equalsIgnoreCase(basicAuthentication)) {
-            	Base64 enc = new Base64();
 				String userpassword = username + ":" + password;
+				byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+
 				((HttpURLConnection) con).setRequestProperty("Authorization",
-						"Basic " + enc.encode(userpassword.getBytes()));
+						"Basic " +  new String(authEncBytes));
 			}
 
         }

@@ -42,16 +42,21 @@ public class HttpClientImpl
 
     }
 
-    public Package fetchPackage(URL url, String username, String password) throws IOException,
+    public Package fetchPackage(URL url, boolean enableBasicAuthentication, String username, String password) throws IOException,
                                         ClassNotFoundException {
         URLConnection con = url.openConnection();
         HttpURLConnection httpCon = (HttpURLConnection) con;
         try {
             httpCon.setRequestMethod( "GET" );
 
-        	Base64 enc = new Base64();
-            String userpassword = username + ":" + password;
-            httpCon.setRequestProperty("Authorization", "Basic " + enc.encode(userpassword.getBytes()));
+            if (enableBasicAuthentication) {
+				String userpassword = username + ":" + password;
+				byte[] authEncBytes = Base64.encodeBase64(userpassword
+						.getBytes());
+				httpCon.setRequestProperty("Authorization", "Basic "
+						+ new String(authEncBytes));
+			} 
+
             
             Object o = DroolsStreamUtils.streamIn( httpCon.getInputStream() );
 
@@ -71,7 +76,7 @@ public class HttpClientImpl
 
         LastUpdatedPing ping = cl.checkLastUpdated( url );
 
-        Package p = cl.fetchPackage( url, null, null );
+        Package p = cl.fetchPackage( url, false, null, null );
 
         System.err.println( ping );
         System.err.println( ping.isError() );

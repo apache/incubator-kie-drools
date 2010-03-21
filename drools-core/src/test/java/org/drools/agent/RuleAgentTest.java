@@ -648,6 +648,8 @@ public class RuleAgentTest extends TestCase {
                       props.getProperty( RuleAgent.LOCAL_URL_CACHE ) );
         assertEquals( "true",
                       props.getProperty( RuleAgent.NEW_INSTANCE ) );
+        assertEquals( "true",
+                props.getProperty( RuleAgent.ENABLE_BASIC_AUTHENTICATION ) );
         assertEquals( "admin",
                 props.getProperty( RuleAgent.USER_NAME ) );
         assertEquals( "admin",

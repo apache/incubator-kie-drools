@@ -81,6 +81,7 @@ public class RuleAgent {
     public static final String    CONFIG_NAME       = "name";              //name is optional
     public static final String    USER_NAME       = "username"; 
     public static final String    PASSWORD       = "password"; 
+    public static final String    ENABLE_BASIC_AUTHENTICATION = "enableBasicAuthentication"; 
    
     //this is needed for cold starting when BRMS is down (ie only for URL).
     public static final String    LOCAL_URL_CACHE   = "localCacheDir";

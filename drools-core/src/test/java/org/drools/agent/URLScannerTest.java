@@ -160,7 +160,7 @@ public class URLScannerTest extends TestCase {
                 return ping;
             }
 
-            public Package fetchPackage(URL url, String username, String password) throws IOException {
+            public Package fetchPackage(URL url, boolean enableBasicAuthentication, String username, String password) throws IOException {
                 if ( url.toExternalForm().equals( "http://goo2.ber" ) ) {
                     return new Package( "goo2.ber" );
                 } else {
@@ -233,7 +233,7 @@ public class URLScannerTest extends TestCase {
                 return ping;
             }
 
-            public Package fetchPackage(URL url, String username, String password) throws IOException {
+            public Package fetchPackage(URL url, boolean enableBasicAuthentication, String username, String password) throws IOException {
                 if ( url.toExternalForm().equals( "http://goo.ber" ) ) {
                     return new Package( "goo.ber" );
                 } else {
@@ -276,7 +276,7 @@ public class URLScannerTest extends TestCase {
                 return ping;
             }
 
-            public Package fetchPackage(URL url, String username, String password) throws IOException {
+            public Package fetchPackage(URL url, boolean enableBasicAuthentication, String username, String password) throws IOException {
                 throw new IOException( "poo" );
             }
 
@@ -307,7 +307,7 @@ public class URLScannerTest extends TestCase {
                 return ping;
             }
 
-            public Package fetchPackage(URL url, String username, String password) throws IOException {
+            public Package fetchPackage(URL url, boolean enableBasicAuthentication, String username, String password) throws IOException {
                 fetchCalled[0] = true;
                 throw new IOException( "poo" );
             }
@@ -357,7 +357,7 @@ public class URLScannerTest extends TestCase {
                 throw new IOException();
             }
 
-            public Package fetchPackage(URL url, String username, String password) throws IOException {
+            public Package fetchPackage(URL url, boolean enableBasicAuthentication, String username, String password) throws IOException {
                 throw new IOException();
             }
 
