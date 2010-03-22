@@ -1,0 +1,14 @@
+package org.drools
+
+declare PersonName
+   name : String @key
+end
+
+rule "Rule 1"
+    when
+        $p: Person()
+    then
+        PersonName pn = new PersonName();
+        pn.setName( $p.getName() );
+        insertLogical( pn ); 
+end

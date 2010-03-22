@@ -49,7 +49,10 @@ public class ModifyPreviousTuples {
                 return current;
             } else {
                 this.leftTuples = new IdentityHashMap<LeftTupleSink, LeftTuple>();
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                for ( LeftTuple next = null; leftTuple != null; leftTuple = next  ) {
+                    next = leftTuple.getLeftParentNext();
+                    leftTuple.setLeftParentPrevious( null );
+                    leftTuple.setLeftParentNext( null );
                     this.leftTuples.put( leftTuple.getLeftTupleSink(),
                                          leftTuple );
                 }
@@ -72,7 +75,10 @@ public class ModifyPreviousTuples {
                 return current;
             } else {
                 this.rightTuples = new IdentityHashMap<RightTupleSink, RightTuple>();
-                for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+                for ( RightTuple next = null ; rightTuple != null; rightTuple = next ) {
+                    next = rightTuple.getHandleNext();
+                    rightTuple.setHandlePrevious( null );
+                    rightTuple.setHandleNext( null );
                     this.rightTuples.put( rightTuple.getRightTupleSink(),
                                           rightTuple );
                 }

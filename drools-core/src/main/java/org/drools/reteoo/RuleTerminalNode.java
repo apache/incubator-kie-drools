@@ -31,8 +31,6 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.LeftTupleList;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
@@ -319,6 +317,9 @@ public class RuleTerminalNode extends BaseNode
             agenda.scheduleItem( (ScheduledAgendaItem) item,
                                  workingMemory );
             item.setActivated( true );
+            workingMemory.removeLogicalDependencies( item,
+                                                     context,
+                                                     this.rule );
 
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                           workingMemory );
@@ -342,7 +343,9 @@ public class RuleTerminalNode extends BaseNode
             item.setActivated( added );
 
             if ( added ) {
-                item.setActivated( true );
+                workingMemory.removeLogicalDependencies( item,
+                                                         context,
+                                                         this.rule );
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }
