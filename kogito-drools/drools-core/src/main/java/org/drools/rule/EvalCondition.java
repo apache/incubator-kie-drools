@@ -200,5 +200,10 @@ public class EvalCondition extends ConditionalElement
             }
         }
     }
+    
+    @Override
+    public String toString() {
+        return this.expression.toString();
+    }
 
-};
+}
