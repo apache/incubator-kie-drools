@@ -1,6 +1,5 @@
 package org.drools.verifier.incoherence;
 
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,14 +7,7 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
-import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.Verifier;
-import org.drools.verifier.VerifierConfiguration;
-import org.drools.verifier.builder.VerifierBuilder;
-import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
@@ -51,7 +43,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 
@@ -87,7 +79,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 
@@ -124,7 +116,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 
@@ -159,7 +151,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 
@@ -194,7 +186,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 
@@ -229,7 +221,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 
@@ -263,7 +255,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 
@@ -297,7 +289,7 @@ public class IncoherentPatternsTest extends TestBase {
             Object o = (Object) iter.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
-                rulesThatHadErrors.add( rule.getRuleName() );
+                rulesThatHadErrors.add( rule.getName() );
             }
         }
 

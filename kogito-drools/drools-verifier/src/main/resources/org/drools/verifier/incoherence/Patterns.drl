@@ -42,10 +42,10 @@ rule "Incoherent Patterns in rule possibility"
 		)
 	
 		$r2 :LiteralRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == $r1.operator
 		)
@@ -53,11 +53,11 @@ rule "Incoherent Patterns in rule possibility"
 		eval( $r1.compareValues( $r2 ) == 0 )
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -67,19 +67,19 @@ rule "Incoherent Patterns in rule possibility"
 		)
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );
@@ -113,20 +113,20 @@ rule "Incoherent Patterns in rule possibility, variables"
 		)
 
 		$r2 :VariableRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
-			fieldGuid matches $r1.fieldGuid,
-			variable.objectTypeGuid matches $r1.variable.objectTypeGuid,
+			fieldPath == $r1.fieldPath,
+			variable.objectTypePath == $r1.variable.objectTypePath,
 			variable.objectTypeType == $r1.variable.objectTypeType,
 			operator == $r1.operator
 		)
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -137,19 +137,19 @@ rule "Incoherent Patterns in rule possibility, variables"
 
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );
@@ -183,20 +183,20 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
 		)
 
 		$r2 :LiteralRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL ),
-			fieldGuid matches $r1.fieldGuid
+			fieldPath == $r1.fieldPath
 		)
 
 		eval( $r1.compareValues( $r2 ) == -1 )
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -206,19 +206,19 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
 		)
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );
@@ -252,20 +252,20 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
 		)
 
 		$r2 :LiteralRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL ),
-			fieldGuid matches $r1.fieldGuid
+			fieldPath == $r1.fieldPath
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -275,19 +275,19 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
 		)
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );
@@ -321,21 +321,21 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$r2 :LiteralRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			# It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
 			( operator != Operator.EQUAL && != Operator.NOT_EQUAL ),
-			fieldGuid matches $r1.fieldGuid
+			fieldPath == $r1.fieldPath
 		)
 
 		eval( $r1.compareValues( $r2 ) == 0 )
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -345,19 +345,19 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );
@@ -391,21 +391,21 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$r2 :VariableRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
-			fieldGuid matches $r1.fieldGuid,
-			variable.objectTypeGuid matches $r1.variable.objectTypeGuid,
+			fieldPath == $r1.fieldPath,
+			variable.objectTypePath == $r1.variable.objectTypePath,
 			variable.objectTypeType == $r1.variable.objectTypeType,
 			# It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
 			( operator != Operator.EQUAL && != Operator.NOT_EQUAL )
 		)
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -415,19 +415,19 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );
@@ -461,20 +461,20 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$r2 :LiteralRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			operator == Operator.EQUAL,
-			fieldGuid matches $r1.fieldGuid
+			fieldPath == $r1.fieldPath
 		)
 
 		eval( $r1.compareValues( $r2 ) == 0 )
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -484,19 +484,19 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );
@@ -531,20 +531,20 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$r2 :VariableRestriction(
-			ruleGuid matches $r1.ruleGuid,
+			rulePath == $r1.rulePath,
 			patternIsNot == false,
-			fieldGuid matches $r1.fieldGuid,
-			variable.objectTypeGuid == $r1.variable.objectTypeGuid,
+			fieldPath == $r1.fieldPath,
+			variable.objectTypePath == $r1.variable.objectTypePath,
 			variable.objectTypeType == $r1.variable.objectTypeType,
 			operator == Operator.EQUAL
 		)
 
 		$pp1 :SubPattern(
-			patternGuid matches $r1.patternGuid
+			patternPath == $r1.patternPath
 		)
 
 		$pp2 :SubPattern(
-			patternGuid matches $r2.patternGuid
+			patternPath == $r2.patternPath
 		)
 
 		# There is a problem if both of these are in the same SubRule.
@@ -554,19 +554,19 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 		)
 
 		$p1 :Pattern(
-			guid matches $r1.patternGuid
+			path == $r1.patternPath
 		)
 
 		$p2 :Pattern(
-			guid matches $r2.patternGuid
+			path == $r2.patternPath
 		)
 
 		$r :VerifierRule(
-			guid matches $rp.ruleGuid
+			path == $rp.rulePath
 		)
 then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		Collection list = new ArrayList();
 		list.add( $p1 );

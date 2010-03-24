@@ -61,7 +61,7 @@ class ComponentsReportVisitor extends ReportVisitor {
     public static String visitRule(String sourceFolder,
                                    VerifierRule rule,
                                    VerifierData data) {
-        Collection<ObjectType> objectTypes = data.getObjectTypesByRuleName( rule.getRuleName() );
+        Collection<ObjectType> objectTypes = data.getObjectTypesByRuleName( rule.getName() );
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put( "sourceFolder",
@@ -83,7 +83,7 @@ class ComponentsReportVisitor extends ReportVisitor {
     public static String visitObjectType(String sourceFolder,
                                          ObjectType objectType,
                                          VerifierData data) {
-        Collection<VerifierRule> rules = data.getRulesByObjectTypeId( objectType.getGuid() );
+        Collection<VerifierRule> rules = data.getRulesByObjectTypePath( objectType.getPath() );
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put( "sourceFolder",
@@ -109,8 +109,8 @@ class ComponentsReportVisitor extends ReportVisitor {
                                     VerifierReport result) {
         VerifierData data = result.getVerifierData();
         ObjectType objectType = data.getVerifierObject( VerifierComponentType.OBJECT_TYPE,
-                                                        field.getObjectTypeGuid() );
-        Collection<VerifierRule> rules = data.getRulesByFieldId( field.getGuid() );
+                                                        field.getObjectTypePath() );
+        Collection<VerifierRule> rules = data.getRulesByFieldPath( field.getPath() );
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put( "sourceFolder",
@@ -130,8 +130,8 @@ class ComponentsReportVisitor extends ReportVisitor {
                  rules );
 
         if ( field.getFieldType() == Field.DOUBLE || field.getFieldType() == Field.DATE || field.getFieldType() == Field.INT ) {
-            Collection<MissingRange> causes = result.getRangeCheckCausesByFieldId( field.getGuid() );
-            Collection<Restriction> restrictions = data.getRestrictionsByFieldGuid( field.getGuid() );
+            Collection<MissingRange> causes = result.getRangeCheckCausesByFieldPath( field.getPath() );
+            Collection<Restriction> restrictions = data.getRestrictionsByFieldPath( field.getPath() );
             map.put( "ranges",
                      "Ranges:" + MissingRangesReportVisitor.visitRanges( UrlFactory.PREVIOUS_FOLDER,
                                                                          restrictions,

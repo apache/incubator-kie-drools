@@ -39,6 +39,6 @@ public interface VerifierReport {
      */
     public Collection<VerifierMessageBase> getBySeverity(Severity severity);
 
-    public Collection<MissingRange> getRangeCheckCausesByFieldId(String guid);
+    public Collection<MissingRange> getRangeCheckCausesByFieldPath(String path);
 
 }

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.components.OperatorDescr;
+import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.data.VerifierComponent;
 
 /**
@@ -21,13 +21,13 @@ class Solver {
     private boolean                      isChildForall    = false;
     private boolean                      isChildNot       = false;
 
-    private OperatorDescr.Type           type;
+    private OperatorDescrType            type;
 
-    protected Solver(OperatorDescr.Type type) {
+    protected Solver(OperatorDescrType type) {
         this.type = type;
     }
 
-    public void addOperator(OperatorDescr.Type type) {
+    public void addOperator(OperatorDescrType type) {
         if ( subSolver != null ) {
             subSolver.addOperator( type );
         } else {
@@ -42,21 +42,17 @@ class Solver {
      */
     public void add(VerifierComponent descr) {
 
-        if ( descr instanceof OperatorDescr ) {
-            throw new UnsupportedOperationException( "Operator descrs are not supported." );
-        }
-
         if ( subSolver != null ) {
             subSolver.add( descr );
         } else {
-            if ( type == OperatorDescr.Type.AND ) {
+            if ( type == OperatorDescrType.AND ) {
                 if ( possibilityLists.isEmpty() ) {
                     possibilityLists.add( new HashSet<VerifierComponent>() );
                 }
                 for ( Set<VerifierComponent> set : possibilityLists ) {
                     set.add( descr );
                 }
-            } else if ( type == OperatorDescr.Type.OR ) {
+            } else if ( type == OperatorDescrType.OR ) {
                 Set<VerifierComponent> set = new HashSet<VerifierComponent>();
                 set.add( descr );
                 possibilityLists.add( set );
@@ -70,7 +66,7 @@ class Solver {
      */
     protected void end() {
         if ( subSolver != null && subSolver.subSolver == null ) {
-            if ( type == OperatorDescr.Type.AND ) {
+            if ( type == OperatorDescrType.AND ) {
                 if ( possibilityLists.isEmpty() ) {
                     possibilityLists.add( new HashSet<VerifierComponent>() );
                 }
@@ -89,7 +85,7 @@ class Solver {
                 }
                 possibilityLists = newPossibilities;
 
-            } else if ( type == OperatorDescr.Type.OR ) {
+            } else if ( type == OperatorDescrType.OR ) {
 
                 possibilityLists.addAll( subSolver.getPossibilityLists() );
 

@@ -17,7 +17,7 @@ abstract public class VerifierMessageBase
 
     private static int          index            = 0;
 
-    // <guid,rule name>
+    // <path,rule name>
     private Map<String, String> impactedRules    = new HashMap<String, String>();
 
     protected final Severity    severity;

@@ -25,13 +25,13 @@ rule "Range check for integers, if smaller than or equal is missing"
 		
 		# Foo( bar > 42 )
 		$r :LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			operator == Operator.GREATER
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			intValue == $r.intValue 
@@ -57,13 +57,13 @@ rule "Range check for integers, if greater than or equal is missing"
 		
 		# Foo( bar > 42 )
 		$r :LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			operator == Operator.LESS
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			intValue == $r.intValue 
@@ -90,13 +90,13 @@ rule "Range check for integers, equal and greater than"
 
 		# Foo( bar == 42 ) 
 		$r :LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
 		)
 
 		# Check if Foo( bar > 42 || >= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			intValue == $r.intValue 
@@ -104,7 +104,7 @@ rule "Range check for integers, equal and greater than"
 		
 		# Check if Foo( bar == 43 || >= 43 ) is missing.
 		not	LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( intValue == $r.getIntValue() + 1 ) 
@@ -131,13 +131,13 @@ rule "Range check for integers, equal and smaller than"
 
 		# Foo( bar == 42 ) 
 		$r :LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
 		)
 
 		# Check if Foo( bar < 42 || <= 42 ) is missing.
 		not	LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			intValue == $r.intValue 
@@ -145,7 +145,7 @@ rule "Range check for integers, equal and smaller than"
 		
 		# Check if Foo( bar == 41 || <= 41 ) is missing.
 		not	LiteralRestriction( 
-			fieldGuid matches $f.guid, 
+			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
 			eval( intValue == $r.getIntValue() - 1 ) 

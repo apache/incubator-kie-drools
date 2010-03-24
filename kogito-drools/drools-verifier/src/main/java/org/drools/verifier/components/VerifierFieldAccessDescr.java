@@ -9,6 +9,10 @@ public class VerifierFieldAccessDescr extends RuleComponent {
     private String fieldName;
     private String argument;
 
+    public VerifierFieldAccessDescr(VerifierRule rule) {
+        super( rule );
+    }
+
     public String getArgument() {
         return argument;
     }

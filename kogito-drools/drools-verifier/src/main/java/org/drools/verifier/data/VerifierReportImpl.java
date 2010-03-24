@@ -60,14 +60,14 @@ class VerifierReportImpl
                       gap );
 
         // Put by field id.
-        gapsByFieldId.put( gap.getField().getGuid(),
+        gapsByFieldId.put( gap.getField().getPath(),
                            gap );
     }
 
     public void remove(Gap gap) {
         gapsById.remove( gap.getGuid() );
 
-        gapsByFieldId.remove( gap.getField().getGuid(),
+        gapsByFieldId.remove( gap.getField().getPath(),
                               gap );
     }
 
@@ -89,11 +89,11 @@ class VerifierReportImpl
                                        missingNumberPattern );
 
         // Put by field id.
-        missingNumberPatternsByFieldId.put( missingNumberPattern.getField().getGuid(),
+        missingNumberPatternsByFieldId.put( missingNumberPattern.getField().getPath(),
                                             missingNumberPattern );
     }
 
-    public Collection<MissingRange> getRangeCheckCausesByFieldId(String id) {
+    public Collection<MissingRange> getRangeCheckCausesByFieldPath(String id) {
         Collection<MissingRange> result = new ArrayList<MissingRange>();
 
         result.addAll( gapsByFieldId.get( id ) );

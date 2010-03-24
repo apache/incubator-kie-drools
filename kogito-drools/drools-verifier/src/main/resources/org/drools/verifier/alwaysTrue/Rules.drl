@@ -39,7 +39,7 @@ rule "Rule possibility that is always true"
 		$r :VerifierRule()
 
 		$rp :SubRule(
-			ruleGuid matches $r.guid
+			rulePath == $r.path
 		)
 		
 		# Each pattern possibility in rule possibility needs to be always true.
@@ -71,7 +71,7 @@ rule "Rule that is always true"
 
 		forall(
 			$rp :SubRule(
-				ruleGuid matches $r.guid
+				rulePath == $r.path
 			)
 			
 			AlwaysTrue(
@@ -80,7 +80,7 @@ rule "Rule that is always true"
 		)
 	then 
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 		
 		result.add( new VerifierMessage(
 								impactedRules,

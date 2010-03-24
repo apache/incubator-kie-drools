@@ -4,9 +4,8 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class VerifierAccumulateDescr extends Source {
+public class VerifierAccumulateDescr extends PatternComponentSource {
 
-    private String   inputPatternGuid;
     private String   initCode;
     private String   actionCode;
     private String   reverseCode;
@@ -16,6 +15,10 @@ public class VerifierAccumulateDescr extends Source {
     private boolean  externalFunction = false;
     private String   functionIdentifier;
     private String   expression;
+
+    public VerifierAccumulateDescr(Pattern pattern) {
+        super( pattern );
+    }
 
     public String getActionCode() {
         return actionCode;
@@ -71,14 +74,6 @@ public class VerifierAccumulateDescr extends Source {
 
     public void setInitCode(String initCode) {
         this.initCode = initCode;
-    }
-
-    public String getInputPatternGuid() {
-        return inputPatternGuid;
-    }
-
-    public void setInputPatternGuid(String inputPatternGuid) {
-        this.inputPatternGuid = inputPatternGuid;
     }
 
     public String getResultCode() {

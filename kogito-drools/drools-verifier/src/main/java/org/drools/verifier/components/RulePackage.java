@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.verifier.data.VerifierComponent;
+
 /**
  * 
  * @author Toni Rikkola
  */
-public class RulePackage extends PackageComponent {
+public class RulePackage extends VerifierComponent {
 
     private int                       offset    = 0;
     private String                    name;
@@ -24,6 +26,12 @@ public class RulePackage extends PackageComponent {
     public int getOffset() {
         offset++;
         return offset % 2;
+    }
+
+    @Override
+    public String getPath() {
+        return String.format( "package[name=%s]",
+                              getName() );
     }
 
     public String getName() {

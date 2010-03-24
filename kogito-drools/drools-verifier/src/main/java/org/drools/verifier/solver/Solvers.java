@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.components.OperatorDescr;
+import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternComponent;
+import org.drools.verifier.components.RuleComponent;
 import org.drools.verifier.components.SubPattern;
-import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierComponent;
@@ -23,6 +24,9 @@ public class Solvers {
 
     private List<SubPattern> subPatterns       = new ArrayList<SubPattern>();
     private List<SubRule>    rulePossibilities = new ArrayList<SubRule>();
+
+    private int              subRuleIndex      = 0;
+    private int              subPatternIndex   = 0;
 
     public void startRuleSolver(VerifierRule rule) {
         ruleSolver = new RuleSolver( rule );
@@ -92,7 +96,7 @@ public class Solvers {
         }
     }
 
-    public void startOperator(OperatorDescr.Type type) {
+    public void startOperator(OperatorDescrType type) {
         if ( patternSolver != null ) {
             patternSolver.addOperator( type );
         } else if ( ruleSolver != null ) {
@@ -108,8 +112,12 @@ public class Solvers {
         }
     }
 
-    public void addRestriction(Restriction restriction) {
-        patternSolver.add( restriction );
+    public void addRuleComponent(RuleComponent ruleComponent) {
+        ruleSolver.add( ruleComponent );
+    }
+
+    public void addPatternComponent(PatternComponent patternComponent) {
+        patternSolver.add( patternComponent );
     }
 
     private void createPatternPossibilities() {
@@ -125,7 +133,7 @@ public class Solvers {
                 SubPattern subPattern = newSubPattern();
 
                 for ( VerifierComponent descr : list ) {
-                    subPattern.add( (Restriction) descr );
+                    subPattern.add( (PatternComponent) descr );
                 }
 
                 ruleSolver.add( subPattern );
@@ -135,26 +143,19 @@ public class Solvers {
     }
 
     private SubPattern newSubPattern() {
-        SubPattern subPattern = new SubPattern();
+        SubPattern subPattern = new SubPattern( patternSolver.getPattern(),
+                                                subPatternIndex++ );
 
-        subPattern.setRuleGuid( ruleSolver.getRule().getGuid() );
-        subPattern.setRuleName( ruleSolver.getRule().getRuleName() );
-        subPattern.setRuleGuid( ruleSolver.getRule().getGuid() );
-        subPattern.setPatternGuid( patternSolver.getPattern().getGuid() );
         return subPattern;
     }
 
     private void createRulePossibilities() {
         for ( Set<VerifierComponent> list : ruleSolver.getPossibilityLists() ) {
-            SubRule possibility = new SubRule();
-
-            possibility.setRuleGuid( ruleSolver.getRule().getGuid() );
-            possibility.setRuleName( ruleSolver.getRule().getRuleName() );
-            possibility.setRuleGuid( ruleSolver.getRule().getGuid() );
+            SubRule possibility = new SubRule( ruleSolver.getRule(),
+                                               subRuleIndex++ );
 
             for ( VerifierComponent descr : list ) {
-                SubPattern patternPossibility = (SubPattern) descr;
-                possibility.add( patternPossibility );
+                possibility.add( (RuleComponent) descr );
             }
 
             rulePossibilities.add( possibility );

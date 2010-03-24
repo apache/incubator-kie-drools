@@ -1,22 +1,30 @@
 package org.drools.verifier.components;
 
+/**
+ * 
+ * @author Toni Rikkola
+ */
 public class EnumRestriction extends Restriction {
 
-    private String enumBaseGuid;
+    private String enumBasePath;
     private String enumBase;
     private String enumName;
+
+    public EnumRestriction(Pattern pattern) {
+        super( pattern );
+    }
 
     @Override
     public RestrictionType getRestrictionType() {
         return RestrictionType.ENUM;
     }
 
-    public String getEnumBaseGuid() {
-        return enumBaseGuid;
+    public String getEnumBasePath() {
+        return enumBasePath;
     }
 
-    public void setEnumBaseGuid(String enumBaseGuid) {
-        this.enumBaseGuid = enumBaseGuid;
+    public void setEnumBasePath(String enumBasePath) {
+        this.enumBasePath = enumBasePath;
     }
 
     public String getEnumBase() {

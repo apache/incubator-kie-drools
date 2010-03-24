@@ -12,6 +12,10 @@ public class VariableRestriction extends Restriction
 
     protected Variable variable;
 
+    public VariableRestriction(Pattern pattern) {
+        super( pattern );
+    }
+
     public Variable getVariable() {
         return variable;
     }

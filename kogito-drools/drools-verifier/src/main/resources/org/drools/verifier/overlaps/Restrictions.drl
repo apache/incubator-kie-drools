@@ -35,19 +35,19 @@ rule "Find overlapping restrictions"
 		
 		$left :LiteralRestriction()
 		$right :LiteralRestriction(
-			guid != $left.guid
+			path != $left.path
 		)
 		
 		$subsumption :Subsumption(
-			left.guid == $left.guid,
+			left.path == $left.path,
 			left.verifierComponentType == $left.verifierComponentType,
-			right.guid == $right.guid,
+			right.path == $right.path,
 			right.verifierComponentType == $right.verifierComponentType
 		)
 		
 		# There is no restriction between these two restrictions.
 		not	$center :LiteralRestriction(
-				fieldGuid matches $left.fieldGuid,
+				fieldPath == $left.fieldPath,
 				eval( $center.compareValues( $left ) == 1 ),
 				eval( $center.compareValues( $right ) == -1 )
 		)

@@ -38,8 +38,8 @@ class UrlFactory {
         if ( o instanceof VerifierRule ) {
             VerifierRule rule = (VerifierRule) o;
             return getRuleUrl( UrlFactory.RULE_FOLDER,
-                               rule.getGuid(),
-                               rule.getRuleName() );
+                               rule.getPath(),
+                               rule.getName() );
         }
 
         return o.toString();

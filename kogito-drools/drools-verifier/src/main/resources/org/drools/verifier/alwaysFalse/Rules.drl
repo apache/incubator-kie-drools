@@ -42,7 +42,7 @@ rule "Rule that is always false"
 		# All the rule possibilities for rule need to be in conflict
 		forall( 
 			$rp :SubRule(
-				ruleGuid matches $r.guid
+				rulePath == $r.path
 			)
 			
 			Incompatibility( 
@@ -52,7 +52,7 @@ rule "Rule that is always false"
 		)
 	then 
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 		
 		# Report an error
 		result.add( new VerifierMessage(

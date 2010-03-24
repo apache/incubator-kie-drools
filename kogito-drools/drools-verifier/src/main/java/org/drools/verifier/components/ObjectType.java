@@ -32,6 +32,12 @@ public class ObjectType extends VerifierComponent
         return offset % 2;
     }
 
+    @Override
+    public String getPath() {
+        return String.format( "objectType[name=%s]",
+                              getName() );
+    }
+
     public String getName() {
         return name;
     }

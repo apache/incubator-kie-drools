@@ -1,11 +1,16 @@
 package org.drools.verifier.components;
 
+import org.drools.verifier.VerifierComponentMockFactory;
+
 import junit.framework.TestCase;
 
 public class LiteralRestrictionTest extends TestCase {
 
     public void testSetValue() {
-        LiteralRestriction booleanRestriction = new LiteralRestriction();
+
+        Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
+
+        LiteralRestriction booleanRestriction = new LiteralRestriction( pattern1 );
         booleanRestriction.setValue( "true" );
 
         assertEquals( Field.BOOLEAN,
@@ -13,7 +18,7 @@ public class LiteralRestrictionTest extends TestCase {
         assertEquals( true,
                       booleanRestriction.getBooleanValue() );
 
-        LiteralRestriction intRestriction = new LiteralRestriction();
+        LiteralRestriction intRestriction = new LiteralRestriction( pattern1 );
         intRestriction.setValue( "1" );
 
         assertEquals( Field.INT,
@@ -21,7 +26,7 @@ public class LiteralRestrictionTest extends TestCase {
         assertEquals( 1,
                       intRestriction.getIntValue() );
 
-        LiteralRestriction doubleRestriction = new LiteralRestriction();
+        LiteralRestriction doubleRestriction = new LiteralRestriction( pattern1 );
         doubleRestriction.setValue( "1.0" );
 
         assertEquals( Field.DOUBLE,
@@ -29,13 +34,13 @@ public class LiteralRestrictionTest extends TestCase {
         assertEquals( 1.0,
                       doubleRestriction.getDoubleValue() );
 
-        LiteralRestriction dateRestriction = new LiteralRestriction();
+        LiteralRestriction dateRestriction = new LiteralRestriction( pattern1 );
         dateRestriction.setValue( "11-jan-2008" );
 
         assertEquals( Field.DATE,
                       dateRestriction.getValueType() );
 
-        LiteralRestriction stringRestriction = new LiteralRestriction();
+        LiteralRestriction stringRestriction = new LiteralRestriction( pattern1 );
         stringRestriction.setValue( "test test" );
 
         assertEquals( Field.STRING,
@@ -43,7 +48,7 @@ public class LiteralRestrictionTest extends TestCase {
         assertEquals( "test test",
                       stringRestriction.getValueAsString() );
 
-        LiteralRestriction nullRestriction = new LiteralRestriction();
+        LiteralRestriction nullRestriction = new LiteralRestriction( pattern1 );
         nullRestriction.setValue( null );
 
         assertEquals( Field.UNKNOWN,

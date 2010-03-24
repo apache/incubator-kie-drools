@@ -22,7 +22,21 @@ public class SubRule extends RuleComponent
 
     private Set<RuleComponent> items            = new HashSet<RuleComponent>();
 
-    private VerifierRule       rule;
+    private final VerifierRule rule;
+
+    public SubRule(VerifierRule rule,
+                   int orderNumber) {
+        super( rule );
+        this.rule = rule;
+        this.setOrderNumber( orderNumber );
+    }
+
+    @Override
+    public String getPath() {
+        return String.format( "%s.subRule[%s]",
+                              getRulePath(),
+                              getOrderNumber() );
+    }
 
     public Set<RuleComponent> getItems() {
         return items;
@@ -32,20 +46,16 @@ public class SubRule extends RuleComponent
         return items.size();
     }
 
-    public void add(SubPattern patternPossibility) {
-        items.add( patternPossibility );
-    }
-
-    public void setRule(VerifierRule rule) {
-        this.rule = rule;
+    public void add(RuleComponent ruleComponent) {
+        items.add( ruleComponent );
     }
 
     public VerifierRule getRule() {
         return rule;
     }
 
-    public String getConsequenceGuid() {
-        return rule.getConsequenceGuid();
+    public String getConsequencePath() {
+        return rule.getConsequencePath();
     }
 
     public ConsequenceType getConsequenceType() {
@@ -58,7 +68,7 @@ public class SubRule extends RuleComponent
 
     @Override
     public String toString() {
-        return "RulePossibility from rule: " + getRuleName() + ", amount of items:" + items.size();
+        return "SubRule from rule: " + getRuleName() + ", amount of items:" + items.size();
     }
 
     public VerifierComponentType getVerifierComponentType() {

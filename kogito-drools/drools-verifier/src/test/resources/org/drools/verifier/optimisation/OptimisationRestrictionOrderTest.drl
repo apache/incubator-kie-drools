@@ -9,7 +9,7 @@ rule "Wrong descr order 1"
 		// Something
 end
 
-rule "Wrong descr order 2"
+rule "Ok descr order"
 	when
 		Foo( bar > 1 || == 1)
 	then

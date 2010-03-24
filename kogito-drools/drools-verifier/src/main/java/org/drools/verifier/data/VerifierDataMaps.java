@@ -10,14 +10,14 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.drools.verifier.components.Field;
-import org.drools.verifier.components.FieldObjectTypeLink;
+import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.VerifierEntryPointDescr;
+import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.VerifierRule;
 
 import com.google.common.collect.Multimap;
@@ -37,13 +37,13 @@ class VerifierDataMaps
     private Map<String, ObjectType>                                    objectTypesByFullName          = new TreeMap<String, ObjectType>();
     private Map<String, Field>                                         fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>();
     private Multimap<String, Field>                                    fieldsByObjectTypeId           = new TreeMultimap<String, Field>();
-    private Map<String, FieldObjectTypeLink>                           fieldObjectTypeLinkByPath      = new TreeMap<String, FieldObjectTypeLink>();
     private Multimap<String, Pattern>                                  patternsByObjectTypeId         = new TreeMultimap<String, Pattern>();
     private Multimap<String, Pattern>                                  patternsByRuleName             = new TreeMultimap<String, Pattern>();
     private Multimap<String, Restriction>                              restrictionsByFieldId          = new TreeMultimap<String, Restriction>();
     private Map<String, Variable>                                      variablesByRuleAndVariableName = new TreeMap<String, Variable>();
-    private Map<String, VerifierEntryPointDescr>                       entryPointsByEntryId           = new TreeMap<String, VerifierEntryPointDescr>();
+    private Map<String, EntryPoint>                       entryPointsByEntryId           = new TreeMap<String, EntryPoint>();
     private Map<String, VerifierRule>                                  rulesByName                    = new TreeMap<String, VerifierRule>();
+    private Map<String, Import>                                        importsByName                  = new TreeMap<String, Import>();
     private Multimap<String, VerifierRule>                             rulesByCategory                = new TreeMultimap<String, VerifierRule>();
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
@@ -51,7 +51,7 @@ class VerifierDataMaps
 
         for ( Pattern pattern : patternsByRuleName.get( ruleName ) ) {
             ObjectType objectType = (ObjectType) getVerifierObject( VerifierComponentType.OBJECT_TYPE,
-                                                                    pattern.getObjectTypeGuid() );
+                                                                    pattern.getObjectTypePath() );
             set.add( objectType );
         }
 
@@ -72,11 +72,6 @@ class VerifierDataMaps
         return variablesByRuleAndVariableName.get( ruleName + "." + variableName );
     }
 
-    public FieldObjectTypeLink getFieldObjectTypeLink(int id,
-                                                      int id2) {
-        return fieldObjectTypeLinkByPath.get( id + "." + id2 );
-    }
-
     public Collection<VerifierComponent> getAll() {
         List<VerifierComponent> objects = new ArrayList<VerifierComponent>();
 
@@ -91,26 +86,26 @@ class VerifierDataMaps
         return fieldsByObjectTypeId.get( id );
     }
 
-    public Collection<VerifierRule> getRulesByObjectTypeId(String id) {
+    public Collection<VerifierRule> getRulesByObjectTypePath(String id) {
         Set<VerifierRule> rules = new HashSet<VerifierRule>();
 
         for ( Pattern pattern : patternsByObjectTypeId.get( id ) ) {
 
             rules.add( (VerifierRule) getVerifierObject( VerifierComponentType.RULE,
-                                                         pattern.getRuleGuid() ) );
+                                                         pattern.getRulePath() ) );
         }
 
         return rules;
     }
 
-    public Collection<VerifierRule> getRulesByFieldId(String id) {
+    public Collection<VerifierRule> getRulesByFieldPath(String id) {
 
         Set<VerifierRule> rules = new HashSet<VerifierRule>();
 
         for ( Restriction restriction : restrictionsByFieldId.get( id ) ) {
 
             rules.add( (VerifierRule) getVerifierObject( VerifierComponentType.RULE,
-                                                         restriction.getRuleGuid() ) );
+                                                         restriction.getRulePath() ) );
         }
 
         return rules;
@@ -120,7 +115,7 @@ class VerifierDataMaps
         return packagesByName.get( name );
     }
 
-    public Collection<Restriction> getRestrictionsByFieldGuid(String id) {
+    public Collection<Restriction> getRestrictionsByFieldPath(String id) {
         return restrictionsByFieldId.get( id );
     }
 
@@ -128,15 +123,15 @@ class VerifierDataMaps
         if ( VerifierComponentType.FIELD.equals( object.getVerifierComponentType() ) ) {
             Field field = (Field) object;
             ObjectType objectType = (ObjectType) getVerifierObject( VerifierComponentType.OBJECT_TYPE,
-                                                                    field.getObjectTypeGuid() );
+                                                                    field.getObjectTypePath() );
             fieldsByObjectTypeAndFieldName.put( objectType.getFullName() + "." + field.getName(),
                                                 field );
 
-            fieldsByObjectTypeId.put( field.getObjectTypeGuid(),
+            fieldsByObjectTypeId.put( field.getObjectTypePath(),
                                       field );
         } else if ( VerifierComponentType.RULE.equals( object.getVerifierComponentType() ) ) {
             VerifierRule rule = (VerifierRule) object;
-            rulesByName.put( rule.getRuleName(),
+            rulesByName.put( rule.getName(),
                              rule );
             if ( rule.getMetadata().containsKey( "category" ) ) {
                 rulesByCategory.put( rule.getMetadata().get( "category" ),
@@ -149,31 +144,31 @@ class VerifierDataMaps
         } else if ( VerifierComponentType.PATTERN.equals( object.getVerifierComponentType() ) ) {
             Pattern pattern = (Pattern) object;
 
-            patternsByObjectTypeId.put( pattern.getObjectTypeGuid(),
+            patternsByObjectTypeId.put( pattern.getObjectTypePath(),
                                         pattern );
             patternsByRuleName.put( pattern.getRuleName(),
                                     pattern );
         } else if ( VerifierComponentType.RESTRICTION.equals( object.getVerifierComponentType() ) ) {
             Restriction restriction = (Restriction) object;
 
-            restrictionsByFieldId.put( restriction.getFieldGuid(),
+            restrictionsByFieldId.put( restriction.getFieldPath(),
                                        restriction );
-        } else if ( VerifierComponentType.FIELD_OBJECT_TYPE_LINK.equals( object.getVerifierComponentType() ) ) {
-            FieldObjectTypeLink link = (FieldObjectTypeLink) object;
-            fieldObjectTypeLinkByPath.put( link.getFieldId() + "." + link.getObjectTypeId(),
-                                           link );
         } else if ( VerifierComponentType.RULE_PACKAGE.equals( object.getVerifierComponentType() ) ) {
             RulePackage rulePackage = (RulePackage) object;
 
             packagesByName.put( rulePackage.getName(),
                                 rulePackage );
+        } else if ( VerifierComponentType.IMPORT.equals( object.getVerifierComponentType() ) ) {
+            Import objectImport = (Import) object;
+            importsByName.put( objectImport.getName(),
+                               objectImport );
         } else if ( VerifierComponentType.OBJECT_TYPE.equals( object.getVerifierComponentType() ) ) {
             ObjectType objectType = (ObjectType) object;
             objectTypesByFullName.put( objectType.getFullName(),
                                        objectType );
         } else if ( VerifierComponentType.ENTRY_POINT_DESCR.equals( object.getVerifierComponentType() ) ) {
-            VerifierEntryPointDescr entryPoint = (VerifierEntryPointDescr) object;
-            entryPointsByEntryId.put( entryPoint.getEntryId(),
+            EntryPoint entryPoint = (EntryPoint) object;
+            entryPointsByEntryId.put( entryPoint.getEntryPointName(),
                                       entryPoint );
         }
 
@@ -185,7 +180,9 @@ class VerifierDataMaps
                      map );
         }
 
-        map.put( object.getGuid(),
+        String path = object.getPath();
+
+        map.put( path,
                  object );
 
     }
@@ -206,13 +203,13 @@ class VerifierDataMaps
     }
 
     //    public <T extends VerifierComponent> T getVerifierObject(VerifierComponentType type,
-    //                                                             String guid) {
+    //                                                             String path) {
     public VerifierComponent getVerifierObject(VerifierComponentType type,
-                                               String guid) {
-        return all.get( type ).get( guid );
+                                               String path) {
+        return all.get( type ).get( path );
     }
 
-    public VerifierEntryPointDescr getEntryPointByEntryId(String entryId) {
+    public EntryPoint getEntryPointByEntryId(String entryId) {
         return entryPointsByEntryId.get( entryId );
     }
 
@@ -220,4 +217,21 @@ class VerifierDataMaps
         return rulesByName.get( name );
     }
 
+    public Import getImportByName(String name) {
+        return importsByName.get( name );
+    }
+
+    public ObjectType getObjectTypeByObjectTypeNameAndPackageName(String factTypeName,
+                                                                  String packageName) {
+
+        for ( VerifierComponent verifierComponent : getAll( VerifierComponentType.IMPORT ) ) {
+            Import objectImport = (Import) verifierComponent;
+
+            if ( objectImport.getPackageName().equals( packageName ) && objectImport.getShortName().equals( factTypeName ) ) {
+                return this.objectTypesByFullName.get( objectImport.getName() );
+            }
+        }
+
+        return null;
+    }
 }

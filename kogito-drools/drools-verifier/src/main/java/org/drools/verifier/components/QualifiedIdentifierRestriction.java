@@ -6,9 +6,12 @@ package org.drools.verifier.components;
  */
 public class QualifiedIdentifierRestriction extends Restriction {
 
-    private String variableGuid;
     private String variableName;
     private String variablePath;
+
+    public QualifiedIdentifierRestriction(Pattern pattern) {
+        super( pattern );
+    }
 
     @Override
     public RestrictionType getRestrictionType() {
@@ -17,14 +20,6 @@ public class QualifiedIdentifierRestriction extends Restriction {
 
     public String getValueAsString() {
         return variablePath + "." + variableName;
-    }
-
-    public String getVariableGuid() {
-        return variableGuid;
-    }
-
-    public void setVariableGuid(String variableGuid) {
-        this.variableGuid = variableGuid;
     }
 
     public String getVariableName() {

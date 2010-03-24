@@ -7,14 +7,14 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.OperatorDescr;
+import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.RuleComponent;
-import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.RuleComponent;
+import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.solver.Solvers;
 
 /**
@@ -37,32 +37,35 @@ public class SolversTest extends TestCase {
      * r3 && r4
      */
     public void testNotAnd() {
-        VerifierRule rule = new VerifierRule();
-        Pattern pattern = new Pattern();
+        RulePackage rulePackage = new RulePackage();
+        rulePackage.setName( "testPackage" );
 
-        Restriction r = new LiteralRestriction();
-        Restriction r2 = new LiteralRestriction();
-        Restriction r3 = new LiteralRestriction();
-        Restriction r4 = new LiteralRestriction();
+        VerifierRule rule = new VerifierRule( rulePackage );
+        rule.setName( "testRule" );
+        Pattern pattern = new Pattern( rule );
 
-        OperatorDescr andDescr = new OperatorDescr( OperatorDescr.Type.AND );
+        Restriction r = new LiteralRestriction( pattern );
+        Restriction r2 = new LiteralRestriction( pattern );
+        Restriction r3 = new LiteralRestriction( pattern );
+        Restriction r4 = new LiteralRestriction( pattern );
+
         Solvers solvers = new Solvers();
 
         solvers.startRuleSolver( rule );
 
-        solvers.startOperator( OperatorDescr.Type.AND );
+        solvers.startOperator( OperatorDescrType.AND );
         solvers.startPatternSolver( pattern );
-        solvers.startOperator( OperatorDescr.Type.AND );
-        solvers.addRestriction( r );
-        solvers.addRestriction( r2 );
+        solvers.startOperator( OperatorDescrType.AND );
+        solvers.addPatternComponent( r );
+        solvers.addPatternComponent( r2 );
         solvers.endOperator();
         solvers.endPatternSolver();
 
         solvers.startNot();
         solvers.startPatternSolver( pattern );
-        solvers.startOperator( OperatorDescr.Type.AND );
-        solvers.addRestriction( r3 );
-        solvers.addRestriction( r4 );
+        solvers.startOperator( OperatorDescrType.AND );
+        solvers.addPatternComponent( r3 );
+        solvers.addPatternComponent( r4 );
         solvers.endOperator();
         solvers.endPatternSolver();
         solvers.endNot();
@@ -111,20 +114,20 @@ public class SolversTest extends TestCase {
      * descr && descr2
      */
     public void testBasicAnd() {
-        VerifierRule rule = new VerifierRule();
-        Pattern pattern = new Pattern();
 
-        Restriction r = new LiteralRestriction();
-        Restriction r2 = new LiteralRestriction();
+        VerifierRule rule = VerifierComponentMockFactory.createRule1();
+        Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        OperatorDescr andDescr = new OperatorDescr( OperatorDescr.Type.AND );
+        Restriction r = new LiteralRestriction( pattern );
+        Restriction r2 = new LiteralRestriction( pattern );
+
         Solvers solvers = new Solvers();
 
         solvers.startRuleSolver( rule );
         solvers.startPatternSolver( pattern );
-        solvers.startOperator( OperatorDescr.Type.AND );
-        solvers.addRestriction( r );
-        solvers.addRestriction( r2 );
+        solvers.startOperator( OperatorDescrType.AND );
+        solvers.addPatternComponent( r );
+        solvers.addPatternComponent( r2 );
         solvers.endOperator();
         solvers.endPatternSolver();
         solvers.endRuleSolver();

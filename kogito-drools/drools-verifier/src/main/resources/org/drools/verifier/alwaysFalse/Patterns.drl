@@ -41,12 +41,12 @@ rule "Pattern that is always false"
 		$p :Pattern()
 		
 		# Check that there is at least one pattern possibility.
-		exists SubPattern( patternGuid == $p.guid )
+		exists SubPattern( patternPath == $p.path )
 		
 		# All the pattern possibilities for pattern need to be in conflict
 		forall( 
 			$pp :SubPattern(
-				patternGuid matches $p.guid
+				patternPath == $p.path
 			)
 			
 			Incompatibility( 
@@ -55,10 +55,10 @@ rule "Pattern that is always false"
 			)
 		)
 		
-		$r :VerifierRule( guid == $p.ruleGuid )
+		$r :VerifierRule( path == $p.rulePath )
 	then 
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 	
 		# Report an error
 		result.add( new VerifierMessage(

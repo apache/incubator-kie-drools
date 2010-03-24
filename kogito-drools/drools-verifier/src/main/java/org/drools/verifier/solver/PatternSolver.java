@@ -1,8 +1,7 @@
 package org.drools.verifier.solver;
 
-import org.drools.verifier.components.OperatorDescr;
+import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.solver.Solver;
 
 /**
  * Takes a list of Constraints and makes possibilities from them.
@@ -11,14 +10,14 @@ import org.drools.verifier.solver.Solver;
  */
 class PatternSolver extends Solver {
 
-	private Pattern pattern;
+    private Pattern pattern;
 
-	public PatternSolver(Pattern pattern) {
-		super(OperatorDescr.Type.OR);
-		this.pattern = pattern;
-	}
+    public PatternSolver(Pattern pattern) {
+        super( OperatorDescrType.OR );
+        this.pattern = pattern;
+    }
 
-	public Pattern getPattern() {
-		return pattern;
-	}
+    public Pattern getPattern() {
+        return pattern;
+    }
 }

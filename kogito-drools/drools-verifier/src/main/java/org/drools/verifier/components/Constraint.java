@@ -11,9 +11,13 @@ public class Constraint extends PatternComponent
     Cause {
 
     private boolean patternIsNot;
-    private String  fieldGuid;
+    private String  fieldPath;
     private String  fieldName;
     private int     lineNumber;
+
+    public Constraint(Pattern pattern) {
+        super( pattern );
+    }
 
     public VerifierComponentType getVerifierComponentType() {
         return VerifierComponentType.CONSTRAINT;
@@ -45,14 +49,14 @@ public class Constraint extends PatternComponent
 
     @Override
     public String toString() {
-        return "Constraint id: " + getGuid() + " field name: " + fieldName;
+        return "Constraint field name: " + fieldName;
     }
 
-    public void setFieldGuid(String guid) {
-        this.fieldGuid = guid;
+    public void setFieldPath(String path) {
+        this.fieldPath = path;
     }
 
-    public String getFieldGuid() {
-        return fieldGuid;
+    public String getFieldPath() {
+        return fieldPath;
     }
 }

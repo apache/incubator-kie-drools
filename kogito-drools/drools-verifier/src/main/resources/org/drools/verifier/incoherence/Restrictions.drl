@@ -39,11 +39,11 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 		)
 
 		$r2 :LiteralRestriction(
-			patternGuid matches $r1.patternGuid,
+			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
-			guid not matches $r1.guid,
+			path != $r1.path,
 			# Operator needs to be reversed to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
 		)
@@ -56,10 +56,10 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 			 items contains $r2
 		)
 
-		$p :Pattern( guid matches $pp.patternGuid )
+		$p :Pattern( path == $pp.patternPath )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		impactedRules.put( $p.getRulePath(), $p.getRuleName());
 	
 		Collection list = new ArrayList();
 		list.add( $r1 );
@@ -90,12 +90,12 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		)
 
 		$r2 :LiteralRestriction(
-			patternGuid matches $r1.patternGuid,
+			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS),
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
@@ -106,10 +106,10 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 			 items contains $r2
 		)
 
-		$p :Pattern( guid matches $pp.patternGuid )
+		$p :Pattern( path == $pp.patternPath )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		impactedRules.put( $p.getRulePath(), $p.getRuleName());
 		
 		Collection list = new ArrayList();
 		list.add( $r1 );
@@ -140,12 +140,12 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		)
 
 		$r2 :LiteralRestriction(
-			patternGuid matches $r1.patternGuid,
+			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
@@ -156,10 +156,10 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 			 items contains $r2
 		)
 
-		$p :Pattern( guid matches $pp.patternGuid )
+		$p :Pattern( path == $pp.patternPath )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		impactedRules.put( $p.getRulePath(), $p.getRuleName());
 		
 		Collection list = new ArrayList();
 		list.add( $r1 );
@@ -190,12 +190,12 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		)
 
 		$r2 :LiteralRestriction(
-			patternGuid matches $r1.patternGuid,
+			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.EQUAL,
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
@@ -206,10 +206,10 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 			 items contains $r2
 		)
 
-		$p :Pattern( guid matches $pp.patternGuid )
+		$p :Pattern( path == $pp.patternPath )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		impactedRules.put( $p.getRulePath(), $p.getRuleName());
 		
 		Collection list = new ArrayList();
 		list.add( $r1 );
@@ -240,12 +240,12 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		)
 
 		$r2 :LiteralRestriction(
-			patternGuid matches $r1.patternGuid,
+			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.GREATER,
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		eval( $r1.compareValues( $r2 ) == 0 )
@@ -256,10 +256,10 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 			 items contains $r2
 		)
 
-		$p :Pattern( guid matches $pp.patternGuid )
+		$p :Pattern( path == $pp.patternPath )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		impactedRules.put( $p.getRulePath(), $p.getRuleName());
 		
 		Collection list = new ArrayList();
 		list.add( $r1 );
@@ -292,10 +292,10 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 		)
 
 		$r2 :VariableRestriction(
-			patternGuid matches $r1.patternGuid,
-			fieldGuid matches $r1.fieldGuid,
-			guid not matches $r1.guid,
-			variable.objectTypeGuid matches $r1.variable.objectTypeGuid,
+			patternPath == $r1.patternPath,
+			fieldPath == $r1.fieldPath,
+			path != $r1.path,
+			variable.objectTypePath == $r1.variable.objectTypePath,
 			variable.objectTypeType == $r1.variable.objectTypeType,
 			# Operator needs to be reversed to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
@@ -307,10 +307,10 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 			 items contains $r2
 		)
 
-		$p :Pattern( guid matches $pp.patternGuid )
+		$p :Pattern( path == $pp.patternPath )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		impactedRules.put( $p.getRulePath(), $p.getRuleName());
 		
 		Collection list = new ArrayList();
 		list.add( $r1 );
@@ -326,6 +326,7 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 								list
 								) );
 end
+
 
 #
 # If two VariableRestrictions are in conflict.
@@ -341,12 +342,12 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 		)
 
 		$r2 :VariableRestriction(
-			patternGuid matches $r1.patternGuid,
-			fieldGuid matches $r1.fieldGuid,
+			patternPath == $r1.patternPath,
+			fieldPath == $r1.fieldPath,
 			operator == Operator.GREATER,
-			variable.objectTypeGuid == $r1.variable.objectTypeGuid,
+			variable.objectTypePath == $r1.variable.objectTypePath,
 			variable.objectTypeType == $r1.variable.objectTypeType,
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		# There is a problem if both of these are in the same SubPattern.
@@ -355,10 +356,10 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 			 items contains $r2
 		)
 
-		$p :Pattern( guid matches $pp.patternGuid )
+		$p :Pattern( path == $pp.patternPath )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRuleGuid(), $p.getRuleName());
+		impactedRules.put( $p.getRulePath(), $p.getRuleName());
 		
 		Collection list = new ArrayList();
 		list.add( $r1 );
@@ -374,3 +375,4 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 								list
 								) );
 end
+

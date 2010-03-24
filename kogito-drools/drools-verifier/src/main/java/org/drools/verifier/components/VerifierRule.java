@@ -13,17 +13,19 @@ import org.drools.verifier.report.components.Cause;
  *
  * @author Toni Rikkola
  */
-public class VerifierRule extends RuleComponent
+public class VerifierRule extends PackageComponent
     implements
     Cause {
 
     private Map<String, String>       attributes      = new HashMap<String, String>();
 
-    private String                    consequenceGuid;
+    private String                    consequencePath;
     private ConsequenceType           consequenceType;
     private int                       lineNumber;
 
     private int                       packageId;
+
+    private String                    name;
 
     private Collection<String>        header          = new ArrayList<String>();
 
@@ -39,6 +41,32 @@ public class VerifierRule extends RuleComponent
 
     private Map<String, List<String>> otherInfo       = new HashMap<String, List<String>>();
 
+    private int                       offset          = 0;
+
+    public VerifierRule(RulePackage rulePackage) {
+        super( rulePackage );
+    }
+
+    @Override
+    public String getPath() {
+        return String.format( "%s.rule[name=%s]",
+                              getPackagePath(),
+                              getName() );
+    }
+
+    public int getOffset() {
+        offset++;
+        return offset % 2;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
     }
@@ -47,12 +75,12 @@ public class VerifierRule extends RuleComponent
         return attributes;
     }
 
-    public String getConsequenceGuid() {
-        return consequenceGuid;
+    public String getConsequencePath() {
+        return consequencePath;
     }
 
-    public void setConsequenceGuid(String consequenceGuid) {
-        this.consequenceGuid = consequenceGuid;
+    public void setConsequencePath(String consequencePath) {
+        this.consequencePath = consequencePath;
     }
 
     public ConsequenceType getConsequenceType() {
@@ -73,7 +101,7 @@ public class VerifierRule extends RuleComponent
 
     @Override
     public String toString() {
-        return "Rule '" + getRuleName() + "'";
+        return "Rule '" + getName() + "'";
     }
 
     public int getPackageId() {

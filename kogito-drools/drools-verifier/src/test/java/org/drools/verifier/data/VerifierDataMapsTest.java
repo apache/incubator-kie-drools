@@ -4,22 +4,24 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
+import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.EnumField;
 import org.drools.verifier.components.EnumRestriction;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.components.FieldObjectTypeLink;
 import org.drools.verifier.components.InlineEvalDescr;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.OperatorDescr;
+import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.PatternOperatorDescr;
 import org.drools.verifier.components.QualifiedIdentifierRestriction;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.ReturnValueFieldDescr;
 import org.drools.verifier.components.ReturnValueRestriction;
+import org.drools.verifier.components.RuleOperatorDescr;
 import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.TextConsequence;
 import org.drools.verifier.components.Variable;
@@ -28,11 +30,11 @@ import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierAccumulateDescr;
 import org.drools.verifier.components.VerifierCollectDescr;
 import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.VerifierEvalDescr;
+import org.drools.verifier.components.RuleEval;
 import org.drools.verifier.components.VerifierFieldAccessDescr;
 import org.drools.verifier.components.VerifierFromDescr;
 import org.drools.verifier.components.VerifierMethodAccessDescr;
-import org.drools.verifier.components.VerifierPredicateDescr;
+import org.drools.verifier.components.PatternEval;
 import org.drools.verifier.components.VerifierRule;
 
 public class VerifierDataMapsTest extends TestCase {
@@ -40,8 +42,9 @@ public class VerifierDataMapsTest extends TestCase {
     public void testSaveVerifierComponentAndGet() {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
-        VerifierRule rule = new VerifierRule();
-        rule.setGuid( "0" );
+        VerifierRule rule = VerifierComponentMockFactory.createRule1();
+        rule.setName( "0" );
+        String rulePath = rule.getPath();
 
         data.add( rule );
 
@@ -60,7 +63,7 @@ public class VerifierDataMapsTest extends TestCase {
                       rules.toArray()[0] );
 
         VerifierRule rule2 = data.getVerifierObject( VerifierComponentType.RULE,
-                                                     "0" );
+                                                     rulePath );
 
         assertNotNull( rule2 );
         assertEquals( rule,
@@ -69,68 +72,78 @@ public class VerifierDataMapsTest extends TestCase {
 
     public void testSaveVerifierComponentAndGetForAllComponentTypes() {
 
-        saveVerifierComponentAndGet( fillTestValues( new Constraint() ) );
-        saveVerifierComponentAndGet( fillTestValues( new FieldObjectTypeLink() ) );
-        saveVerifierComponentAndGet( fillTestValues( new InlineEvalDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new ObjectType() ) );
-        saveVerifierComponentAndGet( fillTestValues( new OperatorDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new SubPattern() ) );
-        saveVerifierComponentAndGet( fillTestValues( new ReturnValueFieldDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new RulePackage() ) );
-        saveVerifierComponentAndGet( fillTestValues( new SubRule() ) );
-        saveVerifierComponentAndGet( fillTestValues( new TextConsequence() ) );
-        saveVerifierComponentAndGet( fillTestValues( new Variable() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierAccessorDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierAccumulateDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierCollectDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierEvalDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierFieldAccessDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierFromDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierMethodAccessDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierPredicateDescr() ) );
-        saveVerifierComponentAndGet( fillTestValues( new VerifierRule() ) );
+        RulePackage rulePackage = VerifierComponentMockFactory.createPackage1();
+        saveVerifierComponentAndGet( rulePackage );
+
+        VerifierRule rule = VerifierComponentMockFactory.createRule1();
+        saveVerifierComponentAndGet( rule );
+
+        Pattern pattern = VerifierComponentMockFactory.createPattern1();
+        saveVerifierComponentAndGet( pattern );
+
+        saveVerifierComponentAndGet( new Constraint( pattern ) );
+        saveVerifierComponentAndGet( new InlineEvalDescr( pattern ) );
+        saveVerifierComponentAndGet( new ObjectType() );
+        saveVerifierComponentAndGet( new RuleOperatorDescr( rule,
+                                                            OperatorDescrType.AND ) );
+        saveVerifierComponentAndGet( new PatternOperatorDescr( pattern,
+                                                               OperatorDescrType.AND ) );
+        saveVerifierComponentAndGet( new SubPattern( pattern,
+                                                     0 ) );
+        saveVerifierComponentAndGet( new ReturnValueFieldDescr( pattern ) );
+        saveVerifierComponentAndGet( new SubRule( rule,
+                                                  0 ) );
+        saveVerifierComponentAndGet( new TextConsequence( rule ) );
+        saveVerifierComponentAndGet( new Variable( rule ) );
+        saveVerifierComponentAndGet( new VerifierAccessorDescr( rule ) );
+        saveVerifierComponentAndGet( new VerifierAccumulateDescr( pattern ) );
+        saveVerifierComponentAndGet( new VerifierCollectDescr( pattern ) );
+        saveVerifierComponentAndGet( new RuleEval( rule ) );
+        saveVerifierComponentAndGet( new VerifierFieldAccessDescr( rule ) );
+        saveVerifierComponentAndGet( new VerifierFromDescr( pattern ) );
+        saveVerifierComponentAndGet( new VerifierMethodAccessDescr( rule ) );
+        saveVerifierComponentAndGet( new PatternEval( pattern ) );
     }
 
     public void testSaveVerifierComponentAndGetForAllFields() {
-        saveVerifierComponentAndGet( (Field) fillTestValues( new EnumField() ) );
-        saveVerifierComponentAndGet( (Field) fillTestValues( new Field() ) );
+        saveVerifierComponentAndGet( new EnumField() );
+        saveVerifierComponentAndGet( new Field() );
     }
 
     public void testSaveVerifierComponentAndGetForAllRestrictions() {
-        saveVerifierComponentAndGet( (Restriction) fillTestValues( new LiteralRestriction() ) );
-        saveVerifierComponentAndGet( (Restriction) fillTestValues( new EnumRestriction() ) );
-        saveVerifierComponentAndGet( (Restriction) fillTestValues( new QualifiedIdentifierRestriction() ) );
-        saveVerifierComponentAndGet( (Restriction) fillTestValues( new ReturnValueRestriction() ) );
-        saveVerifierComponentAndGet( (Restriction) fillTestValues( new ReturnValueRestriction() ) );
-        saveVerifierComponentAndGet( (Restriction) fillTestValues( new VariableRestriction() ) );
+        Pattern pattern = VerifierComponentMockFactory.createPattern1();
+
+        saveVerifierComponentAndGet( new LiteralRestriction( pattern ) );
+        saveVerifierComponentAndGet( new EnumRestriction( pattern ) );
+        saveVerifierComponentAndGet( new QualifiedIdentifierRestriction( pattern ) );
+        saveVerifierComponentAndGet( new ReturnValueRestriction( pattern ) );
+        saveVerifierComponentAndGet( new ReturnValueRestriction( pattern ) );
+        saveVerifierComponentAndGet( new VariableRestriction( pattern ) );
     }
 
     public void testSavePatternAndGet() {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
-        VerifierRule rule = (VerifierRule) fillTestValues( new VerifierRule() );
-        rule.setRuleName( "test" );
-        assertNotNull( rule.getRuleName() );
-        assertEquals( "test",
-                      rule.getRuleName() );
+        VerifierRule rule = VerifierComponentMockFactory.createRule1();
+        assertNotNull( rule.getName() );
+        assertEquals( "testRule1",
+                      rule.getName() );
 
-        ObjectType objectType = (ObjectType) fillTestValues( new ObjectType() );
-        Pattern pattern = (Pattern) fillTestValues( new Pattern() );
+        ObjectType objectType = new ObjectType();
+        Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        pattern.setRuleGuid( rule.getGuid() );
-        assertNotNull( pattern.getRuleGuid() );
-        assertEquals( rule.getGuid(),
-                      pattern.getRuleGuid() );
+        assertNotNull( pattern.getRulePath() );
+        assertEquals( rule.getPath(),
+                      pattern.getRulePath() );
 
-        pattern.setRuleName( rule.getRuleName() );
-        assertNotNull( pattern.getRuleName() );
-        assertEquals( rule.getRuleName(),
+        assertNotNull( pattern.getName() );
+        assertEquals( rule.getName(),
                       pattern.getRuleName() );
 
-        pattern.setObjectTypeGuid( objectType.getGuid() );
-        assertNotNull( pattern.getObjectTypeGuid() );
-        assertEquals( objectType.getGuid(),
-                      pattern.getObjectTypeGuid() );
+        pattern.setObjectTypePath( objectType.getPath() );
+        assertNotNull( pattern.getObjectTypePath() );
+        assertEquals( objectType.getPath(),
+                      pattern.getObjectTypePath() );
 
         data.add( rule );
         data.add( objectType );
@@ -152,35 +165,26 @@ public class VerifierDataMapsTest extends TestCase {
                       components.toArray()[0] );
 
         VerifierComponent objectType2 = data.getVerifierObject( objectType.getVerifierComponentType(),
-                                                                objectType.getGuid() );
+                                                                objectType.getPath() );
 
         assertNotNull( objectType2 );
         assertEquals( objectType,
                       objectType2 );
 
         VerifierComponent rule2 = data.getVerifierObject( rule.getVerifierComponentType(),
-                                                          rule.getGuid() );
+                                                          rule.getPath() );
 
         assertNotNull( rule2 );
         assertEquals( rule,
                       rule2 );
     }
 
-    private VerifierComponent fillTestValues(VerifierComponent component) {
-        component.setGuid( "0" );
-
-        assertNotNull( component.getGuid() );
-        assertNotNull( component.getVerifierComponentType() );
-
-        return component;
-    }
-
     private void saveVerifierComponentAndGet(Field field) {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
-        ObjectType objectType = (ObjectType) fillTestValues( new ObjectType() );
+        ObjectType objectType = new ObjectType();
 
-        field.setObjectTypeGuid( objectType.getGuid() );
+        field.setObjectTypePath( objectType.getPath() );
 
         data.add( objectType );
         data.add( field );
@@ -200,7 +204,7 @@ public class VerifierDataMapsTest extends TestCase {
                       fields.toArray()[0] );
 
         VerifierComponent field2 = data.getVerifierObject( field.getVerifierComponentType(),
-                                                           field.getGuid() );
+                                                           field.getPath() );
 
         assertNotNull( field2 );
         assertEquals( field,
@@ -214,7 +218,7 @@ public class VerifierDataMapsTest extends TestCase {
                       objectTypes.toArray()[0] );
 
         VerifierComponent objectType2 = data.getVerifierObject( objectType.getVerifierComponentType(),
-                                                                objectType.getGuid() );
+                                                                objectType.getPath() );
 
         assertNotNull( objectType2 );
         assertEquals( objectType,
@@ -224,14 +228,14 @@ public class VerifierDataMapsTest extends TestCase {
     private void saveVerifierComponentAndGet(Restriction component) {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
-        ObjectType objectType = (ObjectType) fillTestValues( new ObjectType() );
+        ObjectType objectType = new ObjectType();
 
-        Field field = (Field) fillTestValues( new Field() );
-        field.setObjectTypeGuid( objectType.getGuid() );
+        Field field = new Field();
+        field.setObjectTypePath( objectType.getPath() );
 
-        component.setFieldGuid( field.getGuid() );
+        component.setFieldPath( field.getPath() );
 
-        assertNotNull( component.getFieldGuid() );
+        assertNotNull( component.getFieldPath() );
 
         data.add( objectType );
         data.add( field );
@@ -253,7 +257,7 @@ public class VerifierDataMapsTest extends TestCase {
                       components.toArray()[0] );
 
         VerifierComponent component2 = data.getVerifierObject( component.getVerifierComponentType(),
-                                                               component.getGuid() );
+                                                               component.getPath() );
 
         assertNotNull( component2 );
         assertEquals( component,
@@ -267,7 +271,7 @@ public class VerifierDataMapsTest extends TestCase {
                       fields.toArray()[0] );
 
         VerifierComponent field2 = data.getVerifierObject( field.getVerifierComponentType(),
-                                                           field.getGuid() );
+                                                           field.getPath() );
 
         assertNotNull( field2 );
         assertEquals( field,
@@ -281,7 +285,7 @@ public class VerifierDataMapsTest extends TestCase {
                       objectTypes.toArray()[0] );
 
         VerifierComponent objectType2 = data.getVerifierObject( objectType.getVerifierComponentType(),
-                                                                objectType.getGuid() );
+                                                                objectType.getPath() );
 
         assertNotNull( objectType2 );
         assertEquals( objectType,
@@ -308,7 +312,7 @@ public class VerifierDataMapsTest extends TestCase {
                       components.toArray()[0] );
 
         VerifierComponent component2 = data.getVerifierObject( component.getVerifierComponentType(),
-                                                               component.getGuid() );
+                                                               component.getPath() );
 
         assertNotNull( component2 );
         assertEquals( component,

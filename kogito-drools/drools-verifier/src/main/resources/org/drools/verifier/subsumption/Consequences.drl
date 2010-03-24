@@ -15,7 +15,7 @@ rule "Subsumptant consequences"
 		$left :TextConsequence()
 		
 		$right :TextConsequence(
-			guid != $left.guid,
+			path != $left.path,
 			text == $left.text
 		)	
 		

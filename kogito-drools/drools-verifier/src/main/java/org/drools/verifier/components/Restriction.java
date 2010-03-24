@@ -26,14 +26,25 @@ public abstract class Restriction extends PatternComponent
     }
 
     private boolean    patternIsNot;
-    private String     constraintGuid;
+    private String     constraintPath;
 
     // Id of the field that this restriction is related to.
-    private String     fieldGuid;
+    private String     fieldPath;
 
     protected Operator operator;
 
     public abstract RestrictionType getRestrictionType();
+
+    public Restriction(Pattern pattern) {
+        super( pattern );
+    }
+
+    @Override
+    public String getPath() {
+        return String.format( "%s.restriction[%s]",
+                              getPatternPath(),
+                              getOrderNumber() );
+    }
 
     @Override
     public VerifierComponentType getVerifierComponentType() {
@@ -48,20 +59,20 @@ public abstract class Restriction extends PatternComponent
         this.operator = operator;
     }
 
-    public String getConstraintGuid() {
-        return constraintGuid;
+    public String getConstraintPath() {
+        return constraintPath;
     }
 
-    public void setConstraintGuid(String constraintGuid) {
-        this.constraintGuid = constraintGuid;
+    public void setConstraintPath(String constraintPath) {
+        this.constraintPath = constraintPath;
     }
 
-    public String getFieldGuid() {
-        return fieldGuid;
+    public String getFieldPath() {
+        return fieldPath;
     }
 
-    public void setFieldGuid(String guid) {
-        this.fieldGuid = guid;
+    public void setFieldPath(String path) {
+        this.fieldPath = path;
     }
 
     public boolean isPatternIsNot() {

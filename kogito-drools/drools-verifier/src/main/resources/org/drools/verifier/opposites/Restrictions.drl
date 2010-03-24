@@ -35,9 +35,9 @@ rule "Opposite LiteralRestrictions"
 		)
 
 		$right :LiteralRestriction(
-			fieldGuid matches $left.fieldGuid,
+			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
-			guid not matches $left.guid,
+			path != $left.path,
 			# Operator needs to be reversed to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $left.getOperator() ))
 		)
@@ -71,10 +71,10 @@ rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldGuid matches $left.fieldGuid,
+			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.LESS,
-			guid not matches $left.guid
+			path != $left.path
 		)
 		
 		eval( $left.compareValues( $right ) == 0 )
@@ -106,10 +106,10 @@ rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldGuid matches $left.fieldGuid,
+			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.LESS_OR_EQUAL,
-			guid not matches $left.guid
+			path != $left.path
 		)
 		
 		eval( $left.compareValues( $right ) == 0 )
@@ -143,10 +143,10 @@ rule "Opposite LiteralRestrictions with ranges, less - greater for ints and date
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldGuid matches $left.fieldGuid,
+			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.GREATER,
-			guid not matches $left.guid
+			path != $left.path
 		)
 		
 		eval( $left.compareValues( $right ) == 1 )
@@ -179,10 +179,10 @@ rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal
 
 		$right :LiteralRestriction(
 			restrictionType == $left.restrictionType,
-			fieldGuid matches $left.fieldGuid,
+			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.LESS_OR_EQUAL,
-			guid not matches $left.guid
+			path != $left.path
 		)
 		
 		eval( $left.compareValues( $right ) == 1 )
@@ -211,9 +211,9 @@ rule "Opposite VariableRestrictions"
 		$r1 :VariableRestriction()
 
 		$r2 :VariableRestriction(
-			fieldGuid matches $r1.fieldGuid,
-			guid not matches $r1.guid,
-			variable.objectTypeGuid matches $r1.variable.objectTypeGuid,
+			fieldPath == $r1.fieldPath,
+			path != $r1.path,
+			variable.objectTypePath == $r1.variable.objectTypePath,
 			variable.objectTypeType == $r1.variable.objectTypeType,
 			# Operator needs to be reverse to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))

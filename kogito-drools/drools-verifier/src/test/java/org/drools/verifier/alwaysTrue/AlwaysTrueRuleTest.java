@@ -8,6 +8,8 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.drools.verifier.VerifierComponentMockFactory;
+import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
@@ -37,27 +39,31 @@ public class AlwaysTrueRuleTest extends TestBase {
                            result );
 
         // This rule is always true.
-        VerifierRule rule1 = new VerifierRule();
+        VerifierRule rule1 = VerifierComponentMockFactory.createRule1();
+        Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
-        SubRule rp1 = new SubRule();
-        SubPattern pp1 = new SubPattern();
-        pp1.setRuleGuid( rule1.getGuid() );
+        SubRule rp1 = new SubRule( rule1,
+                                   0 );
+        SubPattern pp1 = new SubPattern( pattern1,
+                                         0 );
         AlwaysTrue alwaysTrue1 = new AlwaysTrue( pp1 );
-        SubPattern pp2 = new SubPattern();
-        pp2.setRuleGuid( rule1.getGuid() );
+        SubPattern pp2 = new SubPattern( pattern1,
+                                         1 );
         AlwaysTrue alwaysTrue2 = new AlwaysTrue( pp2 );
 
         rp1.add( pp1 );
         rp1.add( pp2 );
 
         // This rule is okay.
-        VerifierRule rule2 = new VerifierRule();
+        VerifierRule rule2 = VerifierComponentMockFactory.createRule2();
+        Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
 
-        SubRule rp2 = new SubRule();
-        SubPattern pp3 = new SubPattern();
-        pp3.setRuleGuid( rule2.getGuid() );
-        SubPattern pp4 = new SubPattern();
-        pp4.setRuleGuid( rule2.getGuid() );
+        SubRule rp2 = new SubRule( rule2,
+                                   0 );
+        SubPattern pp3 = new SubPattern( pattern2,
+                                         0 );
+        SubPattern pp4 = new SubPattern( pattern2,
+                                         1 );
         AlwaysTrue alwaysTrue4 = new AlwaysTrue( pp4 );
 
         rp2.add( pp3 );
@@ -120,24 +126,24 @@ public class AlwaysTrueRuleTest extends TestBase {
                            result );
 
         // This rule is always true.
-        VerifierRule rule1 = new VerifierRule();
+        VerifierRule rule1 = VerifierComponentMockFactory.createRule1();
 
-        SubRule rp1 = new SubRule();
-        rp1.setRuleGuid( rule1.getGuid() );
+        SubRule rp1 = new SubRule( rule1,
+                                   0 );
         AlwaysTrue alwaysTrue1 = new AlwaysTrue( rp1 );
 
-        SubRule rp2 = new SubRule();
-        rp2.setRuleGuid( rule1.getGuid() );
+        SubRule rp2 = new SubRule( rule1,
+                                   1 );
         AlwaysTrue alwaysTrue2 = new AlwaysTrue( rp2 );
 
         // This rule is okay.
-        VerifierRule rule2 = new VerifierRule();
+        VerifierRule rule2 = VerifierComponentMockFactory.createRule2();
 
-        SubRule rp3 = new SubRule();
-        rp3.setRuleGuid( rule2.getGuid() );
+        SubRule rp3 = new SubRule( rule2,
+                                   0 );
 
-        SubRule rp4 = new SubRule();
-        rp4.setRuleGuid( rule2.getGuid() );
+        SubRule rp4 = new SubRule( rule2,
+                                   1 );
         AlwaysTrue alwaysTrue4 = new AlwaysTrue( rp4 );
 
         data.add( rule1 );

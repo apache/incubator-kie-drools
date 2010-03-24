@@ -26,9 +26,9 @@ public class WarningsTest extends TestBase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+//        for ( VerifierError error : verifier.getErrors() ) {
+//            System.out.println( error.getMessage() );
+//        }
 
         assertFalse( verifier.hasErrors() );
 

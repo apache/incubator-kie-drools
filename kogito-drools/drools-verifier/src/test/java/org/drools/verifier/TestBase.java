@@ -19,8 +19,8 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.verifier.data.VerifierData;
-import org.drools.verifier.misc.PackageDescrVisitor;
 import org.drools.verifier.report.components.Cause;
+import org.drools.verifier.visitor.PackageDescrVisitor;
 
 /**
  * 
@@ -113,16 +113,16 @@ abstract public class TestBase extends TestCase {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public Collection< ? extends Object> getTestData(InputStream stream,
                                                      VerifierData data) throws Exception {
         Reader drlReader = new InputStreamReader( stream );
         PackageDescr descr = new DrlParser().parse( drlReader );
 
-        PackageDescrVisitor ruleFlattener = new PackageDescrVisitor();
+        PackageDescrVisitor packageDescrVisitor = new PackageDescrVisitor( data,
+                                                                           Collections.EMPTY_LIST );
 
-        ruleFlattener.addPackageDescrToData( descr,
-                                             Collections.EMPTY_LIST,
-                                             data );
+        packageDescrVisitor.visitPackageDescr( descr );
 
         // Rules with relations
         return data.getAll();

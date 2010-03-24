@@ -9,6 +9,10 @@ public class VerifierMethodAccessDescr extends RuleComponent {
     private String methodName;
     private String arguments;
 
+    public VerifierMethodAccessDescr(VerifierRule rule) {
+        super( rule );
+    }
+
     public String getArguments() {
         return arguments;
     }

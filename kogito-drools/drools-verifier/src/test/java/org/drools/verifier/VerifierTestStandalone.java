@@ -49,8 +49,8 @@ class VerifierTestStandalone {
 
             for ( String s : fileNames ) {
                 verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( s,
-                                                                              Verifier.class ),
-                                        ResourceType.DRL );
+                                                                                     Verifier.class ),
+                                               ResourceType.DRL );
             }
 
             verifier.fireAnalysis();
@@ -113,12 +113,12 @@ class VerifierTestStandalone {
             for ( Iterator iterator = classes.iterator(); iterator.hasNext(); ) {
                 ObjectType c = (ObjectType) iterator.next();
 
-                Collection<VerifierRule> cr = result.getVerifierData().getRulesByObjectTypeId( c.getGuid() );
+                Collection<VerifierRule> cr = result.getVerifierData().getRulesByObjectTypePath( c.getPath() );
                 System.err.println( "Class rules:" + cr );
                 Set<Field> flds = c.getFields();
                 for ( Iterator iterator2 = flds.iterator(); iterator2.hasNext(); ) {
                     Field f = (Field) iterator2.next();
-                    cr = result.getVerifierData().getRulesByFieldId( f.getGuid() );
+                    cr = result.getVerifierData().getRulesByFieldPath( f.getPath() );
                     System.err.println( "Field rules: " + cr );
 
                 }

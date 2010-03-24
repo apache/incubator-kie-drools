@@ -27,6 +27,10 @@ public class LiteralRestriction extends Restriction
 
     private Date    dateValue;
 
+    public LiteralRestriction(Pattern pattern) {
+        super( pattern );
+    }
+
     public RestrictionType getRestrictionType() {
         return Restriction.RestrictionType.LITERAL;
     }
