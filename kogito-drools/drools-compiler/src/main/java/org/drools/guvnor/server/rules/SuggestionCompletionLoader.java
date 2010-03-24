@@ -1,5 +1,6 @@
 package org.drools.guvnor.server.rules;
 
+import java.beans.Introspector;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -455,7 +456,7 @@ public class SuggestionCompletionLoader
             if ( method.getParameterTypes().length > 0 ) {
                 String name = method.getName();
                 if ( name.startsWith( "set" ) ) {
-                    name = name.substring( 3 ).toLowerCase();
+                    name = Introspector.decapitalize(name.substring(3));
                 }
 
                 String factField = shortTypeName + "." + name;
@@ -470,9 +471,9 @@ public class SuggestionCompletionLoader
             } else if ( !method.getReturnType().equals( "void" ) ) {
                 String name = method.getName();
                 if ( name.startsWith( "get" ) ) {
-                    name = name.substring( 3 ).toLowerCase();
+                    name = Introspector.decapitalize(name.substring(3));
                 } else if ( name.startsWith( "is" ) ) {
-                    name = name.substring( 2 ).toLowerCase();
+                    name = Introspector.decapitalize(name.substring(2));
                 }
 
                 String factField = shortTypeName + "." + name;
