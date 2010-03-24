@@ -9,6 +9,10 @@ public class VerifierFunctionCallDescr extends RuleComponent {
     private String name;
     private String arguments;
 
+    public VerifierFunctionCallDescr(VerifierRule rule) {
+        super( rule );
+    }
+
     public String getArguments() {
         return arguments;
     }

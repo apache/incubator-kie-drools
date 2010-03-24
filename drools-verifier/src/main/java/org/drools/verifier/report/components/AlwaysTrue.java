@@ -16,7 +16,7 @@ public class AlwaysTrue
 
     private static int              index = 0;
 
-    private final String            guid  = String.valueOf( index++ );
+    private final String            path  = String.valueOf( index++ );
 
     private final Cause             impactedComponent;
 
@@ -43,8 +43,8 @@ public class AlwaysTrue
         return ReasonType.ALWAYS_TRUE;
     }
 
-    public String getGuid() {
-        return guid;
+    public String getPath() {
+        return path;
     }
 
     public Cause getCause() {

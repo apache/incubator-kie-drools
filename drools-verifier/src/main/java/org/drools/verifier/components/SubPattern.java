@@ -13,14 +13,29 @@ import java.util.Set;
 public class SubPattern extends PatternComponent
     implements
     Possibility {
+
     private static final long     serialVersionUID = 8871361928380977116L;
 
-    private Pattern               pattern;
+    private final Pattern         pattern;
 
     private Set<PatternComponent> items            = new HashSet<PatternComponent>();
 
-    public String getSourceGuid() {
-        return pattern.getSourceGuid();
+    public SubPattern(Pattern pattern,
+                      int orderNumber) {
+        super( pattern );
+        this.pattern = pattern;
+        this.setOrderNumber( orderNumber );
+    }
+
+    @Override
+    public String getPath() {
+        return String.format( "%s.subPattern[%s]",
+                              getPatternPath(),
+                              getOrderNumber() );
+    }
+
+    public String getSourcePath() {
+        return pattern.getSourcePath();
     }
 
     public VerifierComponentType getSourceType() {
@@ -31,8 +46,8 @@ public class SubPattern extends PatternComponent
         return pattern.getName();
     }
 
-    public String getObjectTypeGuid() {
-        return pattern.getObjectTypeGuid();
+    public String getObjectTypePath() {
+        return pattern.getObjectTypePath();
     }
 
     public boolean isPatternNot() {
@@ -47,10 +62,6 @@ public class SubPattern extends PatternComponent
         return pattern.isPatternForall();
     }
 
-    public void setPattern(Pattern pattern) {
-        this.pattern = pattern;
-    }
-
     public Pattern getPattern() {
         return pattern;
     }
@@ -63,13 +74,13 @@ public class SubPattern extends PatternComponent
         return items.size();
     }
 
-    public void add(Restriction restriction) {
-        items.add( restriction );
+    public void add(PatternComponent patternComponent) {
+        items.add( patternComponent );
     }
 
     @Override
     public String toString() {
-        return "PatternPossibility from rule: " + getRuleName() + ", amount of items:" + items.size();
+        return "SubPattern from rule: " + getRuleName() + ", amount of items:" + items.size();
     }
 
     public VerifierComponentType getVerifierComponentType() {

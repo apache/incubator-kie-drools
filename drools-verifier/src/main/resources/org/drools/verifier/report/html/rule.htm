@@ -2,13 +2,13 @@
 <div>
 	<h2>Rule</h2>
 	<div>
-		Name: @{rule.ruleName}<br/>
+		Name: @{rule.name}<br/>
 	</div>
 	<div>
 		Patterns:
 		<ul>
 			@foreach{objectType:objectTypes}
-			<li><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.guid}.htm">@{objectType.name}</a></li>
+			<li><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.path}.htm">@{objectType.name}</a></li>
 			@end{}
 		</ul>
 	</div>

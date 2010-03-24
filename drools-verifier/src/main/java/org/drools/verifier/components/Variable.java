@@ -6,9 +6,13 @@ package org.drools.verifier.components;
  */
 public class Variable extends RuleComponent {
 
-    private String objectTypeGuid;
+    private String objectTypePath;
     private String objectTypeType;
     private String objectTypeName;
+
+    public Variable(VerifierRule rule) {
+        super( rule );
+    }
 
     public String getObjectTypeName() {
         return objectTypeName;
@@ -20,12 +24,12 @@ public class Variable extends RuleComponent {
 
     private String name;
 
-    public String getObjectTypeGuid() {
-        return objectTypeGuid;
+    public String getObjectTypePath() {
+        return objectTypePath;
     }
 
-    public void setObjectTypeGuid(String guid) {
-        this.objectTypeGuid = guid;
+    public void setObjectTypePath(String path) {
+        this.objectTypePath = path;
     }
 
     public void setObjectTypeType(String type) {

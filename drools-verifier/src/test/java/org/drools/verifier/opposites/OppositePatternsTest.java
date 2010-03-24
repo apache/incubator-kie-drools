@@ -9,7 +9,9 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.VerifierComponentType;
@@ -25,22 +27,26 @@ public class OppositePatternsTest extends OppositesBase {
 
         Collection<Object> data = new ArrayList<Object>();
 
+        Pattern pattern = VerifierComponentMockFactory.createPattern1();
+
         /*
          * Working pair
          */
-        SubPattern pp1 = new SubPattern();
-        SubPattern pp2 = new SubPattern();
+        SubPattern pp1 = new SubPattern( pattern,
+                                         0 );
+        SubPattern pp2 = new SubPattern( pattern,
+                                         1 );
 
-        Restriction r1 = new LiteralRestriction();
+        Restriction r1 = new LiteralRestriction( pattern );
         pp1.add( r1 );
 
-        Restriction r2 = new LiteralRestriction();
+        Restriction r2 = new LiteralRestriction( pattern );
         pp2.add( r2 );
 
-        Restriction r3 = new LiteralRestriction();
+        Restriction r3 = new LiteralRestriction( pattern );
         pp1.add( r3 );
 
-        Restriction r4 = new LiteralRestriction();
+        Restriction r4 = new LiteralRestriction( pattern );
         pp2.add( r4 );
 
         Opposites o1 = new Opposites( r1,
@@ -51,19 +57,21 @@ public class OppositePatternsTest extends OppositesBase {
         /*
          * Pair that doesn't work.
          */
-        SubPattern pp3 = new SubPattern();
-        SubPattern pp4 = new SubPattern();
+        SubPattern pp3 = new SubPattern( pattern,
+                                         2 );
+        SubPattern pp4 = new SubPattern( pattern,
+                                         3 );
 
-        Restriction r5 = new LiteralRestriction();
+        Restriction r5 = new LiteralRestriction( pattern );
         pp3.add( r5 );
 
-        Restriction r6 = new LiteralRestriction();
+        Restriction r6 = new LiteralRestriction( pattern );
         pp4.add( r6 );
 
-        Restriction r7 = new LiteralRestriction();
+        Restriction r7 = new LiteralRestriction( pattern );
         pp3.add( r7 );
 
-        Restriction r8 = new LiteralRestriction();
+        Restriction r8 = new LiteralRestriction( pattern );
         pp4.add( r8 );
 
         Opposites o3 = new Opposites( r5,

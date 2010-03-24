@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.components.OperatorDescr;
-import org.drools.verifier.components.VerifierEvalDescr;
+import org.drools.verifier.components.PatternOperatorDescr;
+import org.drools.verifier.components.Eval;
+import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.RuleComponent;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.components.VerifierComponentType;
@@ -37,39 +39,34 @@ global VerifierReport result;
 #
 rule "Optimise evals inside pattern"
 	when
-		$operator :OperatorDescr()
-
-		$eval :VerifierEvalDescr(
-			parentGuid matches $operator.guid,
-			parentType == $operator.verifierComponentType
+		$subRule : SubRule()
+		
+		$eval :Eval(
+			this memberOf $subRule.items
 		)
 
-		# Any other RuleComponent that is not predicate or operator
-		$other :RuleComponent(
-			parentGuid matches $operator.guid,
-			parentType == $operator.verifierComponentType,
-			orderNumber > $eval.orderNumber,
-			( verifierComponentType != VerifierComponentType.OPERATOR && != VerifierComponentType.EVAL )
-		)
-
-		$rule :VerifierRule(
-			guid matches $eval.ruleGuid
+		$subPattern : SubPattern(
+			this memberOf $subRule.items,
+			patternPath == $subPattern.patternPath,
+			pattern.orderNumber > $eval.orderNumber,
+			$pattern : pattern
 		)
 	then	
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $rule.getGuid(), $rule.getRuleName());
+		impactedRules.put(  $subRule.getRule().getPath(), 
+							$subRule.getRule().getName());
 	
 		Collection list = new ArrayList();
 		list.add( $eval );
-		list.add( $other );
+		list.add( $pattern );
 		result.add( new VerifierMessage(
 								impactedRules,
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
-								$rule,
-								"Rule \"" + $eval.getRuleName() +
+								$subRule.getRule(),
+								"Rule \"" + $subRule.getRuleName() +
 								"\" would be more effective if the less expensive component, (" +
-								$other +
+								$pattern +
 								"), could be before (" +
 								$eval + ").",
 								list ) );

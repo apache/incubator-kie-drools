@@ -24,10 +24,10 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 
 		$r2 :LiteralRestriction(
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
@@ -49,10 +49,10 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 
 		$r2 :LiteralRestriction(
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.EQUAL,
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		eval( $r1.compareValues( $r2 ) == 1 )
@@ -74,10 +74,10 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 
 		$r2 :LiteralRestriction(
 			restrictionType == $r1.restrictionType,
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.GREATER,
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 
 		eval( $r1.compareValues( $r2 ) == 0 )
@@ -98,11 +98,11 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 		)
 
 		$r2 :VariableRestriction(
-			fieldGuid matches $r1.fieldGuid,
+			fieldPath == $r1.fieldPath,
 			operator == Operator.GREATER,
-			variable.objectTypeGuid == $r1.variable.objectTypeGuid,
+			variable.objectTypePath == $r1.variable.objectTypePath,
 			variable.objectTypeType == $r1.variable.objectTypeType,
-			guid not matches $r1.guid
+			path != $r1.path
 		)
 	then
 		insert( new Incompatibility( $r1, $r2 ) );

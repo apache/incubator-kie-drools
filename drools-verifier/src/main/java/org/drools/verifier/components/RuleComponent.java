@@ -1,15 +1,30 @@
 package org.drools.verifier.components;
 
+/**
+ * 
+ * @author Toni Rikkola
+ */
 public abstract class RuleComponent extends PackageComponent
     implements
     ChildComponent {
 
     private String                ruleName;
-    private String                ruleGuid;
 
     private VerifierComponentType parentType;
-    private String                parentGuid;
+    private String                parentPath;
     private int                   orderNumber;
+
+    public RuleComponent(VerifierRule rule) {
+        this( rule.getPackageName(),
+              rule.getName() );
+    }
+
+    RuleComponent(String packageName,
+                  String ruleName) {
+        super( packageName );
+
+        setRuleName( ruleName );
+    }
 
     /**
      * 
@@ -23,24 +38,29 @@ public abstract class RuleComponent extends PackageComponent
         return ruleName;
     }
 
-    public void setRuleName(String ruleName) {
+    protected void setRuleName(String ruleName) {
         this.ruleName = ruleName;
     }
 
-    public String getRuleGuid() {
-        return ruleGuid;
+    public String getRulePath() {
+        return String.format( "%s.rule[name=%s]",
+                              getPackagePath(),
+                              getRuleName() );
     }
 
-    public void setRuleGuid(String ruleGuid) {
-        this.ruleGuid = ruleGuid;
+    @Override
+    public String getPath() {
+        return String.format( "%s.ruleComponent[%s]",
+                              getRulePath(),
+                              getOrderNumber() );
     }
 
     public VerifierComponentType getParentType() {
         return parentType;
     }
 
-    public String getParentGuid() {
-        return parentGuid;
+    public String getParentPath() {
+        return parentPath;
     }
 
     public int getOrderNumber() {
@@ -51,8 +71,8 @@ public abstract class RuleComponent extends PackageComponent
         this.parentType = parentType;
     }
 
-    public void setParentGuid(String parentGuid) {
-        this.parentGuid = parentGuid;
+    public void setParentPath(String parentPath) {
+        this.parentPath = parentPath;
     }
 
     public void setOrderNumber(int orderNumber) {

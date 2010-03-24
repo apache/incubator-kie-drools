@@ -34,6 +34,7 @@ public class VerifierComponentType
     public static final VerifierComponentType RETURN_VALUE_FIELD_DESCR = new VerifierComponentType( "RETURN_VALUE_FIELD_DESCR" );
     public static final VerifierComponentType ENTRY_POINT_DESCR        = new VerifierComponentType( "ENTRY_POINT_DESCR" );
     public static final VerifierComponentType WORKING_MEMORY           = new VerifierComponentType( "WORKING_MEMORY" );
+    public static final VerifierComponentType IMPORT                   = new VerifierComponentType( "IMPORT  " );
 
     private final String                      type;
 

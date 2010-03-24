@@ -28,7 +28,7 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
-import org.drools.verifier.misc.PackageDescrVisitor;
+import org.drools.verifier.visitor.PackageDescrVisitor;
 
 /**
  * This is the main user class for verifier. This will use rules to validate
@@ -72,11 +72,10 @@ public class VerifierImpl
     public void addPackageDescr(PackageDescr descr) {
         try {
 
-            PackageDescrVisitor ruleFlattener = new PackageDescrVisitor();
+            PackageDescrVisitor ruleFlattener = new PackageDescrVisitor( result.getVerifierData(),
+                                                                         jars );
 
-            ruleFlattener.addPackageDescrToData( descr,
-                                                 jars,
-                                                 result.getVerifierData() );
+            ruleFlattener.visitPackageDescr( descr );
 
         } catch ( Throwable t ) {
             t.printStackTrace();

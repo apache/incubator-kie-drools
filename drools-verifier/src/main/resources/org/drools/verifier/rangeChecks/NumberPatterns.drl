@@ -45,7 +45,7 @@ rule "Range check for number patterns"
 			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
 				from collect(
 					LiteralRestriction( 
-						fieldId == $f.guid, 
+						fieldId == $f.path, 
 						patternIsNot == true, 
 						operator == Operator.EQUAL
 					)
@@ -77,7 +77,7 @@ rule "Range check for number patterns, !="
 			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
 				from collect(
 					LiteralRestriction( 
-						fieldId == $f.guid, 
+						fieldId == $f.path, 
 						patternIsNot == false, 
 						operator == Operator.NOT_EQUAL
 					)
@@ -87,7 +87,7 @@ rule "Range check for number patterns, !="
 			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
 				from collect(
 					LiteralRestriction( 
-						fieldId == $f.guid, 
+						fieldId == $f.path, 
 						patternIsNot == true, 
 						operator == Operator.NOT_EQUAL
 					)

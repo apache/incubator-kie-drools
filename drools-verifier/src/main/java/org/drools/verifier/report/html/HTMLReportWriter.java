@@ -42,7 +42,7 @@ public class HTMLReportWriter extends ReportModeller
         // Rules
         String ruleFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.RULE_FOLDER;
         for ( VerifierRule rule : data.<VerifierRule> getAll( VerifierComponentType.RULE ) ) {
-            writeToFile( ruleFolder + File.separator + rule.getGuid() + ".htm",
+            writeToFile( ruleFolder + File.separator + rule.getPath() + ".htm",
                          formPage( UrlFactory.PREVIOUS_FOLDER,
                                    ComponentsReportVisitor.visitRule( UrlFactory.PREVIOUS_FOLDER,
                                                                       rule,
@@ -52,7 +52,7 @@ public class HTMLReportWriter extends ReportModeller
         // ObjectTypes
         String objectTypeFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.OBJECT_TYPE_FOLDER;
         for ( ObjectType objectType : data.<ObjectType> getAll( VerifierComponentType.OBJECT_TYPE ) ) {
-            writeToFile( objectTypeFolder + File.separator + objectType.getGuid() + ".htm",
+            writeToFile( objectTypeFolder + File.separator + objectType.getPath() + ".htm",
                          formPage( UrlFactory.PREVIOUS_FOLDER,
                                    ComponentsReportVisitor.visitObjectType( UrlFactory.PREVIOUS_FOLDER,
                                                                             objectType,
@@ -62,7 +62,7 @@ public class HTMLReportWriter extends ReportModeller
         // Fields
         String fieldFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.FIELD_FOLDER;
         for ( Field field : data.<Field> getAll( VerifierComponentType.FIELD ) ) {
-            writeToFile( fieldFolder + File.separator + field.getGuid() + ".htm",
+            writeToFile( fieldFolder + File.separator + field.getPath() + ".htm",
                          formPage( UrlFactory.PREVIOUS_FOLDER,
                                    ComponentsReportVisitor.visitField( UrlFactory.PREVIOUS_FOLDER,
                                                                        field,

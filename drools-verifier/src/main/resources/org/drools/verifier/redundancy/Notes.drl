@@ -42,7 +42,7 @@ rule "Find redundant restrictions from pattern possibilities"
 		)
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $pp.getRuleGuid(), $pp.getRuleName());
+		impactedRules.put( $pp.getRulePath(), $pp.getRuleName());
 		
 		Collection causes = new ArrayList();
 		causes.addAll( $r.getItems() );
@@ -73,7 +73,7 @@ rule "Find redundant pattern possibilities from rule possibilities"
 		)
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $sr.getRuleGuid(), $sr.getRuleName());
+		impactedRules.put( $sr.getRulePath(), $sr.getRuleName());
 		
 		Collection causes = new ArrayList();
 		causes.addAll( $r.getItems() );

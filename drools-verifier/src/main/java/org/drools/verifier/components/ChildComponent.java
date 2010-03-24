@@ -4,7 +4,7 @@ public interface ChildComponent {
 
     public VerifierComponentType getParentType();
 
-    public String getParentGuid();
+    public String getParentPath();
 
     public int getOrderNumber();
 

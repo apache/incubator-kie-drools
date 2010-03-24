@@ -25,8 +25,6 @@ import java.util.HashMap;
 
 global VerifierReport result;
 
-
-
 rule "Pattern possibility that is always true"
 	when
 		a :Restriction()
@@ -57,7 +55,7 @@ rule "Pattern possibility that is always true"
 		$p :Pattern()
 		
 		$pp :SubPattern(
-			patternGuid matches $p.guid
+			patternPath == $p.path
 		)
 
 		# For each restriction in pattern possibility 
@@ -83,6 +81,8 @@ rule "Pattern possibility that is always true"
 		insert( new AlwaysTrue( $pp ));
 end
 */
+
+
 #
 # Finds patterns that are always true.
 #
@@ -99,13 +99,13 @@ rule "Pattern that is always true"
 		$p :Pattern()
 
 		# Only report the ones that have restrictions.
-		exists SubPattern( patternGuid == $p.guid )
+		exists SubPattern( patternPath == $p.path )
 		
 		# For each restriction in each pattern possibility for current pattern, 
 		# there needs to be an opposite.
 		forall(
 			$pp :SubPattern(
-				patternGuid matches $p.guid
+				patternPath == $p.path
 			)
 			
 			AlwaysTrue(
@@ -113,10 +113,10 @@ rule "Pattern that is always true"
 			)
 		)
 		
-		$r :VerifierRule( guid matches $p.ruleGuid )
+		$r :VerifierRule( path == $p.rulePath )
 	then 
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getGuid(), $r.getRuleName());
+		impactedRules.put( $r.getPath(), $r.getName());
 		
 		result.add( new VerifierMessage(
 								impactedRules,

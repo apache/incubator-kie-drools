@@ -6,20 +6,31 @@ import org.drools.verifier.report.components.Cause;
  *
  * @author Toni Rikkola
  */
-public class Pattern extends PatternComponent
+public class Pattern extends RuleComponent
     implements
     Cause {
 
     private static final long     serialVersionUID = 5852308145251025423L;
 
-    private String                objectTypeGuid;
+    private String                objectTypePath;
     private String                name;
     private VerifierComponentType sourceType;
-    private String                sourceGuid;
+    private String                sourcePath;
 
     private boolean               isPatternNot     = false;
     private boolean               isPatternExists  = false;
     private boolean               isPatternForall  = false;
+
+    public Pattern(VerifierRule rule) {
+        super( rule );
+    }
+
+    @Override
+    public String getPath() {
+        return String.format( "%s.pattern[%s]",
+                              getRulePath(),
+                              getOrderNumber() );
+    }
 
     public boolean isPatternNot() {
         return isPatternNot;
@@ -37,12 +48,12 @@ public class Pattern extends PatternComponent
         this.isPatternExists = isExists;
     }
 
-    public String getObjectTypeGuid() {
-        return objectTypeGuid;
+    public String getObjectTypePath() {
+        return objectTypePath;
     }
 
-    public void setObjectTypeGuid(String guid) {
-        this.objectTypeGuid = guid;
+    public void setObjectTypePath(String path) {
+        this.objectTypePath = path;
     }
 
     public boolean isPatternForall() {
@@ -53,12 +64,12 @@ public class Pattern extends PatternComponent
         this.isPatternForall = isForall;
     }
 
-    public String getSourceGuid() {
-        return sourceGuid;
+    public String getSourcePath() {
+        return sourcePath;
     }
 
-    public void setSourceGuid(String sourceGuid) {
-        this.sourceGuid = sourceGuid;
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
     }
 
     public VerifierComponentType getSourceType() {

@@ -1,9 +1,11 @@
-package org.drools.verifier.misc;
+package org.drools.verifier.visitor;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -15,6 +17,8 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
+import org.drools.verifier.visitor.PackageDescrVisitor;
+import org.drools.verifier.visitor.UnknownDescriptionException;
 
 import junit.framework.TestCase;
 
@@ -22,8 +26,9 @@ public class PackageDescrVisitorTest extends TestCase {
 
     public void testVisit() throws DroolsParserException,
                            UnknownDescriptionException {
-        PackageDescrVisitor visitor = new PackageDescrVisitor();
         VerifierData data = VerifierReportFactory.newVerifierData();
+        PackageDescrVisitor visitor = new PackageDescrVisitor( data,
+                                                               Collections.EMPTY_LIST );
 
         assertNotNull( data );
 
@@ -32,22 +37,34 @@ public class PackageDescrVisitorTest extends TestCase {
 
         assertNotNull( packageDescr );
 
-        visitor.addPackageDescrToData( packageDescr,
-                                       Collections.EMPTY_LIST,
-                                       data );
+        visitor.visitPackageDescr( packageDescr );
 
         Collection<VerifierComponent> all = data.getAll();
 
+        Set<String> names = new HashSet<String>();
+        for ( VerifierComponent verifierComponent : all ) {
+            String path = verifierComponent.getPath();
+
+            //            System.out.println( "-" + verifierComponent );
+
+            if ( names.contains( path ) ) {
+                fail( "Dublicate path " + path );
+            } else {
+                names.add( path );
+            }
+        }
+
         assertNotNull( all );
-        assertEquals( 51,
+        assertEquals( 52,
                       all.size() );
 
     }
 
     public void testSubPatterns() throws DroolsParserException,
                                  UnknownDescriptionException {
-        PackageDescrVisitor visitor = new PackageDescrVisitor();
         VerifierData data = VerifierReportFactory.newVerifierData();
+        PackageDescrVisitor visitor = new PackageDescrVisitor( data,
+                                                               Collections.EMPTY_LIST );
 
         assertNotNull( data );
 
@@ -56,9 +73,7 @@ public class PackageDescrVisitorTest extends TestCase {
 
         assertNotNull( packageDescr );
 
-        visitor.addPackageDescrToData( packageDescr,
-                                       Collections.EMPTY_LIST,
-                                       data );
+        visitor.visitPackageDescr( packageDescr );
 
         Collection<VerifierComponent> all = data.getAll();
 

@@ -41,7 +41,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                     LiteralRestriction restriction = (LiteralRestriction) r;
 
                     dt.put( restriction.getValueAsObject(),
-                            new DataRow( restriction.getRuleGuid(),
+                            new DataRow( restriction.getRulePath(),
                                          restriction.getRuleName(),
                                          restriction.getOperator(),
                                          restriction.getValueAsString() ) );
@@ -135,7 +135,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                                                 VerifierRangeCheckMessage message,
                                                 VerifierData data) {
         Field field = (Field) message.getFaulty();
-        Collection<Restriction> restrictions = data.getRestrictionsByFieldGuid( field.getGuid() );
+        Collection<Restriction> restrictions = data.getRestrictionsByFieldPath( field.getPath() );
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put( "header",
@@ -155,7 +155,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                  field );
         map.put( "objectType",
                  data.getVerifierObject( VerifierComponentType.OBJECT_TYPE,
-                                         field.getObjectTypeGuid() ) );
+                                         field.getObjectTypePath() ) );
         map.put( "ranges",
                  visitRanges( UrlFactory.THIS_FOLDER,
                               restrictions,

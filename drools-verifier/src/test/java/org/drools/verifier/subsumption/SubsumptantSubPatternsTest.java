@@ -28,9 +28,9 @@ public class SubsumptantSubPatternsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+//        for ( VerifierError error : verifier.getErrors() ) {
+//            System.out.println( error.getMessage() );
+//        }
 
         assertFalse( verifier.hasErrors() );
 
@@ -71,9 +71,9 @@ public class SubsumptantSubPatternsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+//        for ( VerifierError error : verifier.getErrors() ) {
+//            System.out.println( error.getMessage() );
+//        }
 
         assertFalse( verifier.hasErrors() );
 
@@ -109,9 +109,9 @@ public class SubsumptantSubPatternsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+//        for ( VerifierError error : verifier.getErrors() ) {
+//            System.out.println( error.getMessage() );
+//        }
 
         assertFalse( verifier.hasErrors() );
 
@@ -147,9 +147,9 @@ public class SubsumptantSubPatternsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+//        for ( VerifierError error : verifier.getErrors() ) {
+//            System.out.println( error.getMessage() );
+//        }
 
         assertFalse( verifier.hasErrors() );
 
@@ -160,7 +160,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
 
         int count = 0;
         for ( Object object : subsumptionList ) {
-            System.out.println( " * " + ((Subsumption) object) );
+//            System.out.println( " * " + ((Subsumption) object) );
             if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
                 count++;
             }
@@ -185,9 +185,9 @@ public class SubsumptantSubPatternsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+//        for ( VerifierError error : verifier.getErrors() ) {
+//            System.out.println( error.getMessage() );
+//        }
 
         assertFalse( verifier.hasErrors() );
 

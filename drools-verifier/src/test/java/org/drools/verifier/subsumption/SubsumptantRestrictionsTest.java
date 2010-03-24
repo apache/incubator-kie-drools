@@ -26,9 +26,9 @@ public class SubsumptantRestrictionsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+        //        for ( VerifierError error : verifier.getErrors() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
         assertFalse( verifier.hasErrors() );
 
@@ -53,9 +53,9 @@ public class SubsumptantRestrictionsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+        //        for ( VerifierError error : verifier.getErrors() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
         assertFalse( verifier.hasErrors() );
 
@@ -80,9 +80,9 @@ public class SubsumptantRestrictionsTest extends TestCase {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-        for ( VerifierError error : verifier.getErrors() ) {
-            System.out.println( error.getMessage() );
-        }
+        //        for ( VerifierError error : verifier.getErrors() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
         assertFalse( verifier.hasErrors() );
 
@@ -92,6 +92,37 @@ public class SubsumptantRestrictionsTest extends TestCase {
         Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
 
         assertEquals( 6,
+                      subsumptionList.size() );
+
+        verifier.dispose();
+    }
+
+    public void testVerifierLiteralRestrictionRedundancy4() throws Exception {
+
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
+
+        Verifier verifier = vBuilder.newVerifier();
+
+        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantRestriction4.drl",
+                                                                             getClass() ),
+                                       ResourceType.DRL );
+
+        //        for ( VerifierError error : verifier.getErrors() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
+
+        assertFalse( verifier.hasErrors() );
+
+        boolean noProblems = verifier.fireAnalysis();
+        assertTrue( noProblems );
+
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+
+//        for ( Object object : subsumptionList ) {
+//            System.out.println( object );
+//        }
+
+        assertEquals( 4,
                       subsumptionList.size() );
 
         verifier.dispose();

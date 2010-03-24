@@ -20,11 +20,11 @@ public interface Consequence
         }
     }
 
-    public String getGuid();
+    public String getPath();
 
     public ConsequenceType getConsequenceType();
 
-    public String getRuleGuid();
+    public String getRulePath();
     
     public String getRuleName();
 }

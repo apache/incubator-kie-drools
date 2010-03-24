@@ -4,13 +4,13 @@
 	<div>
 		Name: @{field.name}<br/>
 		Type: @{field.fieldType}<br/>
-		Belongs to class: <a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.guid}.htm">@{objectType.name}</a>
+		Belongs to class: <a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.path}.htm">@{objectType.name}</a>
 	</div>
 	<div>
 		Rules that use this component:
 		<ul>
 			@foreach{rule:rules}
-			<li><a href="@{sourceFolder}/@{ruleFolder}/@{rule.guid}.htm">@{rule.ruleName}</a></li>
+			<li><a href="@{sourceFolder}/@{ruleFolder}/@{rule.path}.htm">@{rule.name}</a></li>
 			@end{}
 		</ul>
 	</div>

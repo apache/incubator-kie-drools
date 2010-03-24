@@ -37,20 +37,20 @@ rule "Find redundant LHS"
 		$left :VerifierRule()
 		
 		$right :VerifierRule( 
-			guid != $left.guid 
+			path != $left.path 
 		)
 		
 		$leftSubRules : ArrayList() 
 			from collect( 
 				SubRule(
-					ruleGuid == $left.guid
+					rulePath == $left.path
 				)
 			)
 
 		$rightSubRules : ArrayList() 
 			from collect( 
 				SubRule(
-					ruleGuid == $right.guid
+					rulePath == $right.path
 				)
 			)
 		
@@ -88,11 +88,11 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
 		
 		# RHS should not be redundant		
 		$leftConsequence : Consequence(
-			guid == $left.consequenceGuid,
+			path == $left.consequencePath,
 			consequenceType == $left.consequenceType
 		)
 		$rightConsequence : Consequence(
-			guid == $right.consequenceGuid,
+			path == $right.consequencePath,
 			consequenceType == $right.consequenceType
 		)
 		not Redundancy(
@@ -109,8 +109,8 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
             )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $leftConsequence.getRuleGuid(), $leftConsequence.getRuleName());
-		impactedRules.put( $rightConsequence.getRuleGuid(), $rightConsequence.getRuleName());
+		impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
+		impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
 
 		Equivalence equivalence = new Equivalence( $left, $right, $causes );
 		insert( equivalence );
@@ -120,7 +120,7 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
 						Severity.WARNING, 
 						MessageType.EQUIVALANCE,
 						null, 
-						"Rule is equivalent to rule " + $right.getRuleName() + ".", 
+						"Rule is equivalent to rule " + $right.getName() + ".", 
 						equivalence ) );
 end
 
@@ -148,11 +148,11 @@ rule "Find redundant rules" extends "Find redundant LHS"
 		
 		# RHS needs to be redundant		
 		$leftConsequence : Consequence(
-			guid == $left.consequenceGuid,
+			path == $left.consequencePath,
 			consequenceType == $left.consequenceType
 		)
 		$rightConsequence : Consequence(
-			guid == $right.consequenceGuid,
+			path == $right.consequencePath,
 			consequenceType == $right.consequenceType
 		)
 		exists Redundancy(
@@ -176,8 +176,8 @@ rule "Find redundant rules" extends "Find redundant LHS"
             )
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $leftConsequence.getRuleGuid(), $leftConsequence.getRuleName());
-		impactedRules.put( $rightConsequence.getRuleGuid(), $rightConsequence.getRuleName());
+		impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
+		impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
 		
 		Redundancy redundancy = new Redundancy( $left, $right, $causes );
 		insert( redundancy );
@@ -187,7 +187,7 @@ rule "Find redundant rules" extends "Find redundant LHS"
 						Severity.WARNING, 
 						MessageType.REDUNDANCY,
 						null, 
-						"Rules " + $right.getRuleName() + " and " + $left.getRuleName() + " are redundant.", 
+						"Rules " + $right.getName() + " and " + $left.getName() + " are redundant.", 
 						redundancy ) );
 end
 
@@ -211,7 +211,7 @@ rule "Find subsumptant rule possibilities from different rules"
 	when
 		$left :VerifierRule()
 		$right :VerifierRule( 
-			guid != $left.guid 
+			path != $left.path 
 		)
 		
 		$subsumption :Subsumption(
@@ -227,8 +227,8 @@ rule "Find subsumptant rule possibilities from different rules"
 
 	then
 		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $left.getGuid(), $left.getRuleName());
-		impactedRules.put( $right.getGuid(), $right.getRuleName());
+		impactedRules.put( $left.getPath(), $left.getName());
+		impactedRules.put( $right.getPath(), $right.getName());
 		
 		Collection causes = new ArrayList();
 		causes.add( $subsumption );

@@ -11,13 +11,13 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.components.FieldObjectTypeLink;
+import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.VerifierEntryPointDescr;
+import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.VerifierRule;
 
 /**
@@ -67,11 +67,6 @@ class VerifierDataKnowledgeSession
         return null;
     }
 
-    public FieldObjectTypeLink getFieldObjectTypeLink(int id,
-                                                      int id2) {
-        return null;
-    }
-
     public Collection<VerifierComponent> getAll() {
         Collection<Object> list = kSession.getObjects();
 
@@ -82,11 +77,11 @@ class VerifierDataKnowledgeSession
         return null;
     }
 
-    public Collection<VerifierRule> getRulesByObjectTypeId(String id) {
+    public Collection<VerifierRule> getRulesByObjectTypePath(String id) {
         return null;
     }
 
-    public Collection<VerifierRule> getRulesByFieldId(String id) {
+    public Collection<VerifierRule> getRulesByFieldPath(String id) {
         return null;
     }
 
@@ -94,7 +89,7 @@ class VerifierDataKnowledgeSession
         return null;
     }
 
-    public Collection<Restriction> getRestrictionsByFieldGuid(String id) {
+    public Collection<Restriction> getRestrictionsByFieldPath(String id) {
         return null;
     }
 
@@ -108,13 +103,13 @@ class VerifierDataKnowledgeSession
     }
 
     //    public <T extends VerifierComponent> T getVerifierObject(VerifierComponentType type,
-    //                                                             String guid) {
+    //                                                             String path) {
     public VerifierComponent getVerifierObject(VerifierComponentType type,
-                                               String guid) {
+                                               String path) {
         return null;
     }
 
-    public VerifierEntryPointDescr getEntryPointByEntryId(String entryId) {
+    public EntryPoint getEntryPointByEntryId(String entryId) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -125,6 +120,17 @@ class VerifierDataKnowledgeSession
     }
 
     public Collection<VerifierRule> getRulesByCategoryName(String categoryName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Import getImportByName(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ObjectType getObjectTypeByObjectTypeNameAndPackageName(String factTypeName,
+                                                                  String ru) {
         // TODO Auto-generated method stub
         return null;
     }

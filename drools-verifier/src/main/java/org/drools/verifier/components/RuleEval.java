@@ -6,12 +6,17 @@ import org.drools.verifier.report.components.Cause;
  *
  * @author Toni Rikkola
  */
-public class VerifierPredicateDescr extends RuleComponent
+public class RuleEval extends RuleComponent
     implements
+    Eval,
     Cause {
 
     private String content;
     private String classMethodName;
+
+    public RuleEval(VerifierRule rule) {
+        super( rule );
+    }
 
     public String getClassMethodName() {
         return classMethodName;
@@ -31,10 +36,10 @@ public class VerifierPredicateDescr extends RuleComponent
 
     @Override
     public String toString() {
-        return "Predicate id: " + getGuid() + " content: " + content;
+        return "Eval, content: " + content;
     }
 
     public VerifierComponentType getVerifierComponentType() {
-        return VerifierComponentType.PREDICATE;
+        return VerifierComponentType.EVAL;
     }
 }

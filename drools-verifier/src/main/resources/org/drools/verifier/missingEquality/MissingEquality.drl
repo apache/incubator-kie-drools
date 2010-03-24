@@ -41,10 +41,10 @@ rule "Missing restriction in LiteralRestrictions"
 				)
 			and
 				not LiteralRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == Operator.NOT_EQUAL,
 					patternIsNot == $r.patternIsNot,
-					valueAsString matches $r.valueAsString
+					valueAsString == $r.valueAsString
 				)
 		) or (
 				$r :LiteralRestriction(
@@ -52,10 +52,10 @@ rule "Missing restriction in LiteralRestrictions"
 				)
 			and
 				not LiteralRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == Operator.EQUAL,
 					patternIsNot == $r.patternIsNot,
-					valueAsString matches $r.valueAsString
+					valueAsString == $r.valueAsString
 				)
 		#
 		# matches and not matches
@@ -63,26 +63,26 @@ rule "Missing restriction in LiteralRestrictions"
 		) or (
 				$r :LiteralRestriction(
 					operator == MatchesEvaluatorsDefinition.MATCHES,
-					valueAsString matches $r.valueAsString
+					valueAsString == $r.valueAsString
 				)
 			and
 				not LiteralRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
 					patternIsNot == $r.patternIsNot,
-					valueAsString matches $r.valueAsString
+					valueAsString == $r.valueAsString
 				)
 		) or (
 				$r :LiteralRestriction(
 					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
-					valueAsString matches $r.valueAsString
+					valueAsString == $r.valueAsString
 				)
 			and
 				not LiteralRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == MatchesEvaluatorsDefinition.MATCHES,
 					patternIsNot == $r.patternIsNot,
-					valueAsString matches $r.valueAsString
+					valueAsString == $r.valueAsString
 				)
 		)
 	then
@@ -117,10 +117,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == Operator.NOT_EQUAL,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
@@ -129,10 +129,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == Operator.EQUAL,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		#
@@ -144,10 +144,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
@@ -156,10 +156,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == MatchesEvaluatorsDefinition.MATCHES,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		#
@@ -171,10 +171,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == SetEvaluatorsDefinition.NOT_MEMBEROF,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
@@ -183,10 +183,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == SetEvaluatorsDefinition.MEMBEROF,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		#
@@ -198,10 +198,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == SetEvaluatorsDefinition.NOT_CONTAINS,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		) or (
@@ -210,10 +210,10 @@ rule "Missing restriction in VariableRestrictions"
 				)
 			and
 				not VariableRestriction(
-					fieldGuid matches $r.fieldGuid,
+					fieldPath == $r.fieldPath,
 					operator == SetEvaluatorsDefinition.CONTAINS,
 					patternIsNot == $r.patternIsNot,
-					variable.objectTypeGuid matches $r.variable.objectTypeGuid,
+					variable.objectTypePath == $r.variable.objectTypePath,
 					variable.objectTypeType == $r.variable.objectTypeType
 				)
 		)

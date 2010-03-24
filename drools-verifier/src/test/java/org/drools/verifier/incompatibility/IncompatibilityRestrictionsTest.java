@@ -10,10 +10,14 @@ import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.TestBase;
+import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.report.components.Cause;
 
 public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
@@ -25,35 +29,38 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         Collection<Object> data = new ArrayList<Object>();
 
+        Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
+        Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
+
         /*
          * Working pair
          */
-        LiteralRestriction r1 = new LiteralRestriction();
+        LiteralRestriction r1 = new LiteralRestriction( pattern1 );
         r1.setOperator( Operator.EQUAL );
-        r1.setPatternGuid( "0" );
-        r1.setFieldGuid( "0" );
+        r1.setFieldPath( "0" );
         r1.setValue( "10" );
+        r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction();
+        LiteralRestriction r2 = new LiteralRestriction( pattern1 );
         r2.setOperator( Operator.LESS );
-        r2.setPatternGuid( "0" );
-        r2.setFieldGuid( "0" );
+        r2.setFieldPath( "0" );
         r2.setValue( "1" );
+        r2.setOrderNumber( 2 );
 
         /*
          * Pair that doesn't work.
          */
-        LiteralRestriction r3 = new LiteralRestriction();
+        LiteralRestriction r3 = new LiteralRestriction( pattern2 );
         r3.setOperator( Operator.GREATER_OR_EQUAL );
-        r3.setPatternGuid( "1" );
-        r3.setFieldGuid( "1" );
+        r3.setFieldPath( "1" );
         r3.setValue( "1" );
+        r3.setOrderNumber( 0 );
 
-        LiteralRestriction r4 = new LiteralRestriction();
+        LiteralRestriction r4 = new LiteralRestriction( pattern2 );
         r4.setOperator( Operator.EQUAL );
-        r4.setPatternGuid( "1" );
-        r4.setFieldGuid( "1" );
+        r4.setFieldPath( "1" );
         r4.setValue( "10" );
+        r4.setOrderNumber( 1 );
 
         data.add( r1 );
         data.add( r2 );
@@ -83,35 +90,38 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         Collection<Object> data = new ArrayList<Object>();
 
+        Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
+        Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
+
         /*
          * Working pair
          */
-        LiteralRestriction r1 = new LiteralRestriction();
+        LiteralRestriction r1 = new LiteralRestriction( pattern1 );
         r1.setOperator( Operator.GREATER );
-        r1.setPatternGuid( "0" );
-        r1.setFieldGuid( "0" );
+        r1.setFieldPath( "0" );
         r1.setValue( "10" );
+        r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction();
+        LiteralRestriction r2 = new LiteralRestriction( pattern1 );
         r2.setOperator( Operator.EQUAL );
-        r2.setPatternGuid( "0" );
-        r2.setFieldGuid( "0" );
+        r2.setFieldPath( "0" );
         r2.setValue( "1" );
+        r2.setOrderNumber( 1 );
 
         /*
          * Pair that doesn't work.
          */
-        LiteralRestriction r3 = new LiteralRestriction();
+        LiteralRestriction r3 = new LiteralRestriction( pattern2 );
         r3.setOperator( Operator.GREATER_OR_EQUAL );
-        r3.setPatternGuid( "1" );
-        r3.setFieldGuid( "1" );
+        r3.setFieldPath( "1" );
         r3.setValue( "1" );
+        r3.setOrderNumber( 0 );
 
-        LiteralRestriction r4 = new LiteralRestriction();
+        LiteralRestriction r4 = new LiteralRestriction( pattern2 );
         r4.setOperator( Operator.EQUAL );
-        r4.setPatternGuid( "1" );
-        r4.setFieldGuid( "1" );
+        r4.setFieldPath( "1" );
         r4.setValue( "10" );
+        r4.setOrderNumber( 1 );
 
         data.add( r1 );
         data.add( r2 );
@@ -141,35 +151,38 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         Collection<Object> data = new ArrayList<Object>();
 
+        Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
+        Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
+
         /*
          * Working pair
          */
-        LiteralRestriction r1 = new LiteralRestriction();
+        LiteralRestriction r1 = new LiteralRestriction( pattern1 );
         r1.setOperator( Operator.GREATER );
-        r1.setPatternGuid( "0" );
-        r1.setFieldGuid( "0" );
+        r1.setFieldPath( "0" );
         r1.setValue( "10" );
+        r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction();
+        LiteralRestriction r2 = new LiteralRestriction( pattern1 );
         r2.setOperator( Operator.LESS );
-        r2.setPatternGuid( "0" );
-        r2.setFieldGuid( "0" );
+        r2.setFieldPath( "0" );
         r2.setValue( "10" );
+        r2.setOrderNumber( 1 );
 
         /*
          * Pair that doesn't work.
          */
-        LiteralRestriction r3 = new LiteralRestriction();
+        LiteralRestriction r3 = new LiteralRestriction( pattern2 );
         r3.setOperator( Operator.GREATER_OR_EQUAL );
-        r3.setPatternGuid( "1" );
-        r3.setFieldGuid( "1" );
+        r3.setFieldPath( "1" );
         r3.setValue( "1" );
+        r3.setOrderNumber( 0 );
 
-        LiteralRestriction r4 = new LiteralRestriction();
+        LiteralRestriction r4 = new LiteralRestriction( pattern2 );
         r4.setOperator( Operator.EQUAL );
-        r4.setPatternGuid( "1" );
-        r4.setFieldGuid( "1" );
+        r4.setFieldPath( "1" );
         r4.setValue( "10" );
+        r4.setOrderNumber( 1 );
 
         data.add( r1 );
         data.add( r2 );
@@ -199,43 +212,53 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         Collection<Object> data = new ArrayList<Object>();
 
+        VerifierRule rule = VerifierComponentMockFactory.createRule1();
+
+        ObjectType objectType = new ObjectType();
+        objectType.setFullName( "org.test.Person" );
+
+        Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
+        Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
+
         /*
          * Working pair
          */
-        Variable variable1 = new Variable();
-        variable1.setObjectTypeGuid( "0" );
+        Variable variable1 = new Variable( rule );
+        variable1.setObjectTypePath( "0" );
         variable1.setObjectTypeType( VerifierComponentType.FIELD.getType() );
+        variable1.setOrderNumber( 11 );
 
-        VariableRestriction r1 = new VariableRestriction();
+        VariableRestriction r1 = new VariableRestriction( pattern1 );
         r1.setOperator( Operator.GREATER );
-        r1.setPatternGuid( "0" );
-        r1.setFieldGuid( "0" );
+        r1.setFieldPath( "0" );
         r1.setVariable( variable1 );
+        r1.setOrderNumber( 0 );
 
-        VariableRestriction r2 = new VariableRestriction();
+        VariableRestriction r2 = new VariableRestriction( pattern1 );
         r2.setOperator( Operator.LESS );
-        r2.setPatternGuid( "0" );
-        r2.setFieldGuid( "0" );
+        r2.setFieldPath( "0" );
         r2.setVariable( variable1 );
+        r2.setOrderNumber( 1 );
 
         /*
          * Pair that doesn't work.
          */
-        Variable variable2 = new Variable();
-        variable2.setObjectTypeGuid( "1" );
+        Variable variable2 = new Variable( rule );
+        variable2.setObjectTypePath( "1" );
         variable2.setObjectTypeType( VerifierComponentType.FIELD.getType() );
+        variable2.setOrderNumber( 10 );
 
-        VariableRestriction r3 = new VariableRestriction();
+        VariableRestriction r3 = new VariableRestriction( pattern2 );
         r3.setOperator( Operator.GREATER_OR_EQUAL );
-        r3.setPatternGuid( "1" );
-        r3.setFieldGuid( "1" );
+        r3.setFieldPath( "1" );
         r3.setVariable( variable2 );
+        r3.setOrderNumber( 0 );
 
-        VariableRestriction r4 = new VariableRestriction();
+        VariableRestriction r4 = new VariableRestriction( pattern2 );
         r4.setOperator( Operator.EQUAL );
-        r4.setPatternGuid( "1" );
-        r4.setFieldGuid( "1" );
+        r4.setFieldPath( "1" );
         r4.setVariable( variable2 );
+        r4.setOrderNumber( 1 );
 
         data.add( r1 );
         data.add( r2 );

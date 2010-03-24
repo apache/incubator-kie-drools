@@ -6,12 +6,17 @@ import org.drools.verifier.report.components.Cause;
  *
  * @author Toni Rikkola
  */
-public class VerifierEvalDescr extends RuleComponent
+public class PatternEval extends PatternComponent
     implements
+    Eval,
     Cause {
 
     private String content;
     private String classMethodName;
+
+    public PatternEval(Pattern pattern) {
+        super( pattern );
+    }
 
     public String getClassMethodName() {
         return classMethodName;
@@ -31,10 +36,10 @@ public class VerifierEvalDescr extends RuleComponent
 
     @Override
     public String toString() {
-        return "Eval, content: " + content;
+        return "Eval content: " + content;
     }
 
     public VerifierComponentType getVerifierComponentType() {
-        return VerifierComponentType.EVAL;
+        return VerifierComponentType.PREDICATE;
     }
 }

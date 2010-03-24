@@ -6,6 +6,15 @@ public class TextConsequence extends RuleComponent
 
     private String text;
 
+    public TextConsequence(VerifierRule rule) {
+        super( rule );
+    }
+
+    @Override
+    public String getPath() {
+        return getRulePath() + ".consequence";
+    }
+
     public ConsequenceType getConsequenceType() {
         return ConsequenceType.TEXT;
     }
@@ -25,4 +34,5 @@ public class TextConsequence extends RuleComponent
     public String toString() {
         return "TextConsequence: {\n" + text + "\n";
     }
+
 }

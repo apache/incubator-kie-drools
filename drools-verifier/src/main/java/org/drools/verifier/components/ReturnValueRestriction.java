@@ -14,6 +14,10 @@ public class ReturnValueRestriction extends Restriction
     private String[] declarations;
     private String   classMethodName;
 
+    public ReturnValueRestriction(Pattern pattern) {
+        super( pattern );
+    }
+
     @Override
     public RestrictionType getRestrictionType() {
         return RestrictionType.RETURN_VALUE_RESTRICTION;

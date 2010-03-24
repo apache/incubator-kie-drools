@@ -9,10 +9,10 @@
         </tr>
 			@foreach{objectType:objectTypes}
 	    	<tr class="row@{objectType.offset}">
-	                <td><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.guid}.htm">@{objectType.name}</a></td>
+	                <td><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.path}.htm">@{objectType.name}</a></td>
 					<td>
 				@foreach{field:objectType.fields}
-					@{field.fieldType}&nbsp;<a href="@{sourceFolder}/@{fieldFolder}/@{field.guid}.htm">@{field.name}</a>@end{","}
+					@{field.fieldType}&nbsp;<a href="@{sourceFolder}/@{fieldFolder}/@{field.path}.htm">@{field.name}</a>@end{","}
 					</td>
         	</tr>
 			@end{}

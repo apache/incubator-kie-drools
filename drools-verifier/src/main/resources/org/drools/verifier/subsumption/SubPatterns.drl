@@ -34,8 +34,8 @@ rule "Find subsumptant sub patterns, subsumptant source"
 	
 		$subPattern1 :SubPattern()
 		$subPattern2 :SubPattern( 
-			guid != $subPattern1.guid,
-			objectTypeGuid == $subPattern1.objectTypeGuid,
+			path != $subPattern1.path,
+			objectTypePath == $subPattern1.objectTypePath,
 			# TODO: Check these. Should work with the idea of subsumption.
 			patternNot == $subPattern1.patternNot,
 			patternExists == $subPattern1.patternExists,
@@ -44,12 +44,12 @@ rule "Find subsumptant sub patterns, subsumptant source"
 		# Check if sources are equal or subsumptant 
 		$sourceSubsumption :Subsumption()
 		Source(
-			guid == $subPattern1.sourceGuid,
+			path == $subPattern1.sourcePath,
 			verifierComponentType == $subPattern1.sourceType,
 			this == $sourceSubsumption.left
 		)	
 		Source(
-			guid == $subPattern2.sourceGuid,
+			path == $subPattern2.sourcePath,
 			verifierComponentType == $subPattern2.sourceType,
 			this == $sourceSubsumption.right
 		)
@@ -99,8 +99,8 @@ rule "Find subsumptant sub patterns, same source"
 	
 		$subPattern1 :SubPattern()
 		$subPattern2 :SubPattern( 
-			guid != $subPattern1.guid,
-			objectTypeGuid == $subPattern1.objectTypeGuid,
+			path != $subPattern1.path,
+			objectTypePath == $subPattern1.objectTypePath,
 			# TODO: Check these. Should work with the idea of subsumption.
 			patternNot == $subPattern1.patternNot,
 			patternExists == $subPattern1.patternExists,
@@ -108,7 +108,7 @@ rule "Find subsumptant sub patterns, same source"
 		)
 		# Check if sources are equal or subsumptant #
 		Source(
-				guid == $subPattern1.sourceGuid && == $subPattern2.sourceGuid,
+				path == $subPattern1.sourcePath && == $subPattern2.sourcePath,
 				verifierComponentType == $subPattern1.sourceType && == $subPattern2.sourceType 
 		)	
 
@@ -139,3 +139,4 @@ rule "Find subsumptant sub patterns, same source"
 			) 
 		);
 end
+

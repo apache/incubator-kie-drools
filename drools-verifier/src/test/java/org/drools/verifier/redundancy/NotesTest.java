@@ -7,9 +7,12 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Cause;
@@ -24,15 +27,18 @@ public class NotesTest extends TestBase {
 
         session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Find redundant restrictions from pattern possibilities" ) );
 
-        Collection<Object> objects = new ArrayList<Object>();
-        LiteralRestriction left = new LiteralRestriction();
+        Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction right = new LiteralRestriction();
+        Collection<Object> objects = new ArrayList<Object>();
+        LiteralRestriction left = new LiteralRestriction( pattern );
+
+        LiteralRestriction right = new LiteralRestriction( pattern );
 
         Redundancy redundancy = new Redundancy( left,
                                                 right );
 
-        SubPattern possibility = new SubPattern();
+        SubPattern possibility = new SubPattern( pattern,
+                                                 0 );
         possibility.add( left );
         possibility.add( right );
 
@@ -67,15 +73,21 @@ public class NotesTest extends TestBase {
 
         session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Find redundant pattern possibilities from rule possibilities" ) );
 
-        Collection<Object> objects = new ArrayList<Object>();
-        SubPattern left = new SubPattern();
+        VerifierRule rule = VerifierComponentMockFactory.createRule1();
+        Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        SubPattern right = new SubPattern();
+        Collection<Object> objects = new ArrayList<Object>();
+        SubPattern left = new SubPattern( pattern,
+                                          0 );
+
+        SubPattern right = new SubPattern( pattern,
+                                           1 );
 
         Redundancy redundancy = new Redundancy( left,
                                                 right );
 
-        SubRule possibility = new SubRule();
+        SubRule possibility = new SubRule( rule,
+                                           0 );
         possibility.add( left );
         possibility.add( right );
 
