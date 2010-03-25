@@ -662,6 +662,15 @@ public class SuggestionCompletionEngine
         }
     }
 
+    public void filterFactTypes(FactTypeFilter filter){
+
+        for (String factType : this.getFactTypes()) {
+            if (filter.filter(factType)){
+                this.modelFields.remove(factType);
+            }
+        }
+    }
+
     public void setFieldsForTypes(Map<String,ModelField[]> fieldsForType){
     	this.modelFields.clear();
         this.modelFields.putAll(fieldsForType);
@@ -675,6 +684,10 @@ public class SuggestionCompletionEngine
         String[] types = this.modelFields.keySet().toArray(new String[this.modelFields.size()]);
         Arrays.sort(types);
 		return types;
+    }
+
+    public boolean containsFactType(String modelClassName){
+        return this.modelFields.containsKey(modelClassName);
     }
 
     private ModelField getField(String modelClassName, String fieldName){
