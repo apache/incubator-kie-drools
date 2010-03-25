@@ -23,7 +23,6 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 
 	public String getText() {
 		return new ToStringVisitor().buildString(getRootExpression());
-		//return parts.isEmpty() ? "" : parts.getFirst().getText();
 	}
 	
 	public void appendPart(ExpressionPart part) {
