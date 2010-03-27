@@ -45,6 +45,9 @@ public class Cheesery
     public List getCheeses() {
         return this.cheeses;
     }
+    public void setCheeses(List l) {
+        this.cheeses=l;
+    }
 
     public void addCheese(final Cheese cheese) {
         this.cheeses.add( cheese );

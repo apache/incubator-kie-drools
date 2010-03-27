@@ -10,10 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.Cheese;
-import org.drools.OuterFact;
-import org.drools.Person;
-import org.drools.WorkingMemory;
+import org.drools.*;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
@@ -1429,5 +1426,62 @@ public class ScenarioRunnerTest extends RuleUnit {
     private <T> List<T> ls(T... objects) {
         return Arrays.asList( objects );
     }
+    public void testCollectionFieldInFacts() throws Exception {
 
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+                                                    null,
+                                                    new MockWorkingMemory() );
+        Cheesery listChesse = new Cheesery();
+        Cheese f1 = new Cheese( "cheddar",
+                                42 );
+        Cheese f2 = new Cheese( "Camembert",
+                                43 );
+        Cheese f3 = new Cheese( "Emmental",
+                                45 );
+        runner.populatedData.put( "f1",
+                                  f1 );
+        runner.populatedData.put( "f2",
+                                  f2 );
+        runner.populatedData.put( "f3",
+                                  f3 );
+        FactData fd1 = new FactData( "Cheese",
+                                    "f1",
+                                    ls( new FieldData( "type",
+                                                       "" ),
+                                        new FieldData( "price",
+                                                       "42" ) ),
+                                    false );
+         FactData fd2 = new FactData( "Cheese",
+                                    "f2",
+                                    ls( new FieldData( "type",
+                                                       "" ),
+                                        new FieldData( "price",
+                                                       "43" ) ),
+                                    false );
+         FactData fd3 = new FactData( "Cheese",
+                                    "f3",
+                                    ls( new FieldData( "type",
+                                                       "" ),
+                                        new FieldData( "price",
+                                                       "45" ) ),
+                                    false );
+         runner.populatedData.put("ACheesery",listChesse);
+         FieldData field = new FieldData();
+         field.name="cheeses";
+         field.collectionType="Cheese";
+         field.nature = FieldData.TYPE_COLLECTION;
+          field.value="=[f1,f2,f3]";
+         List<FieldData> lstField = new ArrayList<FieldData>();
+         lstField.add(field);
+          FactData lst = new FactData( "Cheesery",
+                                    "listChesse",
+                                    lstField,
+                                    false );
+        runner.populateFields(lst,runner.populatedData,listChesse);
+        assertTrue(listChesse.getCheeses().size()==3);
+        assertTrue(listChesse.getCheeses().contains(f1));
+        assertTrue(listChesse.getCheeses().contains(f3));
+        assertTrue(listChesse.getCheeses().contains(f3));
+  
+    }
 }
