@@ -6,6 +6,7 @@ package org.drools.core.util;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
 
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
@@ -359,4 +360,5 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
         return builder.toString();
     }
+    
 }

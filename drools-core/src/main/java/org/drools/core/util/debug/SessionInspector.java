@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.drools.WorkingMemory;
 import org.drools.common.NetworkNode;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.AccumulateNode;
@@ -54,23 +55,23 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class SessionInspector {
 
-    private StatefulKnowledgeSession                               session;
+    private ReteooWorkingMemory                                    session;
     private Map<Class< ? extends NetworkNode>, NetworkNodeVisitor> visitors;
 
-    public SessionInspector(StatefulKnowledgeSession session) {
-        this.session = session;
+    // default initializer
+    {
         this.visitors = new HashMap<Class< ? extends NetworkNode>, NetworkNodeVisitor>();
-        
+
         // terminal nodes
         this.visitors.put( RuleTerminalNode.class,
                            RuleTerminalNodeVisitor.INSTANCE );
         this.visitors.put( QueryTerminalNode.class,
                            QueryTerminalNodeVisitor.INSTANCE );
-        
+
         // root node
         this.visitors.put( Rete.class,
                            DefaultNetworkNodeVisitor.INSTANCE );
-        
+
         // object source nodes
         this.visitors.put( EntryPointNode.class,
                            DefaultNetworkNodeVisitor.INSTANCE );
@@ -82,7 +83,7 @@ public class SessionInspector {
                            RightInputAdapterNodeVisitor.INSTANCE );
         this.visitors.put( PropagationQueuingNode.class,
                            PropagationQueueingNodeVisitor.INSTANCE );
-        
+
         // left tuple source nodes
         this.visitors.put( JoinNode.class,
                            BetaNodeVisitor.INSTANCE );
@@ -100,15 +101,21 @@ public class SessionInspector {
                            FromNodeVisitor.INSTANCE );
         this.visitors.put( LeftInputAdapterNode.class,
                            LeftInputAdapterNodeVisitor.INSTANCE );
-        
+    }
+    
+    public SessionInspector(StatefulKnowledgeSession session) {
+        this.session = ((StatefulKnowledgeSessionImpl) session).session;
+    }
+
+    public SessionInspector(WorkingMemory session) {
+        this.session = (ReteooWorkingMemory) session;
     }
 
     public StatefulKnowledgeSessionInfo getSessionInfo() {
         StatefulKnowledgeSessionInfo info = new StatefulKnowledgeSessionInfo();
-        ReteooWorkingMemory wm = ((StatefulKnowledgeSessionImpl) this.session).session;
-        ReteooRuleBase rulebase = (ReteooRuleBase) wm.getRuleBase();
+        ReteooRuleBase rulebase = (ReteooRuleBase) session.getRuleBase();
 
-        info.setSession( wm );
+        info.setSession( session );
 
         Stack<NetworkNode> nodeStack = new Stack<NetworkNode>();
         gatherNodeInfo( rulebase.getRete(),

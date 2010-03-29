@@ -170,4 +170,8 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
+    public String toTupleTree(int indent) {
+        return null;
+    }
+
 }

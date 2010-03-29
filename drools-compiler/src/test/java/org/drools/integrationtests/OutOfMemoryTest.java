@@ -16,8 +16,10 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
@@ -36,6 +38,8 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.core.util.debug.SessionInspector;
+import org.drools.core.util.debug.SessionReporter;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.ObjectFilter;
@@ -105,43 +109,71 @@ public class OutOfMemoryTest extends TestCase {
 
     public void testMemoryLeak() {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_memoryLeak.drl", OutOfMemoryTest.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_memoryLeak.drl",
+                                                            OutOfMemoryTest.class ),
                       ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-        
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         final int pcount = 2;
         Person[] persons = new Person[pcount];
         FactHandle[] pHandles = new FactHandle[pcount];
-        for( int i = 0; i < persons.length; i++ ) {
-            persons[i] = new Person( "person"+i );
+        for ( int i = 0; i < persons.length; i++ ) {
+            persons[i] = new Person( "person-0-" + i );
             pHandles[i] = ksession.insert( persons[i] );
         }
-        
-        ksession.fireAllRules() ;
-        Collection< ? > logicals = getLogicallyInserted( ksession );
-        assertEquals( pcount, logicals.size() );
-        
-        for(int i = 0; i < pcount; i++ ) {
-            persons[i].setName( "personA"+i );
-            ksession.update( pHandles[i], persons[i] );
+
+        Cheese[] cheeses = new Cheese[pcount];
+        FactHandle[] cHandles = new FactHandle[pcount];
+        for ( int i = 0; i < cheeses.length; i++ ) {
+            cheeses[i] = new Cheese( "cheese-0-" + i );
+            cHandles[i] = ksession.insert( cheeses[i] );
         }
-        
-        ksession.fireAllRules() ;
-        logicals = getLogicallyInserted( ksession );
-        assertEquals( pcount, logicals.size() );
+
+        ksession.fireAllRules();
+
+        for ( int j = 1; j <= 1; j++ ) {
+            for ( int i = 0; i < pcount; i++ ) {
+                cheeses[i].setType( "cheese-" + j + "-" + i );
+                ksession.update( cHandles[i],
+                                 cheeses[i] );
+                persons[i].setName( "person-" + j + "-" + i );
+                ksession.update( pHandles[i],
+                                 persons[i] );
+            }
+            ksession.fireAllRules();
+            System.out.println( "DONE" );
+        }
+
+        SessionInspector inspector = new SessionInspector( ksession );
+        SessionReporter.addNamedTemplate( "dump_tuples",
+                                          getClass().getResourceAsStream( "/org/drools/core/util/debug/dump_tuples.mvel" ) );
+        String report = SessionReporter.generateReport( "dump_tuples",
+                                                        inspector.getSessionInfo(),
+                                                        new HashMap<String, Object>() );
+        try {
+            FileWriter out = new FileWriter( "tupleDump.txt" );
+            out.write( report );
+            out.close();
+            System.out.println( report );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        //        logicals = getLogicallyInserted( ksession );
+        //        assertEquals( pcount, logicals.size() );
     }
 
     private Collection< ? > getLogicallyInserted(final StatefulKnowledgeSession ksession) {
-        Collection<?> logicals = ksession.getObjects( new ObjectFilter() {
+        Collection< ? > logicals = ksession.getObjects( new ObjectFilter() {
             public boolean accept(Object object) {
                 return object.getClass().getSimpleName().equals( "PersonName" );
             }
-        });
+        } );
         return logicals;
     }
 }

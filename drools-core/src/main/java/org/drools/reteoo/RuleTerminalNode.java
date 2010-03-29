@@ -317,9 +317,9 @@ public class RuleTerminalNode extends BaseNode
             agenda.scheduleItem( (ScheduledAgendaItem) item,
                                  workingMemory );
             item.setActivated( true );
-            workingMemory.removeLogicalDependencies( item,
-                                                     context,
-                                                     this.rule );
+//            workingMemory.removeLogicalDependencies( item,
+//                                                     context,
+//                                                     this.rule );
 
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                           workingMemory );
@@ -343,9 +343,9 @@ public class RuleTerminalNode extends BaseNode
             item.setActivated( added );
 
             if ( added ) {
-                workingMemory.removeLogicalDependencies( item,
-                                                         context,
-                                                         this.rule );
+//                workingMemory.removeLogicalDependencies( item,
+//                                                         context,
+//                                                         this.rule );
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }
