@@ -181,8 +181,8 @@ public class SessionInspectorTest extends TestCase {
         
         StatefulKnowledgeSessionInfo info = inspector.getSessionInfo();
 
-        SessionReporter.addNamedTemplate( "custom", getClass().getResourceAsStream( "customreports.mvel" ) );
-        String report = SessionReporter.generateReport( "custom", info, null );
+        SessionReporter.addNamedTemplate( "topten", getClass().getResourceAsStream( "customreports.mvel" ) );
+        String report = SessionReporter.generateReport( "topten", info, null );
         
         assertNotNull( report );
         //System.out.println(report);

@@ -16,7 +16,7 @@ topTuples.addAll( session.nodeInfos );
 buffer = new StringBuilder();
 it = topTuples.iterator(); 
 for( int i = 0; i < 10 && it.hasNext() ; i++ ) {
-    ni = (org.drools.util.debug.NodeInfo) it.next();
+    ni = (org.drools.core.util.debug.NodeInfo) it.next();
     buffer.append( (i+1) + ". " + ni.node );
     buffer.append( "\n\t\tLeftTuples = ");
     buffer.append( ni.getTupleMemorySize());
@@ -31,9 +31,9 @@ topFacts = new java.util.TreeSet(new org.drools.core.util.debug.RightMemorySizeC
 topFacts.addAll( session.nodeInfos );
 buffer = new StringBuilder();
 it = topFacts.iterator(); 
-for( int i = 0; i < 10 && it.hasNext() ; i++ ) {
-    ni = (org.drools.util.debug.NodeInfo) it.next();
-    buffer.append( (i+1) + ". " + ni.node );
+for( int j = 0; j < 10 && it.hasNext() ; j++ ) {
+    ni = (org.drools.core.util.debug.NodeInfo) it.next();
+    buffer.append( (j+1) + ". " + ni.node );
     buffer.append( "\n\t\tFacts = ");
     buffer.append( ni.getFactMemorySize());
     buffer.append( "\n");
