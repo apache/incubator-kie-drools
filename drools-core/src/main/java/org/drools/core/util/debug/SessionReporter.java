@@ -1,5 +1,6 @@
 package org.drools.core.util.debug;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +47,19 @@ public class SessionReporter {
                                                  null,
                                                  new MapVariableResolverFactory( context ),
                                                  REPORT_REGISTRY );
+    }
+
+    public static void addNamedTemplate(String name,
+                                        InputStream template) {
+        REPORT_REGISTRY.addNamedTemplate( name,
+                                          TemplateCompiler.compileTemplate( template,
+                                                                            null ) );
+        /*
+         * Process these templates
+         */
+        TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( name ),
+                                 null,
+                                 REPORT_REGISTRY );
     }
 
 }
