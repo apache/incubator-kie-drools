@@ -321,4 +321,8 @@ public class AgendaItem
         }
         return Collections.unmodifiableCollection( list );
     }
+    
+    public String toExternalForm() {
+        return "[ "+this.getRule().getName()+" active="+this.activated+ " ]";
+    }
 }

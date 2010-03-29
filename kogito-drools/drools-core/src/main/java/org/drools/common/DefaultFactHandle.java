@@ -16,6 +16,8 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -261,5 +263,23 @@ public class DefaultFactHandle
         
         clone.objectHashCode = this.objectHashCode;
         return clone;
+    }
+
+    public String toTupleTree(int indent) {
+        StringBuilder buf = new StringBuilder();
+        char[] spaces = new char[indent];
+        Arrays.fill( spaces, ' ' );
+        String istr = new String( spaces );
+        buf.append( istr );
+        buf.append( this.toExternalString() );
+        buf.append( "\n" );
+        for( LeftTuple leftTuple = this.firstLeftTuple; leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
+            buf.append( leftTuple.toTupleTree( indent+4 ) );
+        }
+        return buf.toString();
+    }
+
+    private Object toExternalString() {
+        return "[F:"+this.getId()+" first="+System.identityHashCode( firstLeftTuple )+" last="+System.identityHashCode( lastLeftTuple )+" ]";
     }
 }

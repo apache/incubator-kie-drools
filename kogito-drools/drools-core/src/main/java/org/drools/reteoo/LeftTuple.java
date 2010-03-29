@@ -1,5 +1,8 @@
 package org.drools.reteoo;
 
+import java.util.Arrays;
+
+import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.LeftTupleList;
@@ -531,4 +534,37 @@ public class LeftTuple
     public LeftTuple getParent() {
         return parent;
     }
+    
+    public String toTupleTree(int indent) {
+        StringBuilder buf = new StringBuilder();
+        char[] spaces = new char[indent];
+        Arrays.fill( spaces, ' ' );
+        String istr = new String( spaces );
+        buf.append( istr );
+        buf.append( this.toExternalString() );
+        buf.append( "\n" );
+        for( LeftTuple leftTuple = this.firstChild; leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
+            buf.append( leftTuple.toTupleTree( indent+4 ) );
+        }
+        return buf.toString();
+    }
+
+    private String toExternalString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append( String.format( "%08X", System.identityHashCode( this ) ) ).append( ":" );
+        int[] ids = new int[this.index+1];
+        LeftTuple entry = this;
+        while( entry != null ) {
+            ids[entry.index] = entry.getLastHandle().getId();
+            entry = entry.parent;
+        }
+        builder.append( Arrays.toString( ids ) )
+               .append( " activation=" )
+               .append( this.activation != null ? ((AgendaItem)this.activation).toExternalForm() : "null" )
+               .append( " sink=" )
+               .append( this.sink.getClass().getSimpleName() )
+               .append( "(" ).append( sink.getId() ).append( ")" );
+        return  builder.toString();
+    }
+    
 }

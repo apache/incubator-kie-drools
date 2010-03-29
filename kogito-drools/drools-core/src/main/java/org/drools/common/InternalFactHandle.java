@@ -79,4 +79,6 @@ public interface InternalFactHandle
     
     public String toExternalForm();
     
+    public String toTupleTree( int indent );
+    
 }
