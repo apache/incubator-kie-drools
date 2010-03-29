@@ -106,5 +106,88 @@ public class SessionInspectorTest extends TestCase {
         //System.out.println(report);
         
     }
+    
+    public void testGetSessionInfoWithCustomTemplate() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SubNetworks.drl" ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_AccumulateWithFromChaining.drl" ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_CollectResultsBetaConstraint.drl" ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_QueryMemoryLeak.drl" ),
+                      ResourceType.DRL );
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "results", new ArrayList<Object>() );
+        
+        ksession.insert( new Dimension( 100, 50 ) );
+        ksession.insert( new Dimension( 130, 80 ) );
+        ksession.insert( new Dimension( 50, 40 ) );
+        ksession.insert( new Dimension( 50, 40 ) );
+        Cheesery cheesery = new Cheesery();
+        cheesery.addCheese( new Cheese( "brie", 10 ));
+        cheesery.addCheese( new Cheese( "brie", 10 ));
+        cheesery.addCheese( new Cheese( "brie", 10 ));
+        cheesery.addCheese( new Cheese( "brie", 10 ));
+        cheesery.addCheese( new Cheese( "muzzarella", 10 ));
+        cheesery.addCheese( new Cheese( "muzzarella", 10 ));
+        cheesery.addCheese( new Cheese( "muzzarella", 10 ));
+        cheesery.addCheese( new Cheese( "muzzarella", 10 ));
+        cheesery.addCheese( new Cheese( "muzzarella", 10 ));
+        cheesery.addCheese( new Cheese( "muzzarella", 10 ));
+        cheesery.addCheese( new Cheese( "muzzarella", 10 ));
+        cheesery.addCheese( new Cheese( "stilton", 10 ));
+        cheesery.addCheese( new Cheese( "stilton", 10 ));
+        cheesery.addCheese( new Cheese( "stilton", 10 ));
+        cheesery.addCheese( new Cheese( "stilton", 10 ));
+        cheesery.addCheese( new Cheese( "stilton", 10 ));
+        cheesery.addCheese( new Cheese( "stilton", 10 ));
+        cheesery.addCheese( new Cheese( "stilton", 10 ));
+        ksession.insert( cheesery );
+        ksession.insert( new Person( "Bob", "muzzarella") );
+        ksession.insert( new Person( "Mark", "brie") );
+        ksession.insert( new Cheese( "brie", 10 ) );
+        ksession.insert( new Cheese( "brie", 10 ) );
+        ksession.insert( new Cheese( "brie", 10 ) );
+        ksession.insert( new Cheese( "brie", 10 ) );
+        ksession.insert( new Cheese( "muzzarella", 10 ) );
+        ksession.insert( new Cheese( "muzzarella", 10 ) );
+        ksession.insert( new Cheese( "muzzarella", 10 ) );
+        ksession.insert( new Cheese( "muzzarella", 10 ) );
+        ksession.insert( new Cheese( "Stilton", 10 ) );
+        ksession.insert( new Cheese( "Stilton", 10 ) );
+        ksession.insert( new Cheese( "Stilton", 10 ) );
+        ksession.insert( new Double( 10 ) );
+        ksession.insert( new Double( 11 ) );
+        ksession.insert( new Double( 12 ) );
+        ksession.insert( new Double( 13 ) );
+        ksession.insert( new Double( 14 ) );
+        ksession.insert( new Integer( 15 ) );
+        ksession.insert( new Integer( 16 ) );
+        ksession.insert( new Integer( 17 ) );
+        ksession.insert( new Integer( 18 ) );
+        org.drools.runtime.rule.FactHandle handle = ksession.insert( new Worker( ) );
+        
+        ksession.retract( handle );
+        
+        SessionInspector inspector = new SessionInspector( ksession );
+        
+        StatefulKnowledgeSessionInfo info = inspector.getSessionInfo();
+
+        SessionReporter.addNamedTemplate( "custom", getClass().getResourceAsStream( "customreports.mvel" ) );
+        String report = SessionReporter.generateReport( "custom", info, null );
+        
+        assertNotNull( report );
+        //System.out.println(report);
+        
+    }
+    
 
 }
