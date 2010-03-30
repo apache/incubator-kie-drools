@@ -14,6 +14,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
@@ -185,7 +186,7 @@ public class VerifierImpl
 
         // TODO: Other than DRL
         if ( type.matchesExtension( ".drl" ) ) {
-            DrlParser p = new DrlParser();
+            DrlParser drlParser = new DrlParser();
 
             try {
 
@@ -202,11 +203,17 @@ public class VerifierImpl
                     }
                 } while ( line != null );
 
-                PackageDescr pkg = p.parse( drl.toString() );
+                PackageDescr pkg = drlParser.parse( drl.toString() );
 
-                addPackageDescr( pkg );
+                if ( drlParser.hasErrors() ) {
+                    addVerifierErrors( drlParser );
+                } else if ( pkg == null ) {
+                    errors.add( new VerifierError( "Verifier could not form a PackageDescr from the resources that it was trying to verify." ) );
+                } else {
+                    addPackageDescr( pkg );
 
-                addDrlData( drl.toString() );
+                    addDrlData( drl.toString() );
+                }
 
                 reader.close();
 
@@ -215,6 +222,12 @@ public class VerifierImpl
             } catch ( IOException e ) {
                 errors.add( new VerifierError( e.getMessage() ) );
             }
+        }
+    }
+
+    private void addVerifierErrors(DrlParser p) {
+        for ( DroolsError droolsError : p.getErrors() ) {
+            errors.add( new VerifierError( droolsError.getMessage() ) );
         }
     }
 
