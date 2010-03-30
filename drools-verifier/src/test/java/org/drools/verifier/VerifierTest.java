@@ -56,6 +56,50 @@ public class VerifierTest extends TestCase {
 
     }
 
+    public void testVerifierInvalidDRLs() {
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
+
+        // Check that the builder works.
+        assertFalse( vBuilder.hasErrors() );
+        assertEquals( 0,
+                      vBuilder.getErrors().size() );
+
+        Verifier verifier = vBuilder.newVerifier();
+
+        String drl = "This will not work";
+
+        verifier.addResourcesToVerify( new ReaderResource( new StringReader( drl ) ),
+                                       ResourceType.DRL );
+
+        assertTrue( verifier.hasErrors() );
+
+        assertEquals( 3,
+                      verifier.getErrors().size() );
+
+    }
+
+    public void testVerifierNullPackageDescr() {
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
+
+        // Check that the builder works.
+        assertFalse( vBuilder.hasErrors() );
+        assertEquals( 0,
+                      vBuilder.getErrors().size() );
+
+        Verifier verifier = vBuilder.newVerifier();
+
+        String drl = "#This will not work";
+
+        verifier.addResourcesToVerify( new ReaderResource( new StringReader( drl ) ),
+                                       ResourceType.DRL );
+
+        assertTrue( verifier.hasErrors() );
+
+        assertEquals( 1,
+                      verifier.getErrors().size() );
+
+    }
+
     public void testFactTypesFromJar() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
