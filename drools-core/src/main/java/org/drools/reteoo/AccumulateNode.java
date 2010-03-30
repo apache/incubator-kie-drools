@@ -358,7 +358,7 @@ public class AccumulateNode extends BetaNode {
                         } else {
                             // we must re-add this to ensure deterministic iteration
                             LeftTuple temp = childLeftTuple.getLeftParentNext();
-                            childLeftTuple.reAddLeft();
+                            childLeftTuple.reAddRight();
                             childLeftTuple = temp;
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
@@ -468,7 +468,7 @@ public class AccumulateNode extends BetaNode {
                         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
                         if ( childLeftTuple == null || childLeftTuple.getLeftParent() == leftTuple ) {
                             // we must re-add this to ensure deterministic iteration
-                            childLeftTuple.reAddRight();
+                            childLeftTuple.reAddLeft();
                             removeMatch( rightTuple,
                                          childLeftTuple,
                                          workingMemory,

@@ -224,7 +224,7 @@ public class JoinNode extends BetaNode {
                                                                                       workingMemory,
                                                                                       this.tupleMemoryEnabled );
                             // we must re-add this to ensure deterministic iteration
-                            temp.reAddRight();
+                            temp.reAddLeft();
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
                         childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
@@ -307,7 +307,7 @@ public class JoinNode extends BetaNode {
                                                                                       workingMemory,
                                                                                       this.tupleMemoryEnabled );
                             // we must re-add this to ensure deterministic iteration
-                            temp.reAddLeft();
+                            temp.reAddRight();
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
                         childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
