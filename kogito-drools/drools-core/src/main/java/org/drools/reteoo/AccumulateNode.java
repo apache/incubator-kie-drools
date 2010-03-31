@@ -820,7 +820,7 @@ public class AccumulateNode extends BetaNode {
                                            accctx,
                                            false );
         for ( LeftTuple match = matchings[0]; match != null; match = match.getLeftParentNext() ) {
-            match.unlinkFromLeftParent();
+            // can't unlink from the left parent as it was already unlinked during the splitList call above
             match.unlinkFromRightParent();
         }
         // since there are no more matches, the following call will just re-initialize the accumulation

@@ -22,7 +22,7 @@ Setup
 	    new org.drools.Person('yoda', 36), new org.drools.Person('luke', 37),
 	    new org.drools.Person('dave', 38), new org.drools.Person('bob', 39); 
 
-Test "Modify test"	     
+Test "Join Node Modify test"	     
 	/**    
 	 * insert one left and try modify
 	 */    

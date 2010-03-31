@@ -59,7 +59,7 @@ Test "Single right assertion and retraction"
 /**        
  *  check single left then right assertion
  */
- Test "single left then right assertion" 
+ Test "collect node single left then right assertion" 
 	assert:
 	    otnLeft1, [h0];  
 	sink1:

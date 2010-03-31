@@ -57,7 +57,7 @@ Test "Single right assertion and retraction"
 /**        
  *  check single left then right assertion
  */
- Test "single left then right assertion" 
+ Test "accumulate node single left then right assertion" 
 	assert:
 	    acc, [[h0]];  
 	sink:
