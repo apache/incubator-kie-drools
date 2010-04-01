@@ -22,9 +22,7 @@ import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
  * 
  * @author Michael Neale
  */
-public class SuggestionCompletionEngine
-    implements
-    PortableObject {
+public class SuggestionCompletionEngine implements PortableObject {
 
     /** These are the explicit types supported */
     public static final String            TYPE_COLLECTION        = "Collection";
@@ -154,8 +152,11 @@ public class SuggestionCompletionEngine
     private Map<String, List<MethodInfo>> methodInfos            = new HashMap<String, List<MethodInfo>>();
 
     private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
+    private Map<String, ModelField[]> filterModelFields = null;
 
     private Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
+	private FactTypeFilter factFilter = null;
+	private boolean filteringFacts = true;
     
     public SuggestionCompletionEngine() {
 
@@ -564,10 +565,10 @@ public class SuggestionCompletionEngine
     	if (type == null) {
     		return null;
     	}
-    	if (modelFields.containsKey(type)) {
+    	if (getModelFields().containsKey(type)) {
     		return type;
     	} 
-    	for (Map.Entry<String, ModelField[]> entry : modelFields.entrySet()) {
+    	for (Map.Entry<String, ModelField[]> entry : getModelFields().entrySet()) {
 			for (ModelField mf : entry.getValue()) {
 				if ("this".equals(mf.getName()) && type.equals(mf.getClassName())) {
 					return entry.getKey();
@@ -658,22 +659,18 @@ public class SuggestionCompletionEngine
     public void setFactTypes(String[] factTypes) {
         for (String factType : factTypes) {
             //adds the fact type with no fields.
-            this.modelFields.put(factType, new ModelField[0]);
+            this.getModelFields().put(factType, new ModelField[0]);
         }
     }
 
-    public void filterFactTypes(FactTypeFilter filter){
-
-        for (String factType : this.getFactTypes()) {
-            if (filter.filter(factType)){
-                this.modelFields.remove(factType);
-            }
-        }
+    public void setFactTypeFilter(FactTypeFilter filter){
+    	this.factFilter = filter;
+    	filterModelFields();
     }
 
     public void setFieldsForTypes(Map<String,ModelField[]> fieldsForType){
-    	this.modelFields.clear();
-        this.modelFields.putAll(fieldsForType);
+    	this.getModelFields().clear();
+        this.getModelFields().putAll(fieldsForType);
     }
 
     /**
@@ -681,17 +678,17 @@ public class SuggestionCompletionEngine
      * @return
      */
     public String[] getFactTypes() {
-        String[] types = this.modelFields.keySet().toArray(new String[this.modelFields.size()]);
+        String[] types = this.getModelFields().keySet().toArray(new String[this.getModelFields().size()]);
         Arrays.sort(types);
 		return types;
     }
 
     public boolean containsFactType(String modelClassName){
-        return this.modelFields.containsKey(modelClassName);
+        return this.getModelFields().containsKey(modelClassName);
     }
 
     private ModelField getField(String modelClassName, String fieldName){
-        ModelField[] fields = this.modelFields.get(modelClassName);
+        ModelField[] fields = this.getModelFields().get(modelClassName);
 
         if (fields == null){
             return null;
@@ -709,11 +706,11 @@ public class SuggestionCompletionEngine
     public String[] getModelFields(FieldAccessorsAndMutators accessorOrMutator,
                                    String modelClassName) {
 
-        if ( !this.modelFields.containsKey( modelClassName ) ) {
+        if ( !this.getModelFields().containsKey( modelClassName ) ) {
             return new String[0];
         }
 
-        ModelField[] fields = this.modelFields.get( modelClassName );
+        ModelField[] fields = this.getModelFields().get( modelClassName );
 
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add( "this" );
@@ -733,11 +730,11 @@ public class SuggestionCompletionEngine
 
     public String[] getModelFields(String modelClassName){
 
-        if (!this.modelFields.containsKey(modelClassName)){
+        if (!this.getModelFields().containsKey(modelClassName)){
             return new String[0];
         }
 
-        ModelField[] fields = this.modelFields.get(modelClassName);
+        ModelField[] fields = this.getModelFields().get(modelClassName);
 
         String[] fieldNames = new String[fields.length];
 
@@ -786,7 +783,38 @@ public class SuggestionCompletionEngine
 
     public void setAccessorsAndMutators(Map<String, FieldAccessorsAndMutators> accessorsAndMutators) {
         this.accessorsAndMutators=accessorsAndMutators;
-        
     }
 
+    
+    
+	public void setModelFields(Map<String, ModelField[]> modelFields) {
+		this.modelFields = modelFields;
+		filterModelFields();
+	}
+
+	private void filterModelFields() {
+		if (factFilter != null) {
+			filterModelFields = new HashMap<String, ModelField[]>();
+			for (Map.Entry<String, ModelField[]> entry : modelFields.entrySet()) {
+				if (!factFilter.filter(entry.getKey())) {
+					filterModelFields.put(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+	}
+	
+	public Map<String, ModelField[]> getModelFields() {
+		if (factFilter != null && isFilteringFacts()) {
+			return filterModelFields;
+		}
+		return modelFields;
+	}
+
+	public boolean isFilteringFacts() {
+		return filteringFacts;
+	}
+
+	public void setFilteringFacts(boolean filterFacts) {
+		this.filteringFacts = filterFacts;
+	}
 }
