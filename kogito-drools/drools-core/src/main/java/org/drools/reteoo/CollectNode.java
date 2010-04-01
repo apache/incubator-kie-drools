@@ -376,6 +376,7 @@ public class CollectNode extends BetaNode {
                             // we must re-add this to ensure deterministic iteration
                             LeftTuple temp = childLeftTuple.getLeftParentNext();
                             childLeftTuple.reAddRight();
+                            childLeftTuple.reAddLeft();
                             childLeftTuple = temp;
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
@@ -470,6 +471,7 @@ public class CollectNode extends BetaNode {
                         if ( childLeftTuple == null || childLeftTuple.getLeftParent() == leftTuple ) {
                             // we must re-add this to ensure deterministic iteration
                             childLeftTuple.reAddLeft();
+                            childLeftTuple.reAddRight();
                             removeMatch( rightTuple,
                                          childLeftTuple,
                                          colctx );
