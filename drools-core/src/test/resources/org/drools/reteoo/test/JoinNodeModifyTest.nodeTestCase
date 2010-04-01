@@ -86,6 +86,7 @@ Test "Join Node Modify test"
 	    leftMemory, [];
 	    rightMemory, [];  
 	
+Test "Join Node Modify test 2"	     
 	/**
 	 * insert all and the modify: h0 breaking and re-creating each join, to simulate left modifies
 	 */
