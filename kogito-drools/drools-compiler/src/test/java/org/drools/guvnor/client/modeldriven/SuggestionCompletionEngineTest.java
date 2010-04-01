@@ -719,6 +719,45 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    public void testFilter() {
+
+        final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+
+        sce.setFactTypes(new String[]{"Person", "Vehicle"});
+        
+        sce.setFieldsForTypes(new HashMap<String,ModelField[]>() {
+            {
+                put( "Person",
+                     new ModelField[]{
+                        new ModelField("age", Integer.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_NUMERIC),
+                } );
+
+                put( "Vehicle",
+                     new ModelField[]{
+                        new ModelField("make", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING),
+                } );
+            }
+        });
+        
+        assertEquals(2, sce.getFactTypes().length);
+		sce.setFactTypeFilter(new FactTypeFilter() {
+			public boolean filter(String originalFact) {
+				return "Person".equals(originalFact);
+			}
+		});
+		
+		assertEquals(1, sce.getFactTypes().length);
+		sce.setFilteringFacts(false);
+		
+		assertEquals(2, sce.getFactTypes().length);
+		sce.setFilteringFacts(true);
+		assertEquals(1, sce.getFactTypes().length);
+		
+		sce.setFactTypeFilter(null);
+		assertEquals(2, sce.getFactTypes().length);
+		
+    }
+    
     public static class NestedClass {
         private String name;
 
