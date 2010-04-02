@@ -137,6 +137,8 @@ public class LiteralRestriction extends Restriction
             intValue = Integer.parseInt( value );
             valueType = Field.INT;
             stringValue = value;
+            //even when value is an int, we fill doubleValue too
+            doubleValue = intValue;
             return;
         } catch ( NumberFormatException e ) {
             // Not int.
