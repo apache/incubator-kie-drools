@@ -25,6 +25,8 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
+                                         final LeftTuple currentLeftChild,
+                                         final LeftTuple currentRightChild,
                                          final PropagationContext context,
                                          final InternalWorkingMemory workingMemory,
                                          final boolean leftTupleMemoryEnabled) {

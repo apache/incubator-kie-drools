@@ -26,6 +26,8 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
+                                         final LeftTuple currentLeftChild,
+                                         final LeftTuple currentRightChild,
                                          final PropagationContext context,
                                          final InternalWorkingMemory workingMemory,
                                          boolean leftTupleMemoryEnabled) {
@@ -33,6 +35,8 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                     workingMemory,
                                     new LeftTuple( leftTuple,
                                                    rightTuple,
+                                                   currentLeftChild,
+                                                   currentRightChild,
                                                    this.sink,
                                                    leftTupleMemoryEnabled ) );
     }

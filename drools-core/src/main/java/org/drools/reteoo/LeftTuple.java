@@ -100,30 +100,70 @@ public class LeftTuple
 
     public LeftTuple(final LeftTuple leftTuple,
                      final RightTuple rightTuple,
-                     LeftTupleSink sink,
-                     boolean leftTupleMemoryEnabled) {
+                     final LeftTupleSink sink,
+                     final boolean leftTupleMemoryEnabled) {
+        this( leftTuple,
+              rightTuple,
+              null,
+              null,
+              sink,
+              leftTupleMemoryEnabled );
+    }
+    
+    public LeftTuple(final LeftTuple leftTuple,
+                     final RightTuple rightTuple,
+                     final LeftTuple currentLeftChild,
+                     final LeftTuple currentRightChild,
+                     final LeftTupleSink sink,
+                     final boolean leftTupleMemoryEnabled) {
         this.handle = rightTuple.getFactHandle();
         this.index = leftTuple.index + 1;
         this.parent = leftTuple;
 
         if ( leftTupleMemoryEnabled ) {                        
             this.leftParent = leftTuple;
-            if ( leftTuple.lastChild != null ) {
-                this.leftParentPrevious = leftTuple.lastChild;
-                this.leftParentPrevious.leftParentNext = this;
-            } else {
-                leftTuple.firstChild = this;
-            }
-            leftTuple.lastChild = this;         
-            
             this.rightParent = rightTuple;
-            if ( rightTuple.lastChild != null ) {
-                this.rightParentPrevious = rightTuple.lastChild;
-                this.rightParentPrevious.rightParentNext = this;
+            if( currentLeftChild == null ) {
+                // insert at the end of the list 
+                if ( leftTuple.lastChild != null ) {
+                    this.leftParentPrevious = leftTuple.lastChild;
+                    this.leftParentPrevious.leftParentNext = this;
+                } else {
+                    leftTuple.firstChild = this;
+                }
+                leftTuple.lastChild = this;         
             } else {
-                rightTuple.firstChild = this;
+                // insert before current child
+                this.leftParentNext = currentLeftChild;
+                this.leftParentPrevious = currentLeftChild.leftParentPrevious;
+                currentLeftChild.leftParentPrevious = this;
+                if( this.leftParentPrevious == null ) {
+                    this.leftParent.firstChild = this;
+                } else {
+                    this.leftParentPrevious.leftParentNext = this;
+                }
             }
-            rightTuple.lastChild = this;             
+            
+            if( currentRightChild == null ) {
+                // insert at the end of the list
+                if ( rightTuple.lastChild != null ) {
+                    this.rightParentPrevious = rightTuple.lastChild;
+                    this.rightParentPrevious.rightParentNext = this;
+                } else {
+                    rightTuple.firstChild = this;
+                }
+                rightTuple.lastChild = this;             
+            } else {
+                // insert before current child
+                this.rightParentNext = currentRightChild;
+                this.rightParentPrevious = currentRightChild.rightParentPrevious;
+                currentRightChild.rightParentPrevious = this;
+                if( this.rightParentPrevious == null ) {
+                    this.rightParent.firstChild = this;
+                } else {
+                    this.rightParentPrevious.rightParentNext = this;
+                }
+            }
         }
         
         this.sink = sink;

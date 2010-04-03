@@ -180,6 +180,8 @@ public class CollectNode extends BetaNode {
                                                        handle ) ) {
                 addMatch( leftTuple,
                           rightTuple,
+                          null,
+                          null,
                           colctx );
             }
         }
@@ -265,6 +267,8 @@ public class CollectNode extends BetaNode {
                 final CollectContext colctx = (CollectContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
                 addMatch( leftTuple,
                           rightTuple,
+                          null,
+                          null,
                           colctx );
                 evaluateResultConstraints( ActivitySource.RIGHT,
                                            leftTuple,
@@ -356,6 +360,8 @@ public class CollectNode extends BetaNode {
                         // add a new match
                         addMatch( leftTuple,
                                   rightTuple,
+                                  null,
+                                  null,
                                   colctx );
 
                     }
@@ -367,16 +373,17 @@ public class CollectNode extends BetaNode {
 
                     if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                                handle ) ) {
-                        if ( childLeftTuple != null && childLeftTuple.getRightParent() != rightTuple ) {
+                        if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
                             // add a new match
                             addMatch( leftTuple,
                                       rightTuple,
+                                      childLeftTuple,
+                                      null,
                                       colctx );
                         } else {
                             // we must re-add this to ensure deterministic iteration
                             LeftTuple temp = childLeftTuple.getLeftParentNext();
                             childLeftTuple.reAddRight();
-                            childLeftTuple.reAddLeft();
                             childLeftTuple = temp;
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
@@ -453,6 +460,8 @@ public class CollectNode extends BetaNode {
                         // add a new match
                         addMatch( leftTuple,
                                   rightTuple,
+                                  null,
+                                  null,
                                   colctx );
                         evaluateResultConstraints( ActivitySource.RIGHT,
                                                    leftTuple,
@@ -468,10 +477,11 @@ public class CollectNode extends BetaNode {
                     if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                                 leftTuple ) ) {
                         final CollectContext colctx = (CollectContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
-                        if ( childLeftTuple == null || childLeftTuple.getLeftParent() == leftTuple ) {
+                        LeftTuple temp = null;
+                        if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
                             // we must re-add this to ensure deterministic iteration
+                            temp = childLeftTuple.getRightParentNext();
                             childLeftTuple.reAddLeft();
-                            childLeftTuple.reAddRight();
                             removeMatch( rightTuple,
                                          childLeftTuple,
                                          colctx );
@@ -479,7 +489,12 @@ public class CollectNode extends BetaNode {
                         // add a new match
                         addMatch( leftTuple,
                                   rightTuple,
+                                  null,
+                                  childLeftTuple,
                                   colctx );
+                        if( temp != null ) {
+                            childLeftTuple = temp;
+                        }
                         evaluateResultConstraints( ActivitySource.RIGHT,
                                                    leftTuple,
                                                    context,
@@ -588,6 +603,8 @@ public class CollectNode extends BetaNode {
             // assert
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 colctx.resultTuple,
+                                                null,
+                                                null,
                                                 context,
                                                 workingMemory,
                                                 this.tupleMemoryEnabled );
@@ -638,6 +655,8 @@ public class CollectNode extends BetaNode {
                                                    true );
                 sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                      colctx.resultTuple,
+                                                     null,
+                                                     null,
                                                      sink,
                                                      this.tupleMemoryEnabled ),
                                       context,
@@ -686,6 +705,8 @@ public class CollectNode extends BetaNode {
     @SuppressWarnings("unchecked")
     private void addMatch(final LeftTuple leftTuple,
                           final RightTuple rightTuple,
+                          final LeftTuple currentLeftChild,
+                          final LeftTuple currentRightChild,
                           final CollectContext colctx) {
         InternalFactHandle handle = rightTuple.getFactHandle();
         if ( this.unwrapRightObject ) {
@@ -698,6 +719,8 @@ public class CollectNode extends BetaNode {
             // linking left and right by creating a new left tuple
             new LeftTuple( leftTuple,
                            rightTuple,
+                           currentLeftChild,
+                           currentRightChild,
                            this,
                            this.tupleMemoryEnabled );
         }
