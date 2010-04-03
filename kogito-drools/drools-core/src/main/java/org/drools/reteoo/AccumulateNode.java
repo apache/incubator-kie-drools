@@ -154,6 +154,8 @@ public class AccumulateNode extends BetaNode {
                 // add a match
                 addMatch( leftTuple,
                           rightTuple,
+                          null,
+                          null,
                           workingMemory,
                           memory,
                           accresult );
@@ -243,6 +245,8 @@ public class AccumulateNode extends BetaNode {
                 final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
                 addMatch( leftTuple,
                           rightTuple,
+                          null,
+                          null,
                           workingMemory,
                           memory,
                           accctx );
@@ -335,6 +339,8 @@ public class AccumulateNode extends BetaNode {
                         // add a new match
                         addMatch( leftTuple,
                                   rightTuple,
+                                  null,
+                                  null,
                                   workingMemory,
                                   memory,
                                   accctx );
@@ -348,10 +354,12 @@ public class AccumulateNode extends BetaNode {
 
                     if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                                handle ) ) {
-                        if ( childLeftTuple != null && childLeftTuple.getRightParent() != rightTuple ) {
+                        if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
                             // add a new match
                             addMatch( leftTuple,
                                       rightTuple,
+                                      childLeftTuple, 
+                                      null,
                                       workingMemory,
                                       memory,
                                       accctx );
@@ -359,7 +367,6 @@ public class AccumulateNode extends BetaNode {
                             // we must re-add this to ensure deterministic iteration
                             LeftTuple temp = childLeftTuple.getLeftParentNext();
                             childLeftTuple.reAddRight();
-                            childLeftTuple.reAddLeft();
                             childLeftTuple = temp;
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
@@ -450,6 +457,8 @@ public class AccumulateNode extends BetaNode {
                         // add a new match
                         addMatch( leftTuple,
                                   rightTuple,
+                                  null,
+                                  null,
                                   workingMemory,
                                   memory,
                                   accctx );
@@ -467,24 +476,30 @@ public class AccumulateNode extends BetaNode {
                     if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                                 leftTuple ) ) {
                         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
-                        if ( childLeftTuple == null || childLeftTuple.getLeftParent() == leftTuple ) {
+                        LeftTuple temp = null;
+                        if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
+                            temp = childLeftTuple.getRightParentNext();
                             // we must re-add this to ensure deterministic iteration
                             childLeftTuple.reAddLeft();
-                            childLeftTuple.reAddRight();
                             removeMatch( rightTuple,
                                          childLeftTuple,
                                          workingMemory,
                                          memory,
                                          accctx,
                                          true );
-
+                            childLeftTuple = childLeftTuple.getRightParentNext();
                         }
                         // add a new match
                         addMatch( leftTuple,
                                   rightTuple,
+                                  null,
+                                  childLeftTuple,
                                   workingMemory,
                                   memory,
                                   accctx );
+                        if( temp != null ) {
+                            childLeftTuple = temp;
+                        }
                         evaluateResultConstraints( ActivitySource.RIGHT,
                                                    leftTuple,
                                                    context,
@@ -617,6 +632,8 @@ public class AccumulateNode extends BetaNode {
             // assert
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 accctx.result,
+                                                null, 
+                                                null,
                                                 context,
                                                 workingMemory,
                                                 this.tupleMemoryEnabled );
@@ -643,6 +660,8 @@ public class AccumulateNode extends BetaNode {
                                                    true );
                 sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                      accctx.result,
+                                                     null,
+                                                     null,
                                                      sink,
                                                      this.tupleMemoryEnabled ),
                                       context,
@@ -713,6 +732,8 @@ public class AccumulateNode extends BetaNode {
 
     private void addMatch(final LeftTuple leftTuple,
                           final RightTuple rightTuple,
+                          final LeftTuple currentLeftChild,
+                          final LeftTuple currentRightChild,
                           final InternalWorkingMemory workingMemory,
                           final AccumulateMemory memory,
                           final AccumulateContext accresult) {
@@ -734,6 +755,8 @@ public class AccumulateNode extends BetaNode {
             // linking left and right by creating a new left tuple
             new LeftTuple( leftTuple,
                            rightTuple,
+                           currentLeftChild,
+                           currentRightChild,
                            this,
                            this.tupleMemoryEnabled );
         }

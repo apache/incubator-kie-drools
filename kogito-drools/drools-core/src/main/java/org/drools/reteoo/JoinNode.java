@@ -72,6 +72,8 @@ public class JoinNode extends BetaNode {
                                                        handle ) ) {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
+                                                    null,
+                                                    null,
                                                     context,
                                                     workingMemory,
                                                     this.tupleMemoryEnabled );
@@ -113,6 +115,8 @@ public class JoinNode extends BetaNode {
                 // wm.marshaller.write( i, leftTuple )
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
+                                                    null,
+                                                    null,
                                                     context,
                                                     workingMemory,
                                                     this.tupleMemoryEnabled );
@@ -199,6 +203,8 @@ public class JoinNode extends BetaNode {
                                                                 leftTuple ) ) {
                         this.sink.propagateAssertLeftTuple( leftTuple,
                                                             rightTuple,
+                                                            null,
+                                                            null,
                                                             context,
                                                             workingMemory,
                                                             this.tupleMemoryEnabled );
@@ -209,9 +215,11 @@ public class JoinNode extends BetaNode {
                 for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
                     if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                                 leftTuple ) ) {
-                        if ( childLeftTuple != null && childLeftTuple.getLeftParent() != leftTuple ) {
+                        if ( childLeftTuple == null || childLeftTuple.getLeftParent() != leftTuple ) {
                             this.sink.propagateAssertLeftTuple( leftTuple,
                                                                 rightTuple,
+                                                                null,
+                                                                childLeftTuple,
                                                                 context,
                                                                 workingMemory,
                                                                 this.tupleMemoryEnabled );
@@ -225,7 +233,6 @@ public class JoinNode extends BetaNode {
                                                                                       this.tupleMemoryEnabled );
                             // we must re-add this to ensure deterministic iteration
                             temp.reAddLeft();
-                            temp.reAddRight();
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
                         childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
@@ -281,6 +288,8 @@ public class JoinNode extends BetaNode {
                                                                handle ) ) {
                         this.sink.propagateAssertLeftTuple( leftTuple,
                                                             rightTuple,
+                                                            null,
+                                                            null,
                                                             context,
                                                             workingMemory,
                                                             this.tupleMemoryEnabled );
@@ -293,9 +302,11 @@ public class JoinNode extends BetaNode {
 
                     if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                                handle ) ) {
-                        if ( childLeftTuple != null && childLeftTuple.getRightParent() != rightTuple ) {
+                        if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
                             this.sink.propagateAssertLeftTuple( leftTuple,
                                                                 rightTuple,
+                                                                childLeftTuple,
+                                                                null,
                                                                 context,
                                                                 workingMemory,
                                                                 this.tupleMemoryEnabled );
@@ -309,7 +320,6 @@ public class JoinNode extends BetaNode {
                                                                                       this.tupleMemoryEnabled );
                             // we must re-add this to ensure deterministic iteration
                             temp.reAddRight();
-                            temp.reAddLeft();
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
                         childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
@@ -344,6 +354,8 @@ public class JoinNode extends BetaNode {
                                                            rightTuple.getFactHandle() ) ) {
                     sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                          rightTuple,
+                                                         null,
+                                                         null,
                                                          sink,
                                                          this.tupleMemoryEnabled ),
                                           context,

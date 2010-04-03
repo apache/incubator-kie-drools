@@ -260,6 +260,8 @@ public class FromNode extends LeftTupleSource
                 // this is a new match, so propagate as assert
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
+                                                    null,
+                                                    null,
                                                     context,
                                                     workingMemory,
                                                     this.tupleMemoryEnabled );
@@ -395,6 +397,8 @@ public class FromNode extends LeftTupleSource
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightTuples.getNext() ) {
                     this.sink.propagateAssertLeftTuple( leftTuple,
                                                         rightTuple,
+                                                        null,
+                                                        null, 
                                                         context,
                                                         workingMemory,
                                                         this.tupleMemoryEnabled );

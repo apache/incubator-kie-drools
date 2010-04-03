@@ -12,6 +12,8 @@ public interface LeftTupleSinkPropagator
     Externalizable {
     public void propagateAssertLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
+                                         LeftTuple currentLeftChild, // insert new tuple before this child in the child list
+                                         LeftTuple currentRightChild, // insert new tuple before this child in the child list
                                          PropagationContext context,
                                          InternalWorkingMemory workingMemory,
                                          boolean leftTupleMemoryEnabled);

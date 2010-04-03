@@ -32,6 +32,8 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
+                                         final LeftTuple currentLeftChild,
+                                         final LeftTuple currentRightChild,
                                          final PropagationContext context,
                                          final InternalWorkingMemory workingMemory,
                                          final boolean leftTupleMemoryEnabled) {
@@ -39,6 +41,8 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             LeftTuple newLeftTuple = new LeftTuple( leftTuple,
                                                     rightTuple,
+                                                    currentLeftChild,
+                                                    currentRightChild,
                                                     sink,
                                                     leftTupleMemoryEnabled );
             doPropagateAssertLeftTuple( context,
