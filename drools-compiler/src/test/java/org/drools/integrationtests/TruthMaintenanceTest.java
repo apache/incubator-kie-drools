@@ -787,7 +787,7 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals( 0, IteratorToList.convert( workingMemory.iterateObjects() ).size() );
     }
 
-    public void FIXME_testLogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion() throws Exception {
+    public void testLogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion() throws Exception {
         // TODO JBRULES-1804
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

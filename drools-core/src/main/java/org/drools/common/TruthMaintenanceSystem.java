@@ -175,19 +175,26 @@ public class TruthMaintenanceSystem {
         if ( list == null || list.isEmpty() ) {
             return;
         }
+        
         for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
-            final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
-            final Set set = (Set) this.justifiedMap.get( handle.getId() );
-            if ( set != null ) {
-                set.remove( node );
-                WorkingMemoryAction action = new LogicalRetractCallback( this,
-                                                                         node,
-                                                                         set,
-                                                                         handle,
-                                                                         context,
-                                                                         activation );
-                workingMemory.queueWorkingMemoryAction( action );
-            }
+            removeLogicalDependency( activation, node, context );
+        }
+    }
+    
+    public void removeLogicalDependency(final Activation activation,
+                                        final LogicalDependency node,
+                                        final PropagationContext context) {
+        final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
+        final Set set = (Set) this.justifiedMap.get( handle.getId() );
+        if ( set != null ) {
+            set.remove( node );
+            WorkingMemoryAction action = new LogicalRetractCallback( this,
+                                                                     node,
+                                                                     set,
+                                                                     handle,
+                                                                     context,
+                                                                     activation );
+            workingMemory.queueWorkingMemoryAction( action );
         }
     }
 

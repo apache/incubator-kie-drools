@@ -215,4 +215,9 @@ public class SequentialKnowledgeHelper
     public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap) {
         this.identityMap = identityMap;
     }
+
+    public void cancelRemainingPreviousLogicalDependencies() {
+        // TODO Auto-generated method stub
+        
+    }
 }

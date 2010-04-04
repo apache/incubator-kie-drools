@@ -902,6 +902,7 @@ public class DefaultAgenda
                 this.knowledgeHelper.setActivation( activation );
                 activation.getRule().getConsequence().evaluate( this.knowledgeHelper,
                                                                 this.workingMemory );
+                this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
                 this.knowledgeHelper.reset();
             } catch ( final Exception e ) {
                 if ( this.legacyConsequenceExceptionHandler != null ) {
