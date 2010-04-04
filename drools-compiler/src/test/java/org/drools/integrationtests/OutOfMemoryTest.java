@@ -120,7 +120,7 @@ public class OutOfMemoryTest extends TestCase {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final int pcount = 2;
+        final int pcount = 5;
         Person[] persons = new Person[pcount];
         FactHandle[] pHandles = new FactHandle[pcount];
         for ( int i = 0; i < persons.length; i++ ) {
@@ -137,7 +137,7 @@ public class OutOfMemoryTest extends TestCase {
 
         ksession.fireAllRules();
 
-        for ( int j = 1; j <= 1; j++ ) {
+        for ( int j = 1; j <= 5; j++ ) {
             for ( int i = 0; i < pcount; i++ ) {
                 cheeses[i].setType( "cheese-" + j + "-" + i );
                 ksession.update( cHandles[i],
