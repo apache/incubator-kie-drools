@@ -3,6 +3,8 @@ package org.drools.integrationtests;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +42,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.integrationtests.PseudoSchedulerRemoveJobTest.A;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
@@ -47,6 +50,7 @@ import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
@@ -174,7 +178,7 @@ public class CepEspTest extends TestCase {
         KnowledgePackage kpkg = pkgs.iterator().next();
 
         // serialize the package
-        Package internalPkg = ((KnowledgePackageImp)kpkg).pkg; // nasty trick for test purposes
+        Package internalPkg = ((KnowledgePackageImp) kpkg).pkg; // nasty trick for test purposes
         byte[] serializedPkg = DroolsStreamUtils.streamOut( internalPkg );
 
         // recreate the pkg using a new kbuilder
@@ -985,7 +989,7 @@ public class CepEspTest extends TestCase {
 
         final Rule rule = ruleBase.getPackage( "org.drools" ).getRule( "Delaying Not" );
         assertEquals( 10000,
-                      ((DurationTimer)rule.getTimer()).getDuration() );
+                      ((DurationTimer) rule.getTimer()).getDuration() );
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
@@ -1385,5 +1389,43 @@ public class CepEspTest extends TestCase {
             logger.writeToDisk();
         }
 
+    }
+
+    public void testPseudoSchedulerRemoveJobTest() {
+        String str = "import org.drools.integrationtests.CepEspTest.A\n";
+        str += "declare A\n";
+        str += "    @role( event )\n";
+        str += "end\n";
+        str += "rule A\n";
+        str += "when\n";
+        str += "   $a : A()\n";
+        str += "   not A(this after [1s,10s] $a)\n";
+        str += "then\n";
+        str += "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+
+        KnowledgeSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( "pseudo" ) );
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( sessionConfig,
+                                                              KnowledgeBaseFactory.newEnvironment() );
+        PseudoClockScheduler pseudoClock = ksession.getSessionClock();
+        
+        FactHandle h = ksession.insert(new A());
+        ksession.retract(h);
+    }
+
+    public static class A
+        implements
+        Serializable {
     }
 }
