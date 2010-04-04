@@ -40,6 +40,8 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.LogicalDependency;
+import org.drools.core.util.LinkedList;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
@@ -49,15 +51,17 @@ public class DefaultKnowledgeHelper
     KnowledgeHelper,
     Externalizable {
 
-    private static final long            serialVersionUID = 400L;
+    private static final long                   serialVersionUID = 400L;
 
-    private Rule                         rule;
-    private GroupElement                 subrule;
-    private Activation                   activation;
-    private Tuple                        tuple;
-    private InternalWorkingMemoryActions workingMemory;
+    private Rule                                rule;
+    private GroupElement                        subrule;
+    private Activation                          activation;
+    private Tuple                               tuple;
+    private InternalWorkingMemoryActions        workingMemory;
 
-    private IdentityHashMap<Object,FactHandle>              identityMap;
+    private IdentityHashMap<Object, FactHandle> identityMap;
+
+    private LinkedList                          previousJustified;
 
     public DefaultKnowledgeHelper() {
 
@@ -66,7 +70,7 @@ public class DefaultKnowledgeHelper
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
 
-       this.identityMap =  new IdentityHashMap<Object,FactHandle>();
+        this.identityMap = new IdentityHashMap<Object, FactHandle>();
 
     }
 
@@ -77,7 +81,7 @@ public class DefaultKnowledgeHelper
         activation = (Activation) in.readObject();
         tuple = (Tuple) in.readObject();
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
-        identityMap = (IdentityHashMap<Object,FactHandle> ) in.readObject();
+        identityMap = (IdentityHashMap<Object, FactHandle>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -86,7 +90,7 @@ public class DefaultKnowledgeHelper
         out.writeObject( activation );
         out.writeObject( tuple );
         out.writeObject( workingMemory );
-         out.writeObject( identityMap );
+        out.writeObject( identityMap );
     }
 
     public void setActivation(final Activation agendaItem) {
@@ -111,12 +115,13 @@ public class DefaultKnowledgeHelper
 
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
-         FactHandle handle = this.workingMemory.insert( object,
-                                   dynamic,
-                                   false,
-                                   this.rule,
-                                   this.activation );
-         this.getIdentityMap().put(object, handle);
+        FactHandle handle = this.workingMemory.insert( object,
+                                                       dynamic,
+                                                       false,
+                                                       this.rule,
+                                                       this.activation );
+        this.getIdentityMap().put( object,
+                                   handle );
     }
 
     public void insertLogical(final Object object) throws FactException {
@@ -126,42 +131,76 @@ public class DefaultKnowledgeHelper
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
-      FactHandle handle = this.workingMemory.insert( object,
-                                   dynamic,
-                                   true,
-                                   this.rule,
-                                   this.activation );
-        this.getIdentityMap().put(object, handle);
+        if ( this.previousJustified == null ) {
+            this.previousJustified = this.activation.getLogicalDependencies();
+            this.activation.setLogicalDependencies( null );
+        }
+
+        // iterate to find previous equal logical insertion
+        LogicalDependency dep = null;
+        if ( this.previousJustified != null ) {
+            for ( dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
+                if ( object.equals( ((InternalFactHandle) dep.getFactHandle()).getObject() ) ) {
+                    this.previousJustified.remove( dep );
+                    break;
+                }
+            }
+            
+            
+        }
+
+        if ( dep != null ) {
+            // Add the previous matching logical dependency back into the list
+            this.activation.addLogicalDependency( dep );
+        } else {
+            // no previous matching logical dependency, so create a new one
+            FactHandle handle = this.workingMemory.insert( object,
+                                                           dynamic,
+                                                           true,
+                                                           this.rule,
+                                                           this.activation );
+
+            this.getIdentityMap().put( object,
+                                       handle );
+        }
+    }
+    
+    public void cancelRemainingPreviousLogicalDependencies() {
+        if ( this.previousJustified != null ) {
+            for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
+                this.workingMemory.getTruthMaintenanceSystem().removeLogicalDependency( activation, dep, activation.getPropagationContext() );
+            }
+        }
     }
 
     public void update(final FactHandle handle,
                        final Object newObject) throws FactException {
         // only update if this fact exists in the wm
 
-        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
-                                .update( handle,
-                                   newObject,
-                                   this.rule,
-                                   this.activation );
-        this.getIdentityMap().put(newObject, handle);
+        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
+                                                                                                  newObject,
+                                                                                                  this.rule,
+                                                                                                  this.activation );
+        this.getIdentityMap().put( newObject,
+                                   handle );
     }
 
     public void update(final Object object) throws FactException {
         FactHandle handle = getFactHandle( object );
-        if( handle == null ) {
+        if ( handle == null ) {
             throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
-        update( handle, object );
+        update( handle,
+                object );
     }
 
     public void retract(final FactHandle handle) throws FactException {
-        ((InternalWorkingMemoryEntryPoint)((InternalFactHandle)handle).getEntryPoint())
-                            .retract( handle,
-                                    true,
-                                    true,
-                                    this.rule,
-                                    this.activation );
-         this.getIdentityMap().remove(((InternalFactHandle)handle).getObject());
+        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).retract( handle,
+                                                                                                   true,
+                                                                                                   true,
+                                                                                                   this.rule,
+                                                                                                   this.activation );
+        this.getIdentityMap().remove( ((InternalFactHandle) handle).getObject() );
     }
 
     public void retract(final Object object) throws FactException {
@@ -197,20 +236,21 @@ public class DefaultKnowledgeHelper
     }
 
     public Object get(final Declaration declaration) {
-         InternalWorkingMemoryEntryPoint wmTmp = ((InternalWorkingMemoryEntryPoint)(this.tuple.get(declaration)).getEntryPoint());
-         
-        if(wmTmp != null){
-        Object object = declaration.getValue( wmTmp.getInternalWorkingMemory() ,
-                                     this.tuple.get( declaration ).getObject() );
+        InternalWorkingMemoryEntryPoint wmTmp = ((InternalWorkingMemoryEntryPoint) (this.tuple.get( declaration )).getEntryPoint());
 
-                getIdentityMap().put(object, wmTmp.getFactHandleByIdentity(object));
-                return object;
+        if ( wmTmp != null ) {
+            Object object = declaration.getValue( wmTmp.getInternalWorkingMemory(),
+                                                  this.tuple.get( declaration ).getObject() );
+
+            getIdentityMap().put( object,
+                                  wmTmp.getFactHandleByIdentity( object ) );
+            return object;
         }
         return null;
     }
 
     public Declaration getDeclaration(final String identifier) {
-             return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
+        return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
     }
 
     public void halt() {
@@ -238,7 +278,7 @@ public class DefaultKnowledgeHelper
      */
     public IdentityHashMap<Object, FactHandle> getIdentityMap() {
         return identityMap;
-}
+    }
 
     /**
      * @param identityMap the identityMap to set
@@ -248,14 +288,15 @@ public class DefaultKnowledgeHelper
     }
 
     private FactHandle getFactHandle(final Object object) {
-        FactHandle handle = identityMap.get(object);
+        FactHandle handle = identityMap.get( object );
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
-        if ( handle == null || ((InternalFactHandle)handle).getEntryPoint() == null ) {
-            for( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
+        if ( handle == null || ((InternalFactHandle) handle).getEntryPoint() == null ) {
+            for ( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
                 handle = (FactHandle) ep.getFactHandle( object );
-                if( handle != null ) {
-                    identityMap.put( object, handle );
+                if ( handle != null ) {
+                    identityMap.put( object,
+                                     handle );
                     break;
                 }
             }

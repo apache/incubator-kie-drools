@@ -83,6 +83,8 @@ public interface KnowledgeHelper
     public void insertLogical(Object object,
                                     boolean dynamic) throws FactException;
     
+    public void cancelRemainingPreviousLogicalDependencies();
+    
     void update(FactHandle handle,
                       Object newObject) throws FactException;
 
