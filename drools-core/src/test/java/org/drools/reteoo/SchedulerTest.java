@@ -176,7 +176,7 @@ public class SchedulerTest extends DroolsTestCase {
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
-        rule.setTimer( new DurationTimer(100) );
+        rule.setTimer( new DurationTimer(1000) );
 
         node.assertLeftTuple( tuple1,
                           context1,
