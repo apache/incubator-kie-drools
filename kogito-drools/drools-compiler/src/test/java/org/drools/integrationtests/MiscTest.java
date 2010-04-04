@@ -147,6 +147,7 @@ import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
@@ -7338,4 +7339,40 @@ public class MiscTest extends TestCase {
         ksession.insert( new Pet("Toni") );
     }
 
+    
+    public void testSharedLIANodeRemoval() throws IOException, DroolsParserException {
+        String str = "global java.util.List list;\n";
+        str += "rule \"test\"\n";
+        str += "when\n";
+        str += "  exists(eval(true))\n";
+        str += "then\n";
+        str += " list.add(\"fired\");\n";
+        str += "end\n";
+        
+        PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackageFromDrl(new StringReader(str));
+        Assert.assertTrue("Should not have errors", pkgBuilder.getErrors().isEmpty());
+
+        // Add once ...
+        ReteooRuleBase rb = new ReteooRuleBase("dummy");
+        rb.addPackage(pkgBuilder.getPackage());
+
+        // This one works
+        List list = new ArrayList();
+        StatefulSession session = rb.newStatefulSession();
+        session.setGlobal( "list", list );
+        session.fireAllRules();       
+        assertEquals(1, list.size() );
+
+        
+        list.clear();
+        // ... remove ...
+        rb.removePackage(pkgBuilder.getPackage().getName());
+        rb.addPackage(pkgBuilder.getPackage());          
+        session = rb.newStatefulSession();
+        session.setGlobal( "list", list );
+        session.fireAllRules();   
+        assertEquals(1, list.size() );
+        
+    }
 }
