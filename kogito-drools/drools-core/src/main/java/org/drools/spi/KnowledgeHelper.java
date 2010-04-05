@@ -124,4 +124,6 @@ public interface KnowledgeHelper
      public IdentityHashMap<Object, FactHandle> getIdentityMap();
 
     public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap);
+    
+    <T> T getContext(Class<T> contextClass);
 }

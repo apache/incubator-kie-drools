@@ -27,7 +27,10 @@ import java.util.Map;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
@@ -35,11 +38,12 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.NodeInstanceContainer;
+import org.drools.runtime.process.ProcessContext;
+import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.spi.Activation;
@@ -302,6 +306,44 @@ public class DefaultKnowledgeHelper
             }
         }
         return handle;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public <T> T getContext(Class<T> contextClass) {
+    	if (ProcessContext.class.equals(contextClass)) {
+    		String ruleflowGroupName = getActivation().getRule().getRuleFlowGroup();
+    		if (ruleflowGroupName != null) {
+    			Map<Long, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
+    			if (!nodeInstances.isEmpty()) {
+    				if (nodeInstances.size() > 1) {
+    					// TODO
+    					throw new UnsupportedOperationException(
+							"Not supporting multiple node instances for the same ruleflow group");
+    				}
+    				Map.Entry<Long, String> entry = nodeInstances.entrySet().iterator().next();
+    				ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
+    				org.drools.spi.ProcessContext context = new org.drools.spi.ProcessContext();
+    				context.setProcessInstance((org.drools.process.instance.ProcessInstance) processInstance);
+    				String nodeInstance = entry.getValue();
+    				String[] nodeInstanceIds = nodeInstance.split(":");
+    				NodeInstanceContainer container = (WorkflowProcessInstance) processInstance;
+    				for (int i = 0; i < nodeInstanceIds.length; i++) {
+    					for (NodeInstance subNodeInstance: container.getNodeInstances()) {
+    						if (subNodeInstance.getId() == new Long(nodeInstanceIds[i])) {
+    							if (i == nodeInstanceIds.length - 1) {
+    								context.setNodeInstance(subNodeInstance);
+    								break;
+    							} else {
+    								container = (NodeInstanceContainer) subNodeInstance;
+    							}
+    						}
+    					}
+    				}
+    				return (T) context;
+    			}
+    		}
+    	}
+    	return null;
     }
 
 }

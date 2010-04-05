@@ -39,7 +39,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
         addRuleSetListener();
-        ((ProcessInstance) getProcessInstance()).getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+        ((ProcessInstance) getProcessInstance()).getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
     }
 
     public void addEventListeners() {

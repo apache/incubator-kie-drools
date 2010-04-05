@@ -6,7 +6,6 @@ import java.util.Hashtable;
 import org.drools.Service;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl;
-import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.osgi.api.Activator.BundleContextInstantiator;
@@ -25,6 +24,7 @@ public class Activator
     private ServiceRegistration kbuilderReg;
 
     private ServiceTracker      dtableTracker;
+    private ServiceTracker      bpmn2Tracker;
 
     public void start(BundleContext bc) throws Exception {
         System.out.println( "registering compiler services" );
@@ -42,12 +42,19 @@ public class Activator
                                                                            this ) );
         this.dtableTracker.open();
 
+        this.bpmn2Tracker = new ServiceTracker( bc,
+								                BPMN2ProcessProvider.class.getName(),
+								                new DroolsServiceTracker( bc,
+								                                          this ) );
+        this.bpmn2Tracker.open();
+        
         System.out.println( "compiler services registered" );
     }
 
     public void stop(BundleContext bc) throws Exception {
         this.kbuilderReg.unregister();
         this.dtableTracker.close();
+        this.bpmn2Tracker.close();
     }
 
     public static class DroolsServiceTracker

@@ -24,7 +24,8 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     private org.drools.workflow.core.NodeContainer nodeContainer;
     private Map<String, CompositeNode.NodeAndType> inConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
     private Map<String, CompositeNode.NodeAndType> outConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
-    
+	private boolean cancelRemainingInstances = true;
+	
     public CompositeNode() {
         this.nodeContainer = new NodeContainerImpl();
     }
@@ -321,6 +322,14 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
     
+	public boolean isCancelRemainingInstances() {
+		return cancelRemainingInstances;
+	}
+
+	public void setCancelRemainingInstances(boolean cancelRemainingInstances) {
+		this.cancelRemainingInstances = cancelRemainingInstances;
+	}
+
     public class NodeAndType implements Serializable {
 
 		private static final long serialVersionUID = 1L;

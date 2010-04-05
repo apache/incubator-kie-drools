@@ -38,6 +38,7 @@ import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstanceContainer;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
@@ -100,6 +101,21 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			}
 		}
 		return Collections.unmodifiableCollection(result);
+	}
+
+	public List<String> getActiveNodeIds() {
+		List<String> result = new ArrayList<String>();
+		addActiveNodeIds(this, result);
+		return result;
+	}
+	
+	private void addActiveNodeIds(NodeInstanceContainer container, List<String> result) {
+		for (org.drools.runtime.process.NodeInstance nodeInstance: container.getNodeInstances()) {
+			result.add(((NodeImpl) ((NodeInstanceImpl) nodeInstance).getNode()).getUniqueId());
+			if (nodeInstance instanceof NodeInstanceContainer) {
+				addActiveNodeIds((NodeInstanceContainer) nodeInstance, result);
+			}
+		}
 	}
 
 	public NodeInstance getFirstNodeInstance(final long nodeId) {

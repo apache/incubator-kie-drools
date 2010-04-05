@@ -19,7 +19,9 @@ package org.drools.common;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.core.util.Iterator;
@@ -54,6 +56,7 @@ public class RuleFlowGroupImpl
     private boolean                     autoDeactivate   = true;    
     private LinkedList                  list;
     private List<RuleFlowGroupListener> listeners;
+    private Map<Long, String>           nodeInstances    = new HashMap<Long, String>();
 
     public RuleFlowGroupImpl() {
 
@@ -139,6 +142,7 @@ public class RuleFlowGroupImpl
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
                 }
             }
+            nodeInstances.clear();
             notifyRuleFlowGroupListeners();
             ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowGroupDeactivated( this,
                                                                                                              this.workingMemory );
@@ -289,4 +293,17 @@ public class RuleFlowGroupImpl
             }
         }
     }
+    
+    public void addNodeInstance(Long processInstanceId, String nodeInstanceId) {
+    	nodeInstances.put(processInstanceId, nodeInstanceId);
+    }
+
+    public void removeNodeInstance(Long processInstanceId, String nodeInstanceId) {
+    	nodeInstances.put(processInstanceId, nodeInstanceId);
+    }
+    
+    public Map<Long, String> getNodeInstances() {
+    	return nodeInstances;
+    }
+    
 }
