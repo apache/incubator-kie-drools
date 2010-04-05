@@ -11,7 +11,7 @@ public class DTColumnConfig implements PortableObject {
 
 
     /**
-     * For a default value ! Will stil be in the array of course, just use this value if its empty.
+     * For a default value ! Will still be in the array of course, just use this value if its empty.
      */
     public String defaultValue = null;
 
