@@ -126,10 +126,13 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     public void triggerCompleted(String outType) {
-        triggerCompleted(outType, true);
-        while (!nodeInstances.isEmpty()) {
-            NodeInstance nodeInstance = (NodeInstance) nodeInstances.get(0);
-            ((org.drools.workflow.instance.NodeInstance) nodeInstance).cancel();
+    	boolean cancelRemainingInstances = getCompositeNode().isCancelRemainingInstances();
+        triggerCompleted(outType, cancelRemainingInstances);
+        if (cancelRemainingInstances) {
+	        while (!nodeInstances.isEmpty()) {
+	            NodeInstance nodeInstance = (NodeInstance) nodeInstances.get(0);
+	            ((org.drools.workflow.instance.NodeInstance) nodeInstance).cancel();
+	        }
         }
     }
 

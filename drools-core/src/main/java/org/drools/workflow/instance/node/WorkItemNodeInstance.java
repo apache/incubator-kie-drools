@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
+import org.drools.definition.process.Node;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
@@ -69,6 +70,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     
     public void internalSetWorkItemId(long workItemId) {
     	this.workItemId = workItemId;
+    }
+    
+    public void internalSetWorkItem(WorkItem workItem) {
+    	this.workItem = workItem;
     }
     
     public boolean isInversionOfControl() {
@@ -165,26 +170,29 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public void triggerCompleted(WorkItem workItem) {
-        for (Iterator<Map.Entry<String, String>> iterator = getWorkItemNode().getOutMappings().entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<String, String> mapping = iterator.next();
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
-            if (variableScopeInstance != null) {
-            	Object value = workItem.getResult(mapping.getKey());
-            	if (value == null) {
-            		try {
-                		value = MVEL.eval(mapping.getKey(), new WorkItemResolverFactory(workItem));
-                	} catch (Throwable t) {
-                		// do nothing
-                	}
-            	}
-                variableScopeInstance.setVariable(mapping.getValue(), value);
-            } else {
-                System.err.println("Could not find variable scope for variable " + mapping.getValue());
-                System.err.println("when trying to complete Work Item " + workItem.getName());
-                System.err.println("Continuing without setting variable.");
-            }
-        }
+    	WorkItemNode workItemNode = getWorkItemNode();
+    	if (workItemNode != null) {
+	        for (Iterator<Map.Entry<String, String>> iterator = getWorkItemNode().getOutMappings().entrySet().iterator(); iterator.hasNext(); ) {
+	            Map.Entry<String, String> mapping = iterator.next();
+	            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
+	            if (variableScopeInstance != null) {
+	            	Object value = workItem.getResult(mapping.getKey());
+	            	if (value == null) {
+	            		try {
+	                		value = MVEL.eval(mapping.getKey(), new WorkItemResolverFactory(workItem));
+	                	} catch (Throwable t) {
+	                		// do nothing
+	                	}
+	            	}
+	                variableScopeInstance.setVariable(mapping.getValue(), value);
+	            } else {
+	                System.err.println("Could not find variable scope for variable " + mapping.getValue());
+	                System.err.println("when trying to complete Work Item " + workItem.getName());
+	                System.err.println("Continuing without setting variable.");
+	            }
+	        }
+    	}
         if (isInversionOfControl()) {
             WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
             workingMemory.update(workingMemory.getFactHandle(this), this);
@@ -245,6 +253,19 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             removeEventListeners();
             triggerCompleted(workItem);
         }
+    }
+    
+    public String getNodeName() {
+    	Node node = getNode();
+    	if (node == null) {
+    		String nodeName =  "[Dynamic]";
+    		WorkItem workItem = getWorkItem();
+    		if (workItem != null) {
+    			nodeName += " " + workItem.getParameter("TaskName");
+    		}
+    		return nodeName;
+    	}
+    	return super.getNodeName();
     }
     
 }

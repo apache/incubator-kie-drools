@@ -1,5 +1,7 @@
 package org.drools.common;
 
+import java.util.Map;
+
 import org.drools.spi.Activation;
 import org.drools.spi.RuleFlowGroup;
 
@@ -33,5 +35,11 @@ public interface InternalRuleFlowGroup extends RuleFlowGroup {
     void addRuleFlowGroupListener(RuleFlowGroupListener listener);
     
     void removeRuleFlowGroupListener(RuleFlowGroupListener listener);
+    
+    void addNodeInstance(Long processInstanceId, String nodeInstanceId);
+
+    void removeNodeInstance(Long processInstanceId, String nodeInstanceId);
+    
+    Map<Long, String> getNodeInstances();
     
 }

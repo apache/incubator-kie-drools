@@ -22,9 +22,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.common.InternalRuleBase;
+import org.drools.definition.process.Node;
 import org.drools.definition.process.Process;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
@@ -129,7 +131,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     
     public void cancel() {
         super.cancel();
-        if (!getSubProcessNode().isIndependent()) {
+        if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
             ProcessInstance processInstance = (ProcessInstance)
                 ((ProcessInstance) getProcessInstance()).getWorkingMemory()
                     .getProcessInstance(processInstanceId);
@@ -201,6 +203,14 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	            System.err.println("Continuing without setting variable.");
 	        }
 	    }
+    }
+    
+    public String getNodeName() {
+    	Node node = getNode();
+    	if (node == null) {
+    		return "[Dynamic] Sub Process";
+    	}
+    	return super.getNodeName();
     }
 
 }

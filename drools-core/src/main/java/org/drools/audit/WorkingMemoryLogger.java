@@ -459,6 +459,9 @@ public abstract class WorkingMemoryLogger
     
     private String createNodeId(NodeInstance nodeInstance) {
     	Node node = ((org.drools.workflow.instance.NodeInstance) nodeInstance).getNode();
+    	if (node == null) {
+    		return "";
+    	}
     	String nodeId = "" + node.getId();
     	NodeContainer nodeContainer = node.getNodeContainer();
     	while (nodeContainer != null) {

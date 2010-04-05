@@ -571,6 +571,12 @@ public class DefaultAgenda
         ((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( true );
     }
 
+    public void activateRuleFlowGroup(final String name, long processInstanceId, String nodeInstanceId) {
+    	InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup( name );
+    	ruleFlowGroup.addNodeInstance(processInstanceId, nodeInstanceId);
+        ruleFlowGroup.setActive( true );
+    }
+
     public void deactivateRuleFlowGroup(final String name) {
         ((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( false );
     }

@@ -38,7 +38,11 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 	}
 	
 	protected void triggerEvent(String type) {
-		List<DroolsAction> actions = getExtendedNode().getActions(type);
+		ExtendedNodeImpl extendedNode = getExtendedNode();
+		if (extendedNode == null) {
+			return;
+		}
+		List<DroolsAction> actions = extendedNode.getActions(type);
 		if (actions != null) {
 			KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
 			for (DroolsAction droolsAction: actions) {

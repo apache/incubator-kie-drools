@@ -26,6 +26,7 @@ import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
+import org.drools.workflow.instance.node.DynamicNodeInstance;
 import org.drools.workflow.instance.node.ForEachNodeInstance;
 import org.drools.workflow.instance.node.HumanTaskNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
@@ -175,6 +176,52 @@ public abstract class AbstractProcessInstanceMarshaller implements
             } else {
                 stream.writeInt(0);
             }
+        } else if (nodeInstance instanceof DynamicNodeInstance) {
+            stream.writeShort(PersisterEnums.DYNAMIC_NODE_INSTANCE);
+            DynamicNodeInstance dynamicNodeInstance = (DynamicNodeInstance) nodeInstance;
+            List<Long> timerInstances = dynamicNodeInstance.getTimerInstances();
+            if (timerInstances != null) {
+                stream.writeInt(timerInstances.size());
+                for (Long id : timerInstances) {
+                    stream.writeLong(id);
+                }
+            } else {
+                stream.writeInt(0);
+            }
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) dynamicNodeInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+            if (variableScopeInstance == null) {
+            	stream.writeInt(0);
+            } else {
+	            Map<String, Object> variables = variableScopeInstance.getVariables();
+	            List<String> keys = new ArrayList<String>(variables.keySet());
+	            Collections.sort(keys,
+	                    new Comparator<String>() {
+	                        public int compare(String o1,
+	                                String o2) {
+	                            return o1.compareTo(o2);
+	                        }
+	                    });
+	            stream.writeInt(keys.size());
+	            for (String key : keys) {
+	                stream.writeUTF(key);
+	                stream.writeObject(variables.get(key));
+	            }
+            }
+            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(dynamicNodeInstance.getNodeInstances());
+            Collections.sort(nodeInstances,
+                    new Comparator<NodeInstance>() {
+
+                        public int compare(NodeInstance o1,
+                                NodeInstance o2) {
+                            return (int) (o1.getId() - o2.getId());
+                        }
+                    });
+            for (NodeInstance subNodeInstance : nodeInstances) {
+                stream.writeShort(PersisterEnums.NODE_INSTANCE);
+                writeNodeInstance(context,
+                        subNodeInstance);
+            }
+            stream.writeShort(PersisterEnums.END);
         } else if (nodeInstance instanceof CompositeContextNodeInstance) {
             stream.writeShort(PersisterEnums.COMPOSITE_NODE_INSTANCE);
             CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
@@ -327,6 +374,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 
         switch (nodeType) {
             case PersisterEnums.COMPOSITE_NODE_INSTANCE:
+            case PersisterEnums.DYNAMIC_NODE_INSTANCE:
                 int nbVariables = stream.readInt();
                 if (nbVariables > 0) {
                     Context variableScope = ((org.drools.process.core.Process) processInstance.getProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
@@ -347,7 +395,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                             (CompositeContextNodeInstance) nodeInstance,
                             processInstance);
                 }
-                break;
+                // don't break just yet, also do below
             case PersisterEnums.FOR_EACH_NODE_INSTANCE:
                 while (stream.readShort() == PersisterEnums.NODE_INSTANCE) {
                     readNodeInstance(context,
@@ -424,6 +472,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 break;
             case PersisterEnums.FOR_EACH_NODE_INSTANCE:
                 nodeInstance = new ForEachNodeInstance();
+                break;
+            case PersisterEnums.DYNAMIC_NODE_INSTANCE:
+                nodeInstance = new DynamicNodeInstance();
                 break;
             case PersisterEnums.STATE_NODE_INSTANCE:
                 nodeInstance = new StateNodeInstance();
