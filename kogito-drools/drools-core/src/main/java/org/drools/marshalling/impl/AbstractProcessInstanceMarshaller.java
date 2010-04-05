@@ -395,7 +395,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                             (CompositeContextNodeInstance) nodeInstance,
                             processInstance);
                 }
-                // don't break just yet, also do below
+                break;
             case PersisterEnums.FOR_EACH_NODE_INSTANCE:
                 while (stream.readShort() == PersisterEnums.NODE_INSTANCE) {
                     readNodeInstance(context,
