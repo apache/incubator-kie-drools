@@ -41,4 +41,8 @@ public abstract class PatternComponent extends RuleComponent {
         return patternName;
     }
 
+    public int getPatternOrderNumber() {
+        return patternOrderNumber;
+    }
+
 }
