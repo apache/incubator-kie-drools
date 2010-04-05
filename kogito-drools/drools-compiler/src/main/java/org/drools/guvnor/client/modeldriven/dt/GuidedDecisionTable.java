@@ -87,7 +87,7 @@ public class GuidedDecisionTable implements PortableObject {
 	public String[] getValueList(DTColumnConfig col, SuggestionCompletionEngine sce) {
 		if (col instanceof AttributeCol) {
 			AttributeCol at = (AttributeCol) col;
-			if (at.attr.equals("no-loop") || at.attr.equals("enabled")) {
+			if ("no-loop".equals(at.attr) || "enabled".equals(at.attr)) {
 				return new String[] { "true", "false" };
 			}
 		} else if (col instanceof ConditionCol) {
@@ -127,8 +127,8 @@ public class GuidedDecisionTable implements PortableObject {
 	}
 
 	private String getBoundFactType(String boundName) {
-		for (Iterator iterator = conditionCols.iterator(); iterator.hasNext();) {
-			ConditionCol c = (ConditionCol) iterator.next();
+		for (Iterator<ConditionCol> iterator = conditionCols.iterator(); iterator.hasNext();) {
+			ConditionCol c = iterator.next();
 			if (c.boundName.equals(boundName)) {
 				return c.factType;
 			}
@@ -139,11 +139,7 @@ public class GuidedDecisionTable implements PortableObject {
 	public boolean isNumeric(DTColumnConfig col, SuggestionCompletionEngine sce) {
 		if (col instanceof AttributeCol) {
 			AttributeCol at = (AttributeCol) col;
-			if (at.attr.equals("salience")) {
-				return true;
-			} else {
-				return false;
-			}
+			return "salience".equals(at.attr);
 		} else if (col instanceof ConditionCol) {
 			ConditionCol c = (ConditionCol) col;
 			if (c.constraintValueType == ISingleFieldConstraint.TYPE_LITERAL) {
