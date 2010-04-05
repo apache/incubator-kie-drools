@@ -2,13 +2,9 @@ package org.drools.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.base.MapGlobalResolver;
@@ -16,9 +12,9 @@ import org.drools.command.Command;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
@@ -33,14 +29,12 @@ import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.Environment;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSessionResults;
-import org.drools.runtime.impl.BatchExecutionImpl;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.AgendaFilter;
 
@@ -243,8 +237,8 @@ public class StatelessKnowledgeSessionImpl
             boolean autoFireAllRules = true;
             if ( command instanceof FireAllRulesCommand ) {
                 autoFireAllRules = false;
-            } else if ( command instanceof BatchExecutionImpl ) {
-                for ( Command nestedCmd : ((BatchExecutionImpl) command).getCommands() ) {
+            } else if ( command instanceof BatchExecutionCommand ) {
+                for ( Command nestedCmd : ((BatchExecutionCommand) command).getCommands() ) {
                     if ( nestedCmd instanceof FireAllRulesCommand ) {
                         autoFireAllRules = false;
                         break;

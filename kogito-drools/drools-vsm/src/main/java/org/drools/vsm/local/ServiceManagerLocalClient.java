@@ -6,6 +6,7 @@ import java.util.Properties;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.agent.KnowledgeAgentProvider;
+import org.drools.agent.impl.KnowledgeAgentProviderImpl;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
@@ -47,8 +48,7 @@ public class ServiceManagerLocalClient
     }
 
     public KnowledgeAgentProvider getKnowledgeAgentFactory() {
-        // TODO Auto-generated method stub
-        return null;
+        return new KnowledgeAgentProviderImpl();
     }
 
     public JPAKnowledgeServiceProvider JPAKnowledgeService() {

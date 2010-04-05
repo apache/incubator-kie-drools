@@ -7,6 +7,7 @@ import java.util.Map;
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryProvider;
 import org.drools.command.Setter;
+import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -16,14 +17,12 @@ import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
 import org.drools.command.runtime.rule.GetObjectsCommand;
-import org.drools.command.runtime.rule.InsertElementsCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.impl.BatchExecutionImpl;
 import org.drools.runtime.rule.FactHandle;
 
 public class CommandFactoryProviderImpl implements CommandFactoryProvider {
@@ -148,7 +147,6 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 	}
 
 	public Command newBatchExecution(List<? extends Command> commands) {
-		return new BatchExecutionImpl(
-				(List<GenericCommand>) commands);
+		return new BatchExecutionCommand((List<GenericCommand<?>>) commands);
 	}
 }

@@ -13,6 +13,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
 import org.drools.command.Setter;
+import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -27,14 +28,11 @@ import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
-import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
-import org.drools.common.DisconnectedFactHandle;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.help.BatchExecutionHelperProvider;
-import org.drools.runtime.impl.BatchExecutionImpl;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
@@ -64,12 +62,12 @@ public class BatchExecutionHelperProviderImpl
         ElementNames names = new XmlElementNames();
         
         // xstream.setMode( XStream.NO_REFERENCES );
-        xstream.processAnnotations( BatchExecutionImpl.class );
-        xstream.addImplicitCollection( BatchExecutionImpl.class,
+        xstream.processAnnotations( BatchExecutionCommand.class );
+        xstream.addImplicitCollection( BatchExecutionCommand.class,
                                        "commands" );
         
         xstream.alias( "batch-execution",
-                       BatchExecutionImpl.class );
+        		BatchExecutionCommand.class );
         xstream.alias( "insert",
                        InsertObjectCommand.class );
         xstream.alias( "modify",
