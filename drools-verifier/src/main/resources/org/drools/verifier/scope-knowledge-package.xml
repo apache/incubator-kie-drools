@@ -33,9 +33,6 @@
 		<resource
 			source='classpath:org/drools/verifier/optimisation/PatternOrder.drl'
 			type='DRL' />
-		<!-- Overlaps -->
-		<resource source='classpath:org/drools/verifier/overlaps/Restrictions.drl'
-			type='DRL' />
 		<!-- Range checks -->
 		<resource source='classpath:org/drools/verifier/rangeChecks/Clean.drl'
 			type='DRL' />

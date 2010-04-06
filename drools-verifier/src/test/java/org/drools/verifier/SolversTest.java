@@ -44,10 +44,14 @@ public class SolversTest extends TestCase {
         rule.setName( "testRule" );
         Pattern pattern = new Pattern( rule );
 
-        Restriction r = new LiteralRestriction( pattern );
-        Restriction r2 = new LiteralRestriction( pattern );
-        Restriction r3 = new LiteralRestriction( pattern );
-        Restriction r4 = new LiteralRestriction( pattern );
+        Restriction r = LiteralRestriction.createRestriction( pattern,
+                                                              "" );
+        Restriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
+        Restriction r3 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
+        Restriction r4 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
 
         Solvers solvers = new Solvers();
 
@@ -118,8 +122,10 @@ public class SolversTest extends TestCase {
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        Restriction r = new LiteralRestriction( pattern );
-        Restriction r2 = new LiteralRestriction( pattern );
+        Restriction r = LiteralRestriction.createRestriction( pattern,
+                                                              "" );
+        Restriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
 
         Solvers solvers = new Solvers();
 

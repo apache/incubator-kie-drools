@@ -40,17 +40,17 @@ rule "Range check for dates, if smaller than or equal is missing"
 		$f :Field( fieldType == Field.DATE )
 		
 		# Foo( bar > "27-Oct-2007" )
-		$r :LiteralRestriction( 
+		$r :DateRestriction( 
 			fieldPath == $f.path, 
 			operator == Operator.GREATER
 		)
 		
 		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
-		not	LiteralRestriction( 
+		not	DateRestriction( 
 			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue()) ) 
+			value == $r.value
 		)
 	then
 		Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
@@ -72,17 +72,17 @@ rule "Range check for dates, if greater than or equal is missing"
 		$f :Field( fieldType == Field.DATE )
 		
 		# Foo( bar > "27-Oct-2007" )
-		$r :LiteralRestriction( 
+		$r :DateRestriction( 
 			fieldPath == $f.path, 
 			operator == Operator.LESS
 		)
 		
 		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
-		not	LiteralRestriction( 
+		not	DateRestriction( 
 			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue()) ) 
+			value == $r.value
 		)
 	then
 		Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
@@ -105,25 +105,25 @@ rule "Range check for dates, equal and greater than"
 		$f :Field( fieldType == Field.DATE )
 
 		# Foo( bar == "27-Oct-2007" ) 
-		$r :LiteralRestriction( 
+		$r :DateRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
 		)
 
 		# Check if Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" ) is missing.
-		not	LiteralRestriction( 
+		not	DateRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue()) ) 
+			patternIsNot == $r.patternIsNot,  
+			value == $r.value 
 		)
 		
 		# Check if Foo( bar == "28-Oct-2007" || >= "28-Oct-2007" ) is missing.
-		not	LiteralRestriction( 
+		not	DateRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( checkDates( dateValue, $r.getDateValue(), true ) ) 
+			eval( checkDates( value, $r.getValue(), true ) ) 
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.GREATER, $r );
@@ -146,25 +146,25 @@ rule "Range check for dates, equal and smaller than"
 		$f :Field( fieldType == Field.DATE )
 
 		# Foo( bar == "27-Oct-2007" ) 
-		$r :LiteralRestriction( 
+		$r :DateRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
 		)
 
 		# Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
-		not	LiteralRestriction( 
+		not	DateRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue()) ) 
+			eval( value.equals($r.getValue()) ) 
 		)
 		
 		# Check if Foo( bar == "26-Oct-2007" || <= "26-Oct-2007" ) is missing.
-		not	LiteralRestriction( 
+		not	DateRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( checkDates( dateValue, $r.getDateValue(), false ) )
+			eval( checkDates( value, $r.getValue(), false ) )
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.LESS, $r );

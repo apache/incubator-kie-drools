@@ -113,7 +113,8 @@ public class VerifierDataMapsTest extends TestCase {
     public void testSaveVerifierComponentAndGetForAllRestrictions() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        saveVerifierComponentAndGet( new LiteralRestriction( pattern ) );
+        saveVerifierComponentAndGet( LiteralRestriction.createRestriction( pattern,
+                                                                           "" ) );
         saveVerifierComponentAndGet( new EnumRestriction( pattern ) );
         saveVerifierComponentAndGet( new QualifiedIdentifierRestriction( pattern ) );
         saveVerifierComponentAndGet( new ReturnValueRestriction( pattern ) );

@@ -3,6 +3,7 @@ package org.drools.verifier.opposites
 
 #list any import classes here.
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.Field;
 
@@ -39,10 +40,9 @@ rule "Opposite LiteralRestrictions"
 			valueType == $left.valueType,
 			path != $left.path,
 			# Operator needs to be reversed to what the other one has.
-			eval( operator == MissingRange.getReversedOperator( $left.getOperator() ))
+			eval( operator == MissingRange.getReversedOperator( $left.getOperator() )),
+			valueAsString == valueAsString
 		)
-
-		eval( $left.compareValues( $right ) == 0 )
 
 		# Check that there is not already a pair with these values.
 		not Opposites( 
@@ -74,11 +74,10 @@ rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
 			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.LESS,
-			path != $left.path
+			path != $left.path,
+			valueAsString == $left.valueAsString
 		)
 		
-		eval( $left.compareValues( $right ) == 0 )
-
 		# Check that there is not already a pair with these values.
 		not Opposites( 
 	        left == $left,
@@ -109,10 +108,9 @@ rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
 			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.LESS_OR_EQUAL,
-			path != $left.path
+			path != $left.path,
+			valueAsString == $left.valueAsString 
 		)
-		
-		eval( $left.compareValues( $right ) == 0 )
 
 		# Check that there is not already a pair with these values.
 		not Opposites( 
@@ -136,20 +134,19 @@ end
 #
 rule "Opposite LiteralRestrictions with ranges, less - greater for ints and dates"
 	when
-		$left :LiteralRestriction(
+		$left :NumberRestriction(
 			operator == Operator.LESS,
 			( valueType == Field.INT || == Field.DATE )
 		)
 
-		$right :LiteralRestriction(
+		$right :NumberRestriction(
 			restrictionType == $left.restrictionType,
 			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.GREATER,
-			path != $left.path
+			path != $left.path,
+			value < $left.value
 		)
-		
-		eval( $left.compareValues( $right ) == 1 )
 		
 		# Check that there is not already a pair with these values.
 		not Opposites( 
@@ -172,20 +169,19 @@ end
 #
 rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
 	when
-		$left :LiteralRestriction(
+		$left :NumberRestriction(
 			operator == Operator.GREATER_OR_EQUAL,
 			( valueType == Field.INT || == Field.DATE )
 		)
 
-		$right :LiteralRestriction(
+		$right :NumberRestriction(
 			restrictionType == $left.restrictionType,
 			fieldPath == $left.fieldPath,
 			valueType == $left.valueType,
 			operator == Operator.LESS_OR_EQUAL,
-			path != $left.path
+			path != $left.path,
+			value < $left.value
 		)
-		
-		eval( $left.compareValues( $right ) == 1 )
 		
 		# Check that there is not already a pair with these values.
 		not Opposites( 

@@ -37,16 +37,20 @@ public class OppositePatternsTest extends OppositesBase {
         SubPattern pp2 = new SubPattern( pattern,
                                          1 );
 
-        Restriction r1 = new LiteralRestriction( pattern );
+        Restriction r1 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp1.add( r1 );
 
-        Restriction r2 = new LiteralRestriction( pattern );
+        Restriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp2.add( r2 );
 
-        Restriction r3 = new LiteralRestriction( pattern );
+        Restriction r3 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp1.add( r3 );
 
-        Restriction r4 = new LiteralRestriction( pattern );
+        Restriction r4 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp2.add( r4 );
 
         Opposites o1 = new Opposites( r1,
@@ -62,16 +66,20 @@ public class OppositePatternsTest extends OppositesBase {
         SubPattern pp4 = new SubPattern( pattern,
                                          3 );
 
-        Restriction r5 = new LiteralRestriction( pattern );
+        Restriction r5 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp3.add( r5 );
 
-        Restriction r6 = new LiteralRestriction( pattern );
+        Restriction r6 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp4.add( r6 );
 
-        Restriction r7 = new LiteralRestriction( pattern );
+        Restriction r7 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp3.add( r7 );
 
-        Restriction r8 = new LiteralRestriction( pattern );
+        Restriction r8 = LiteralRestriction.createRestriction( pattern,
+                                                               "" );
         pp4.add( r8 );
 
         Opposites o3 = new Opposites( r5,

@@ -50,10 +50,6 @@ public class Gap extends MissingRange
         return restriction.getValueAsString();
     }
 
-    public Object getValueAsObject() {
-        return restriction.getValueAsObject();
-    }
-
     @Override
     public String toString() {
         return "Gap: (" + field + ") " + getOperator() + " " + getValueAsString() + " from rule: [" + getRuleName() + "]";

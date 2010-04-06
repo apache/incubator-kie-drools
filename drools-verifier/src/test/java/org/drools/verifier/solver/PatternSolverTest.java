@@ -31,8 +31,10 @@ public class PatternSolverTest extends TestCase {
     public void testAddBasicAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 
@@ -63,8 +65,10 @@ public class PatternSolverTest extends TestCase {
     public void testAddBasicOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 
@@ -99,9 +103,12 @@ public class PatternSolverTest extends TestCase {
     public void testAddOrAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction3 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 
@@ -144,9 +151,12 @@ public class PatternSolverTest extends TestCase {
     public void testAddAndOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction3 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 
@@ -194,10 +204,14 @@ public class PatternSolverTest extends TestCase {
     public void testAddAndOrOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction3 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction4 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 
@@ -254,10 +268,14 @@ public class PatternSolverTest extends TestCase {
     public void testAddOrAndAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction3 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction4 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 
@@ -306,10 +324,14 @@ public class PatternSolverTest extends TestCase {
     public void testAddOrAndOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction3 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction4 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 
@@ -359,11 +381,16 @@ public class PatternSolverTest extends TestCase {
     public void testAddOrAndOrDescr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction2 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction3 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction4 = new LiteralRestriction( pattern );
-        LiteralRestriction literalRestriction5 = new LiteralRestriction( pattern );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
+                                                                                      "" );
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
+        LiteralRestriction literalRestriction5 = LiteralRestriction.createRestriction( pattern,
+                                                                                       "" );
 
         PatternSolver solver = new PatternSolver( pattern );
 

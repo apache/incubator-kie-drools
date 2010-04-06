@@ -10,52 +10,66 @@ public class LiteralRestrictionTest extends TestCase {
 
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction booleanRestriction = new LiteralRestriction( pattern1 );
-        booleanRestriction.setValue( "true" );
+        LiteralRestriction literalBooleanRestriction = LiteralRestriction.createRestriction( pattern1,
+                                                                                             "true" );
+
+        assertTrue( literalBooleanRestriction instanceof BooleanRestriction );
+
+        BooleanRestriction booleanRestriction = (BooleanRestriction) literalBooleanRestriction;
 
         assertEquals( Field.BOOLEAN,
                       booleanRestriction.getValueType() );
         assertEquals( true,
-                      booleanRestriction.getBooleanValue() );
+                      booleanRestriction.getValue() );
 
-        LiteralRestriction intRestriction = new LiteralRestriction( pattern1 );
-        intRestriction.setValue( "1" );
+        LiteralRestriction intLiteralRestriction = LiteralRestriction.createRestriction( pattern1,
+                                                                                         "1" );
+        assertTrue( intLiteralRestriction instanceof NumberRestriction );
+        NumberRestriction intRestriction = (NumberRestriction) intLiteralRestriction;
 
+        assertTrue( intRestriction.isInt() );
         assertEquals( Field.INT,
                       intRestriction.getValueType() );
         assertEquals( 1,
-                      intRestriction.getIntValue() );
+                      intRestriction.getValue() );
 
-        LiteralRestriction doubleRestriction = new LiteralRestriction( pattern1 );
-        doubleRestriction.setValue( "1.0" );
+        LiteralRestriction doubleLiteralRestriction = LiteralRestriction.createRestriction( pattern1,
+                                                                                            "1.0" );
+        assertTrue( doubleLiteralRestriction instanceof NumberRestriction );
+
+        NumberRestriction doubleRestriction = (NumberRestriction) doubleLiteralRestriction;
 
         assertEquals( Field.DOUBLE,
                       doubleRestriction.getValueType() );
         assertEquals( 1.0,
-                      doubleRestriction.getDoubleValue() );
+                      doubleRestriction.getValue() );
 
-        LiteralRestriction dateRestriction = new LiteralRestriction( pattern1 );
-        dateRestriction.setValue( "11-jan-2008" );
+        LiteralRestriction dateLiteralRestriction = LiteralRestriction.createRestriction( pattern1,
+                                                                                          "11-jan-2008" );
+
+        assertTrue( dateLiteralRestriction instanceof DateRestriction );
+
+        DateRestriction dateRestriction = (DateRestriction) dateLiteralRestriction;
 
         assertEquals( Field.DATE,
                       dateRestriction.getValueType() );
 
-        LiteralRestriction stringRestriction = new LiteralRestriction( pattern1 );
-        stringRestriction.setValue( "test test" );
+        LiteralRestriction stringRestriction = LiteralRestriction.createRestriction( pattern1,
+                                                                                     "test test" );
 
         assertEquals( Field.STRING,
                       stringRestriction.getValueType() );
         assertEquals( "test test",
                       stringRestriction.getValueAsString() );
 
-        LiteralRestriction nullRestriction = new LiteralRestriction( pattern1 );
-        nullRestriction.setValue( null );
+        LiteralRestriction nullRestriction = LiteralRestriction.createRestriction( pattern1,
+                                                                                   null );
+
+        assertTrue( nullRestriction instanceof StringRestriction );
 
         assertEquals( Field.UNKNOWN,
                       nullRestriction.getValueType() );
-        assertEquals( null,
+        assertEquals( "",
                       nullRestriction.getValueAsString() );
-        assertEquals( null,
-                      nullRestriction.getValueAsObject() );
     }
 }

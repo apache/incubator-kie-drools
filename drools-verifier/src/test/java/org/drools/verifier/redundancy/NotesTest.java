@@ -30,9 +30,11 @@ public class NotesTest extends TestBase {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         Collection<Object> objects = new ArrayList<Object>();
-        LiteralRestriction left = new LiteralRestriction( pattern );
+        LiteralRestriction left = LiteralRestriction.createRestriction( pattern,
+                                                                        "" );
 
-        LiteralRestriction right = new LiteralRestriction( pattern );
+        LiteralRestriction right = LiteralRestriction.createRestriction( pattern,
+                                                                         "" );
 
         Redundancy redundancy = new Redundancy( left,
                                                 right );

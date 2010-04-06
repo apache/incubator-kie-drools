@@ -38,16 +38,20 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
         SubPattern pp2 = new SubPattern( pattern2,
                                          0 );
 
-        Restriction r1 = new LiteralRestriction( pattern1 );
+        Restriction r1 = LiteralRestriction.createRestriction( pattern1,
+                                                               "" );
         pp1.add( r1 );
 
-        Restriction r2 = new LiteralRestriction( pattern2 );
+        Restriction r2 = LiteralRestriction.createRestriction( pattern2,
+                                                               "" );
         pp2.add( r2 );
 
-        Restriction r3 = new LiteralRestriction( pattern1 );
+        Restriction r3 = LiteralRestriction.createRestriction( pattern1,
+                                                               "" );
         pp1.add( r3 );
 
-        Restriction r4 = new LiteralRestriction( pattern2 );
+        Restriction r4 = LiteralRestriction.createRestriction( pattern2,
+                                                               "" );
         pp2.add( r4 );
 
         Incompatibility o1 = new Incompatibility( r1,
@@ -65,16 +69,20 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
         SubPattern pp4 = new SubPattern( pattern4,
                                          0 );
 
-        Restriction r5 = new LiteralRestriction( pattern3 );
+        Restriction r5 = LiteralRestriction.createRestriction( pattern3,
+                                                               "" );
         pp3.add( r5 );
 
-        Restriction r6 = new LiteralRestriction( pattern4 );
+        Restriction r6 = LiteralRestriction.createRestriction( pattern4,
+                                                               "" );
         pp4.add( r6 );
 
-        Restriction r7 = new LiteralRestriction( pattern3 );
+        Restriction r7 = LiteralRestriction.createRestriction( pattern3,
+                                                               "" );
         pp3.add( r7 );
 
-        Restriction r8 = new LiteralRestriction( pattern4 );
+        Restriction r8 = LiteralRestriction.createRestriction( pattern4,
+                                                               "" );
         pp4.add( r8 );
 
         Incompatibility o3 = new Incompatibility( r5,
