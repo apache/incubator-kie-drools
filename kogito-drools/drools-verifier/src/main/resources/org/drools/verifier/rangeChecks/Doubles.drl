@@ -26,17 +26,17 @@ rule "Range check for doubles, if smaller than or equal is missing"
 		$f :Field( fieldType == Field.DOUBLE )
 		
 		# Foo( bar > 42 )
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			operator == Operator.GREATER
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			doubleValue == $r.doubleValue 
+			value == $r.value 
 		)
 	then
 		Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
@@ -58,17 +58,17 @@ rule "Range check for doubles, if greater than or equal is missing"
 		$f :Field( fieldType == Field.DOUBLE )
 		
 		# Foo( bar > 42 )
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			operator == Operator.LESS
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			doubleValue == $r.doubleValue 
+			value == $r.value 
 		)
 	then
 		Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
@@ -91,17 +91,17 @@ rule "Range check for doubles, equal and greater than"
 		$f :Field( fieldType == Field.DOUBLE )
 
 		# Foo( bar == 42 ) 
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
 		)
 
 		# Check if Foo( bar > 42 || >= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			doubleValue == $r.doubleValue 
+			value == $r.value 
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.GREATER, $r );
@@ -124,17 +124,17 @@ rule "Range check for doubles, equal and smaller than"
 		$f :Field( fieldType == Field.DOUBLE )
 
 		# Foo( bar == 42 ) 
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
 		)
 
 		# Check if Foo( bar < 42 || <= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			doubleValue == $r.doubleValue 
+			value == $r.value 
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.LESS, $r );

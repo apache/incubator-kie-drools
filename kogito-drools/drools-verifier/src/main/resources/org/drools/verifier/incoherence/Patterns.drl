@@ -4,6 +4,7 @@ package org.drools.verifier.incoherence
 #list any import classes here.
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.Pattern;
@@ -47,10 +48,9 @@ rule "Incoherent Patterns in rule possibility"
 			restrictionType == $r1.restrictionType,
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
-			operator == $r1.operator
+			operator == $r1.operator,
+			valueAsString == $r1.valueAsString
 		)
-
-		eval( $r1.compareValues( $r2 ) == 0 )
 
 		$pp1 :SubPattern(
 			patternPath == $r1.patternPath
@@ -177,19 +177,18 @@ end
 #
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with lesser value"
 	when
-		$r1 :LiteralRestriction(
+		$r1 :NumberRestriction(
 			patternIsNot == true,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
 		)
 
-		$r2 :LiteralRestriction(
+		$r2 :NumberRestriction(
 			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL ),
-			fieldPath == $r1.fieldPath
+			fieldPath == $r1.fieldPath,
+			value > $r1.value
 		)
-
-		eval( $r1.compareValues( $r2 ) == -1 )
 
 		$pp1 :SubPattern(
 			patternPath == $r1.patternPath
@@ -246,19 +245,18 @@ end
 #
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with greater value"
 	when
-		$r1 :LiteralRestriction(
+		$r1 :NumberRestriction(
 			patternIsNot == true,
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL )
 		)
 
-		$r2 :LiteralRestriction(
+		$r2 :NumberRestriction(
 			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL ),
-			fieldPath == $r1.fieldPath
+			fieldPath == $r1.fieldPath,
+			value < $r1.value
 		)
-
-		eval( $r1.compareValues( $r2 ) == 1 )
 
 		$pp1 :SubPattern(
 			patternPath == $r1.patternPath
@@ -325,10 +323,9 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			patternIsNot == false,
 			# It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
 			( operator != Operator.EQUAL && != Operator.NOT_EQUAL ),
-			fieldPath == $r1.fieldPath
+			fieldPath == $r1.fieldPath,
+			valueAsString == $r1.valueAsString
 		)
-
-		eval( $r1.compareValues( $r2 ) == 0 )
 
 		$pp1 :SubPattern(
 			patternPath == $r1.patternPath
@@ -464,10 +461,9 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			rulePath == $r1.rulePath,
 			patternIsNot == false,
 			operator == Operator.EQUAL,
-			fieldPath == $r1.fieldPath
+			fieldPath == $r1.fieldPath,
+			valueAsString == $r1.valueAsString
 		)
-
-		eval( $r1.compareValues( $r2 ) == 0 )
 
 		$pp1 :SubPattern(
 			patternPath == $r1.patternPath

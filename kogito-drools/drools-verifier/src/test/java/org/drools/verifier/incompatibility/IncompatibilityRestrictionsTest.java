@@ -35,31 +35,31 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         /*
          * Working pair
          */
-        LiteralRestriction r1 = new LiteralRestriction( pattern1 );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern1,
+                                                                      "10" );
         r1.setOperator( Operator.EQUAL );
         r1.setFieldPath( "0" );
-        r1.setValue( "10" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern1 );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern1,
+                                                                      "1" );
         r2.setOperator( Operator.LESS );
         r2.setFieldPath( "0" );
-        r2.setValue( "1" );
         r2.setOrderNumber( 2 );
 
         /*
          * Pair that doesn't work.
          */
-        LiteralRestriction r3 = new LiteralRestriction( pattern2 );
+        LiteralRestriction r3 = LiteralRestriction.createRestriction( pattern2,
+                                                                      "1" );
         r3.setOperator( Operator.GREATER_OR_EQUAL );
         r3.setFieldPath( "1" );
-        r3.setValue( "1" );
         r3.setOrderNumber( 0 );
 
-        LiteralRestriction r4 = new LiteralRestriction( pattern2 );
+        LiteralRestriction r4 = LiteralRestriction.createRestriction( pattern2,
+                                                                      "10" );
         r4.setOperator( Operator.EQUAL );
         r4.setFieldPath( "1" );
-        r4.setValue( "10" );
         r4.setOrderNumber( 1 );
 
         data.add( r1 );
@@ -96,31 +96,31 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         /*
          * Working pair
          */
-        LiteralRestriction r1 = new LiteralRestriction( pattern1 );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern1,
+                                                                      "10" );
         r1.setOperator( Operator.GREATER );
         r1.setFieldPath( "0" );
-        r1.setValue( "10" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern1 );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern1,
+                                                                      "1" );
         r2.setOperator( Operator.EQUAL );
         r2.setFieldPath( "0" );
-        r2.setValue( "1" );
         r2.setOrderNumber( 1 );
 
         /*
          * Pair that doesn't work.
          */
-        LiteralRestriction r3 = new LiteralRestriction( pattern2 );
+        LiteralRestriction r3 = LiteralRestriction.createRestriction( pattern2,
+                                                                      "1" );
         r3.setOperator( Operator.GREATER_OR_EQUAL );
         r3.setFieldPath( "1" );
-        r3.setValue( "1" );
         r3.setOrderNumber( 0 );
 
-        LiteralRestriction r4 = new LiteralRestriction( pattern2 );
+        LiteralRestriction r4 = LiteralRestriction.createRestriction( pattern2,
+                                                                      "10" );
         r4.setOperator( Operator.EQUAL );
         r4.setFieldPath( "1" );
-        r4.setValue( "10" );
         r4.setOrderNumber( 1 );
 
         data.add( r1 );
@@ -157,31 +157,31 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         /*
          * Working pair
          */
-        LiteralRestriction r1 = new LiteralRestriction( pattern1 );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern1,
+                                                                      "10" );
         r1.setOperator( Operator.GREATER );
         r1.setFieldPath( "0" );
-        r1.setValue( "10" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern1 );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern1,
+                                                                      "10" );
         r2.setOperator( Operator.LESS );
         r2.setFieldPath( "0" );
-        r2.setValue( "10" );
         r2.setOrderNumber( 1 );
 
         /*
          * Pair that doesn't work.
          */
-        LiteralRestriction r3 = new LiteralRestriction( pattern2 );
+        LiteralRestriction r3 = LiteralRestriction.createRestriction( pattern2,
+                                                                      "1" );
         r3.setOperator( Operator.GREATER_OR_EQUAL );
         r3.setFieldPath( "1" );
-        r3.setValue( "1" );
         r3.setOrderNumber( 0 );
 
-        LiteralRestriction r4 = new LiteralRestriction( pattern2 );
+        LiteralRestriction r4 = LiteralRestriction.createRestriction( pattern2,
+                                                                      "" );
         r4.setOperator( Operator.EQUAL );
         r4.setFieldPath( "1" );
-        r4.setValue( "10" );
         r4.setOrderNumber( 1 );
 
         data.add( r1 );

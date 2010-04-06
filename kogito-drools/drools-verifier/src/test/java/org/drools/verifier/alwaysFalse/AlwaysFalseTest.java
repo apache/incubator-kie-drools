@@ -43,8 +43,10 @@ public class AlwaysFalseTest extends TestBase {
         // This pattern has an error.
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
-        Restriction r1 = new LiteralRestriction( pattern1 );
-        Restriction r2 = new LiteralRestriction( pattern1 );
+        Restriction r1 = LiteralRestriction.createRestriction( pattern1,
+                                                               "" );
+        Restriction r2 = LiteralRestriction.createRestriction( pattern1,
+                                                               "" );
         Incompatibility i1 = new Incompatibility( r1,
                                                   r2 );
         SubPattern pp1 = new SubPattern( pattern1,
@@ -64,8 +66,10 @@ public class AlwaysFalseTest extends TestBase {
         // This pattern does not have an error.
         Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
 
-        Restriction r5 = new LiteralRestriction( pattern2 );
-        Restriction r6 = new LiteralRestriction( pattern2 );
+        Restriction r5 = LiteralRestriction.createRestriction( pattern2,
+                                                               "" );
+        Restriction r6 = LiteralRestriction.createRestriction( pattern2,
+                                                               "" );
         SubPattern pp3 = new SubPattern( pattern2,
                                          0 );
         pp3.add( r5 );
@@ -207,7 +211,7 @@ public class AlwaysFalseTest extends TestBase {
 
         // This pattern does not have an error.
         VerifierRule rule2 = VerifierComponentMockFactory.createRule2();
-        Pattern pattern2= VerifierComponentMockFactory.createPattern2();
+        Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
 
         SubPattern pp5 = new SubPattern( pattern2,
                                          0 );

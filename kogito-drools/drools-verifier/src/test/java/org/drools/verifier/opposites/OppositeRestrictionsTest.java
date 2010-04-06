@@ -31,40 +31,40 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction r1 = new LiteralRestriction( pattern );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r1.setFieldPath( "0" );
         r1.setOperator( Operator.EQUAL );
-        r1.setValue( "1" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r2.setFieldPath( "0" );
         r2.setOperator( Operator.NOT_EQUAL );
-        r2.setValue( "1" );
         r2.setOrderNumber( 1 );
 
-        LiteralRestriction r3 = new LiteralRestriction( pattern );
+        LiteralRestriction r3 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1.0" );
         r3.setFieldPath( "0" );
         r3.setOperator( Operator.EQUAL );
-        r3.setValue( "1.0" );
         r3.setOrderNumber( 2 );
 
-        LiteralRestriction r4 = new LiteralRestriction( pattern );
+        LiteralRestriction r4 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1.0" );
         r4.setFieldPath( "0" );
         r4.setOperator( Operator.NOT_EQUAL );
-        r4.setValue( "1.0" );
         r4.setOrderNumber( 3 );
 
-        LiteralRestriction r5 = new LiteralRestriction( pattern );
+        LiteralRestriction r5 = LiteralRestriction.createRestriction( pattern,
+                                                                      "foo" );
         r5.setFieldPath( "0" );
         r5.setOperator( MatchesEvaluatorsDefinition.MATCHES );
-        r5.setValue( "foo" );
         r5.setOrderNumber( 4 );
 
-        LiteralRestriction r6 = new LiteralRestriction( pattern );
+        LiteralRestriction r6 = LiteralRestriction.createRestriction( pattern,
+                                                                      "foo" );
         r6.setFieldPath( "0" );
         r6.setOperator( MatchesEvaluatorsDefinition.NOT_MATCHES );
-        r6.setValue( "foo" );
         r6.setOrderNumber( 5 );
 
         data.add( r1 );
@@ -109,16 +109,16 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction r1 = new LiteralRestriction( pattern );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r1.setFieldPath( "0" );
         r1.setOperator( Operator.GREATER_OR_EQUAL );
-        r1.setValue( "1" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r2.setFieldPath( "0" );
         r2.setOperator( Operator.LESS );
-        r2.setValue( "1" );
         r2.setOrderNumber( 1 );
 
         data.add( r1 );
@@ -148,16 +148,16 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Collection<Object> data = new ArrayList<Object>();
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
-        LiteralRestriction r1 = new LiteralRestriction( pattern );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r1.setFieldPath( "0" );
         r1.setOperator( Operator.GREATER );
-        r1.setValue( "1" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r2.setFieldPath( "0" );
         r2.setOperator( Operator.LESS_OR_EQUAL );
-        r2.setValue( "1" );
         r2.setOrderNumber( 1 );
 
         data.add( r1 );
@@ -188,16 +188,16 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction r1 = new LiteralRestriction( pattern );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern,
+                                                                      "0" );
         r1.setFieldPath( "0" );
         r1.setOperator( Operator.GREATER );
-        r1.setValue( "0" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r2.setFieldPath( "0" );
         r2.setOperator( Operator.LESS );
-        r2.setValue( "1" );
         r2.setOrderNumber( 1 );
 
         data.add( r1 );
@@ -228,16 +228,16 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction r1 = new LiteralRestriction( pattern );
+        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern,
+                                                                      "1" );
         r1.setFieldPath( "0" );
         r1.setOperator( Operator.GREATER_OR_EQUAL );
-        r1.setValue( "1" );
         r1.setOrderNumber( 0 );
 
-        LiteralRestriction r2 = new LiteralRestriction( pattern );
+        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern,
+                                                                      "0" );
         r2.setFieldPath( "0" );
         r2.setOperator( Operator.LESS_OR_EQUAL );
-        r2.setValue( "0" );
         r2.setOrderNumber( 1 );
 
         data.add( r1 );

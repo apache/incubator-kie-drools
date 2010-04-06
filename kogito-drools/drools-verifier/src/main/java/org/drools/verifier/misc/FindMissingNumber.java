@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.verifier.components.Field;
-import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 
 public class FindMissingNumber {
 
@@ -18,7 +17,7 @@ public class FindMissingNumber {
      * @return false if can't find a pattern or constraints list is null or size
      *         of the list is under 3.
      */
-    public static Number testForPattern(Collection<LiteralRestriction> restrictions) {
+    public static Number testForPattern(Collection<NumberRestriction> restrictions) {
 
         if ( restrictions == null || restrictions.size() < MIN_NUMBER_OF_RESTRICTIONS ) {
             return null;
@@ -27,11 +26,11 @@ public class FindMissingNumber {
         BigDecimal[] numbers = new BigDecimal[restrictions.size()];
 
         int index = 0;
-        for ( LiteralRestriction restriction : restrictions ) {
-            if ( restriction.getValueType() == Field.DOUBLE ) {
-                numbers[index++] = BigDecimal.valueOf( restriction.getDoubleValue() );
-            } else if ( restriction.getValueType() == Field.INT ) {
-                numbers[index++] = BigDecimal.valueOf( restriction.getIntValue() );
+        for ( NumberRestriction restriction : restrictions ) {
+            if ( restriction.isInt() ) {
+                numbers[index++] = BigDecimal.valueOf( restriction.getValue().intValue() );
+            } else {
+                numbers[index++] = BigDecimal.valueOf( restriction.getValue().doubleValue() );
             }
         }
 

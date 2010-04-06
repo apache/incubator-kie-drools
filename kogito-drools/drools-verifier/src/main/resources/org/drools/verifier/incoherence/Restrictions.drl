@@ -3,6 +3,7 @@ package org.drools.verifier.incoherence
 
 #list any import classes here.
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VariableRestriction;
@@ -45,10 +46,9 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 			valueType == $r1.valueType,
 			path != $r1.path,
 			# Operator needs to be reversed to what the other one has.
-			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
+			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() )),
+			valueAsString == $r1.valueAsString
 		)
-
-		eval( $r1.compareValues( $r2 ) == 0 )
 
 		# There is a problem if both of these are in the same SubPattern.
 		$pp :SubPattern(
@@ -85,21 +85,20 @@ end
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"
 	when
-		$r1 :LiteralRestriction(
+		$r1 :NumberRestriction(
 			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER )
 		)
 
-		$r2 :LiteralRestriction(
+		$r2 :NumberRestriction(
 			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS),
-			path != $r1.path
+			path != $r1.path,
+			value < $r1.value
 		)
-
-		eval( $r1.compareValues( $r2 ) == 1 )
-
+		
 		# There is a problem if both of these are in the same SubPattern.
 		$pp :SubPattern(
 			 items contains $r1,
@@ -135,20 +134,19 @@ end
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
 	when
-		$r1 :LiteralRestriction(
+		$r1 :NumberRestriction(
 			operator == Operator.EQUAL
 		)
 
-		$r2 :LiteralRestriction(
+		$r2 :NumberRestriction(
 			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
-			path != $r1.path
+			path != $r1.path,
+			value < $r1.value
 		)
-
-		eval( $r1.compareValues( $r2 ) == 1 )
 
 		# There is a problem if both of these are in the same SubPattern.
 		$pp :SubPattern(
@@ -185,20 +183,19 @@ end
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
 	when
-		$r1 :LiteralRestriction(
+		$r1 :NumberRestriction(
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
 		)
 
-		$r2 :LiteralRestriction(
+		$r2 :NumberRestriction(
 			patternPath == $r1.patternPath,
 			restrictionType == $r1.restrictionType,
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.EQUAL,
-			path != $r1.path
+			path != $r1.path,
+			value < $r1.value
 		)
-
-		eval( $r1.compareValues( $r2 ) == 1 )
 
 		# There is a problem if both of these are in the same SubPattern.
 		$pp :SubPattern(
@@ -245,10 +242,9 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.GREATER,
-			path != $r1.path
+			path != $r1.path,
+			valueAsString == $r1.valueAsString
 		)
-
-		eval( $r1.compareValues( $r2 ) == 0 )
 
 		# There is a problem if both of these are in the same SubPattern.
 		$pp :SubPattern(

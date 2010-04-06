@@ -47,7 +47,7 @@ rule "Range check for number patterns"
 					LiteralRestriction( 
 						fieldId == $f.path, 
 						patternIsNot == true, 
-						operator == Operator.EQUAL
+						operator =valueator.EQUAL
 					)
 				)
 		)
@@ -88,7 +88,7 @@ rule "Range check for number patterns, !="
 				from collect(
 					LiteralRestriction( 
 						fieldId == $f.path, 
-						patternIsNot == true, 
+						pavaluesNot == true, 
 						operator == Operator.NOT_EQUAL
 					)
 				)

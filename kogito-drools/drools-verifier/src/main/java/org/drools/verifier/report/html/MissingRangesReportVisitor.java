@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierData;
@@ -28,7 +28,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
         Collection<String> stringRows = new ArrayList<String>();
 
         for ( MissingRange cause : causes ) {
-            dt.put( cause.getValueAsObject(),
+            dt.put( cause.getValueAsString(),
                     new DataRow( null,
                                  null,
                                  cause.getOperator(),
@@ -36,11 +36,11 @@ class MissingRangesReportVisitor extends ReportVisitor {
         }
 
         for ( Restriction r : restrictions ) {
-            if ( r instanceof LiteralRestriction ) {
+            if ( r instanceof NumberRestriction ) {
                 try {
-                    LiteralRestriction restriction = (LiteralRestriction) r;
+                    NumberRestriction restriction = (NumberRestriction) r;
 
-                    dt.put( restriction.getValueAsObject(),
+                    dt.put( restriction.getValue(),
                             new DataRow( restriction.getRulePath(),
                                          restriction.getRuleName(),
                                          restriction.getOperator(),

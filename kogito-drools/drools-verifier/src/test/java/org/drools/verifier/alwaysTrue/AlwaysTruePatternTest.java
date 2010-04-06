@@ -48,8 +48,10 @@ public class AlwaysTruePatternTest extends TestBase {
         // This pattern is always true.
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
-        Restriction r1 = new LiteralRestriction( pattern1 );
-        Restriction r2 = new LiteralRestriction( pattern1 );
+        Restriction r1 = LiteralRestriction.createRestriction( pattern1,
+                                                               "" );
+        Restriction r2 = LiteralRestriction.createRestriction( pattern1,
+                                                               "" );
         Opposites o1 = new Opposites( r1,
                                       r2 );
         SubPattern pp1 = new SubPattern( pattern1,
@@ -69,8 +71,10 @@ public class AlwaysTruePatternTest extends TestBase {
         // This pattern is okay.
         Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
 
-        Restriction r5 = new LiteralRestriction( pattern2 );
-        Restriction r6 = new LiteralRestriction( pattern2 );
+        Restriction r5 = LiteralRestriction.createRestriction( pattern2,
+                                                               "" );
+        Restriction r6 = LiteralRestriction.createRestriction( pattern2,
+                                                               "" );
         SubPattern pp3 = new SubPattern( pattern2,
                                          0 );
         pp3.add( r5 );

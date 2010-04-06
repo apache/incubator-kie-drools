@@ -128,14 +128,14 @@ public class FieldConstraintDescrVisitor {
      */
     private void visit(LiteralRestrictionDescr descr) {
 
-        LiteralRestriction restriction = new LiteralRestriction( pattern );
+        LiteralRestriction restriction = LiteralRestriction.createRestriction( pattern,
+                                                                               descr.getText() );
 
         restriction.setPatternIsNot( pattern.isPatternNot() );
         restriction.setConstraintPath( constraint.getPath() );
         restriction.setFieldPath( constraint.getFieldPath() );
         restriction.setOperator( Operator.determineOperator( descr.getEvaluator(),
                                                              descr.isNegated() ) );
-        restriction.setValue( descr.getText() );
         restriction.setOrderNumber( orderNumber );
         restriction.setParentPath( pattern.getPath() );
         restriction.setParentType( pattern.getVerifierComponentType() );

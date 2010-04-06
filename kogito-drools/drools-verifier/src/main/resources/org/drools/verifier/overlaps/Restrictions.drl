@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.drools.verifier.data.VerifierReport;
 
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 
 import org.drools.verifier.report.components.Subsumption;
 import org.drools.verifier.report.components.Severity;
@@ -29,7 +30,33 @@ global VerifierReport result;
 #
 # Example 1: Pattern1( a > 10 ) and Pattern1( a > 100 )
 #
-rule "Find overlapping restrictions"
+rule "Find overlapping number restrictions"
+	when
+		# There is subsumption between two restrictions
+		
+		$left :NumberRestriction()
+		$right :NumberRestriction(
+			path != $left.path
+		)
+		
+		$subsumption :Subsumption(
+			left.path == $left.path,
+			left.verifierComponentType == $left.verifierComponentType,
+			right.path == $right.path,
+			right.verifierComponentType == $right.verifierComponentType
+		)
+		
+		# There is no restriction between these two restrictions.
+		not	$center :NumberRestriction(
+				fieldPath == $left.fieldPath,
+				value == $left.value,
+				value > $right.value
+		)
+	then 
+		insert( new Overlap( $left, $right ) );
+end
+
+rule "Find overlapping literal restrictions"
 	when
 		# There is subsumption between two restrictions
 		
@@ -48,10 +75,23 @@ rule "Find overlapping restrictions"
 		# There is no restriction between these two restrictions.
 		not	$center :LiteralRestriction(
 				fieldPath == $left.fieldPath,
-				eval( $center.compareValues( $left ) == 1 ),
-				eval( $center.compareValues( $right ) == -1 )
+				valueAsString == $left.valueAsString,
+				valueAsString == $right.valueAsString
 		)
 	then 
 		insert( new Overlap( $left, $right ) );
 end
+
+rule "Finddsds overlapping literal restrictions"
+	when
+		# There is subsumption between two restrictions
+		
+		$left :LiteralRestriction()
+		$right :LiteralRestriction(
+			path != $left.path
+		)
+	then 
+		System.out.println( "-----" + $left +" "+ $right);
+end
+
 

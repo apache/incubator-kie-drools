@@ -5,6 +5,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
 
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.report.components.Subsumption;
 
 import org.drools.verifier.data.VerifierReport;
@@ -22,18 +23,17 @@ global VerifierReport result;
 rule "Find subsumptant restrictions, greater than"
 	when
 		# Covered x > 10
-		$lower:LiteralRestriction(
+		$lower:NumberRestriction(
 			( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
 		)
 
 		# Covered x > 100
-		$higher :LiteralRestriction( 
+		$higher :NumberRestriction( 
 			fieldPath == $lower.fieldPath,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL )
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL ),
+			value < $lower.value
 		)
-		
-		eval( $lower.compareValues( $higher ) == -1 )
 	then 
 		insert( new Subsumption( $higher, $lower ) );
 end
@@ -47,10 +47,9 @@ rule "Find subsumptant restrictions, equal"
 		$right :LiteralRestriction( 
 			path != $left.path,
 			fieldPath == $left.fieldPath,
-			operator == $left.operator
+			operator == $left.operator,
+			valueAsString == $left.valueAsString
 		)
-		
-		eval( $left.compareValues( $right ) == 0 )
 	then 
 		insert( new Subsumption( $left, $right ) );
 end
@@ -66,18 +65,17 @@ end
 rule "Find subsumptant restrictions, less than"
 	when
 		# Covered x < 10
-		$higher :LiteralRestriction(
+		$higher :NumberRestriction(
 			( valueType == Field.INT || == Field.DOUBLE || == Field.DATE ),
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL )
 		)
 
 		# Covered x < 100
-		$lower :LiteralRestriction( 
+		$lower :NumberRestriction( 
 			fieldPath == $higher.fieldPath,
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL)
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL),
+			value < $higher.value
 		)
-		
-		eval( $lower.compareValues( $higher ) == - 1 )
 	then 
 		insert( new Subsumption( $higher, $lower ) );
 end

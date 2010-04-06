@@ -3,6 +3,7 @@ package org.drools.verifier.incompatibility
 
 #list any import classes here.
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.VariableRestriction;
 
 import org.drools.verifier.report.components.Incompatibility;
@@ -18,19 +19,19 @@ import org.drools.base.evaluators.Operator;
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
 	when
-		$r1 :LiteralRestriction(
+		$r1 :NumberRestriction(
 			operator == Operator.EQUAL
 		)
 
-		$r2 :LiteralRestriction(
+		$r2 :NumberRestriction(
 			restrictionType == $r1.restrictionType,
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
-			path != $r1.path
+			path != $r1.path,
+			value < $r1.value
 		)
 
-		eval( $r1.compareValues( $r2 ) == 1 )
 	then
 		insert( new Incompatibility( $r1, $r2 ) );
 end
@@ -43,19 +44,19 @@ end
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
 	when
-		$r1 :LiteralRestriction(
+		$r1 :NumberRestriction(
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
 		)
 
-		$r2 :LiteralRestriction(
+		$r2 :NumberRestriction(
 			restrictionType == $r1.restrictionType,
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.EQUAL,
-			path != $r1.path
+			path != $r1.path,
+			value < $r1.value
 		)
 
-		eval( $r1.compareValues( $r2 ) == 1 )
 	then
 		insert( new Incompatibility( $r1, $r2 ) );
 end
@@ -77,10 +78,10 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 			fieldPath == $r1.fieldPath,
 			valueType == $r1.valueType,
 			operator == Operator.GREATER,
-			path != $r1.path
+			path != $r1.path,
+			valueAsString == valueAsString
 		)
 
-		eval( $r1.compareValues( $r2 ) == 0 )
 	then
 		insert( new Incompatibility( $r1, $r2 ) );
 end

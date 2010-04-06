@@ -65,8 +65,6 @@ public abstract class MissingRange
         return operator;
     }
 
-    public abstract Object getValueAsObject();
-
     public abstract String getValueAsString();
 
 }

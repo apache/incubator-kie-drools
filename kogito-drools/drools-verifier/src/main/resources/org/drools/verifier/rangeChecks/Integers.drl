@@ -24,21 +24,21 @@ rule "Range check for integers, if smaller than or equal is missing"
 		$f :Field( fieldType == Field.INT )
 		
 		# Foo( bar > 42 )
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			operator == Operator.GREATER
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			intValue == $r.intValue 
+			value == $r.value 
 		)
 	then
 		Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
-		
+	
 		result.add( gap );
 		insert( gap );
 end
@@ -56,17 +56,17 @@ rule "Range check for integers, if greater than or equal is missing"
 		$f :Field( fieldType == Field.INT )
 		
 		# Foo( bar > 42 )
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			operator == Operator.LESS
 		)
 		
 		# Check if Foo( bar == 42 || <= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			intValue == $r.intValue 
+			value == $r.value 
 		)
 	then
 		Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
@@ -85,29 +85,30 @@ end
 #
 rule "Range check for integers, equal and greater than"
 	@verifying_scopes(knowledge-package, decision-table)
+	dialect "mvel" 
 	when
 		$f :Field( fieldType == Field.INT )
 
 		# Foo( bar == 42 ) 
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
 		)
 
 		# Check if Foo( bar > 42 || >= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			intValue == $r.intValue 
+			value == $r.value 
 		)
 		
 		# Check if Foo( bar == 43 || >= 43 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( intValue == $r.getIntValue() + 1 ) 
+			value == ( $r.value + 1 ) 
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.GREATER, $r );
@@ -126,29 +127,30 @@ end
 #
 rule "Range check for integers, equal and smaller than"
 	@verifying_scopes(knowledge-package, decision-table)
+	dialect "mvel" 
 	when
 		$f :Field( fieldType == Field.INT )
 
 		# Foo( bar == 42 ) 
-		$r :LiteralRestriction( 
+		$r :NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
 		)
 
 		# Check if Foo( bar < 42 || <= 42 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			intValue == $r.intValue 
+			value == $r.value 
 		)
 		
 		# Check if Foo( bar == 41 || <= 41 ) is missing.
-		not	LiteralRestriction( 
+		not	NumberRestriction( 
 			fieldPath == $f.path, 
 			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( intValue == $r.getIntValue() - 1 ) 
+			value == ( $r.value - 1 ) 
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.LESS, $r );
