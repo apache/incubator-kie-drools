@@ -25,6 +25,8 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Tuple;
 
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 public class QueryResult {
 
     protected FactHandle[] factHandles;
@@ -58,7 +60,7 @@ public class QueryResult {
      *     The Object
      */
     public Object get(final int i) {
-        return getObject( this.factHandles[ i ]);
+        return getObject( this.factHandles[ i + 1]); // Add one, as we hide root DroolsQuery
     }
 
     /** 
@@ -86,7 +88,7 @@ public class QueryResult {
     }
     
     public FactHandle getFactHandle(Declaration declr) {
-        return this.factHandles[  declr.getPattern().getOffset() -1 ]; // -1 because we shifted the array left
+        return this.factHandles[  declr.getPattern().getOffset() ]; // -1 because we shifted the array left
                                                                        // when removing the query object
     }     
 
@@ -95,7 +97,11 @@ public class QueryResult {
      * @return
      */
     public FactHandle[] getFactHandles() {
-        return this.factHandles;
+        int size = size();
+        FactHandle[] subArray = new FactHandle[ size];
+        
+        System.arraycopy( this.factHandles, 1, subArray, 0, size );
+        return subArray;
     }
 
     /**
@@ -103,7 +109,7 @@ public class QueryResult {
      * @return
      */
     public int size() {
-        return this.factHandles.length;
+        return this.factHandles.length -1;
     }
     
     /**

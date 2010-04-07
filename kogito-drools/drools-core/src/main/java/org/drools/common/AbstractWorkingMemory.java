@@ -147,8 +147,6 @@ public abstract class AbstractWorkingMemory
 
     protected ObjectStore                                        objectStore;
 
-    protected Map                                                queryResults;
-
     /** Global values which are associated with this memory. */
     protected GlobalResolver                                     globalResolver;
     
@@ -313,7 +311,6 @@ public abstract class AbstractWorkingMemory
         this.actionQueue = new LinkedList<WorkingMemoryAction>();
 
         this.addRemovePropertyChangeListenerArgs = new Object[]{this};
-        this.queryResults = Collections.EMPTY_MAP;
         this.workingMemoryEventSupport = new WorkingMemoryEventSupport();
         this.agendaEventSupport = new AgendaEventSupport();
         this.workflowEventSupport = new RuleFlowEventSupport();
@@ -1105,7 +1102,7 @@ public abstract class AbstractWorkingMemory
         return handle;
     }
 
-    protected void insert(final InternalFactHandle handle,
+    public void insert(final InternalFactHandle handle,
                           final Object object,
                           final Rule rule,
                           final Activation activation,

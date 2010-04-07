@@ -33,6 +33,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
@@ -97,13 +98,15 @@ public class SingleBetaConstraints
         out.writeObject(conf);
     }
 
-    private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        if ( constraint instanceof VariableConstraint ) {
+    public  static boolean isIndexable(final BetaNodeFieldConstraint constraint) {
+        if ( constraint instanceof VariableConstraint  ) {
             final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
-        } else {
-            return false;
-        }
+            if ( (!(variableConstraint.getRestriction() instanceof UnificationRestriction )) ) {
+                return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
+            }
+        } 
+        
+        return false;
     }
 
     public ContextEntry[] createContext() {

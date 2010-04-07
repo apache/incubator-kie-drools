@@ -29,7 +29,7 @@ public class NativeQueryResults
 	}
 
 	public String[] getIdentifiers() {
-        return this.getResults().getDeclarations().keySet().toArray( new String[this.getResults().getDeclarations().size()] );
+        return getDeclarations().keySet().toArray( new String[this.getResults().getDeclarations().size()] );
     }
     
     

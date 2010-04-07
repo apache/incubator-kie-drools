@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +16,7 @@ package org.drools;
  * limitations under the License.
  */
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,30 +31,40 @@ import org.drools.rule.Query;
  * get a specific row. All the available Declarations used in the query can also be accessed.
  *
  */
-public class QueryResults implements Iterable<QueryResult>{
-    private Query           query;
-
+public class QueryResults
+    implements
+    Iterable<QueryResult> {
     private Map<String, Declaration> declarations;
 
-    protected List<FactHandle[]> results;
-    protected WorkingMemory workingMemory;
-    
+    protected List<FactHandle[]>     results;
+    protected WorkingMemory          workingMemory;
+
     public QueryResults() {
-	}
+    }
 
     public QueryResults(final List<FactHandle[]> results,
-                        final Query query,
+                        final Declaration[] declArray,
                         final WorkingMemory workingMemory) {
         this.results = results;
-        this.query = query;
         this.workingMemory = workingMemory;
+
+        if ( declArray.length > 0 ) {
+            final Map<String, Declaration> map = new HashMap<String, Declaration>( declArray.length );
+            for ( int i = 0, length = declArray.length; i < length; i++ ) {
+                map.put( declArray[i].getIdentifier(),
+                         declArray[i] );
+            }
+            this.declarations = map;
+        } else {
+            this.declarations = Collections.emptyMap();
+        }
     }
 
     public QueryResult get(final int i) {
         if ( i > this.results.size() ) {
             throw new NoSuchElementException();
         }
-        return new QueryResult( this.results.get(i),
+        return new QueryResult( this.results.get( i ),
                                 this.workingMemory,
                                 this );
     }
@@ -66,23 +78,7 @@ public class QueryResults implements Iterable<QueryResult>{
         return new QueryResultsIterator( this.results.iterator() );
     }
 
-    /**
-     * Return a map of Declarations where the key is the identifier and the value
-     * is the Declaration.
-     * 
-     * @return
-     *      The Map of Declarations.
-     */
     public Map<String, Declaration> getDeclarations() {
-
-        final Declaration[] declarations = this.query.getDeclarations();
-        final Map<String, Declaration> map = new HashMap<String, Declaration>( declarations.length );
-        for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            map.put( declarations[i].getIdentifier(),
-                     declarations[i] );
-        }
-        this.declarations = map;
-
         return this.declarations;
     }
 

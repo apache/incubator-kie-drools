@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
@@ -72,6 +73,7 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
+import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
@@ -382,17 +384,17 @@ public class PatternBuilder
                                   pattern.getObjectType(),
                                   fieldName,
                                   (LiteralRestriction) restriction );
-        } else if ( restriction instanceof VariableRestriction ) {
+        } else if ( restriction instanceof VariableRestriction ||  restriction instanceof UnificationRestriction ) {
             constraint = new VariableConstraint( extractor,
-                                                 (VariableRestriction) restriction );
+                                                 restriction );
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
-                                  (VariableRestriction) restriction );
+                                  (AcceptsReadAccessor) restriction );
             registerReadAccessor( context,
                                   pattern.getObjectType(),
                                   fieldName,
-                                  (VariableRestriction) restriction );
+                                  (AcceptsReadAccessor) restriction );
         } else if ( restriction instanceof ReturnValueRestriction ) {
             constraint = new ReturnValueConstraint( extractor,
                                                     (ReturnValueRestriction) restriction );
@@ -743,7 +745,7 @@ public class PatternBuilder
         return restriction;
     }
 
-    private VariableRestriction buildRestriction(final RuleBuildContext context,
+    private Restriction buildRestriction(final RuleBuildContext context,
                                                  final InternalReadAccessor extractor,
                                                  final FieldConstraintDescr fieldConstraintDescr,
                                                  final VariableRestrictionDescr variableRestrictionDescr) {
@@ -788,10 +790,17 @@ public class PatternBuilder
         if ( evaluator == null ) {
             return null;
         }
+        
+        Restriction restriction = new VariableRestriction( extractor,
+                                                           declaration,
+                                                           evaluator );
+        
+        if ( declaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) )  {
+            // declaration is query argument, so allow for unification.
+            restriction = new UnificationRestriction( ( VariableRestriction ) restriction );
+        }
 
-        return new VariableRestriction( extractor,
-                                        declaration,
-                                        evaluator );
+        return restriction;
     }
 
     private LiteralRestriction buildRestriction(final RuleBuildContext context,

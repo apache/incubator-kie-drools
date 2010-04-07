@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.drools.QueryResults;
 import org.drools.SessionConfiguration;
+import org.drools.base.DefaultQueryResultsCollector;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
@@ -39,6 +40,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
@@ -61,7 +63,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
      *
      */
     private static final long serialVersionUID = 400L;
-    
+
     public ReteooWorkingMemory() {
         super();
     }
@@ -136,75 +138,39 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         try {
             startOperation();
             this.ruleBase.readLock();
-            this.lock.lock();            
-            Object object = new DroolsQuery( query,
-                                             arguments );
-            InternalFactHandle handle = this.handleFactory.newFactHandle( object,
+            this.lock.lock();
+            DroolsQuery queryObject = new DroolsQuery( query,
+                                                       arguments,
+                                                       new DefaultQueryResultsCollector() );
+            InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                       object ),
+                                                                                                                                       queryObject ),
                                                                           this );
 
             insert( handle,
-                    object,
+                    queryObject,
                     null,
                     null,
                     this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                        object ) );
+                                                        queryObject ) );
 
-            final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
-            Query queryObj = null;
-            List list = null;
+            this.handleFactory.destroyFactHandle( handle );
 
-            if ( node == null ) {
-                // There are no results, first check the query object actually exists
-                final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
-                for ( int i = 0; i < pkgs.length; i++ ) {
-                    final Rule rule = pkgs[i].getRule( query );
-                    if ( (rule != null) && (rule instanceof Query) ) {
-                        queryObj = (Query) rule;
-                        break;
-                    }
-                }
-
-                this.handleFactory.destroyFactHandle( handle );
-
-                if ( queryObj == null ) {
-                    throw new IllegalArgumentException( "Query '" + query + "' does not exist" );
-                }
-                list = Collections.EMPTY_LIST;
-            } else {
-                list = (List) this.getNodeMemory( node );
-
-                if ( list == null ) {
-                    list = Collections.EMPTY_LIST;
-                } else {
-                    this.clearNodeMemory( node );
-                }
-                queryObj = (Query) node.getRule();
-
-                this.handleFactory.destroyFactHandle( handle );
+            Declaration[] declarations = new Declaration[0];
+            if ( queryObject.getQuery() != null ) {
+                // this is null when there are no query results, thus the query object is never set
+                declarations = queryObject.getQuery().getDeclarations();
             }
 
-            return new QueryResults( list,
-                                     queryObj,
+            return new QueryResults( ((DefaultQueryResultsCollector) queryObject.getQueryResultCollector()).getResults(),
+                                     declarations,
                                      this );
         } finally {
             this.lock.unlock();
-            this.ruleBase.readUnlock();            
+            this.ruleBase.readUnlock();
             endOperation();
         }
     }
-
-    void setQueryResults(final String query,
-                         final QueryTerminalNode node) {
-        if ( this.queryResults == Collections.EMPTY_MAP ) {
-            this.queryResults = new HashMap();
-        }
-        this.queryResults.put( query,
-                               node );
-    }
-    
-    
 
     public static class WorkingMemoryReteAssertAction
         implements
@@ -340,47 +306,49 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-            if( this.factHandle.isValid() ) {
+            if ( this.factHandle.isValid() ) {
                 // if the fact is still in the working memory (since it may have been previously retracted already
                 final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                PropagationContext.EXPIRATION,
                                                                                null,
                                                                                null,
                                                                                this.factHandle );
-                ((EventFactHandle)factHandle).setExpired( true );
+                ((EventFactHandle) factHandle).setExpired( true );
                 this.node.retractObject( factHandle,
                                          context,
                                          workingMemory );
-                
+
                 // if no activations for this expired event
-                if( ((EventFactHandle)factHandle).getActivationsCount() == 0 ) {
+                if ( ((EventFactHandle) factHandle).getActivationsCount() == 0 ) {
                     // remove it from the object store and clean up resources
-                    ((EventFactHandle)factHandle).getEntryPoint().retract( factHandle );
+                    ((EventFactHandle) factHandle).getEntryPoint().retract( factHandle );
                 }
             }
         }
     }
-  public EntryPoint getEntryPoint() {
+
+    public EntryPoint getEntryPoint() {
         return this.entryPoint;
-  }
-   public InternalWorkingMemory getInternalWorkingMemory() {
+    }
+
+    public InternalWorkingMemory getInternalWorkingMemory() {
         return this;
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles() {
-        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+        throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles(ObjectFilter filter) {
-        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+        throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 
-    public Collection< Object > getObjects() {
-        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
+    public Collection<Object> getObjects() {
+        throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 
-    public Collection< Object > getObjects(ObjectFilter filter) {
-        throw new UnsupportedOperationException("this is implementedby StatefulKnowledgeImpl");
+    public Collection<Object> getObjects(ObjectFilter filter) {
+        throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 
 }

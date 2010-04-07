@@ -41,7 +41,9 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
@@ -622,6 +624,20 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public EntryPoint getEntryPoint() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void insert(InternalFactHandle handle,
+                       Object object,
+                       Rule rule,
+                       Activation activation,
+                       ObjectTypeConf typeConf) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

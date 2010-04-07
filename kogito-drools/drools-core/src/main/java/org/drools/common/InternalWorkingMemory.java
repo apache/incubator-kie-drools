@@ -14,7 +14,9 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
@@ -62,6 +64,14 @@ public interface InternalWorkingMemory
     public void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     public FactHandleFactory getFactHandleFactory();
+    
+    public EntryPoint getEntryPoint();
+    
+    public void insert(final InternalFactHandle handle,
+                       final Object object,
+                       final Rule rule,
+                       final Activation activation,
+                       ObjectTypeConf typeConf);    
     
     /**
      * Looks for the fact handle associated to the given object
