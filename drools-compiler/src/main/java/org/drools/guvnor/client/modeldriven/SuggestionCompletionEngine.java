@@ -684,6 +684,9 @@ public class SuggestionCompletionEngine implements PortableObject {
     }
 
     public boolean containsFactType(String modelClassName){
+        if (modelClassName.contains(".")){
+            modelClassName = modelClassName.substring(modelClassName.lastIndexOf(".")+1);
+        }
         return this.getModelFields().containsKey(modelClassName);
     }
 
