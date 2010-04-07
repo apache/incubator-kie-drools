@@ -34,7 +34,7 @@ import org.drools.workflow.instance.node.DynamicUtils;
 
 public class ProcessDynamicNodeTest extends TestCase {
     
-    public void testDynamicActions() {
+    public void TODOtestDynamicActions() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -101,7 +101,7 @@ public class ProcessDynamicNodeTest extends TestCase {
         assertEquals(4, list.size());
     }
 
-    public void testDynamicAsyncActions() {
+    public void TODOtestDynamicAsyncActions() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
