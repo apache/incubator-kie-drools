@@ -6,10 +6,7 @@ import org.drools.command.Context;
 import org.drools.command.ContextManager;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.runtime.pipeline.impl.ServiceManagerPipelineImpl;
 import org.drools.runtime.process.WorkItemManager;
-import org.drools.vsm.ServiceManager;
 
 public class KnowledgeCommandContext
     implements
@@ -52,11 +49,6 @@ public class KnowledgeCommandContext
         return this.kresults;
     }
     
-    public ServiceManager getServiceManager() {
-        return null;
-        // return this.context.get( ServiceManagerPipelineImpl )
-    }
-
     public ContextManager getContextManager() {
         return context.getContextManager();
     }
