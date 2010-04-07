@@ -196,8 +196,8 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
         PatternDescrVisitor visitor = new PatternDescrVisitor( data,
                                                                rule,
                                                                solvers );
-        visitor.visitPatternDescr( descr,
-                                   orderNumber.next() );
+        visitor.visit( descr,
+                       orderNumber.next() );
     }
 
     private void formPossibilities() {

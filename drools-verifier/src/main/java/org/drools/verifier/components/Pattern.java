@@ -27,9 +27,18 @@ public class Pattern extends RuleComponent
 
     @Override
     public String getPath() {
-        return String.format( "%s.pattern[%s]",
-                              getRulePath(),
-                              getOrderNumber() );
+        String parentPath = getParentPath();
+
+        if ( parentPath == null ) {
+            return String.format( "%s.pattern[%s]",
+                                  getRulePath(),
+                                  getOrderNumber() );
+
+        } else {
+            return String.format( "%s.pattern[%s]",
+                                  getParentPath(),
+                                  getOrderNumber() );
+        }
     }
 
     public boolean isPatternNot() {

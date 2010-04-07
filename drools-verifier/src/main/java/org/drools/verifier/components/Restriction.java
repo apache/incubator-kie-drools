@@ -42,7 +42,7 @@ public abstract class Restriction extends PatternComponent
     @Override
     public String getPath() {
         return String.format( "%s.restriction[%s]",
-                              getPatternPath(),
+                              getParentPath(),
                               getOrderNumber() );
     }
 

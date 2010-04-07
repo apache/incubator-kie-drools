@@ -1,0 +1,8 @@
+rule "rule5"
+   when
+       Person( age == "150" )
+       Person (age < 90)
+      java.util.HashSet( ) from collect ( Person( age == "2010" )) 
+   then
+       System.out.println("Rule fired");
+end
