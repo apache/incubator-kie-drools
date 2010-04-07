@@ -27,6 +27,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.Restriction;
 import org.drools.time.Interval;
 
 public class VariableConstraint extends MutableTypeConstraint
@@ -37,7 +38,7 @@ public class VariableConstraint extends MutableTypeConstraint
     private static final long    serialVersionUID = 400L;
 
     private InternalReadAccessor fieldExtractor;
-    private VariableRestriction  restriction;
+    private Restriction  restriction;
 
     public VariableConstraint() {
     }
@@ -52,7 +53,7 @@ public class VariableConstraint extends MutableTypeConstraint
     }
 
     public VariableConstraint(final InternalReadAccessor fieldExtractor,
-                              final VariableRestriction restriction) {
+                              final Restriction restriction) {
         this.fieldExtractor = fieldExtractor;
         this.restriction = restriction;
     }
@@ -61,7 +62,7 @@ public class VariableConstraint extends MutableTypeConstraint
                                             ClassNotFoundException {
         super.readExternal( in );
         fieldExtractor = (InternalReadAccessor) in.readObject();
-        restriction = (VariableRestriction) in.readObject();
+        restriction = (Restriction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -89,7 +90,15 @@ public class VariableConstraint extends MutableTypeConstraint
     }
 
     public Evaluator getEvaluator() {
-        return this.restriction.getEvaluator();
+        if ( this.restriction instanceof UnificationRestriction ) {
+            return ((UnificationRestriction) this.restriction).getEvaluator();
+        } else {
+            return ((VariableRestriction) this.restriction).getEvaluator();
+        }
+    }
+    
+    public Restriction getRestriction() {
+        return this.restriction;
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
@@ -118,7 +127,11 @@ public class VariableConstraint extends MutableTypeConstraint
     }
     
     public Interval getInterval() {
-        return this.restriction.getInterval();
+        if ( this.restriction instanceof UnificationRestriction ) {
+            return ((UnificationRestriction) this.restriction).getInterval();
+        } else {
+            return ((VariableRestriction) this.restriction).getInterval();
+        }
     }
 
     public String toString() {

@@ -1,5 +1,11 @@
 package org.drools.base;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.rule.Query;
+import org.drools.rule.Variable;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -16,53 +22,61 @@ package org.drools.base;
  * limitations under the License.
  */
 
-public final class DroolsQuery {
-    private final String name;
-    private final Object[] args;
+public final class DroolsQuery extends Arguments {
+    private final String         name;
+    private QueryResultCollector resultsCollector;
+    private Query                query;
 
-    private static final Object[] EMPTY_PARAMS = new Object[0];
-
-    public DroolsQuery(final String name) {
-        super();
-        this.name = name;
-        this.args = EMPTY_PARAMS;
+    public DroolsQuery(final String name,
+                       QueryResultCollector resultsCollector) {
+        this( name,
+              null,
+              resultsCollector );
     }
 
-    public DroolsQuery(final String name, final Object[] params) {
-        super();
+    public DroolsQuery(final String name,
+                       final Object[] params,
+                       QueryResultCollector resultsCollector) {
+        super( params );
         this.name = name;
-        if ( params != null ) {
-            this.args = params;
-        } else {
-            this.args = EMPTY_PARAMS;
-        }
+        this.resultsCollector = resultsCollector;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public Object[] getArguments() {
-        return this.args;
+    public void setQuery(Query query) {
+        // this is set later, as we don't yet know which Query will match this DroolsQuery propagation
+        this.query = query;
     }
 
+    public Query getQuery() {
+        return this.query;
+    }
+
+    public QueryResultCollector getQueryResultCollector() {
+        return this.resultsCollector;
+    }
+
+    @Override
     public int hashCode() {
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || getClass() != object.getClass() ) {
-            return false;
-        }
-
-        final DroolsQuery other = (DroolsQuery) object;
-        return this.name.equals( other.name );
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( !super.equals( obj ) ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        DroolsQuery other = (DroolsQuery) obj;
+        if ( name == null ) {
+            if ( other.name != null ) return false;
+        } else if ( !name.equals( other.name ) ) return false;
+        return true;
     }
+
 }

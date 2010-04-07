@@ -176,6 +176,15 @@ public class EvalCondition extends ConditionalElement
     public Map getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
+    
+
+    public List getNestedElements() {
+        return Collections.EMPTY_LIST;
+    }    
+    
+    public boolean isPatternScopeDelimiter() {
+        return true;
+    }    
 
     /**
      * @inheritDoc
@@ -184,13 +193,6 @@ public class EvalCondition extends ConditionalElement
         return null;
     }
 
-    public List getNestedElements() {
-        return Collections.EMPTY_LIST;
-    }
-
-    public boolean isPatternScopeDelimiter() {
-        return true;
-    }
 
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {

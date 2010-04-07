@@ -22,6 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -33,12 +34,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -62,7 +61,6 @@ import org.drools.FirstClass;
 import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
-import org.drools.InsertedObject;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
@@ -79,8 +77,6 @@ import org.drools.PersonWithEquals;
 import org.drools.Pet;
 import org.drools.PolymorphicFact;
 import org.drools.Primitives;
-import org.drools.QueryResult;
-import org.drools.QueryResults;
 import org.drools.RandomNumber;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -93,11 +89,8 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TestParam;
 import org.drools.Win;
-import org.drools.Worker;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -108,7 +101,6 @@ import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -118,9 +110,6 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.xml.XmlDumper;
-import org.drools.core.util.Entry;
-import org.drools.core.util.ObjectHashSet;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
 import org.drools.event.ActivationCancelledEvent;
@@ -144,9 +133,8 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.marshalling.MarshallerFactory;
-import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.InvalidRulePackage;
@@ -155,10 +143,8 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
-import org.drools.spi.ObjectType;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -2112,27 +2098,6 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void testQuery() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-
-        //ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        final Cheese stilton = new Cheese( "stinky",
-                                           5 );
-        session.insert( stilton );
-        //        session = SerializationHelper.getSerialisedStatefulSession( session,
-        //                                                                    ruleBase );
-        final QueryResults results = session.getQueryResults( "simple query" );
-        assertEquals( 1,
-                      results.size() );
-
-    }
 
     public void testEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -3225,232 +3190,6 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void testQuery2() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        workingMemory.fireAllRules();
-
-        final QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( new InsertedObject( "value1" ),
-                      results.get( 0 ).get( 0 ) );
-    }
-
-    public void testQueryWithParams() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QueryWithParams.drl" ) ) );
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        workingMemory.fireAllRules();
-
-        QueryResults results = workingMemory.getQueryResults( "assertedobjquery",
-                                                              new String[]{"value1"} );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( new InsertedObject( "value1" ),
-                      results.get( 0 ).get( 0 ) );
-
-        results = workingMemory.getQueryResults( "assertedobjquery",
-                                                 new String[]{"value3"} );
-        assertEquals( 0,
-                      results.size() );
-
-        results = workingMemory.getQueryResults( "assertedobjquery2",
-                                                 new String[]{null, "value2"} );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( new InsertedObject( "value2" ),
-                      results.get( 0 ).get( 0 ) );
-
-        results = workingMemory.getQueryResults( "assertedobjquery2",
-                                                 new String[]{"value3", "value2"} );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( new InsertedObject( "value2" ),
-                      results.get( 0 ).get( 0 ) );
-    }
-
-    public void testQueryWithParamsOnKnowledgeApi() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryWithParams.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        kbase = SerializationHelper.serializeObject( kbase );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.fireAllRules();
-
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "assertedobjquery",
-                                                                                 new String[]{"value1"} );
-        assertEquals( 1,
-                      results.size() );
-        //        assertEquals( new InsertedObject( "value1" ),
-        //                      results.get( 0 ).get( 0 ) );
-
-        results = ksession.getQueryResults( "assertedobjquery",
-                                            new String[]{"value3"} );
-        assertEquals( 0,
-                      results.size() );
-
-        results = ksession.getQueryResults( "assertedobjquery2",
-                                            new String[]{null, "value2"} );
-        assertEquals( 1,
-                      results.size() );
-
-        assertEquals( new InsertedObject( "value2" ),
-                      ((org.drools.runtime.rule.QueryResultsRow) results.iterator().next()).get( "assertedobj" ) );
-
-        results = ksession.getQueryResults( "assertedobjquery2",
-                                            new String[]{"value3", "value2"} );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( new InsertedObject( "value2" ),
-                      ((org.drools.runtime.rule.QueryResultsRow) results.iterator().next()).get( "assertedobj" ) );
-    }
-
-    public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
-        String str = "";
-        str += "package org.drools.test  \n";
-        str += "import org.drools.Cheese \n";
-        str += "query cheeses \n";
-        str += "    stilton : Cheese(type == 'stilton') \n";
-        str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
-        str += "end\n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        kbase = SerializationHelper.serializeObject( kbase );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        Cheese stilton1 = new Cheese( "stilton",
-                                      1 );
-        Cheese cheddar1 = new Cheese( "cheddar",
-                                      1 );
-        Cheese stilton2 = new Cheese( "stilton",
-                                      2 );
-        Cheese cheddar2 = new Cheese( "cheddar",
-                                      2 );
-        Cheese stilton3 = new Cheese( "stilton",
-                                      3 );
-        Cheese cheddar3 = new Cheese( "cheddar",
-                                      3 );
-
-        Set set = new HashSet();
-        List list = new ArrayList();
-        list.add( stilton1 );
-        list.add( cheddar1 );
-        set.add( list );
-
-        list = new ArrayList();
-        list.add( stilton2 );
-        list.add( cheddar2 );
-        set.add( list );
-
-        list = new ArrayList();
-        list.add( stilton3 );
-        list.add( cheddar3 );
-        set.add( list );
-
-        ksession.insert( stilton1 );
-        ksession.insert( stilton2 );
-        ksession.insert( stilton3 );
-        ksession.insert( cheddar1 );
-        ksession.insert( cheddar2 );
-        ksession.insert( cheddar3 );
-
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "cheeses" );
-        assertEquals( 3,
-                      results.size() );
-        assertEquals( 2,
-                      results.getIdentifiers().length );
-        Set newSet = new HashSet();
-        for ( org.drools.runtime.rule.QueryResultsRow result : results ) {
-            list = new ArrayList();
-            list.add( result.get( "stilton" ) );
-            list.add( result.get( "cheddar" ) );
-            newSet.add( list );
-        }
-        assertEquals( set,
-                      newSet );
-
-        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) ksession).session.getQueryResults( "cheeses" ) );
-        assertEquals( 3,
-                      flatResults.size() );
-        assertEquals( 2,
-                      flatResults.getIdentifiers().length );
-        newSet = new HashSet();
-        for ( org.drools.runtime.rule.QueryResultsRow result : flatResults ) {
-            list = new ArrayList();
-            list.add( result.get( "stilton" ) );
-            list.add( result.get( "cheddar" ) );
-            newSet.add( list );
-        }
-        assertEquals( set,
-                      newSet );
-    }
-
-    public void testTwoQuerries() throws Exception {
-        // @see JBRULES-410 More than one Query definition causes an incorrect
-        // Rete network to be built.
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_TwoQuerries.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final Cheese stilton = new Cheese( "stinky",
-                                           5 );
-        workingMemory.insert( stilton );
-        final Person per1 = new Person( "stinker",
-                                        "smelly feet",
-                                        70 );
-        final Person per2 = new Person( "skunky",
-                                        "smelly armpits",
-                                        40 );
-
-        workingMemory.insert( per1 );
-        workingMemory.insert( per2 );
-
-        QueryResults results = workingMemory.getQueryResults( "find stinky cheeses" );
-        assertEquals( 1,
-                      results.size() );
-
-        results = workingMemory.getQueryResults( "find pensioners" );
-        assertEquals( 1,
-                      results.size() );
-    }
 
     public void testInsurancePricingExample() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -3572,91 +3311,7 @@ public class MiscTest extends TestCase {
         ksession.fireAllRules();
     }
 
-    public void testDoubleQueryWithExists() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DoubleQueryWithExists.drl" ) ) );
-        final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final Person p1 = new Person( "p1",
-                                      "stilton",
-                                      20 );
-        p1.setStatus( "europe" );
-        final FactHandle c1FactHandle = workingMemory.insert( p1 );
-        final Person p2 = new Person( "p2",
-                                      "stilton",
-                                      30 );
-        p2.setStatus( "europe" );
-        final FactHandle c2FactHandle = workingMemory.insert( p2 );
-        final Person p3 = new Person( "p3",
-                                      "stilton",
-                                      40 );
-        p3.setStatus( "europe" );
-        final FactHandle c3FactHandle = workingMemory.insert( p3 );
-        workingMemory.fireAllRules();
-
-        QueryResults queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
-        assertEquals( 2,
-                      queryResults.size() );
-
-        // europe=[ 1, 2 ], america=[ 3 ]
-        p3.setStatus( "america" );
-        workingMemory.update( c3FactHandle,
-                              p3 );
-        workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
-        assertEquals( 1,
-                      queryResults.size() );
-
-        // europe=[ 1 ], america=[ 2, 3 ]
-        p2.setStatus( "america" );
-        workingMemory.update( c2FactHandle,
-                              p2 );
-        workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
-        assertEquals( 1,
-                      queryResults.size() );
-
-        // europe=[ ], america=[ 1, 2, 3 ]
-        p1.setStatus( "america" );
-        workingMemory.update( c1FactHandle,
-                              p1 );
-        workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
-        assertEquals( 2,
-                      queryResults.size() );
-
-        // europe=[ 2 ], america=[ 1, 3 ]
-        p2.setStatus( "europe" );
-        workingMemory.update( c2FactHandle,
-                              p2 );
-        workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
-        assertEquals( 1,
-                      queryResults.size() );
-
-        // europe=[ 1, 2 ], america=[ 3 ]
-        p1.setStatus( "europe" );
-        workingMemory.update( c1FactHandle,
-                              p1 );
-        workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
-        assertEquals( 1,
-                      queryResults.size() );
-
-        // europe=[ 1, 2, 3 ], america=[ ]
-        p3.setStatus( "europe" );
-        workingMemory.update( c3FactHandle,
-                              p3 );
-        workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
-        assertEquals( 2,
-                      queryResults.size() );
-    }
 
     public void testFunctionWithPrimitives() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -5868,28 +5523,6 @@ public class MiscTest extends TestCase {
                       objectWithSet.getMessage() );
     }
 
-    public void testQueryWithCollect() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        workingMemory.fireAllRules();
-
-        final QueryResults results = workingMemory.getQueryResults( "collect objects" );
-        assertEquals( 1,
-                      results.size() );
-
-        final QueryResult result = results.get( 0 );
-        final List list = (List) result.get( "$list" );
-
-        assertEquals( 2,
-                      list.size() );
-    }
-
     public void testNestedAccessors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedAccessors.drl" ) ) );
@@ -7120,76 +6753,6 @@ public class MiscTest extends TestCase {
         assertEquals( 3, list.size() ); 
     }        
 
-    public void testDroolsQueryCleanup() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryMemoryLeak.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( errors.size() > 0 ) {
-            for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
-            }
-            throw new IllegalArgumentException( "Could not parse knowledge." );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        String workerId = "B1234";
-        Worker worker = new Worker();
-        worker.setId( workerId );
-
-        org.drools.runtime.rule.FactHandle handle = ksession.insert( worker );
-        ksession.fireAllRules();
-
-        assertNotNull( handle );
-
-        Object retractedWorker = null;
-        for ( int i = 0; i < 100; i++ ) {
-            retractedWorker = (Object) ksession.getQueryResults( "getWorker",
-                                                                 new Object[]{workerId} );
-        }
-
-        assertNotNull( retractedWorker );
-
-        StatefulKnowledgeSessionImpl sessionImpl = (StatefulKnowledgeSessionImpl) ksession;
-
-        ReteooWorkingMemory reteWorkingMemory = sessionImpl.session;
-        AbstractWorkingMemory abstractWorkingMemory = (AbstractWorkingMemory) reteWorkingMemory;
-
-        InternalRuleBase ruleBase = (InternalRuleBase) abstractWorkingMemory.getRuleBase();
-        Collection<EntryPointNode> entryPointNodes = ruleBase.getRete().getEntryPointNodes().values();
-
-        EntryPointNode defaultEntryPointNode = null;
-        for ( EntryPointNode epNode : entryPointNodes ) {
-            if ( epNode.getEntryPoint().getEntryPointId() == "DEFAULT" ) {
-                defaultEntryPointNode = epNode;
-                break;
-            }
-        }
-        assertNotNull( defaultEntryPointNode );
-
-        Map<ObjectType, ObjectTypeNode> obnodes = defaultEntryPointNode.getObjectTypeNodes();
-
-        ObjectType key = new ClassObjectType( DroolsQuery.class );
-        ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        ObjectHashSet droolsQueryMemory = (ObjectHashSet) abstractWorkingMemory.getNodeMemory( droolsQueryNode );
-        assertEquals( 0,
-                      droolsQueryMemory.size() );
-
-        Entry[] entries = droolsQueryMemory.getTable();
-        int entryCounter = 0;
-        for ( Entry entry : entries ) {
-            if ( entry != null ) {
-                entryCounter++;
-                ObjectEntry oEntry = (ObjectEntry) entry;
-                DefaultFactHandle factHandle = (DefaultFactHandle) oEntry.getValue();
-                assertNull( factHandle.getObject() );
-            }
-        }
-    }
-
     public void testJBRules2140() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_JBRules2140.drl",
@@ -7338,8 +6901,7 @@ public class MiscTest extends TestCase {
         // XXX: Fails here, this worked in revision 30833
         ksession.insert( new Pet("Toni") );
     }
-
-    
+   
     public void testSharedLIANodeRemoval() throws IOException, DroolsParserException {
         String str = "global java.util.List list;\n";
         str += "rule \"test\"\n";
@@ -7375,4 +6937,5 @@ public class MiscTest extends TestCase {
         assertEquals(1, list.size() );
         
     }
+
 }

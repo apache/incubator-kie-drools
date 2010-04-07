@@ -177,12 +177,7 @@ public class QuadroupleBetaConstraints
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        if ( constraint instanceof VariableConstraint ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
-        } else {
-            return false;
-        }
+        return SingleBetaConstraints.isIndexable( constraint );
     }
 
     /* (non-Javadoc)

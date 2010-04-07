@@ -12,4 +12,5 @@ public class NodeTypeEnums {
     public static final short QueryTerminalNode    = 8;
     public static final short RuleTerminalNode     = 9;
     public static final short ForallNotNode        = 10;
+    public static final short UnificationNode      = 11;
 }

@@ -1,5 +1,6 @@
 package org.drools.rule.builder;
 
+import org.drools.base.Arguments;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
@@ -19,13 +20,13 @@ import org.drools.spi.ObjectType;
 public class QueryBuilder implements EngineElementBuilder {
     public Pattern build(final RuleBuildContext context,
                          final QueryDescr queryDescr) {
-        ObjectType objectType = new ClassObjectType( DroolsQuery.class );
+        ObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final Pattern pattern = new Pattern( context.getNextPatternId(),
                                              0, // offset is 0 by default
-                                             objectType,
+                                             queryObjectType,
                                              null );
         
-        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, objectType, "name", null, true );
+        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, queryObjectType, "name", null, true );
 
         final FieldValue field = FieldFactory.getFieldValue( queryDescr.getName(),
                                                              ValueType.STRING_TYPE,
@@ -36,12 +37,14 @@ public class QueryBuilder implements EngineElementBuilder {
                                                                                                                                     Operator.EQUAL ),
                                                                     field );
         
-        PatternBuilder.registerReadAccessor( context, objectType, "name", constraint );
+        PatternBuilder.registerReadAccessor( context, queryObjectType, "name", constraint );
 
         // adds appropriate constraint to the pattern
         pattern.addConstraint( constraint );
 
-        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, objectType, "arguments", null, true );
+        ObjectType argsObjectType = new ClassObjectType( Arguments.class );
+        
+        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "arguments", null, true );
 
         String[] params = queryDescr.getParameters();
         String[] types = queryDescr.getParameterTypes();
@@ -57,7 +60,7 @@ public class QueryBuilder implements EngineElementBuilder {
                 ArrayElementReader reader = new ArrayElementReader( arrayExtractor,
                                         i,
                                         context.getDialect().getTypeResolver().resolveType( types[i] ) );
-                PatternBuilder.registerReadAccessor( context, objectType, "arguments", reader );
+                PatternBuilder.registerReadAccessor( context, argsObjectType, "arguments", reader );
                 
                 declr.setReadAccessor( reader );
                 
