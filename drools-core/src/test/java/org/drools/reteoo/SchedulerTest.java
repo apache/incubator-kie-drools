@@ -176,7 +176,7 @@ public class SchedulerTest extends DroolsTestCase {
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
-        rule.setTimer( new DurationTimer(1000) );
+        rule.setTimer( new DurationTimer(50) );
 
         node.assertLeftTuple( tuple1,
                           context1,
@@ -185,8 +185,8 @@ public class SchedulerTest extends DroolsTestCase {
         assertEquals( 0,
                       data.size() );
 
-        // sleep for 1 seconds
-        Thread.sleep( 1000 );
+        // sleep for 2 seconds
+        Thread.sleep( 2000 );
 
         // now check for update
         assertEquals( 4,
