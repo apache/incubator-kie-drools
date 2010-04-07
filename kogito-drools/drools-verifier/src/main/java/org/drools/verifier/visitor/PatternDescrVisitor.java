@@ -44,18 +44,26 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         this.rule = rule;
     }
 
-    public void visitPatternDescr(PatternDescr descr,
-                                  VerifierComponent parent,
-                                  int orderNumber) throws UnknownDescriptionException {
-        Pattern pattern = visitPatternDescr( descr,
-                                             orderNumber );
+    public void visit(PatternDescr descr,
+                      VerifierComponent parent,
+                      int orderNumber) throws UnknownDescriptionException {
+        visitPatternDescr( descr,
+                           parent,
+                           orderNumber );
 
-        pattern.setParentPath( parent.getPath() );
-        pattern.setParentType( parent.getVerifierComponentType() );
     }
 
-    public Pattern visitPatternDescr(PatternDescr descr,
-                                     int orderNumber) throws UnknownDescriptionException {
+    public void visit(PatternDescr descr,
+                      int orderNumber) throws UnknownDescriptionException {
+        visitPatternDescr( descr,
+                           null,
+                           orderNumber );
+
+    }
+
+    private Pattern visitPatternDescr(PatternDescr descr,
+                                      VerifierComponent parent,
+                                      int orderNumber) throws UnknownDescriptionException {
 
         objectType = data.getObjectTypeByFullName( descr.getObjectType() );
 
@@ -72,14 +80,16 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         }
 
         pattern = new Pattern( rule );
+        if ( parent != null ) {
+            pattern.setParentPath( parent.getPath() );
+            pattern.setParentType( parent.getVerifierComponentType() );
+        }
         pattern.setObjectTypePath( objectType.getPath() );
         pattern.setName( objectType.getName() );
         pattern.setPatternNot( solvers.getRuleSolver().isChildNot() );
         pattern.setPatternExists( solvers.getRuleSolver().isExists() );
         pattern.setPatternForall( solvers.getRuleSolver().isForall() );
         pattern.setOrderNumber( orderNumber );
-
-        data.add( pattern );
 
         if ( descr.getIdentifier() != null ) {
             Variable variable = new Variable( rule );
@@ -109,6 +119,8 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         visit( descr.getConstraint() );
 
         solvers.endPatternSolver();
+
+        data.add( pattern );
 
         return pattern;
     }
@@ -237,9 +249,9 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
                                                                rule,
                                                                solvers );
 
-        visitor.visitPatternDescr( descr.getInputPattern(),
-                                   collect,
-                                   0 );
+        visitor.visit( descr.getInputPattern(),
+                       collect,
+                       0 );
         collect.setParentPath( rule.getPath() );
         collect.setParentType( rule.getVerifierComponentType() );
 
@@ -255,6 +267,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
                                                                rule,
                                                                solvers );
         Pattern parentPattern = visitor.visitPatternDescr( descr.getInputPattern(),
+                                                           null,
                                                            0 );
 
         accumulate.setInitCode( descr.getInitCode() );
