@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class RuleModel
-        implements
-        PortableObject {
+public class RuleModel implements PortableObject {
 
     /**
      * This name is generally not used - the asset name or the
@@ -21,6 +19,8 @@ public class RuleModel
     public IPattern[] lhs = new IPattern[0];
     public IAction[] rhs = new IAction[0];
 
+    public RuleModel() {
+	}
     /**
      * This will return the fact pattern that a variable is bound to.
      *
@@ -562,16 +562,16 @@ public class RuleModel
     public boolean hasDSLSentences() {
 
         if (this.lhs != null) {
-            for (int i = 0; i < this.lhs.length; i++) {
-                if (lhs[i] instanceof DSLSentence) {
+            for (IPattern pattern : this.lhs) {
+                if (pattern instanceof DSLSentence) {
                     return true;
                 }
             }
         }
 
         if (this.rhs != null) {
-            for (int i = 0; i < this.rhs.length; i++) {
-                if (rhs[i] instanceof DSLSentence) {
+            for (IAction action : this.rhs) {
+                if (action instanceof DSLSentence) {
                     return true;
                 }
             }

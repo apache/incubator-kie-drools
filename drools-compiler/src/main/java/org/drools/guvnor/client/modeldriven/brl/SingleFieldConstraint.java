@@ -2,7 +2,7 @@ package org.drools.guvnor.client.modeldriven.brl;
 
 
 /**
- * This represents a contraint on a fact - involving a SINGLE FIELD.
+ * This represents a constraint on a fact - involving a SINGLE FIELD.
  * 
  * Can also include optional "connective constraints" that extend the options for matches.
  * @author Michael Neale
@@ -17,7 +17,7 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
 
     /**
      * Used instead of "value" when constraintValueType = TYPE_EXPR_BUILDER.
-     * Eteban Aliverti
+     * Esteban Aliverti
      */
     private ExpressionFormLine expression = new ExpressionFormLine();
 
@@ -62,11 +62,7 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
      * Returns true of there is a field binding.
      */
     public boolean isBound() {
-        if ( this.fieldBinding != null && !"".equals( this.fieldBinding ) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.fieldBinding != null && this.fieldBinding.length() > 0 ;
     }
 
     public ExpressionFormLine getExpression() {
@@ -76,7 +72,4 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
     public void setExpression(ExpressionFormLine expression) {
         this.expression = expression;
     }
-
-    
-
 }

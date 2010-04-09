@@ -46,6 +46,11 @@ public class ActionFieldValue
     public static final int TYPE_PREDICATE = 5;
 
     /**
+     * This is for a field to be a placeholder for a template
+     */
+    public static final int TYPE_TEMPLATE = 7;
+    
+    /**
      * This is the datatype archectype (eg String, Numeric etc).
      */
     public String type;
@@ -61,8 +66,6 @@ public class ActionFieldValue
     public ActionFieldValue() {
     }
 
-
-
     /**
      * This will return true if the value is really a "formula" - in
      * the sense of like an excel spreadsheet.
@@ -72,14 +75,7 @@ public class ActionFieldValue
      *
      */
     public boolean isFormula() {
-        if ( this.value == null ) {
-            return false;
-        }
-        if ( this.value.trim().startsWith( "=" ) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.value != null && this.value.trim().startsWith( "=" );
     }
 
 }

@@ -46,6 +46,11 @@ public class ISingleFieldConstraint
      * The fieldName and fieldBinding is not used in the case of a predicate.
      */
     public static final int TYPE_PREDICATE = 5;
+    
+    /**
+     * This is for a field to be a placeholder for a template
+     */
+    public static final int TYPE_TEMPLATE = 7;
 
     public String           value;
     public int              constraintValueType;

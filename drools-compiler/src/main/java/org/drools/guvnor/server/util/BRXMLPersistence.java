@@ -19,7 +19,7 @@ public class BRXMLPersistence
     private XStream                     xt;
     private static final BRLPersistence INSTANCE = new BRXMLPersistence();
 
-    private BRXMLPersistence() {
+    protected BRXMLPersistence() {
         this.xt = new XStream( new DomDriver() );
 
         this.xt.alias( "rule",
@@ -108,11 +108,8 @@ public class BRXMLPersistence
      * @see org.drools.guvnor.server.util.BRLPersistence#toModel(java.lang.String)
      */
     public RuleModel unmarshal(final String xml) {
-        if ( xml == null ) {
-            return new RuleModel();
-        }
-        if ( xml.trim().equals( "" ) ) {
-            return new RuleModel();
+        if ( xml == null || xml.trim().length() == 0) {
+            return createEmptyModel();
         }
         RuleModel rm = (RuleModel) this.xt.fromXML( xml );
         //Fixme , hack for a upgrade to add Metadata
@@ -124,6 +121,10 @@ public class BRXMLPersistence
         
         return rm;
     }
+
+	protected RuleModel createEmptyModel() {
+		return new RuleModel();
+	}
 
     /**
      * 
