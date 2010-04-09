@@ -13,7 +13,7 @@ public class BRDRLPersistence implements BRLPersistence {
 
     private static final BRLPersistence INSTANCE = new BRDRLPersistence();
 
-    private BRDRLPersistence() {
+    protected BRDRLPersistence() {
     }
 
     public static BRLPersistence getInstance() {
@@ -28,15 +28,14 @@ public class BRDRLPersistence implements BRLPersistence {
      * .client.modeldriven.brl.RuleModel)
      */
     public String marshal(RuleModel model) {
-        boolean isDSLEnhanced = model.hasDSLSentences();
+        return marshalRule(model);
+    }
+    
+    protected String marshalRule(RuleModel model) {
+    	boolean isDSLEnhanced = model.hasDSLSentences();
 
         StringBuilder buf = new StringBuilder();
-        buf.append("rule \"" + model.name + "\"");
-        if (null != model.parentName && model.parentName.length() > 0) {
-            buf.append(" extends \"" + model.parentName + "\"\n");
-        } else {
-            buf.append("\n");
-        }
+        this.marshalHeader(model, buf);
         this.marshalMetadata(buf, model);
         this.marshalAttributes(buf, model);
 
@@ -44,13 +43,28 @@ public class BRDRLPersistence implements BRLPersistence {
         this.marshalLHS(buf, model, isDSLEnhanced);
         buf.append("\tthen\n");
         this.marshalRHS(buf, model, isDSLEnhanced);
-        buf.append("end\n");
+        this.marshalFooter(buf);
         return buf.toString();
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     *
+	protected void marshalFooter(StringBuilder buf) {
+		buf.append("end\n");
+	}
+
+	protected void marshalHeader(RuleModel model, StringBuilder buf) {
+		buf.append("rule \"" + marshalRuleName(model) + "\"");
+        if (null != model.parentName && model.parentName.length() > 0) {
+            buf.append(" extends \"" + model.parentName + "\"\n");
+        } else {
+            buf.append('\n');
+        }
+	}
+
+	protected String marshalRuleName(RuleModel model) {
+		return model.name;
+	}
+
+    /**
      * @see
      * org.drools.guvnor.server.util.BRLPersistence#unmarshal(java.lang.String)
      */
@@ -109,22 +123,22 @@ public class BRDRLPersistence implements BRLPersistence {
      */
     private void marshalLHS(StringBuilder buf, RuleModel model,
             boolean isDSLEnhanced) {
-        IPattern[] lhs = model.lhs;
-        LHSPatternVisitor visitor = new LHSPatternVisitor(isDSLEnhanced, buf);
-        for (int i = 0; i < lhs.length; i++) {
-            final IPattern cond = lhs[i];
-            visitor.visit(cond);
-        }
+		if (model.lhs != null) {
+			LHSPatternVisitor visitor = new LHSPatternVisitor(isDSLEnhanced, buf);
+			for (IPattern cond : model.lhs) {
+				visitor.visit(cond);
+			}
+		}
     }
 
     private void marshalRHS(StringBuilder buf, RuleModel model,
             boolean isDSLEnhanced) {
-        IAction[] rhs = model.rhs;
-        RHSActionVisitor visitor = new RHSActionVisitor(isDSLEnhanced, buf);
-        for (int i = 0; i < rhs.length; i++) {
-            final IAction action = rhs[i];
-            visitor.visit(action);
-        }
+		if (model.rhs != null) {
+			RHSActionVisitor visitor = new RHSActionVisitor(isDSLEnhanced, buf);
+			for (IAction action : model.rhs) {
+				visitor.visit(action);
+			}
+		}
     }
 
     public static class LHSPatternVisitor extends ReflectiveVisitor {
@@ -438,6 +452,15 @@ public class BRDRLPersistence implements BRLPersistence {
                         buf.append(expression.getText());
                     }
                     break;
+                case ISingleFieldConstraint.TYPE_TEMPLATE:
+                	if (operator.equals("in")) {
+                        buf.append(value);
+                    } else {
+                        buf.append("\"@{");
+                        buf.append(value);
+                        buf.append("}\"");
+                    }
+                	break;
                 default:
                     buf.append(value);
             }
@@ -601,14 +624,21 @@ public class BRDRLPersistence implements BRLPersistence {
                     buf.append(fieldValues[i].value.substring(1));
                 } else if (SuggestionCompletionEngine.TYPE_STRING.equals(fieldValues[i].type)) {
                     buf.append("\"");
-                    buf.append(fieldValues[i].value);
+                    buf.append(generateFieldValue(fieldValues[i]));
                     buf.append("\"");
                 } else {
-                    buf.append(fieldValues[i].value);
+                    buf.append(generateFieldValue(fieldValues[i]));
                 }
                 buf.append(" );\n");
             }
         }
+
+		private String generateFieldValue(final ActionFieldValue fieldValue) {
+			if (fieldValue.nature == ActionFieldValue.TYPE_TEMPLATE) {
+				return "@{" + fieldValue.value + "}";
+			}
+			return fieldValue.value;
+		}
 
         private void generateSetMethodCallsMethod(final ActionCallMethod action,
                 final ActionFieldValue[] fieldValues) {
