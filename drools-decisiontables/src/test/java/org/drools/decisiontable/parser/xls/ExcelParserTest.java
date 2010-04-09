@@ -91,7 +91,7 @@ public class ExcelParserTest extends TestCase {
     	
     }
     
-    static class MockCell implements Cell {
+    static class MockCell<CellFeatures> implements Cell {
 
     	int column;
     	int row;
