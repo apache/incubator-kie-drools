@@ -30,6 +30,7 @@ import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.conf.AccumulateFunctionOption;
+import org.drools.builder.conf.ClassLoaderCacheOption;
 import org.drools.builder.conf.DefaultDialectOption;
 import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.builder.conf.DumpDirOption;
@@ -71,6 +72,7 @@ import org.mvel2.MVEL;
  * drools.accumulate.function.<function name> = <qualified class>
  * drools.evaluator.<ident> = <qualified class>
  * drools.dump.dir = <String>
+ * drools.classLoaderCacheEnabled = true|false
  *
  * default dialect is java.
  * Available preconfigured Accumulate functions are:
@@ -88,27 +90,29 @@ public class PackageBuilderConfiguration
 
     private Map<String, DialectConfiguration> dialectConfigurations;
 
-    private DefaultDialectOption            defaultDialect;
+    private DefaultDialectOption              defaultDialect;
 
-    private ClassLoader                     classLoader;
+    private CompositeClassLoader              classLoader;
 
-    private ChainedProperties               chainedProperties;
+    private ChainedProperties                 chainedProperties;
 
-    private Map<String, AccumulateFunction> accumulateFunctions;
+    private Map<String, AccumulateFunction>   accumulateFunctions;
 
-    private EvaluatorRegistry               evaluatorRegistry;
+    private EvaluatorRegistry                 evaluatorRegistry;
 
-    private SemanticModules                 semanticModules;
+    private SemanticModules                   semanticModules;
 
-    private ProcessNodeBuilderRegistry      nodeBuilderRegistry;
+    private ProcessNodeBuilderRegistry        nodeBuilderRegistry;
 
-    private File                            dumpDirectory;
+    private File                              dumpDirectory;
 
-    private boolean                         allowMultipleNamespaces              = true;
+    private boolean                           allowMultipleNamespaces = true;
 
-    private boolean                         processStringEscapes                 = true;
+    private boolean                           processStringEscapes    = true;
 
-    private String                          defaultPackageName;
+    private boolean                           classLoaderCache        = true;
+
+    private String                            defaultPackageName;
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -162,11 +166,15 @@ public class PackageBuilderConfiguration
 
         this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                         this.classLoader,
-                                                        true);
+                                                        true );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
         }
+
+        setProperty( ClassLoaderCacheOption.PROPERTY_NAME,
+                     this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
+                                                         "true" ) );
 
         this.dialectConfigurations = new HashMap<String, DialectConfiguration>();
 
@@ -181,7 +189,7 @@ public class PackageBuilderConfiguration
         setProperty( ProcessStringEscapesOption.PROPERTY_NAME,
                      this.chainedProperties.getProperty( ProcessStringEscapesOption.PROPERTY_NAME,
                                                          "true" ) );
-        
+
         setProperty( DefaultPackageNameOption.PROPERTY_NAME,
                      this.chainedProperties.getProperty( DefaultPackageNameOption.PROPERTY_NAME,
                                                          "defaultpkg" ) );
@@ -207,6 +215,8 @@ public class PackageBuilderConfiguration
             setDefaultPackageName( value );
         } else if ( name.equals( ProcessStringEscapesOption.PROPERTY_NAME ) ) {
             setProcessStringEscapes( Boolean.parseBoolean( value ) );
+        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
+            setClassLoaderCacheEnabled( Boolean.parseBoolean( value ) );
         }
     }
 
@@ -225,13 +235,15 @@ public class PackageBuilderConfiguration
             AccumulateFunction function = this.accumulateFunctions.get( name.substring( index ) );
             return function != null ? function.getClass().getName() : null;
         } else if ( name.startsWith( EvaluatorOption.PROPERTY_NAME ) ) {
-            String key = name.substring( name.lastIndexOf( '.' )+1 );
-            EvaluatorDefinition evalDef = this.evaluatorRegistry.getEvaluatorDefinition( key ); 
+            String key = name.substring( name.lastIndexOf( '.' ) + 1 );
+            EvaluatorDefinition evalDef = this.evaluatorRegistry.getEvaluatorDefinition( key );
             return evalDef != null ? evalDef.getClass().getName() : null;
         } else if ( name.equals( DumpDirOption.PROPERTY_NAME ) ) {
             return this.dumpDirectory != null ? this.dumpDirectory.toString() : null;
         } else if ( name.equals( ProcessStringEscapesOption.PROPERTY_NAME ) ) {
             return String.valueOf( isProcessStringEscapes() );
+        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
+            return String.valueOf( isClassLoaderCacheEnabled() );
         }
         return null;
     }
@@ -318,7 +330,9 @@ public class PackageBuilderConfiguration
 
     /** Use this to override the classLoader that will be used for the rules. */
     public void setClassLoader(final ClassLoader classLoader) {
-        this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, getClass() );
+        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
+                                                           getClass(),
+                                                           isClassLoaderCacheEnabled() );
     }
 
     public void addSemanticModule(SemanticModule module) {
@@ -616,11 +630,20 @@ public class PackageBuilderConfiguration
     public void setProcessStringEscapes(boolean processStringEscapes) {
         this.processStringEscapes = processStringEscapes;
     }
-    
+
+    public boolean isClassLoaderCacheEnabled() {
+        return classLoaderCache;
+    }
+
+    public void setClassLoaderCacheEnabled(boolean classLoaderCacheEnabled) {
+        this.classLoaderCache = classLoaderCacheEnabled;
+        this.classLoader.setCachingEnabled( this.classLoaderCache );
+    }
+
     public String getDefaultPackageName() {
         return defaultPackageName;
     }
-    
+
     public void setDefaultPackageName(String defaultPackageName) {
         this.defaultPackageName = defaultPackageName;
     }
@@ -632,16 +655,18 @@ public class PackageBuilderConfiguration
         } else if ( DumpDirOption.class.equals( option ) ) {
             return (T) DumpDirOption.get( this.dumpDirectory );
         } else if ( ProcessStringEscapesOption.class.equals( option ) ) {
-            return (T) ( this.processStringEscapes ? ProcessStringEscapesOption.YES : ProcessStringEscapesOption.NO ); 
+            return (T) (this.processStringEscapes ? ProcessStringEscapesOption.YES : ProcessStringEscapesOption.NO);
         } else if ( DefaultPackageNameOption.class.equals( option ) ) {
             return (T) DefaultPackageNameOption.get( this.defaultPackageName );
+        } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
+            return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends MultiValueKnowledgeBuilderOption> T getOption(Class<T> option,
-                                          String key) {
+                                                                    String key) {
         if ( AccumulateFunctionOption.class.equals( option ) ) {
             return (T) AccumulateFunctionOption.get( key,
                                                      this.accumulateFunctions.get( key ) );
@@ -666,7 +691,8 @@ public class PackageBuilderConfiguration
             this.processStringEscapes = ((ProcessStringEscapesOption) option).isProcessStringEscapes();
         } else if ( option instanceof DefaultPackageNameOption ) {
             setDefaultPackageName( ((DefaultPackageNameOption) option).getPackageName() );
+        } else if ( option instanceof ClassLoaderCacheOption ) {
+            setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
         }
     }
-
 }

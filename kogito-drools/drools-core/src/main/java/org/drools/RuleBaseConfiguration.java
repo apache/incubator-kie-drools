@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.drools.builder.conf.ClassLoaderCacheOption;
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
@@ -115,6 +116,7 @@ import org.mvel2.MVEL;
  * drools.maxThreads = &lt;-1|1..n&gt;
  * drools.multithreadEvaluation = &lt;true|false&gt;
  * drools.mbeans = &lt;enabled|disabled&gt;
+ * drools.classLoaderCacheEnabled = &lt;true|false&gt; 
  * </pre>
  */
 public class RuleBaseConfiguration
@@ -143,6 +145,7 @@ public class RuleBaseConfiguration
     private String                         executorService;
     private String                         consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
+    private boolean                        classLoaderCacheEnabled;
 
     private EventProcessingOption          eventProcessingMode;
 
@@ -164,7 +167,7 @@ public class RuleBaseConfiguration
     private ProcessInstanceFactoryRegistry processInstanceFactoryRegistry;
     private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
 
-    private transient ClassLoader          classLoader;
+    private transient CompositeClassLoader classLoader;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
@@ -190,6 +193,7 @@ public class RuleBaseConfiguration
         out.writeBoolean( multithread );
         out.writeInt( maxThreads );
         out.writeObject( eventProcessingMode );
+        out.writeBoolean( classLoaderCacheEnabled );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -217,6 +221,7 @@ public class RuleBaseConfiguration
         multithread = in.readBoolean();
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
+        classLoaderCacheEnabled = in.readBoolean();
     }
 
     /**
@@ -307,6 +312,8 @@ public class RuleBaseConfiguration
             setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( StringUtils.isEmpty( value ) ? "cloud" : value ) );
         } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
             setMBeansEnabled( MBeansOption.isEnabled( value ) );
+        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
+            setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf( value ) );
         }
     }
 
@@ -358,6 +365,8 @@ public class RuleBaseConfiguration
             return getEventProcessingMode().getMode();
         } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
             return isMBeansEnabled() ? "enabled" : "disabled";
+        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
+            return Boolean.toString( isClassLoaderCacheEnabled() );
         }
 
         return null;
@@ -383,7 +392,9 @@ public class RuleBaseConfiguration
 
         setClassLoader( classLoader );
 
-        this.chainedProperties = new ChainedProperties( "rulebase.conf", this.classLoader, true );
+        this.chainedProperties = new ChainedProperties( "rulebase.conf",
+                                                        this.classLoader,
+                                                        true );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
@@ -443,12 +454,15 @@ public class RuleBaseConfiguration
 
         setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( MaxThreadsOption.PROPERTY_NAME,
                                                                              "3" ) ) );
-        
+
         setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( this.chainedProperties.getProperty( EventProcessingOption.PROPERTY_NAME,
                                                                                                                         "cloud" ) ) );
-        
+
         setMBeansEnabled( MBeansOption.isEnabled( this.chainedProperties.getProperty( MBeansOption.PROPERTY_NAME,
                                                                                       "disabled" ) ) );
+
+        setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
+                                                                                         "true" ) ) );
     }
 
     /**
@@ -688,6 +702,16 @@ public class RuleBaseConfiguration
      */
     public int getMaxThreads() {
         return this.maxThreads;
+    }
+
+    public boolean isClassLoaderCacheEnabled() {
+        return this.classLoaderCacheEnabled;
+    }
+
+    public void setClassLoaderCacheEnabled(final boolean classLoaderCacheEnabled) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.classLoaderCacheEnabled = classLoaderCacheEnabled;
+        this.classLoader.setCachingEnabled( this.classLoaderCacheEnabled );
     }
 
     private void initProcessNodeInstanceFactoryRegistry() {
@@ -967,7 +991,9 @@ public class RuleBaseConfiguration
     }
 
     public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, getClass() );
+        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
+                                                           getClass(),
+                                                           isClassLoaderCacheEnabled() );
     }
 
     /**
@@ -1223,6 +1249,8 @@ public class RuleBaseConfiguration
             return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
         } else if ( MBeansOption.class.equals( option ) ) {
             return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
+        } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
+            return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         }
         return null;
 
@@ -1263,6 +1291,8 @@ public class RuleBaseConfiguration
             setMultithreadEvaluation( ((MultithreadEvaluationOption) option).isMultithreadEvaluation() );
         } else if ( option instanceof MBeansOption ) {
             setMBeansEnabled( ((MBeansOption) option).isEnabled() );
+        } else if ( option instanceof ClassLoaderCacheOption ) {
+            setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
         }
 
     }

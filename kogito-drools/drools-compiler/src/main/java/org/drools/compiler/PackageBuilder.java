@@ -126,7 +126,7 @@ public class PackageBuilder {
      */
     private final String                      defaultDialect;
 
-    private DroolsCompositeClassLoader              rootClassLoader;
+    private DroolsCompositeClassLoader        rootClassLoader;
 
     private Map<String, Class< ? >>           globals;
 
@@ -135,8 +135,8 @@ public class PackageBuilder {
     private List<DSLTokenizedMappingFile>     dslFiles;
 
     private TimeIntervalParser                timeParser;
-    
-    protected DateFormats                     dateFormats;    
+
+    protected DateFormats                     dateFormats;
 
     /**
      * Use this when package is starting from scratch.
@@ -182,14 +182,15 @@ public class PackageBuilder {
         } else {
             this.configuration = configuration;
         }
-        
+
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
         if ( this.dateFormats == null ) {
             this.dateFormats = new DateFormatsImpl();
             //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
-        }        
+        }
 
-        this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader() );
+        this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader(),
+                                                               this.configuration.isClassLoaderCacheEnabled() );
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
@@ -216,14 +217,15 @@ public class PackageBuilder {
         if ( ruleBase != null ) {
             this.rootClassLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
         } else {
-            this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader() );
+            this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader(),
+                                                                   this.configuration.isClassLoaderCacheEnabled() );
         }
-        
+
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
         if ( this.dateFormats == null ) {
             this.dateFormats = new DateFormatsImpl();
             //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
-        }                
+        }
 
         // FIXME, we need to get drools to support "default" namespace.
         //this.defaultNamespace = pkg.getName();        
@@ -341,9 +343,9 @@ public class PackageBuilder {
         DefaultExpander expander = getDslExpander();
 
         try {
-        	if (expander == null) {
-        		expander = new DefaultExpander();
-        	}
+            if ( expander == null ) {
+                expander = new DefaultExpander();
+            }
             String str = expander.expand( resource.getReader() );
             if ( expander.hasErrors() ) {
                 this.results.addAll( expander.getErrors() );
@@ -371,15 +373,15 @@ public class PackageBuilder {
         DefaultExpander expander = getDslExpander();
 
         try {
-        	String str;
-        	if (expander != null) {
-        		str = expander.expand( new StringReader( drl ) );
+            String str;
+            if ( expander != null ) {
+                str = expander.expand( new StringReader( drl ) );
                 if ( expander.hasErrors() ) {
                     this.results.addAll( expander.getErrors() );
                 }
-        	} else {
-        		str = drl;
-        	}
+            } else {
+                str = drl;
+            }
 
             final PackageDescr pkg = parser.parse( str );
             this.results.addAll( parser.getErrors() );
@@ -487,7 +489,7 @@ public class PackageBuilder {
                 addProcessFromXml( resource );
             } else if ( ResourceType.BPMN2.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
-                BPMN2ProcessFactory.configurePackageBuilder(this);
+                BPMN2ProcessFactory.configurePackageBuilder( this );
                 addProcessFromXml( resource );
             } else if ( ResourceType.DTABLE.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
@@ -498,16 +500,19 @@ public class PackageBuilder {
                 addPackageFromDrl( new StringReader( string ) );
             } else if ( ResourceType.PKG.equals( type ) ) {
                 InputStream is = resource.getInputStream();
-                Package pkg = (Package) DroolsStreamUtils.streamIn( is, this.configuration.getClassLoader() );
+                Package pkg = (Package) DroolsStreamUtils.streamIn( is,
+                                                                    this.configuration.getClassLoader() );
                 is.close();
                 addPackage( pkg );
             } else if ( ResourceType.CHANGE_SET.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
                 if ( resource instanceof ClassPathResource ) {
-                    reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),  ((ClassPathResource) resource).getClazz() );
+                    reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),
+                                           ((ClassPathResource) resource).getClazz() );
                 } else {
-                    reader.setClassLoader( this.configuration.getClassLoader() , null);
+                    reader.setClassLoader( this.configuration.getClassLoader(),
+                                           null );
                 }
                 ChangeSet changeSet = reader.read( resource.getReader() );
                 if ( changeSet == null ) {
@@ -1230,10 +1235,10 @@ public class PackageBuilder {
     public Map<String, PackageRegistry> getPackageRegistry() {
         return this.pkgRegistryMap;
     }
-    
+
     public DateFormats getDateFormats() {
         return this.dateFormats;
-    }    
+    }
 
     /**
      * Returns an expander for DSLs (only if there is a DSL configured for this package).

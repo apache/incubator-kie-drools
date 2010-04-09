@@ -1088,7 +1088,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( builder.hasErrors() );
 
         Package bp = builder.getPackage();
-        DroolsCompositeClassLoader rootClassloader = new DroolsCompositeClassLoader( Thread.currentThread().getContextClassLoader() );
+        DroolsCompositeClassLoader rootClassloader = new DroolsCompositeClassLoader( Thread.currentThread().getContextClassLoader(),
+                                                                                     false );
         JavaDialectRuntimeData dialectData = (JavaDialectRuntimeData) bp.getDialectRuntimeRegistry().getDialectData( "java" );
         dialectData.onAdd( bp.getDialectRuntimeRegistry(),
                            rootClassloader );
@@ -1392,8 +1393,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
-        final TypeDeclarationDescr typeDeclDescr = new TypeDeclarationDescr(StockTick.class.getName());
-        typeDeclDescr.addMetaAttribute( "role", "event" );
+        final TypeDeclarationDescr typeDeclDescr = new TypeDeclarationDescr( StockTick.class.getName() );
+        typeDeclDescr.addMetaAttribute( "role",
+                                        "event" );
         packageDescr.addTypeDeclaration( typeDeclDescr );
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -1509,33 +1511,33 @@ public class PackageBuilderTest extends DroolsTestCase {
         public void setResource(Resource resource) {
         }
 
-		public String[] getGlobalNames() {
-			return null;
-		}
+        public String[] getGlobalNames() {
+            return null;
+        }
 
-		public Map<String, String> getGlobals() {
-			return null;
-		}
+        public Map<String, String> getGlobals() {
+            return null;
+        }
 
-		public List<String> getImports() {
-			return null;
-		}
+        public List<String> getImports() {
+            return null;
+        }
 
-		public void setGlobals(Map<String, String> globals) {
-		}
+        public void setGlobals(Map<String, String> globals) {
+        }
 
-		public void setImports(List<String> imports) {
-		}
+        public void setImports(List<String> imports) {
+        }
 
-		public List<String> getFunctionImports() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        public List<String> getFunctionImports() {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		public void setFunctionImports(List<String> functionImports) {
-			// TODO Auto-generated method stub
-			
-		}
+        public void setFunctionImports(List<String> functionImports) {
+            // TODO Auto-generated method stub
+
+        }
 
     }
 

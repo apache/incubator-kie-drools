@@ -92,10 +92,12 @@ import org.drools.Win;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.ClassLoaderCacheOption;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
@@ -145,6 +147,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
+import org.drools.util.CompositeClassLoader;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -6935,7 +6938,22 @@ public class MiscTest extends TestCase {
         session.setGlobal( "list", list );
         session.fireAllRules();   
         assertEquals(1, list.size() );
+    }
+    
+    public void testClassLoaderHits() throws Exception {
+        final KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        //conf.setOption( ClassLoaderCacheOption.DISABLED );
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_GeneratedBeansMVEL.drl" ) ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_GeneratedBeans.drl" ) ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_NullFieldOnCompositeSink.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        //((CompositeClassLoader)((PackageBuilderConfiguration)conf).getClassLoader()).dumpStats();
         
     }
-
 }
