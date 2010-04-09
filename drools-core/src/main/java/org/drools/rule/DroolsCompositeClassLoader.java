@@ -12,17 +12,15 @@ import org.drools.core.util.DroolsClassLoader;
 public class DroolsCompositeClassLoader extends ClassLoader
     implements
     DroolsClassLoader {
-    
 
     /* Assumption: modifications are really rare, but iterations are frequent. */
     private final List<ClassLoader> classLoaders = new CopyOnWriteArrayList<ClassLoader>();
-    private boolean hasParent = false;
-    
-    public DroolsCompositeClassLoader(final ClassLoader parentClassLoader) {
+    private final boolean           hasParent;
+
+    public DroolsCompositeClassLoader(final ClassLoader parentClassLoader,
+                                      final boolean cacheParentCalls) {
         super( parentClassLoader );
-        if ( parentClassLoader != null ) {
-            this.hasParent = true;
-        }
+        this.hasParent = parentClassLoader != null;
     }
 
     public synchronized void addClassLoader(final ClassLoader classLoader) {
@@ -40,7 +38,6 @@ public class DroolsCompositeClassLoader extends ClassLoader
             }
         }
         this.classLoaders.add( classLoader );
-
     }
 
     public synchronized void removeClassLoader(final ClassLoader classLoader) {
@@ -53,9 +50,9 @@ public class DroolsCompositeClassLoader extends ClassLoader
     /**
      * Search the list of child ClassLoaders
      */
-    public Class<?> fastFindClass(final String name) {
+    public Class< ? > fastFindClass(final String name) {
         for ( final ClassLoader classLoader : this.classLoaders ) {
-            final Class<?> cls = ((DroolsClassLoader) classLoader).fastFindClass( name );
+            final Class< ? > cls = ((DroolsClassLoader) classLoader).fastFindClass( name );
             if ( cls != null ) {
                 return cls;
             }
@@ -66,18 +63,19 @@ public class DroolsCompositeClassLoader extends ClassLoader
     /**
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
      * and the parent ClassLoader if one is provided
-     */ 
-    public Class<?> loadClass(final String name,
-                                        final boolean resolve) throws ClassNotFoundException {
+     */
+    public Class< ? > loadClass(final String name,
+                                final boolean resolve) throws ClassNotFoundException {
         // search the child ClassLoaders
-        Class<?> cls = fastFindClass( name );
-        
+        Class< ? > cls;
+        cls = fastFindClass( name );
+
         // still not found so search the parent ClassLoader
         if ( this.hasParent && cls == null ) {
             cls = Class.forName( name,
-                           true,
-                           getParent() );
-        }        
+                                 true,
+                                 getParent() );
+        }
 
         if ( resolve ) {
             resolveClass( cls );
@@ -89,30 +87,29 @@ public class DroolsCompositeClassLoader extends ClassLoader
     /**
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
      * and the parent ClassLoader if one is provided
-     */    
-    public InputStream getResourceAsStream(final String name) {        
+     */
+    public InputStream getResourceAsStream(final String name) {
         for ( final ClassLoader classLoader : this.classLoaders ) {
             InputStream stream = classLoader.getResourceAsStream( name );
             if ( stream != null ) {
                 return stream;
             }
         }
-        
+
         if ( this.hasParent ) {
-            return getParent().getResourceAsStream( name );            
+            return getParent().getResourceAsStream( name );
         }
-        
+
         return null;
 
     }
-    
 
     /**
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
-     */    
-    protected Class<?> findClass(final String name) throws ClassNotFoundException {
-        final Class<?> cls = fastFindClass( name );
-        
+     */
+    protected Class< ? > findClass(final String name) throws ClassNotFoundException {
+        final Class< ? > cls = fastFindClass( name );
+
         if ( cls == null ) {
             throw new ClassNotFoundException( name );
         }

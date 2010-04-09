@@ -118,7 +118,9 @@ public class SessionConfiguration
     }
 
     private void init(ClassLoader classLoader, Properties properties) {
-    	this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, getClass() );
+    	this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, 
+    	                                                    getClass(),
+    	                                                    false );
     	
         this.immutable = false;
         this.chainedProperties = new ChainedProperties( "session.conf",  this.classLoader );

@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -50,8 +49,8 @@ import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.management.DroolsManagementAgent;
 import org.drools.process.core.Process;
-import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
+import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
@@ -59,7 +58,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
-import org.drools.time.Calendar;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -87,14 +85,14 @@ abstract public class AbstractRuleBase
 
     private Map                                        agendaGroupRuleTotals;
 
-    private transient DroolsCompositeClassLoader             rootClassLoader;
+    private transient DroolsCompositeClassLoader       rootClassLoader;
 
     /**
      * The fact handle factory.
      */
     private FactHandleFactory                          factHandleFactory;
 
-    private transient Map<String, Class< ? >>          globals;   
+    private transient Map<String, Class< ? >>          globals;
 
     private ReloadPackageCompilationData               reloadPackageCompilationData = null;
 
@@ -153,7 +151,8 @@ abstract public class AbstractRuleBase
             this.agendaGroupRuleTotals = new HashMap();
         }
 
-        this.rootClassLoader = new DroolsCompositeClassLoader( this.config.getClassLoader() );
+        this.rootClassLoader = new DroolsCompositeClassLoader( this.config.getClassLoader(),
+                                                               this.config.isClassLoaderCacheEnabled() );
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
         this.globals = new HashMap<String, Class< ? >>();
@@ -199,6 +198,9 @@ abstract public class AbstractRuleBase
             droolsStream = new DroolsObjectOutputStream( bytes );
         }
 
+        // must write this option first in order to properly deserialize later
+        droolsStream.writeBoolean( this.config.isClassLoaderCacheEnabled() );
+        
         droolsStream.writeObject( this.config );
         droolsStream.writeObject( this.pkgs );
 
@@ -250,7 +252,8 @@ abstract public class AbstractRuleBase
             droolsStream = new DroolsObjectInputStream( bytes );
         }
 
-        this.rootClassLoader = new DroolsCompositeClassLoader( droolsStream.getParentClassLoader() );
+        boolean classLoaderCacheEnabled = droolsStream.readBoolean();
+        this.rootClassLoader = new DroolsCompositeClassLoader( droolsStream.getParentClassLoader(), classLoaderCacheEnabled );
         droolsStream.setClassLoader( this.rootClassLoader );
         droolsStream.setRuleBase( this );
 
