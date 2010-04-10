@@ -137,7 +137,6 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
@@ -147,7 +146,10 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
-import org.drools.util.CompositeClassLoader;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -6955,5 +6957,102 @@ public class MiscTest extends TestCase {
 
         //((CompositeClassLoader)((PackageBuilderConfiguration)conf).getClassLoader()).dumpStats();
         
+    }
+    
+    public void testMVELConsequenceWithoutSemiColon1() throws Exception {
+        String drl = "";
+        drl += "package test\n";
+        drl += "import org.drools.Person\n";
+        drl += "import org.drools.Pet\n";
+        drl += "rule test dialect 'mvel'\n";
+        drl += "when\n";
+        drl += "$person:Person()\n";
+        drl += "$pet:Pet()\n";
+        drl += "then\n";
+        drl += "    retract($person) // some comment\n";
+        drl += "    retract($pet) // another comment\n";
+        drl += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        // create working memory mock listener
+        org.drools.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.drools.event.rule.WorkingMemoryEventListener.class );
+        
+        ksession.addEventListener( wml );
+
+        org.drools.runtime.rule.FactHandle personFH = ksession.insert( new Person("Toni") );
+        org.drools.runtime.rule.FactHandle petFH = ksession.insert( new Pet("Toni") );
+        
+        int fired = ksession.fireAllRules();
+        assertEquals( 1, fired );
+
+        // capture the arguments and check that the retracts happened
+        ArgumentCaptor<org.drools.event.rule.ObjectRetractedEvent> retracts = ArgumentCaptor.forClass(org.drools.event.rule.ObjectRetractedEvent.class);
+        verify( wml, times(2) ).objectRetracted( retracts.capture() );
+        List<org.drools.event.rule.ObjectRetractedEvent> values = retracts.getAllValues();
+        assertThat( values.get( 0 ).getFactHandle(), is( personFH ) );
+        assertThat( values.get( 1 ).getFactHandle(), is( petFH ) );
+        
+    }
+   
+    // following test depends on MVEL: http://jira.codehaus.org/browse/MVEL-212
+    public void FIXME_testMVELConsequenceUsingFactConstructors() throws Exception {
+        String drl = "";
+        drl += "package test\n";
+        drl += "import org.drools.Person\n";
+        drl += "global org.drools.runtime.StatefulKnowledgeSession ksession\n";
+        drl += "rule test dialect 'mvel'\n";
+        drl += "when\n";
+        drl += "    $person:Person( name == 'mark' )\n";
+        drl += "then\n";
+        drl += "    // bellow constructor for Person does not exist\n";
+        drl += "    Person p = new Person( 'bob', 30, 555 )\n";
+        drl += "    ksession.update(ksession.getFactHandle($person), new Person('bob', 30, 999, 453, 534, 534, 32))\n";
+        drl += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+        }
+        assertTrue( kbuilder.hasErrors() );
+
+//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+//        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+//        ksession.setGlobal( "ksession", ksession );
+//
+//        // create working memory mock listener
+//        org.drools.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.drools.event.rule.WorkingMemoryEventListener.class );
+//        
+//        ksession.addEventListener( wml );
+//
+//        org.drools.runtime.rule.FactHandle personFH = ksession.insert( new Person("mark", 40) );
+//        
+//        int fired = ksession.fireAllRules();
+//        assertEquals( 1, fired );
+//
+//        // capture the arguments and check that the retracts happened
+//        ArgumentCaptor<org.drools.event.rule.ObjectUpdatedEvent> updates = ArgumentCaptor.forClass(org.drools.event.rule.ObjectUpdatedEvent.class);
+//        verify( wml, times(1) ).objectUpdated( updates.capture() );
+//        assertThat( updates.getValue().getFactHandle(), is( personFH ) );
     }
 }

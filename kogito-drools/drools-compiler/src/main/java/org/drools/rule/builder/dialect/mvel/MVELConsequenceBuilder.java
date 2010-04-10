@@ -148,6 +148,41 @@ public class MVELConsequenceBuilder
         for ( int i = 0; i < cs.length; i++ ) {
             char c = cs[i];
             switch ( c ) {
+                case '/' :
+                    if( i < cs.length-1 && cs[i+1] == '*' ) {
+                        // multi-line comment
+                        int start = i;
+                        i+=2; // skip the /*
+                        for( ; i < cs.length; i++ ) {
+                            if( cs[i] == '*' && i < cs.length-1 && cs[i+1] == '/' ) {
+                                i++; // skip the */
+                                break;
+                            } else if( cs[i] == '\n' || cs[i] == '\r' ) {
+                                lastNonWhite = checkAndAddSemiColon( result,
+                                                                     brace,
+                                                                     sqre,
+                                                                     crly,
+                                                                     lastNonWhite );
+                            }
+                        }
+                        result.append( cs, start, i-start );
+                        break;
+                    } else if( i < cs.length-1 && cs[i+1] != '/' ) {
+                        // not a line comment
+                        break;
+                    }
+                    // otherwise handle it in the same way as #
+                case '#' :
+                    // line comment
+                    lastNonWhite = checkAndAddSemiColon( result,
+                                                         brace,
+                                                         sqre,
+                                                         crly,
+                                                         lastNonWhite );
+                    i = processLineComment( cs,
+                                            i,
+                                            result);
+                    continue;
                 case '(' :
                     brace++;
                     break;
@@ -169,7 +204,8 @@ public class MVELConsequenceBuilder
                 default :
                     break;
             }
-            if ( (brace == 0 && sqre == 0 && crly == 0) && (c == '\n' || c == '\r') ) {
+            if ( brace == 0 && sqre == 0 && crly == 0 && ( c == '\n' || c == '\r' ) ){
+                // line break 
                 if ( lastNonWhite != ';' ) {
                     result.append( ';' );
                     lastNonWhite = ';';
@@ -178,9 +214,34 @@ public class MVELConsequenceBuilder
                 lastNonWhite = c;
             }
             result.append( c );
-
         }
         return result.toString();
+    }
+
+    private static int processLineComment(char[] cs,
+                                          int i,
+                                          StringBuilder result) {
+        for( ; i < cs.length; i++ ) {
+            result.append( cs[i] );
+            if( cs[i] == '\n' || cs[i] == '\r' ) {
+                break;
+            }
+        }
+        return i;
+    }
+
+    private static char checkAndAddSemiColon(StringBuilder result,
+                                             int brace,
+                                             int sqre,
+                                             int crly,
+                                             char lastNonWhite) {
+        if ( brace == 0 && sqre == 0 && crly == 0 ){
+            if ( lastNonWhite != ';' ) {
+                result.append( ';' );
+                lastNonWhite = ';';
+            }
+        }
+        return lastNonWhite;
     }
 
 }
