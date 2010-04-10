@@ -14,7 +14,7 @@ public class NumberRestriction extends LiteralRestriction {
     }
 
     public void setValue(Number number) {
-        this.value = number;;
+        this.value = number;
     }
 
     public boolean isInt() {

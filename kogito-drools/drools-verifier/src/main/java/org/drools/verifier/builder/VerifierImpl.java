@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
@@ -11,6 +12,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
@@ -163,6 +165,14 @@ public class VerifierImpl
                 kbuilder.add( resource,
                               conf.getVerifyingResources().get( resource ) );
             }
+        }
+
+        if (kbuilder.hasErrors()){
+            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
+            while(errors.hasNext()){
+                this.errors.add(new VerifierError("Error compiling verifier rules: "+errors.next().getMessage()));
+            }
+            throw new IllegalStateException("Error compiling verifier rules");
         }
 
         verifierKnowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
