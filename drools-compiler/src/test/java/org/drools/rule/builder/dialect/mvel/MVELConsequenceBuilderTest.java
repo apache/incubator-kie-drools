@@ -233,6 +233,14 @@ public class MVELConsequenceBuilderTest extends TestCase {
         assertEquals( "   \n\nfoo [\n bar \n];\n\n\nbar;  x;\n  \nyeah();\nman[42];\nbaby;ca chiga;\nend",
                       MVELConsequenceBuilder.delimitExpressions( ex ) );
 
+        ex = "   retract(f1) // some comment\n   retract(f2)\nend";
+        assertEquals( "   retract(f1) ;// some comment\n   retract(f2);\nend",
+                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+
+        ex = "   retract(f1 /* inline comment */) /* some\n comment\n*/   retract(f2)\nend";
+        assertEquals( "   retract(f1 /* inline comment */) ;/* some\n comment\n*/   retract(f2);\nend",
+                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+
     }
 
     public void testMVELDebugSymbols() throws DroolsParserException {
