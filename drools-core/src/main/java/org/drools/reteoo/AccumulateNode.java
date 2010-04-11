@@ -414,6 +414,11 @@ public class AccumulateNode extends BetaNode {
         // this is needed to fix for indexing and deterministic iteration
         memory.betaMemory.getRightTupleMemory().remove( rightTuple );
         memory.betaMemory.getRightTupleMemory().add( rightTuple );
+        
+        if ( !this.tupleMemoryEnabled ) {
+            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+            return;
+        }        
 
         // WTD here
         //                if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
