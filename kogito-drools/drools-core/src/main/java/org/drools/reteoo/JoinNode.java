@@ -172,6 +172,11 @@ public class JoinNode extends BetaNode {
         // this is needed to fix for indexing and deterministic iteration
         memory.getRightTupleMemory().remove( rightTuple );
         memory.getRightTupleMemory().add( rightTuple );
+        
+        if ( !this.tupleMemoryEnabled ) {
+            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+            return;
+        }        
 
         LeftTuple childLeftTuple = rightTuple.firstChild;
 
