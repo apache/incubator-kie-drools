@@ -366,7 +366,11 @@ public class ExistsNode extends BetaNode {
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
-
+        if ( !this.tupleMemoryEnabled ) {
+            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+            return;
+        }
+        
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // TODO: wtd with behaviours?
