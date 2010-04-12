@@ -23,9 +23,11 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.ClassObjectType;
 import org.drools.spi.AcceptsClassObjectType;
@@ -136,6 +138,23 @@ public class Pattern
         this.objectType = objectType;
     }
 
+    public Declaration[] getRequiredDeclarations() {
+        Set<Declaration> decl = new HashSet<Declaration>();
+        Set<String> locals = new HashSet<String>();
+        for( Object constr : this.constraints ) {
+            if( constr instanceof Constraint ) {
+                for( Declaration d : ((Constraint)constr).getRequiredDeclarations() ) {
+                    if( ! locals.contains( d.getIdentifier() ) ) {
+                        decl.add( d );
+                    }
+                }
+            } else {
+                locals.add( ((Declaration)constr).getIdentifier() );
+            }
+        }
+        return decl.toArray( new Declaration[decl.size()] );
+    }
+    
     public Object clone() {
         final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
         final Pattern clone = new Pattern( this.index,

@@ -3,10 +3,7 @@ package org.drools.marshalling.impl;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -33,20 +30,14 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.process.core.context.swimlane.SwimlaneContext;
-import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
-import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.process.instance.timer.TimerInstance;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.InitialFactHandle;
 import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.LeftTuple;
@@ -60,33 +51,17 @@ import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.CollectNode.CollectContext;
-import org.drools.reteoo.CollectNode.CollectMemory;
-import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.runtime.Environment;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.workflow.instance.impl.NodeInstanceImpl;
-import org.drools.workflow.instance.node.CompositeContextNodeInstance;
-import org.drools.workflow.instance.node.ForEachNodeInstance;
-import org.drools.workflow.instance.node.HumanTaskNodeInstance;
-import org.drools.workflow.instance.node.JoinInstance;
-import org.drools.workflow.instance.node.MilestoneNodeInstance;
-import org.drools.workflow.instance.node.RuleSetNodeInstance;
-import org.drools.workflow.instance.node.SubProcessNodeInstance;
-import org.drools.workflow.instance.node.TimerNodeInstance;
-import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
 public class InputMarshaller {
     /**
@@ -404,10 +379,6 @@ public class InputMarshaller {
                 memory = ((AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink )).betaMemory;
                 break;
             }
-            case NodeTypeEnums.CollectNode : {
-                memory = ((CollectMemory) context.wm.getNodeMemory( (BetaNode) sink )).betaMemory;
-                break;
-            }
             default : {
                 memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 break;
@@ -564,56 +535,6 @@ public class InputMarshaller {
                             LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
                             LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
                                                                       accctx.result,
-                                                                      childSink,
-                                                                      true );
-                            readLeftTuple( childLeftTuple,
-                                           context );
-                            break;
-                        }
-                        default : {
-                            throw new RuntimeDroolsException( "Marshalling error. This is a bug. Please contact the development team." );
-                        }
-                    }
-                }
-                break;
-            }
-            case NodeTypeEnums.CollectNode : {
-                // accumulate nodes generate new facts on-demand and need special procedures when de-serializing from persistent storage
-                CollectMemory memory = (CollectMemory) context.wm.getNodeMemory( (BetaNode) sink );
-                memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
-
-                CollectContext colctx = new CollectContext();
-                memory.betaMemory.getCreatedHandles().put( parentLeftTuple,
-                                                           colctx,
-                                                           false );
-                // first we de-serialize the generated fact handle
-                InternalFactHandle handle = readFactHandle( context );
-                colctx.resultTuple = new RightTuple( handle,
-                                                     (RightTupleSink) sink );
-
-                // then we de-serialize the boolean propagated flag
-                colctx.propagated = stream.readBoolean();
-
-                // then we de-serialize all the propagated tuples
-                short head = -1;
-                while ( (head = stream.readShort()) != PersisterEnums.END ) {
-                    switch ( head ) {
-                        case PersisterEnums.RIGHT_TUPLE : {
-                            int factHandleId = stream.readInt();
-                            RightTupleKey key = new RightTupleKey( factHandleId,
-                                                                   sink );
-                            RightTuple rightTuple = context.rightTuples.get( key );
-                            // just wiring up the match record
-                            new LeftTuple( parentLeftTuple,
-                                           rightTuple,
-                                           sink,
-                                           true );
-                            break;
-                        }
-                        case PersisterEnums.LEFT_TUPLE : {
-                            LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                            LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                                      colctx.resultTuple,
                                                                       childSink,
                                                                       true );
                             readLeftTuple( childLeftTuple,

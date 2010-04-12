@@ -30,7 +30,6 @@ import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.CollectNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.LeftTupleSink;
@@ -44,12 +43,10 @@ import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.Sink;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.test.dsl.AccumulateNodeStep;
 import org.drools.reteoo.test.dsl.BetaNodeStep;
 import org.drools.reteoo.test.dsl.BindingStep;
-import org.drools.reteoo.test.dsl.CollectNodeStep;
 import org.drools.reteoo.test.dsl.DSLMock;
 import org.drools.reteoo.test.dsl.DslStep;
 import org.drools.reteoo.test.dsl.EvalNodeStep;
@@ -90,7 +87,6 @@ public class ReteDslTestEngine {
     private static final String JOIN_NODE                = "JoinNode";
     private static final String NOT_NODE                 = "NotNode";
     private static final String EXISTS_NODE              = "ExistsNode";
-    private static final String COLLECT_NODE             = "CollectNode";
     private static final String ACCUMULATE_NODE          = "AccumulateNode";
     private static final String RULE_TERMINAL_NODE       = "RuleTerminalNode";
     private static final String EVAL_NODE                = "EvalNode";
@@ -121,8 +117,6 @@ public class ReteDslTestEngine {
                         new NotNodeStep( this.reteTesterHelper ) );
         this.steps.put( EXISTS_NODE,
                         new ExistsNodeStep( this.reteTesterHelper ) );
-        this.steps.put( COLLECT_NODE,
-                        new CollectNodeStep( this.reteTesterHelper ) );
         this.steps.put( ACCUMULATE_NODE,
                         new AccumulateNodeStep( this.reteTesterHelper ) );
         this.steps.put( RULE_TERMINAL_NODE,
@@ -293,10 +287,7 @@ public class ReteDslTestEngine {
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
 
             BetaMemory memory = null;
-            if ( node instanceof CollectNode ) {
-                CollectMemory colmem = (CollectMemory) wm.getNodeMemory( node );
-                memory = colmem.betaMemory;
-            } else if ( node instanceof AccumulateNode ) {
+            if ( node instanceof AccumulateNode ) {
                 AccumulateMemory accmem = (AccumulateMemory) wm.getNodeMemory( node );
                 memory = accmem.betaMemory;
             } else {

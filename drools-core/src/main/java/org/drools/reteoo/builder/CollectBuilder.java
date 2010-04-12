@@ -20,14 +20,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.base.accumulators.CollectAccumulator;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
-import org.drools.reteoo.CollectNode;
+import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
 import org.drools.rule.Collect;
+import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -55,15 +58,15 @@ public class CollectBuilder
         final List resultBehaviors = context.getBehaviors();
 
         final Pattern sourcePattern = collect.getSourcePattern();
-        final Pattern resultPattern = collect.getResultPattern();      
-        
+        final Pattern resultPattern = collect.getResultPattern();
+
         // get builder for the pattern
         final ReteooComponentBuilder builder = utils.getBuilderFor( sourcePattern );
 
         // save tuple source and pattern offset for later if needed
         final LeftTupleSource tupleSource = context.getTupleSource();
         final int currentPatternIndex = context.getCurrentPatternOffset();
-        
+
         // builds the source pattern
         builder.build( context,
                        utils,
@@ -88,27 +91,36 @@ public class CollectBuilder
             context.setBetaconstraints( betaConstraints );
             existSubNetwort = true;
         }
-        
-        BetaConstraints binder = utils.createBetaNodeConstraint( context, context.getBetaconstraints(), false );
+
+        BetaConstraints binder = utils.createBetaNodeConstraint( context,
+                                                                 context.getBetaconstraints(),
+                                                                 false );
         // indexing for the results should be always disabled
-        BetaConstraints resultBinder = utils.createBetaNodeConstraint( context, resultBetaConstraints, true );
-        
+        BetaConstraints resultBinder = utils.createBetaNodeConstraint( context,
+                                                                       resultBetaConstraints,
+                                                                       true );
+
         Behavior[] behaviors = Behavior.EMPTY_BEHAVIOR_LIST;
-        if( ! context.getBehaviors().isEmpty() ) {
-            behaviors = (Behavior[]) context.getBehaviors().toArray( new Behavior[ context.getBehaviors().size() ]);
+        if ( !context.getBehaviors().isEmpty() ) {
+            behaviors = (Behavior[]) context.getBehaviors().toArray( new Behavior[context.getBehaviors().size()] );
         }
 
+        CollectAccumulator accumulator = new CollectAccumulator( collect );
+        Accumulate accumulate = new Accumulate( sourcePattern,
+                                                sourcePattern.getRequiredDeclarations(),
+                                                (Declaration[]) collect.getInnerDeclarations().values().toArray( new Declaration[0] ),
+                                                accumulator );
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                new CollectNode( context.getNextId(),
-                                                                                 context.getTupleSource(),
-                                                                                 context.getObjectSource(),
-                                                                                 (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
-                                                                                 binder, // source binder
-                                                                                 resultBinder,
-                                                                                 behaviors,
-                                                                                 collect,
-                                                                                 existSubNetwort,
-                                                                                 context ) ) );
+                                                                    new AccumulateNode( context.getNextId(),
+                                                                                        context.getTupleSource(),
+                                                                                        context.getObjectSource(),
+                                                                                        (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
+                                                                                        binder, // source binder
+                                                                                        resultBinder,
+                                                                                        behaviors,
+                                                                                        accumulate,
+                                                                                        existSubNetwort,
+                                                                                        context ) ) );
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );
