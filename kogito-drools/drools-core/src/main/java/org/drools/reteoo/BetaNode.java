@@ -34,7 +34,6 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -236,11 +235,9 @@ public abstract class BetaNode extends LeftTupleSource
                 BetaMemory memory = null;
                 Object object = workingMemories[i].getNodeMemory( this );
                 
-                // handle special cases for Collect and Accumulate to make sure they tidy up their specific data
+                // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
-                if ( object instanceof CollectMemory ) {
-                    memory = (( CollectMemory )object).betaMemory;
-                } else if ( object instanceof AccumulateMemory ) {
+                if ( object instanceof AccumulateMemory ) {
                     memory = (( AccumulateMemory )object).betaMemory;
                 } else {
                     memory = ( BetaMemory ) object;
@@ -263,11 +260,9 @@ public abstract class BetaNode extends LeftTupleSource
                     leftTuple.unlinkFromRightParent();
                 }
 
-                // handle special cases for Collect and Accumulate to make sure they tidy up their specific data
+                // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
-                if ( object instanceof CollectMemory ) {
-                    ((CollectNode) this).doRemove( workingMemories[i], ( CollectMemory ) object );
-                } else if ( object instanceof AccumulateMemory ) {
+                if ( object instanceof AccumulateMemory ) {
                     ((AccumulateNode) this).doRemove( workingMemories[i], ( AccumulateMemory ) object );
                 }
 

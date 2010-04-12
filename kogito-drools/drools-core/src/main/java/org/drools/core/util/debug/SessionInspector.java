@@ -26,7 +26,6 @@ import org.drools.common.NetworkNode;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AlphaNode;
-import org.drools.reteoo.CollectNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.ExistsNode;
@@ -93,8 +92,6 @@ public class SessionInspector {
                            BetaNodeVisitor.INSTANCE );
         this.visitors.put( AccumulateNode.class,
                            AccumulateNodeVisitor.INSTANCE );
-        this.visitors.put( CollectNode.class,
-                           CollectNodeVisitor.INSTANCE );
         this.visitors.put( EvalConditionNode.class,
                            EvalConditionNodeVisitor.INSTANCE );
         this.visitors.put( FromNode.class,
