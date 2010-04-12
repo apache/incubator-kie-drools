@@ -296,7 +296,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.1866667"
      inkscape:cx="404.95622"
-     inkscape:cy="323.95587"
+     inkscape:cy="322.27048"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -329,7 +329,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -493,5 +493,5 @@
            y="450"
            style="font-size:24px;text-align:start;text-anchor:start" /></flowRegion><flowPara
          id="flowPara2990-2">This container of size 18 can not hold</flowPara><flowPara
-         id="flowPara3059">2 items with a total size of 14.</flowPara></flowRoot>  </g>
+         id="flowPara3059">these 2 items with a total size of 14.</flowPara></flowRoot>  </g>
 </svg>
