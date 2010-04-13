@@ -230,6 +230,8 @@ public class BRDRLPersistence implements BRLPersistence {
                     visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) pattern.getRightPattern());
                 } else if (pattern.getRightPattern() instanceof FromCompositeFactPattern) {
                     visitFromCompositeFactPattern((FromCompositeFactPattern) pattern.getRightPattern());
+                } else if (pattern.getRightPattern() instanceof FreeFormLine) {
+                    visitFreeFormLine((FreeFormLine) pattern.getRightPattern());
                 } else {
                     throw new IllegalArgumentException("Unuported pattern " + pattern.getRightPattern() + " for FROM COLLECT");
                 }
