@@ -147,12 +147,11 @@ public class SuggestionCompletionLoader
 
         SuggestionCompletionEngine sce = this.builder.getInstance();
 
-        populateDateEnums( dataEnums,
-                           sce );
+        populateDateEnums( dataEnums, sce );
 
         return sce;
     }
-
+    
     private void populateDateEnums(List<String> dataEnums,
                                    SuggestionCompletionEngine sce) {
         for ( Iterator<String> iter = dataEnums.iterator(); iter.hasNext(); ) {
@@ -287,8 +286,13 @@ public class SuggestionCompletionLoader
      */
     private void populateModelInfo(final PackageDescr pkgDescr,
                                    final List jars) {
-        for ( final Iterator it = pkgDescr.getImports().iterator(); it.hasNext(); ) {
-            final ImportDescr imp = (ImportDescr) it.next();
+        List<ImportDescr> imports = new ArrayList<ImportDescr>(pkgDescr.getImports());
+        imports.add(new ImportDescr("java.util.Set"));
+        imports.add(new ImportDescr("java.util.List"));
+        imports.add(new ImportDescr("java.util.Collection"));
+        imports.add(new ImportDescr("java.lang.Number"));
+        
+		for (ImportDescr imp : imports) {
             final String className = imp.getTarget();
             if ( className.endsWith( "*" ) ) {
                 this.errors.add( "Unable to introspect model for wild card imports (" + className + "). Please explicitly import each fact type you require." );
@@ -306,8 +310,9 @@ public class SuggestionCompletionLoader
                     } catch ( final IOException e ) {
                         this.errors.add( "Error while inspecting the class: " + className + ". The error was: " + e.getMessage() );
                     } catch ( NoClassDefFoundError e ) {
-                        this.errors.add( "Unable to find the class: " + e.getMessage().replace( '/',
-                                                                                                '.' ) + " which is required by: " + className + ". You may need to add more classes to the model." );
+						this.errors.add("Unable to find the class: " + e.getMessage().replace('/', '.')
+								+ " which is required by: " + className
+								+ ". You may need to add more classes to the model.");
                     }
                 }
             }
@@ -442,7 +447,7 @@ public class SuggestionCompletionLoader
         Set<String> fieldSet = new TreeSet<String>();
         fieldSet.addAll( inspector.getFieldNames().keySet() );
         // add the "this" field. This won't come out from the inspector
-        fieldSet.add( "this" );
+        fieldSet.add("this");
 
         this.builder.addFieldsForType( shortTypeName,
                                        removeIrrelevantFields( fieldSet ) );
@@ -526,7 +531,7 @@ public class SuggestionCompletionLoader
         this.builder.getInstance().addMethodInfo( shortTypeName,
                                                   methodInfos );
     }
-
+    
     String getShortNameOfClass(final String clazz) {
         return clazz.substring( clazz.lastIndexOf( '.' ) + 1 );
     }
