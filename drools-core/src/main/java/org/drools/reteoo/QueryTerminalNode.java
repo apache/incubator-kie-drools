@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.Arguments;
+import org.drools.base.ArrayElements;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.DisconnectedFactHandle;

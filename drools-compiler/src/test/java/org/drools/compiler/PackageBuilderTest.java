@@ -837,57 +837,6 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
-    public void testQuery() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-
-        final PackageDescr packageDescr = new PackageDescr( "p1" );
-        final QueryDescr queryDescr = new QueryDescr( "query1" );
-        queryDescr.setParameters( new String[]{"$type"} );
-        queryDescr.setParameterTypes( new String[]{"String"} );
-
-        packageDescr.addRule( queryDescr );
-
-        final AndDescr lhs = new AndDescr();
-        queryDescr.setLhs( lhs );
-
-        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                       "stilton" );
-        lhs.addDescr( pattern );
-
-        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$type" ) );
-
-        pattern.addConstraint( literalDescr );
-
-        queryDescr.setConsequence( "update(stilton);" );
-
-        builder.addPackage( packageDescr );
-
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
-
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        session.insert( new Cheese( "stilton",
-                                    15 ) );
-
-        QueryResults results = session.getQueryResults( "query1",
-                                                        new Object[]{"stilton"} );
-        assertEquals( 1,
-                      results.size() );
-        Object object = results.get( 0 ).get( 0 );
-        assertEquals( new Cheese( "stilton",
-                                  15 ),
-                      object );
-
-        results = session.getQueryResults( "query1",
-                                           new Object[]{"cheddar"} );
-    }
-
     public void testDuplicateRuleNames() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();

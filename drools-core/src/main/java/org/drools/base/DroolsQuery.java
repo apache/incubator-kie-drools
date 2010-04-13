@@ -22,7 +22,7 @@ import org.drools.rule.Variable;
  * limitations under the License.
  */
 
-public final class DroolsQuery extends Arguments {
+public final class DroolsQuery extends ArrayElements {
     private final String         name;
     private QueryResultCollector resultsCollector;
     private Query                query;

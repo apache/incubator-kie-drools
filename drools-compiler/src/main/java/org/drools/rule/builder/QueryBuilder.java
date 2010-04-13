@@ -1,6 +1,6 @@
 package org.drools.rule.builder;
 
-import org.drools.base.Arguments;
+import org.drools.base.ArrayElements;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
@@ -42,9 +42,9 @@ public class QueryBuilder implements EngineElementBuilder {
         // adds appropriate constraint to the pattern
         pattern.addConstraint( constraint );
 
-        ObjectType argsObjectType = new ClassObjectType( Arguments.class );
+        ObjectType argsObjectType = new ClassObjectType( ArrayElements.class );
         
-        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "arguments", null, true );
+        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null, true );
 
         String[] params = queryDescr.getParameters();
         String[] types = queryDescr.getParameterTypes();
@@ -60,7 +60,7 @@ public class QueryBuilder implements EngineElementBuilder {
                 ArrayElementReader reader = new ArrayElementReader( arrayExtractor,
                                         i,
                                         context.getDialect().getTypeResolver().resolveType( types[i] ) );
-                PatternBuilder.registerReadAccessor( context, argsObjectType, "arguments", reader );
+                PatternBuilder.registerReadAccessor( context, argsObjectType, "elements", reader );
                 
                 declr.setReadAccessor( reader );
                 

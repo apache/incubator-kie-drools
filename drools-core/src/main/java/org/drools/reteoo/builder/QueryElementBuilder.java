@@ -34,6 +34,9 @@ public class QueryElementBuilder
                       final RuleConditionElement rce) {
 
         final QueryElement qe = (QueryElement) rce;
+        
+        qe.getResultPattern().setOffset( context.getCurrentPatternOffset() );
+        
         utils.checkUnboundDeclarations( context,
                                         qe.getRequiredDeclarations() );
 

@@ -23,6 +23,20 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         super( partitionId );
         this.sink = sink;
     }
+    
+    public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
+                                              final RightTuple rightTuple,
+                                              boolean leftTupleMemoryEnabled) {
+        LeftTuple child = new LeftTuple( leftTuple,
+                                         rightTuple,
+                                         null,
+                                         null,
+                                         this.sink,
+                                         leftTupleMemoryEnabled );
+        
+        child.setLeftParentNext( leftTuple.firstChild );
+        leftTuple.firstChild = child;
+    }
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
@@ -136,6 +150,13 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( this.sink );
+    }
+    
+    public void doPropagateAssertLeftTuple(PropagationContext context,
+                                              InternalWorkingMemory workingMemory,
+                                              LeftTuple leftTuple,
+                                              LeftTupleSink sink) {
+        sink.assertLeftTuple( leftTuple, context, workingMemory );
     }
 
     /**

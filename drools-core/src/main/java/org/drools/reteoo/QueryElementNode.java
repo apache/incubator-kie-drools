@@ -2,16 +2,19 @@ package org.drools.reteoo;
 
 import org.drools.QueryResults;
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ArrayElements;
 import org.drools.base.DefaultQueryResultsCollector;
 import org.drools.base.DroolsQuery;
 import org.drools.base.QueryResultCollector;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.QueryElementFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
@@ -109,15 +112,16 @@ public class QueryElementNode extends LeftTupleSource
 
         int[] declIndexes = this.queryElement.getDeclIndexes();
 
-        for ( int i = 0, length = declIndexes.length; i > length; i++ ) {
+        for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
             Declaration declr = (Declaration) arguments[declIndexes[i]];
-            inputArgs[i] = declr.getValue( workingMemory,
+            inputArgs[declIndexes[i]] = declr.getValue( workingMemory,
                                            leftTuple.get( declr ).getObject() );
         }
 
         UnificationNodeQueryResultsCollector collector = new UnificationNodeQueryResultsCollector( leftTuple,
                                                                                                    this.queryElement.getVariables(),
-                                                                                                   this.sink );
+                                                                                                   this.sink,
+                                                                                                   this.tupleMemoryEnabled );
         
         DroolsQuery queryObject = new DroolsQuery( this.queryElement.getQueryName(),
                                                    inputArgs,
@@ -137,6 +141,16 @@ public class QueryElementNode extends LeftTupleSource
                                                                                                     queryObject ) );
 
         workingMemory.getFactHandleFactory().destroyFactHandle( handle );
+        
+        LeftTuple childLeftTuple = leftTuple.firstChild;
+        LeftTuple temp = null;
+        while ( childLeftTuple != null ) {
+            temp = childLeftTuple;
+            this.sink.doPropagateAssertLeftTuple( context, workingMemory, childLeftTuple, childLeftTuple.getLeftTupleSink() );
+            childLeftTuple = childLeftTuple.getLeftParentNext();
+            temp.setLeftParentNext( null );
+        }
+        leftTuple.firstChild = null;
 
     }
 
@@ -149,13 +163,17 @@ public class QueryElementNode extends LeftTupleSource
 
         private DroolsQuery               query;
         private int[]                     variables;
+        
+        private boolean                   tupleMemoryEnabled;
 
         public UnificationNodeQueryResultsCollector(LeftTuple leftTuple,
                                                     int[] variables,
-                                                    LeftTupleSinkPropagator sink) {
+                                                    LeftTupleSinkPropagator sink,
+                                                    boolean                   tupleMemoryEnabled) {
             this.leftTuple = leftTuple;
             this.variables = variables;
             this.sink = sink;
+            this.tupleMemoryEnabled = tupleMemoryEnabled;
         }
 
         public void setDroolsQuery(DroolsQuery query) {
@@ -166,27 +184,19 @@ public class QueryElementNode extends LeftTupleSource
                         PropagationContext context,
                         InternalWorkingMemory workingMemory) {
 
-            Object[] args = query.getArguments();
+            Object[] args = query.getElements();
             Object[] objects = new Object[this.variables.length];
 
             for ( int i = 0, length = this.variables.length; i < length; i++ ) {
                 objects[i] = ((Variable) args[ this.variables[i]] ).getValue();
-            }
+            }        
 
-            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( objects,
-                                                                                                  null, // set this to null, otherwise it uses the driver fact's entrypoint
-                                                                                                  workingMemory );
-
-            RightTuple rightTuple = new RightTuple( handle,
-                                                    null );
-
-            this.sink.propagateAssertLeftTuple( this.leftTuple,
-                                                rightTuple,
-                                                null,
-                                                null,
-                                                context,
-                                                workingMemory,
-                                                false );
+            QueryElementFactHandle handle = new QueryElementFactHandle(objects );
+            RightTuple rightTuple = new RightTuple( handle ); 
+            
+            this.sink.createChildLeftTuplesforQuery( this.leftTuple, 
+                                                     rightTuple, 
+                                                     this.tupleMemoryEnabled );
         }
 
     }
