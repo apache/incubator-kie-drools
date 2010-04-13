@@ -30,6 +30,7 @@ import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.QueryElementNode.UnificationNodeQueryResultsCollector;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
+import org.drools.rule.Pattern;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.rule.Variable;
@@ -84,11 +85,14 @@ public class QueryElementNodeTest extends DroolsTestCase {
     }
 
     public void test1() {
-        QueryElement qe = new QueryElement( "queryName1",
+        Pattern p = new Pattern();
+        QueryElement qe = new QueryElement( p,
+                                            "queryName1",
                                             new Object[]{new Variable(), "x1", new Variable(), "x3", "x4", new Variable(),"x6",},
                                             new Declaration[0],
                                             new int[0],
                                             new int[] { 0, 2, 5 } );
+       
 
         final MockTupleSource source = new MockTupleSource( 12 );
 
@@ -155,7 +159,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
                 DroolsQuery query = ( DroolsQuery ) object;
                 UnificationNodeQueryResultsCollector collector = ( UnificationNodeQueryResultsCollector ) query.getQueryResultCollector();
                 for ( int i = 0; i < 3; i++ ) {
-                    Object[] args = query.getArguments();
+                    Object[] args = query.getElements();
                     ((Variable)args[0]).setValue( "string_0_" + i );
                     ((Variable)args[2]).setValue( "string_2_" + i );
                     ((Variable)args[5]).setValue( "string_5_" + i );

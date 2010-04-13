@@ -47,7 +47,7 @@ public class DefaultQueryResultsCollector
         DroolsQuery query = (DroolsQuery) handle.getObject();
 
         // Copy of it's arguments for unification variables.
-        Object[] args = query.getArguments();
+        Object[] args = query.getElements();
         Object[] newArgs = new Object[args.length];
         for ( int i = 0, length = args.length; i < length; i++ ) {
             if ( args[i] instanceof Variable ) {
@@ -60,7 +60,7 @@ public class DefaultQueryResultsCollector
                                                                 handle.getIdentityHashCode(),
                                                                 handle.getObjectHashCode(),
                                                                 handle.getRecency(),
-                                                                new Arguments( newArgs ) );
+                                                                new ArrayElements( newArgs ) );
 
         this.results.add( handles );
 

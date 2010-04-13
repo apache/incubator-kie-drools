@@ -132,8 +132,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                           className,
                           map,
                           context.getRule(),
-                          ruleDescr );
-
+                          ruleDescr );      
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
     }

@@ -68,8 +68,10 @@ import org.drools.rule.OrConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.PredicateConstraint;
+import org.drools.rule.Query;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
+import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
@@ -144,11 +146,24 @@ public class PatternBuilder
                 objectType = new ClassObjectType( userProvidedClass,
                                                   isEvent );
             } catch ( final ClassNotFoundException e ) {
+                // swallow as we'll do another check in a moment and then record the problem
+            }
+        }
+        
+        // lets see if it maps to a query
+        if ( objectType == null ) {
+            Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );            
+            if ( rule != null && rule instanceof Query ) {
+                // it's a query so delegate to the QueryElementBuilder
+                QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                return qeBuilder.build( context, descr, prefixPattern );
+            } else { 
+                // this isn't a query either, so log an error
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               patternDescr,
                                                               null,
                                                               "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
-                return null;
+                return null;                
             }
         }
 

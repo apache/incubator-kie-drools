@@ -12,6 +12,8 @@ import java.util.Map;
 public class QueryElement extends ConditionalElement
     implements
     Externalizable {
+    
+    private Pattern       resultPattern;
     private String        queryName;
     private Object[]      arguments;
     private int[]         declIndexes;
@@ -19,12 +21,14 @@ public class QueryElement extends ConditionalElement
 
     private Declaration[] requiredDeclarations;
 
-    public QueryElement(String queryName,
+    public QueryElement(Pattern       resultPattern,
+                        String queryName,
                         Object[] arguments,
                         Declaration[] requiredDeclarations,
                         int[] declIndexes,
                         int[] variables) {
         super();
+        this.resultPattern = resultPattern;
         this.queryName = queryName;
         this.arguments = arguments;
         this.requiredDeclarations = requiredDeclarations;
@@ -49,15 +53,19 @@ public class QueryElement extends ConditionalElement
     }
 
     public Map getInnerDeclarations() {
-        return Collections.EMPTY_MAP;
+        return this.resultPattern.getInnerDeclarations();
     }
 
     public Map getOuterDeclarations() {
-        return Collections.EMPTY_MAP;
+        return this.resultPattern.getOuterDeclarations();
     }
 
     public List getNestedElements() {
         return Collections.EMPTY_LIST;
+    }
+    
+    public Pattern getResultPattern() {
+        return this.resultPattern;
     }
 
     public boolean isPatternScopeDelimiter() {
@@ -72,7 +80,7 @@ public class QueryElement extends ConditionalElement
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return null;
+        return this.resultPattern.resolveDeclaration( identifier );
     }
 
     public void replaceDeclaration(Declaration declaration,
@@ -84,41 +92,14 @@ public class QueryElement extends ConditionalElement
         }
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode( arguments );
-        result = prime * result + Arrays.hashCode( declIndexes );
-        result = prime * result + ((queryName == null) ? 0 : queryName.hashCode());
-        result = prime * result + Arrays.hashCode( variables );
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        QueryElement other = (QueryElement) obj;
-        if ( !Arrays.equals( arguments,
-                             other.arguments ) ) return false;
-        if ( !Arrays.equals( declIndexes,
-                             other.declIndexes ) ) return false;
-        if ( queryName == null ) {
-            if ( other.queryName != null ) return false;
-        } else if ( !queryName.equals( other.queryName ) ) return false;
-        if ( !Arrays.equals( variables,
-                             other.variables ) ) return false;
-        return true;
-    }
 
     @Override
     public Object clone() {
-        return new QueryElement( queryName, arguments, requiredDeclarations, declIndexes, variables );
+        return new QueryElement( resultPattern, queryName, arguments, requiredDeclarations, declIndexes, variables );
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
+       out.writeObject( this.resultPattern );
        out.writeObject( this.queryName );
        out.writeObject( this.arguments );
        out.writeObject( this.requiredDeclarations );
@@ -128,6 +109,7 @@ public class QueryElement extends ConditionalElement
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        this.resultPattern = ( Pattern ) in.readObject();
         this.queryName = (String) in.readObject();
         this.arguments = (Object[]) in.readObject();
         this.requiredDeclarations = ( Declaration[] ) in.readObject();

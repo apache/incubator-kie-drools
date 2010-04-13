@@ -10,6 +10,11 @@ import org.drools.spi.PropagationContext;
 public interface LeftTupleSinkPropagator
     extends
     Externalizable {
+    
+    public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
+                                              final RightTuple rightTuple,
+                                              boolean leftTupleMemoryEnabled);
+    
     public void propagateAssertLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
                                          LeftTuple currentLeftChild, // insert new tuple before this child in the child list
@@ -40,6 +45,11 @@ public interface LeftTupleSinkPropagator
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory);
 
+    public void doPropagateAssertLeftTuple(PropagationContext context,
+                                              InternalWorkingMemory workingMemory,
+                                              LeftTuple leftTuple,
+                                              LeftTupleSink sink);
+    
     public BaseNode getMatchingNode(BaseNode candidate);
 
     public LeftTupleSink[] getSinks();

@@ -29,6 +29,23 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     public void removeTupleSink(final LeftTupleSink sink) {
         this.sinks.remove( (LeftTupleSinkNode) sink );
     }
+    
+    public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
+                                              final RightTuple rightTuple,
+                                              boolean leftTupleMemoryEnabled) {
+        
+        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            LeftTuple child = new LeftTuple( leftTuple,
+                                             rightTuple,
+                                             null,
+                                             null,
+                                             sink,
+                                             leftTupleMemoryEnabled );
+            
+            child.setLeftParentNext( leftTuple.firstChild );
+            leftTuple.firstChild = child;
+        }
+    }
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
@@ -163,6 +180,13 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         super.writeExternal( out );
         out.writeObject( this.sinks );
     }
+    
+    public void doPropagateAssertLeftTuple(PropagationContext context,
+                                           InternalWorkingMemory workingMemory,
+                                           LeftTuple leftTuple,
+                                           LeftTupleSink sink) {
+     sink.assertLeftTuple( leftTuple, context, workingMemory );
+ }    
 
     /**
      * This is a hook method that may be overriden by subclasses. Please keep it
