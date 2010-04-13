@@ -304,14 +304,17 @@ public class NotNode extends BetaNode {
 
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
+                                 InternalWorkingMemory workingMemory) {        
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );               
         if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+            
+            //normally do this at the end, but as we are exiting early, make sure the buckets are still correct.
+            memory.getRightTupleMemory().remove( rightTuple );
+            memory.getRightTupleMemory().add( rightTuple );               
             return;
         }
         
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );               
-
         // TODO: wtd with behaviours?
         //        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
         //                                         rightTuple,
