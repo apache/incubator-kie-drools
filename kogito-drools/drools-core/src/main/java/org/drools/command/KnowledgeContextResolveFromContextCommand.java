@@ -1,6 +1,7 @@
 package org.drools.command;
 
 import org.drools.KnowledgeBase;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
@@ -15,6 +16,7 @@ public class KnowledgeContextResolveFromContextCommand
     private String  kbuilderIdentifier;
     private String  statefulKsessionName;
     private String  kresults;
+    private String  workingMemoryEntryPointName;
     private Command command;
 
     public KnowledgeContextResolveFromContextCommand(Command command,
@@ -28,12 +30,22 @@ public class KnowledgeContextResolveFromContextCommand
         this.statefulKsessionName = statefulKsessionName;
         this.kresults = kresults;
     }
+     public KnowledgeContextResolveFromContextCommand(Command command,
+                                                     String kbuilderIdentifier,
+                                                     String kbaseIdentifier,
+                                                     String statefulKsessionName,
+                                                     String workingMemoryEntryPointName,
+                                                     String kresults) {
+        this(command, kbuilderIdentifier, kbaseIdentifier, statefulKsessionName, kresults);
+        this.workingMemoryEntryPointName = workingMemoryEntryPointName;
+    }
 
     public Object execute(Context context) {
         KnowledgeCommandContext kcContext = new KnowledgeCommandContext( context,
                                                                          (KnowledgeBuilder) context.get( this.kbuilderIdentifier ),
                                                                          (KnowledgeBase) context.get( this.kbaseIdentifier ),
                                                                          (StatefulKnowledgeSession) context.get( this.statefulKsessionName ),
+                                                                         (WorkingMemoryEntryPoint) context.get(this.workingMemoryEntryPointName),
                                                                          (ExecutionResultImpl) context.get( this.kresults ) );
         return ((GenericCommand) command).execute( kcContext );
     }
