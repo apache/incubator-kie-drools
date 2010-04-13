@@ -57,7 +57,7 @@ public class ClassFieldInspector {
     private       Class< ? >              classUnderInspection = null;
 
     /**
-     * @param classUnderInspection The class sthat the fields to be shadowed are extracted for.
+     * @param classUnderInspection The class that the fields to be shadowed are extracted for.
      * @throws IOException
      */
     public ClassFieldInspector(final Class< ? > classUnderInspection) throws IOException {
