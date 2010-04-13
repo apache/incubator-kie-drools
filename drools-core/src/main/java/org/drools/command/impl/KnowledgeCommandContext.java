@@ -7,6 +7,7 @@ import org.drools.command.ContextManager;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class KnowledgeCommandContext
     implements
@@ -15,6 +16,7 @@ public class KnowledgeCommandContext
     private KnowledgeBuilder         kbuilder;
     private KnowledgeBase            kbase;
     private StatefulKnowledgeSession statefulKsession;
+    private WorkingMemoryEntryPoint  workingMemoryEntryPoint;
     private ExecutionResults         kresults;
 
     public KnowledgeCommandContext(Context context,
@@ -27,6 +29,15 @@ public class KnowledgeCommandContext
         this.kbase = kbase;
         this.statefulKsession = statefulKsession;
         this.kresults = kresults;
+    }
+    public KnowledgeCommandContext(Context context,
+                                   KnowledgeBuilder kbuilder,
+                                   KnowledgeBase kbase,
+                                   StatefulKnowledgeSession statefulKsession,
+                                   WorkingMemoryEntryPoint  workingMemoryEntryPoint,
+                                   ExecutionResults         kresults) {
+        this(context, kbuilder, kbase, statefulKsession, kresults);
+        this.workingMemoryEntryPoint = workingMemoryEntryPoint;
     }
 
     public KnowledgeBuilder getKnowledgeBuilder() {
@@ -48,6 +59,15 @@ public class KnowledgeCommandContext
     public ExecutionResults getExecutionResults() {
         return this.kresults;
     }
+
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint() {
+        return workingMemoryEntryPoint;
+    }
+
+    public void setWorkingMemoryEntryPoint(WorkingMemoryEntryPoint workingMemoryEntryPoint) {
+        this.workingMemoryEntryPoint = workingMemoryEntryPoint;
+    }
+    
     
     public ContextManager getContextManager() {
         return context.getContextManager();

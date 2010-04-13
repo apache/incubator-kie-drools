@@ -68,9 +68,11 @@ public class EventFactHandle extends DefaultFactHandle {
 
     /**
      * @see FactHandle
+     * 1: is used for EventFactHandle
      */
     public String toExternalForm() {
-        return "[event fid:" + getId() + ":" + getRecency() + ":" + getObject() + "]";
+        //return "[event fid:" + getId() + ":" + getRecency() + ":" + getObject() + "]";
+        return "1:" + this.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency();
     }
 
     /**
