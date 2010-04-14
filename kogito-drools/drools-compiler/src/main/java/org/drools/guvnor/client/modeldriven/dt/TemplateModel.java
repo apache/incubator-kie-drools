@@ -94,30 +94,6 @@ public class TemplateModel extends RuleModel implements PortableObject {
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		new RuleModelVisitor(result).visit(this);
 		return result;
-//        for (IPattern pattern : this.lhs) {
-//            if (pattern instanceof FactPattern) {
-//                FactPattern fact = (FactPattern) pattern;
-//                for (FieldConstraint fc : fact.getFieldConstraints()) {
-//                    if (fc instanceof ISingleFieldConstraint) {
-//                        ISingleFieldConstraint con = (ISingleFieldConstraint) fc;
-//                        if (ISingleFieldConstraint.TYPE_TEMPLATE == con.constraintValueType && !result.containsKey(con.value)) {
-//                            result.put(con.value, result.size());
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        for (IAction action : this.rhs) {
-//            if (action instanceof ActionInsertFact) {
-//                ActionInsertFact fact = (ActionInsertFact) action;
-//                for (ActionFieldValue afv : fact.fieldValues) {
-//                	if (afv.nature == ActionFieldValue.TYPE_TEMPLATE && !result.containsKey(afv.value)) {
-//                		result.put(afv.value, result.size());
-//                	}
-//                }
-//            }
-//        }
-//        return result;
 	}
 
 	public Map<String, List<String>> getTable() {
@@ -170,10 +146,10 @@ public class TemplateModel extends RuleModel implements PortableObject {
 				visitFromCompositeFactPattern((FromCompositeFactPattern) o);
 			} else if (o instanceof FreeFormLine) {
 				visitFreeFormLine((FreeFormLine) o);
-			} else if (o instanceof FromCollectCompositeFactPattern) {
-				visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) o);
 			} else if (o instanceof FromAccumulateCompositeFactPattern) {
 				visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) o);
+			} else if (o instanceof FromCollectCompositeFactPattern) {
+				visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) o);
 			} else if (o instanceof DSLSentence) {
 				visitDSLSentence((DSLSentence) o);
 			} else if (o instanceof ActionFieldList) {
@@ -236,6 +212,7 @@ public class TemplateModel extends RuleModel implements PortableObject {
 
 		private void visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
         	visit(pattern.getFactPattern());
+        	parseStringPattern(pattern.getExpression().getText());
         }
 
 		private void visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
