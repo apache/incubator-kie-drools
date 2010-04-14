@@ -691,7 +691,10 @@ public class SuggestionCompletionEngine implements PortableObject {
     }
 
     private ModelField getField(String modelClassName, String fieldName){
-        ModelField[] fields = this.getModelFields().get(modelClassName);
+
+        String shortName = this.getFactNameFromType(modelClassName );
+
+        ModelField[] fields = this.getModelFields().get(shortName);
 
         if (fields == null){
             return null;
@@ -709,11 +712,13 @@ public class SuggestionCompletionEngine implements PortableObject {
     public String[] getModelFields(FieldAccessorsAndMutators accessorOrMutator,
                                    String modelClassName) {
 
-        if ( !this.getModelFields().containsKey( modelClassName ) ) {
+        String shortName = this.getFactNameFromType(modelClassName );
+
+        if ( !this.getModelFields().containsKey( shortName) ) {
             return new String[0];
         }
 
-        ModelField[] fields = this.getModelFields().get( modelClassName );
+        ModelField[] fields = this.getModelFields().get( shortName );
 
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add( "this" );
@@ -723,7 +728,7 @@ public class SuggestionCompletionEngine implements PortableObject {
             if ( fields[i].getClassType() == FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS ) {
                 fieldNames.add( fieldName );
             } else if ( FieldAccessorsAndMutators.compare( accessorOrMutator,
-                                                           this.accessorsAndMutators.get( modelClassName + "." + fieldName ) ) ) {
+                                                           this.accessorsAndMutators.get( shortName + "." + fieldName ) ) ) {
                 fieldNames.add( fieldName );
             }
         }
@@ -733,11 +738,13 @@ public class SuggestionCompletionEngine implements PortableObject {
 
     public String[] getModelFields(String modelClassName){
 
-        if (!this.getModelFields().containsKey(modelClassName)){
+        String shortName = this.getFactNameFromType(modelClassName );
+
+        if (!this.getModelFields().containsKey(shortName)){
             return new String[0];
         }
 
-        ModelField[] fields = this.getModelFields().get(modelClassName);
+        ModelField[] fields = this.getModelFields().get(shortName);
 
         String[] fieldNames = new String[fields.length];
 
