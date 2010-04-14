@@ -17,6 +17,7 @@
 
 package org.drools.builder;
 
+import java.util.Map;
 import org.drools.runtime.CommandExecutor;
 
 /**
@@ -26,4 +27,5 @@ import org.drools.runtime.CommandExecutor;
 public interface DirectoryLookupFactoryService {
     public void register(String key, CommandExecutor value);
     public CommandExecutor lookup(String key);
+    public Map<String, Map<String, String>> getDirectoryMap();
 }
