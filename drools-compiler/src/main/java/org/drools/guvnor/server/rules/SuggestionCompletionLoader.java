@@ -259,19 +259,19 @@ public class SuggestionCompletionLoader
             final GlobalDescr global = (GlobalDescr) it.next();
             try {
                 final String shortTypeName = getShortNameOfClass( global.getType() );
+                final Class<?> clazz = loadClass( global.getType(), jars );
                 if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
-                    final Class clazz = loadClass( global.getType(),
-                                                   jars );
+                    
                     loadClassFields( clazz,
                                      shortTypeName );
 
                     this.builder.addGlobalType( global.getIdentifier(),
                                                 shortTypeName );
-                    if ( clazz != null && Collection.class.isAssignableFrom( clazz ) ) {
-                        this.builder.addGlobalCollection( global.getIdentifier() );
-                    }
+                    
                 }
-
+                if ( clazz != null && Collection.class.isAssignableFrom( clazz ) ) {
+                    this.builder.addGlobalCollection( global.getIdentifier() );
+                }
                 this.builder.addGlobalType( global.getIdentifier(),
                                             shortTypeName );
             } catch ( final IOException e ) {
