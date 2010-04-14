@@ -455,13 +455,7 @@ public class BRDRLPersistence implements BRLPersistence {
                     }
                     break;
                 case ISingleFieldConstraint.TYPE_TEMPLATE:
-                	if (operator.equals("in")) {
-                        buf.append(value);
-                    } else {
-                        buf.append("\"@{");
-                        buf.append(value);
-                        buf.append("}\"");
-                    }
+                	buf.append("@{").append(value).append("}");
                 	break;
                 default:
                     buf.append(value);
@@ -624,6 +618,8 @@ public class BRDRLPersistence implements BRLPersistence {
                 buf.append("( ");
                 if (fieldValues[i].isFormula()) {
                     buf.append(fieldValues[i].value.substring(1));
+                } else if (fieldValues[i].nature == ActionFieldValue.TYPE_TEMPLATE) {
+                	buf.append("@{").append(fieldValues[i].value).append("}");
                 } else if (SuggestionCompletionEngine.TYPE_STRING.equals(fieldValues[i].type)) {
                     buf.append("\"");
                     buf.append(generateFieldValue(fieldValues[i]));
@@ -636,9 +632,6 @@ public class BRDRLPersistence implements BRLPersistence {
         }
 
 		private String generateFieldValue(final ActionFieldValue fieldValue) {
-			if (fieldValue.nature == ActionFieldValue.TYPE_TEMPLATE) {
-				return "@{" + fieldValue.value + "}";
-			}
 			return fieldValue.value;
 		}
 
