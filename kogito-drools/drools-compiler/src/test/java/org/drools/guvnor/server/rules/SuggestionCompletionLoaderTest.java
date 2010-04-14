@@ -1,12 +1,17 @@
 package org.drools.guvnor.server.rules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
+import org.drools.guvnor.client.modeldriven.FactTypeFilter;
 import org.drools.guvnor.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.lang.descr.ImportDescr;
 
 public class SuggestionCompletionLoaderTest extends TestCase {
 
@@ -14,6 +19,71 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person", new ArrayList(), new ArrayList() );
         assertNotNull(eng);
+
+    }
+
+    public void testSuggestionCompLoaderWithExtraImportProviders() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        loader.addExternalImportDescrProvider(new SuggestionCompletionLoader.ExternalImportDescrProvider() {
+
+            public Set<ImportDescr> getImportDescrs() {
+                return new HashSet<ImportDescr>(){
+                    {
+                        add(new ImportDescr("java.util.List"));
+                        add(new ImportDescr("java.util.Set"));
+                    }
+                };
+            }
+        });
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person", new ArrayList(), new ArrayList() );
+        assertNotNull(eng);
+
+        assertEquals(3, eng.getFactTypes().length);
+        List<String> factTypes = Arrays.asList(eng.getFactTypes());
+        assertTrue(factTypes.contains("List"));
+        assertTrue(factTypes.contains("Set"));
+        assertTrue(factTypes.contains("Person"));
+
+        eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end", new ArrayList(), new ArrayList());
+        assertEquals(5, eng.getFactTypes().length);
+        factTypes = Arrays.asList(eng.getFactTypes());
+        assertTrue(factTypes.contains("List"));
+        assertTrue(factTypes.contains("Set"));
+        assertTrue(factTypes.contains("Person"));
+        assertTrue(factTypes.contains("GenBean"));
+        assertTrue(factTypes.contains("GenBean2"));
+
+    }
+
+    public void testSuggestionCompLoaderWithExtraImportProvidersAndFilters() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        loader.addExternalImportDescrProvider(new SuggestionCompletionLoader.ExternalImportDescrProvider() {
+
+            public Set<ImportDescr> getImportDescrs() {
+                return new HashSet<ImportDescr>(){
+                    {
+                        add(new ImportDescr("java.util.List"));
+                        add(new ImportDescr("java.util.Set"));
+                    }
+                };
+            }
+        });
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end", new ArrayList(), new ArrayList());
+        eng.setFactTypeFilter(new FactTypeFilter() {
+
+            public boolean filter(String originalFact) {
+                return originalFact.equals("List") || originalFact.equals("GenBean2");
+            }
+        });
+        eng.setFilteringFacts(true);
+
+        assertNotNull(eng);
+
+        assertEquals(3, eng.getFactTypes().length);
+        List<String> factTypes = Arrays.asList(eng.getFactTypes());
+        assertTrue(factTypes.contains("Set"));
+        assertTrue(factTypes.contains("Person"));
+        assertTrue(factTypes.contains("GenBean"));
 
     }
 
@@ -45,7 +115,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals(SuggestionCompletionEngine.TYPE_COLLECTION,eng.getFieldType( "SomeFact", "factListString"));
         assertEquals("String",eng.getParametricFieldType("SomeFact", "factListString"));
     }
-    
+
     public void testLoadDifferentMethodTypes() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact", new ArrayList(), new ArrayList() );
@@ -61,9 +131,9 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertFalse(loader.hasErrors());
         assertNotNull(eng);
 
-        assertEquals(6, eng.getFactTypes().length); //Collection, Set, List, Number are always present
-        assertEquals("GenBean", eng.getFactTypes()[1]);
-        assertEquals("GenBean2", eng.getFactTypes()[2]);
+        assertEquals(2, eng.getFactTypes().length);
+        assertEquals("GenBean", eng.getFactTypes()[0]);
+        assertEquals("GenBean2", eng.getFactTypes()[1]);
 
         assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType( "GenBean", "id" ));
         assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "GenBean", "name"));
@@ -114,7 +184,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("anEnum", fields[2]);
 	    assertEquals("bigDecimal", fields[3]);
     }
-    
+
     public void testEnumFields() throws Exception {
 	    SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 	    SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact", new ArrayList(), new ArrayList() );
@@ -132,10 +202,10 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact\n import org.drools.Person", new ArrayList(), new ArrayList() );
         assertNotNull(eng);
         String[] facts  = eng.getFactTypes();
-        assertEquals(6, facts.length);
+        assertEquals(2, facts.length);
 
-        assertEquals("Person", facts[3]);
-        assertEquals("SomeFact", facts[5]);
+        assertEquals("Person", facts[0]);
+        assertEquals("SomeFact", facts[1]);
     }
 
     public void testTypeDeclarations() throws Exception {
