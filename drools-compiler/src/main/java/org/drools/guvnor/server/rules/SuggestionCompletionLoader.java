@@ -77,6 +77,20 @@ public class SuggestionCompletionLoader
     final ClassTypeResolver                         resolver;
 
     /**
+     * Interface used for add external ImportDescr added to SuggestionCompletionEngine
+     * Use this to add Fact Types that are not imported by the package.
+     * @author esteban.aliverti@gmail.com
+     */
+    public static interface ExternalImportDescrProvider{
+        public Set<ImportDescr> getImportDescrs();
+    }
+
+    /**
+     * List of external ImportDescr providers.
+     */
+    private List<ExternalImportDescrProvider> externalImportDescrProviders = new ArrayList<ExternalImportDescrProvider>();
+
+    /**
      * This uses the current classes classloader as a base, and jars can be
      * added.
      */
@@ -151,7 +165,7 @@ public class SuggestionCompletionLoader
 
         return sce;
     }
-    
+
     private void populateDateEnums(List<String> dataEnums,
                                    SuggestionCompletionEngine sce) {
         for ( Iterator<String> iter = dataEnums.iterator(); iter.hasNext(); ) {
@@ -261,13 +275,13 @@ public class SuggestionCompletionLoader
                 final String shortTypeName = getShortNameOfClass( global.getType() );
                 final Class<?> clazz = loadClass( global.getType(), jars );
                 if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
-                    
+
                     loadClassFields( clazz,
                                      shortTypeName );
 
                     this.builder.addGlobalType( global.getIdentifier(),
                                                 shortTypeName );
-                    
+
                 }
                 if ( clazz != null && Collection.class.isAssignableFrom( clazz ) ) {
                     this.builder.addGlobalCollection( global.getIdentifier() );
@@ -287,11 +301,15 @@ public class SuggestionCompletionLoader
     private void populateModelInfo(final PackageDescr pkgDescr,
                                    final List jars) {
         List<ImportDescr> imports = new ArrayList<ImportDescr>(pkgDescr.getImports());
-        imports.add(new ImportDescr("java.util.Set"));
-        imports.add(new ImportDescr("java.util.List"));
-        imports.add(new ImportDescr("java.util.Collection"));
-        imports.add(new ImportDescr("java.lang.Number"));
-        
+
+        //Adds any external import 
+        if (this.externalImportDescrProviders != null){
+            for (ExternalImportDescrProvider externalImportDescrProvider : this.externalImportDescrProviders) {
+                imports.addAll(externalImportDescrProvider.getImportDescrs());
+            }
+        }
+
+
 		for (ImportDescr imp : imports) {
             final String className = imp.getTarget();
             if ( className.endsWith( "*" ) ) {
@@ -380,7 +398,7 @@ public class SuggestionCompletionLoader
             final String factType = templ.getName();
             this.builder.addFactType( factType,
                                       FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS );
-            
+
 
             final String[] fields = new String[templ.getFields().size()];
 
@@ -531,7 +549,7 @@ public class SuggestionCompletionLoader
         this.builder.getInstance().addMethodInfo( shortTypeName,
                                                   methodInfos );
     }
-    
+
     String getShortNameOfClass(final String clazz) {
         return clazz.substring( clazz.lastIndexOf( '.' ) + 1 );
     }
@@ -606,6 +624,19 @@ public class SuggestionCompletionLoader
             }
         }
         return fieldType;
+    }
+
+    public void addExternalImportDescrProvider(ExternalImportDescrProvider provider){
+        this.externalImportDescrProviders.add(provider);
+    }
+
+    public Set<ImportDescr> getExternalImportDescrs(){
+        Set<ImportDescr> result = new HashSet<ImportDescr>();
+        for (ExternalImportDescrProvider externalImportDescrProvider : this.externalImportDescrProviders) {
+            result.addAll(externalImportDescrProvider.getImportDescrs());
+        }
+
+        return result;
     }
 
     /**
