@@ -142,14 +142,14 @@ public class TemplateModel extends RuleModel implements PortableObject {
 				visitSingleFieldConstraint((SingleFieldConstraint) o);
 			} else if (o instanceof CompositeFactPattern) {
 				visitCompositeFactPattern((CompositeFactPattern) o);
-			} else if (o instanceof FromCompositeFactPattern) {
-				visitFromCompositeFactPattern((FromCompositeFactPattern) o);
 			} else if (o instanceof FreeFormLine) {
 				visitFreeFormLine((FreeFormLine) o);
 			} else if (o instanceof FromAccumulateCompositeFactPattern) {
 				visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) o);
 			} else if (o instanceof FromCollectCompositeFactPattern) {
 				visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) o);
+			} else if (o instanceof FromCompositeFactPattern) {
+				visitFromCompositeFactPattern((FromCompositeFactPattern) o);
 			} else if (o instanceof DSLSentence) {
 				visitDSLSentence((DSLSentence) o);
 			} else if (o instanceof ActionFieldList) {
