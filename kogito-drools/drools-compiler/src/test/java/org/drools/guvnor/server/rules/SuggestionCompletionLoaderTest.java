@@ -61,9 +61,9 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertFalse(loader.hasErrors());
         assertNotNull(eng);
 
-        assertEquals(2, eng.getFactTypes().length);
-        assertEquals("GenBean", eng.getFactTypes()[0]);
-        assertEquals("GenBean2", eng.getFactTypes()[1]);
+        assertEquals(6, eng.getFactTypes().length); //Collection, Set, List, Number are always present
+        assertEquals("GenBean", eng.getFactTypes()[1]);
+        assertEquals("GenBean2", eng.getFactTypes()[2]);
 
         assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType( "GenBean", "id" ));
         assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "GenBean", "name"));
@@ -132,10 +132,10 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact\n import org.drools.Person", new ArrayList(), new ArrayList() );
         assertNotNull(eng);
         String[] facts  = eng.getFactTypes();
-        assertEquals(2, facts.length);
+        assertEquals(6, facts.length);
 
-        assertEquals("Person", facts[0]);
-        assertEquals("SomeFact", facts[1]);
+        assertEquals("Person", facts[3]);
+        assertEquals("SomeFact", facts[5]);
     }
 
     public void testTypeDeclarations() throws Exception {
