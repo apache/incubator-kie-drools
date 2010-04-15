@@ -25,8 +25,8 @@ import java.util.List;
 import org.drools.core.util.StringUtils;
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
+import org.drools.util.codec.Base64;
 
-import org.apache.commons.codec.binary.Base64;
 
 
 /**

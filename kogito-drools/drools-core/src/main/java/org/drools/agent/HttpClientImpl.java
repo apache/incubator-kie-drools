@@ -8,8 +8,8 @@ import java.net.URLConnection;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
+import org.drools.util.codec.Base64;
 
-import org.apache.commons.codec.binary.Base64;
 
 public class HttpClientImpl
     implements
