@@ -75,7 +75,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                                              ClassNotFoundException {
         String name = desc.getName();
         try {
-            return Class.forName(name, false, this.ruleBase.getRootClassLoader());
+            return Class.forName(name, false, (this.ruleBase == null)?null:this.ruleBase.getRootClassLoader());
         } catch (ClassNotFoundException ex) {
             return super.resolveClass( desc );
         }        
