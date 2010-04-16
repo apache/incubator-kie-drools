@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
@@ -191,5 +192,23 @@ public abstract class ObjectSource extends BaseNode
 
     public boolean isInUse() {
         return this.sink.size() > 0;
+    }
+    
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
+        if ( !node.isInUse() ) {
+            removeObjectSink( (ObjectSink) node );
+        }
+        if ( !this.isInUse() && this instanceof NodeMemory ) {
+            for( InternalWorkingMemory workingMemory : workingMemories ) {
+                workingMemory.clearNodeMemory( (NodeMemory) this );
+            }
+        }
+        this.source.remove( context,
+                            builder,
+                            this,
+                            workingMemories );
     }
 }

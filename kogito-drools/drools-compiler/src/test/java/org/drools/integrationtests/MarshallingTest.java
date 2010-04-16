@@ -1120,9 +1120,9 @@ public class MarshallingTest extends TestCase {
         assertEquals( 2,
                       nodes.size() );
         assertEquals( "InitialFact",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 5 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
 
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -1171,9 +1171,9 @@ public class MarshallingTest extends TestCase {
         assertEquals( 2,
                       nodes.size() );
         assertEquals( "InitialFact",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 5 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
 
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -1230,9 +1230,9 @@ public class MarshallingTest extends TestCase {
         assertEquals( 2,
                       nodes.size() );
         assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 5 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
 
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -1278,13 +1278,13 @@ public class MarshallingTest extends TestCase {
         assertEquals( 4,
                       nodes.size() );
         assertEquals( "Cheese",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 6 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 4 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "JoinNode",
-                      nodes.get( 7 ).getClass().getSimpleName() );
+                      nodes.get( 5 ).getClass().getSimpleName() );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 8 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 6 )).getRule().getName() );
 
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -1336,7 +1336,6 @@ public class MarshallingTest extends TestCase {
         r2d2.setCheese( brie );
         session.insert( r2d2 );
 
-        System.out.println( "\n\njointpattern" );
         session = getSerialisedStatefulSession( session );
 
         session.fireAllRules();

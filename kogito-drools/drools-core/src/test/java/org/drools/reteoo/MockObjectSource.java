@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
@@ -90,12 +89,6 @@ public class MockObjectSource extends ObjectSource {
                                context,
                                workingMemory );
         }
-    }
-
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final BaseNode node,
-                            final InternalWorkingMemory[] workingMemories) {
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {

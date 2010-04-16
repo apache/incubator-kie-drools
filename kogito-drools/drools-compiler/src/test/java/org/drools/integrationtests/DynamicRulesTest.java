@@ -1,7 +1,12 @@
 package org.drools.integrationtests;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -23,7 +28,6 @@ import org.drools.OrderItem;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.Precondition;
-import org.drools.Primitives;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -35,15 +39,16 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.marshalling.MarshallerFactory;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -1026,29 +1031,31 @@ public class DynamicRulesTest extends TestCase {
                          ResourceType.DRL );
             Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
             KnowledgePackage pkg = pkgs.iterator().next();
-            
+
             // serialize out
             byte[] out = DroolsStreamUtils.streamOut( ((KnowledgePackageImp) pkg).pkg );
 
             // adding original packages to a kbase just to make sure they are fine
-            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader1 );
+            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+                                                                                                       loader1 );
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
             kbase.addKnowledgePackages( pkgs );
-            
+
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            
+
             // create another builder
             KnowledgeBuilderConfiguration conf2 = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
                                                                                                             loader2 );
             KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( conf2 );
             builder2.add( ResourceFactory.newByteArrayResource( out ),
-                         ResourceType.PKG );
+                          ResourceType.PKG );
             Collection<KnowledgePackage> pkgs2 = builder2.getKnowledgePackages();
-            
+
             // create another kbase
-            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader2 );
+            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+                                                                                                        loader2 );
             KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
             kbase2.addKnowledgePackages( pkgs2 );
 
@@ -1075,30 +1082,32 @@ public class DynamicRulesTest extends TestCase {
                          ResourceType.DRL );
             Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
             KnowledgePackage pkg = pkgs.iterator().next();
-            
+
             // serialize out
             byte[] out = DroolsStreamUtils.streamOut( pkg );
 
             // adding original packages to a kbase just to make sure they are fine
-            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader1 );
+            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+                                                                                                       loader1 );
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
             kbase.addKnowledgePackages( pkgs );
-            
+
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
             //loader2.loadClass( "org.drools.Primitives" );
             //loader2.loadClass( "org.drools.TestEnum" );
-            
+
             // set context classloader and use it
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader( loader2 );
             KnowledgePackage pkg2 = (KnowledgePackage) DroolsStreamUtils.streamIn( out );
             Collection<KnowledgePackage> pkgs2 = Collections.singleton( pkg2 );
             Thread.currentThread().setContextClassLoader( ccl );
-            
+
             // create another kbase
-            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader2 );
+            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+                                                                                                        loader2 );
             KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
             kbase2.addKnowledgePackages( pkgs2 );
 
@@ -1109,6 +1118,90 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    public void testDynamicRuleRemovalsSubNetworkAndNot() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_DynamicRulesWithNotSubnetwork.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final AgendaEventListener alistener = mock( AgendaEventListener.class );
+        ksession.addEventListener( alistener );
+
+        // pattern does not match, so do not activate
+        ksession.insert( new Person( "toni" ) );
+        verify( alistener,
+                never() ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+
+        // pattern matches, so create activation
+        ksession.insert( new Person( "bob" ) );
+        verify( alistener,
+                times( 1 ) ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+
+        // already active, so no new activation should be created
+        ksession.insert( new Person( "mark" ) );
+        verify( alistener,
+                times( 1 ) ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+
+        kbase.removeKnowledgePackage( "org.drools" );
+
+        assertEquals( 0,
+                      kbase.getKnowledgePackages().size() );
+
+        // lets re-compile and add it again
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_DynamicRulesWithNotSubnetwork.drl" ) ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        // rule should be reactivated, since data is still in the session
+        verify( alistener,
+                times( 2 ) ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
+        
+    }
+
+    public void testSharedLIANodeRemoval() throws IOException, DroolsParserException {
+        String str = "global java.util.List list;\n";
+        str += "rule \"test\"\n";
+        str += "when\n";
+        str += "  exists(eval(true))\n";
+        str += "then\n";
+        str += " list.add(\"fired\");\n";
+        str += "end\n";
+        
+        PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackageFromDrl(new StringReader(str));
+        Assert.assertTrue("Should not have errors", pkgBuilder.getErrors().isEmpty());
+
+        // Add once ...
+        ReteooRuleBase rb = new ReteooRuleBase("dummy");
+        rb.addPackage(pkgBuilder.getPackage());
+
+        // This one works
+        List list = new ArrayList();
+        StatefulSession session = rb.newStatefulSession();
+        session.setGlobal( "list", list );
+        session.fireAllRules();       
+        assertEquals(1, list.size() );
+
+        
+        list.clear();
+        // ... remove ...
+        rb.removePackage(pkgBuilder.getPackage().getName());
+        rb.addPackage(pkgBuilder.getPackage());          
+        session = rb.newStatefulSession();
+        session.setGlobal( "list", list );
+        session.fireAllRules();   
+        assertEquals(1, list.size() );
+    }
+    
     public class SubvertedClassLoader extends URLClassLoader {
 
         private static final long serialVersionUID = 400L;

@@ -354,8 +354,6 @@ public class FromNode extends LeftTupleSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
 
-        context.visitTupleSource( this );
-
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
@@ -375,12 +373,10 @@ public class FromNode extends LeftTupleSource
             }
         }
 
-        if ( !context.alreadyVisited( this.tupleSource ) ) {
-            this.tupleSource.remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        }
+        this.tupleSource.remove( context,
+                                 builder,
+                                 this,
+                                 workingMemories );
     }
 
     @SuppressWarnings("unchecked")

@@ -304,23 +304,20 @@ public class EvalConditionNode extends LeftTupleSource
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
 
         if ( !this.isInUse() ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                workingMemories[i].clearNodeMemory( this );
+            for( InternalWorkingMemory workingMemory : workingMemories ) {
+                workingMemory.clearNodeMemory( this );
             }
         }
 
-        if ( !context.alreadyVisited( this.tupleSource ) ) {
-            this.tupleSource.remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        }
+        this.tupleSource.remove( context,
+                                 builder,
+                                 this,
+                                 workingMemories );
     }
 
     public boolean isLeftTupleMemoryEnabled() {

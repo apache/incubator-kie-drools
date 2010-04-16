@@ -30,7 +30,6 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.core.util.Iterator;
@@ -283,10 +282,6 @@ public class EntryPointNode extends ObjectSource
                             final InternalWorkingMemory[] workingMemories) {
         final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
         removeObjectSink( objectTypeNode );
-        for ( int i = 0; i < workingMemories.length; i++ ) {
-            // clear the node memory for each working memory.
-            workingMemories[i].clearNodeMemory( (NodeMemory) node );
-        }
     }
 
     public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes() {
