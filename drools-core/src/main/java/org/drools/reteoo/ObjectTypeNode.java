@@ -327,19 +327,24 @@ public class ObjectTypeNode extends ObjectSource
                   workingMemories );
     }
 
+    /**
+     * OTN needs to override remove to avoid releasing the node ID, since OTN are
+     * never removed from the rulebase in the current implementation
+     */
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if( context.getCleanupAdapter() != null ) {
-            for( InternalWorkingMemory workingMemory : workingMemories ) {
+        if ( context.getCleanupAdapter() != null ) {
+            for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 CleanupAdapter adapter = context.getCleanupAdapter();
                 final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
                 Iterator it = memory.iterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-                    for( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
-                        adapter.cleanUp( leftTuple, workingMemory );
+                    for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
+                        adapter.cleanUp( leftTuple,
+                                         workingMemory );
                     }
                 }
             }
@@ -347,11 +352,6 @@ public class ObjectTypeNode extends ObjectSource
         }
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
-        }
-        if ( ! this.isInUse() ) {
-            for( InternalWorkingMemory workingMemory : workingMemories ) {
-                workingMemory.clearNodeMemory( this );
-            }
         }
     }
 

@@ -101,10 +101,7 @@ public class BuildUtils {
         RuleBasePartitionId partition = null;
         if ( candidate instanceof EntryPointNode ) {
             // entry point nodes are always shared
-            EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) candidate).getEntryPoint() );
-            if ( epn != null ) {
-                node = epn;
-            }
+            node = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) candidate).getEntryPoint() );
             // all EntryPointNodes belong to the main partition
             partition = RuleBasePartitionId.MAIN_PARTITION;
         } else if ( candidate instanceof ObjectTypeNode ) {
@@ -131,11 +128,6 @@ public class BuildUtils {
             } else {
                 throw new RuntimeDroolsException( "This is a bug on node sharing verification. Please report to development team." );
             }
-            if ( node != null ) {
-                // shared node found
-                // undo previous id assignment
-                context.releaseId( candidate.getId() );
-            }
         }
 
         if ( node == null ) {
@@ -161,6 +153,10 @@ public class BuildUtils {
             }
             // adds the node to the context list to track all added nodes
             context.getNodes().add( node );
+        } else {
+            // shared node found
+            // undo previous id assignment
+            context.releaseId( candidate.getId() );
         }
         return node;
 

@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -126,24 +125,6 @@ public class PropagationQueuingNode extends ObjectSource
     public void attach(InternalWorkingMemory[] workingMemories) {
         attach();
         // this node does not require update, so nothing else to do.
-    }
-
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final BaseNode node,
-                            final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
-        }
-        if ( !this.isInUse() ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                workingMemories[i].clearNodeMemory( this );
-            }
-        }
-        this.source.remove( context,
-                            builder,
-                            this,
-                            workingMemories );
     }
 
     /**
@@ -329,10 +310,6 @@ public class PropagationQueuingNode extends ObjectSource
         protected InternalFactHandle handle;
         protected PropagationContext context;
 
-        public Action() {
-
-        }
-
         public Action(InternalFactHandle handle,
                       PropagationContext context) {
             super();
@@ -374,10 +351,6 @@ public class PropagationQueuingNode extends ObjectSource
 
     private static class RetractAction extends Action {
         private static final long serialVersionUID = -84784886430845209L;
-
-        public RetractAction() {
-
-        }
 
         public RetractAction(final InternalFactHandle handle,
                              final PropagationContext context) {

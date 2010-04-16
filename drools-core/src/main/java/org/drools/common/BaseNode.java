@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
 
@@ -96,7 +97,7 @@ public abstract class BaseNode
                   builder,
                   node,
                   workingMemories );
-        if ( !isInUse() ) {
+        if ( !this.isInUse() && !( this instanceof EntryPointNode ) ) {
             builder.getIdGenerator().releaseId( this.getId() );
         }
     }

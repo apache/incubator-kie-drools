@@ -239,8 +239,8 @@ public class RightInputAdapterNode extends ObjectSource
         }
 
         if ( !this.isInUse() ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                ObjectHashMap memory = (ObjectHashMap) workingMemories[i].getNodeMemory( this );
+            for ( InternalWorkingMemory workingMemory : workingMemories ) {
+                ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
 
                 Iterator it = memory.iterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
@@ -249,17 +249,15 @@ public class RightInputAdapterNode extends ObjectSource
                     leftTuple.unlinkFromRightParent();
 
                     InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-                    workingMemories[i].getFactHandleFactory().destroyFactHandle( handle );
+                    workingMemory.getFactHandleFactory().destroyFactHandle( handle );
                 }
+                workingMemory.clearNodeMemory( this );
             }
         }
-
-        if ( !context.alreadyVisited( this.tupleSource ) ) {
-            this.tupleSource.remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        }
+        this.tupleSource.remove( context,
+                                 builder,
+                                 this,
+                                 workingMemories );
     }
 
     public boolean isLeftTupleMemoryEnabled() {

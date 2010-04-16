@@ -25,7 +25,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -172,7 +171,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
@@ -263,12 +261,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
             this.sink.assertLeftTuple( tuple,
                                        context,
                                        workingMemory );
-        }
-
-        public void retractRightTuple(final RightTuple rightTuple,
-                                      final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
 
         public void modifyObject(InternalFactHandle factHandle,

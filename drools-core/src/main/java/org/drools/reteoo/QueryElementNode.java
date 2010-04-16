@@ -1,28 +1,17 @@
 package org.drools.reteoo;
 
-import org.drools.QueryResults;
-import org.drools.RuleBaseConfiguration;
-import org.drools.base.ArrayElements;
-import org.drools.base.DefaultQueryResultsCollector;
 import org.drools.base.DroolsQuery;
 import org.drools.base.QueryResultCollector;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaConstraints;
-import org.drools.common.DisconnectedFactHandle;
-import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
-import org.drools.core.util.Entry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Variable;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 
 public class QueryElementNode extends LeftTupleSource
@@ -61,17 +50,14 @@ public class QueryElementNode extends LeftTupleSource
                             ReteooBuilder builder,
                             BaseNode node,
                             InternalWorkingMemory[] workingMemories) {
-        context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
 
-        if ( !context.alreadyVisited( this.tupleSource ) ) {
-            this.tupleSource.remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        }
+        this.tupleSource.remove( context,
+                                 builder,
+                                 this,
+                                 workingMemories );
     }
 
     public void attach() {

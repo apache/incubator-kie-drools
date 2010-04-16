@@ -19,23 +19,16 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.LinkedList;
-import java.util.List;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.base.ArrayElements;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
-import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.rule.Variable;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -202,12 +195,10 @@ public final class QueryTerminalNode extends BaseNode
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !context.alreadyVisited( this.tupleSource ) ) {
-            this.tupleSource.remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        }
+        this.tupleSource.remove( context,
+                                 builder,
+                                 this,
+                                 workingMemories );
     }
 
     public boolean isInUse() {

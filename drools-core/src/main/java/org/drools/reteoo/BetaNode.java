@@ -225,10 +225,8 @@ public abstract class BetaNode extends LeftTupleSource
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
-            
         }
         if ( !this.isInUse() || context.getCleanupAdapter() != null ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -292,13 +290,10 @@ public abstract class BetaNode extends LeftTupleSource
                                 builder,
                                 this,
                                 workingMemories );
-        if ( !context.alreadyVisited( this.leftInput ) ) {
-            this.leftInput.remove( context,
-                                   builder,
-                                   this,
-                                   workingMemories );
-        }
-
+        this.leftInput.remove( context,
+                               builder,
+                               this,
+                               workingMemories );
     }
 
     public void modifyObject(InternalFactHandle factHandle,

@@ -181,8 +181,7 @@ public class Rete extends ObjectSource
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        final EntryPointNode entryPointNode = (EntryPointNode) node;
-        removeObjectSink( entryPointNode );
+        // for now, we don't remove EntryPointNodes because they might be referenced by external sources
     }
 
     public EntryPointNode getEntryPointNode(final EntryPoint entryPoint) {
