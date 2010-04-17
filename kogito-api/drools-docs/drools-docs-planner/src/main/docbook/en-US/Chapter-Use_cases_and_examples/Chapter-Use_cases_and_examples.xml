@@ -969,7 +969,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
       </listitem>
 
       <listitem>
-        <para>A departement can have a minimum or maximum age.</para>
+        <para>A department can have a minimum or maximum age.</para>
       </listitem>
 
       <listitem>
