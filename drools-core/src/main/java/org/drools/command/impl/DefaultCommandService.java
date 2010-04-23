@@ -1,9 +1,7 @@
 package org.drools.command.impl;
 
-import org.drools.StatefulSession;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
-import org.drools.reteoo.ReteooWorkingMemory;
 
 public class DefaultCommandService implements CommandService {
 
