@@ -17,7 +17,6 @@ import javax.transaction.UserTransaction;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.command.CommandService;
 import org.drools.command.Context;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
@@ -37,7 +36,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 public class SingleSessionCommandService
     implements
-    CommandService {
+    org.drools.command.SingleSessionCommandService {
 
     private EntityManagerFactory        emf;
     private EntityManager               em;
@@ -63,7 +62,7 @@ public class SingleSessionCommandService
                                        SessionConfiguration conf,
                                        Environment env) {
         this( new KnowledgeBaseImpl( ruleBase ),
-              (SessionConfiguration) conf,
+              conf,
               env );
     }
 
@@ -73,7 +72,7 @@ public class SingleSessionCommandService
 		                               Environment env) {
 		this( sessionId,
 		      new KnowledgeBaseImpl( ruleBase ),
-		      (SessionConfiguration) conf,
+		      conf,
 		      env );
 	}
     
@@ -112,7 +111,7 @@ public class SingleSessionCommandService
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
         
-        ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        ((StatefulKnowledgeSessionImpl) this.ksession).session.setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
 
         this.emf = (EntityManagerFactory) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
         this.em = emf.createEntityManager(); // how can I ensure this is an extended entity?
@@ -209,7 +208,7 @@ public class SingleSessionCommandService
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
 		this.ksession = this.marshallingHelper.getObject();
-        ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        ((StatefulKnowledgeSessionImpl) this.ksession).session.setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
 		this.kContext = new KnowledgeCommandContext(new ContextImpl( "ksession", null), null, null, this.ksession, null );
         ((JPASignalManager) ((StatefulKnowledgeSessionImpl)ksession).session.getSignalManager()).setCommandService( this );
 
@@ -245,7 +244,7 @@ public class SingleSessionCommandService
                 // there must have been a rollback to lazily re-initialise the state
                 this.em = this.emf.createEntityManager();
                 this.sessionInfo = this.em.find( SessionInfo.class, this.sessionInfo.getId() );
-                ((ReteooWorkingMemory)((StatefulKnowledgeSessionImpl) this.ksession).session).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+                ((StatefulKnowledgeSessionImpl) this.ksession).session.setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
                 this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
                 // have to create a new localEM as an EM part of a transaction cannot do a find.
                 // this.sessionInfo.rollback();
@@ -306,7 +305,8 @@ public class SingleSessionCommandService
         return sessionInfo.getId();
     }
 
-    private void registerRollbackSync() throws IllegalStateException,
+    @SuppressWarnings("unchecked")
+	private void registerRollbackSync() throws IllegalStateException,
                                       RollbackException,
                                       SystemException {
         TransactionManager txm = (TransactionManager) env.get( EnvironmentName.TRANSACTION_MANAGER );
@@ -314,17 +314,16 @@ public class SingleSessionCommandService
             return;
         }
 
-        Map map = (Map) env.get( "synchronizations" );
+        Map<Object, Object> map = (Map<Object, Object>) env.get( "synchronizations" );
         if ( map == null ) {
-            map = new IdentityHashMap();
+            map = new IdentityHashMap<Object, Object>();
             env.set( "synchronizations",
                      map );
         }
 
         if ( map.get( this ) == null ) {
             txm.getTransaction().registerSynchronization( new SynchronizationImpl() );
-            map.put( this,
-                     this );
+			map.put(this, this);
         }
 
     }
@@ -333,14 +332,15 @@ public class SingleSessionCommandService
         implements
         Synchronization {
 
-        public void afterCompletion(int status) {
+        @SuppressWarnings("unchecked")
+		public void afterCompletion(int status) {
             if ( status != Status.STATUS_COMMITTED ) {
                 rollback();
             }
 
             // always cleanup thread local whatever the result
             //rollbackRegistered.remove();
-            Map map = (Map) env.get( "synchronizations" );
+            Map<Object, Object> map = (Map<Object, Object>) env.get( "synchronizations" );
             map.remove( SingleSessionCommandService.this );
 
             // cleanup local entity manager
