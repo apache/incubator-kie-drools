@@ -1,5 +1,6 @@
 package org.drools.persistence.session;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.transaction.UserTransaction;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.xml.DOMConfigurator;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
@@ -45,27 +47,61 @@ import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
+import org.h2.tools.DeleteDbFiles;
+import org.h2.tools.Server;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class SingleSessionCommandServiceTest extends TestCase {
 
-    PoolingDataSource            ds1;
-    private EntityManagerFactory emf;
-
+	private PoolingDataSource ds1;
+	private EntityManagerFactory emf;
+	private static Server h2Server;
+    
+    static {
+    	try {
+			DeleteDbFiles.execute("", "JPADroolsFlow", true);
+			h2Server = Server.createTcpServer(new String[0]);
+			h2Server.start();
+		} catch (SQLException e) {
+			throw new RuntimeException("can't start h2 server db",e);
+		}
+		DOMConfigurator.configure(SingleSessionCommandServiceTest.class.getResource("/log4j.xml"));
+    }
+    
+    @Override
+    protected void finalize() throws Throwable {
+    	if (h2Server != null) {
+    		h2Server.stop();
+    	}
+    	DeleteDbFiles.execute("", "JPADroolsFlow", true);
+    	super.finalize();
+    }
+    
     protected void setUp() {
+    	
         ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
+        ds1.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
+    	ds1.setUniqueName("jdbc/testDS1");
+    	ds1.setMaxPoolSize(5);
+    	ds1.setAllowLocalTransactions(true);
+    	ds1.getDriverProperties().setProperty("driverClassName", "org.h2.Driver");
+    	ds1.getDriverProperties().setProperty("url", "jdbc:h2:tcp://localhost/JPADroolsFlow");
+    	ds1.getDriverProperties().setProperty("user", "sa");
+    	ds1.getDriverProperties().setProperty("password", "");
+        
+        
+//        ds1.setUniqueName( "jdbc/testDS1" );
+//        ds1.setClassName( "org.h2.Driver" );
+//        ds1.setMaxPoolSize( 3 );
+//        ds1.setAllowLocalTransactions( true );
+//        ds1.getDriverProperties().put( "user",
+//                                       "sa" );
+//        ds1.getDriverProperties().put( "password",
+//                                       "" );
+//        ds1.getDriverProperties().put( "URL",
+//                                       "jdbc:h2:tcp://localhost/JPADroolsFlow" );
         ds1.init();
 
         emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
@@ -106,7 +142,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
 
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
-        ProcessInstance processInstance = (ProcessInstance) service.execute( startProcessCommand );
+        ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
@@ -120,7 +156,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                                                    env );
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
@@ -142,7 +178,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                                                    env );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
@@ -164,7 +200,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                                                    env );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
@@ -186,7 +222,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                                                    env );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNull( processInstance );
         service.dispose();
     }
@@ -222,7 +258,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ut.begin();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
-        ProcessInstance processInstance = (ProcessInstance) service.execute( startProcessCommand );
+        ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
         ut.commit();
 
@@ -238,7 +274,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ut.begin();
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         ut.commit();
         service.dispose();
@@ -264,7 +300,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ut.begin();
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         ut.commit();
         assertNotNull( processInstance );
         service.dispose();
@@ -290,7 +326,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ut.begin();
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         ut.commit();
         assertNotNull( processInstance );
         service.dispose();
@@ -316,7 +352,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ut.begin();
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         ut.commit();
         assertNull( processInstance );
         service.dispose();
@@ -593,7 +629,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         int sessionId = service.getSessionId();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
-        ProcessInstance processInstance = (ProcessInstance) service.execute( startProcessCommand );
+        ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
         service.dispose();
 
@@ -603,7 +639,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                                                    env );
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
@@ -614,7 +650,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         Thread.sleep( 3000 );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNull( processInstance );
     }
 
@@ -696,7 +732,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         int sessionId = service.getSessionId();
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
-        ProcessInstance processInstance = (ProcessInstance) service.execute( startProcessCommand );
+        ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
 
         Thread.sleep( 2000 );
@@ -707,7 +743,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                                                    env );
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
-        processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
+        processInstance = service.execute( getProcessInstanceCommand );
         assertNull( processInstance );
     }
 
