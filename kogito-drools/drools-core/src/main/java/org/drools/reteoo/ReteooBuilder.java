@@ -279,9 +279,6 @@ public class ReteooBuilder
         }
 
         public void releaseId(int id) {
-            if( recycledIds.contains( id ) ) {
-                System.out.println("ERROR");
-            }
             this.recycledIds.add(id );
         }
 
