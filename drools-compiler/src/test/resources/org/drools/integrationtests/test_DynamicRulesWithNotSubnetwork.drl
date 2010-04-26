@@ -1,0 +1,12 @@
+package org.drools;
+ 
+rule "subnetworks with not"
+	when
+		not( 
+		    not( Person( name == "bob") ) and 
+		    not( Person( name == "mark" ) ) 
+		) 
+	then
+	    // do something
+end
+
