@@ -185,6 +185,7 @@ public class RuleFlowGroupImpl
     }
 
     public void addActivation(final Activation activation) {
+        assert activation.getActivationNode() == null;
         final ActivationNode node = new ActivationNode( activation,
                                                               this );
         activation.setActivationNode( node );
@@ -198,7 +199,7 @@ public class RuleFlowGroupImpl
     public void removeActivation(final Activation activation) {
         final ActivationNode node = activation.getActivationNode();
         this.list.remove( node );
-        activation.setActivationGroupNode( null );
+        activation.setActivationNode( null );
         if ( this.active && this.autoDeactivate ) {
             if ( this.list.isEmpty() ) {
                 // deactivate callback

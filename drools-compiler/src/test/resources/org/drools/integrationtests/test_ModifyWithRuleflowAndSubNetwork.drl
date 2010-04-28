@@ -1,0 +1,25 @@
+package org.drools
+
+import org.drools.Order.OrderStatus
+
+rule "insert OrderStatus"
+    ruleflow-group "process"
+when
+    $o : Order()
+then
+    insert( $o.getStatus() );
+end
+
+rule "test modify with ruleflow and subnetwork"
+    ruleflow-group "process"
+when
+    $os : OrderStatus( active == true )
+    $o : Order( status == $os, $items : itemsValues )
+    Number( intValue < 10 ) from accumulate(
+        OrderItem( ) from $items,
+        count( 1 ) )
+then
+    modify( $os ) {
+        setActive( false ) 
+    }
+end

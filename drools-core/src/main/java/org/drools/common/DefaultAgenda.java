@@ -904,6 +904,13 @@ public class DefaultAgenda
             }
             activation.setActivated( false );
 
+            if ( activation.getActivationNode() != null ) {
+                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
+                // it is possible that the ruleflow group is no longer active if it was
+                // cleared during execution of this activation
+                ruleFlowGroup.removeActivation( activation );
+            }
+
             try {
                 this.knowledgeHelper.setActivation( activation );
                 activation.getRule().getConsequence().evaluate( this.knowledgeHelper,
@@ -921,15 +928,6 @@ public class DefaultAgenda
                                                                       e );
                 } else {
                     throw new RuntimeException( e );
-                }
-            }
-
-            if ( activation.getActivationNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
-                // it is possible that the ruleflow group is no longer active if it was
-                // cleared during execution of this activation
-                if ( ruleFlowGroup.isActive() ) {
-                    ruleFlowGroup.removeActivation( activation );
                 }
             }
 
