@@ -251,7 +251,6 @@ public class ReteooBuilder
         private int               nextId;
 
         public IdGenerator() {
-
         }
 
         public IdGenerator(final int firstId) {
@@ -259,6 +258,7 @@ public class ReteooBuilder
             this.recycledIds = new LinkedList<Integer>();
         }
 
+        @SuppressWarnings("unchecked")
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             recycledIds = (Queue<Integer>) in.readObject();
@@ -272,14 +272,11 @@ public class ReteooBuilder
 
         public int getNextId() {
             Integer id = this.recycledIds.poll();
-            if ( id == null ) {
-                return this.nextId++;
-            }
-            return id;
+            return ( id == null ) ? this.nextId++ : id.intValue();
         }
 
         public void releaseId(int id) {
-            this.recycledIds.add(id );
+            this.recycledIds.add( id );
         }
 
         public int getLastId() {

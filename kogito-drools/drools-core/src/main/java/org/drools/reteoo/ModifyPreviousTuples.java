@@ -37,7 +37,7 @@ public class ModifyPreviousTuples {
     }
 
     public LeftTuple removeLeftTuple(LeftTupleSink sink) {
-        if ( this.leftTuple == null ) {
+        if ( this.leftTuple == null && this.leftTuples == null ) {
             return null;
         }
         if ( this.leftTuples == null ) {
@@ -62,7 +62,7 @@ public class ModifyPreviousTuples {
     }
 
     public RightTuple removeRightTuple(RightTupleSink sink) {
-        if ( this.rightTuple == null ) {
+        if ( this.rightTuple == null && this.rightTuples == null ) {
             return null;
         }        
         if ( this.rightTuples == null ) {
