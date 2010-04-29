@@ -171,7 +171,7 @@ public class RuleBuilderTest extends TestCase {
         ruleDescr.addAttribute( new AttributeDescr( "duration",
                                                     "60" ) );
         ruleDescr.addAttribute( new AttributeDescr( "calendars",
-                                                    "\"cal1\"" ) );        
+                                                    "\"cal1\"" ) );
         ruleDescr.addAttribute( new AttributeDescr( "date-effective",
                                                     "10-Jul-1974" ) );
         ruleDescr.addAttribute( new AttributeDescr( "date-expires",
@@ -186,26 +186,63 @@ public class RuleBuilderTest extends TestCase {
                                               new DateFormatsImpl() ) );
 
         // defining expectations on the mock object
-        when( context.getRule() ).thenReturn(rule);
-        when( context.getRuleDescr() ).thenReturn(ruleDescr);
-        when( context.getPackageBuilder() ).thenReturn(new PackageBuilder());
-        
+        when( context.getRule() ).thenReturn( rule );
+        when( context.getRuleDescr() ).thenReturn( ruleDescr );
+        when( context.getPackageBuilder() ).thenReturn( new PackageBuilder() );
+
         // calling the build method
         RuleBuilder builder = new RuleBuilder();
         builder.buildAttributes( context );
 
         // check expectations
-        verify( rule ).setNoLoop(true);
-        verify( rule ).setAutoFocus(false);
-        verify( rule ).setAgendaGroup("my agenda");
+        verify( rule ).setNoLoop( true );
+        verify( rule ).setAutoFocus( false );
+        verify( rule ).setAgendaGroup( "my agenda" );
         verify( rule ).setActivationGroup( "my activation" );
         verify( rule ).setRuleFlowGroup( "mygroup" );
         verify( rule ).setLockOnActive( true );
         verify( rule ).setEnabled( EnabledBoolean.ENABLED_FALSE );
-        verify( rule ).setTimer( new IntervalTimer( null , null, -1, TimeUtils.parseTimeString( "60" ), 0 ) );
-        verify( rule ).setCalendars( new String[] { "cal1" } );
+        verify( rule ).setTimer( new IntervalTimer( null,
+                                                    null,
+                                                    -1,
+                                                    TimeUtils.parseTimeString( "60" ),
+                                                    0 ) );
+        verify( rule ).setCalendars( new String[]{"cal1"} );
         verify( rule ).setDateEffective( effective );
         verify( rule ).setDateExpires( expires );
+    }
+
+    public void testBuildMetaAttributes() throws Exception {
+        // creates mock objects
+        final RuleBuildContext context = mock( RuleBuildContext.class );
+        final Rule rule = mock( Rule.class );
+
+        // creates input object
+        final RuleDescr ruleDescr = new RuleDescr( "my rule" );
+        ruleDescr.addMetaAttribute( "ruleId",
+                                    "123" );
+        ruleDescr.addMetaAttribute( "author",
+                                    "Bob Doe" );
+        ruleDescr.addMetaAttribute( "text",
+                                    "\"It's a quoted\\\" string\"" );
+
+        // creates expected results
+        // defining expectations on the mock object
+        when( context.getRule() ).thenReturn( rule );
+        when( context.getRuleDescr() ).thenReturn( ruleDescr );
+        when( context.getPackageBuilder() ).thenReturn( new PackageBuilder() );
+
+        // calling the build method
+        RuleBuilder builder = new RuleBuilder();
+        builder.buildMetaAttributes( context );
+
+        // check expectations
+        verify( rule ).addMetaAttribute( "ruleId",
+                                         "123" );
+        verify( rule ).addMetaAttribute( "author",
+                                         "Bob Doe" );
+        verify( rule ).addMetaAttribute( "text",
+                                         "It's a quoted\" string" );
     }
 
     public void testBuildDurationExpression() throws Exception {
@@ -218,74 +255,83 @@ public class RuleBuilderTest extends TestCase {
         ruleDescr.addAttribute( new AttributeDescr( "duration",
                                                     "( 1h30m )" ) );
         ruleDescr.addAttribute( new AttributeDescr( "calendars",
-                                                    "[\"cal1\", \"cal2\"]" ) ); 
-        
+                                                    "[\"cal1\", \"cal2\"]" ) );
+
         // defining expectations on the mock object
-        when( context.getRule() ).thenReturn(rule);
-        when( context.getRuleDescr() ).thenReturn(ruleDescr);
+        when( context.getRule() ).thenReturn( rule );
+        when( context.getRuleDescr() ).thenReturn( ruleDescr );
 
         // calling the build method
         RuleBuilder builder = new RuleBuilder();
         builder.buildAttributes( context );
 
         // check expectations
-        verify( rule ).setTimer( new IntervalTimer( null , null, -1, TimeUtils.parseTimeString( "1h30m" ), 0 ) );
-        verify( rule ).setCalendars( new String[] { "cal1", "cal2" } );
+        verify( rule ).setTimer( new IntervalTimer( null,
+                                                    null,
+                                                    -1,
+                                                    TimeUtils.parseTimeString( "1h30m" ),
+                                                    0 ) );
+        verify( rule ).setCalendars( new String[]{"cal1", "cal2"} );
     }
-    
+
     public void testBuildBigDecimalLiteralConstraint() throws Exception {
-        final PackageDescr pkgDescr = new PackageDescr("org.drools");
-        final RuleDescr ruleDescr = new RuleDescr("Test Rule");
+        final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         AndDescr andDescr = new AndDescr();
-        PatternDescr patDescr = new PatternDescr("java.math.BigDecimal", "$bd");
-        FieldConstraintDescr fcd = new FieldConstraintDescr("this");
-        LiteralRestrictionDescr restr = new LiteralRestrictionDescr("==", "10");
+        PatternDescr patDescr = new PatternDescr( "java.math.BigDecimal",
+                                                  "$bd" );
+        FieldConstraintDescr fcd = new FieldConstraintDescr( "this" );
+        LiteralRestrictionDescr restr = new LiteralRestrictionDescr( "==",
+                                                                     "10" );
         fcd.addRestriction( restr );
         patDescr.addConstraint( fcd );
         andDescr.addDescr( patDescr );
         ruleDescr.setLhs( andDescr );
         ruleDescr.setConsequence( "" );
         pkgDescr.addRule( ruleDescr );
-        
+
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( pkgDescr );
 
         Assert.assertTrue( pkgBuilder.getErrors().toString(),
                            pkgBuilder.getErrors().isEmpty() );
 
-        final Rule rule = pkgBuilder.getPackages()[0].getRule("Test Rule");
+        final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
-        assertTrue("Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(), fc.getField().getValue() instanceof BigDecimal );
+        assertTrue( "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(),
+                    fc.getField().getValue() instanceof BigDecimal );
     }
 
     public void testBuildBigIntegerLiteralConstraint() throws Exception {
-        final PackageDescr pkgDescr = new PackageDescr("org.drools");
-        final RuleDescr ruleDescr = new RuleDescr("Test Rule");
+        final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         AndDescr andDescr = new AndDescr();
-        PatternDescr patDescr = new PatternDescr("java.math.BigInteger", "$bd");
-        FieldConstraintDescr fcd = new FieldConstraintDescr("this");
-        LiteralRestrictionDescr restr = new LiteralRestrictionDescr("==", "10");
+        PatternDescr patDescr = new PatternDescr( "java.math.BigInteger",
+                                                  "$bd" );
+        FieldConstraintDescr fcd = new FieldConstraintDescr( "this" );
+        LiteralRestrictionDescr restr = new LiteralRestrictionDescr( "==",
+                                                                     "10" );
         fcd.addRestriction( restr );
         patDescr.addConstraint( fcd );
         andDescr.addDescr( patDescr );
         ruleDescr.setLhs( andDescr );
         ruleDescr.setConsequence( "" );
         pkgDescr.addRule( ruleDescr );
-        
+
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( pkgDescr );
 
         Assert.assertTrue( pkgBuilder.getErrors().toString(),
                            pkgBuilder.getErrors().isEmpty() );
 
-        final Rule rule = pkgBuilder.getPackages()[0].getRule("Test Rule");
+        final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
-        assertTrue("Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(), fc.getField().getValue() instanceof BigInteger );
+        assertTrue( "Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(),
+                    fc.getField().getValue() instanceof BigInteger );
     }
 
-    
 }

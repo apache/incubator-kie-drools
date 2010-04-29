@@ -33,7 +33,6 @@ import org.drools.io.Resource;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
-import org.drools.spi.Duration;
 import org.drools.spi.Enabled;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
@@ -61,128 +60,129 @@ public class Rule
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long        serialVersionUID = 400L;
 
     /**   */
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
     /** The parent pkg */
-    private String            pkg;
+    private String                   pkg;
 
     /** Name of the rule. */
-    private String            name;
-    
+    private String                   name;
+
     /** Parent Rule Name, optional */
-    private Rule 			parent;
+    private Rule                     parent;
 
     /** Salience value. */
-    private Salience          salience;
+    private Salience                 salience;
 
     /** The Rule is dirty after patterns have been added */
-    private boolean           dirty;
-    private Map               declarations;
-    private Declaration[]     declarationArray;
+    private boolean                  dirty;
+    private Map                      declarations;
+    private Declaration[]            declarationArray;
 
-    private GroupElement      lhsRoot;
+    private GroupElement             lhsRoot;
 
-    private String            dialect;
+    private String                   dialect;
 
-    private String            agendaGroup;
-    
-    private Map<String,String> metaAttributes;
+    private String                   agendaGroup;
+
+    private Map<String, String>      metaAttributes;
 
     /** Consequence. */
-    private Consequence       consequence;
-    
+    private Consequence              consequence;
+
     private Map<String, Consequence> namedConsequence;
-    
+
     /** Timer semantics that controls the firing of a rule */
-    private Timer             timer;
+    private Timer                    timer;
 
     /** Load order in Package */
-    private long              loadOrder;
+    private long                     loadOrder;
 
     /** Is recursion of this rule allowed */
-    private boolean           noLoop;
+    private boolean                  noLoop;
 
     /** makes the rule's much the current focus */
-    private boolean           autoFocus;
+    private boolean                  autoFocus;
 
-    private String            activationGroup;
+    private String                   activationGroup;
 
-    private String            ruleFlowGroup;
+    private String                   ruleFlowGroup;
 
-    private boolean           lockOnActive;
+    private boolean                  lockOnActive;
 
-    private boolean           hasLogicalDependency;
+    private boolean                  hasLogicalDependency;
 
     /** indicates that the rule is semantically correct. */
-    private boolean           semanticallyValid;
-    
-    private String[]          calendars;
+    private boolean                  semanticallyValid;
 
-    private Calendar          dateEffective;
+    private String[]                 calendars;
 
-    private Calendar          dateExpires;
+    private Calendar                 dateEffective;
 
-    private Enabled           enabled;
-    
-    private Resource          resource;
+    private Calendar                 dateExpires;
+
+    private Enabled                  enabled;
+
+    private Resource                 resource;
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(pkg);
-        out.writeObject(name);
-        out.writeObject(parent);
-        out.writeObject(salience);
-        out.writeBoolean(dirty);
-        out.writeObject(declarations);
-        out.writeObject(declarationArray);
-        out.writeObject(lhsRoot);
-        out.writeObject(dialect);
-        out.writeObject(agendaGroup);
-        out.writeObject(metaAttributes);
+        out.writeObject( pkg );
+        out.writeObject( name );
+        out.writeObject( parent );
+        out.writeObject( salience );
+        out.writeBoolean( dirty );
+        out.writeObject( declarations );
+        out.writeObject( declarationArray );
+        out.writeObject( lhsRoot );
+        out.writeObject( dialect );
+        out.writeObject( agendaGroup );
+        out.writeObject( metaAttributes );
 
         if ( this.consequence instanceof CompiledInvoker ) {
             out.writeObject( null );
             out.writeObject( null );
         } else {
-            out.writeObject(this.consequence); 
+            out.writeObject( this.consequence );
             out.writeObject( this.namedConsequence );
-        } 
-        out.writeObject(timer);
-        out.writeLong(loadOrder);
-        out.writeBoolean(noLoop);
-        out.writeBoolean(autoFocus);
-        out.writeObject(activationGroup);
-        out.writeObject(ruleFlowGroup);
-        out.writeBoolean(lockOnActive);
-        out.writeBoolean(hasLogicalDependency);
-        out.writeBoolean(semanticallyValid);
-        out.writeObject(dateEffective);
-        out.writeObject(dateExpires);
-        out.writeObject(enabled);
+        }
+        out.writeObject( timer );
+        out.writeLong( loadOrder );
+        out.writeBoolean( noLoop );
+        out.writeBoolean( autoFocus );
+        out.writeObject( activationGroup );
+        out.writeObject( ruleFlowGroup );
+        out.writeBoolean( lockOnActive );
+        out.writeBoolean( hasLogicalDependency );
+        out.writeBoolean( semanticallyValid );
+        out.writeObject( dateEffective );
+        out.writeObject( dateExpires );
+        out.writeObject( enabled );
         out.writeObject( resource );
     }
-    
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        pkg = (String)in.readObject();
-        name = (String)in.readObject();
-        parent = (Rule)in.readObject();
-        salience = (Salience)in.readObject();
-        
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        pkg = (String) in.readObject();
+        name = (String) in.readObject();
+        parent = (Rule) in.readObject();
+        salience = (Salience) in.readObject();
+
         dirty = in.readBoolean();
-        declarations    = (Map)in.readObject();
-        declarationArray = (Declaration[])in.readObject();
-        lhsRoot = (GroupElement)in.readObject();
-        dialect = (String)in.readObject();
-        agendaGroup = (String)in.readObject();
-        metaAttributes = (Map<String,String>)in.readObject();
-        
-        consequence = (Consequence)in.readObject();
+        declarations = (Map) in.readObject();
+        declarationArray = (Declaration[]) in.readObject();
+        lhsRoot = (GroupElement) in.readObject();
+        dialect = (String) in.readObject();
+        agendaGroup = (String) in.readObject();
+        metaAttributes = (Map<String, String>) in.readObject();
+
+        consequence = (Consequence) in.readObject();
         namedConsequence = (Map<String, Consequence>) in.readObject();
-        timer = (Timer)in.readObject();
-        loadOrder   = in.readLong();
+        timer = (Timer) in.readObject();
+        loadOrder = in.readLong();
         noLoop = in.readBoolean();
         autoFocus = in.readBoolean();
         activationGroup = (String) in.readObject();
@@ -193,7 +193,7 @@ public class Rule
         dateEffective = (Calendar) in.readObject();
         dateExpires = (Calendar) in.readObject();
         enabled = (Enabled) in.readObject();
-        resource = ( Resource ) in.readObject();
+        resource = (Resource) in.readObject();
     }
 
     // ------------------------------------------------------------
@@ -220,8 +220,8 @@ public class Rule
         this.semanticallyValid = true;
         this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
-        this.metaAttributes = new HashMap<String,String>();
-     
+        this.metaAttributes = new HashMap<String, String>();
+
     }
 
     /**
@@ -243,8 +243,6 @@ public class Rule
               null,
               AgendaGroup.MAIN );
     }
-    
-    
 
     public Resource getResource() {
         return resource;
@@ -313,7 +311,7 @@ public class Rule
     public void setPackage(String pkg) {
         this.pkg = pkg;
     }
-    
+
     public String getPackageName() {
         return this.pkg;
     }
@@ -366,8 +364,12 @@ public class Rule
      *
      * This uses the dateEffective, dateExpires and enabled flag to decide this.
      */
-    public boolean isEffective(TimeMachine tm, Tuple tuple, WorkingMemory workingMemory) {
-        if ( !this.enabled.getValue( tuple, this, workingMemory ) ) {
+    public boolean isEffective(TimeMachine tm,
+                               Tuple tuple,
+                               WorkingMemory workingMemory) {
+        if ( !this.enabled.getValue( tuple,
+                                     this,
+                                     workingMemory ) ) {
             return false;
         }
         if ( this.dateEffective == null && this.dateExpires == null ) {
@@ -425,7 +427,8 @@ public class Rule
      */
     public Declaration getDeclaration(final String identifier) {
         if ( this.dirty || (this.declarations == null) ) {
-            this.declarations = this.getExtendedLhs(this, null).getOuterDeclarations();
+            this.declarations = this.getExtendedLhs( this,
+                                                     null ).getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
@@ -462,7 +465,8 @@ public class Rule
      */
     public Declaration[] getDeclarations() {
         if ( this.dirty || (this.declarationArray == null) ) {
-            this.declarations = this.getExtendedLhs(this, null).getOuterDeclarations();
+            this.declarations = this.getExtendedLhs( this,
+                                                     null ).getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
@@ -496,23 +500,27 @@ public class Rule
         this.dirty = true;
         this.lhsRoot = lhsRoot;
     }
-    private GroupElement getExtendedLhs(Rule rule, GroupElement fromChild){
-    	//combine rules LHS with Parent "Extends"
-    	final GroupElement lhs = (GroupElement) rule.lhsRoot.clone();
-    	//use the children passed from prior child rules, and combine with current LHS (at the end)
-    	if(null != fromChild){
-			//Have GroupElement from a child rule, so combine it
-			lhs.getChildren().addAll(fromChild.getChildren());
-		}
-    	//move recursively up the tree
-    	if(rule.parent != null){
-    		return getExtendedLhs(rule.parent, lhs);
-    	}
-    	//at the top of the tree, return combined LHS
-    	//TODO Merge LHS for performace
-    	
-    	return lhs;	
+
+    private GroupElement getExtendedLhs(Rule rule,
+                                        GroupElement fromChild) {
+        //combine rules LHS with Parent "Extends"
+        final GroupElement lhs = (GroupElement) rule.lhsRoot.clone();
+        //use the children passed from prior child rules, and combine with current LHS (at the end)
+        if ( null != fromChild ) {
+            //Have GroupElement from a child rule, so combine it
+            lhs.getChildren().addAll( fromChild.getChildren() );
+        }
+        //move recursively up the tree
+        if ( rule.parent != null ) {
+            return getExtendedLhs( rule.parent,
+                                   lhs );
+        }
+        //at the top of the tree, return combined LHS
+        //TODO Merge LHS for performace
+
+        return lhs;
     }
+
     /**
      * Uses the LogicTransformer to process the Rule patters - if no ORs are
      * used this will return an array of a single AND element. If there are Ors
@@ -524,8 +532,9 @@ public class Rule
      * @throws InvalidPatternException
      */
     public GroupElement[] getTransformedLhs() throws InvalidPatternException {
-    	//Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
-    	return LogicTransformer.getInstance().transform( getExtendedLhs(this, null) );
+        //Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
+        return LogicTransformer.getInstance().transform( getExtendedLhs( this,
+                                                                         null ) );
     }
 
     public int getSpecifity() {
@@ -559,16 +568,17 @@ public class Rule
     public void wire(Object object) {
         if ( object instanceof Salience ) {
             setSalience( (Salience) object );
-        } else if( object instanceof Enabled ) {
-        	setEnabled(( Enabled) object);
+        } else if ( object instanceof Enabled ) {
+            setEnabled( (Enabled) object );
         } else {
             Consequence c = (Consequence) object;
             if ( "default".equals( c.getName() ) ) {
-                setConsequence( c );    
+                setConsequence( c );
             } else {
-                getNamedConsequences().put( c.getName(), c );
+                getNamedConsequences().put( c.getName(),
+                                            c );
             }
-            
+
         }
     }
 
@@ -593,12 +603,12 @@ public class Rule
     public Consequence getConsequence() {
         return this.consequence;
     }
-    
+
     public Map<String, Consequence> getNamedConsequences() {
         if ( this.namedConsequence == null ) {
             this.namedConsequence = new HashMap<String, Consequence>();
         }
-        
+
         return this.namedConsequence;
     }
 
@@ -688,27 +698,41 @@ public class Rule
         this.enabled = b;
     }
 
-    public boolean isEnabled( Tuple tuple, WorkingMemory workingMemory ) {
-        return this.enabled.getValue( tuple, this, workingMemory );
+    public boolean isEnabled(Tuple tuple,
+                             WorkingMemory workingMemory) {
+        return this.enabled.getValue( tuple,
+                                      this,
+                                      workingMemory );
     }
-	public void setMetaAttributes(Map<String,String> metaAttributes) {
-		this.metaAttributes = metaAttributes;
-	}
-	public Map<String,String> getMetaAttributes() {
-		return metaAttributes;
-	}
+
+    public void setMetaAttributes(Map<String, String> metaAttributes) {
+        this.metaAttributes = metaAttributes;
+    }
+
+    public void addMetaAttribute(String key,
+                                 String value) {
+        this.metaAttributes.put( key,
+                                 value );
+    }
+
+    public Map<String, String> getMetaAttributes() {
+        return metaAttributes;
+    }
+
     public String getMetaAttribute(final String identifier) {
         return (String) this.metaAttributes.get( identifier );
     }
-    
+
     public Collection<String> listMetaAttributes() {
         return this.metaAttributes.keySet();
     }
-    
-	public void setParent(Rule parent) {
-		this.parent = parent;
-	}
-	public Rule getParent() {
-		return parent;
-	}
+
+    public void setParent(Rule parent) {
+        this.parent = parent;
+    }
+
+    public Rule getParent() {
+        return parent;
+    }
+
 }
