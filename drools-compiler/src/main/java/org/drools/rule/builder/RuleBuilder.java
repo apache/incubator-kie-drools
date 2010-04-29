@@ -20,11 +20,13 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
 import org.drools.core.util.DateUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.lang.DroolsSoftKeywords;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -65,7 +67,7 @@ public class RuleBuilder {
             context.getRule().setParent( context.getPkg().getRule( ruleDescr.getParentName() ) );
         }
         // add all the rule's meta attributes
-        context.getRule().getMetaAttributes().putAll( ruleDescr.getMetaAttributes() );
+        buildMetaAttributes( context );
 
         final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
@@ -99,6 +101,17 @@ public class RuleBuilder {
             }
         }
 
+    }
+
+    public void buildMetaAttributes(final RuleBuildContext context ) {
+        Rule rule = context.getRule();
+        for( Entry<String, String> meta : context.getRuleDescr().getMetaAttributes().entrySet() ) {
+            String value = meta.getValue().trim();
+            if( value.startsWith( "\"" ) && value.endsWith( "\"" ) && value.length() > 2 ) {
+                value = StringUtils.unescapeJava( value.substring( 1, value.length()-1 ) ); 
+            }
+            rule.addMetaAttribute( meta.getKey(), value );
+        }
     }
 
     public void buildAttributes(final RuleBuildContext context) {
