@@ -9,7 +9,13 @@ import org.drools.runtime.process.ProcessInstance;
 public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance> {
 	
 	private Long processInstanceId;
+
+	public GetProcessInstanceCommand() {}
 	
+	public GetProcessInstanceCommand(Long processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
+
 	public Long getProcessInstanceId() {
 		return processInstanceId;
 	}
