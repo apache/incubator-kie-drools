@@ -6,7 +6,6 @@ import java.util.Map;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class CompleteWorkItemCommand implements GenericCommand<Object> {
@@ -14,16 +13,16 @@ public class CompleteWorkItemCommand implements GenericCommand<Object> {
 	private long workItemId;
 	private Map<String, Object> results = new HashMap<String, Object>();
 	
+	public CompleteWorkItemCommand() {}
 	
-	public CompleteWorkItemCommand() {
-	    
+	public CompleteWorkItemCommand(long workItemId) {
+		this.workItemId = workItemId;
 	}
 	
-	public CompleteWorkItemCommand(long workItemId,
-                                   Map<String, Object> results) {
-        this.workItemId = workItemId;
-        this.results = results;
-    }
+	public CompleteWorkItemCommand(long workItemId, Map<String, Object> results) {
+		this(workItemId);
+		this.results = results;
+	}
 
     public long getWorkItemId() {
 		return workItemId;
