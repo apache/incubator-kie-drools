@@ -14,23 +14,15 @@
 
 package org.drools.util;
 
-import java.io.IOException;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.Service;
-import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerService;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.io.ResourceFactoryService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.component.ComponentContext;
 
 /**
  * This is an internal class, not for public consumption.
@@ -39,15 +31,12 @@ import org.osgi.service.component.ComponentContext;
 public class ServiceRegistryImpl
     implements
     ServiceRegistry {
-    private static ServiceRegistry     instance;
+	private static ServiceRegistry instance = new ServiceRegistryImpl();
 
     private Map<String, Callable< ? >> registry        = new HashMap<String, Callable< ? >>();
     private Map<String, Callable< ? >> defaultServices = new HashMap<String, Callable< ? >>();
 
     public static synchronized ServiceRegistry getInstance() {
-        if ( instance == null ) {
-            instance = new ServiceRegistryImpl();
-        }
         return ServiceRegistryImpl.instance;
     }
 
@@ -58,8 +47,7 @@ public class ServiceRegistryImpl
     /* (non-Javadoc)
      * @see org.drools.util.internal.ServiceRegistry#registerLocator(java.lang.String, java.util.concurrent.Callable)
      */
-    public synchronized void registerLocator(Class cls,
-                                             Callable cal) {
+	public synchronized void registerLocator(Class cls, Callable cal) {
         this.registry.put( cls.getName(),
                            cal );
     }
