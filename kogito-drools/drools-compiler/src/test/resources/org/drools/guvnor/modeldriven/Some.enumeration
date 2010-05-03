@@ -1,3 +1,0 @@
-'Person.age' : [1, 2, 3, 4]
-'Person.rating' : ["High", "Low"]
-'Person.something' : (new org.drools.guvnor.modeldriven.SampleDataSource()).getData()

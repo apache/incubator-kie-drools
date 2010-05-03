@@ -55,13 +55,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <artifactId>janino</artifactId>
       </dependency>
       <dependency>
-         <groupId>com.thoughtworks.xstream</groupId>
-         <artifactId>xstream</artifactId>
-         <optional>true</optional>
-      </dependency>
-      <dependency>
          <groupId>org.mvel</groupId>
          <artifactId>mvel2</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.mortbay.jetty</groupId>

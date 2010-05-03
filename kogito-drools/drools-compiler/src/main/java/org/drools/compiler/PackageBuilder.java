@@ -17,7 +17,6 @@ package org.drools.compiler;
  */
 
 import java.beans.IntrospectionException;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -56,9 +55,6 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ReaderResource;
@@ -362,47 +358,33 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromBrl(final Resource resource) throws DroolsParserException,
-                                                          IOException {
-        this.resource = resource;
+	public void addPackageFromBrl(final Resource resource) throws DroolsParserException {
+		this.resource = resource;
+		try {
+	        BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
+	        Reader knowledge = provider.getKnowledgeReader(resource);
 
-        String brl = loadBrlFile( resource.getReader() );
-        RuleModel model = BRXMLPersistence.getInstance().unmarshal( brl );
-        String drl = BRDRLPersistence.getInstance().marshal( model );
-        final DrlParser parser = new DrlParser();
-        DefaultExpander expander = getDslExpander();
+			DrlParser parser = new DrlParser();
+	        DefaultExpander expander = getDslExpander();
 
-        try {
-            String str;
-            if ( expander != null ) {
-                str = expander.expand( new StringReader( drl ) );
-                if ( expander.hasErrors() ) {
-                    this.results.addAll( expander.getErrors() );
-                }
-            } else {
-                str = drl;
-            }
+	        if (null != expander) {
+	        	knowledge = new StringReader(expander.expand(knowledge));
+	        	if (expander.hasErrors())
+	        		this.results.addAll(expander.getErrors());
+	        }
 
-            final PackageDescr pkg = parser.parse( str );
-            this.results.addAll( parser.getErrors() );
-            if ( !parser.hasErrors() ) {
-                addPackage( pkg );
-            }
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+	        PackageDescr pkg = parser.parse(knowledge);
+	        if (parser.hasErrors()) {
+	        	this.results.addAll(parser.getErrors());
+	        } else {
+	        	addPackage(pkg);
+	        }
+
+		} catch (Exception e) {
+			throw new DroolsParserException(e);
+		} finally {
+			this.resource = null;
         }
-        this.resource = null;
-    }
-
-    private String loadBrlFile(final Reader drl) throws IOException {
-        final StringBuilder buf = new StringBuilder();
-        final BufferedReader input = new BufferedReader( drl );
-        String line = null;
-        while ( (line = input.readLine()) != null ) {
-            buf.append( line );
-            buf.append( "\n" );
-        }
-        return buf.toString();
     }
 
     public void addDsl(Resource resource) throws IOException {
