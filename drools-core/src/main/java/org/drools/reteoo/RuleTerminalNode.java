@@ -298,7 +298,7 @@ public class RuleTerminalNode extends BaseNode
         }
 
         AgendaItem item = (AgendaItem) leftTuple.getActivation();
-        if ( item.isActivated() ) {
+        if ( item != null && item.isActivated() ) {
             // already activated, do nothing
             return;
         }
@@ -314,12 +314,18 @@ public class RuleTerminalNode extends BaseNode
         final Timer timer = this.rule.getTimer();
 
         if ( timer != null ) {
+            if ( item == null ) {
+                item = agenda.createScheduledAgendaItem( leftTuple,
+                                                         context,
+                                                         this.rule,
+                                                         this.subrule );
+            }
             agenda.scheduleItem( (ScheduledAgendaItem) item,
                                  workingMemory );
             item.setActivated( true );
-//            workingMemory.removeLogicalDependencies( item,
-//                                                     context,
-//                                                     this.rule );
+            //            workingMemory.removeLogicalDependencies( item,
+            //                                                     context,
+            //                                                     this.rule );
 
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                           workingMemory );
@@ -334,18 +340,32 @@ public class RuleTerminalNode extends BaseNode
                 }
             }
 
-            item.setSalience( rule.getSalience().getValue( leftTuple,
-                                                           workingMemory ) ); // need to re-evaluate salience, as used fields may have changed
-            item.setPropagationContext( context ); // update the Propagation Context
+            if ( item == null ) {
+                // -----------------
+                // Lazy instantiation and addition to the Agenda of AgendGroup
+                // implementations
+                // ----------------
+                item = agenda.createAgendaItem( leftTuple,
+                                                rule.getSalience().getValue( leftTuple,
+                                                                             workingMemory ),
+                                                context,
+                                                this.rule,
+                                                this.subrule );
+                item.setSequenence( this.sequence );
+            } else {
+                item.setSalience( rule.getSalience().getValue( leftTuple,
+                                                               workingMemory ) ); // need to re-evaluate salience, as used fields may have changed
+                item.setPropagationContext( context ); // update the Propagation Context
+            }
 
             boolean added = agenda.addActivation( item );
 
             item.setActivated( added );
 
             if ( added ) {
-//                workingMemory.removeLogicalDependencies( item,
-//                                                         context,
-//                                                         this.rule );
+                //                workingMemory.removeLogicalDependencies( item,
+                //                                                         context,
+                //                                                         this.rule );
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }
@@ -395,7 +415,7 @@ public class RuleTerminalNode extends BaseNode
                                  builder,
                                  this,
                                  workingMemories );
-        for( InternalWorkingMemory workingMemory : workingMemories ) {
+        for ( InternalWorkingMemory workingMemory : workingMemories ) {
             workingMemory.executeQueuedActions();
         }
         context.setCleanupAdapter( adapter );
@@ -470,19 +490,21 @@ public class RuleTerminalNode extends BaseNode
         return NodeTypeEnums.RuleTerminalNode;
     }
 
-    public static class RTNCleanupAdapter implements CleanupAdapter {
+    public static class RTNCleanupAdapter
+        implements
+        CleanupAdapter {
         private RuleTerminalNode node;
-        
+
         public RTNCleanupAdapter(RuleTerminalNode node) {
             this.node = node;
         }
 
         public void cleanUp(final LeftTuple leftTuple,
                             final InternalWorkingMemory workingMemory) {
-            if( leftTuple.getLeftTupleSink() != node ) {
+            if ( leftTuple.getLeftTupleSink() != node ) {
                 return;
             }
-            
+
             final Activation activation = leftTuple.getActivation();
 
             if ( activation.isActivated() ) {

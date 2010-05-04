@@ -18,6 +18,12 @@ public interface InternalRuleFlowGroup extends RuleFlowGroup {
     void clear();
 
     /**
+     * Checks if this ruleflow group is active and should automatically deactivate.
+     * If the queue is empty, it deactivates the group.
+     */
+    public void deactivateIfEmpty();
+
+    /**
      * Activates or deactivates this <code>RuleFlowGroup</code>.
      * When activating, all activations of this <code>RuleFlowGroup</code> are added
      * to the agenda.
