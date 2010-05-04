@@ -904,8 +904,9 @@ public class DefaultAgenda
             }
             activation.setActivated( false );
 
+            InternalRuleFlowGroup ruleFlowGroup = null;
             if ( activation.getActivationNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
+                ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
                 // it is possible that the ruleflow group is no longer active if it was
                 // cleared during execution of this activation
                 ruleFlowGroup.removeActivation( activation );
@@ -929,6 +930,10 @@ public class DefaultAgenda
                 } else {
                     throw new RuntimeException( e );
                 }
+            }
+            
+            if( ruleFlowGroup != null ) {
+                ruleFlowGroup.deactivateIfEmpty();
             }
 
             // if the tuple contains expired events 
