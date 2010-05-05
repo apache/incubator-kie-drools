@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
