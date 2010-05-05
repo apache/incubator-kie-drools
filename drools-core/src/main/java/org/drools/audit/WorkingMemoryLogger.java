@@ -82,6 +82,7 @@ import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 import org.drools.workflow.core.node.CompositeNode;
+import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.instance.node.CompositeNodeInstance;
 
 /**
@@ -467,8 +468,11 @@ public abstract class WorkingMemoryLogger
     	while (nodeContainer != null) {
     		if (nodeContainer instanceof CompositeNode) {
     			node = (CompositeNode) nodeContainer;
-    			nodeId = node.getId() + ":" + nodeId;
     			nodeContainer = node.getNodeContainer();
+    			// filter out hidden compositeNode inside ForEach node
+    			if (!(nodeContainer instanceof ForEachNode)) {
+        			nodeId = node.getId() + ":" + nodeId;
+    			}
     		} else {
     			break;
     		}
