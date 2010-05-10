@@ -193,6 +193,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 	            }
 	        }
     	}
+    	this.workItemId = -1;
         if (isInversionOfControl()) {
             WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
             workingMemory.update(workingMemory.getFactHandle(this), this);
