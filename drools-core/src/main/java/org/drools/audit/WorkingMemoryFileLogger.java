@@ -54,6 +54,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
     private int        nbOfFile          = 0;
     private boolean    split             = true;
     private boolean    initialized       = false;
+    private boolean    finalized         = false;
 
     public WorkingMemoryFileLogger() {
     }
@@ -133,8 +134,25 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         } finally {
             if( fileWriter != null ) { try { fileWriter.close(); } catch(Exception e) {} }
         }
+        
+        if (!finalized) {
+        	finalizeLog();
+        }
     }
 
+    private void finalizeLog() {
+    	try {
+            FileWriter writer = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
+            writer.append("</object-stream>\n");
+            writer.close();
+            finalized = true;
+        } catch ( final FileNotFoundException exc ) {
+            throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
+        } catch ( final Throwable t ) {
+            t.printStackTrace( System.err );
+        }
+    }
+    
     private void initializeLog() {
         try {
             FileWriter writer = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), false);
