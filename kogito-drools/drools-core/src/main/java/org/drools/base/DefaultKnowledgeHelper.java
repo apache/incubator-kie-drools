@@ -110,6 +110,7 @@ public class DefaultKnowledgeHelper
         this.activation = null;
         this.tuple = null;
         this.identityMap.clear();
+        this.previousJustified = null;
     }
 
     public void insert(final Object object) throws FactException {
