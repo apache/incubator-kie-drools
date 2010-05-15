@@ -119,6 +119,7 @@ public class AgendaItem
         this.salience = salience;
         this.subrule = subrule;
         this.activationNumber = activationNumber;
+        this.index = -1;
     }
 
     // ------------------------------------------------------------
@@ -275,6 +276,7 @@ public class AgendaItem
         	this.agendaGroup.remove( this );
         }
         this.activated = false;
+        this.index = -1;
     }
     
     public int getIndex() {
