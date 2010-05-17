@@ -17,6 +17,7 @@ package org.drools.workflow.instance.impl;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.WorkingMemory;
@@ -26,9 +27,11 @@ import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
+import org.drools.process.core.context.exclusive.ExclusiveGroup;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.workflow.core.impl.NodeImpl;
@@ -152,6 +155,26 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
     	if (!hidden) {
     		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
     	}
+    	// check for exclusive group first
+    	NodeInstanceContainer parent = getNodeInstanceContainer();
+    	if (parent instanceof ContextInstanceContainer) {
+    		List<ContextInstance> contextInstances = ((ContextInstanceContainer) parent).getContextInstances(ExclusiveGroup.EXCLUSIVE_GROUP);
+    		if (contextInstances != null) {
+    			for (ContextInstance contextInstance: new ArrayList<ContextInstance>(contextInstances)) {
+    				ExclusiveGroupInstance groupInstance = (ExclusiveGroupInstance) contextInstance;
+    				if (groupInstance.containsNodeInstance(this)) {
+    					for (NodeInstance nodeInstance: groupInstance.getNodeInstances()) {
+    						if (nodeInstance != this) {
+    							((org.drools.workflow.instance.NodeInstance) nodeInstance).cancel();
+    						}
+    					}
+    					((ContextInstanceContainer) parent).removeContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, contextInstance);
+    				}
+    				
+    			}
+    		}
+    	}
+    	// trigger next node
         ((org.drools.workflow.instance.NodeInstance) ((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
         	.getNodeInstance(connection.getTo())).trigger(this, connection.getToType());
         if (!hidden) {

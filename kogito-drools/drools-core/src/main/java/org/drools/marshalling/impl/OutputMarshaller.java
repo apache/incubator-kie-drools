@@ -141,6 +141,12 @@ public class OutputMarshaller {
             context.writeUTF( group.getName() );
             context.writeBoolean( group.isActive() );
             context.writeBoolean( group.isAutoDeactivate() );
+            Map<Long, String> nodeInstances = group.getNodeInstances();
+            context.writeInt( nodeInstances.size() );
+            for (Map.Entry<Long, String> entry: nodeInstances.entrySet()) {
+            	context.writeLong( entry.getKey() );
+            	context.writeUTF( entry.getValue() );
+            }
         }
         context.writeShort( PersisterEnums.END );
     }

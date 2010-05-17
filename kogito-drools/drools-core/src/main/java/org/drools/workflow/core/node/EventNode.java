@@ -7,10 +7,9 @@ import org.drools.definition.process.Connection;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTransformer;
 import org.drools.process.core.event.EventTypeFilter;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
-public class EventNode extends NodeImpl implements EventNodeInterface {
+public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
 
 	private static final long serialVersionUID = 4L;
 	
@@ -78,22 +77,28 @@ public class EventNode extends NodeImpl implements EventNodeInterface {
 		this.scope = scope;
 	}
 
-	public void validateAddIncomingConnection(final String type, final Connection connection) {
-        throw new UnsupportedOperationException(
-            "An event node does not have an incoming connection!");
+    public void validateAddIncomingConnection(final String type, final Connection connection) {
+        super.validateAddIncomingConnection(type, connection);
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                "This type of node only accepts default incoming connection type!");
+        }
+        if (getFrom() != null) {
+            throw new IllegalArgumentException(
+                "This type of node cannot have more than one incoming connection!");
+        }
     }
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "This type of node only accepts default outgoing connection type!");
         }
-        if (getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE) != null
-                && !getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+        if (getTo() != null) {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one outgoing connection!");
         }
     }
-
+    
 }

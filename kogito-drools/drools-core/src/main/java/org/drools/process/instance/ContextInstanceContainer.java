@@ -15,6 +15,8 @@ public interface ContextInstanceContainer {
     
     void addContextInstance(String contextId, ContextInstance contextInstance);
     
+    void removeContextInstance(String contextId, ContextInstance contextInstance);
+    
     // TODO: does it make sense to have more than one contextInstance
     // with the same contextId (e.g. multiple variable scope instances
     // sharing the same context instance container?

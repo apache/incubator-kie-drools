@@ -90,6 +90,7 @@ public class RuleFlowGroupImpl
         list = (LinkedList) in.readObject();
         autoDeactivate = in.readBoolean();
         listeners = (List<RuleFlowGroupListener>) in.readObject();
+        nodeInstances = (Map<Long, String>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -99,6 +100,7 @@ public class RuleFlowGroupImpl
         out.writeObject( list );
         out.writeBoolean( autoDeactivate );
         out.writeObject( listeners );
+        out.writeObject( nodeInstances );
     }
 
     public String getName() {

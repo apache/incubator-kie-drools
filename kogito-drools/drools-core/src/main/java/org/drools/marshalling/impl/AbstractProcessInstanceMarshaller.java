@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -14,11 +15,13 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Context;
 import org.drools.process.core.Process;
+import org.drools.process.core.context.exclusive.ExclusiveGroup;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.ContextInstance;
+import org.drools.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.runtime.process.ProcessInstance;
@@ -27,6 +30,7 @@ import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.DynamicNodeInstance;
+import org.drools.workflow.instance.node.EventNodeInstance;
 import org.drools.workflow.instance.node.ForEachNodeInstance;
 import org.drools.workflow.instance.node.HumanTaskNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
@@ -82,7 +86,6 @@ public abstract class AbstractProcessInstanceMarshaller implements
         }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance(SwimlaneContext.SWIMLANE_SCOPE);
-
         if (swimlaneContextInstance != null) {
             Map<String, String> swimlaneActors = swimlaneContextInstance.getSwimlaneActors();
             stream.writeInt(swimlaneActors.size());
@@ -93,6 +96,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         } else {
             stream.writeInt(0);
         }
+        
         List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(workFlow.getNodeInstances());
         Collections.sort(nodeInstances,
                 new Comparator<NodeInstance>() {
@@ -108,6 +112,22 @@ public abstract class AbstractProcessInstanceMarshaller implements
                     nodeInstance);
         }
         stream.writeShort(PersisterEnums.END);
+        
+        List<ContextInstance> exclusiveGroupInstances =
+        	workFlow.getContextInstances(ExclusiveGroup.EXCLUSIVE_GROUP);
+        if (exclusiveGroupInstances == null) {
+        	stream.writeInt(0);
+        } else {
+        	stream.writeInt(exclusiveGroupInstances.size());
+        	for (ContextInstance contextInstance: exclusiveGroupInstances) {
+        		ExclusiveGroupInstance exclusiveGroupInstance = (ExclusiveGroupInstance) contextInstance;
+        		Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
+        		stream.writeInt(groupNodeInstances.size());
+        		for (NodeInstance nodeInstance: groupNodeInstances) {
+        			stream.writeLong(nodeInstance.getId());
+        		}
+        	}
+        }
     }
 
     public void writeNodeInstance(MarshallerWriteContext context,
@@ -144,7 +164,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
             } else {
                 stream.writeInt(0);
             }
-        } else if (nodeInstance instanceof TimerNodeInstance) {
+        } else if (nodeInstance instanceof EventNodeInstance) {
+        	stream.writeShort(PersisterEnums.EVENT_NODE_INSTANCE);
+    	} else if (nodeInstance instanceof TimerNodeInstance) {
             stream.writeShort(PersisterEnums.TIMER_NODE_INSTANCE);
             stream.writeLong(((TimerNodeInstance) nodeInstance).getTimerId());
         } else if (nodeInstance instanceof JoinInstance) {
@@ -176,57 +198,15 @@ public abstract class AbstractProcessInstanceMarshaller implements
             } else {
                 stream.writeInt(0);
             }
-        } else if (nodeInstance instanceof DynamicNodeInstance) {
-            stream.writeShort(PersisterEnums.DYNAMIC_NODE_INSTANCE);
-            DynamicNodeInstance dynamicNodeInstance = (DynamicNodeInstance) nodeInstance;
-            List<Long> timerInstances = dynamicNodeInstance.getTimerInstances();
-            if (timerInstances != null) {
-                stream.writeInt(timerInstances.size());
-                for (Long id : timerInstances) {
-                    stream.writeLong(id);
-                }
-            } else {
-                stream.writeInt(0);
-            }
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) dynamicNodeInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-            if (variableScopeInstance == null) {
-            	stream.writeInt(0);
-            } else {
-	            Map<String, Object> variables = variableScopeInstance.getVariables();
-	            List<String> keys = new ArrayList<String>(variables.keySet());
-	            Collections.sort(keys,
-	                    new Comparator<String>() {
-	                        public int compare(String o1,
-	                                String o2) {
-	                            return o1.compareTo(o2);
-	                        }
-	                    });
-	            stream.writeInt(keys.size());
-	            for (String key : keys) {
-	                stream.writeUTF(key);
-	                stream.writeObject(variables.get(key));
-	            }
-            }
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(dynamicNodeInstance.getNodeInstances());
-            Collections.sort(nodeInstances,
-                    new Comparator<NodeInstance>() {
-
-                        public int compare(NodeInstance o1,
-                                NodeInstance o2) {
-                            return (int) (o1.getId() - o2.getId());
-                        }
-                    });
-            for (NodeInstance subNodeInstance : nodeInstances) {
-                stream.writeShort(PersisterEnums.NODE_INSTANCE);
-                writeNodeInstance(context,
-                        subNodeInstance);
-            }
-            stream.writeShort(PersisterEnums.END);
         } else if (nodeInstance instanceof CompositeContextNodeInstance) {
-            stream.writeShort(PersisterEnums.COMPOSITE_NODE_INSTANCE);
+        	if (nodeInstance instanceof DynamicNodeInstance) {
+                stream.writeShort(PersisterEnums.DYNAMIC_NODE_INSTANCE);
+        	} else {
+        		stream.writeShort(PersisterEnums.COMPOSITE_NODE_INSTANCE);
+        	}
             CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
             List<Long> timerInstances =
-                    ((CompositeContextNodeInstance) nodeInstance).getTimerInstances();
+                ((CompositeContextNodeInstance) nodeInstance).getTimerInstances();
             if (timerInstances != null) {
                 stream.writeInt(timerInstances.size());
                 for (Long id : timerInstances) {
@@ -269,13 +249,27 @@ public abstract class AbstractProcessInstanceMarshaller implements
                         subNodeInstance);
             }
             stream.writeShort(PersisterEnums.END);
+            List<ContextInstance> exclusiveGroupInstances =
+            	compositeNodeInstance.getContextInstances(ExclusiveGroup.EXCLUSIVE_GROUP);
+            if (exclusiveGroupInstances == null) {
+            	stream.writeInt(0);
+            } else {
+            	stream.writeInt(exclusiveGroupInstances.size());
+            	for (ContextInstance contextInstance: exclusiveGroupInstances) {
+            		ExclusiveGroupInstance exclusiveGroupInstance = (ExclusiveGroupInstance) contextInstance;
+            		Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
+            		stream.writeInt(groupNodeInstances.size());
+            		for (NodeInstance groupNodeInstance: groupNodeInstances) {
+            			stream.writeLong(groupNodeInstance.getId());
+            		}
+            	}
+            }
         } else if (nodeInstance instanceof ForEachNodeInstance) {
             stream.writeShort(PersisterEnums.FOR_EACH_NODE_INSTANCE);
             ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) nodeInstance;
             List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(forEachNodeInstance.getNodeInstances());
             Collections.sort(nodeInstances,
                     new Comparator<NodeInstance>() {
-
                         public int compare(NodeInstance o1,
                                 NodeInstance o2) {
                             return (int) (o1.getId() - o2.getId());
@@ -348,6 +342,21 @@ public abstract class AbstractProcessInstanceMarshaller implements
             readNodeInstance(context, processInstance, processInstance);
         }
 
+        int exclusiveGroupInstances = stream.readInt();
+    	for (int i = 0; i < exclusiveGroupInstances; i++) {
+            ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
+            processInstance.addContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance);
+            int nodeInstances = stream.readInt();
+            for (int j = 0; j < nodeInstances; j++) {
+                long nodeInstanceId = stream.readLong();
+                NodeInstance nodeInstance = processInstance.getNodeInstance(nodeInstanceId);
+                if (nodeInstance == null) {
+                	throw new IllegalArgumentException("Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId);
+                }
+                exclusiveGroupInstance.addNodeInstance(nodeInstance);
+            }
+    	}
+
         processInstance.internalSetNodeInstanceCounter(nodeInstanceCounter);
         if (wm != null) {
             processInstance.reconnect();
@@ -395,6 +404,22 @@ public abstract class AbstractProcessInstanceMarshaller implements
                             (CompositeContextNodeInstance) nodeInstance,
                             processInstance);
                 }
+                
+                int exclusiveGroupInstances = stream.readInt();
+            	for (int i = 0; i < exclusiveGroupInstances; i++) {
+                    ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
+                    processInstance.addContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance);
+                    int nodeInstances = stream.readInt();
+                    for (int j = 0; j < nodeInstances; j++) {
+                        long nodeInstanceId = stream.readLong();
+                        NodeInstance groupNodeInstance = processInstance.getNodeInstance(nodeInstanceId);
+                        if (groupNodeInstance == null) {
+                        	throw new IllegalArgumentException("Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId);
+                        }
+                        exclusiveGroupInstance.addNodeInstance(groupNodeInstance);
+                    }
+            	}
+
                 break;
             case PersisterEnums.FOR_EACH_NODE_INSTANCE:
                 while (stream.readShort() == PersisterEnums.NODE_INSTANCE) {
@@ -445,6 +470,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 nodeInstance = new TimerNodeInstance();
                 ((TimerNodeInstance) nodeInstance).internalSetTimerId(stream.readLong());
                 break;
+            case PersisterEnums.EVENT_NODE_INSTANCE:
+                nodeInstance = new EventNodeInstance();
+                break;
             case PersisterEnums.JOIN_NODE_INSTANCE:
                 nodeInstance = new JoinInstance();
                 int number = stream.readInt();
@@ -475,6 +503,14 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 break;
             case PersisterEnums.DYNAMIC_NODE_INSTANCE:
                 nodeInstance = new DynamicNodeInstance();
+                nbTimerInstances = stream.readInt();
+                if (nbTimerInstances > 0) {
+                    List<Long> timerInstances = new ArrayList<Long>();
+                    for (int i = 0; i < nbTimerInstances; i++) {
+                        timerInstances.add(stream.readLong());
+                    }
+                    ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
+                }
                 break;
             case PersisterEnums.STATE_NODE_INSTANCE:
                 nodeInstance = new StateNodeInstance();

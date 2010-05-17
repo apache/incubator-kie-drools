@@ -47,19 +47,15 @@ public class EventNodeInstance extends NodeInstanceImpl implements EventNodeInst
     		}
     		variableScopeInstance.setVariable(variableName, event);
     	}
-    	trigger(null, null);
+    	triggerCompleted();
     }
     
     public void internalTrigger(final NodeInstance from, String type) {
-        if (type != null) {
+    	if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                "An event node does not accept incoming connections!");
+                "An EventNode only accepts default incoming connections!");
         }
-        if (from != null) {
-            throw new IllegalArgumentException(
-                "An event can only be triggered by its parent!");
-        }
-        triggerCompleted();
+        // Do nothing, event activated
     }
     
     public EventNode getEventNode() {

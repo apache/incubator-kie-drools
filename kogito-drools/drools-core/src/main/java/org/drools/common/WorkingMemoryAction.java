@@ -15,6 +15,7 @@ public interface WorkingMemoryAction extends Externalizable {
     public static final int LogicalRetractCallback = 4;
     public static final int WorkingMemoryReteExpireAction = 5;
     public static final int SignalProcessInstanceAction = 6;
+    public static final int SignalAction = 7;
     
     
     public void execute(InternalWorkingMemory workingMemory);

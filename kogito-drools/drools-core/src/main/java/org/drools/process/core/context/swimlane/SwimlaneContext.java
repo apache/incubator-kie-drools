@@ -48,7 +48,7 @@ public class SwimlaneContext extends AbstractContext {
             return getSwimlane((String) param) == null ? null : this;
         }
         throw new IllegalArgumentException(
-            "ExceptionScopes can only resolve exception names: " + param);
+            "Swimlanes can only resolve swimlane names: " + param);
     }
 
 }

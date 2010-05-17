@@ -172,6 +172,15 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return Collections.unmodifiableCollection(result);
     }
 
+	public NodeInstance getNodeInstance(long nodeInstanceId) {
+		for (NodeInstance nodeInstance: nodeInstances) {
+			if (nodeInstance.getId() == nodeInstanceId) {
+				return nodeInstance;
+			}
+		}
+		return null;
+	}
+
     public NodeInstance getFirstNodeInstance(final long nodeId) {
         for ( final Iterator<NodeInstance> iterator = this.nodeInstances.iterator(); iterator.hasNext(); ) {
             final NodeInstance nodeInstance = iterator.next();
@@ -262,6 +271,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
 	public void addEventListeners() {
+		super.addEventListeners();
 		for (NodeInstance nodeInstance: nodeInstances) {
             if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
                 ((EventBasedNodeInstanceInterface) nodeInstance).addEventListeners();
@@ -270,6 +280,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	}
 
 	public void removeEventListeners() {
+		super.removeEventListeners();
 		for (NodeInstance nodeInstance: nodeInstances) {
             if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
                 ((EventBasedNodeInstanceInterface) nodeInstance).removeEventListeners();

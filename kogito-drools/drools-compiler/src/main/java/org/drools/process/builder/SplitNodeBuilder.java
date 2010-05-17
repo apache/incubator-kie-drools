@@ -27,7 +27,7 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
                       Node node) {
         Split splitNode = ( Split ) node;
         
-        if ( splitNode.getType() == Split.TYPE_AND ) {
+        if ( splitNode.getType() != Split.TYPE_XOR && splitNode.getType() != Split.TYPE_OR ) {
             // we only process or/xor
             return;
         }

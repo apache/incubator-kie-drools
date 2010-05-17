@@ -51,6 +51,11 @@ public class DefaultSignalManager implements SignalManager {
 	}
 	
 	public void signalEvent(String type, Object event) {
+		((InternalWorkingMemory) workingMemory).queueWorkingMemoryAction(new SignalAction(type, event));
+		workingMemory.fireAllRules();
+	}
+	
+	public void internalSignalEvent(String type, Object event) {
 		if (processEventListeners != null) {
 			List<EventListener> eventListeners = processEventListeners.get(type);
 			if (eventListeners != null) {
@@ -60,7 +65,6 @@ public class DefaultSignalManager implements SignalManager {
 			}
 		}
 	}
-	
 	public void signalEvent(long processInstanceId, String type, Object event) {
 		ProcessInstance processInstance = workingMemory.getProcessInstance(processInstanceId);
 		if (processInstance != null) {
@@ -90,7 +94,10 @@ public class DefaultSignalManager implements SignalManager {
 		}
 		
 		public void execute(InternalWorkingMemory workingMemory) {
-			workingMemory.getProcessInstance(processInstanceId).signalEvent(type, event);
+			ProcessInstance processInstance = workingMemory.getProcessInstance(processInstanceId);
+			if (processInstance != null) {
+				processInstance.signalEvent(type, event);
+			}
 		}
 
 		public void write(MarshallerWriteContext context) throws IOException {
@@ -113,6 +120,53 @@ public class DefaultSignalManager implements SignalManager {
 
 		public void writeExternal(ObjectOutput out) throws IOException {
 			out.writeLong(processInstanceId);
+			out.writeUTF(type);
+			out.writeBoolean(event != null);
+			if (event != null) {
+				out.writeObject(event);
+			}
+		}
+		
+	}
+	
+	public static class SignalAction implements WorkingMemoryAction {
+
+		private String type;
+		private Object event;
+		
+		public SignalAction(String type, Object event) {
+			this.type = type;
+			this.event = event;
+		}
+		
+		public SignalAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
+			type = context.readUTF();
+			if (context.readBoolean()) {
+				event = context.readObject();
+			}
+		}
+		
+		public void execute(InternalWorkingMemory workingMemory) {
+			((DefaultSignalManager) workingMemory.getSignalManager()).internalSignalEvent(type, event);
+		}
+
+		public void write(MarshallerWriteContext context) throws IOException {
+			context.writeInt( WorkingMemoryAction.SignalAction );
+			context.writeUTF(type);
+			context.writeBoolean(event != null);
+			if (event != null) {
+				context.writeObject(event);
+			}
+		}
+
+		public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+			type = in.readUTF();
+			if (in.readBoolean()) {
+				event = in.readObject();
+			}
+		}
+
+		public void writeExternal(ObjectOutput out) throws IOException {
 			out.writeUTF(type);
 			out.writeBoolean(event != null);
 			if (event != null) {
