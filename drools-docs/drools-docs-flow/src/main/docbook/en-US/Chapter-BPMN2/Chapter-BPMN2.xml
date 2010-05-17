@@ -18,12 +18,12 @@
       <itemizedlist>
         <listitem>Events
           <itemizedlist>
-            <listitem>Start Event (None, Conditional, Signal)</listitem>
-            <listitem>End Event (None, Terminate, Error, Escalation, Signal, Message)</listitem>
+            <listitem>Start Event (None, Conditional, Signal, Message, Timer)</listitem>
+            <listitem>End Event (None, Terminate, Error, Escalation, Signal, Message, Compensation)</listitem>
             <listitem>Intermediate Catch Event (Signal, Timer, Conditional, Message)</listitem>
-            <listitem>Intermediate Throw Event (None, Signal, Escalation, Message)</listitem>
+            <listitem>Intermediate Throw Event (None, Signal, Escalation, Message, Compensation)</listitem>
             <listitem>Non-interrupting Boundary Event (Escalation, Timer)</listitem>
-            <listitem>Interrupting Boundary Event (Escalation, Error, Timer)</listitem>
+            <listitem>Interrupting Boundary Event (Escalation, Error, Timer, Compensation)</listitem>
           </itemizedlist>
         </listitem>
         <listitem>Activities
@@ -38,6 +38,8 @@
             <listitem>Receive Task</listitem>
             <listitem>Reusable Sub-Process (Call Activity)</listitem>
             <listitem>Embedded Sub-Process</listitem>
+            <listitem>Ad-Hoc Sub-Process</listitem>
+            <listitem>Data-Object</listitem>
           </itemizedlist>
         </listitem>
         <listitem>Gateways
@@ -47,6 +49,7 @@
                 <listitem>Exclusive (Java, MVEL or XPath expression language)</listitem>
                 <listitem>Inclusive (Java, MVEL or XPath expression language)</listitem>
                 <listitem>Parallel</listitem>
+                <listitem>Event-Based</listitem>
               </itemizedlist>
             </listitem>
             <listitem>Converging
@@ -75,11 +78,17 @@
     </listitem>
   </itemizedlist>
 
-  <para>For example, consider the following BPMN process for performing evaluations.  Whenever an evaluation process is started for a specific employee, that employee must first perform a self-evaluation, after which the project manager and human resource manager must also fill in their evaluation, as shown in the figure below.</para>
+  <para>For example, consider the following BPMN process for performing evaluations.
+  Whenever an evaluation process is started for a specific employee, that employee
+  must first perform a self-evaluation, after which the project manager and human
+  resource manager must also fill in their evaluation, as shown in the figure below.</para>
 
 <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-BPMN2/Evaluation.png"/></imageobject></mediaobject>
 
-  <para>An executable version of this process expressed using BPMN 2.0 XML would look something like this (note that the process needs to contain all the details to make it execuble, including all the parameters for each of the tasks present, hence the large process definition):</para>
+  <para>An executable version of this process expressed using BPMN 2.0 XML would look
+  something like this (note that the process needs to contain all the details to make
+  it execuble, including all the parameters for each of the tasks present, hence the
+  large process definition):</para>
 
   <programlisting>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt; 
@@ -93,149 +102,127 @@
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:tns="http://www.jboss.org/drools"&gt;
 
-  &lt;itemDefinition id="employeeItem" structureRef="java.lang.Object" /&gt;
+  &lt;itemDefinition id="_employeeItem" structureRef="java.lang.Object" /&gt;
 
-  &lt;resource id="Actor" name="Human Actor" /&gt;
-
-  &lt;process id="com.sample.evaluation" name="Evaluation Process" &gt;
+  &lt;process processType="Private" isExecutable="true" id="com.sample.evaluation" name="Evaluation Process" &gt;
 
     &lt;!-- process variables --&gt;
-    &lt;property id="employee" itemSubjectRef="tns:employeeItem"/&gt;
+    &lt;property id="employee" itemSubjectRef="_employeeItem"/&gt;
 
     &lt;!-- nodes --&gt;
     &lt;startEvent id="_1" name="StartProcess" g:x="16" g:y="56" g:width="48" g:height="48" /&gt;
     &lt;userTask id="_2" name="Self Evaluation" g:x="96" g:y="56" g:width="143" g:height="48" &gt;
       &lt;ioSpecification&gt;
         &lt;dataInput id="_2_CommentInput" name="Comment" /&gt;
-        &lt;dataInput id="_2_TaskNameInput" name="TaskName" /&gt;
-        &lt;dataInput id="_2_PriorityInput" name="Priority" /&gt;
-        &lt;dataInput id="_2_ContentInput" name="Content" /&gt;
         &lt;dataInput id="_2_SkippableInput" name="Skippable" /&gt;
+        &lt;dataInput id="_2_TaskNameInput" name="TaskName" /&gt;
+        &lt;dataInput id="_2_ContentInput" name="Content" /&gt;
+        &lt;dataInput id="_2_PriorityInput" name="Priority" /&gt;
         &lt;inputSet&gt;
           &lt;dataInputRefs&gt;_2_CommentInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_2_TaskNameInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_2_PriorityInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_2_ContentInput&lt;/dataInputRefs&gt;
           &lt;dataInputRefs&gt;_2_SkippableInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_2_TaskNameInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_2_ContentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_2_PriorityInput&lt;/dataInputRefs&gt;
         &lt;/inputSet&gt;
         &lt;outputSet&gt;
         &lt;/outputSet&gt;
       &lt;/ioSpecification&gt;
-      &lt;property id="_2_Comment" /&gt;
-      &lt;property id="_2_TaskName" /&gt;
-      &lt;property id="_2_Priority" /&gt;
-      &lt;property id="_2_Content" /&gt;
-      &lt;property id="_2_Skippable" /&gt;
       &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_2_CommentInput&lt;/targetRef&gt;
         &lt;assignment&gt;
           &lt;from xs:type="tFormalExpression"&gt;You need to perform a self-evaluation&lt;/from&gt;
           &lt;to xs:type="tFormalExpression"&gt;_2_CommentInput&lt;/to&gt;
         &lt;/assignment&gt;
-        &lt;sourceRef&gt;_2_Comment&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_2_CommentInput&lt;/targetRef&gt;
       &lt;/dataInputAssociation&gt;
       &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_2_TaskNameInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_2_TaskName&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_2_TaskNameInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_2_PriorityInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_2_Priority&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_2_PriorityInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_2_ContentInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_2_Content&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_2_ContentInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_2_SkippableInput&lt;/targetRef&gt;
         &lt;assignment&gt;
           &lt;from xs:type="tFormalExpression"&gt;false&lt;/from&gt;
           &lt;to xs:type="tFormalExpression"&gt;_2_SkippableInput&lt;/to&gt;
         &lt;/assignment&gt;
-        &lt;sourceRef&gt;_2_Skippable&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_2_SkippableInput&lt;/targetRef&gt;
       &lt;/dataInputAssociation&gt;
-      &lt;potentialOwner resourceRef="tns:Actor" &gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_2_TaskNameInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_TaskNameInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_2_ContentInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_ContentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_2_PriorityInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_2_PriorityInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;potentialOwner&gt;
         &lt;resourceAssignmentExpression&gt;
           &lt;formalExpression&gt;#{employee}&lt;/formalExpression&gt;
         &lt;/resourceAssignmentExpression&gt;
       &lt;/potentialOwner&gt;
     &lt;/userTask&gt;
-    &lt;parallelGateway id="_3" name="Diverge" g:x="271" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" /&gt;
+    &lt;parallelGateway id="_3" name="Diverge" g:x="271" g:y="56" g:width="49" g:height="49" gatewayDirection="Diverging" /&gt;
     &lt;userTask id="_4" name="HR Manager Evaluation" g:x="352" g:y="96" g:width="225" g:height="48" &gt;
       &lt;ioSpecification&gt;
         &lt;dataInput id="_4_CommentInput" name="Comment" /&gt;
-        &lt;dataInput id="_4_TaskNameInput" name="TaskName" /&gt;
-        &lt;dataInput id="_4_PriorityInput" name="Priority" /&gt;
-        &lt;dataInput id="_4_ContentInput" name="Content" /&gt;
         &lt;dataInput id="_4_SkippableInput" name="Skippable" /&gt;
+        &lt;dataInput id="_4_TaskNameInput" name="TaskName" /&gt;
+        &lt;dataInput id="_4_ContentInput" name="Content" /&gt;
+        &lt;dataInput id="_4_PriorityInput" name="Priority" /&gt;
         &lt;inputSet&gt;
           &lt;dataInputRefs&gt;_4_CommentInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_4_TaskNameInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_4_PriorityInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_4_ContentInput&lt;/dataInputRefs&gt;
           &lt;dataInputRefs&gt;_4_SkippableInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_4_TaskNameInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_4_ContentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_4_PriorityInput&lt;/dataInputRefs&gt;
         &lt;/inputSet&gt;
         &lt;outputSet&gt;
         &lt;/outputSet&gt;
       &lt;/ioSpecification&gt;
-      &lt;property id="_4_Comment" /&gt;
-      &lt;property id="_4_TaskName" /&gt;
-      &lt;property id="_4_Priority" /&gt;
-      &lt;property id="_4_Content" /&gt;
-      &lt;property id="_4_Skippable" /&gt;
       &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_4_CommentInput&lt;/targetRef&gt;
         &lt;assignment&gt;
           &lt;from xs:type="tFormalExpression"&gt;You need to perform an evaluation for #{employee}&lt;/from&gt;
           &lt;to xs:type="tFormalExpression"&gt;_4_CommentInput&lt;/to&gt;
         &lt;/assignment&gt;
-        &lt;sourceRef&gt;_4_Comment&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_4_CommentInput&lt;/targetRef&gt;
       &lt;/dataInputAssociation&gt;
       &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_4_TaskNameInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_4_TaskName&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_4_TaskNameInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_4_PriorityInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_4_Priority&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_4_PriorityInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_4_ContentInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_4_Content&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_4_ContentInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_4_SkippableInput&lt;/targetRef&gt;
         &lt;assignment&gt;
           &lt;from xs:type="tFormalExpression"&gt;false&lt;/from&gt;
           &lt;to xs:type="tFormalExpression"&gt;_4_SkippableInput&lt;/to&gt;
         &lt;/assignment&gt;
-        &lt;sourceRef&gt;_4_Skippable&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_4_SkippableInput&lt;/targetRef&gt;
       &lt;/dataInputAssociation&gt;
-      &lt;potentialOwner resourceRef="tns:Actor" &gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_4_TaskNameInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_TaskNameInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_4_ContentInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_ContentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_4_PriorityInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_4_PriorityInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;potentialOwner&gt;
         &lt;resourceAssignmentExpression&gt;
           &lt;formalExpression&gt;mary&lt;/formalExpression&gt;
         &lt;/resourceAssignmentExpression&gt;
@@ -244,82 +231,72 @@
     &lt;userTask id="_5" name="Project Manager Evaluation" g:x="352" g:y="16" g:width="225" g:height="48" &gt;
       &lt;ioSpecification&gt;
         &lt;dataInput id="_5_CommentInput" name="Comment" /&gt;
-        &lt;dataInput id="_5_TaskNameInput" name="TaskName" /&gt;
-        &lt;dataInput id="_5_PriorityInput" name="Priority" /&gt;
-        &lt;dataInput id="_5_ContentInput" name="Content" /&gt;
         &lt;dataInput id="_5_SkippableInput" name="Skippable" /&gt;
+        &lt;dataInput id="_5_TaskNameInput" name="TaskName" /&gt;
+        &lt;dataInput id="_5_ContentInput" name="Content" /&gt;
+        &lt;dataInput id="_5_PriorityInput" name="Priority" /&gt;
         &lt;inputSet&gt;
           &lt;dataInputRefs&gt;_5_CommentInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_5_TaskNameInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_5_PriorityInput&lt;/dataInputRefs&gt;
-          &lt;dataInputRefs&gt;_5_ContentInput&lt;/dataInputRefs&gt;
           &lt;dataInputRefs&gt;_5_SkippableInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_5_TaskNameInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_5_ContentInput&lt;/dataInputRefs&gt;
+          &lt;dataInputRefs&gt;_5_PriorityInput&lt;/dataInputRefs&gt;
         &lt;/inputSet&gt;
         &lt;outputSet&gt;
         &lt;/outputSet&gt;
       &lt;/ioSpecification&gt;
-      &lt;property id="_5_Comment" /&gt;
-      &lt;property id="_5_TaskName" /&gt;
-      &lt;property id="_5_Priority" /&gt;
-      &lt;property id="_5_Content" /&gt;
-      &lt;property id="_5_Skippable" /&gt;
       &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_5_CommentInput&lt;/targetRef&gt;
         &lt;assignment&gt;
           &lt;from xs:type="tFormalExpression"&gt;You need to perform an evaluation for #{employee}&lt;/from&gt;
           &lt;to xs:type="tFormalExpression"&gt;_5_CommentInput&lt;/to&gt;
         &lt;/assignment&gt;
-        &lt;sourceRef&gt;_5_Comment&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_5_CommentInput&lt;/targetRef&gt;
       &lt;/dataInputAssociation&gt;
       &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_5_TaskNameInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_5_TaskName&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_5_TaskNameInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_5_PriorityInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_5_Priority&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_5_PriorityInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
-        &lt;assignment&gt;
-          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
-          &lt;to xs:type="tFormalExpression"&gt;_5_ContentInput&lt;/to&gt;
-        &lt;/assignment&gt;
-        &lt;sourceRef&gt;_5_Content&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_5_ContentInput&lt;/targetRef&gt;
-      &lt;/dataInputAssociation&gt;
-      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_5_SkippableInput&lt;/targetRef&gt;
         &lt;assignment&gt;
           &lt;from xs:type="tFormalExpression"&gt;false&lt;/from&gt;
           &lt;to xs:type="tFormalExpression"&gt;_5_SkippableInput&lt;/to&gt;
         &lt;/assignment&gt;
-        &lt;sourceRef&gt;_5_Skippable&lt;/sourceRef&gt;
-        &lt;targetRef&gt;_5_SkippableInput&lt;/targetRef&gt;
       &lt;/dataInputAssociation&gt;
-      &lt;potentialOwner resourceRef="tns:Actor" &gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_5_TaskNameInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;Performance Evaluation&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_TaskNameInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_5_ContentInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_ContentInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;dataInputAssociation&gt;
+        &lt;targetRef&gt;_5_PriorityInput&lt;/targetRef&gt;
+        &lt;assignment&gt;
+          &lt;from xs:type="tFormalExpression"&gt;1&lt;/from&gt;
+          &lt;to xs:type="tFormalExpression"&gt;_5_PriorityInput&lt;/to&gt;
+        &lt;/assignment&gt;
+      &lt;/dataInputAssociation&gt;
+      &lt;potentialOwner&gt;
         &lt;resourceAssignmentExpression&gt;
           &lt;formalExpression&gt;john&lt;/formalExpression&gt;
         &lt;/resourceAssignmentExpression&gt;
       &lt;/potentialOwner&gt;
     &lt;/userTask&gt;
-    &lt;parallelGateway id="_6" name="Converge" g:x="603" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" /&gt;
-    &lt;endEvent id="_7" name="EndProcess" g:x="683" g:y="56" g:width="48" g:height="48" /&gt;
+    &lt;parallelGateway id="_6" name="Converge" g:x="603" g:y="55" g:width="49" g:height="49" gatewayDirection="Converging" /&gt;
+    &lt;endEvent id="_7" name="EndProcess" g:x="690" g:y="56" g:width="48" g:height="48" /&gt;
 
     &lt;!-- connections --&gt;
-    &lt;sequenceFlow sourceRef="_2" targetRef="_3" /&gt;
-    &lt;sequenceFlow sourceRef="_3" targetRef="_4" g:bendpoints="[295,120]" /&gt;
-    &lt;sequenceFlow sourceRef="_6" targetRef="_7" /&gt;
-    &lt;sequenceFlow sourceRef="_1" targetRef="_2" /&gt;
-    &lt;sequenceFlow sourceRef="_3" targetRef="_5" g:bendpoints="[295,39]" /&gt;
-    &lt;sequenceFlow sourceRef="_5" targetRef="_6" g:bendpoints="[627,40]" /&gt;
-    &lt;sequenceFlow sourceRef="_4" targetRef="_6" g:bendpoints="[627,121]" /&gt;
+    &lt;sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" /&gt;
+    &lt;sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" /&gt;
+    &lt;sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" g:bendpoints="[295,120]" /&gt;
+    &lt;sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" g:bendpoints="[295,39]" /&gt;
+    &lt;sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" g:bendpoints="[627,40]" /&gt;
+    &lt;sequenceFlow id="_4-_6" sourceRef="_4" targetRef="_6" g:bendpoints="[627,121]" /&gt;
+    &lt;sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" /&gt;
 
   &lt;/process&gt;
 
@@ -329,21 +306,9 @@
 
   <programlisting>
 private static KnowledgeBase readKnowledgeBase() throws Exception {
-  KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-  ((PackageBuilderConfiguration) conf).initSemanticModules();
-  ((PackageBuilderConfiguration) conf).loadSemanticModule("BPMN2SemanticModule.conf");
-  KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
-  kbuilder.add(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.DRF);
-  KnowledgeBuilderErrors errors = kbuilder.getErrors();
-  if (errors.size() &gt; 0) {
-    for (KnowledgeBuilderError error: errors) {
-      System.err.println(error);
-    }
-    throw new IllegalArgumentException("Could not parse knowledge.");
-  }
-  KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-  kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-  return kbase;
+  KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+  kbuilder.add(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
+  return kbuilder.newKnowledgeBase();
 }</programlisting>
 
   <para> ... and how to execute this process.</para>
@@ -494,21 +459,21 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry> - rule trigger</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry> - signal trigger</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry> - parameter mapping</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -627,7 +592,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry> - OR</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -830,7 +795,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry>9. WorkItem Node</entry>
-          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check_orange.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -921,7 +886,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry> - swimlane</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -963,7 +928,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry> - variables</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
@@ -998,14 +963,14 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       <tbody>
         <row>
           <entry>13. ForEach Node</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry> - bind to variable</entry>
-          <entry></entry>
+          <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
           <entry><mediaobject><imageobject><imagedata align="center" format="GIF" role="" fileref="images/Chapter-BPMN2/check.gif"/></imageobject></mediaobject></entry>
         </row>
       </tbody>
