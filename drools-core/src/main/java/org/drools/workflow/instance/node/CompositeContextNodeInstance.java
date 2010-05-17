@@ -60,6 +60,13 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
         }
         list.add(contextInstance);
     }
+    
+    public void removeContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list != null) {
+            list.remove(contextInstance);
+        }
+    }
 
     public ContextInstance getContextInstance(String contextId, long id) {
         List<ContextInstance> contextInstances = subContextInstances.get(contextId);

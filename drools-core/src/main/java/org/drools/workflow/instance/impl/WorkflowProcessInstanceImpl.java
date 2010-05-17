@@ -102,6 +102,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return Collections.unmodifiableCollection(result);
 	}
+	
+	public NodeInstance getNodeInstance(long nodeInstanceId) {
+		for (NodeInstance nodeInstance: nodeInstances) {
+			if (nodeInstance.getId() == nodeInstanceId) {
+				return nodeInstance;
+			}
+		}
+		return null;
+	}
 
 	public List<String> getActiveNodeIds() {
 		List<String> result = new ArrayList<String>();
@@ -287,7 +296,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		final StringBuilder sb = new StringBuilder("WorkflowProcessInstance");
 		sb.append(getId());
 		sb.append(" [processId=");
-		sb.append(getProcess().getId());
+		sb.append(getProcessId());
 		sb.append(",state=");
 		sb.append(getState());
 		sb.append("]");
@@ -337,7 +346,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			for (Node node : getWorkflowProcess().getNodes()) {
 				if (node instanceof EventNodeInterface) {
 					if (((EventNodeInterface) node).acceptsEvent(type, event)) {
-						if (node instanceof EventNode) {
+						if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
 							EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
 							eventNodeInstance.signalEvent(type, event);
 						} else {

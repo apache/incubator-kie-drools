@@ -69,6 +69,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 		try {
 			action.execute(knowledgeHelper, ((ProcessInstance) getProcessInstance()).getWorkingMemory(), context);
 		} catch (Exception exception) {
+			exception.printStackTrace();
 			String exceptionName = exception.getClass().getName();
 			ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
 				resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);

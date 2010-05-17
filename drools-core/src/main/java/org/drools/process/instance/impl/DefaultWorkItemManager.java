@@ -60,6 +60,10 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 	
 	public void internalAddWorkItem(WorkItem workItem) {
 	    workItems.put(new Long(workItem.getId()), workItem);
+	    // fix to reset workItemCounter after deserialization
+	    if (workItem.getId() > workItemCounter) {
+	    	workItemCounter = workItem.getId();
+	    }
 	}
 
     public void internalAbortWorkItem(long id) {

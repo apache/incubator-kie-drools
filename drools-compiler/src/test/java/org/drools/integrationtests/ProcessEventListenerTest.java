@@ -100,26 +100,32 @@ public class ProcessEventListenerTest extends TestCase{
         final RuleFlowEventListenerExtension listener = new RuleFlowEventListenerExtension() {
 
             public void beforeVariableChange(RuleFlowVariableChangeEvent event, WorkingMemory workingMemory) {
+            	System.out.println("beforeVariableChange " + event);
                 processEventList.add(event);
             }
 
             public void afterVariableChange(RuleFlowVariableChangeEvent event, WorkingMemory workingMemory) {
+            	System.out.println("afterVariableChange " + event);
                 processEventList.add(event);
             }
 
             public void beforeRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+            	System.out.println("beforeRuleFlowStarted " + event);
                 processEventList.add(event);
             }
 
             public void afterRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+            	System.out.println("afterRuleFlowStarted " + event);
                 processEventList.add(event);
             }
 
             public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+            	System.out.println("beforeRuleFlowCompleted " + event);
                 processEventList.add(event);
             }
 
             public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+            	System.out.println("afterRuleFlowCompleted " + event);
                 processEventList.add(event);
             }
 
@@ -140,22 +146,24 @@ public class ProcessEventListenerTest extends TestCase{
             }
 
             public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+            	System.out.println("beforeRuleFlowNodeTriggered " + event);
                 processEventList.add(event);
             }
 
             public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+            	System.out.println("afterRuleFlowNodeTriggered " + event);
                 processEventList.add(event);
             }
 
             public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+            	System.out.println("beforeRuleFlowNodeLeft " + event);
                 processEventList.add(event);
             }
 
             public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+            	System.out.println("afterRuleFlowNodeLeft " + event);
                 processEventList.add(event);
-            }
-
-           
+            }     
         };
 
 
@@ -166,7 +174,7 @@ public class ProcessEventListenerTest extends TestCase{
         assertEquals("MyValue", ((VariableScopeInstance)
                                     ((ProcessInstance) processInstance)
                                         .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
-        assertEquals( 28, processEventList.size() );
+        assertEquals( 26, processEventList.size() );
         assertEquals( "org.drools.event", ((RuleFlowStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
 
         assertEquals("MyVar",((RuleFlowVariableChangeEvent) processEventList.get(4)).getName());

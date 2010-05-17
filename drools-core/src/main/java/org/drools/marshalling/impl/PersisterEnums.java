@@ -41,5 +41,6 @@ public class PersisterEnums {
     public static final short TIMER                     = 29;
     public static final short STATE_NODE_INSTANCE       = 30;
     public static final short DYNAMIC_NODE_INSTANCE     = 31;
+    public static final short EVENT_NODE_INSTANCE       = 32;
 
 }

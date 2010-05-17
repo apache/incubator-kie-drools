@@ -3,6 +3,7 @@ package org.drools.persistence.processinstance;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.Query;
 
 import org.drools.WorkingMemory;
@@ -48,6 +49,7 @@ public class JPASignalManager extends DefaultSignalManager {
         EntityManager em = (EntityManager) getWorkingMemory().getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
         
         Query processInstancesForEvent = em.createNamedQuery( "ProcessInstancesWaitingForEvent" );
+        processInstancesForEvent.setFlushMode(FlushModeType.COMMIT);
         processInstancesForEvent.setParameter( "type",
                                                type );
         List<Long> list = (List<Long>) processInstancesForEvent.getResultList();

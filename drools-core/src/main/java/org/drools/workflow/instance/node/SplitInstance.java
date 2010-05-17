@@ -17,10 +17,20 @@ package org.drools.workflow.instance.node;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.WorkingMemory;
+import org.drools.common.EventSupport;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
+import org.drools.process.core.context.exclusive.ExclusiveGroup;
+import org.drools.process.instance.ContextInstanceContainer;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.instance.NodeInstanceContainer;
@@ -129,6 +139,56 @@ public class SplitInstance extends NodeInstanceImpl {
                 if ( !found ) {
                     throw new IllegalArgumentException( "OR split could not find at least one valid outgoing connection for split " + getSplit().getName() );
                 }                
+                break;
+            case Split.TYPE_XAND :
+            	((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+                Node node = getNode();
+                List<Connection> connections = null;
+                if (node != null) {
+                	connections = node.getOutgoingConnections(type);
+                }
+                if (connections == null || connections.isEmpty()) {
+                	((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+                		.nodeInstanceCompleted(this, type);
+                } else {
+                	ExclusiveGroupInstance groupInstance = new ExclusiveGroupInstance();
+            		org.drools.runtime.process.NodeInstanceContainer parent = getNodeInstanceContainer();
+                	if (parent instanceof ContextInstanceContainer) {
+                		((ContextInstanceContainer) parent).addContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, groupInstance);
+                	} else {
+                		throw new IllegalArgumentException(
+            				"An Exclusive AND is only possible if the parent is a context instance container");
+                	}
+                	Map<NodeInstance, String> nodeInstances = new HashMap<NodeInstance, String>();
+        	        for (Connection connection: connections) {
+        	        	nodeInstances.put(
+    	            		((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+        	            		.getNodeInstance(connection.getTo()),
+    	            		connection.getToType());
+        	        }
+        	        for (NodeInstance nodeInstance: nodeInstances.keySet()) {
+        	        	groupInstance.addNodeInstance(nodeInstance);
+        	        }
+        	        for (Map.Entry<NodeInstance, String> entry: nodeInstances.entrySet()) {
+        	        	// stop if this process instance has been aborted / completed
+        	        	if (getProcessInstance().getState() != ProcessInstance.STATE_ACTIVE) {
+        	        		return;
+        	        	}
+        	        	boolean hidden = false;
+        	        	if (getNode().getMetaData("hidden") != null) {
+        	        		hidden = true;
+        	        	}
+        	        	WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
+        	        	if (!hidden) {
+        	        		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
+        	        	}
+        	            ((org.drools.workflow.instance.NodeInstance) entry.getKey())
+        	        		.trigger(this, entry.getValue());
+        	            if (!hidden) {
+        	                ((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
+        	            }
+        	        }
+                }
                 break;
             default :
                 throw new IllegalArgumentException( "Illegal split type " + split.getType() );

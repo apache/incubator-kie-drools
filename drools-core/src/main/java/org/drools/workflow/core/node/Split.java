@@ -56,6 +56,7 @@ public class Split extends NodeImpl implements Constrainable {
      * triggered.  
      */
     public static final int TYPE_OR        = 3;
+    public static final int TYPE_XAND      = 4;
 
     private static final long serialVersionUID = 400L;
 
@@ -87,7 +88,8 @@ public class Split extends NodeImpl implements Constrainable {
             ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
             return this.constraints.get(ref);
         }
-        throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with: " + getType() );
+        throw new UnsupportedOperationException( "Constraints are " + 
+    		"only supported with XOR or OR split types, not with: " + getType() );
     }
 
     public Constraint internalGetConstraint(final ConnectionRef ref) {
@@ -107,7 +109,8 @@ public class Split extends NodeImpl implements Constrainable {
                 new ConnectionRef(connection.getTo().getId(), connection.getToType()),
                 constraint);
         } else {
-            throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with type:" + getType() );
+            throw new UnsupportedOperationException( "Constraints are " + 
+        		"only supported with XOR or OR split types, not with type:" + getType() );
         }
     }
 

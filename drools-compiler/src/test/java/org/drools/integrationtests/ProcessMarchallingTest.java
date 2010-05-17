@@ -394,14 +394,32 @@ public class ProcessMarchallingTest extends TestCase {
     		"              </parameter>\n" +
     		"            </work>\n" +
     		"          </humanTask>\n" +
+    		"          <humanTask id=\"2\" name=\"Human Task Again\" >\n" +
+    		"            <work name=\"Human Task\" >\n" +
+    		"              <parameter name=\"Comment\" >\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"              </parameter>\n" +
+    		"              <parameter name=\"ActorId\" >\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"              </parameter>\n" +
+    		"              <parameter name=\"Priority\" >\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"              </parameter>\n" +
+    		"              <parameter name=\"TaskName\" >\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <value>Do something else: #{item}</value>\n" +
+    		"              </parameter>\n" +
+    		"            </work>\n" +
+    		"          </humanTask>\n" +
     		"        </nodes>\n" +
     		"        <connections>\n" +
+    		"          <connection from=\"1\" to=\"2\" />\n" +
     		"        </connections>\n" +
     		"        <in-ports>\n" +
     		"          <in-port type=\"DROOLS_DEFAULT\" nodeId=\"1\" nodeInType=\"DROOLS_DEFAULT\" />\n" +
     		"        </in-ports>\n" +
     		"        <out-ports>\n" +
-    		"          <out-port type=\"DROOLS_DEFAULT\" nodeId=\"1\" nodeOutType=\"DROOLS_DEFAULT\" />\n" +
+    		"          <out-port type=\"DROOLS_DEFAULT\" nodeId=\"2\" nodeOutType=\"DROOLS_DEFAULT\" />\n" +
     		"        </out-ports>\n" +
     		"      </forEach>\n" +
     		"      <start id=\"1\" name=\"Start\" />\n" +
@@ -431,6 +449,17 @@ public class ProcessMarchallingTest extends TestCase {
         parameters.put("list", list);
         session.startProcess("com.sample.ruleflow", parameters);
 
+        assertEquals(1, session.getProcessInstances().size());
+        assertEquals(3, handler.getWorkItems().size());
+        
+        session = getSerialisedStatefulSession( session );
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+        List<WorkItem> workItems = new ArrayList<WorkItem>(handler.getWorkItems());
+        handler.reset();
+        for (WorkItem workItem: workItems) {
+        	session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        }
         assertEquals(1, session.getProcessInstances().size());
         assertEquals(3, handler.getWorkItems().size());
         
