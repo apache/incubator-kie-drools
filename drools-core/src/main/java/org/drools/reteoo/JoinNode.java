@@ -189,7 +189,7 @@ public class JoinNode extends BetaNode {
                                                rightTuple.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-            if ( childLeftTuple != null && leftMemory.isIndexed() && ( leftTuple == null || ( leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory() ) ) ) {            
+        if ( childLeftTuple != null && leftMemory.isIndexed() && ( leftTuple == null || ( leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory() ) ) ) {            
             // our index has changed, so delete all the previous propagations
             this.sink.propagateRetractRightTuple( rightTuple,
                                                   context,
