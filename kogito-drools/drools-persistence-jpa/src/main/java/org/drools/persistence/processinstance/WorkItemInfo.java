@@ -41,7 +41,7 @@ public class WorkItemInfo {
     private @Transient
     WorkItem       workItem;
 
-    WorkItemInfo() {
+    protected WorkItemInfo() {
     }
 
     public WorkItemInfo(WorkItem workItem) {

@@ -93,7 +93,7 @@ public class ProcessInstanceInfo {
     private Map<String, VariableInstanceInfo> variables          = new HashMap<String, VariableInstanceInfo>();
     private boolean                           externalVariables  = false;
 
-    ProcessInstanceInfo() {
+    protected ProcessInstanceInfo() {
     }
 
     public ProcessInstanceInfo(ProcessInstance processInstance) {

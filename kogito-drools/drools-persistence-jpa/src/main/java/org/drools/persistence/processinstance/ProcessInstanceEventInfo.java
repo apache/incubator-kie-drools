@@ -23,7 +23,7 @@ public class ProcessInstanceEventInfo {
     private String eventType;
     private long   processInstanceId;
 
-    ProcessInstanceEventInfo() {
+    protected ProcessInstanceEventInfo() {
     }
     
     public long getId() {
