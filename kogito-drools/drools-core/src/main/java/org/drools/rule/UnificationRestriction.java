@@ -43,7 +43,7 @@ public class UnificationRestriction
                              InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
                              ContextEntry context) {
-        throw new UnsupportedOperationException( "Cannot use a Unification Restriction in the AlphaNetwork" );
+        return this.vr.isAllowed( extractor, handle, workingMemory, ((UnificationContextEntry)context).getContextEntry() );
     }
 
     public boolean isAllowedCachedLeft(ContextEntry context,
@@ -59,7 +59,7 @@ public class UnificationRestriction
 
     public boolean isAllowedCachedRight(LeftTuple tuple,
                                         ContextEntry context) {
-        throw new UnsupportedOperationException( "Cannot right activate a Unification Restriction (for now )" );
+        return this.vr.isAllowedCachedRight( tuple, ((UnificationContextEntry)context).getContextEntry() );
     }
     
     public Evaluator getEvaluator() {
@@ -136,8 +136,7 @@ public class UnificationRestriction
 
         public void updateFromFactHandle(InternalWorkingMemory workingMemory,
                                          InternalFactHandle handle) {
-            throw new UnsupportedOperationException( "Cannot right activate a Unification Restriction (for now )" );
-            //this.contextEntry.updateFromFactHandle( workingMemory, handle );
+            this.contextEntry.updateFromFactHandle( workingMemory, handle );
         }
 
         public void updateFromTuple(InternalWorkingMemory workingMemory,

@@ -375,7 +375,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should not add to left memory, since we are in sequential mode
         this.node.assertLeftTuple( tuple0,
-                                   this.context,
+                                   new PropagationContextImpl( 0,
+                                                               PropagationContext.ASSERTION,
+                                                               null,
+                                                               null,
+                                                               f0 ),
                                    this.workingMemory );
         // check memories 
         assertNull( this.memory.getLeftTupleMemory() );
@@ -390,7 +394,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                 null,
                                                 true );
         this.node.assertLeftTuple( tuple1,
-                                   this.context,
+                                   new PropagationContextImpl( 0,
+                                                               PropagationContext.ASSERTION,
+                                                               null,
+                                                               null,
+                                                               f1 ),
                                    this.workingMemory );
         assertNull( this.memory.getLeftTupleMemory() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",

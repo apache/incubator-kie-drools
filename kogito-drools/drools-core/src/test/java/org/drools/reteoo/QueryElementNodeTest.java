@@ -27,7 +27,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.reteoo.QueryElementNode.UnificationNodeQueryResultsCollector;
+import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -159,13 +159,13 @@ public class QueryElementNodeTest extends DroolsTestCase {
                            ObjectTypeConf typeConf) {
             if( object instanceof DroolsQuery ) {
                 DroolsQuery query = ( DroolsQuery ) object;
-                UnificationNodeQueryResultsCollector collector = ( UnificationNodeQueryResultsCollector ) query.getQueryResultCollector();
+                UnificationNodeViewChangedEventListener collector = ( UnificationNodeViewChangedEventListener ) query.getQueryResultCollector();
                 for ( int i = 0; i < 3; i++ ) {
                     Object[] args = query.getElements();
                     ((Variable)args[0]).setValue( "string_0_" + i );
                     ((Variable)args[2]).setValue( "string_2_" + i );
                     ((Variable)args[5]).setValue( "string_5_" + i );
-                    collector.add( null, null, this );
+                    collector.rowAdded( rule, null, null, this );
                 }
             } else {
                 super.insert( handle, object, rule, activation, typeConf );

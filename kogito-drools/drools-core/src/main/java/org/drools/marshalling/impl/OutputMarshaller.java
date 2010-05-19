@@ -48,6 +48,7 @@ import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.process.WorkItem;
+import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
@@ -561,11 +562,11 @@ public class OutputMarshaller {
         //Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
         if ( entries.length != 0 ) {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
-                if (entry.getKey().getActivation() != null) {
+                if (entry.getKey().getObject() != null) {
 					LeftTuple leftTuple = entry.getKey();
 					stream.writeShort(PersisterEnums.ACTIVATION);
 					writeActivation(context, leftTuple, (AgendaItem) leftTuple
-							.getActivation(), (RuleTerminalNode) leftTuple
+							.getObject(), (RuleTerminalNode) leftTuple
 							.getLeftTupleSink());
 				}
             }
@@ -641,8 +642,8 @@ public class OutputMarshaller {
             Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 LeftTuple leftTuple = entry.getKey();
-                if (leftTuple.getActivation() != null) {
-					PropagationContext pc = leftTuple.getActivation()
+                if (leftTuple.getObject() != null) {
+					PropagationContext pc = ((Activation)leftTuple.getObject())
 							.getPropagationContext();
 					if (!pcMap.containsKey(pc.getPropagationNumber())) {
 						stream.writeShort(PersisterEnums.PROPAGATION_CONTEXT);

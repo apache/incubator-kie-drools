@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -62,6 +63,16 @@ public class NotNode extends BetaNode {
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
+        
+        boolean useLeftMemory = true;
+        if ( !this.tupleMemoryEnabled ) {
+            // This is a hack, to not add closed DroolsQuery objects
+            Object object = ((InternalFactHandle)context.getFactHandle()).getObject();
+            if (  memory.getLeftTupleMemory() == null || object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
+                useLeftMemory = false;
+            }
+        }
+        
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
                                           leftTuple );
@@ -71,7 +82,7 @@ public class NotNode extends BetaNode {
                                                        rightTuple.getFactHandle() ) ) {
                 leftTuple.setBlocker( rightTuple );
 
-                if ( this.tupleMemoryEnabled ) {
+                if ( useLeftMemory ) {
                     rightTuple.addBlocked( leftTuple );
                 }
 
@@ -83,14 +94,14 @@ public class NotNode extends BetaNode {
 
         if ( leftTuple.getBlocker() == null ) {
             // tuple is not blocked, so add to memory so other fact handles can attempt to match
-            if ( this.tupleMemoryEnabled ) {
+            if ( useLeftMemory ) {
                 memory.getLeftTupleMemory().add( leftTuple );
             }
 
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
                                                 workingMemory,
-                                                this.tupleMemoryEnabled );
+                                                useLeftMemory );
         }
     }
 
@@ -113,9 +124,9 @@ public class NotNode extends BetaNode {
 
         memory.getRightTupleMemory().add( rightTuple );
 
-        if ( !this.tupleMemoryEnabled ) {
-            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
-            return;
+        if ( memory.getLeftTupleMemory() == null || memory.getLeftTupleMemory().size() == 0  ) {
+            // do nothing here, as no left memory
+            return;            
         }
 
         this.constraints.updateFromFactHandle( memory.getContext(),
@@ -306,8 +317,8 @@ public class NotNode extends BetaNode {
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {        
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );               
-        if ( !this.tupleMemoryEnabled ) {
-            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+        if ( memory.getLeftTupleMemory() == null || ( memory.getLeftTupleMemory().size() == 0 && rightTuple.getBlocked() == null ) ) {
+            // do nothing here, as we know there are no left tuples
             
             //normally do this at the end, but as we are exiting early, make sure the buckets are still correct.
             memory.getRightTupleMemory().remove( rightTuple );
@@ -425,7 +436,7 @@ public class NotNode extends BetaNode {
         this.sink.propagateAssertLeftTuple( leftTuple,
                                             context,
                                             workingMemory,
-                                            this.tupleMemoryEnabled );
+                                            true );
     }
 
     /**
@@ -446,7 +457,7 @@ public class NotNode extends BetaNode {
         this.sink.propagateModifyChildLeftTuple( leftTuple,
                                                  context,
                                                  workingMemory,
-                                                 this.tupleMemoryEnabled );
+                                                 true );
     }
 
     /**
@@ -460,7 +471,7 @@ public class NotNode extends BetaNode {
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
             sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                  sink,
-                                                 this.tupleMemoryEnabled ),
+                                                 true ),
                                   context,
                                   workingMemory );
         }

@@ -423,7 +423,11 @@ public class NotNodeTest extends DroolsTestCase {
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
-                                   this.context,
+                                   new PropagationContextImpl( 0,
+                                                               PropagationContext.ASSERTION,
+                                                               null,
+                                                               null,
+                                                               f0 ),
                                    this.workingMemory );
 
         assertEquals( 0,

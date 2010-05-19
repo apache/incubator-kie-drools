@@ -1109,6 +1109,8 @@ public abstract class AbstractWorkingMemory
                           ObjectTypeConf typeConf) {
         this.ruleBase.executeQueuedActions();
 
+        executeQueuedActions();
+        
         if ( activation != null ) {
             // release resources so that they can be GC'ed
             activation.getPropagationContext().releaseResources();
@@ -1278,6 +1280,10 @@ public abstract class AbstractWorkingMemory
             this.lock.unlock();
             this.ruleBase.readUnlock();
         }
+    }
+    
+    public EntryPointNode getEntryPointNode() {
+        return this.entryPointNode;
     }
 
     public void update(final org.drools.runtime.rule.FactHandle handle,

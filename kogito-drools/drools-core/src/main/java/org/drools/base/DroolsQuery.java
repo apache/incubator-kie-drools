@@ -24,22 +24,26 @@ import org.drools.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String         name;
-    private QueryResultCollector resultsCollector;
+    private InternalViewChangedEventListener resultsCollector;
     private Query                query;
+    private boolean              open;
 
     public DroolsQuery(final String name,
-                       QueryResultCollector resultsCollector) {
+                       InternalViewChangedEventListener resultsCollector) {
         this( name,
               null,
-              resultsCollector );
+              resultsCollector,
+              false );
     }
 
     public DroolsQuery(final String name,
                        final Object[] params,
-                       QueryResultCollector resultsCollector) {
+                       final InternalViewChangedEventListener resultsCollector,
+                       final boolean open ) {
         super( params );
         this.name = name;
         this.resultsCollector = resultsCollector;
+        this.open = open;
     }
 
     public String getName() {
@@ -55,8 +59,12 @@ public final class DroolsQuery extends ArrayElements {
         return this.query;
     }
 
-    public QueryResultCollector getQueryResultCollector() {
+    public InternalViewChangedEventListener getQueryResultCollector() {
         return this.resultsCollector;
+    }
+
+    public boolean isOpen() {
+        return open;
     }
 
     @Override

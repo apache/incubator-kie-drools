@@ -230,7 +230,7 @@ public class TruthMaintenanceSystem {
             
             this.handle = context.handles.get( context.readInt() );
             this.context = context.propagationContexts.get( context.readLong() );
-            this.activation = context.terminalTupleMap.get( context.readInt() ).getActivation();
+            this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getObject();
             
             this.set = ( Set ) this.tms.getJustifiedMap().get( handle.getId() ); 
            

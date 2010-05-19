@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -134,11 +135,20 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
+        boolean useLeftMemory = true;
+        if ( !this.leftTupleMemoryEnabled ) {
+            // This is a hack, to not add closed DroolsQuery objects
+            Object object = ((InternalFactHandle)context.getFactHandle()).getObject();                
+            if ( object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
+                useLeftMemory = false;
+            } 
+        }
+        
         if ( !workingMemory.isSequential() ) {
             this.sink.createAndPropagateAssertLeftTuple( factHandle,
                                                          context,
                                                          workingMemory,
-                                                         this.leftTupleMemoryEnabled );
+                                                         useLeftMemory );
         } else {
             workingMemory.addLIANodePropagation( new LIANodePropagation( this,
                                                                          factHandle,
@@ -161,7 +171,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         final RightTupleSinkAdapter adapter = new RightTupleSinkAdapter( sink,
-                                                                         this.leftTupleMemoryEnabled );
+                                                                         true );
         this.objectSource.updateSink( adapter,
                                       context,
                                       workingMemory );

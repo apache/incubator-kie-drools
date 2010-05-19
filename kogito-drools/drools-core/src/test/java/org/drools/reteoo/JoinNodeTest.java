@@ -219,10 +219,12 @@ public class JoinNodeTest extends DroolsTestCase {
 		final DefaultFactHandle f0 = new DefaultFactHandle(0, "cheese");
 		final LeftTuple tuple0 = new LeftTuple(f0, this.node, true);
 
-		this.node.assertObject(f0, this.context, this.workingMemory);
+		this.node.assertObject(f0, new PropagationContextImpl(0,
+		                                                      PropagationContext.ASSERTION, null, null, f0), this.workingMemory);
 
 		// assert tuple
-		this.node.assertLeftTuple(tuple0, this.context, this.workingMemory);
+		this.node.assertLeftTuple(tuple0, new PropagationContextImpl(0,
+		                                                              PropagationContext.ASSERTION, null, null, f0), this.workingMemory);
 
 		assertEquals(1, this.sink.getAsserted().size());
 

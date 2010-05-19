@@ -184,7 +184,7 @@ public class RuleTerminalNode extends BaseNode
 
             agenda.scheduleItem( item,
                                  workingMemory );
-            tuple.setActivation( item );
+            tuple.setObject( item );
 
             item.setActivated( true );
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
@@ -211,7 +211,7 @@ public class RuleTerminalNode extends BaseNode
                                                              this.subrule );
             item.setSequenence( this.sequence );
 
-            tuple.setActivation( item );
+            tuple.setObject( item );
 
             boolean added = agenda.addActivation( item );
 
@@ -228,7 +228,7 @@ public class RuleTerminalNode extends BaseNode
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        final Activation activation = leftTuple.getActivation();
+        final Activation activation = (Activation) leftTuple.getObject();
 
         // activation can be null if the LeftTuple previous propagated into a no-loop
         if ( activation == null ) {
@@ -297,7 +297,7 @@ public class RuleTerminalNode extends BaseNode
             return;
         }
 
-        AgendaItem item = (AgendaItem) leftTuple.getActivation();
+        AgendaItem item = (AgendaItem) leftTuple.getObject();
         if ( item != null && item.isActivated() ) {
             // already activated, do nothing
             return;
@@ -363,9 +363,6 @@ public class RuleTerminalNode extends BaseNode
             item.setActivated( added );
 
             if ( added ) {
-                //                workingMemory.removeLogicalDependencies( item,
-                //                                                         context,
-                //                                                         this.rule );
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }
@@ -505,7 +502,7 @@ public class RuleTerminalNode extends BaseNode
                 return;
             }
 
-            final Activation activation = leftTuple.getActivation();
+            final Activation activation = (Activation) leftTuple.getObject();
 
             if ( activation.isActivated() ) {
                 activation.remove();
