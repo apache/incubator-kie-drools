@@ -4715,6 +4715,52 @@ public class MiscTest extends TestCase {
         assertEquals( 0,
                       results.size() );
     }
+    
+    public void testSelfJoinWithIndex() {
+        String drl = "";
+        drl += "package org.test\n";
+        drl += "import org.drools.Person\n";
+        drl += "global java.util.List list\n";
+        drl += "rule test1\n";
+        drl += "when\n";
+        drl += "   $p1 : Person( $name : name, $age : age )\n";
+        drl += "   $p2 : Person( name == $name, age < $age)\n";
+        drl += "then\n";
+        drl += "    list.add( $p1 );\n";
+        drl += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        Person p1 = new Person("darth", 30);
+        org.drools.runtime.rule.FactHandle fh1 = ksession.insert( p1 );
+
+        Person p2 = new Person("darth", 25);
+        org.drools.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.
+        
+        p1.setName( "yoda" );
+        ksession.update( fh1, p1 );  // creates activation
+              
+        ksession.fireAllRules();
+        
+        assertEquals( 0, list.size() );
+    }
 
     public void testMergingDifferentPackages() throws Exception {
         // using the same builder
