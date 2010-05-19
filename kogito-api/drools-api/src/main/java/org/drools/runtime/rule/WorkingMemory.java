@@ -38,15 +38,15 @@ public interface WorkingMemory
      * @return
      */
     WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
-    
+
     /**
      * Returns a collection of all available working memory entry points
      * for this session.
      * 
      * @return the collection of all available entry points for this session
      */
-    Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints();
-    
+    Collection< ? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints();
+
     /**
      * Retrieve the QueryResults of the specified query.
      *
@@ -76,5 +76,10 @@ public interface WorkingMemory
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the KnowledgeBase
      */
-    public QueryResults getQueryResults(String query, Object[] arguments);      
+    public QueryResults getQueryResults(String query,
+                                        Object[] arguments);
+
+    public LiveQuery openLiveQuery(String query,
+                                   Object[] arguments,
+                                   ViewChangedEventListener listener);
 }
