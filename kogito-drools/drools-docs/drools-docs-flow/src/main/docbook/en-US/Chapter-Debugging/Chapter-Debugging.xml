@@ -19,6 +19,9 @@
   the engine or invoked by the engine, listeners, etc.).  At these
   breakpoints, you can then inspect the internal state of your processes.
   </para>
+  
+  <para>A screencast that shows processing debugging in action can be found
+  <ulink url="http://downloads.jboss.com/drools/videos/OrderExample.swf">here</ulink></para>
 
   <para>We use a simple example throughout this section to illustrate
   the debugging capabilities. The example will be introduced first,
