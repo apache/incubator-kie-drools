@@ -11,10 +11,18 @@
 
   <para>This section describes how to debug processes.  This means
   that the current state of your running processes can be inspected
-  and visualized during the execution.  We use a simple example
-  throughout this section to illustrate the debugging capabilities.
-  The example will be introduced first, followed by an illustration
-  on how to use the debugging capabilities.
+  and visualized during the execution.  Note that we currently don't
+  allow you to put breakpoints on the nodes within a RuleFlow directly.
+  You can however put breakpoints inside rules (that could be evaluated
+  in the context of a process if you use a ruleset node), or on any
+  Java code you might have (i.e. your application code that is invoking
+  the engine or invoked by the engine, listeners, etc.).  At these
+  breakpoints, you can then inspect the internal state of your processes.
+  </para>
+
+  <para>We use a simple example throughout this section to illustrate
+  the debugging capabilities. The example will be introduced first,
+  followed by an illustration on how to use the debugging capabilities.
   </para>
 
   <section>
