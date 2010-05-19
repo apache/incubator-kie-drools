@@ -102,7 +102,8 @@ public class FlatQueryResults
         public QueryResultsRow next() {
             return new FlatQueryResultRow( identifiers,
                                            this.iterator.next(),
-                                           this.handleIterator.next() );
+                                           this.handleIterator.next(),
+                                           size() );
         }
 
         public void remove() {

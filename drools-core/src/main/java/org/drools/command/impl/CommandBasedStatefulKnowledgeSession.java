@@ -69,8 +69,10 @@ import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.AgendaGroup;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.RuleFlowGroup;
+import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
  
@@ -407,6 +409,12 @@ public class CommandBasedStatefulKnowledgeSession
     public long getFactCount() {
         // TODO: implement this
         return 0;
+    }
+
+    public LiveQuery openLiveQuery(String query,
+                                               Object[] arguments,
+                                               ViewChangedEventListener listener) {
+        return null;
     }
 
 }

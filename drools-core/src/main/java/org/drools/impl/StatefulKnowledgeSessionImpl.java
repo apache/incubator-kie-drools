@@ -69,7 +69,9 @@ import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.runtime.rule.impl.NativeQueryResults;
@@ -829,6 +831,12 @@ public class StatefulKnowledgeSessionImpl
 
     public long getFactCount() {
         return this.session.getFactCount();
+    }
+
+    public LiveQuery openLiveQuery(String query,
+                                               Object[] arguments,
+                                               ViewChangedEventListener listener) {
+        return this.session.openLiveQuery( query, arguments, listener );
     }
 
     

@@ -1,7 +1,7 @@
 package org.drools.reteoo;
 
 import org.drools.base.DroolsQuery;
-import org.drools.base.QueryResultCollector;
+import org.drools.base.InternalViewChangedEventListener;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -11,6 +11,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.QueryElement;
+import org.drools.rule.Rule;
 import org.drools.rule.Variable;
 import org.drools.spi.PropagationContext;
 
@@ -104,14 +105,15 @@ public class QueryElementNode extends LeftTupleSource
                                            leftTuple.get( declr ).getObject() );
         }
 
-        UnificationNodeQueryResultsCollector collector = new UnificationNodeQueryResultsCollector( leftTuple,
+        UnificationNodeViewChangedEventListener collector = new UnificationNodeViewChangedEventListener( leftTuple,
                                                                                                    this.queryElement.getVariables(),
                                                                                                    this.sink,
                                                                                                    this.tupleMemoryEnabled );
         
         DroolsQuery queryObject = new DroolsQuery( this.queryElement.getQueryName(),
                                                    inputArgs,
-                                                   collector );
+                                                   collector,
+                                                   false );
         collector.setDroolsQuery( queryObject );
 
         InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( queryObject,
@@ -140,9 +142,9 @@ public class QueryElementNode extends LeftTupleSource
 
     }
 
-    public static class UnificationNodeQueryResultsCollector
+    public static class UnificationNodeViewChangedEventListener
         implements
-        QueryResultCollector {
+        InternalViewChangedEventListener {
 
         private LeftTuple                 leftTuple;
         protected LeftTupleSinkPropagator sink;
@@ -152,7 +154,7 @@ public class QueryElementNode extends LeftTupleSource
         
         private boolean                   tupleMemoryEnabled;
 
-        public UnificationNodeQueryResultsCollector(LeftTuple leftTuple,
+        public UnificationNodeViewChangedEventListener(LeftTuple leftTuple,
                                                     int[] variables,
                                                     LeftTupleSinkPropagator sink,
                                                     boolean                   tupleMemoryEnabled) {
@@ -166,7 +168,8 @@ public class QueryElementNode extends LeftTupleSource
             this.query = query;
         }
 
-        public void add(LeftTuple resultLeftTuple,
+        public void rowAdded(final Rule rule,
+                             LeftTuple resultLeftTuple,
                         PropagationContext context,
                         InternalWorkingMemory workingMemory) {
 
@@ -184,6 +187,20 @@ public class QueryElementNode extends LeftTupleSource
                                                      rightTuple, 
                                                      this.tupleMemoryEnabled );
         }
+        
+        public void rowRemoved(final Rule rule,
+                               final LeftTuple tuple,
+                final PropagationContext context,
+                final InternalWorkingMemory workingMemory) {
+            //TODO
+        }
+        
+        public void rowUpdated(final Rule rule,
+                               final LeftTuple tuple,
+                final PropagationContext context,
+                final InternalWorkingMemory workingMemory) {
+            //TODO        	
+        }        
 
     }
 

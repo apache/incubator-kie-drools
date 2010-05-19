@@ -617,7 +617,7 @@ public class InputMarshaller {
                                                 rule,
                                                 subRule );
 
-        leftTuple.setActivation( activation );
+        leftTuple.setObject( activation );
 
         if ( stream.readBoolean() ) {
             String activationGroupName = stream.readUTF();

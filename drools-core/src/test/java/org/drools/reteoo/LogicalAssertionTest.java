@@ -37,6 +37,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
@@ -127,7 +128,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                       false,
                                                                                       true,
                                                                                       rule1,
-                                                                                      tuple1.getActivation() );
+                                                                                      (Activation)tuple1.getObject() );
         new RightTuple( logicalHandle,
                         sink );
         // Retract the tuple and test the logically asserted fact was also retracted
@@ -155,7 +156,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                    false,
                                                                    true,
                                                                    rule1,
-                                                                   tuple1.getActivation() );
+                                                                   (Activation)tuple1.getObject() );
 
         new RightTuple( logicalHandle,
                         sink );
@@ -251,14 +252,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                           false,
                                                           true,
                                                           rule1,
-                                                          tuple1.getActivation() );
+                                                          (Activation)tuple1.getObject() );
 
         final String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = workingMemory.insert( logicalString2,
                                                           false,
                                                           true,
                                                           rule1,
-                                                          tuple1.getActivation() );
+                                                          (Activation)tuple1.getObject() );
 
         assertSame( logicalHandle1,
                     logicalHandle2 );
@@ -357,7 +358,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                           false,
                                                           true,
                                                           rule1,
-                                                          tuple1.getActivation() );
+                                                          (Activation)tuple1.getObject() );
 
         // This assertion is stated and should override any previous justified
         // "equals" objects.
@@ -397,7 +398,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                false,
                                                true,
                                                rule1,
-                                               tuple1.getActivation() );
+                                               (Activation)tuple1.getObject() );
 
         assertNull( logicalHandle1 );
 
@@ -406,7 +407,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                false,
                                                false,
                                                rule1,
-                                               tuple1.getActivation() );
+                                               (Activation)tuple1.getObject() );
         // return the matched handle
 
         assertSame( logicalHandle2,
@@ -521,7 +522,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 false,
                                                                 true,
                                                                 rule1,
-                                                                tuple1.getActivation() );
+                                                                (Activation)tuple1.getObject() );
 
         // This assertion is stated and should override any previous justified
         // "equals" objects.
@@ -627,7 +628,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 false,
                                                                 true,
                                                                 rule1,
-                                                                tuple1.getActivation() );
+                                                                (Activation)tuple1.getObject() );
 
         // create the second activation to justify the "logical" fact
         final Rule rule2 = new Rule( "test-rule2" );
@@ -658,7 +659,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 false,
                                                                 true,
                                                                 rule2,
-                                                                tuple2.getActivation() );
+                                                                (Activation)tuple2.getObject() );
 
         // "logical" should only appear once
         assertEquals( 1,
@@ -774,7 +775,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 false,
                                                                 true,
                                                                 rule1,
-                                                                tuple1.getActivation() );
+                                                                (Activation)tuple1.getObject() );
         new RightTuple( logicalHandle1,
                         sink );
 
@@ -784,7 +785,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 false,
                                                                 true,
                                                                 rule2,
-                                                                tuple2.getActivation() );
+                                                                (Activation)tuple2.getObject() );
         
         assertSame( logicalHandle1, logicalHandle2 );
 
@@ -908,7 +909,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                           false,
                                                           true,
                                                           rule1,
-                                                          tuple1.getActivation() );
+                                                          (Activation)tuple1.getObject() );
 
         // Checks that previous LogicalAssert failed
         assertNull( logicalHandle3 );
@@ -924,7 +925,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                    false,
                                                    true,
                                                    rule1,
-                                                   tuple1.getActivation() );
+                                                   (Activation)tuple1.getObject() );
 
             // Checks that previous LogicalAssert failed
             assertNull( logicalHandle3 );
@@ -936,7 +937,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                false,
                                                true,
                                                rule1,
-                                               tuple1.getActivation() );
+                                               (Activation)tuple1.getObject() );
 
         // Checks that previous LogicalAssert succeeded as there are no more
         // stated strings in the working memory
@@ -1019,7 +1020,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                               false,
                                                               true,
                                                               rule1,
-                                                              tuple1.getActivation() );
+                                                              (Activation) tuple1.getObject() );
 
         cheese.setType( "cheddar" );
         cheese.setPrice( 20 );

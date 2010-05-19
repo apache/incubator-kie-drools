@@ -16,9 +16,11 @@
 
 package org.drools.reteoo;
 
+import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
@@ -101,12 +103,21 @@ public class ExistsNode extends BetaNode {
                                           workingMemory,
                                           leftTuple );
 
+        boolean useLeftMemory = true;
+        if ( !this.tupleMemoryEnabled ) {
+            // This is a hack, to not add closed DroolsQuery objects
+            Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
+            if ( memory.getLeftTupleMemory() == null || object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
+                useLeftMemory = false;
+            }
+        }
+
         for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                        rightTuple.getFactHandle() ) ) {
 
                 leftTuple.setBlocker( rightTuple );
-                if ( this.tupleMemoryEnabled ) {
+                if ( useLeftMemory ) {
                     rightTuple.addBlocked( leftTuple );
                 }
 
@@ -121,8 +132,8 @@ public class ExistsNode extends BetaNode {
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
                                                 workingMemory,
-                                                this.tupleMemoryEnabled );
-        } else if ( this.tupleMemoryEnabled ) {
+                                                useLeftMemory );
+        } else if ( useLeftMemory ) {
             // LeftTuple is not blocked, so add to memory so other RightTuples can match
             memory.getLeftTupleMemory().add( leftTuple );
         }
@@ -158,8 +169,8 @@ public class ExistsNode extends BetaNode {
 
         memory.getRightTupleMemory().add( rightTuple );
 
-        if ( !this.tupleMemoryEnabled ) {
-            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+        if ( memory.getLeftTupleMemory() == null || memory.getLeftTupleMemory().size() == 0 ) {
+            // do nothing here, as no left memory
             return;
         }
 
@@ -176,14 +187,12 @@ public class ExistsNode extends BetaNode {
                 leftTuple.setBlocker( rightTuple );
                 rightTuple.addBlocked( leftTuple );
 
-                if ( this.tupleMemoryEnabled ) {
-                    // this is now blocked so remove it from memory
-                    memory.getLeftTupleMemory().remove( leftTuple );
-                }
+                memory.getLeftTupleMemory().remove( leftTuple );
+
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     context,
                                                     workingMemory,
-                                                    this.tupleMemoryEnabled );
+                                                    true );
             }
 
             leftTuple = temp;
@@ -350,13 +359,13 @@ public class ExistsNode extends BetaNode {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     context,
                                                     workingMemory,
-                                                    this.tupleMemoryEnabled );
+                                                    true );
             } else {
                 // blocked, with previous children, modify
                 this.sink.propagateModifyChildLeftTuple( leftTuple,
                                                          context,
                                                          workingMemory,
-                                                         this.tupleMemoryEnabled );
+                                                         true );
             }
         }
 
@@ -365,17 +374,17 @@ public class ExistsNode extends BetaNode {
 
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {        
+                                 InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( !this.tupleMemoryEnabled ) {
-            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
-            
+
+        if ( memory.getLeftTupleMemory() == null || ( memory.getLeftTupleMemory().size() == 0 && rightTuple.getBlocked() == null ) ) {
+            // do nothing here, as we know there are no left tuples
+
             //normally do this at the end, but as we are exiting early, make sure the buckets are still correct.
             memory.getRightTupleMemory().remove( rightTuple );
-            memory.getRightTupleMemory().add( rightTuple );            
+            memory.getRightTupleMemory().add( rightTuple );
             return;
-        }        
+        }
 
         // TODO: wtd with behaviours?
         //        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
@@ -412,7 +421,8 @@ public class ExistsNode extends BetaNode {
                 // subclasses like ForallNotNode might override this propagation
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     context,
-                                                    workingMemory, this.tupleMemoryEnabled  );
+                                                    workingMemory,
+                                                    true );
             }
 
             leftTuple = temp;
@@ -426,12 +436,12 @@ public class ExistsNode extends BetaNode {
             // iterate all the existing previous blocked LeftTuples
             for ( LeftTuple leftTuple = (LeftTuple) firstBlocked; leftTuple != null; ) {
                 LeftTuple temp = leftTuple.getBlockedNext();
-                
+
                 leftTuple.setBlockedPrevious( null ); // must null these as we are re-adding them to the list
                 leftTuple.setBlockedNext( null );
-                
+
                 if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-                                                                         leftTuple ) ) {
+                                                            leftTuple ) ) {
                     // in the same bucket and it still blocks, so add back into blocked list
                     rightTuple.addBlocked( leftTuple ); // no need to set on LeftTuple, as it already has the reference
                     leftTuple = temp;
@@ -486,17 +496,22 @@ public class ExistsNode extends BetaNode {
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        //        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        //
-        //        final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
-        //        for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
-        //            if ( tuple.getMatch() != null ) {
-        //                sink.assertLeftTuple( new LeftTuple( tuple ),
-        //                                      context,
-        //                                      workingMemory );
-        //            }
-        //        }
-        // @FIXME
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        Iterator it = memory.getRightTupleMemory().iterator();
+
+        // Relies on the fact that any propagated LeftTuples are blocked, but due to lazy blocking
+        // they will only be blocked once. So we can iterate the right memory to find the left tuples to propagate
+        for ( RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next() ) {
+            LeftTuple leftTuple = rightTuple.getBlocked();
+            while ( leftTuple != null ) {
+                sink.assertLeftTuple( new LeftTuple( leftTuple,
+                                                     sink,
+                                                     true ),
+                                      context,
+                                      workingMemory );
+                leftTuple = leftTuple.getBlockedNext();
+            }
+        }
     }
 
     public String toString() {

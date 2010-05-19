@@ -918,6 +918,7 @@ public class DefaultAgenda
                                                                 this.workingMemory );
                 this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
                 this.knowledgeHelper.reset();
+                ((AgendaItem)activation).fired = true;
             } catch ( final Exception e ) {
                 if ( this.legacyConsequenceExceptionHandler != null ) {
                     this.legacyConsequenceExceptionHandler.handleException( activation,

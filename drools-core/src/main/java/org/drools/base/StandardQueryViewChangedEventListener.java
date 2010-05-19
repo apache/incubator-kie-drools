@@ -8,16 +8,17 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Query;
+import org.drools.rule.Rule;
 import org.drools.rule.Variable;
 import org.drools.spi.PropagationContext;
 
-public class DefaultQueryResultsCollector
+public class StandardQueryViewChangedEventListener
     implements
-    QueryResultCollector {
+    InternalViewChangedEventListener {
 
     private List results;
 
-    public DefaultQueryResultsCollector() {
+    public StandardQueryViewChangedEventListener() {
         this.results = new ArrayList( 250 );
     }
 
@@ -25,7 +26,8 @@ public class DefaultQueryResultsCollector
         return this.results;
     }
 
-    public void add(final LeftTuple tuple,
+    public void rowAdded(final Rule rule,
+                         final LeftTuple tuple,
                     final PropagationContext context,
                     final InternalWorkingMemory workingMemory) {
         InternalFactHandle[] handles = new InternalFactHandle[tuple.getIndex() + 1];
@@ -64,6 +66,18 @@ public class DefaultQueryResultsCollector
 
         this.results.add( handles );
 
+    }
+    
+    public void rowRemoved(final Rule rule,
+                           final LeftTuple tuple,
+            final PropagationContext context,
+            final InternalWorkingMemory workingMemory) {
+    }
+    
+    public void rowUpdated(final Rule rule,
+                           final LeftTuple tuple,
+            final PropagationContext context,
+            final InternalWorkingMemory workingMemory) {    	
     }
 
 }

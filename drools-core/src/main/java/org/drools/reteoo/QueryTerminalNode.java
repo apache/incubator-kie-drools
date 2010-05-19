@@ -135,10 +135,29 @@ public final class QueryTerminalNode extends BaseNode
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertLeftTuple(final LeftTuple tuple,
+    public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        LeftTuple entry = tuple;
+        LeftTuple entry = leftTuple;
+
+        // find the DroolsQuery object
+        while ( entry.getParent() != null ) {
+            entry = entry.getParent();
+        }
+        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
+        query.setQuery( (Query) this.rule );        
+
+        // Add results to the adapter
+        query.getQueryResultCollector().rowAdded( this.rule,
+                                                  leftTuple,
+                                                  context,
+                                                  workingMemory );
+    }
+
+    public void retractLeftTuple(final LeftTuple leftTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
+        LeftTuple entry = leftTuple;
 
         // find the DroolsQuery object
         while ( entry.getParent() != null ) {
@@ -148,15 +167,50 @@ public final class QueryTerminalNode extends BaseNode
         query.setQuery( (Query) this.rule );
 
         // Add results to the adapter
-        query.getQueryResultCollector().add( tuple,
-                                             context,
-                                             workingMemory );
+        query.getQueryResultCollector().rowRemoved( this.rule,
+                                                    leftTuple,
+                                                    context,
+                                                    workingMemory );
     }
 
-    public void retractLeftTuple(final LeftTuple tuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "Querries should not result in this method being called" );
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
+        if ( leftTuple != null ) {
+            leftTuple.reAdd(); //
+            // LeftTuple previously existed, so continue as modify
+            modifyLeftTuple( leftTuple,
+                             context,
+                             workingMemory );
+        } else {
+            // LeftTuple does not exist, so create and continue as assert
+            assertLeftTuple( new LeftTuple( factHandle,
+                                            this,
+                                            true ),
+                             context,
+                             workingMemory );
+        }
+    }
+
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        LeftTuple entry = leftTuple;
+
+        // find the DroolsQuery object
+        while ( entry.getParent() != null ) {
+            entry = entry.getParent();
+        }
+        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
+        query.setQuery( (Query) this.rule );
+
+        // Add results to the adapter
+        query.getQueryResultCollector().rowUpdated( this.rule,
+                                                    leftTuple,
+                                                    context,
+                                                    workingMemory );
     }
 
     public String toString() {
@@ -263,19 +317,6 @@ public final class QueryTerminalNode extends BaseNode
 
     public short getType() {
         return NodeTypeEnums.QueryTerminalNode;
-    }
-
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "Querries should not result in this method being called" );
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "Querries should not result in this method being called" );
     }
 
 }

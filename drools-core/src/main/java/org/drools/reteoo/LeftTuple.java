@@ -22,7 +22,7 @@ public class LeftTuple
 
     private LeftTuple          parent;
 
-    private Activation         activation;
+    private Object             object;
 
     private RightTuple         blocker;
 
@@ -411,10 +411,6 @@ public class LeftTuple
         return get( declaration.getPattern().getOffset() );
     }
 
-    public Activation getActivation() {
-        return this.activation;
-    }
-
     /**
      * Returns the fact handles in reverse order
      */
@@ -462,9 +458,13 @@ public class LeftTuple
     public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
-
-    public void setActivation(final Activation activation) {
-        this.activation = activation;
+    
+    public Object getObject() {
+        return this.object;
+    }
+    
+    public void setObject(final Object object) {
+        this.object = object;
     }
 
 //    public int hashCode() {        
@@ -600,7 +600,7 @@ public class LeftTuple
         }
         builder.append( Arrays.toString( ids ) )
                .append( " activation=" )
-               .append( this.activation != null ? ((AgendaItem)this.activation).toExternalForm() : "null" )
+               .append( this.object != null ? this.object : "null" )
                .append( " sink=" )
                .append( this.sink.getClass().getSimpleName() )
                .append( "(" ).append( sink.getId() ).append( ")" );
