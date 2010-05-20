@@ -60,11 +60,11 @@ public class Main {
         this.ksession = kbase.newStatefulKnowledgeSession();
 
         this.pacMan = new PacMan();
-        this.pacMan.setSpeed( 5 );
+        this.pacMan.setSpeed( 3 );
         this.ksession.insert( this.pacMan );
 
         Monster monster = new Monster();
-        monster.setSpeed( 3 );
+        monster.setSpeed( 5 );
         this.ksession.insert( monster );
 
         this.ksession.insert( new Score() );

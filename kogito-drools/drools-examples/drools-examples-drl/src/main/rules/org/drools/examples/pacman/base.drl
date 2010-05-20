@@ -1,14 +1,28 @@
 package org.drools.examples.pacman
 
+declare Direction
+   @role(event)
+end 
+
 /**
  * This controls the flow of time in pacman, currently it's slow 500ms, to make it easy to visualise things as
  * they happen
  */
-rule IncreaseTick dialect "mvel" salience -1 duration 100 when
+rule IncreaseTick dialect "mvel" salience -1 duration 300 when
     $t : Tick()
 then
     modify( $t ) { tock +=  1 };
     //exitPoints["ConsoleExitPoint" ].insert( "tick " + $t.tock + "\n" );
+end
+
+/**
+ * Retract old Directions
+ */
+rule RetractOldDirections dialect "mvel" salience 100 when
+    $oldD     : Direction()   
+    $newD     : Direction( this != $oldD, character == $oldD.character, this after $oldD )
+then
+    retract( $oldD );
 end
 
 /**
