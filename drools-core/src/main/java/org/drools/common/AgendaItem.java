@@ -91,9 +91,6 @@ public class AgendaItem
     private ActivationGroupNode activationGroupNode;
 
     private ActivationNode   activationNode;
-    
-    public boolean fired;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
