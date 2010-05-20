@@ -21,15 +21,22 @@ public class PacmanGui extends JFrame
     implements
     KeyListener,
     ActionListener {
-    JTextArea           displayArea;
-    static final String newline = System.getProperty( "line.separator" );
+    JTextArea               displayArea;
+    static final String     newline = System.getProperty( "line.separator" );
     WorkingMemoryEntryPoint keyListenerEntryPoint;
 
     public static void init(final StatefulKnowledgeSession ksession) {
         try {
-            UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
-            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            String osName = System.getProperty( "os.name" );
+            if ( osName.indexOf( "Linux" ) >= 0 ) {
+                UIManager.setLookAndFeel( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" );
+            } else if ( osName.indexOf( "Windows" ) >= 0 ) {
+                UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
+            } else if ( osName.indexOf( "Mac" ) >= 0 ) {
+                UIManager.setLookAndFeel( "com.apple.laf.AquaLookAndFeel" );
+            } else {
+                UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+            }
         } catch ( UnsupportedLookAndFeelException ex ) {
             ex.printStackTrace();
         } catch ( IllegalAccessException ex ) {
@@ -47,7 +54,7 @@ public class PacmanGui extends JFrame
         try {
             javax.swing.SwingUtilities.invokeAndWait( new Runnable() {
                 public void run() {
-                    createAndShowGUI(ksession);
+                    createAndShowGUI( ksession );
                 }
             } );
         } catch ( Exception e ) {
@@ -57,7 +64,8 @@ public class PacmanGui extends JFrame
 
     private static void createAndShowGUI(StatefulKnowledgeSession ksession) {
         //Create and set up the window.
-        PacmanGui frame = new PacmanGui( "KeyEventDemo", ksession );
+        PacmanGui frame = new PacmanGui( "KeyEventDemo",
+                                         ksession );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
         //Set up the content pane.
@@ -67,16 +75,16 @@ public class PacmanGui extends JFrame
         frame.pack();
         frame.setVisible( true );
     }
-    
+
     public void appendText(final String string) {
         javax.swing.SwingUtilities.invokeLater( new Runnable() {
             public void run() {
                 displayArea.append( string );
-                displayArea.setCaretPosition(displayArea.getDocument().getLength());
+                displayArea.setCaretPosition( displayArea.getDocument().getLength() );
             }
-        } );                
+        } );
     }
-        
+
     private void addComponentsToPane() {
         JButton button = new JButton( "Clear" );
         button.addActionListener( this );
@@ -94,15 +102,19 @@ public class PacmanGui extends JFrame
                               BorderLayout.PAGE_END );
     }
 
-    public PacmanGui(String name, StatefulKnowledgeSession ksession) {
-        super( name );        
+    public PacmanGui(String name,
+                     StatefulKnowledgeSession ksession) {
+        super( name );
         this.keyListenerEntryPoint = ksession.getWorkingMemoryEntryPoint( "KeyListener" );
-        ksession.registerExitPoint( "ConsoleExitPoint", new ConsoleExitPoint( this ) );
+        ksession.registerExitPoint( "ConsoleExitPoint",
+                                    new ConsoleExitPoint( this ) );
     }
-    
-    public static class ConsoleExitPoint implements ExitPoint {        
+
+    public static class ConsoleExitPoint
+        implements
+        ExitPoint {
         private PacmanGui gui;
-        
+
         public ConsoleExitPoint(PacmanGui gui) {
             this.gui = gui;
         }
@@ -110,8 +122,8 @@ public class PacmanGui extends JFrame
         public void insert(final Object arg) {
             gui.appendText( (String) arg );
         }
-        
-    }    
+
+    }
 
     /** Handle the key typed event from the text field. */
     public void keyTyped(KeyEvent e) {
@@ -123,23 +135,23 @@ public class PacmanGui extends JFrame
     }
 
     public void keyReleased(KeyEvent e) {
-//        switch ( e.getKeyCode() ) {
-//            case 38 : { // UP
-//             break;   
-//            }
-//            case 40 : { // DOWN
-//                break;
-//            }
-//            case 37 : { // LEFt
-//                break;
-//            }
-//            case 39 : { // RIGHT
-//                break;
-//            }
-//            default: {
-//                
-//            }
-//        }
+        //        switch ( e.getKeyCode() ) {
+        //            case 38 : { // UP
+        //             break;   
+        //            }
+        //            case 40 : { // DOWN
+        //                break;
+        //            }
+        //            case 37 : { // LEFt
+        //                break;
+        //            }
+        //            case 39 : { // RIGHT
+        //                break;
+        //            }
+        //            default: {
+        //                
+        //            }
+        //        }
         //System.out.println( e );
         this.keyListenerEntryPoint.insert( e );
     }
