@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
@@ -83,8 +84,8 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         out.writeObject( index );
     }
 
-    public RightTuple getFirst(LeftTuple leftTuple) {
-        RightTupleList bucket = get( leftTuple );
+    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle) {
+        RightTupleList bucket = get( leftTuple, factHandle );
         if ( bucket != null ) {
             return bucket.first;
         } else {
@@ -307,18 +308,20 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         return false;
     }
 
-    public RightTupleList get(final LeftTuple tuple) {
+    public RightTupleList get(final LeftTuple tuple, InternalFactHandle factHandle) {
         //this.index.setCachedValue( tuple );
 
         final int hashCode = this.index.hashCodeOf( tuple );
 
         final int index = indexOf( hashCode,
                                    this.table.length );
+        
         RightTupleList entry = (RightTupleList) this.table[index];
 
         while ( entry != null ) {
             if ( entry.matches( tuple,
-                                hashCode ) ) {
+                                hashCode,
+                                factHandle ) ) {
                 return entry;
             }
             entry = (RightTupleList) entry.getNext();

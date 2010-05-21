@@ -183,7 +183,7 @@ public class Person
     }
 
     public String toString() {
-        return "[Person name='" + this.name + "']";
+        return "[Person name='" + this.name + " age='" + this.age + "' likes='" + likes + "']";
     }
 
     /**
