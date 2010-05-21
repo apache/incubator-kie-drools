@@ -64,7 +64,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
                       map.size() );
         assertNull( map.get( new LeftTuple( cheddarHandle1,
                                             null,
-                                            true ) ) );
+                                            true ), cheddarHandle1 ) );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -86,7 +86,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
 
         final RightTupleList list = map.get( new LeftTuple( stiltonHandle2,
                                                             null,
-                                                            true ) );
+                                                            true ), stiltonHandle2 );
         assertSame( stiltonRighTuple.getFactHandle(),
                     list.first.getFactHandle() );
         assertNull( list.first.getNext() );
@@ -139,7 +139,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
                                                                          stilton2 );
         RightTupleList list = map.get( new LeftTuple( stiltonHandle2,
                                                       null,
-                                                      true ) );
+                                                      true ),stiltonHandle2 );
         assertSame( stiltonHandle1,
                     list.first.getFactHandle() );
         assertNull( list.first.getNext() );
@@ -150,7 +150,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
                                                                          cheddar2 );
         list = map.get( new LeftTuple( cheddarHandle2,
                                        null,
-                                       true ) );
+                                       true ), cheddarHandle2 );
         assertSame( cheddarHandle1,
                     list.first.getFactHandle() );
         assertNull( list.first.getNext() );
@@ -212,7 +212,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
 
         final RightTupleList list = map.get( new LeftTuple( stiltonHandle3,
                                                             null,
-                                                            true ) );
+                                                            true ), stiltonHandle3 );
         assertSame( stiltonHandle1,
                     list.first.getFactHandle() );
         assertSame( stiltonHandle2,
@@ -607,7 +607,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
 
         assertNull( map.getFirst( new LeftTuple( stiltonHandle,
                                                  null,
-                                                 true ) ) );
+                                                 true ), stiltonHandle ) );
     }
 
 }

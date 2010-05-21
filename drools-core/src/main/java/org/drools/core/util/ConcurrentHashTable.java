@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
@@ -334,7 +335,8 @@ public class ConcurrentHashTable {
         }
 
         RightTupleList get(final int hashCode,
-                                  final LeftTuple tuple) {
+                                  final LeftTuple tuple,
+                                  final InternalFactHandle factHandle) {
             //this.index.setCachedValue( tuple );
             lock();
             try {
@@ -345,7 +347,8 @@ public class ConcurrentHashTable {
 
                 while ( entry != null ) {
                     if ( entry.matches( tuple,
-                                        hashCode ) ) {
+                                        hashCode ,
+                                        factHandle ) ) {
                         return entry;
                     }
                     entry = (RightTupleList) entry.getNext();
@@ -692,10 +695,11 @@ public class ConcurrentHashTable {
                                        object );
     }
 
-    public RightTupleList get(final LeftTuple tuple) {
+    public RightTupleList get(final LeftTuple tuple, InternalFactHandle factHandle) {
         final int hashCode = this.index.hashCodeOf( tuple );
         return segmentFor( hashCode ).get( hashCode,
-                                    tuple );
+                                    tuple, 
+                                    factHandle);
     }
 
     /**

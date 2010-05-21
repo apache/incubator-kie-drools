@@ -4716,6 +4716,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
     
+
     public void testSelfJoinWithIndex() {
         String drl = "";
         drl += "package org.test\n";
@@ -4760,7 +4761,7 @@ public class MiscTest extends TestCase {
         ksession.fireAllRules();
         
         assertEquals( 0, list.size() );
-    }
+    }    
 
     public void testMergingDifferentPackages() throws Exception {
         // using the same builder
@@ -4786,6 +4787,69 @@ public class MiscTest extends TestCase {
         }
     }
 
+    public void testSelfJoinAndNotWithIndex() {
+        String drl = "";
+        drl += "package org.test\n";
+        drl += "import org.drools.Person\n";
+        drl += "global java.util.List list\n";
+        drl += "rule test1\n";
+        drl += "when\n";
+        drl += "   $p1 : Person( )\n";
+        drl += "     not Person( name == $p1.name, age < $p1.age )\n";
+        drl += "   $p2 : Person( name == $p1.name, likes != $p1.likes, age > $p1.age)\n";
+        drl += "     not Person( name == $p1.name, likes == $p2.likes, age < $p2.age )\n";
+        drl += "then\n";
+        drl += "    System.out.println( $p1 + \":\" + $p2 );\n";
+        drl += "    list.add( $p1 );\n";
+        drl += "    list.add( $p2 );\n";
+        drl += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        Person p0 = new Person("yoda", 0);
+        p0.setLikes( "cheddar" );
+        org.drools.runtime.rule.FactHandle fh0 = ksession.insert( p0 );        
+        
+        Person p1 = new Person("darth", 15);
+        p1.setLikes( "cheddar" );
+        org.drools.runtime.rule.FactHandle fh1 = ksession.insert( p1 );
+
+        Person p2 = new Person("darth", 25);
+        p2.setLikes( "cheddar" );
+        org.drools.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.
+        
+        Person p3 = new Person("darth", 30);
+        p3.setLikes( "brie" );
+        org.drools.runtime.rule.FactHandle fh3 = ksession.insert( p3 );
+        
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+        assertSame( p1, list.get( 0 ) );
+        assertSame( p3, list.get( 1 ) );
+        
+        p1.setName( "yoda" );
+        ksession.update( fh1, p1 );  // creates activation
+              
+        ksession.fireAllRules();        
+        assertEquals( 4, list.size() );
+        assertSame( p2, list.get( 2 ) );
+        assertSame( p3, list.get( 3 ) );        
+    }
+        
     public void testMergingDifferentPackages2() throws Exception {
         // using different builders
         try {
