@@ -14,8 +14,8 @@
   <name>Drools :: Documentation</name>
 
   <modules>
-    <module>docbook-style-drools</module>
-    <module>docbook-xsl-drools</module>
+    <!--module>docbook-style-drools</module>
+    <module>docbook-xsl-drools</module-->
     <module>drools-docs-introduction</module>
     <module>drools-docs-expert</module>
     <module>drools-docs-flow</module>
@@ -26,7 +26,7 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
+      <!--dependency>
         <groupId>org.drools</groupId>
         <artifactId>docbook-style-drools</artifactId>
         <version>1.1.0</version>
@@ -35,12 +35,7 @@
         <groupId>org.drools</groupId>
         <artifactId>docbook-xsl-drools</artifactId>
         <version>1.1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-introduction</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+      </dependency-->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-docs-introduction</artifactId>
@@ -69,6 +64,12 @@
         <artifactId>drools-docs-planner</artifactId>
         <version>${project.version}</version>
       </dependency>
+	  
+	    <dependency>
+			<groupId>org.jboss.docs</groupId>
+			<artifactId>highlight</artifactId>
+			<version>1.0.0</version>
+		</dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -95,8 +96,8 @@
                 </property>
             </activation>
             <modules>
-                <module>docbook-style-drools</module>
-                <module>docbook-xsl-drools</module>
+                <!--module>docbook-style-drools</module>
+                <module>docbook-xsl-drools</module-->
                 <module>drools-docs-introduction</module>
                 <module>drools-docs-expert</module>
                 <module>drools-docs-flow</module>
@@ -111,8 +112,8 @@
                 <activeByDefault>true</activeByDefault> 
             </activation>            
             <modules>
-                <module>docbook-style-drools</module>
-                <module>docbook-xsl-drools</module>
+                <!--module>docbook-style-drools</module>
+                <module>docbook-xsl-drools</module-->
                 <module>drools-docs-introduction</module>
                 <module>drools-docs-expert</module>
                 <module>drools-docs-flow</module>
@@ -129,7 +130,7 @@
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>
         <artifactId>maven-jdocbook-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>2.2.3</version>
         <extensions>true</extensions>
         <!-- executions>
           <execution -->
@@ -147,15 +148,16 @@
 
         <dependencies>
           <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>docbook-style-drools</artifactId>
-            <version>1.1.0</version>
-            <type>jdocbook-style</type>
+			<groupId>org.jboss</groupId>
+			<artifactId>jbossorg-jdocbook-style</artifactId>
+			<version>1.1.0</version>
+			<type>jdocbook-style</type>
+
           </dependency>
 
           <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>docbook-xsl-drools</artifactId>
+            <groupId>org.jboss</groupId>
+            <artifactId>jbossorg-docbook-xslt</artifactId>
             <version>1.1.0</version>
           </dependency>
         </dependencies>
@@ -186,35 +188,31 @@
             -->
           </imageResource>
           <formats>
-            <!--format>
-              <formatName>pdf</formatName>
-              <stylesheetResource>classpath:/org/jboss/pdf.xsl</stylesheetResource -->
-              <!--
-                <stylesheetResource>classpath:/fo/docbook.xsl</stylesheetResource>
-              -->
-              <!-- finalName>${artifactId}.pdf</finalName -->
-              <!-- profilingTypeName>two_pass</profilingTypeName -->
-            <!-- /format -->
             <format>
               <formatName>html_single</formatName>
-              <stylesheetResource>classpath:/org/jboss/xhtml-single.xsl</stylesheetResource>
+			  <!--stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource-->
               <finalName>index.html</finalName>
               <!-- <profilingTypeName>two_pass</profilingTypeName> -->
             </format>
 
             <format>
               <formatName>html</formatName>
-              <stylesheetResource>classpath:/org/jboss/xhtml.xsl</stylesheetResource>
+			  <!--stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource-->			  
               <finalName>index.html</finalName>
               <!-- <profilingTypeName>two_pass</profilingTypeName> -->
             </format>
 
             <format>
               <formatName>eclipse</formatName>
-              <stylesheetResource>classpath:/eclipse/eclipse.xsl</stylesheetResource>
+              <!--stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource-->			  
               <finalName>${artifactId}.html</finalName>
-              <!-- <profilingTypeName>two_pass</profilingTypeName> -->
             </format>
+			
+			<format>
+              <formatName>pdf</formatName>
+			  <!--stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource-->
+			  <finalName>${artifactId}.html</finalName>
+			</format>
           </formats>
           <options>
             <xmlTransformerType>saxon</xmlTransformerType>
