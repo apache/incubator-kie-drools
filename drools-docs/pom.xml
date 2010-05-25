@@ -211,7 +211,7 @@
 			<format>
               <formatName>pdf</formatName>
 			  <!--stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource-->
-			  <finalName>${artifactId}.html</finalName>
+			  <finalName>${artifactId}.pdf</finalName>
 			</format>
           </formats>
           <options>
