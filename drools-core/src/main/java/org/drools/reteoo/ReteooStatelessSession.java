@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.FireAllRules;
+import org.drools.event.AbstractEventSupport;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -90,12 +92,12 @@ public class ReteooStatelessSession
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                                 this.ruleBase,
                                                                 this.sessionConf,
-                                                                EnvironmentFactory.newEnvironment() );
+                                                                EnvironmentFactory.newEnvironment(),
+                                                                this.workingMemoryEventSupport,
+                                                                this.agendaEventSupport,
+                                                                this.ruleFlowEventSupport);
 
             wm.setGlobalResolver( this.globalResolver );
-            wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
-            wm.setAgendaEventSupport( this.agendaEventSupport );
-            wm.setRuleFlowEventSupport( ruleFlowEventSupport );
 
             final InitialFactHandleDummyObject initialFact = new InitialFactHandleDummyObject();
             final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( initialFact,
@@ -111,8 +113,8 @@ public class ReteooStatelessSession
             return wm;
         }
     }
-
-    public void addEventListener(final WorkingMemoryEventListener listener) {
+    
+	public void addEventListener(final WorkingMemoryEventListener listener) {
         this.workingMemoryEventSupport.addEventListener( listener );
     }
 

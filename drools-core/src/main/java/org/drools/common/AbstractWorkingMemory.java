@@ -81,7 +81,6 @@ import org.drools.reteoo.InitialFactHandle;
 import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.ModifyPreviousTuples;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
@@ -266,10 +265,47 @@ public abstract class AbstractWorkingMemory
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
+                                 final SessionConfiguration config,
+                                 final Environment environment,
+                                 final WorkingMemoryEventSupport workingMemoryEventSupport,
+                                 final AgendaEventSupport agendaEventSupport,
+                                 final RuleFlowEventSupport ruleFlowEventSupport) {
+        this( id,
+              ruleBase,
+              handleFactory,
+              null,
+              0,
+              config,
+              environment,
+              workingMemoryEventSupport,
+              agendaEventSupport,
+              ruleFlowEventSupport);
+}
+
+    public AbstractWorkingMemory(final int id,
+                                 final InternalRuleBase ruleBase,
+                                 final FactHandleFactory handleFactory,
                                  final InitialFactHandle initialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
-                                 final Environment environment) {
+                                 final Environment environment)
+    {
+        this( id, ruleBase, handleFactory, initialFactHandle, propagationContext, config, environment,
+           new WorkingMemoryEventSupport(),
+           new AgendaEventSupport(),
+           new RuleFlowEventSupport());
+    }
+    
+    public AbstractWorkingMemory(final int id,
+                                 final InternalRuleBase ruleBase,
+                                 final FactHandleFactory handleFactory,
+                                 final InitialFactHandle initialFactHandle,
+                                 final long propagationContext,
+                                 final SessionConfiguration config,
+                                 final Environment environment,
+                                 final WorkingMemoryEventSupport workingMemoryEventSupport,
+                                 final AgendaEventSupport agendaEventSupport,
+                                 final RuleFlowEventSupport ruleFlowEventSupport) {
         this.id = id;
         this.config = config;
         this.ruleBase = ruleBase;
@@ -311,9 +347,9 @@ public abstract class AbstractWorkingMemory
         this.actionQueue = new LinkedList<WorkingMemoryAction>();
 
         this.addRemovePropertyChangeListenerArgs = new Object[]{this};
-        this.workingMemoryEventSupport = new WorkingMemoryEventSupport();
-        this.agendaEventSupport = new AgendaEventSupport();
-        this.workflowEventSupport = new RuleFlowEventSupport();
+        this.workingMemoryEventSupport = workingMemoryEventSupport;
+        this.agendaEventSupport = agendaEventSupport;
+        this.workflowEventSupport = ruleFlowEventSupport;
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
