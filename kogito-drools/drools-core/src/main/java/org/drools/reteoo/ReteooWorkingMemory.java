@@ -20,15 +20,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
-import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.SessionConfiguration;
-import org.drools.base.StandardQueryViewChangedEventListener;
 import org.drools.base.DroolsQuery;
+import org.drools.base.StandardQueryViewChangedEventListener;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
@@ -38,21 +34,22 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.event.AgendaEventSupport;
+import org.drools.event.RuleFlowEventSupport;
+import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
-import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.ViewChangedEventListener;
-import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
 import org.drools.runtime.rule.impl.LiveQueryImpl;
-import org.drools.runtime.rule.impl.RowAdapter;
+import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -100,6 +97,26 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         this.agenda = new DefaultAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );
     }
+    public ReteooWorkingMemory(final int id,
+                               final InternalRuleBase ruleBase,
+                               final SessionConfiguration config,
+                               final Environment environment,
+                               final WorkingMemoryEventSupport workingMemoryEventSupport,
+                               final AgendaEventSupport agendaEventSupport,
+                               final RuleFlowEventSupport ruleFlowEventSupport) {
+        super( id, 
+               ruleBase,
+               ruleBase.newFactHandleFactory(),
+               config,
+               environment,
+               workingMemoryEventSupport,
+               agendaEventSupport,
+               ruleFlowEventSupport);
+
+        this.agenda = new DefaultAgenda( ruleBase );
+        this.agenda.setWorkingMemory( this );
+}
+
 
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
