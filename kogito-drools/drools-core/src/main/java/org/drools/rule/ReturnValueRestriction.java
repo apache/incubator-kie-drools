@@ -50,7 +50,7 @@ public class ReturnValueRestriction
     private ReturnValueExpression        expression;
 
     private String[]                     requiredGlobals;
-    
+
     private Declaration[]                requiredDeclarations;
 
     private Declaration[]                previousDeclarations;
@@ -129,7 +129,7 @@ public class ReturnValueRestriction
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         expression = (ReturnValueExpression) in.readObject();
-        requiredGlobals = ( String[] ) in.readObject();
+        requiredGlobals = (String[]) in.readObject();
         requiredDeclarations = (Declaration[]) in.readObject();
         previousDeclarations = (Declaration[]) in.readObject();
         localDeclarations = (Declaration[]) in.readObject();
@@ -144,7 +144,7 @@ public class ReturnValueRestriction
         } else {
             out.writeObject( this.expression );
         }
-        out.writeObject(  requiredGlobals );
+        out.writeObject( requiredGlobals );
         out.writeObject( requiredDeclarations );
         out.writeObject( previousDeclarations );
         out.writeObject( localDeclarations );
@@ -190,6 +190,8 @@ public class ReturnValueRestriction
                 this.localDeclarations[i] = newDecl;
             }
         }
+        this.expression.replaceDeclaration( oldDecl,
+                                            newDecl );
     }
 
     public void wire(Object object) {
@@ -210,7 +212,7 @@ public class ReturnValueRestriction
     public Evaluator getEvaluator() {
         return this.evaluator;
     }
-    
+
     public boolean isTemporal() {
         return this.evaluator.isTemporal();
     }
@@ -221,7 +223,7 @@ public class ReturnValueRestriction
                              final WorkingMemory workingMemory,
                              final ContextEntry context) {
         try {
-            return this.evaluator.evaluate( (InternalWorkingMemory)workingMemory,
+            return this.evaluator.evaluate( (InternalWorkingMemory) workingMemory,
                                             this.readAccessor,
                                             handle.getObject(),
                                             this.expression.evaluate( handle.getObject(),

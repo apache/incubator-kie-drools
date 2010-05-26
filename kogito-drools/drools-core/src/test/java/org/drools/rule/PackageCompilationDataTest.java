@@ -29,6 +29,12 @@ public class PackageCompilationDataTest extends TestCase {
         public void writeExternal(ObjectOutput out) throws IOException {
 
         }
+        public Declaration[] getRequiredDeclarations() {
+            return null;
+        }
+        public void replaceDeclaration(Declaration declaration,
+                                       Declaration resolved) {
+        }
     }
 
     public void testCodeSourceUrl() throws Exception {

@@ -29,4 +29,7 @@ public interface EvalExpression
                             Declaration[] requiredDeclarations,
                             WorkingMemory workingMemory,
                             Object context ) throws Exception;
+
+    public void replaceDeclaration(Declaration declaration,
+                                   Declaration resolved);
 }

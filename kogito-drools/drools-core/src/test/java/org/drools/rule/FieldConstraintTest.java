@@ -327,6 +327,10 @@ public class FieldConstraintTest extends TestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
+
+            public void replaceDeclaration(Declaration declaration,
+                                           Declaration resolved) {
+            }
         };
 
         final ReturnValueRestriction restriction1 = new ReturnValueRestriction( priceExtractor,

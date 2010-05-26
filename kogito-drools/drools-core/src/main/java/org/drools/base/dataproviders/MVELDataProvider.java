@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -60,10 +61,12 @@ public class MVELDataProvider
 //        out.writeObject(prototype);
     }
     
+    @SuppressWarnings("unchecked")
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
         prototype = unit.getFactory( );
-        this.requiredDeclarations = (Declaration[]) this.unit.getFactory().getPreviousDeclarations().values().toArray(new Declaration[this.unit.getFactory().getPreviousDeclarations().size()]);
+        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();
+        this.requiredDeclarations = (Declaration[]) previousDeclarations.values().toArray(new Declaration[previousDeclarations.size()]);
     }   
     
     public Declaration[] getRequiredDeclarations() {

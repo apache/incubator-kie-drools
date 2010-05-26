@@ -50,6 +50,14 @@
     }
 @end{}
 
+@declare{"replaceDeclaration"}
+    public void replaceDeclaration(org.drools.rule.Declaration declaration,
+                                   org.drools.rule.Declaration resolved) { 
+        // this class does not cache declarations
+    }
+@end{}
+
+
 @declare{"returnValueInvoker"}
 package @{package};
 
@@ -89,6 +97,8 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression
             @foreach{identifier : globals}@{identifier}
             @end{","} );
     }
+
+    @includeNamed{"replaceDeclaration"}
 
     @includeNamed{"hashCode"}
 
@@ -146,7 +156,7 @@ package @{package};
 public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
-
+    
     // no need for context
     public Object createContext() { return null; }
 
@@ -167,6 +177,8 @@ public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.d
             @foreach{identifier : globals}@{identifier}
             @end{","} );
     }
+    
+    @includeNamed{"replaceDeclaration"}
 
     @includeNamed{"hashCode"}
 

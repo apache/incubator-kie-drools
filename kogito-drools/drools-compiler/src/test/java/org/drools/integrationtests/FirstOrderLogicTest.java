@@ -15,6 +15,9 @@ import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.ClockType;
+import org.drools.FactA;
+import org.drools.FactB;
+import org.drools.FactC;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -36,6 +39,8 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
@@ -44,6 +49,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
+import static org.mockito.Mockito.*;
 
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -928,6 +934,33 @@ public class FirstOrderLogicTest extends TestCase {
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
+    }
+
+    // JBRULES-2482
+    public void testOrWithVariableResolution() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval.drl",
+                                                            FirstOrderLogicTest.class ),
+                      ResourceType.DRL );
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final AgendaEventListener al = mock( AgendaEventListener.class );
+        ksession.addEventListener( al );
+
+        ksession.insert( new FactA( "a" ) );
+        ksession.insert( new FactB( "b" ) );
+        ksession.insert( new FactC( "c" ) );
+
+        ksession.fireAllRules();
+        verify( al,
+                times( 6 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
     }
 
     public void testCollectWithMemberOfOperators() throws Exception {

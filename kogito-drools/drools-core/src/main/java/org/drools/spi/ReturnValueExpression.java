@@ -31,5 +31,8 @@ public interface ReturnValueExpression
                                Declaration[] localDeclarations,
                                WorkingMemory workingMemory,
                                Object context ) throws Exception;
+    
+    public void replaceDeclaration(Declaration declaration,
+                                   Declaration resolved);
 
 }
