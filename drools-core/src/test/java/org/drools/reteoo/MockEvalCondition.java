@@ -56,6 +56,14 @@ public class MockEvalCondition extends EvalCondition {
         public void writeExternal(ObjectOutput out) throws IOException {
 
         }
+
+        public Declaration[] getRequiredDeclarations() {
+            return null;
+        }
+
+        public void replaceDeclaration(Declaration declaration,
+                                       Declaration resolved) {
+        }
                                                   };
 
     public MockEvalCondition(final boolean isAllowed) {

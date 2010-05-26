@@ -381,4 +381,22 @@ public class MVELCompilationUnit
         return cls;
 
     }
+
+    public void replaceDeclaration(Declaration declaration,
+                                   Declaration resolved) {
+        if( previousDeclarations != null ) {
+            for( int i = 0; i < previousDeclarations.length; i++ ) {
+                if( previousDeclarations[i].equals( declaration ) ) {
+                    previousDeclarations[i] = resolved; 
+                }
+            }
+        }
+        if( localDeclarations != null ) {
+            for( int i = 0; i < localDeclarations.length; i++ ) {
+                if( localDeclarations[i].equals( declaration ) ) {
+                    localDeclarations[i] = resolved; 
+                }
+            }
+        }
+    }
 }

@@ -7,7 +7,6 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -151,7 +150,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                            final KnowledgeHelper knowledgeHelper,
                            final Object object,
                            final WorkingMemory workingMemory,
-                           final Map<String, Object> variables) {
+                           final Map<String, Object> variables ) {
         if (tuple != null) {
             this.tupleObjects = ((LeftTuple) tuple).toFactHandles();
         }

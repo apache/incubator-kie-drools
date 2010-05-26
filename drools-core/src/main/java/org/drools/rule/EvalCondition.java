@@ -201,6 +201,8 @@ public class EvalCondition extends ConditionalElement
                 this.requiredDeclarations[i] = resolved;
             }
         }
+        this.expression.replaceDeclaration( declaration,
+                                            resolved );
     }
     
     @Override

@@ -118,5 +118,13 @@ public class EvalNodeStep
             return result.booleanValue();
         }
 
+        public Declaration[] getRequiredDeclarations() {
+            return null;
+        }
+
+        public void replaceDeclaration(Declaration declaration,
+                                       Declaration resolved) {
+        }
+
     }
 }
