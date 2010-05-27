@@ -91,6 +91,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.Calendars;
+import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.ExecutionResults;
@@ -148,7 +149,7 @@ public abstract class AbstractWorkingMemory
 
     /** Global values which are associated with this memory. */
     protected GlobalResolver                                     globalResolver;
-    
+
     protected Calendars                                          calendars;
     protected DateFormats                                        dateFormats;
 
@@ -224,6 +225,8 @@ public abstract class AbstractWorkingMemory
 
     private Map<String, ExitPoint>                               exitPoints;
 
+    private Map<String, Channel>                                 channels;
+
     private Environment                                          environment;
 
     private ExecutionResults                                     batchExecutionResult;
@@ -279,8 +282,8 @@ public abstract class AbstractWorkingMemory
               environment,
               workingMemoryEventSupport,
               agendaEventSupport,
-              ruleFlowEventSupport);
-}
+              ruleFlowEventSupport );
+    }
 
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
@@ -288,14 +291,19 @@ public abstract class AbstractWorkingMemory
                                  final InitialFactHandle initialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
-                                 final Environment environment)
-    {
-        this( id, ruleBase, handleFactory, initialFactHandle, propagationContext, config, environment,
-           new WorkingMemoryEventSupport(),
-           new AgendaEventSupport(),
-           new RuleFlowEventSupport());
+                                 final Environment environment) {
+        this( id,
+              ruleBase,
+              handleFactory,
+              initialFactHandle,
+              propagationContext,
+              config,
+              environment,
+              new WorkingMemoryEventSupport(),
+              new AgendaEventSupport(),
+              new RuleFlowEventSupport() );
     }
-    
+
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
@@ -322,13 +330,14 @@ public abstract class AbstractWorkingMemory
         } else {
             this.globalResolver = new MapGlobalResolver();
         }
-        
+
         this.calendars = new CalendarsImpl();
-        
+
         this.dateFormats = (DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
         if ( this.dateFormats == null ) {
             this.dateFormats = new DateFormatsImpl();
-            this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
+            this.environment.set( EnvironmentName.DATE_FORMATS,
+                                  this.dateFormats );
         }
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
@@ -385,25 +394,25 @@ public abstract class AbstractWorkingMemory
         this.firing = new AtomicBoolean( false );
         this.modifyContexts = new HashMap<InternalFactHandle, PropagationContext>();
         this.exitPoints = new ConcurrentHashMap<String, ExitPoint>();
-        //setGlobal( "exitPoints", Collections.unmodifiableMap( this.exitPoints ) );
+        this.channels = new ConcurrentHashMap<String, Channel>();
         initProcessEventListeners();
         initPartitionManagers();
         initTransient();
 
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
-        
+
         initManagementBeans();
-        
+
         initProcessActivationListener();
     }
 
     private void initManagementBeans() {
-        if( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
-            DroolsManagementAgent.getInstance().registerKnowledgeSession( this ); 
+        if ( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
+            DroolsManagementAgent.getInstance().registerKnowledgeSession( this );
         }
     }
-    
+
     public String getEntryPointId() {
         return EntryPoint.DEFAULT.getEntryPointId();
     }
@@ -678,11 +687,11 @@ public abstract class AbstractWorkingMemory
     public GlobalResolver getGlobalResolver() {
         return this.globalResolver;
     }
-    
+
     public Calendars getCalendars() {
         return this.calendars;
     }
-    
+
     public DateFormats getDateFormats() {
         return this.dateFormats;
     }
@@ -1139,14 +1148,14 @@ public abstract class AbstractWorkingMemory
     }
 
     public void insert(final InternalFactHandle handle,
-                          final Object object,
-                          final Rule rule,
-                          final Activation activation,
-                          ObjectTypeConf typeConf) {
+                       final Object object,
+                       final Rule rule,
+                       final Activation activation,
+                       ObjectTypeConf typeConf) {
         this.ruleBase.executeQueuedActions();
 
         executeQueuedActions();
-        
+
         if ( activation != null ) {
             // release resources so that they can be GC'ed
             activation.getPropagationContext().releaseResources();
@@ -1317,7 +1326,7 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.readUnlock();
         }
     }
-    
+
     public EntryPointNode getEntryPointNode() {
         return this.entryPointNode;
     }
@@ -1370,7 +1379,7 @@ public abstract class AbstractWorkingMemory
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = handle.getObject();
 
-            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle)handle).isExpired()) ) {
+            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
                 return;
             }
@@ -1427,7 +1436,7 @@ public abstract class AbstractWorkingMemory
 
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
-           
+
             this.entryPointNode.modifyObject( handle,
                                               propagationContext,
                                               typeConf,
@@ -1575,30 +1584,36 @@ public abstract class AbstractWorkingMemory
 
         }
     }
-    
+
     private void initProcessActivationListener() {
-    	addEventListener(new DefaultAgendaEventListener() {
-    	    public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
-		        String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
-		        if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
-		            // new activations of the rule associate with a state node
-		            // signal process instances of that state node
-		            String ruleName = event.getActivation().getRule().getName();
-		            if (ruleName.startsWith("RuleFlowStateNode-")) {
-		            	int index = ruleName.indexOf("-", 18);
-		            	index = ruleName.indexOf("-", index + 1);
-		            	String eventType = ruleName.substring(0, index);
-		            	signalManager.signalEvent(eventType, event);
-		            }
-	            }
+        addEventListener( new DefaultAgendaEventListener() {
+            public void activationCreated(ActivationCreatedEvent event,
+                                          WorkingMemory workingMemory) {
+                String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
+                if ( "DROOLS_SYSTEM".equals( ruleFlowGroup ) ) {
+                    // new activations of the rule associate with a state node
+                    // signal process instances of that state node
+                    String ruleName = event.getActivation().getRule().getName();
+                    if ( ruleName.startsWith( "RuleFlowStateNode-" ) ) {
+                        int index = ruleName.indexOf( "-",
+                                                      18 );
+                        index = ruleName.indexOf( "-",
+                                                  index + 1 );
+                        String eventType = ruleName.substring( 0,
+                                                               index );
+                        signalManager.signalEvent( eventType,
+                                                   event );
+                    }
+                }
             }
-    	});
-    	addEventListener(new DefaultRuleFlowEventListener() {
-    	    public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
-                    final WorkingMemory workingMemory) {
-    	    	signalManager.signalEvent("RuleFlowGroup_" + event.getRuleFlowGroup().getName(), null);
+        } );
+        addEventListener( new DefaultRuleFlowEventListener() {
+            public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
+                                                      final WorkingMemory workingMemory) {
+                signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
+                                           null );
             }
-    	});
+        } );
     }
 
     public ProcessInstance startProcess(final String processId) {
@@ -1919,8 +1934,8 @@ public abstract class AbstractWorkingMemory
     // }
 
     public void dispose() {
-        if( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
-            DroolsManagementAgent.getInstance().unregisterKnowledgeSession( this ); 
+        if ( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
+            DroolsManagementAgent.getInstance().unregisterKnowledgeSession( this );
         }
         this.workingMemoryEventSupport.reset();
         this.agendaEventSupport.reset();
@@ -1940,36 +1955,62 @@ public abstract class AbstractWorkingMemory
         return this.kruntime;
     }
 
+    /**
+     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
+     */
+    @Deprecated
     public void registerExitPoint(String name,
                                   ExitPoint exitPoint) {
         this.exitPoints.put( name,
                              exitPoint );
     }
 
+    /**
+     * @deprecated Use {@link #unregisterChannel(String)} instead.
+     */
+    @Deprecated
     public void unregisterExitPoint(String name) {
         this.exitPoints.remove( name );
     }
 
+    /**
+     * @deprecated Use {@link #getChannels()} instead.
+     */
+    @Deprecated
     public Map<String, ExitPoint> getExitPoints() {
         return this.exitPoints;
+    }
+
+    public void registerChannel(String name,
+                                Channel channel) {
+        this.channels.put( name,
+                           channel );
+    }
+    
+    public void unregisterChannel(String name) {
+        this.channels.remove( name );
+    }
+
+    public Map<String, Channel> getChannels() {
+        return this.channels;
     }
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         return this.entryPoints;
     }
-    
+
     public long getFactCount() {
         return this.objectStore.size();
     }
 
     public long getTotalFactCount() {
         long result = 0;
-        for( WorkingMemoryEntryPoint ep : this.entryPoints.values() ) {
+        for ( WorkingMemoryEntryPoint ep : this.entryPoints.values() ) {
             result += ep.getFactCount();
         }
         return result;
     }
-    
+
     /**
      * This method must be called before starting any new work in the engine,
      * like inserting a new fact or firing a new rule. It will reset the engine
@@ -1984,13 +2025,13 @@ public abstract class AbstractWorkingMemory
             this.lastIdleTimestamp.set( -1 );
         }
     }
-    
+
     private EndOperationListener endOperationListener;
-    
+
     public void setEndOperationListener(EndOperationListener listener) {
         this.endOperationListener = listener;
     }
-    
+
     public static interface EndOperationListener {
         void endOperation(ReteooWorkingMemory wm);
     }
@@ -2025,7 +2066,7 @@ public abstract class AbstractWorkingMemory
         long lastIdle = this.lastIdleTimestamp.get();
         return lastIdle > -1 ? timerManager.getTimerService().getCurrentTime() - lastIdle : -1;
     }
-    
+
     public long getLastIdleTimestamp() {
         return this.lastIdleTimestamp.get();
     }

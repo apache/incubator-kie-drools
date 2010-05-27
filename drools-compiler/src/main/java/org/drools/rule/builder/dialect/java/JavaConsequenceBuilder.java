@@ -19,7 +19,6 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -170,7 +169,9 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                     break;
                 case ENTRY :
                 case EXIT :
-                    rewriteInterfacePoint( originalCode,
+                case CHANNEL :
+                    rewriteInterfacePoint( context, 
+                                           originalCode,
                                            consequence,
                                            (JavaInterfacePointsDescr) block );
                     break;
@@ -181,15 +182,26 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         return consequence.toString();
     }
 
-    private void rewriteInterfacePoint(final String originalCode,
-                                       StringBuilder consequence,
-                                       JavaInterfacePointsDescr ep) {
+    @SuppressWarnings("unchecked")
+    private void rewriteInterfacePoint(final RuleBuildContext context,
+                                       final String originalCode,
+                                       final StringBuilder consequence,
+                                       final JavaInterfacePointsDescr ep) {
         // rewriting it for proper exitPoints access
         consequence.append( "drools.get" );
         if ( ep.getType() == BlockType.EXIT ) {
             consequence.append( "ExitPoint( " );
-        } else {
+        } else if( ep.getType() == BlockType.ENTRY ) {
             consequence.append( "EntryPoint( " );
+        } else if( ep.getType() == BlockType.CHANNEL ) {
+            consequence.append( "Channel( " );
+        } else {
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          context.getRuleDescr(),
+                                                          ep,
+                                                          "Unable to rewrite code block: " + ep + "\n" ) );
+
+            return;
         }
         consequence.append( ep.getId() );
         consequence.append( " )" );

@@ -57,6 +57,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.Calendars;
+import org.drools.runtime.Channel;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
@@ -83,8 +84,8 @@ public class StatefulKnowledgeSessionImpl
     StatefulKnowledgeSession,
     CommandExecutor,
     InternalWorkingMemoryEntryPoint {
-    public ReteooWorkingMemory                                                session;
-    public KnowledgeBaseImpl                                                  kbase;
+    public ReteooWorkingMemory session;
+    public KnowledgeBaseImpl   kbase;
 
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
         this( session,
@@ -95,9 +96,9 @@ public class StatefulKnowledgeSessionImpl
                                         KnowledgeBase kbase) {
         this.session = session;
         this.session.setKnowledgeRuntime( this );
-        this.kbase = ( KnowledgeBaseImpl ) kbase;
+        this.kbase = (KnowledgeBaseImpl) kbase;
     }
-    
+
     public int getId() {
         return this.session.getId();
     }
@@ -105,8 +106,8 @@ public class StatefulKnowledgeSessionImpl
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         return session.getWorkingMemoryEntryPoint( name );
     }
-    
-    public Collection<? extends org.drools.runtime.rule.WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+
+    public Collection< ? extends org.drools.runtime.rule.WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
         return session.getWorkingMemoryEntryPoints();
     }
 
@@ -117,7 +118,7 @@ public class StatefulKnowledgeSessionImpl
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
         WorkingMemoryEventListenerWrapper wrapper = null;
-        if( listener != null && ! ( listener instanceof WorkingMemoryEventListenerWrapper ) ) {
+        if ( listener != null && !(listener instanceof WorkingMemoryEventListenerWrapper) ) {
             wrapper = new WorkingMemoryEventListenerWrapper( listener );
         } else {
             wrapper = (WorkingMemoryEventListenerWrapper) listener;
@@ -127,9 +128,9 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
         List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
-        for( WorkingMemoryEventListener listener : ((List<WorkingMemoryEventListener>)this.session.getWorkingMemoryEventListeners()) ) {
-            if( listener instanceof WorkingMemoryEventListenerWrapper ) {
-                listeners.add( ((WorkingMemoryEventListenerWrapper)listener).unWrap() );
+        for ( WorkingMemoryEventListener listener : ((List<WorkingMemoryEventListener>) this.session.getWorkingMemoryEventListeners()) ) {
+            if ( listener instanceof WorkingMemoryEventListenerWrapper ) {
+                listeners.add( ((WorkingMemoryEventListenerWrapper) listener).unWrap() );
             } else {
                 listeners.add( listener );
             }
@@ -144,9 +145,9 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
         List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
-        for( AgendaEventListener listener : ((List<AgendaEventListener>)this.session.getAgendaEventListeners()) ) {
-            if( listener instanceof AgendaEventListenerWrapper ) {
-                listeners.add( ((AgendaEventListenerWrapper)listener).unWrap() );
+        for ( AgendaEventListener listener : ((List<AgendaEventListener>) this.session.getAgendaEventListeners()) ) {
+            if ( listener instanceof AgendaEventListenerWrapper ) {
+                listeners.add( ((AgendaEventListenerWrapper) listener).unWrap() );
             } else {
                 listeners.add( listener );
             }
@@ -156,7 +157,7 @@ public class StatefulKnowledgeSessionImpl
 
     public void removeEventListener(AgendaEventListener listener) {
         AgendaEventListenerWrapper wrapper = null;
-        if( listener != null && ! ( listener instanceof AgendaEventListenerWrapper ) ) {
+        if ( listener != null && !(listener instanceof AgendaEventListenerWrapper) ) {
             wrapper = new AgendaEventListenerWrapper( listener );
         } else {
             wrapper = (AgendaEventListenerWrapper) listener;
@@ -171,9 +172,9 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
         List<ProcessEventListener> listeners = new ArrayList<ProcessEventListener>();
-        for( ProcessEventListener listener : ((List<ProcessEventListener>)this.session.getRuleFlowEventListeners()) ) {
-            if( listener instanceof ProcessEventListenerWrapper ) {
-                listeners.add( ((ProcessEventListenerWrapper)listener).unWrap() );
+        for ( ProcessEventListener listener : ((List<ProcessEventListener>) this.session.getRuleFlowEventListeners()) ) {
+            if ( listener instanceof ProcessEventListenerWrapper ) {
+                listeners.add( ((ProcessEventListenerWrapper) listener).unWrap() );
             } else {
                 listeners.add( listener );
             }
@@ -183,7 +184,7 @@ public class StatefulKnowledgeSessionImpl
 
     public void removeEventListener(ProcessEventListener listener) {
         ProcessEventListenerWrapper wrapper = null;
-        if( listener != null && ! ( listener instanceof ProcessEventListenerWrapper ) ) {
+        if ( listener != null && !(listener instanceof ProcessEventListenerWrapper) ) {
             wrapper = new ProcessEventListenerWrapper( listener );
         } else {
             wrapper = (ProcessEventListenerWrapper) listener;
@@ -262,14 +263,13 @@ public class StatefulKnowledgeSessionImpl
     public ProcessInstance getProcessInstance(long id) {
         return this.session.getProcessInstance( id );
     }
-    
+
     public void abortProcessInstance(long id) {
-    	org.drools.process.instance.ProcessInstance processInstance =
-    		this.session.getProcessInstance( id );
-    	if (processInstance == null) {
-    		throw new IllegalArgumentException("Could not find process instance for id " + id);
-    	}
-    	processInstance.setState( ProcessInstance.STATE_ABORTED );
+        org.drools.process.instance.ProcessInstance processInstance = this.session.getProcessInstance( id );
+        if ( processInstance == null ) {
+            throw new IllegalArgumentException( "Could not find process instance for id " + id );
+        }
+        processInstance.setState( ProcessInstance.STATE_ABORTED );
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -301,8 +301,8 @@ public class StatefulKnowledgeSessionImpl
     public void signalEvent(String type,
                             Object event,
                             long processInstanceId) {
-        this.session.getProcessInstance(processInstanceId).signalEvent( type,
-                                                                        event );
+        this.session.getProcessInstance( processInstanceId ).signalEvent( type,
+                                                                          event );
     }
 
     public void setGlobal(String identifier,
@@ -318,11 +318,11 @@ public class StatefulKnowledgeSessionImpl
     public Globals getGlobals() {
         return (Globals) this.session.getGlobalResolver();
     }
-    
+
     public Calendars getCalendars() {
         return this.session.getCalendars();
-    }    
-    
+    }
+
     public Environment getEnvironment() {
         return this.session.getEnvironment();
     }
@@ -343,36 +343,50 @@ public class StatefulKnowledgeSessionImpl
     //        return new FutureAdapter( this.session.asyncFireAllRules() );
     //    }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles() {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public Collection< Object > getObjects() {
+    public Collection<Object> getObjects() {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection< Object > getObjects(org.drools.runtime.ObjectFilter filter) {
+    public Collection<Object> getObjects(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public void retract(org.drools.FactHandle factHandle, boolean removeLogical, boolean updateEqualsMap, Rule rule, Activation activation) throws FactException {
-        ((AbstractWorkingMemory)this.session).retract(factHandle, removeLogical, updateEqualsMap, rule, activation);
+    public void retract(org.drools.FactHandle factHandle,
+                        boolean removeLogical,
+                        boolean updateEqualsMap,
+                        Rule rule,
+                        Activation activation) throws FactException {
+        ((AbstractWorkingMemory) this.session).retract( factHandle,
+                                                        removeLogical,
+                                                        updateEqualsMap,
+                                                        rule,
+                                                        activation );
     }
 
-    public void update(FactHandle factHandle, Object object, Rule rule, Activation activation) throws FactException {
-        ((AbstractWorkingMemory)this.session).update((org.drools.FactHandle)factHandle, object, rule, activation);
+    public void update(FactHandle factHandle,
+                       Object object,
+                       Rule rule,
+                       Activation activation) throws FactException {
+        ((AbstractWorkingMemory) this.session).update( (org.drools.FactHandle) factHandle,
+                                                       object,
+                                                       rule,
+                                                       activation );
     }
 
     public EntryPoint getEntryPoint() {
@@ -384,7 +398,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public org.drools.FactHandle getFactHandleByIdentity(Object object) {
-        return session.getFactHandleByIdentity(object);
+        return session.getFactHandleByIdentity( object );
     }
 
     public static abstract class AbstractImmutableCollection
@@ -530,7 +544,7 @@ public class StatefulKnowledgeSessionImpl
         public WorkingMemoryEventListener unWrap() {
             return listener;
         }
-        
+
         /**
          * Since this is a class adapter for API compatibility, the 
          * equals() and hashCode() methods simply delegate the calls 
@@ -540,9 +554,9 @@ public class StatefulKnowledgeSessionImpl
          */
         @Override
         public int hashCode() {
-            return listener!=null ? listener.hashCode() : 0;
+            return listener != null ? listener.hashCode() : 0;
         }
-        
+
         /**
          * Since this is a class adapter for API compatibility, the 
          * equals() and hashCode() methods simply delegate the calls 
@@ -552,11 +566,11 @@ public class StatefulKnowledgeSessionImpl
          */
         @Override
         public boolean equals(Object obj) {
-            if( listener == null || obj == null ) {
+            if ( listener == null || obj == null ) {
                 return obj == listener;
             }
-            if( obj instanceof WorkingMemoryEventListenerWrapper ) {
-                return this.listener.equals( ((WorkingMemoryEventListenerWrapper)obj).unWrap() );
+            if ( obj instanceof WorkingMemoryEventListenerWrapper ) {
+                return this.listener.equals( ((WorkingMemoryEventListenerWrapper) obj).unWrap() );
             }
             return this.listener.equals( obj );
         }
@@ -623,9 +637,9 @@ public class StatefulKnowledgeSessionImpl
          */
         @Override
         public int hashCode() {
-            return listener!=null ? listener.hashCode() : 0;
+            return listener != null ? listener.hashCode() : 0;
         }
-        
+
         /**
          * Since this is a class adapter for API compatibility, the 
          * equals() and hashCode() methods simply delegate the calls 
@@ -635,11 +649,11 @@ public class StatefulKnowledgeSessionImpl
          */
         @Override
         public boolean equals(Object obj) {
-            if( listener == null || obj == null ) {
+            if ( listener == null || obj == null ) {
                 return obj == listener;
             }
-            if( obj instanceof AgendaEventListenerWrapper ) {
-                return this.listener.equals( ((AgendaEventListenerWrapper)obj).unWrap() );
+            if ( obj instanceof AgendaEventListenerWrapper ) {
+                return this.listener.equals( ((AgendaEventListenerWrapper) obj).unWrap() );
             }
             return this.listener.equals( obj );
         }
@@ -721,7 +735,7 @@ public class StatefulKnowledgeSessionImpl
         public ProcessEventListener unWrap() {
             return listener;
         }
-        
+
         /**
          * Since this is a class adapter for API compatibility, the 
          * equals() and hashCode() methods simply delegate the calls 
@@ -731,9 +745,9 @@ public class StatefulKnowledgeSessionImpl
          */
         @Override
         public int hashCode() {
-            return listener!=null ? listener.hashCode() : 0;
+            return listener != null ? listener.hashCode() : 0;
         }
-        
+
         /**
          * Since this is a class adapter for API compatibility, the 
          * equals() and hashCode() methods simply delegate the calls 
@@ -743,11 +757,11 @@ public class StatefulKnowledgeSessionImpl
          */
         @Override
         public boolean equals(Object obj) {
-            if( listener == null || obj == null ) {
+            if ( listener == null || obj == null ) {
                 return obj == listener;
             }
-            if( obj instanceof ProcessEventListenerWrapper ) {
-                return this.listener.equals( ((ProcessEventListenerWrapper)obj).unWrap() );
+            if ( obj instanceof ProcessEventListenerWrapper ) {
+                return this.listener.equals( ((ProcessEventListenerWrapper) obj).unWrap() );
             }
             return this.listener.equals( obj );
         }
@@ -772,14 +786,36 @@ public class StatefulKnowledgeSessionImpl
         return new AgendaImpl( (InternalAgenda) this.session.getAgenda() );
     }
 
+    /**
+     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
+     */
+    @Deprecated
     public void registerExitPoint(String name,
                                   ExitPoint exitPoint) {
         this.session.registerExitPoint( name,
                                         exitPoint );
     }
 
+    /**
+     * @deprecated Use {@link #unregisterChannel(String)} instead.
+     */
+    @Deprecated
     public void unregisterExitPoint(String name) {
         this.session.unregisterExitPoint( name );
+    }
+
+    public void registerChannel(String name,
+                                Channel channel) {
+        this.session.registerChannel( name,
+                                      channel );
+    }
+
+    public void unregisterChannel(String name) {
+        this.session.unregisterChannel( name );
+    }
+
+    public Map<String, Channel> getChannels() {
+        return this.session.getChannels();
     }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
@@ -791,38 +827,50 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public QueryResults getQueryResults(String query) {
-        return new NativeQueryResults( this.session.getQueryResults( query ));
+        return new NativeQueryResults( this.session.getQueryResults( query ) );
     }
 
     public QueryResults getQueryResults(String query,
                                         Object[] arguments) {
-        return new NativeQueryResults( this.session.getQueryResults( query, arguments ) );
+        return new NativeQueryResults( this.session.getQueryResults( query,
+                                                                     arguments ) );
     }
-    
-    private KnowledgeCommandContext commandContext = new KnowledgeCommandContext( new ContextImpl("ksession", null), null, this.kbase, this, null);
-    
-    public ExecutionResults execute(Command command) {        
-        return execute(null, command);
+
+    private KnowledgeCommandContext commandContext = new KnowledgeCommandContext( new ContextImpl( "ksession",
+                                                                                                   null ),
+                                                                                  null,
+                                                                                  this.kbase,
+                                                                                  this,
+                                                                                  null );
+
+    public ExecutionResults execute(Command command) {
+        return execute( null,
+                        command );
     }
-    
-    public ExecutionResults execute(Context context, Command command) {
+
+    public ExecutionResults execute(Context context,
+                                    Command command) {
         ExecutionResultImpl results = null;
         if ( context != null ) {
-            results = ( ExecutionResultImpl ) ((KnowledgeCommandContext)context).getExecutionResults();
+            results = (ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults();
         }
-        
+
         if ( results == null ) {
             results = new ExecutionResultImpl();
         }
-        
+
         try {
             session.startBatchExecution( results );
-            ((GenericCommand)command).execute( new KnowledgeCommandContext( context, null, this.kbase, this, results) );
+            ((GenericCommand) command).execute( new KnowledgeCommandContext( context,
+                                                                             null,
+                                                                             this.kbase,
+                                                                             this,
+                                                                             results ) );
             ExecutionResults result = session.getExecutionResult();
             return result;
         } finally {
             session.endBatchExecution();
-        }        
+        }
     }
 
     public String getEntryPointId() {
@@ -834,10 +882,11 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public LiveQuery openLiveQuery(String query,
-                                               Object[] arguments,
-                                               ViewChangedEventListener listener) {
-        return this.session.openLiveQuery( query, arguments, listener );
+                                   Object[] arguments,
+                                   ViewChangedEventListener listener) {
+        return this.session.openLiveQuery( query,
+                                           arguments,
+                                           listener );
     }
 
-    
 }

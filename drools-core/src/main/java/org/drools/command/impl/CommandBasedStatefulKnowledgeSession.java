@@ -12,13 +12,16 @@ import org.drools.command.GetSessionClockCommand;
 import org.drools.command.runtime.AddEventListenerCommand;
 import org.drools.command.runtime.DisposeCommand;
 import org.drools.command.runtime.GetCalendarsCommand;
+import org.drools.command.runtime.GetChannelsCommand;
 import org.drools.command.runtime.GetEnvironmentCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.GetGlobalsCommand;
 import org.drools.command.runtime.GetKnowledgeBaseCommand;
+import org.drools.command.runtime.RegisterChannelCommand;
 import org.drools.command.runtime.RegisterExitPointCommand;
 import org.drools.command.runtime.RemoveEventListenerCommand;
 import org.drools.command.runtime.SetGlobalCommand;
+import org.drools.command.runtime.UnregisterChannelCommand;
 import org.drools.command.runtime.UnregisterExitPointCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
@@ -55,6 +58,7 @@ import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.Calendars;
+import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
@@ -75,7 +79,7 @@ import org.drools.runtime.rule.RuleFlowGroup;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
- 
+
 public class CommandBasedStatefulKnowledgeSession
     implements
     StatefulKnowledgeSession {
@@ -150,11 +154,13 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void signalEvent(String type,
-		            		Object event,
-		            		long processInstanceId) {
-		SignalEventCommand command = new SignalEventCommand( processInstanceId, type, event );
-		commandService.execute( command );
-	}
+                            Object event,
+                            long processInstanceId) {
+        SignalEventCommand command = new SignalEventCommand( processInstanceId,
+                                                             type,
+                                                             event );
+        commandService.execute( command );
+    }
 
     public ProcessInstance startProcess(String processId) {
         return startProcess( processId,
@@ -197,15 +203,38 @@ public class CommandBasedStatefulKnowledgeSession
         return this.commandService.execute( new GetKnowledgeBaseCommand() );
     }
 
+    /**
+     * @deprecated Use {@link #registerChannel(String, Channel)} instead
+     */
+    @Deprecated
     public void registerExitPoint(String name,
                                   ExitPoint exitPoint) {
         this.commandService.execute( new RegisterExitPointCommand( name,
                                                                    exitPoint ) );
     }
 
+    /**
+     * @deprecated Use {@link #unregisterChannel(String)} instead.
+     */
+    @Deprecated
     public void unregisterExitPoint(String name) {
         this.commandService.execute( new UnregisterExitPointCommand( name ) );
 
+    }
+
+    public void registerChannel(String name,
+                                Channel channel) {
+        this.commandService.execute( new RegisterChannelCommand( name,
+                                                                 channel ) );
+    }
+
+    public void unregisterChannel(String name) {
+        this.commandService.execute( new UnregisterChannelCommand( name ) );
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Channel> getChannels() {
+        return (Map<String, Channel>) this.commandService.execute( new GetChannelsCommand() );
     }
 
     public Agenda getAgenda() {
@@ -370,10 +399,10 @@ public class CommandBasedStatefulKnowledgeSession
     public Globals getGlobals() {
         return commandService.execute( new GetGlobalsCommand() );
     }
-    
+
     public Calendars getCalendars() {
         return commandService.execute( new GetCalendarsCommand() );
-    }    
+    }
 
     public Object getObject(FactHandle factHandle) {
         return commandService.execute( new GetObjectCommand( factHandle ) );
@@ -401,7 +430,7 @@ public class CommandBasedStatefulKnowledgeSession
                                              arguments );
         return this.commandService.execute( cmd );
     }
-    
+
     public String getEntryPointId() {
         return EntryPoint.DEFAULT.getEntryPointId();
     }
@@ -412,8 +441,8 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public LiveQuery openLiveQuery(String query,
-                                               Object[] arguments,
-                                               ViewChangedEventListener listener) {
+                                   Object[] arguments,
+                                   ViewChangedEventListener listener) {
         return null;
     }
 

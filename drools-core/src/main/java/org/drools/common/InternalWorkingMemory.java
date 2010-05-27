@@ -20,6 +20,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
+import org.drools.runtime.Channel;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -139,7 +140,19 @@ public interface InternalWorkingMemory
     
     public KnowledgeRuntime getKnowledgeRuntime();
     
+    /**
+     * @deprecated Use {@link #getChannels()} instead.
+     */
+    @Deprecated
     public Map<String, ExitPoint> getExitPoints();
+    
+    /**
+     * Returns a map of channel Id->Channel of all channels in
+     * this working memory
+     * 
+     * @return
+     */
+    public Map< String, Channel> getChannels();
     
     public Map<String, ? extends WorkingMemoryEntryPoint> getEntryPoints();
 

@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/lang/dsl/DSLMap.g 2009-12-07 17:31:05
+// $ANTLR 3.1.1 src/main/resources/org/drools/lang/dsl/DSLMap.g 2010-05-27 17:19:52
 
 	package org.drools.lang.dsl;
 	import java.util.List;
@@ -552,7 +552,7 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: key_section, scope_section, meta_section, value_section
+            // elements: meta_section, scope_section, value_section, key_section
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -741,7 +741,7 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: value4, value1, value2, value3
+            // elements: value4, value3, value2, value1
             // token labels: 
             // rule labels: value1, value4, value2, retval, value3
             // token list labels: 
@@ -1791,15 +1791,15 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: name, name, name, name, name, q, name, q, name, q, q, q, q, name, q, q, name, q
-            // token labels: q, name
+            // elements: q, name, q, q, name, q, name, q, q, name, name, name, name, name, q, q, q, name
+            // token labels: name, q
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleTokenStream stream_q=new RewriteRuleTokenStream(adaptor,"token q",q);
             RewriteRuleTokenStream stream_name=new RewriteRuleTokenStream(adaptor,"token name",name);
+            RewriteRuleTokenStream stream_q=new RewriteRuleTokenStream(adaptor,"token q",q);
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();

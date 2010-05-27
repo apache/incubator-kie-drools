@@ -25,6 +25,7 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
+import org.drools.runtime.Channel;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -111,9 +112,21 @@ public interface KnowledgeHelper
     
     Map<String, WorkingMemoryEntryPoint> getEntryPoints();
     
+    /**
+     * @deprecated Use {@link #getChannel(String)} instead.
+     */
+    @Deprecated
     ExitPoint getExitPoint( String id );
     
+    /**
+     * @deprecated Use {@link #getChannels()} instead.
+     */
+    @Deprecated
     Map<String, ExitPoint> getExitPoints();
+    
+    Channel getChannel( String id );
+    
+    Map<String, Channel> getChannels();
 
     void setFocus(String focus);
 

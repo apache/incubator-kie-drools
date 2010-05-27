@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/lang/dsl/DSLMap.g 2009-12-07 17:31:05
+// $ANTLR 3.1.1 src/main/resources/org/drools/lang/dsl/DSLMap.g 2010-05-27 17:19:52
 
 	package org.drools.lang.dsl;
 	import java.util.List;
