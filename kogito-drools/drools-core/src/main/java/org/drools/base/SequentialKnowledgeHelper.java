@@ -29,6 +29,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
+import org.drools.runtime.Channel;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -195,16 +196,32 @@ public class SequentialKnowledgeHelper
         return this.workingMemory.getEntryPoints().get( id );
     }
 
+    /**
+     * @deprecated use {@link #getChannel()} instead
+     */
+    @Deprecated
     public ExitPoint getExitPoint(String id) {
         return this.workingMemory.getExitPoints().get( id );
+    }
+
+    public Channel getChannel(String id) {
+        return this.workingMemory.getChannels().get( id );
     }
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
     }
 
+    /**
+     * @deprecated use {@link #getChannels()} instead
+     */
+    @Deprecated
     public Map<String, ExitPoint> getExitPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
+    }
+
+    public Map<String, Channel> getChannels() {
+        return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }
 
     public IdentityHashMap<Object, FactHandle> getIdentityMap() {

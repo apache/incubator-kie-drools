@@ -712,19 +712,27 @@ epStatement
         : 
         ( s='exitPoints' '[' id=StringLiteral c=']' 
         {
-	    d = new JavaInterfacePointsDescr( $id.text );
-	    d.setType( JavaBlockDescr.BlockType.EXIT );
-	    d.setStart( ((CommonToken)$s).getStartIndex() );
+    	    d = new JavaInterfacePointsDescr( $id.text );
+		    d.setType( JavaBlockDescr.BlockType.EXIT );
+	    	d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-	    this.blocks.add( d );
+	    	this.blocks.add( d );
         }
         |  s='entryPoints' '[' id=StringLiteral c=']' 
         {
-	    d = new JavaInterfacePointsDescr( $id.text );
-	    d.setType( JavaBlockDescr.BlockType.ENTRY );
-	    d.setStart( ((CommonToken)$s).getStartIndex() );
+		    d = new JavaInterfacePointsDescr( $id.text );
+		    d.setType( JavaBlockDescr.BlockType.ENTRY );
+		    d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-	    this.blocks.add( d );
+		    this.blocks.add( d );
+        }
+        |  s='channels' '[' id=StringLiteral c=']' 
+        {
+		    d = new JavaInterfacePointsDescr( $id.text );
+		    d.setType( JavaBlockDescr.BlockType.CHANNEL );
+		    d.setStart( ((CommonToken)$s).getStartIndex() );
+            d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+		    this.blocks.add( d );
         }
         ) 
         ;	

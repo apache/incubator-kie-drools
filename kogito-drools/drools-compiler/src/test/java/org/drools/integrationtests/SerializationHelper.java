@@ -81,7 +81,7 @@ public class SerializationHelper {
         // bytes should be the same.
         if ( !areByteArraysEqual( b1,
                                   b2 ) ) {
-            
+
             throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
         }
 
@@ -95,16 +95,19 @@ public class SerializationHelper {
     }
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                        boolean dispose) throws Exception {
-        
-        return getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newSerializeMarshallingStrategy(), dispose);
+                                                                                 boolean dispose) throws Exception {
+
+        return getSerialisedStatefulKnowledgeSession( ksession,
+                                                      MarshallerFactory.newSerializeMarshallingStrategy(),
+                                                      dispose );
     }
-    
+
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                         ObjectMarshallingStrategy strategy,
-                                                                        boolean dispose) throws Exception {
-        
-        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(), new ObjectMarshallingStrategy[]{ strategy } );
+                                                                                 ObjectMarshallingStrategy strategy,
+                                                                                 boolean dispose) throws Exception {
+
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
+                                                                 new ObjectMarshallingStrategy[]{strategy} );
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         marshaller.marshall( bos,
@@ -137,7 +140,7 @@ public class SerializationHelper {
         }
 
         return ksession2;
-    }    
+    }
 
     public static boolean areByteArraysEqual(byte[] b1,
                                              byte[] b2) {
@@ -147,7 +150,7 @@ public class SerializationHelper {
 
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
-                System.out.println("Difference at "+i+": ["+b1[i]+"] != ["+b2[i]+"]");
+                System.out.println( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
                 return false;
             }
         }

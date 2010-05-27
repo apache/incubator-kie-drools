@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/lang/DescrBuilderTree.g 2009-12-07 17:31:02
+// $ANTLR 3.1.1 src/main/resources/org/drools/lang/DescrBuilderTree.g 2010-05-27 17:19:49
 
 	package org.drools.lang;
 

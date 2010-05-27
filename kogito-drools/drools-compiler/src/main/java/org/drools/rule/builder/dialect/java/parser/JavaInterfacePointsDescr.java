@@ -47,7 +47,7 @@ public class JavaInterfacePointsDescr implements JavaBlockDescr {
     }
     
     public String toString() {
-        return "ExitPoints( type="+type+" start="+start+" end="+end+" id="+id+" )";
+        return type+"( start="+start+" end="+end+" id="+id+" )";
     }
 
     public BlockType getType() {
