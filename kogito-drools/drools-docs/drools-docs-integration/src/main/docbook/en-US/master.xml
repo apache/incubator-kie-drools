@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:xi="http://www.w3.org/2001/XInclude"
+                    xmlns:svg="http://www.w3.org/2000/svg"
+                    xmlns:m="http://www.w3.org/1998/Math/MathML"
+                    xmlns:html="http://www.w3.org/1999/xhtml"
+                    xmlns:db="http://docbook.org/ns/docbook">
+
+  <info>
+    <title>Drools Integration User Guide</title>
+
+    <releaseinfo>5.1.0.SNAPSHOT</releaseinfo>
+    
+  </info>
+
+<title>Drools Integration</title>
+
+	<xi:include href="Chapter-Camel/Chapter-Camel.xml" />
+
+	<xi:include href="Chapter-Spring/Chapter-Spring.xml" />
+	
+	<xi:include href="Chapter-Server/Chapter-Server.xml" />
+	
+	<xi:include href="Chapter-OSGI/Chapter-OSGI.xml" />
+
+   <index/>
+</book>
