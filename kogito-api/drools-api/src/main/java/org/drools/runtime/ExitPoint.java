@@ -22,10 +22,12 @@ package org.drools.runtime;
  * when
  *   ...
  * then
- *   exitPoint["my-exit-point"].insert(...);
+ *   exitPoints["my-exit-point"].insert(...);
  * </pre>
+ * 
+ * @deprecated Use Channel instead
  */
-
+@Deprecated
 public interface ExitPoint {
     void insert(Object object);
 }
