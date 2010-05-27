@@ -1,5 +1,7 @@
 package org.drools.runtime;
 
+import java.util.Map;
+
 import org.drools.KnowledgeBase;
 import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.runtime.process.ProcessRuntime;
@@ -17,7 +19,7 @@ public interface KnowledgeRuntime
      * @return
      */
     public <T extends SessionClock> T getSessionClock();
-    
+
     /**
      * Sets a global value on the internal collection
      * @param identifer the global identifier
@@ -29,7 +31,7 @@ public interface KnowledgeRuntime
     Object getGlobal(String identifier);
 
     Globals getGlobals();
-    
+
     Calendars getCalendars();
 
     Environment getEnvironment();
@@ -41,9 +43,24 @@ public interface KnowledgeRuntime
      */
     KnowledgeBase getKnowledgeBase();
 
+    /**
+     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
+     */
+    @Deprecated
     void registerExitPoint(String name,
                            ExitPoint exitPoint);
 
+    /**
+     * @deprecated Use {@link #unregisterChannel(String)} instead.
+     */
+    @Deprecated
     void unregisterExitPoint(String name);
+
+    void registerChannel(String name,
+                         Channel channel);
+
+    void unregisterChannel(String name);
+
+    Map< String, Channel> getChannels();
 
 }

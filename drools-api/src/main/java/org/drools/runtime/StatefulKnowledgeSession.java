@@ -77,5 +77,5 @@ public interface StatefulKnowledgeSession
      * will not free the memory used by the session.
      */
     void dispose();
-    
+
 }
