@@ -15,6 +15,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.runtime.Calendars;
+import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
@@ -26,7 +27,9 @@ import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
 import org.drools.vsm.Message;
@@ -414,5 +417,26 @@ public class StatefulKnowledgeSessionRemoteClient
         // TODO Auto-generated method stub
         return null;
     }
+
+	public Map<String, Channel> getChannels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void registerChannel(String name, Channel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void unregisterChannel(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public LiveQuery openLiveQuery(String query, Object[] arguments,
+			ViewChangedEventListener listener) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
