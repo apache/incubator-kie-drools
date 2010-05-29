@@ -231,7 +231,7 @@ public class ReteooBuilder
         final Object object = this.rules.remove( rule );
 
         final BaseNode[] nodes = (BaseNode[]) object;
-        final RuleRemovalContext context = new RuleRemovalContext();
+        final RuleRemovalContext context = new RuleRemovalContext( rule );
         for ( int i = 0, length = nodes.length; i < length; i++ ) {
             final BaseNode node = nodes[i];
             node.remove( context,

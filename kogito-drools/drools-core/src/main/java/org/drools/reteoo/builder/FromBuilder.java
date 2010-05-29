@@ -38,6 +38,7 @@ public class FromBuilder
                       final BuildUtils utils,
                       final RuleConditionElement rce) {
         final From from = (From) rce;
+        context.pushRuleComponent( from );
 
         BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context, context.getBetaconstraints(), true );
         
@@ -51,6 +52,7 @@ public class FromBuilder
                                                                               context ) ) );
         context.setAlphaConstraints( null );
         context.setBetaconstraints( null );
+        context.popRuleComponent();
     }
 
     /**

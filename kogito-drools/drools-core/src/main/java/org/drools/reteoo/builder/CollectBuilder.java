@@ -52,6 +52,7 @@ public class CollectBuilder
 
         boolean existSubNetwort = false;
         final Collect collect = (Collect) rce;
+        context.pushRuleComponent( collect );
 
         final List resultBetaConstraints = context.getBetaconstraints();
         final List resultAlphaConstraints = context.getAlphaConstraints();
@@ -125,6 +126,7 @@ public class CollectBuilder
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );
         context.setBehaviors( Collections.EMPTY_LIST );
+        context.popRuleComponent();
     }
 
     /**

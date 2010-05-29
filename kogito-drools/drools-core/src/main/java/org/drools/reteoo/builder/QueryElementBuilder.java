@@ -34,6 +34,7 @@ public class QueryElementBuilder
                       final RuleConditionElement rce) {
 
         final QueryElement qe = (QueryElement) rce;
+        context.pushRuleComponent( qe );
         
         qe.getResultPattern().setOffset( context.getCurrentPatternOffset() );
         
@@ -46,7 +47,7 @@ public class QueryElementBuilder
                                                                                           qe,
                                                                                           false,
                                                                                           context ) ) );
-
+        context.popRuleComponent();
     }
 
     /**

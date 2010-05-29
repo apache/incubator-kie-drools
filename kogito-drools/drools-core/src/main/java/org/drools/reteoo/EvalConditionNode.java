@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map.Entry;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -28,9 +29,11 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.definition.rule.Rule;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleComponent;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -312,6 +315,11 @@ public class EvalConditionNode extends LeftTupleSource
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( this );
             }
+        } else {
+            // need to re-wire eval expression to the same one from another rule 
+            // that is sharing this node
+            Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
+            this.condition = (EvalCondition) next.getValue();
         }
 
         this.tupleSource.remove( context,

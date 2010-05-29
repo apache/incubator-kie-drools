@@ -37,6 +37,7 @@ public class EvalBuilder
                       final RuleConditionElement rce) {
 
         final EvalCondition eval = (EvalCondition) rce;
+        context.pushRuleComponent( rce );
         utils.checkUnboundDeclarations( context,
                                         eval.getRequiredDeclarations() );
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
@@ -44,6 +45,7 @@ public class EvalBuilder
                                                                                        context.getTupleSource(),
                                                                                        eval,
                                                                                        context ) ) );
+        context.popRuleComponent();
 
     }
 

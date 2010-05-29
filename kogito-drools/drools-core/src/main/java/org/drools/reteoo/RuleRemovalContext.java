@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.common.InternalWorkingMemory;
+import org.drools.definition.rule.Rule;
 
 /**
  * This context class is used during rule removal to ensure
@@ -36,9 +37,13 @@ public class RuleRemovalContext
     implements
     Externalizable {
 
+    // the rule being removed
+    private Rule rule;
+    
     private CleanupAdapter cleanupAdapter;
 
-    public RuleRemovalContext() {
+    public RuleRemovalContext( final Rule rule ) {
+        this.rule = rule;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -46,6 +51,15 @@ public class RuleRemovalContext
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+    }
+
+    /**
+     * Returns the reference to the rule being removed from the kbase
+     * 
+     * @return
+     */
+    public Rule getRule() {
+        return rule;
     }
 
     public void setCleanupAdapter(CleanupAdapter cleanupAdapter) {
