@@ -35,7 +35,6 @@ import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.FixedDuration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
@@ -45,7 +44,6 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
-import org.drools.spi.Duration;
 import org.drools.spi.ObjectType;
 import org.drools.time.impl.CompositeMaxDurationTimer;
 import org.drools.time.impl.DurationTimer;
@@ -69,9 +67,11 @@ public class PatternBuilder
 
         final Pattern pattern = (Pattern) rce;
 
+        context.pushRuleComponent( pattern );
         this.attachPattern( context,
                             utils,
                             pattern );
+        context.popRuleComponent();
 
     }
 
@@ -314,11 +314,13 @@ public class PatternBuilder
         for ( final Iterator<Constraint> it = alphaConstraints.iterator(); it.hasNext(); ) {
             final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();
 
+            context.pushRuleComponent( constraint );
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new AlphaNode( context.getNextId(),
                                                                                      (AlphaNodeFieldConstraint) constraint,
                                                                                      context.getObjectSource(),
                                                                                      context ) ) );
+            context.popRuleComponent();
         }
 
         // now restore back to original values

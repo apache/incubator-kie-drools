@@ -16,12 +16,15 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import static org.mockito.Mockito.mock;
+
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.definition.rule.Rule;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
@@ -231,7 +234,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                               this.workingMemory );
 
         // Check memory was not populated
-        final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
+        this.workingMemory.getNodeMemory( node );
 
         // test no propagations
         assertEquals( 0,
@@ -286,7 +289,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       sink.getAsserted().size() );
 
-        RuleRemovalContext removalContext = new RuleRemovalContext();
+        RuleRemovalContext removalContext = new RuleRemovalContext( mock( Rule.class ));
         InternalWorkingMemory[] workingMemories = new InternalWorkingMemory[]{this.workingMemory};
 
         // This use to throw ClassCastException JBRULES-1719

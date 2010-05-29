@@ -49,6 +49,7 @@ public class ForallBuilder
                       final BuildUtils utils,
                       final RuleConditionElement rce) {
         final Forall forall = (Forall) rce;
+        context.pushRuleComponent( forall );
 
         // forall can be translated into
         // not( basePattern and not( <remaining_patterns>+ ) ) 
@@ -81,6 +82,8 @@ public class ForallBuilder
         builder.build( context,
                        utils,
                        not );
+        
+        context.popRuleComponent();
 
     }
 

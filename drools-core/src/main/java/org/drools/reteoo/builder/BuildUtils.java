@@ -158,6 +158,7 @@ public class BuildUtils {
             // undo previous id assignment
             context.releaseId( candidate.getId() );
         }
+        node.addAssociation( context.getRule(), context.peekRuleComponent() );
         return node;
 
     }

@@ -73,12 +73,14 @@ public class GroupElementBuilder
         final ReteooComponentBuilder builder = this.geBuilders.get( ge.getType() );
         
         context.push( ge );
+        context.pushRuleComponent( ge );
 
         builder.build( context,
                        utils,
                        rce );
         
         context.pop();
+        context.popRuleComponent();
     }
 
     /**

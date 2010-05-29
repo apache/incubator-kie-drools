@@ -19,6 +19,7 @@ package org.drools.reteoo.builder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Stack;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
@@ -32,6 +33,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
+import org.drools.spi.RuleComponent;
 import org.drools.time.TemporalDependencyMatrix;
 
 /**
@@ -58,6 +60,9 @@ public class BuildContext {
     
     // rule being added at this moment
     private Rule                             rule;
+    
+    // the rule component being processed at the moment
+    private Stack<RuleComponent>             ruleComponent;
 
     // working memories attached to the given rulebase
     private InternalWorkingMemory[]          workingMemories;
@@ -125,6 +130,8 @@ public class BuildContext {
         this.nodes = new LinkedList<BaseNode>();
 
         this.partitionId = null;
+        
+        this.ruleComponent = new Stack<RuleComponent>();
     }
 
     /**
@@ -442,6 +449,42 @@ public class BuildContext {
         if ( rule instanceof Query) {
         	this.query = true;
         }
+    }
+
+    /**
+     * Removes the top element from the rule component stack.
+     * The rule component stack is used to add trackability to
+     * the ReteOO nodes so that they can be linked to the rule
+     * components that originated them.
+     *  
+     * @return
+     */
+    public RuleComponent popRuleComponent() {
+        return this.ruleComponent.pop();
+    }
+    
+    /**
+     * Peeks at the top element from the rule component stack.
+     * The rule component stack is used to add trackability to
+     * the ReteOO nodes so that they can be linked to the rule
+     * components that originated them.
+     *  
+     * @return
+     */
+    public RuleComponent peekRuleComponent() { 
+        return this.ruleComponent.isEmpty() ? null : this.ruleComponent.peek();
+    }
+    
+    /**
+     * Adds the ruleComponent to the top of the rule component stack.
+     * The rule component stack is used to add trackability to
+     * the ReteOO nodes so that they can be linked to the rule
+     * components that originated them.
+     *  
+     * @return
+     */
+    public void pushRuleComponent( RuleComponent ruleComponent ) {
+        this.ruleComponent.push( ruleComponent );
     }
 
 }
