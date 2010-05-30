@@ -28,6 +28,9 @@ import org.mvel2.compiler.ExpressionCompiler;
 public class MVELCompilationUnit
     implements
     Externalizable {
+
+    private static final long serialVersionUID = 6528176992846228138L;
+
     private String                          name;
     
     private String                          expression;
