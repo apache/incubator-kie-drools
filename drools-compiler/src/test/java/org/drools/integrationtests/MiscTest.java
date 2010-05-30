@@ -6181,6 +6181,54 @@ public class MiscTest extends TestCase {
                       jlist.get( 2 ) );
 
     }
+    
+    public void testFieldBindingOnWrongFieldName() {
+        //JBRULES-2527
+        
+        String str = "";
+        str += "package org.drools\n";
+        str += "import org.drools.Person\n";
+        str += "global java.util.List mlist\n";
+        str += "rule rule1 \n";
+        str += "when\n";
+        str += "   Person( $f : invalidFieldName, eval( $f != null ) )\n";
+        str += "then\n";
+        str += "end\n";
+
+        try {
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+    
+            if ( !kbuilder.hasErrors() ) {
+                fail( "KnowledgeBuilder should have errors" );
+            }
+        } catch ( Exception e ) {
+                fail( "Exception should not be thrown ");
+        }
+        
+        str = "";
+        str += "package org.drools\n";
+        str += "import org.drools.Person\n";
+        str += "global java.util.List mlist\n";
+        str += "rule rule1 \n";
+        str += "when\n";
+        str += "   Person( $f : invalidFieldName, name == ( $f ) )\n";
+        str += "then\n";
+        str += "end\n";
+
+        try {
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+    
+            if ( !kbuilder.hasErrors() ) {
+                fail( "KnowledgeBuilder should have errors" );
+            }
+        } catch ( Exception e ) {
+                fail( "Exception should not be thrown ");
+        }      
+    }    
 
     public void testDeepNestedConstraints() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
