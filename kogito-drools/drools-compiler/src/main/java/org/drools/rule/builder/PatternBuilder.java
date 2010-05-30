@@ -596,7 +596,7 @@ public class PatternBuilder
                        final PredicateDescr predicateDescr,
                        final AbstractCompositeConstraint container) {
 
-        Map<String, Class< ? >> declarations = getDeclarationsMap( context );
+        Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr, context );
         Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
 
         final Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
@@ -660,9 +660,16 @@ public class PatternBuilder
 
     }
 
-    private Map<String, Class< ? >> getDeclarationsMap(final RuleBuildContext context) {
+    private Map<String, Class< ? >> getDeclarationsMap(final BaseDescr baseDescr, final RuleBuildContext context) {
         Map<String, Class< ? >> declarations = new HashMap<String, Class< ? >>();
         for ( Map.Entry<String, Declaration> entry : context.getDeclarationResolver().getDeclarations( context.getRule() ).entrySet() ) {
+            if ( entry.getValue().getExtractor() == null ) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              baseDescr,
+                                                              null,
+                                                              "Field Reader does not exist for declaration '" + entry.getKey() + "' in'" + baseDescr + "' in the rule '" + context.getRule().getName() + "'" ) );
+                continue;           
+            }
             declarations.put( entry.getKey(),
                               entry.getValue().getExtractor().getExtractToClass() );
         }
@@ -973,7 +980,7 @@ public class PatternBuilder
                                                     final InternalReadAccessor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        Map<String, Class< ? >> declarations = getDeclarationsMap( context );
+        Map<String, Class< ? >> declarations = getDeclarationsMap( returnValueRestrictionDescr, context );
         Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,
@@ -1065,9 +1072,6 @@ public class PatternBuilder
                 reader = context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(),
                                                                                   fieldName,
                                                                                   target );
-                //                extractor = context.getDialect().getClassFieldExtractorCache().getReader( ((ClassObjectType) objectType).getClassType(),
-                //                                                                                          fieldName,
-                //                                                                                          classloader );
             } catch ( final Exception e ) {
                 if ( reportError ) {
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
