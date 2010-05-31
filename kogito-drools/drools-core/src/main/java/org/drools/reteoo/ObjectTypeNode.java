@@ -136,6 +136,7 @@ public class ObjectTypeNode extends ObjectSource
 
         skipOnModify = in.readBoolean();
         objectMemoryEnabled = in.readBoolean();
+        expirationOffset = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -143,6 +144,7 @@ public class ObjectTypeNode extends ObjectSource
         out.writeObject( objectType );
         out.writeBoolean( skipOnModify );
         out.writeBoolean( objectMemoryEnabled );
+        out.writeLong( expirationOffset );
     }
 
     /**
