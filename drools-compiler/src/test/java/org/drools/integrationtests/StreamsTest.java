@@ -17,15 +17,25 @@
  */
 package org.drools.integrationtests;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StockTick;
@@ -34,11 +44,15 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
+import org.drools.conf.EventProcessingOption;
+import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.time.impl.PseudoClockScheduler;
 
 /**
  * Tests related to the stream support features
@@ -64,16 +78,24 @@ public class StreamsTest extends TestCase {
     private KnowledgeBase loadKnowledgeBase(final String fileName) throws IOException,
                                                                   DroolsParserException,
                                                                   Exception {
+        return loadKnowledgeBase( fileName,
+                                  KnowledgeBaseFactory.newKnowledgeBaseConfiguration() );
+    }
+
+    private KnowledgeBase loadKnowledgeBase(final String fileName,
+                                            KnowledgeBaseConfiguration kconf) throws IOException,
+                                                                             DroolsParserException,
+                                                                             Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( fileName,
-                                                                    getClass() ),
-                              ResourceType.DRL );
-        
-        if( kbuilder.hasErrors() ) {
-            System.out.println(kbuilder.getErrors());
+                                                            getClass() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors() );
             return null;
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         return SerializationHelper.serializeObject( kbase );
@@ -86,7 +108,8 @@ public class StreamsTest extends TestCase {
 
         KnowledgeSessionConfiguration conf = new SessionConfiguration();
         ((SessionConfiguration) conf).setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf, null );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
+                                                                              null );
 
         final List results = new ArrayList();
 
@@ -224,13 +247,13 @@ public class StreamsTest extends TestCase {
                     results.get( 0 ) );
 
     }
-    
+
     public void testModifyRetracOnEntryPointFacts() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_modifyRetractEntryPoint.drl" );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
-        final List<? extends Number> results = new ArrayList<Number>();
+        final List< ? extends Number> results = new ArrayList<Number>();
         session.setGlobal( "results",
                            results );
 
@@ -270,38 +293,86 @@ public class StreamsTest extends TestCase {
 
         session.fireAllRules();
 
-        System.out.println(results);
+        System.out.println( results );
         assertEquals( 2,
                       results.size() );
         assertEquals( 30,
-                      ((Number)results.get( 0 )).intValue() );
+                      ((Number) results.get( 0 )).intValue() );
         assertEquals( 110,
-                      ((Number)results.get( 1 )).intValue() );
-        
+                      ((Number) results.get( 1 )).intValue() );
+
         // the 3 non-matched facts continue to exist in the entry point
-        assertEquals( 3, 
+        assertEquals( 3,
                       entry.getObjects().size() );
         // but no fact was inserted into the main session
-        assertEquals( 0, 
+        assertEquals( 0,
                       session.getObjects().size() );
 
     }
-    
+
     public void testGetEntryPointList() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPointReference.drl" );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        
+
         WorkingMemoryEntryPoint def = session.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() );
         WorkingMemoryEntryPoint s1 = session.getWorkingMemoryEntryPoint( "stream1" );
         WorkingMemoryEntryPoint s2 = session.getWorkingMemoryEntryPoint( "stream2" );
         WorkingMemoryEntryPoint s3 = session.getWorkingMemoryEntryPoint( "stream3" );
-        Collection<? extends WorkingMemoryEntryPoint> eps = session.getWorkingMemoryEntryPoints();
-        
-        assertEquals( 4, eps.size() );
+        Collection< ? extends WorkingMemoryEntryPoint> eps = session.getWorkingMemoryEntryPoints();
+
+        assertEquals( 4,
+                      eps.size() );
         assertTrue( eps.contains( def ) );
         assertTrue( eps.contains( s1 ) );
         assertTrue( eps.contains( s2 ) );
         assertTrue( eps.contains( s3 ) );
     }
+
+    public void testEventDoesNotExpireIfNotInPattern() throws Exception {
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_EventExpiration.drl",
+                                                 kconf );
+
+        KnowledgeSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksessionConfig.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksessionConfig,
+                                                                               null );
+
+        WorkingMemoryEventListener wml = mock( WorkingMemoryEventListener.class );
+        ksession.addEventListener( wml );
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        final StockTick st1 = new StockTick( 1,
+                                             "RHT",
+                                             100,
+                                             1000 );
+        final StockTick st2 = new StockTick( 2,
+                                             "RHT",
+                                             100,
+                                             1000 );
+
+        ksession.insert( st1 );
+        ksession.insert( st2 );
+
+        verify( wml,
+                times( 2 ) ).objectInserted( any( org.drools.event.rule.ObjectInsertedEvent.class ) );
+        assertThat( ksession.getObjects().size(),
+                    equalTo( 2 ) );
+        assertThat( ksession.getObjects(),
+                    hasItems( (Object) st1,
+                              st2 ) );
+
+        ksession.fireAllRules();
+
+        clock.advanceTime( 3,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertThat( ksession.getObjects().size(),
+                    equalTo( 0 ) );
+    }
+
 }

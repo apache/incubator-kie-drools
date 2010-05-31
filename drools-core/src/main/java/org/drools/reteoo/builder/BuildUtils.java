@@ -106,10 +106,9 @@ public class BuildUtils {
             partition = RuleBasePartitionId.MAIN_PARTITION;
         } else if ( candidate instanceof ObjectTypeNode ) {
             // object type nodes are always shared
-            ObjectTypeNode otn = (ObjectTypeNode) candidate;
             Map<ObjectType, ObjectTypeNode> map = context.getRuleBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
             if ( map != null ) {
-                otn = map.get( otn.getObjectType() );
+                ObjectTypeNode otn = map.get( ((ObjectTypeNode) candidate).getObjectType() );
                 if ( otn != null ) {
                     // adjusting expiration offset
                     otn.setExpirationOffset( Math.max( otn.getExpirationOffset(),
@@ -160,7 +159,6 @@ public class BuildUtils {
         }
         node.addAssociation( context.getRule(), context.peekRuleComponent() );
         return node;
-
     }
 
     /**
