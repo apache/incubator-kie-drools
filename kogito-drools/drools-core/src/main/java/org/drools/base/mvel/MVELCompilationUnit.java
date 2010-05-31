@@ -29,7 +29,7 @@ public class MVELCompilationUnit
     implements
     Externalizable {
 
-    private static final long serialVersionUID = 6528176992846228138L;
+    private static final long serialVersionUID = 510L;
 
     private String                          name;
     
