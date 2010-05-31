@@ -90,39 +90,44 @@ public class JPAVariablePersister implements VariablePersister {
 		}
 	}
 
-	private Serializable getClassIdValue(Object o) throws NoSuchMethodException,
+	public static Serializable getClassIdValue(Object o) throws NoSuchMethodException,
 			SecurityException, IllegalAccessException,
 			InvocationTargetException, IllegalArgumentException {
 		Class<? extends Object> varClass = o.getClass();
-		Field[] fields = varClass.getDeclaredFields();
 		Serializable idValue = null;
-		for (int i = 0; i < fields.length && idValue == null; i++) {
-			Field field = fields[i];
-			Id id = field.getAnnotation(Id.class);
-			if (id != null) {
-				try {
-					idValue = callIdMethod(o, "get"
-							+ Character.toUpperCase(field.getName().charAt(0))
-							+ field.getName().substring(1));
-				} catch (NoSuchMethodException e) {
-					idValue = (Serializable) field.get(o);
-				}
-			}
-		}
-		if (idValue == null) {
-			Method[] methods = varClass.getMethods();
-			for (int i = 0; i < methods.length && idValue == null; i++) {
-				Method method = methods[i];
-				Id id = method.getAnnotation(Id.class);
+		do {
+			Field[] fields = varClass.getDeclaredFields();
+			for (int i = 0; i < fields.length && idValue == null; i++) {
+				Field field = fields[i];
+				Id id = field.getAnnotation(Id.class);
 				if (id != null) {
-					idValue = (Serializable) method.invoke(o);
+					try {
+						idValue = callIdMethod(o, "get"
+								+ Character.toUpperCase(field.getName().charAt(0))
+								+ field.getName().substring(1));
+					} catch (NoSuchMethodException e) {
+						idValue = (Serializable) field.get(o);
+					}
 				}
 			}
+		} while ((varClass = varClass.getSuperclass()) != null && idValue == null); 
+		if (idValue == null) {
+			varClass = o.getClass();
+			do {
+				Method[] methods = varClass.getMethods();
+				for (int i = 0; i < methods.length && idValue == null; i++) {
+					Method method = methods[i];
+					Id id = method.getAnnotation(Id.class);
+					if (id != null) {
+						idValue = (Serializable) method.invoke(o);
+					}
+				}
+			} while ((varClass = varClass.getSuperclass()) != null && idValue == null);
 		}
 		return idValue;
 	}
 
-	private Serializable callIdMethod(Object target, String methodName) throws IllegalArgumentException,
+	private static Serializable callIdMethod(Object target, String methodName) throws IllegalArgumentException,
 			SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return (Serializable) target.getClass().getMethod(methodName, (Class[]) null).invoke(target, new Object[] {});
 	}

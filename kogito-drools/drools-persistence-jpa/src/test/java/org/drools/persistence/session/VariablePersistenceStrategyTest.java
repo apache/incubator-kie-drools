@@ -19,6 +19,7 @@ import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.processinstance.VariablePersistenceStrategyFactory;
+import org.drools.persistence.processinstance.persisters.JPAVariablePersister;
 import org.drools.persistence.processinstance.variabletypes.VariableInstanceInfo;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -282,6 +283,18 @@ public class VariablePersistenceStrategyTest extends TestCase {
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
         assertNull( processInstance );
+    }
+    
+    public void testEntityWithSuperClassAnnotationField() throws Exception {
+    	MySubEntity subEntity = new MySubEntity();
+    	subEntity.setId(3L);
+    	assertEquals(3L, JPAVariablePersister.getClassIdValue(subEntity));
+    }
+    
+    public void testEntityWithSuperClassAnnotationMethod() throws Exception {
+    	MySubEntityMethods subEntity = new MySubEntityMethods();
+    	subEntity.setId(3L);
+    	assertEquals(3L, JPAVariablePersister.getClassIdValue(subEntity));
     }
     
 }
