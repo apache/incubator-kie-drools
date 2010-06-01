@@ -1,0 +1,15 @@
+package org.drools
+
+declare StockTick
+    @role( event )
+    @expires( 0 )
+end
+
+rule X
+when
+    StockTick()
+then 
+    // no-op
+end
+
+

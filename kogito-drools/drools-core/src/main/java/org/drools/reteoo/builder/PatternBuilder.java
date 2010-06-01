@@ -312,10 +312,13 @@ public class PatternBuilder
                                                  expirationOffset );
                 }
             }
-            if ( expirationOffset == 0 ) {
-                otn.setExpirationOffset( context.getTemporalDistance().getExpirationOffset( pattern ) );
-            } else {
+            long distance = context.getTemporalDistance().getExpirationOffset( pattern );
+            if( distance == Long.MAX_VALUE ) {
+                // it means the rules have no closed temporal constraints, 
+                // so use whatever is set for the OTN or on temporal behaviors
                 otn.setExpirationOffset( expirationOffset );
+            } else {
+                otn.setExpirationOffset( Math.max( distance, expirationOffset ) );
             }
         }
 
