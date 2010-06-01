@@ -97,7 +97,7 @@ public class TypeDeclaration
     private boolean              dynamic;
 
     private transient ObjectType objectType;
-    private long                 expirationOffset;
+    private long                 expirationOffset = -1;
 
     public TypeDeclaration() {
     }

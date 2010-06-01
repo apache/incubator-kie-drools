@@ -24,11 +24,7 @@ import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.Sink;
 import org.drools.spi.PropagationContext;
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.Description;
-import org.hamcrest.Factory;
-import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.matchers.JUnitMatchers;
 import org.mockito.ArgumentCaptor;
@@ -317,36 +313,6 @@ public class MockitoHelper {
                                  m );
             }
         }
-    }
-    
-    public static class IsTuple extends BaseMatcher<List<InternalFactHandle>> {
-        private final InternalFactHandle[] expected;
-
-        public IsTuple(List<InternalFactHandle> tupleAsList) {
-            expected = tupleAsList.toArray( new InternalFactHandle[tupleAsList.size()] );
-        }
-
-        public boolean matches(Object arg) {
-            if( arg == null || ! ( arg.getClass().isArray() && InternalFactHandle.class.isAssignableFrom( arg.getClass().getComponentType() ) ) ) {
-                return false;
-            }
-            InternalFactHandle[] actual = (InternalFactHandle[]) arg;
-            return Arrays.equals( expected, actual );
-        }
-
-        public void describeTo(Description description) {
-            description.appendValue(expected);
-        }
-        
-        /**
-         * Is the value equal to another value, as tested by the
-         * {@link java.lang.Object#equals} invokedMethod?
-         */
-        @Factory
-        public static Matcher<List<InternalFactHandle>> isTuple(List<InternalFactHandle> operand) {
-            return new IsTuple(operand);
-        }
-
     }
 
 }

@@ -60,6 +60,14 @@ public class TemporalDependencyMatrix {
         for( Interval interval : matrix[index] ) {
            expiration = Math.max( expiration, interval.getUpperBound() ); 
         }
+        if( expiration == 0 ) {
+            // no useful info based on the temporal distance calculation, so return -1
+            expiration = -1;
+        } else if( expiration != Long.MAX_VALUE ) {
+            // else, account for the actual expiration by adding one to whatever interval upper bound was found
+            expiration += 1;
+        } // otherwise, it means we must keep the infinite expiration offset 
+                
         return expiration;
     }
     

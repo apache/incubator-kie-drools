@@ -113,9 +113,9 @@ public class BuildUtilsTest extends TestCase {
         //printMatrix( matrix.getMatrix() );
         assertEqualsMatrix( expected, matrix.getMatrix() );
         
-        assertEquals( 14, matrix.getExpirationOffset( a ) );
-        assertEquals( 10, matrix.getExpirationOffset( d ) );
-        assertEquals( 0, matrix.getExpirationOffset( e ) );
+        assertEquals( 15, matrix.getExpirationOffset( a ) );
+        assertEquals( 11, matrix.getExpirationOffset( d ) );
+        assertEquals( -1, matrix.getExpirationOffset( e ) );
         
     }
 
