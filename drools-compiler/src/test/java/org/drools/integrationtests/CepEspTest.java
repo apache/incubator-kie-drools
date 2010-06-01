@@ -1,5 +1,11 @@
 package org.drools.integrationtests;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -7,11 +13,9 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.ClockType;
@@ -41,6 +45,9 @@ import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
@@ -49,10 +56,12 @@ import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.mockito.ArgumentCaptor;
 
 public class CepEspTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -83,7 +92,7 @@ public class CepEspTest extends TestCase {
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             System.out.println( parser.getErrors() );
-            Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
         builder.addPackage( packageDescr );
@@ -95,6 +104,22 @@ public class CepEspTest extends TestCase {
         // load up the rulebase
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         return ruleBase;
+    }
+
+    private KnowledgeBase loadKnowledgeBase(final Reader reader,
+                                            final KnowledgeBaseConfiguration conf) throws IOException,
+                                                                                  ClassNotFoundException {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( reader ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        // add the packages to a rulebase
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase = SerializationHelper.serializeObject( kbase );
+        return kbase;
     }
 
     public void testEventAssertion() throws Exception {
@@ -602,6 +627,185 @@ public class CepEspTest extends TestCase {
 
     }
 
+    public void testBeforeOperator() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_BeforeOperator.drl" ) );
+        final KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( reader,
+                                                       kconf );
+
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
+                                                                               null );
+
+        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
+        clock.setStartupTime( 1000 );
+        
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        StockTick tick1 = new StockTick( 1,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick2 = new StockTick( 2,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick3 = new StockTick( 3,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick4 = new StockTick( 4,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis(),
+                                         5 );
+        StockTick tick5 = new StockTick( 5,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         5 );
+        StockTick tick6 = new StockTick( 6,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick7 = new StockTick( 7,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         5 );
+        StockTick tick8 = new StockTick( 8,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+
+        ksession.insert( tick1 );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick2 );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick3 );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick4 );
+        ksession.insert( tick5 );
+        clock.advanceTime( 1,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick6 );
+        ksession.insert( tick7 );
+        clock.advanceTime( 2,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick8 );
+        
+        ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
+        verify( ael ).activationCreated( arg.capture() );
+        assertThat( arg.getValue().getActivation().getRule().getName(), is( "before" ) );
+
+        ksession.fireAllRules();
+        
+        verify( ael ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+    }
+
+    public void testMetByOperator() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_MetByOperator.drl" ) );
+        final KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( reader,
+                                                       kconf );
+
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
+                                                                               null );
+
+        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
+        clock.setStartupTime( 1000 );
+        
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        StockTick tick1 = new StockTick( 1,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick2 = new StockTick( 2,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick3 = new StockTick( 3,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick4 = new StockTick( 4,
+                                         "DROO",
+                                         50,
+                                         System.currentTimeMillis(),
+                                         5 );
+        StockTick tick5 = new StockTick( 5,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         5 );
+        StockTick tick6 = new StockTick( 6,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+        StockTick tick7 = new StockTick( 7,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         5 );
+        StockTick tick8 = new StockTick( 8,
+                                         "ACME",
+                                         10,
+                                         System.currentTimeMillis(),
+                                         3 );
+
+        InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( tick1 );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
+        InternalFactHandle fh2 = (InternalFactHandle) ksession.insert( tick2 );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick3 );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick4 );
+        ksession.insert( tick5 );
+        clock.advanceTime( 1,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick6 );
+        ksession.insert( tick7 );
+        clock.advanceTime( 2,
+                           TimeUnit.MILLISECONDS );
+        ksession.insert( tick8 );
+        
+        ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
+        verify( ael ).activationCreated( arg.capture() );
+        Activation activation = arg.getValue().getActivation(); 
+        assertThat( activation.getRule().getName(), is( "metby" ) );
+
+        ksession.fireAllRules();
+        
+        ArgumentCaptor<AfterActivationFiredEvent> aaf = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael ).afterActivationFired( aaf.capture() );
+        assertThat( (InternalFactHandle) aaf.getValue().getActivation().getFactHandles().toArray()[0], is( fh2 ));
+    }
+
     public void testAfterOnArbitraryDates() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_AfterOperatorDates.drl" ) );
@@ -1004,11 +1208,13 @@ public class CepEspTest extends TestCase {
 
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
+        
+        StockTick st1O = new StockTick( 1,
+                                       "DROO",
+                                       100,
+                                       clock.getCurrentTime() ); 
 
-        EventFactHandle st1 = (EventFactHandle) wm.insert( new StockTick( 1,
-                                                                          "DROO",
-                                                                          100,
-                                                                          clock.getCurrentTime() ) );
+        EventFactHandle st1 = (EventFactHandle) wm.insert( st1O );
 
         wm.fireAllRules();
 
@@ -1041,7 +1247,7 @@ public class CepEspTest extends TestCase {
         assertEquals( 1,
                       results.size() );
 
-        assertEquals( st1.getObject(),
+        assertEquals( st1O,
                       results.get( 0 ) );
 
     }
@@ -1416,11 +1622,11 @@ public class CepEspTest extends TestCase {
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( sessionConfig,
-                                                              KnowledgeBaseFactory.newEnvironment() );
+                                                                                       KnowledgeBaseFactory.newEnvironment() );
         PseudoClockScheduler pseudoClock = ksession.getSessionClock();
-        
-        FactHandle h = ksession.insert(new A());
-        ksession.retract(h);
+
+        FactHandle h = ksession.insert( new A() );
+        ksession.retract( h );
     }
 
     public static class A

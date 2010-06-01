@@ -303,10 +303,10 @@ public class BuildUtils {
                     for ( Map.Entry<Declaration, Interval> entry : temporal.entrySet() ) {
                         int targetIndex = declarations.indexOf( entry.getKey() );
                         Interval interval = entry.getValue();
-                        // FIXME: should it always be intersection or sometimes it would be union?????
                         source[targetIndex][eventIndex].intersect( interval );
-                        source[eventIndex][targetIndex].intersect( new Interval( -interval.getUpperBound(),
-                                                                                 -interval.getLowerBound() ) );
+                        Interval reverse = new Interval( interval.getUpperBound() == Long.MAX_VALUE ? Long.MIN_VALUE : -interval.getUpperBound(), 
+                                                         interval.getLowerBound() == Long.MIN_VALUE ? Long.MAX_VALUE : -interval.getLowerBound() );
+                        source[eventIndex][targetIndex].intersect( reverse );
                     }
                     eventIndex++;
                 }

@@ -1,0 +1,15 @@
+package org.drools;
+
+declare StockTick 
+    @role( event )
+    @duration( duration )
+end
+
+rule "metby"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this metby[1] $a )
+then
+    // no-op
+end
+

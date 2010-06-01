@@ -1,0 +1,15 @@
+package org.drools;
+
+declare StockTick 
+    @role( event )
+    @duration( duration )
+end
+
+rule "before"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this before[5,8] $a )
+then
+    // no-op
+end
+

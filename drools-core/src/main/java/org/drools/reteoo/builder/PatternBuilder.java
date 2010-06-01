@@ -269,7 +269,11 @@ public class PatternBuilder
                                              expirationOffset );
             }
         }
-        return expirationOffset;
+        // if none of the type declarations have an @expires annotation
+        // we return -1 (no-expiration) value, otherwise we return the
+        // set expiration value+1 to enable the fact to match events with
+        // the same timestamp
+        return expirationOffset == -1 ? -1 : expirationOffset+1;
     }
 
     public void attachAlphaNodes(final BuildContext context,
@@ -313,9 +317,12 @@ public class PatternBuilder
                 }
             }
             long distance = context.getTemporalDistance().getExpirationOffset( pattern );
-            if( distance == Long.MAX_VALUE ) {
-                // it means the rules have no closed temporal constraints, 
-                // so use whatever is set for the OTN or on temporal behaviors
+            if( distance == -1 ) {
+                // it means the rules have no temporal constraints, or
+                // the constraints require events to be hold forever. In this 
+                // case, we allow type declarations to override the implicit 
+                // expiration offset by defining an expiration policy with the
+                // @expires tag
                 otn.setExpirationOffset( expirationOffset );
             } else {
                 otn.setExpirationOffset( Math.max( distance, expirationOffset ) );
