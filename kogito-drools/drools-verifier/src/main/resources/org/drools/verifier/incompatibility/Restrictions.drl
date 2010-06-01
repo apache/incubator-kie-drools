@@ -79,7 +79,7 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 			valueType == $r1.valueType,
 			operator == Operator.GREATER,
 			path != $r1.path,
-			valueAsString == valueAsString
+			valueAsString == $r1.valueAsString
 		)
 
 	then

@@ -132,7 +132,7 @@ end
 # Dependencies: None
 # Example: Pattern( a < 10 && a > 9 )
 #
-rule "Opposite LiteralRestrictions with ranges, less - greater for ints and dates"
+rule "Opposite LiteralRestrictions with ranges, less - greater for numbers"
 	when
 		$left :NumberRestriction(
 			operator == Operator.LESS,
@@ -145,7 +145,7 @@ rule "Opposite LiteralRestrictions with ranges, less - greater for ints and date
 			valueType == $left.valueType,
 			operator == Operator.GREATER,
 			path != $left.path,
-			value < $left.value
+			value > $left.value
 		)
 		
 		# Check that there is not already a pair with these values.
