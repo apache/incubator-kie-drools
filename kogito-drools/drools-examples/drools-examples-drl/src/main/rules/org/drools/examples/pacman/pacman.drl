@@ -1,9 +1,25 @@
 package org.drools.examples.pacman
 
 /**
+ * By increasing the tick we slow down the time to the next move.
+ * I use the CE 'or' here rathre than an infix "in" to maximise node sharing
+ * with both the EatFood and EatPowerPill rules.
+ */
+rule SlowWhenEating dialect "mvel" no-loop salience 10when
+    $char : Character( name == "Pacman" )
+    $l : Location( character == $char )
+    $target : Cell( row == $l.row, col == $l.col)
+    (or $contents : CellContents( cell == $target, cellType == CellType.FOOD )
+        $contents : CellContents( cell == $target, cellType == CellType.POWER_PILL ) )    
+    $update : ScheduledLocationUpdate( character == $char )
+then  
+    modify ( $update ) { tock += 2 };
+end
+
+/**
  * When we move onto a FOOD cell, increase the score by 1
  */
-rule EatFood dialect "mvel" no-loop when
+rule EatFood dialect "mvel" when
     $char : Character( name == "Pacman" )
     $l : Location( character == $char )
     $target : Cell( row == $l.row, col == $l.col)
@@ -17,7 +33,7 @@ end
 /**
  * When we move onto a POWER_PILL cell, increase the score by 5
  */
-rule EatPowerPill dialect "mvel" no-loop when
+rule EatPowerPill dialect "mvel" when
     $char : Character( name == "Pacman" )
     $l : Location( character == $char )
     $target : Cell( row == $l.row, col == $l.col)
@@ -28,21 +44,7 @@ then
     modify( $s ) { score += 5 };    
 end
 
-/**
- * By increasing the tick we slow down the time to the next move.
- * I use the CE 'or' here rathre than an infix "in" to maximise node sharing
- * with both the EatFood and EatPowerPill rules.
- */
-rule SlowWhenEating dialect "mvel" no-loop when
-    $char : Character( name == "Pacman" )
-    $l : Location( character == $char )
-    $target : Cell( row == $l.row, col == $l.col)
-    (or $contents : CellContents( cell == $target, cellType == CellType.FOOD )
-        $contents : CellContents( cell == $target, cellType == CellType.POWER_PILL ) )    
-    $update : ScheduledLocationUpdate( character == $char )
-then  
-    modify ( $update ) { tock += 2 };
-end
+
 
 rule MonsterCollision dialect "mvel" no-loop when
     $pac    : Character( name == "Pacman" )
