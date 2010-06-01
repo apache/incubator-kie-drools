@@ -1,0 +1,22 @@
+package com.misc.someData
+
+import com.sample.DroolsTest.Message;
+
+rule "Persons age, OK"
+	when
+		Person( 
+			age > 0,
+			age < 20
+		)
+	then
+end
+
+rule "Persons age, FAIL"
+	when
+		Person( 
+			# Can't be under 0 and over 20
+			age < 0,
+			age > 20
+		)
+	then
+end

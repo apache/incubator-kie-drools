@@ -6,8 +6,16 @@ import java.util.Iterator;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
+import org.drools.runtime.ClassObjectFilter;
 import org.drools.verifier.TestBase;
+import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierComponentMockFactory;
+import org.drools.verifier.VerifierError;
+import org.drools.verifier.builder.VerifierBuilder;
+import org.drools.verifier.builder.VerifierBuilderFactory;
+import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.SubPattern;
@@ -18,6 +26,8 @@ import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Incompatibility;
+import org.drools.verifier.report.components.MessageType;
+import org.drools.verifier.report.components.Overlap;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
@@ -277,4 +287,42 @@ public class AlwaysFalseTest extends TestBase {
                       result.getBySeverity( Severity.NOTE ).size() );
         assertTrue( works );
     }
+
+    public void testAlwaysFalse() {
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
+
+        Verifier verifier = vBuilder.newVerifier();
+
+        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "AlwaysFalseTest.drl",
+                                                                             getClass() ),
+                                       ResourceType.DRL );
+
+        assertFalse( verifier.hasErrors() );
+
+        boolean noProblems = verifier.fireAnalysis();
+        assertTrue( noProblems );
+
+        Collection<VerifierMessageBase> notes = verifier.getResult().getBySeverity( Severity.ERROR );
+
+        assertEquals( 1,
+                      containsMessageType( notes,
+                                           MessageType.ALWAYS_FALSE ) );
+
+        verifier.dispose();
+    }
+
+    private int containsMessageType(Collection<VerifierMessageBase> notes,
+                                    MessageType type) {
+        int amount = 0;
+        for ( VerifierMessageBase note : notes ) {
+            if ( note instanceof VerifierMessage ) {
+                VerifierMessage message = (VerifierMessage) note;
+                if ( message.getMessageType() == type ) {
+                    amount++;
+                }
+            }
+        }
+        return amount;
+    }
+
 }

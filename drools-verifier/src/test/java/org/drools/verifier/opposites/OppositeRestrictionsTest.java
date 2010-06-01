@@ -179,45 +179,6 @@ public class OppositeRestrictionsTest extends OppositesBase {
         }
     }
 
-    public void testLiteralRestrictionOppositeWithRangesLessAndGreaterForIntsAndDates() throws Exception {
-        StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
-
-        session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Opposite LiteralRestrictions with ranges, less - greater for ints and dates" ) );
-
-        Collection<Object> data = new ArrayList<Object>();
-
-        Pattern pattern = VerifierComponentMockFactory.createPattern1();
-
-        LiteralRestriction r1 = LiteralRestriction.createRestriction( pattern,
-                                                                      "0" );
-        r1.setFieldPath( "0" );
-        r1.setOperator( Operator.GREATER );
-        r1.setOrderNumber( 0 );
-
-        LiteralRestriction r2 = LiteralRestriction.createRestriction( pattern,
-                                                                      "1" );
-        r2.setFieldPath( "0" );
-        r2.setOperator( Operator.LESS );
-        r2.setOrderNumber( 1 );
-
-        data.add( r1 );
-        data.add( r2 );
-
-        StatelessSessionResult sessionResult = session.executeWithResults( data );
-
-        Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
-                                                         sessionResult.iterateObjects() );
-
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
-
-        if ( !map.isEmpty() ) {
-            fail( "More opposites than was expected." );
-        }
-    }
 
     public void testLiteralRestrictionOppositeWithRangesLessOrEqualAndGreaterOrEqualForIntsAndDates() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
