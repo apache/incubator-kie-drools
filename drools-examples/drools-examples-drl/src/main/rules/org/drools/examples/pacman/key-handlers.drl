@@ -54,11 +54,20 @@ then
     insert( $newD );
 end
 
+rule KeyEventCount dialect "mvel" salience -5 when
+   $n : Number() from accumulate( 
+           $keyEvent : KeyEvent() from entry-point "KeyListener",
+            count( $keyEvent ) ) 
+then
+    System.out.println( "count : " + $n ) ;
+end
+
+
 /**
  * Retract all KeyEvents, ideally we should have expirs 0s, but that doesn't work
- */
 rule KeyListenerRuleRetractEvent dialect "mvel" salience -5 when
     $keyEvent : KeyEvent() from entry-point "KeyListener"
 then
     retract( $keyEvent );
 end
+  */
