@@ -45,6 +45,9 @@ import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
 import org.drools.conf.EventProcessingOption;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.EntryPoint;
@@ -375,4 +378,56 @@ public class StreamsTest extends TestCase {
                     equalTo( 0 ) );
     }
 
+    public void testEventExpirationSetToZero() throws Exception {
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_EventExpirationSetToZero.drl",
+                                                 kconf );
+
+        KnowledgeSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksessionConfig.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksessionConfig,
+                                                                               null );
+
+        WorkingMemoryEventListener wml = mock( WorkingMemoryEventListener.class );
+        ksession.addEventListener( wml );
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        final StockTick st1 = new StockTick( 1,
+                                             "RHT",
+                                             100,
+                                             1000 );
+        final StockTick st2 = new StockTick( 2,
+                                             "RHT",
+                                             100,
+                                             1000 );
+
+        ksession.insert( st1 );
+        ksession.insert( st2 );
+
+        verify( wml,
+                times( 2 ) ).objectInserted( any( org.drools.event.rule.ObjectInsertedEvent.class ) );
+        verify( ael,
+                times( 2 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        assertThat( ksession.getObjects().size(),
+                    equalTo( 2 ) );
+        assertThat( ksession.getObjects(),
+                    hasItems( (Object) st1,
+                              st2 ) );
+
+        int fired = ksession.fireAllRules();
+
+        assertThat( fired,
+                    equalTo( 2 ) );
+
+        clock.advanceTime( 3,
+                           TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertThat( ksession.getObjects().size(),
+                    equalTo( 0 ) );
+    }
 }
