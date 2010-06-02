@@ -1,13 +1,198 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:svg="http://www.w3.org/2000/svg"
-         xmlns:m="http://www.w3.org/1998/Math/MathML"
-         xmlns:html="http://www.w3.org/1999/xhtml"
-         xmlns:db="http://docbook.org/ns/docbook">
-  <title>Spring Integration</title>
+<chapter version="5.0" xml:base="../" xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
+	<title>Spring Integration</title>
 
-  <para>TODO</para>
+	<section>
+		<title>Integration with Drools Expert</title>
+		<para>In this section we will explain the drools namespace.</para>
+	
+		<section>
+			<title>Define a Resource</title>
+			
+			<para>Defines a resource to be referenced from other tags</para>
+			<section>
+				<title><![CDATA[<drools:resource>'s parameters as attributes:]]></title>
+				<table>
+					<tgroup cols="3" align="left" colsep="1" rowsep="1">
+						<thead>
+							<row>
+								<entry align="center">Attribute</entry>
+								<entry align="center">Description</entry>
+								<entry align="center">Required</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry>id</entry>
+								<entry>Bean's <emphasis>id</emphasis> is the name to be reference from other beans.</entry>
+								<entry>Yes, but can be omitted when this tag is nested.</entry>
+							</row>
+							<row>
+								<entry>source</entry>
+								<entry>The path to the file containing the actual resource.</entry>
+								<entry>Yes</entry>
+							</row>
+							<row>
+								<entry>type</entry>
+								<entry>Type of the Resource as is defined in class <classname>ResourceType</classname>.</entry>
+								<entry>No, default to DRL</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+			</section>
+			<section>
+				<title><![CDATA[<drools:resource>'s parameters as nested elements:]]></title>
+				
+				<para>When configuring a <emphasis>decision table</emphasis> resource you can nest a 
+				<emphasis><![CDATA[<drools:decisiontable-conf>]]></emphasis> tag to configure the resource.
+				</para>
+				
+				<table>
+					<tgroup cols="3" align="left" colsep="1" rowsep="1">
+						<thead>
+							<row>
+								<entry align="center">Attribute</entry>
+								<entry align="center">Description</entry>
+								<entry align="center">Required</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry>input-type</entry>
+								<entry>Decision Table input type: XLS or CSV</entry>
+								<entry>No</entry>
+							</row>
+							<row>
+								<entry>worksheet-name</entry>
+								<entry>The worksheet name to be used in the when using an XLS</entry>
+								<entry>No</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+				<example>
+						<title>resource definition example</title>
+						<programlisting>
+							<![CDATA[
+								<drools:resource source="classpath:org/drools/IntegrationExampleTest.xls"
+										type="DTABLE">
+									<drools:decisiontable-conf input-type="XLS" worksheet-name="Tables_2" />
+								</drools:resource>	
+							]]>
+						</programlisting>
+					</example>
+			</section>
+		
+			<section>
+				<title>Define a KnowledgeBase</title>
+			
+				<section>
+					<title><![CDATA[<drools:kbase>]]>'s parameters as attributes:</title>
+					<table>
+						<tgroup cols="3" align="left" colsep="1" rowsep="1">
+							<thead>
+								<row>
+									<entry align="center">Attribute</entry>
+									<entry align="center">Description</entry>
+									<entry align="center">Required</entry>
+								</row>
+							</thead>
+							<tbody>
+								<row>
+									<entry>id</entry>
+									<entry>Bean's <emphasis>id</emphasis> is the name to be referenced from other beans.</entry>
+									<entry>Yes</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</table>
+				</section>
+				<section>
+					<title><![CDATA[<drools:kbase>'s parameters as nested elements:]]></title>
+					
+					<para>There are two ways to define the a resource inside a kbase. You 
+					can nest a <emphasis>drools:resource</emphasis>, or you can reference a previously
+					defined resource using <emphasis>drools:resource-ref</emphasis>.
+					Additionally, you can configure schema models that would be compiled to types
+					inside the kbase using <emphasis><![CDATA[<drools:model >]]></emphasis>.
+					</para>
+					
+					<example>
+						<title>kbase definition example</title>
+						<programlisting>
+							<![CDATA[
+								<drools:kbase id="kbase1" node="node1">
+									<drools:resource 
+											source="classpath:org/drools/spring/IntegrationExampleTest.xls" 
+											type="DTABLE">
+										<drools:decisiontable-conf input-type="XLS" worksheet-name="Table_2" />
+									</drools:resource>
+									<drools:resource-ref id="resource1"/>
+									<drools:model
+										source="classpath:org/drools/container/spring/model.xsd" />
+								</drools:kbase>	
+							]]>
+						</programlisting>
+					</example>
+				</section>
+			</section>
+			
+			<section>
+				<title>Define KnowledgeSessions</title>
+			
+				<section>
+					<title><![CDATA[<drools:ksession>]]>'s parameters as attributes:</title>
+					<table>
+						<tgroup cols="3" align="left" colsep="1" rowsep="1">
+							<thead>
+								<row>
+									<entry align="center">Attribute</entry>
+									<entry align="center">Description</entry>
+									<entry align="center">Required</entry>
+								</row>
+							</thead>
+							<tbody>
+								<row>
+									<entry>id</entry>
+									<entry>Bean's <emphasis>id</emphasis> is the name to be referenced from other beans.</entry>
+									<entry>Yes</entry>
+								</row>
+								<row>
+									<entry>type</entry>
+									<entry>is the session <emphasis>stateful</emphasis> or <emphasis>stateless?</emphasis></entry>
+									<entry>Yes</entry>
+								</row>
+								<row>
+									<entry>name</entry>
+									<entry></entry>
+									<entry>No; defaults to <emphasis>id</emphasis> when omitted.</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</table>
+					
+					<example>
+						<title>ksession definition example</title>
+						<programlisting>
+							<![CDATA[
+								<drools:ksession id="ksession1" type="stateless" 
+									name="stateless1" kbase="kbase1"/>
 
+								<drools:ksession id="ksession2" type="stateful" 
+									kbase="kbase1"/>	
+							]]>
+						</programlisting>
+					</example>
+				</section>
+			</section>
+		</section>
+	</section>
+
+	<section>
+		<title>Integration with Drools Flow</title>
+	</section>
 </chapter>
