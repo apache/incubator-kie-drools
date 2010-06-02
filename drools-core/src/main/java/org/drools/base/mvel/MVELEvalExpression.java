@@ -93,7 +93,7 @@ public class MVELEvalExpression
     @SuppressWarnings("unchecked")
     public Declaration[] getRequiredDeclarations() {
         Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();
-        return (Declaration[]) previousDeclarations.values().toArray(new Declaration[previousDeclarations.size()]);
+        return (Declaration[]) previousDeclarations.values().toArray( new Declaration[previousDeclarations.size()] );
     }
 
     public void replaceDeclaration(Declaration declaration,
@@ -101,7 +101,17 @@ public class MVELEvalExpression
         this.unit.replaceDeclaration( declaration,
                                       resolved );
         // need to get a new prototype factory, since the declaration was updated
-        prototype = unit.getFactory();        
+        prototype = unit.getFactory();
+    }
+
+    public MVELEvalExpression clone() {
+        MVELEvalExpression clone = new MVELEvalExpression( unit.clone(),
+                                                           id );
+        // expr should be stateless, so it should be fine to share the reference
+        clone.expr = expr;
+        clone.prototype = clone.unit.getFactory();
+        
+        return clone;
     }
 
 }

@@ -21,7 +21,8 @@ import org.drools.WorkingMemory;
 
 public interface EvalExpression
     extends
-    Invoker {
+    Invoker,
+    Cloneable {
     
     public Object createContext();
     
@@ -32,4 +33,6 @@ public interface EvalExpression
 
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved);
+    
+    public EvalExpression clone();
 }

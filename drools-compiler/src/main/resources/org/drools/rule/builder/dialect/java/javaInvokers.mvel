@@ -178,6 +178,11 @@ public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.d
             @end{","} );
     }
     
+    public org.drools.spi.EvalExpression clone() {
+        // this class is stateless, so no cloning needed
+        return this;
+    }
+    
     @includeNamed{"replaceDeclaration"}
 
     @includeNamed{"hashCode"}

@@ -35,6 +35,9 @@ public class PackageCompilationDataTest extends TestCase {
         public void replaceDeclaration(Declaration declaration,
                                        Declaration resolved) {
         }
+        public EvalExpression clone() {
+            return this;
+        }
     }
 
     public void testCodeSourceUrl() throws Exception {

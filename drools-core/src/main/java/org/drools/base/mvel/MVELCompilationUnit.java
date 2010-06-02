@@ -27,7 +27,8 @@ import org.mvel2.compiler.ExpressionCompiler;
 
 public class MVELCompilationUnit
     implements
-    Externalizable {
+    Externalizable,
+    Cloneable {
 
     private static final long serialVersionUID = 510L;
 
@@ -402,4 +403,23 @@ public class MVELCompilationUnit
             }
         }
     }
+
+    @Override
+    public MVELCompilationUnit clone() {
+        return new MVELCompilationUnit(name, 
+                                       expression,
+                                       pkgImports,
+                                       importClasses,
+                                       importMethods,
+                                       importFields,
+                                       globalIdentifiers,
+                                       previousDeclarations,
+                                       localDeclarations,
+                                       otherIdentifiers,
+                                       inputIdentifiers,
+                                       inputTypes,
+                                       languageLevel,
+                                       strictMode);
+    }
+
 }
