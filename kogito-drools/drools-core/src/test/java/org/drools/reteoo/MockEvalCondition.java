@@ -64,6 +64,9 @@ public class MockEvalCondition extends EvalCondition {
         public void replaceDeclaration(Declaration declaration,
                                        Declaration resolved) {
         }
+        public EvalExpression clone() {
+            return this;
+        }
                                                   };
 
     public MockEvalCondition(final boolean isAllowed) {

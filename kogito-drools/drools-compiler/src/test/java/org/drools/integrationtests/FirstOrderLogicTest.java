@@ -963,6 +963,33 @@ public class FirstOrderLogicTest extends TestCase {
                 times( 6 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
     }
 
+    // JBRULES-2526
+    public void testOrWithVariableResolution2() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval2.drl",
+                                                            FirstOrderLogicTest.class ),
+                      ResourceType.DRL );
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final AgendaEventListener al = mock( AgendaEventListener.class );
+        ksession.addEventListener( al );
+
+        ksession.insert( new FactA( "a" ) );
+        ksession.insert( new FactB( "b" ) );
+        ksession.insert( new FactC( "c" ) );
+
+        ksession.fireAllRules();
+        verify( al,
+                times( 8 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+    }
+
     public void testCollectWithMemberOfOperators() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectMemberOfOperator.drl" ) ) );

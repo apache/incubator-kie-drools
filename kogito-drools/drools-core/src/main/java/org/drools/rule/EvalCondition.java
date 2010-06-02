@@ -125,7 +125,7 @@ public class EvalCondition extends ConditionalElement
     }
 
     public Object clone() {
-        final EvalCondition clone = new EvalCondition( this.expression,
+        final EvalCondition clone = new EvalCondition( this.expression.clone(),
                                                        (Declaration[]) this.requiredDeclarations.clone() );
 
         if ( this.cloned == Collections.EMPTY_LIST ) {

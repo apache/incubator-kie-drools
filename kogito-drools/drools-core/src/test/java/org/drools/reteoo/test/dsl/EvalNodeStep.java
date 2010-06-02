@@ -125,6 +125,10 @@ public class EvalNodeStep
         public void replaceDeclaration(Declaration declaration,
                                        Declaration resolved) {
         }
+        
+        public EvalExpression clone() {
+            return this;
+        }
 
     }
 }
