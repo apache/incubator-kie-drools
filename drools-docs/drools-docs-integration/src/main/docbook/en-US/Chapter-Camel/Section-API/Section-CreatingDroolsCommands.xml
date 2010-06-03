@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+
+    <title>Creating Drools Commands</title>
+
+    <para>The next step is create our commands to be converted to XML. All our
+    commands must be added in a BatchExecutionCommand object because the
+    lookup is a required parameter in the XML format. The lookup parameter
+    must be the KnowledgeSession identifier in which we want to execute the
+    commands.</para>
+
+    <para></para>
+
+    <para><programlisting>BatchExecutionCommand cmd = new BatchExecutionCommand();
+cmd.setLookup("ksession1");
+cmd.getCommands().add(new InsertObjectCommand(new Person("lucaz", 25), "person1"));
+cmd.getCommands().add(new InsertObjectCommand(new Person("hadrian", 25), "person2"));
+cmd.getCommands().add(new InsertObjectCommand(new Person("baunax", 21), "person3"));
+cmd.getCommands().add(new FireAllRulesCommand());</programlisting></para>
+
+    <para>At this moment, the supported commands are:</para>
+
+    <itemizedlist>
+      <listitem>
+         AbortWorkItemCommand 
+      </listitem>
+
+      <listitem>
+         CompleteWorkItemCommand 
+      </listitem>
+
+      <listitem>
+         FireAllRulesCommand 
+      </listitem>
+
+      <listitem>
+         GetGlobalCommand 
+      </listitem>
+
+      <listitem>
+         InsertObjectCommand 
+      </listitem>
+
+      <listitem>
+         RetractCommand 
+      </listitem>
+
+      <listitem>
+         ModifyCommand 
+      </listitem>
+
+      <listitem>
+         InsertElementsCommand 
+      </listitem>
+
+      <listitem>
+         QueryCommand 
+      </listitem>
+
+      <listitem>
+         SetGlobalCommand 
+      </listitem>
+
+      <listitem>
+         SignalEventCommand 
+      </listitem>
+
+      <listitem>
+         StartProcessCommand 
+      </listitem>
+    </itemizedlist>
+
+    <para></para>
+
+    <para>In the next sections you will see how to marshall/unmarshall the
+    commands to XML to XStream and JAXB</para>
+
+    <para></para>
+
+</section>
