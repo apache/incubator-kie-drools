@@ -117,6 +117,7 @@ public class NamedEntryPoint
                 addPropertyChangeListener( object );
             }
             try {
+                this.ruleBase.readLock();
                 this.lock.lock();
                 insert( handle,
                         object,
@@ -124,6 +125,7 @@ public class NamedEntryPoint
                         activation );
 
             } finally {
+                this.ruleBase.unlock();
                 this.lock.unlock();
             }
             return handle;
@@ -178,6 +180,7 @@ public class NamedEntryPoint
                           final Rule rule,
                           final Activation activation) throws FactException {
         try {
+            this.ruleBase.readLock();
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
             this.wm.startOperation();
@@ -239,6 +242,7 @@ public class NamedEntryPoint
             this.wm.executeQueuedActions();
         } finally {
             this.wm.endOperation();
+            this.ruleBase.unlock();
             this.lock.unlock();
         }
     }
@@ -257,6 +261,7 @@ public class NamedEntryPoint
                         final Rule rule,
                         final Activation activation) throws FactException {
         try {
+            this.ruleBase.readLock();
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
             this.wm.startOperation();
@@ -303,6 +308,7 @@ public class NamedEntryPoint
             this.wm.executeQueuedActions();
         } finally {
             this.wm.endOperation();
+            this.ruleBase.unlock();
             this.lock.unlock();
         }
     }
@@ -317,6 +323,7 @@ public class NamedEntryPoint
                               final Rule rule,
                               final Activation activation) {
         try {
+            this.ruleBase.readLock();
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
             this.wm.startOperation();
@@ -356,6 +363,7 @@ public class NamedEntryPoint
 
         } finally {
             this.wm.endOperation();
+            this.ruleBase.unlock();
             this.lock.unlock();
         }
     }
@@ -385,6 +393,7 @@ public class NamedEntryPoint
                                 final Rule rule,
                                 final Activation activation) {
         try {
+            this.ruleBase.readLock();
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
             this.wm.startOperation();
@@ -431,6 +440,7 @@ public class NamedEntryPoint
             this.wm.executeQueuedActions();
         } finally {
             this.wm.endOperation();
+            this.ruleBase.unlock();
             this.lock.unlock();
         }
     }
