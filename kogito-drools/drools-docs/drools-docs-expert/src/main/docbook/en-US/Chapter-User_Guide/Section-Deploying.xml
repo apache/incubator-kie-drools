@@ -230,13 +230,12 @@ kbase.addKnowledgePackages( kpkgs );
     <para>The following example constructs an agent that will build a new
     KnowledgeBase from the specified ChangeSet. (See section "Building" for
     more details on the ChangeSet format.) Note that the method can be called
-    iteratively to add new resources over time. At the moment the remove and
-    modify elements of the ChangeSet XML are not implemented, but future
-    versions will provide this as well, giving you more control over those
-    incremental changes.
+    iteratively to add new resources over time. 
     The Knowledge Agent polls the resources added from the ChangeSet 
     every 60 seconds, the default interval, to see if they are updated.
-    Whenever changes are found it will construct a new Knowledge Base.
+    Whenever changes are found it will construct a new Knowledge Base or apply
+    the modifications to the existing Knowledge Base according to its
+    configuration.
     If the change set specifies a resource that
     is a directory its contents will be scanned for changes, too.</para>
 
@@ -318,8 +317,8 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();
     <code>applyChangeSet()</code> method it will also add any directories to the scanning
     process. When the directory scan detects an additional file, it will be 
     added to the Knowledge Base; any removed file is removed from the
-    Knowledge Base, and modified files will, as usual, force the build of a
-    new Knowledge Base using the latest version.</para>
+    Knowledge Base, and modified files will be removed from the Knowledge Base.
+    </para>
 
     <example>
       <title>ChangeSet XML which adds a directories contents</title>
