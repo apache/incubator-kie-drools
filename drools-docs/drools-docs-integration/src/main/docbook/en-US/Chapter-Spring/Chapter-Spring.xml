@@ -2,7 +2,7 @@
 <chapter version="5.0" xml:base="../" xmlns="http://docbook.org/ns/docbook"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
+	xmlns:html="http://www.w3.org/1999/xhtml">
 	<title>Spring Integration</title>
 
 	<section>
@@ -78,11 +78,10 @@
 						<title>resource definition example</title>
 						<programlisting>
 							<![CDATA[
-								<drools:resource source="classpath:org/drools/IntegrationExampleTest.xls"
-										type="DTABLE">
-									<drools:decisiontable-conf input-type="XLS" worksheet-name="Tables_2" />
-								</drools:resource>	
-							]]>
+<drools:resource source="classpath:org/drools/IntegrationExampleTest.xls"
+		type="DTABLE">
+	<drools:decisiontable-conf input-type="XLS" worksheet-name="Tables_2" />
+</drools:resource>]]>
 						</programlisting>
 					</example>
 			</section>
@@ -125,17 +124,16 @@
 						<title>kbase definition example</title>
 						<programlisting>
 							<![CDATA[
-								<drools:kbase id="kbase1" node="node1">
-									<drools:resource 
-											source="classpath:org/drools/spring/IntegrationExampleTest.xls" 
-											type="DTABLE">
-										<drools:decisiontable-conf input-type="XLS" worksheet-name="Table_2" />
-									</drools:resource>
-									<drools:resource-ref id="resource1"/>
-									<drools:model
-										source="classpath:org/drools/container/spring/model.xsd" />
-								</drools:kbase>	
-							]]>
+<drools:kbase id="kbase1" node="node1">
+	<drools:resource 
+			source="classpath:org/drools/spring/IntegrationExampleTest.xls" 
+			type="DTABLE">
+		<drools:decisiontable-conf input-type="XLS" worksheet-name="Table_2" />
+	</drools:resource>
+	<drools:resource-ref id="resource1"/>
+	<drools:model
+		source="classpath:org/drools/container/spring/model.xsd" />
+</drools:kbase>]]>
 						</programlisting>
 					</example>
 				</section>
@@ -179,20 +177,158 @@
 						<title>ksession definition example</title>
 						<programlisting>
 							<![CDATA[
-								<drools:ksession id="ksession1" type="stateless" 
-									name="stateless1" kbase="kbase1"/>
+<drools:ksession id="ksession1" type="stateless" 
+	name="stateless1" kbase="kbase1"/>
 
-								<drools:ksession id="ksession2" type="stateful" 
-									kbase="kbase1"/>	
-							]]>
+<drools:ksession id="ksession2" type="stateful" 
+	kbase="kbase1"/>]]>
 						</programlisting>
 					</example>
 				</section>
+			</section>
+		</section>
+		
+		<section>
+			<title>Define a KnowledgeBase</title>
+		
+			<section>
+				<title><![CDATA[<drools:kbase>]]>'s parameters as attributes:</title>
+				<table>
+					<tgroup cols="3" align="left" colsep="1" rowsep="1">
+						<thead>
+							<row>
+								<entry align="center">Attribute</entry>
+								<entry align="center">Description</entry>
+								<entry align="center">Required</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry>id</entry>
+								<entry>Bean's <emphasis>id</emphasis> is the name to be referenced from other beans.</entry>
+								<entry>Yes</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+			</section>
+			<section>
+				<title><![CDATA[<drools:kbase>'s parameters as nested elements:]]></title>
+				
+				<para>There are two ways to define the a resource inside a kbase. You 
+				can nest a <emphasis>drools:resource</emphasis>, or you can reference a previously
+				defined resource using <emphasis>drools:resource-ref</emphasis>.
+				Additionally, you can configure schema models that would be compiled to types
+				inside the kbase using <emphasis><![CDATA[<drools:model >]]></emphasis>.
+				</para>
+				
+				<example>
+					<title>KnowledgeBase definition example</title>
+					<programlisting>
+						<![CDATA[
+<drools:kbase id="kbase1" node="node1">
+	<drools:resource 
+			source="classpath:org/drools/spring/IntegrationExampleTest.xls" 
+			type="DTABLE">
+		<drools:decisiontable-conf input-type="XLS" worksheet-name="Table_2" />
+	</drools:resource>
+	<drools:resource-ref id="resource1"/>
+	<drools:model
+		source="classpath:org/drools/container/spring/model.xsd" />
+</drools:kbase>]]>
+					</programlisting>
+				</example>
 			</section>
 		</section>
 	</section>
 
 	<section>
 		<title>Integration with Drools Flow</title>
+		
+		<section>
+			<title>Define a JpaSessionServiceFactory</title>
+		
+			<section>
+				<title><![CDATA[<drools:jpaSessionServiceFactory>]]>'s parameters as attributes:</title>
+				<table>
+					<tgroup cols="3" align="left" colsep="1" rowsep="1">
+						<thead>
+							<row>
+								<entry align="center">Attribute</entry>
+								<entry align="center">Description</entry>
+								<entry align="center">Required</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry>id</entry>
+								<entry>Bean's <emphasis>id</emphasis> is the name to be referenced from other beans.</entry>
+								<entry>Yes</entry>
+							</row>
+							<row>
+								<entry>kbase</entry>
+								<entry>A reference to an <emphasis>KnowledgeBase</emphasis>.</entry>
+								<entry>Yes</entry>
+							</row>
+							<row>
+								<entry>entityManagerFactory</entry>
+								<entry>A reference to an EntityManagerFactory</entry>
+								<entry>Yes</entry>
+							</row>
+							<row>
+								<entry>transactionManager</entry>
+								<entry>A reference to an <classname>org.springframework.orm.jpa.JpaTransactionManager</classname></entry>
+								<entry>Yes</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+			</section>
+			<section>
+				<title><![CDATA[<drools:jpaSessionServiceFactory>'s parameters as nested elements:]]></title>
+				
+				<para>You can configure custom <emphasis>Variable Peristers</emphasis> using the nested tag <![CDATA[<drools:variablePersisters>]]>
+				</para>
+				
+				<table>
+					<tgroup cols="3" align="left" colsep="1" rowsep="1">
+						<thead>
+							<row>
+								<entry align="center">Attribute</entry>
+								<entry align="center">Description</entry>
+								<entry align="center">Required</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry>forClass</entry>
+								<entry>The class or interface name that would be persisted using this persister.</entry>
+								<entry>Yes</entry>
+							</row>
+							<row>
+								<entry>implementation</entry>
+								<entry>The persister implementation class name.</entry>
+								<entry>Yes</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+				
+				<example>
+					<title>kbase definition example</title>
+					<programlisting>
+						<![CDATA[
+<drools:jpaSessionServiceFactory id="jpaSingleSessionCommandService" kbase="kbase1" 
+		entityManagerFactory="myEmf" transactionManager="txManager">
+	<drools:variablePersisters>
+		<drools:persister forClass="javax.persistence.Entity" implementation="org.drools.persistence.processinstance.persisters.JPAVariablePersister"/>
+		<drools:persister forClass="java.lang.String" implementation="org.drools.container.spring.beans.persistence.StringVariablePersister"/>
+		<drools:persister forClass="java.io.Serializable" implementation="org.drools.persistence.processinstance.persisters.SerializableVariablePersister"/>
+	</drools:variablePersisters>
+</drools:jpaSessionServiceFactory>]]>
+					</programlisting>
+				</example>
+			</section>
+		</section>
 	</section>
 </chapter>
