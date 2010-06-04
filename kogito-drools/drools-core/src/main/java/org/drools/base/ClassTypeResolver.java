@@ -146,6 +146,12 @@ public class ClassTypeResolver
                 clazz = null;
             }
         }
+        
+        // try as a nested class
+        if ( clazz == null ) {
+            clazz = importClass( className,
+                                 className );
+        }        
 
         // Now try the className with each of the given imports
         if ( clazz == null ) {
