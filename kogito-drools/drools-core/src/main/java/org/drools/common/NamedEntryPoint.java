@@ -125,7 +125,7 @@ public class NamedEntryPoint
                         activation );
 
             } finally {
-                this.ruleBase.unlock();
+                this.ruleBase.readUnlock();
                 this.lock.unlock();
             }
             return handle;
@@ -242,7 +242,7 @@ public class NamedEntryPoint
             this.wm.executeQueuedActions();
         } finally {
             this.wm.endOperation();
-            this.ruleBase.unlock();
+            this.ruleBase.readUnlock();
             this.lock.unlock();
         }
     }
@@ -308,7 +308,7 @@ public class NamedEntryPoint
             this.wm.executeQueuedActions();
         } finally {
             this.wm.endOperation();
-            this.ruleBase.unlock();
+            this.ruleBase.readUnlock();
             this.lock.unlock();
         }
     }
@@ -363,7 +363,7 @@ public class NamedEntryPoint
 
         } finally {
             this.wm.endOperation();
-            this.ruleBase.unlock();
+            this.ruleBase.readUnlock();
             this.lock.unlock();
         }
     }
@@ -440,7 +440,7 @@ public class NamedEntryPoint
             this.wm.executeQueuedActions();
         } finally {
             this.wm.endOperation();
-            this.ruleBase.unlock();
+            this.ruleBase.readUnlock();
             this.lock.unlock();
         }
     }
