@@ -589,10 +589,6 @@ public class AccumulateNode extends BetaNode {
                                                          leftTuple,
                                                          workingMemory );
 
-        if ( result == null ) {
-            throw new RuntimeDroolsException( "Accumulate must not return a null value." );
-        }
-
         if ( accctx.result == null ) {
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result,
                                                                                                   workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
@@ -606,13 +602,12 @@ public class AccumulateNode extends BetaNode {
         }
 
         // First alpha node filters
-        boolean isAllowed = true;
-        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
+        boolean isAllowed = result != null;
+        for ( int i = 0, length = this.resultConstraints.length; isAllowed && i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( accctx.result.getFactHandle(),
                                                        workingMemory,
                                                        memory.alphaContexts[i] ) ) {
                 isAllowed = false;
-                break;
             }
         }
         if ( isAllowed ) {
