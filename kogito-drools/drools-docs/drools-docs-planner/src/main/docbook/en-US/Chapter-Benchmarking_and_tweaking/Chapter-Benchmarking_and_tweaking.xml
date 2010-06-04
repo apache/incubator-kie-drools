@@ -33,7 +33,7 @@
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solverBenchmarkSuite&gt;
-    &lt;solvedSolutionFilesDirectory&gt;local/data/nqueens/solved&lt;/solvedSolutionFilesDirectory&gt;
+    &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
 
     &lt;inheritedUnsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inheritedUnsolvedSolutionFile&gt;
     &lt;inheritedUnsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/inheritedUnsolvedSolutionFile&gt;
@@ -97,8 +97,8 @@
     part of multiple <literal>solverBenchmark</literal> entities can be extracted to the <literal>inherited</literal>
     entities and can be overwritten per <literal>solverBenchmark</literal> entity.</para>
 
-    <para>If you specify a <literal>solvedSolutionFilesDirectory</literal> (relative to the working directory), the best
-    solution of each solver run will be written to that directory.</para>
+    <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory).
+    A summary chart and the best solution of each solver run will be written in that directory.</para>
   </section>
 
   <section>
@@ -117,13 +117,12 @@
       </mediaobject>
     </figure>
 
-    <para>To configure graph and CSV output of the best score over time, just add the
-    <literal>solverStatisticType</literal> and the <literal>solverStatisticFilesDirectory</literal> lines:</para>
+    <para>To configure graph and CSV output of the best score over time, just add a
+    <literal>solverStatisticType</literal> line:</para>
 
     <programlisting>&lt;solverBenchmarkSuite&gt;
-    &lt;solvedSolutionFilesDirectory&gt;local/data/nqueens/solved&lt;/solvedSolutionFilesDirectory&gt;
+    &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
     &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
-    &lt;solverStatisticFilesDirectory&gt;local/data/nqueens/statistic&lt;/solverStatisticFilesDirectory&gt;
     ...
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
