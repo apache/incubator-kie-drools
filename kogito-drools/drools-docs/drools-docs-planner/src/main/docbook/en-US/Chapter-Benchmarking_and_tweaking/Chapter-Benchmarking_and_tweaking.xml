@@ -98,13 +98,13 @@
     entities and can be overwritten per <literal>solverBenchmark</literal> entity.</para>
 
     <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory).
-    A summary chart and the best solution of each solver run will be written in that directory.</para>
+    A summary statistic and the best solution of each solver run will be written in that directory.</para>
   </section>
 
   <section>
     <title>Best score over time statistic (graph and CSV)</title>
 
-    <para>The benchmarker supports outputting the best score over time statistic as a graph or CSV (comma separated
+    <para>The benchmarker supports outputting the best score over time statistic as a graph and a CSV (comma separated
     values) file. Here's an example of a graph:</para>
 
     <figure>
@@ -126,7 +126,6 @@
     ...
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
-    <para>It will output an overview of all graphs and CSV files as an <filename>index.html</filename> file in the
-    statistic directory.</para>
+    <para>It will output all graphs and CSV files in the <literal>benchmarkDirectory</literal>.</para>
   </section>
 </chapter>
