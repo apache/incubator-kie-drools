@@ -239,6 +239,10 @@ public class BatchExecutionHelper {
     public static XStream newXStreamMarshaller() {
         return getBatchExecutionHelperProvider().newXStreamMarshaller();
     }
+    
+    public static XStream newJSonMarshaller() {
+        return getBatchExecutionHelperProvider().newJSonMarshaller();
+    }    
 
     private static synchronized void setBatchExecutionHelperProvider(BatchExecutionHelperProvider provider) {
         BatchExecutionHelper.provider = provider;
