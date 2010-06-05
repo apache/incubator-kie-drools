@@ -250,7 +250,7 @@
     </section>
 
     <section>
-      <title>Categorisation</title>
+      <title>Categorization</title>
 
       <figure>
         <title>Categories</title>
@@ -752,7 +752,6 @@
             </listitem>
           </orderedlist>
           </para>
-          
           <figure>
             <title>Adding Patterns</title>
 
@@ -1203,7 +1202,7 @@ public class SampleDataSource2 {
       rules, showing the list may take several seconds - hence the importance
       of using categories to help you find your way around).</para>
 
-      <para>So whilst rules (and assets in general) can appear in any number
+      <para>So while rules (and assets in general) can appear in any number
       of categories, they only live in one package. If you think of the BRMS
       as a file system, then each package is a folder, and the assets live in
       that folder - as one big happy list of files. When you create a
@@ -1241,6 +1240,11 @@ public class SampleDataSource2 {
           <listitem>
             <para>Model: A package requires at least one model - for the
             rules.</para>
+          </listitem>
+
+           <listitem>
+            <para>WorkingSets: Working Sets let you create subsets of package's
+            Fact Types and apply constraints to their fields.</para>
           </listitem>
         </itemizedlist></para>
 
@@ -1526,6 +1530,179 @@ public class SampleDataSource2 {
     the application, and allows the model to have a lifecycle separate from
     the application. It also removed the hassle of keeping jar files in sync
     between rules and the applications that use the rules.</para>
+  </section>
+
+  <section>
+    <title>Working Sets</title>
+    <para>Working Sets are a mean for grouping Facts and then defining 
+    constraints on them. You can create groups of Facts and only those Facts 
+    will be visible when authoring rules using the Guided Editor.</para>
+    <para>Right now, Working Sets must be activated manually from the Guided
+    Editor window (using the "Select Working Set" button placed in the toolbar).
+    In the future, different Working Sets could be assigned to different users
+    to reduce the scope and complexity when authoring rules.</para>
+
+    <figure>
+      <title>Creating a new Working Set</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/WorkingSetCreation.png"
+                     format="PNG" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The figure above shows the window used to create or modify
+    Working Sets. In this window you will find 2 lists. The list on the left
+    side contains the possible Fact Types that can be added to the Working
+    Set. These facts are those defined/imported in the package's model. The
+    list on the right side contains the allowed Fact Types of this Working Set.
+    When this Working Sets is active, only those Fact Types could be used
+    while authoring rules using the Guided BRL Editor</para>
+
+    <figure>
+      <title>Defining Field Constraints inside a Working Set</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/WorkingSetConstraintCreation.png"
+                     format="PNG" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Once you have selected the valid Fact Types for a Working Set, you
+    can add Constraints to the fields of those Facts Types. The image above
+    shows how the Field Constraint tab looks like. In this configuration screen
+    you will find:</para>
+    <para>A.- Fact Types dropdown: Here you will find a list containing the
+    Working Set's Fact Types</para>
+    <para>B.- Field dropdown: Once you have selected a Fact Type, this dropdown
+    will contain its fields.</para>
+    <para>C.- Constraints List: This lists shows all the Constraints applied to
+    the selected Field</para>
+    <para>D.- Action Buttons: Using these buttons you will be able to add or
+    remove Constraints to the selected Field. Right now, Guvnor provides a
+    built-in collection of Constraints. The idea for next releases is to let
+    users to plug their custom Constraints too.</para>
+    <para>E.- Constraint's Attributes: In this section you will find all the
+    attributes of the current Constraint that could be parametrized by the
+    user.</para>
+    <para>In the example above, a Matches Constraint is created for Car.brand
+    field. This means that when rule authors use this field in a Rule condition,
+    they should use a value valid according to this constraint, otherwise they
+    will receive an error or warning.</para>
+
+    <section>
+        <title>Activating and Using Working Sets</title>
+        <para>Working Sets are no active by default in Guvnor. Because this is
+        an experimental feature, you must enable them manually in the Guided
+        Editor panel if you want to use them. In the future, Working Sets will
+        be associated to each user's profile.</para>
+        <para>A new button was added in Guided Editor's Toolbar:
+        "Select Working Sets". This button will open a popup with the list of
+        the package's Working Sets. Using this popup you can activate one or
+        more Working Sets.</para>
+        <para>When Working Sets are activated, only the Fact Types allowed by
+        them could be used when inserting new Patterns or Actions. The Patterns
+        and Actions already present in the rule that contain prohibited Fact
+        Types are marked as read only. Take a look at the next screen shots
+        comparing the Guided Editor panel with and without Working Sets</para>
+
+    <figure>
+      <title>Comparison of "Add new Pattern" window using Working Set and
+      without using them</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/WorkingSetFactConstraint.png"
+                     format="PNG" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>In the image you can see how Working Sets could help rule's authors
+    by reducing the amount of available Fact Types</para>
+
+    <figure>
+      <title>Comparison of "Add new Pattern" window using Working Set and
+      without using them</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/WorkingSetFactConstraintRO.png"
+                     format="PNG" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    
+    <para>Here you can see how Patterns containing prohibited Fact Types are
+    switched to read only mode after Working Sets are activated.</para>
+    
+    <section>
+        <title>Using Field Constraint</title>
+        <para>Up to now we have only cover how Facts are filtered using Working
+        Sets. Another important feature of Working Sets is Field Constraints. We
+        have already saw how to configure them, now we are going to explain how
+        to use them.</para>
+        <para>Because Field Constraints are defined inside a Working Set, we
+        need to activate one or more Working Set to start working with them.
+        Once a Working Set defining Field's Constraints is active we have
+        two ways to use them: on demand validation and real-time validation.</para>
+        <para>On demand validation is performed when you press the "Verify"
+        button present in Guided Editor's toolbar. This button will fire a
+        rule verification and will end up showing a report with the results.
+        Any violated constraint will be shown as an error or warning according
+        to its relevance</para>
+
+        <figure>
+          <title>On demand Field Constraints validation</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/WorkingSetFieldConstraintReport.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>The image above shows the report that appears when a Working
+        Set defines a Range Constraint on Driver.age. The age should be
+        between 18 and 80.</para>
+
+        <para>Real-Time validation is an experimental feature (yes, inside
+        another experimental feature like Working Sets) that checks for
+        Field's Constraints violations in real time and mark the lines where
+        the violations are using error or warning icons. This feature is
+        disabled by default because sometimes it could be expensive. If you
+        want to try it out, you should enable it in Administration -> Rules
+        Verification. This configuration is not yet persisted, so you need to
+        enable it every time you start Guvnor.</para>
+
+        <figure>
+          <title>Real-Time Field Constraints validation</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/WorkingSetFieldConstraintRealTimeValidation.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>This Image shows the result of real-time validation. There you
+        can see the same result as on demand validation, but you don't need
+        to click any button, and the errors/warnings are shown in a more
+        fashionable way!</para>
+
+        <caution>The problem with real-time validation is that right now only
+        support "top level" Patterns.</caution>
+
+    </section>
+
+
+    </section>
   </section>
 
   <section>
