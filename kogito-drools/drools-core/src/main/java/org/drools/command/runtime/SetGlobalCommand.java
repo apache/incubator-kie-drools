@@ -54,6 +54,10 @@ public class SetGlobalCommand
     public String getIdentifier() {
         return this.identifier;
     }
+    
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     public Object getObject() {
         return this.object;

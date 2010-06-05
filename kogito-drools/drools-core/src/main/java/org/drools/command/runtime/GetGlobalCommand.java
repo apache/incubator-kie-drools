@@ -41,6 +41,12 @@ public class GetGlobalCommand
     public String getIdentifier() {
         return identifier;
     }
+    
+    
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
