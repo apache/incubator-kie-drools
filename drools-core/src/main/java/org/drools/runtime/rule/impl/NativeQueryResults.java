@@ -1,14 +1,19 @@
 package org.drools.runtime.rule.impl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
+import org.drools.spi.ObjectType;
 
 @XmlAccessorType( XmlAccessType.FIELD )
 public class NativeQueryResults
@@ -29,7 +34,17 @@ public class NativeQueryResults
 	}
 
 	public String[] getIdentifiers() {
-        return getDeclarations().keySet().toArray( new String[this.getResults().getDeclarations().size()] );
+	    List<String> actualIds = new ArrayList();
+	    for ( Declaration declr : results.getDeclarations().values() ) {
+	           ObjectType objectType = declr.getPattern().getObjectType();
+	            if ( objectType instanceof ClassObjectType ) {
+	                if ( ((ClassObjectType) objectType).getClassType() == DroolsQuery.class ) {
+	                    continue;
+	                }
+	            }	    
+	            actualIds.add( declr.getIdentifier() );
+	    }
+	    return actualIds.toArray( new String[actualIds.size() ] );
     }
     
     

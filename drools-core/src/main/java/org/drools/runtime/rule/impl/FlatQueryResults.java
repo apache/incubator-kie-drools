@@ -3,6 +3,7 @@ package org.drools.runtime.rule.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,7 +20,7 @@ import org.drools.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 public class FlatQueryResults
     implements
     QueryResults {
-    private HashMap<String, Integer> identifiers;
+    private Map<String, Integer> identifiers;
     @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
 	@XmlElement(name="results")
     private ArrayList<ArrayList<Object>>           results;
@@ -31,7 +32,7 @@ public class FlatQueryResults
     	
 	}
 
-    public FlatQueryResults(HashMap<String, Integer> identifiers,
+    public FlatQueryResults(Map<String, Integer> identifiers,
                             ArrayList<ArrayList<Object>> results,
                             ArrayList<ArrayList<FactHandle>> factHandles) {
         this.identifiers = identifiers;
@@ -45,6 +46,14 @@ public class FlatQueryResults
         this.factHandles = new ArrayList<ArrayList<FactHandle>> ( results.size() );
 
         int length = declrs.length;
+        
+        identifiers = new HashMap<String, Integer>( length );
+        for ( int i = 0; i < length; i++ ) {
+            identifiers.put( declrs[i].getIdentifier(),
+                             i );
+        }
+        
+        
 
         for ( org.drools.QueryResult result : results ) {
         	ArrayList<Object> row = new ArrayList<Object>();
@@ -60,11 +69,7 @@ public class FlatQueryResults
             this.factHandles.add( rowHandle );
         }
 
-        identifiers = new HashMap<String, Integer>( length );
-        for ( int i = 0; i < length; i++ ) {
-            identifiers.put( declrs[i].getIdentifier(),
-                             i );
-        }
+
 
     }
 
@@ -83,11 +88,11 @@ public class FlatQueryResults
     }
 
     private class QueryResultsIterator implements Iterator<QueryResultsRow> {
-        private HashMap<String, Integer> identifiers;
+        private Map<String, Integer> identifiers;
         private Iterator<ArrayList<Object>> iterator;
         private Iterator<ArrayList<FactHandle>> handleIterator;
 
-        public QueryResultsIterator(HashMap<String, Integer> identifiers,
+        public QueryResultsIterator(Map<String, Integer> identifiers,
                                     final Iterator<ArrayList<Object>> iterator,
                                     final Iterator<ArrayList<FactHandle>> handleIterator) {
             this.identifiers = identifiers;
@@ -102,8 +107,7 @@ public class FlatQueryResults
         public QueryResultsRow next() {
             return new FlatQueryResultRow( identifiers,
                                            this.iterator.next(),
-                                           this.handleIterator.next(),
-                                           size() );
+                                           this.handleIterator.next() );
         }
 
         public void remove() {

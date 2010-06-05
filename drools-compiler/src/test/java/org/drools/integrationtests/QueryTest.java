@@ -102,6 +102,24 @@ public class QueryTest extends TestCase {
         assertEquals( new InsertedObject( "value1" ),
                       results.get( 0 ).get( 0 ) );
     }
+    
+    public void testQuery2KnowledgeBuilder() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_Query.drl", getClass() ), ResourceType.DRL );
+
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbase.getKnowledgePackages() );
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        final org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "assertedobjquery" );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new InsertedObject( "value1" ),
+                      results.iterator().next().get( "assertedobj" ) );
+    }    
 
     public void testQueryWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
