@@ -1,5 +1,7 @@
 package org.drools.command.runtime.rule;
 
+import java.io.ObjectStreamException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -89,5 +91,10 @@ public class InsertObjectCommand
     public String toString() {
         return "session.insert(" + object + ");";
     }
+    
+//    private Object readResolve() throws ObjectStreamException {
+//        this.returnObject = true;
+//        return this;
+//    }
 
 }

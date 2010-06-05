@@ -17,7 +17,10 @@ package org.drools.core.util;
  * limitations under the License.
  */
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -1184,4 +1187,29 @@ public class StringUtils {
         }
         return out.toString();
     } 
+    
+    public static String toString(Reader reader) throws IOException {
+        if ( reader instanceof BufferedReader ) {
+            return toString( (BufferedReader) reader );
+        } else {
+            return toString( new BufferedReader( reader ) );
+        }    
+    }
+    
+    public static String toString(InputStream is) throws IOException {
+        return toString( new BufferedReader(new InputStreamReader(is, "UTF-8") ) );
+    }    
+    
+    public static String toString(BufferedReader reader) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        } finally {
+            reader.close();
+        }
+        return sb.toString();
+    }     
 }

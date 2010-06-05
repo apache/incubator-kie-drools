@@ -142,13 +142,12 @@ public class ClassFieldAccessorFactory {
                     final Object[] params = {index, fieldType, valueType};
                     return (BaseClassFieldReader) newClass.getConstructors()[0].newInstance( params );
                 } else {
-                    throw new RuntimeDroolsException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'" );
+                    throw new RuntimeDroolsException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'\n" );
                 }
             }
         } catch ( final RuntimeDroolsException e ) {
             throw e;
         } catch ( final Exception e ) {
-//            e.printStackTrace();
             throw new RuntimeDroolsException( e );
         }
     }
