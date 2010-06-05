@@ -15,21 +15,9 @@ public class NativeQueryResultRow
     public Object get(String identifier) {
         return this.result.get( identifier );
     }    
-
-    public Object get(int i) {
-        return this.result.get( i );
-    }
     
     public FactHandle getFactHandle(String identifier) {
         return this.result.getFactHandle( identifier );
     }    
-
-    public FactHandle getFactHandle(int i) {
-        return this.result.getFactHandle( i );
-    }
-
-    public int size() {
-        return result.size();
-    }
 
 }
