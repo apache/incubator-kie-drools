@@ -8,14 +8,7 @@ public interface Row {
      * @return
      */
     public Object get(String identifier);
-    
-    /**
-     * Return the Object for the specified position
-     * 
-     * @param i
-     * @return
-     */
-    public Object get(final int i);    
+      
     
     /**
      * Return the FactHandle associated with the given identifier
@@ -24,18 +17,4 @@ public interface Row {
      */
     public FactHandle getFactHandle(String identifier);
 
-    /**
-     * Return the FactHandle for the specified position
-     * 
-     * @param i
-     * @return
-     */
-    public FactHandle getFactHandle(final int i);  
-    
-    /**
-     * Number of objects in the row
-     * 
-     * @return
-     */
-    public int size();
 }
