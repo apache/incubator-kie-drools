@@ -9,4 +9,5 @@ import com.thoughtworks.xstream.XStream;
  */
 public interface BatchExecutionHelperProvider {
     XStream newXStreamMarshaller();
+    XStream newJSonMarshaller();
 }
