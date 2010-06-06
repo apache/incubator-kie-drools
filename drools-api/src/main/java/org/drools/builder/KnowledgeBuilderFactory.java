@@ -5,6 +5,8 @@ import java.util.Properties;
 import org.drools.KnowledgeBase;
 import org.drools.util.ServiceRegistryImpl;
 
+import com.sun.tools.xjc.Options;
+
 /**
  * This factory is used to build the knowledge base definitions that are held collectively in
  * KnowledgePackages. The KnowledgePackage also provides the role of 'namespacing'. An optional
@@ -26,7 +28,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder() {
-        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder();
+        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder();
     }
 
     /**
@@ -35,16 +37,16 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder( conf );
+        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder( conf );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
-        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder( kbase );
+        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder( kbase );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
                                                        KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilder( kbase,
+        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder( kbase,
                                                                   conf );
     }
 
@@ -54,7 +56,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilderConfiguration.
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
-        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilderConfiguration();
+        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilderConfiguration();
     }
 
     /**
@@ -65,7 +67,7 @@ public class KnowledgeBuilderFactory {
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
                                                                                  ClassLoader classLoader) {
-        return getKnowledgeBuilderPServiceFactory().newKnowledgeBuilderConfiguration( properties,
+        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilderConfiguration( properties,
                                                                                classLoader );
     }
 
@@ -89,14 +91,20 @@ public class KnowledgeBuilderFactory {
      * @return
      */
     public static DecisionTableConfiguration newDecisionTableConfiguration() {
-        return getKnowledgeBuilderPServiceFactory().newDecisionTableConfiguration();
+        return getKnowledgeBuilderPerviceFactory().newDecisionTableConfiguration();
     }
 
+    public static JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
+                                                         String systemId) {
+        return getKnowledgeBuilderPerviceFactory().newJaxbConfiguration(xjcOpts,
+                                                                        systemId);
+    }    
+    
     private static synchronized void setKnowledgeBuilderFactoryService(KnowledgeBuilderFactoryService serviceFactory) {
         KnowledgeBuilderFactory.factoryService = serviceFactory;
     }
 
-    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderPServiceFactory() {
+    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderPerviceFactory() {
         if ( factoryService == null ) {
             loadServiceFactory();
         }

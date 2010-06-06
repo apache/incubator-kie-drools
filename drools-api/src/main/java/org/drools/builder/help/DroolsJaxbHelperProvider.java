@@ -26,6 +26,10 @@ public interface DroolsJaxbHelperProvider {
     /**
      * Generates pojos for a given XSD using XJC and adds them to the specified KnowlegeBase.
      * 
+     * @deprecated
+     *     This is now deprecated, as we now support XSD as a standard ResourceType. Although
+     *     you'll still need the newJAXBContext method to create a JAXBContext from the KnowledgeBase. 
+     * 
      * @param resource
      *     The resource to the XSD model
      * @param kbuilder

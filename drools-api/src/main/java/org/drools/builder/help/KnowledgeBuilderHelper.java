@@ -106,7 +106,7 @@ public class KnowledgeBuilderHelper {
 
     private static void loadProvider() {
         try {
-            Class<DroolsJaxbHelperProvider> cls = (Class<DroolsJaxbHelperProvider>) Class.forName( "org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl" );
+            Class<DroolsJaxbHelperProvider> cls = (Class<DroolsJaxbHelperProvider>) Class.forName( "org.drools.pipeline.impl.DroolsJaxbHelperProviderImpl" );
             setDroolsJaxbHelperProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
             throw new RuntimeException( "Provider org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl could not be set.",
