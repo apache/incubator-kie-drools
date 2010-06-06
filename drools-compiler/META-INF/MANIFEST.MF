@@ -42,7 +42,7 @@ Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1274306750644
+Bnd-LastModified: 1275721184639
 Bundle-Activator: org.drools.osgi.compiler.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system

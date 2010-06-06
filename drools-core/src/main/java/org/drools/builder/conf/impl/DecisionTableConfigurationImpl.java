@@ -28,4 +28,5 @@ public class DecisionTableConfigurationImpl implements DecisionTableConfiguratio
     public String getWorksheetName() {
         return this.worksheetName;
     }
+    
 }
