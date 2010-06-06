@@ -269,15 +269,17 @@ Export-Package: org.drools.server.profile;uses:="javax.xml.bind";versi
  on="5.1.0.SNAPSHOT",org.drools.process.core.context.exclusive;uses:="
  org.drools.process.core.context,org.drools.process.core";version="5.1
  .0.SNAPSHOT",org.drools.runtime.pipeline;version="5.1.0.SNAPSHOT",org
- .drools.runtime.help.impl;uses:="org.drools.command.runtime.process,c
- om.thoughtworks.xstream.io,com.thoughtworks.xstream.converters,com.th
- oughtworks.xstream.mapper,org.drools.command,com.thoughtworks.xstream
- .converters.collections,org.drools.common,org.drools.runtime.impl,org
- .drools.command.runtime.rule,org.drools.command.runtime,org.drools.ru
- ntime.rule.impl,org.drools.base,org.drools.rule,org.drools.spi,com.th
- oughtworks.xstream";version="5.1.0.SNAPSHOT",org.drools.io.internal;v
- ersion="5.1.0.SNAPSHOT",org.drools.concurrent;uses:="org.drools,org.d
- rools.spi";version="5.1.0.SNAPSHOT"
+ .drools.runtime.help.impl;uses:="com.thoughtworks.xstream,org.drools.
+ common,org.drools.command.runtime.process,org.drools.command.runtime,
+ org.drools.runtime.impl,org.drools.command.runtime.rule,org.drools.ru
+ ntime.rule.impl,com.thoughtworks.xstream.converters,com.thoughtworks.
+ xstream.io,com.thoughtworks.xstream.converters.reflection,com.thought
+ works.xstream.mapper,com.thoughtworks.xstream.core.util,com.thoughtwo
+ rks.xstream.converters.collections,org.drools.command,org.drools.comm
+ and.impl,com.thoughtworks.xstream.io.json,org.drools.base,org.drools.
+ rule,org.drools.spi";version="5.1.0.SNAPSHOT",org.drools.io.internal;
+ version="5.1.0.SNAPSHOT",org.drools.concurrent;uses:="org.drools,org.
+ drools.spi";version="5.1.0.SNAPSHOT"
 Private-Package: .;version="5.1.0.SNAPSHOT",org.drools.reteoo.compiled
  ;version="5.1.0.SNAPSHOT",org.drools.reteoo.builder;version="5.1.0.SN
  APSHOT",org.drools.reteoo;version="5.1.0.SNAPSHOT"
@@ -289,24 +291,25 @@ Require-Bundle: org.drools.api;visibility:=reexport;bundle-version="5.
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1274306691563
+Bnd-LastModified: 1275721153372
 Bundle-Activator: org.drools.osgi.core.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: com.thoughtworks.xstream,com.thoughtworks.xstream.conv
  erters,com.thoughtworks.xstream.converters.collections,com.thoughtwor
- ks.xstream.io,com.thoughtworks.xstream.io.xml,com.thoughtworks.xstrea
- m.mapper,javax.management,javax.management.openmbean,javax.swing,java
- x.swing.border,javax.swing.event,javax.xml.bind,javax.xml.bind.annota
- tion,javax.xml.bind.annotation.adapters,javax.xml.parsers,org.mvel2;v
- ersion="2.0",org.mvel2.asm;version="2.0",org.mvel2.asm.util;version="
- 2.0",org.mvel2.ast;version="2.0",org.mvel2.compiler;version="2.0",org
- .mvel2.debug;version="2.0",org.mvel2.integration;version="2.0",org.mv
- el2.integration.impl;version="2.0",org.mvel2.optimizers;version="2.0"
- ,org.mvel2.templates;version="2.0",org.mvel2.util;version="2.0",org.o
- sgi.framework;version="1.5",org.w3c.dom,org.xml.sax,org.xml.sax.helpe
- rs
+ ks.xstream.converters.reflection,com.thoughtworks.xstream.core.util,c
+ om.thoughtworks.xstream.io,com.thoughtworks.xstream.io.json,com.thoug
+ htworks.xstream.io.xml,com.thoughtworks.xstream.mapper,javax.manageme
+ nt,javax.management.openmbean,javax.swing,javax.swing.border,javax.sw
+ ing.event,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.ann
+ otation.adapters,javax.xml.parsers,org.mvel2;version="2.0",org.mvel2.
+ asm;version="2.0",org.mvel2.asm.util;version="2.0",org.mvel2.ast;vers
+ ion="2.0",org.mvel2.compiler;version="2.0",org.mvel2.debug;version="2
+ .0",org.mvel2.integration;version="2.0",org.mvel2.integration.impl;ve
+ rsion="2.0",org.mvel2.optimizers;version="2.0",org.mvel2.templates;ve
+ rsion="2.0",org.mvel2.util;version="2.0",org.osgi.framework;version="
+ 1.5",org.w3c.dom,org.xml.sax,org.xml.sax.helpers
 Bundle-SymbolicName: org.drools.core
 Bundle-DocURL: http://www.jboss.org/
 

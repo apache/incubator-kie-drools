@@ -43,6 +43,8 @@ import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.impl.JaxbConfigurationImpl;
+import org.drools.builder.help.DroolsJaxbHelperProvider;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.xml.XmlPackageReader;
@@ -74,6 +76,7 @@ import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
+import org.drools.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.Function;
@@ -518,6 +521,12 @@ public class PackageBuilder {
                                               iNestedResourceResource.getResourceType(),
                                               iNestedResourceResource.getConfiguration() );
                     }
+                }
+            }  else if ( ResourceType.XSD.equals( type ) ) {
+                JaxbConfigurationImpl confImpl = ( JaxbConfigurationImpl ) configuration;
+                String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel( resource, this, confImpl.getXjcOpts(), confImpl.getSystemId() );
+                for ( String cls : classes ) {
+                    confImpl.getClasses().add( cls );
                 }
             } else {
                 ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
