@@ -1,4 +1,4 @@
-package org.drools.pipeline.impl;
+package org.drools.runtime.pipeline.impl;
 
 /*
  * Copyright 2005 JBoss Inc
