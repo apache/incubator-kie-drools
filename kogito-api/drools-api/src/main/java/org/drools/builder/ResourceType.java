@@ -83,6 +83,11 @@ public class ResourceType implements Serializable {
     public static final ResourceType CHANGE_SET = addResourceTypeToRegistry( "CHANGE_SET",
                                                                              "Change Set",
                                                                              "xcs" );
+    
+    /** XSD */
+    public static final ResourceType XSD        = addResourceTypeToRegistry( "XSD",
+                                                                             "XSD",
+                                                                             "xsd" );    
 
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get( resourceType );

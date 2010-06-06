@@ -57,7 +57,7 @@ Created-By: 1.6.0_18 (Sun Microsystems Inc.)
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1274306668600
+Bnd-LastModified: 1275721110390
 Bundle-Activator: org.drools.osgi.api.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system

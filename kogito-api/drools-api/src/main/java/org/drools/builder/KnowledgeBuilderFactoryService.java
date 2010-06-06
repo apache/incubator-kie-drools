@@ -5,6 +5,8 @@ import java.util.Properties;
 import org.drools.KnowledgeBase;
 import org.drools.Service;
 
+import com.sun.tools.xjc.Options;
+
 /**
  * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFacotry to "provide" it's concrete implementation.
  * 
@@ -47,7 +49,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      *     The KnowledgeBuilder
      */
-    KnowledgeBuilder newKnowledgeBuilder();
+    public KnowledgeBuilder newKnowledgeBuilder();
 
     /**
      * Instantiate and return a new KnowledgeBuilder using the given KnowledgeBuilderConfiguration
@@ -57,10 +59,13 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      *     The KnowledgeBuilder
      */
-    KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf);
+    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf);
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase);
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
                                                 KnowledgeBuilderConfiguration conf);
+
+    public JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
+                                                  String systemId);
 }
