@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+    <title>Introduction</title>
+
+    <para>The drools execution server (drools-server) module is a war which
+    you can deploy to execute KnowledgeBases remotely for any sort of client
+    application. This is not limited to JVM application clients, but any
+    technology that can use HTTP, through a REST/SOAP interface. This version
+    of the execution server supports stateless and statefull sessions in a
+    native way.</para>
+
+</section>
