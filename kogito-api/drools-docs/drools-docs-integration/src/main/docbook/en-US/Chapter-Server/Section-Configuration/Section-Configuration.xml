@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+    <title>Configuration</title>
+
+    <para>Inside the war file you will found a few XML configuration files.
+    The most importants are session.xml and services.xml that we'll see in
+    depth in the next sections. The other two files, configuration.xml and
+    core.xml only made the REST and SOAP services configuration.</para>
+
+    <section>
+      <title>Knowledge Sessions configuration</title>
+
+      <para>All the drools-server configuration is created using the Spring
+      integration. You can check the drools-spring documentation to have more
+      information about all the posibles Knowledge Sessions
+      configurations.</para>
+
+      <para>But as an example you can check the next configuration, when we
+      created two Knowledge Sessions, one stateless and another stateful,
+      using two diferents Knowledge Base.</para>
+
+      <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:drools="http://drools.org/schema/drools-spring"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd"
+    default-autowire="byName"&gt;
+
+    &lt;drools:connection id="connection1" type="local" /&gt;
+
+    &lt;drools:execution-node id="node1" connection="connection1" /&gt;
+
+    &lt;drools:kbase id="kbase1" node="node1"&gt;
+    &lt;drools:resource source="classpath:changesets/change-set-1.xml" type="CHANGE_SET" /&gt;
+        &lt;drools:model source="classpath:model/person.xsd" /&gt;
+    &lt;/drools:kbase&gt;
+
+    &lt;drools:kbase id="kbase2" node="node1"&gt;
+        &lt;drools:resource source="classpath:changesets/change-set-2.xml" type="CHANGE_SET" /&gt;
+    &lt;/drools:kbase&gt;
+
+    &lt;drools:ksession id="ksession1" type="stateful" kbase="kbase1" node="node1"/&gt;
+
+    &lt;drools:ksession id="ksession2" type="stateless" kbase="kbase2" node="node1"/&gt;
+
+&lt;/beans&gt;</programlisting></para>
+
+      <para>For further configuration details, check the Drools Spring
+      documentation</para>
+    </section>
+
+    <section>
+      <title>Knowledge Service configuration</title>
+
+      <para>The next step is configure the services that are going to be
+      exposed through drools-server. The first thing that you should notice is
+      that there's a new xml namespace for this, named drools-service.</para>
+
+      <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:drools-service="http://drools.org/schema/drools-service-spring"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://drools.org/schema/drools-service-spring http://drools.org/schema/drools-service-spring.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd"
+    default-autowire="byName"&gt;
+
+    &lt;!-- Only needed to deploy on JBoss AS 5.X --&gt;
+    &lt;bean id="jbossResolver" class="org.apache.camel.jboss.JBossPackageScanClassResolver"/&gt;
+
+    &lt;!-- This camel context bean is required --&gt;
+    &lt;camelContext id="executionContext" xmlns="http://camel.apache.org/schema/spring" /&gt;
+
+    &lt;drools-service:configuration id="service-conf-2" marshaller="XSTREAM" session="ksession2" /&gt;
+
+    &lt;drools-service:definition id="service" smId="sm1" camelContext="executionContext"&gt;
+        &lt;drools-service:configuration marshaller="JAXB" session="ksession1"&gt;
+            &lt;drools-service:class&gt;org.drools.model.Person&lt;/drools-service:class&gt;
+            &lt;drools-service:startup-command&gt;
+                &lt;![CDATA[
+                &lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+                &lt;batch-execution lookup="ksession1" xmlns:ns2="http://drools.org/model"&gt;
+                    &lt;insert out-identifier="santa"&gt;
+                        &lt;object xsi:type="ns2:person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+                            &lt;ns2:name&gt;santa&lt;/ns2:name&gt;
+                            &lt;ns2:age&gt;99&lt;/ns2:age&gt;
+                        &lt;/object&gt;
+                    &lt;/insert&gt;
+                &lt;/batch-execution&gt;
+                     ]]&gt;
+            &lt;/drools-service:startup-command&gt;
+        &lt;/drools-service:configuration&gt;
+        &lt;drools-service:configuration-ref id="service-conf-2" /&gt;
+    &lt;/drools-service:definition&gt;
+
+&lt;/beans&gt;</programlisting></para>
+
+      <section>
+        <title>Initial Configuration</title>
+
+        <para>In the previous sections was mentioned that the configuration
+        must be changed to allow the deployment of drools-server in a JBoss
+        Application Server 5. Bassicly we are adding a Camel
+        PackageScanClassResolver that can deal with the new JBoss AS5
+        classloader.</para>
+
+        <para>If you want to deploy in a AS5 you simply must add this bean
+        definition line.<programlisting>&lt;bean id="jbossResolver" class="org.apache.camel.jboss.JBossPackageScanClassResolver"/&gt;</programlisting>Another
+        important configuration is the Camel Context declaration, as you can
+        see below:</para>
+
+        <para><programlisting>&lt;camelContext id="executionContext" xmlns="http://camel.apache.org/schema/spring" /&gt;</programlisting></para>
+
+        <para>After all this initial configuration, you can start config your
+        own Knowledge Services.</para>
+      </section>
+
+      <section>
+        <title>Creating our own knowledge service configuration</title>
+
+        <para>The idea of a service configuration is declare how our commands
+        are going to interact with the KnowledgeSession and which initial
+        configuration is needed to their interpretation.</para>
+
+        <para>In a common declaration we have 3 required attributes:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>id: to identify the service configuration in the service
+            definition, which will see in the next section.</para>
+          </listitem>
+
+          <listitem>
+            <para>marshaller: here we declare wich marshaller are going to be
+            used in the commands marshalling/marshaller. At this moment we
+            have support for three types of command format: XSTREAM, JAXB and
+            JSON.</para>
+          </listitem>
+
+          <listitem>
+            <para>session: the Knowledge Session in which the commands are
+            going to be executed.</para>
+          </listitem>
+        </orderedlist>
+
+        <para>Using JAXB we can add a special configuration to declare wich
+        classes needs to be included in the JAXBContext. This will allow us to
+        copy our JAR model to the servlet container in which the drools-server
+        has been deployed and use them in JAXB commands without using a XSD
+        file that declare the same model definition.<programlisting>&lt;drools-service:class&gt;org.drools.model.Person&lt;/drools-service:class&gt;</programlisting></para>
+
+        <para>Also we can add commands that are going to be executed when
+        drools-server got deployed. To use this just add the next tag with the
+        XML command inside them</para>
+
+        <para><programlisting>&lt;drools-service:startup-command&gt;
+&lt;![CDATA[ 
+   &lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+   &lt;batch-execution lookup="ksession1" xmlns:ns2="http://drools.org/model"&gt;
+      &lt;insert out-identifier="santa"&gt;
+         &lt;object xsi:type="ns2:person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+            &lt;ns2:name&gt;santa&lt;/ns2:name&gt;
+            &lt;ns2:age&gt;99&lt;/ns2:age&gt;
+         &lt;/object&gt;
+      &lt;/insert&gt;
+   &lt;/batch-execution&gt;
+]]&gt;
+&lt;drools-service:startup-command/&gt;</programlisting></para>
+
+        <note>
+          Remember to add the &lt;![CDATA[  ]]&gt; tag to don't break the XML parser.
+        </note>
+      </section>
+
+      <section>
+        <title>Creating our own knowledge service definition</title>
+
+        <para>The idea of a knowledge servide definition is group diferents
+        knowledge service configurations to be exposed as a service.</para>
+
+        <para><programlisting>&lt;drools-service:definition id="service" node="node1" camelContext="executionContext"&gt;
+   &lt;drools-service:configuration marshaller="JAXB" session="ksession1"&gt;
+      &lt;drools-service:class&gt;org.drools.model.Person&lt;/drools-service:class&gt;
+   &lt;/drools-service:configuration&gt;
+   &lt;drools-service:configuration-ref id="service-conf-2" /&gt;
+&lt;/drools-service:definition&gt;</programlisting>The service definition has
+        three required attributes:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>id: by default named 'service'. If you want to change this
+            name, you should also change the SOAP/Rest configuration in
+            core.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>node: the ExecutionNode previously configured in
+            sessions.xml file.</para>
+          </listitem>
+
+          <listitem>
+            <para>camelContext: the Camel Context created in sessions.xml
+            file.</para>
+          </listitem>
+        </orderedlist>
+
+        <para>Inside the service definition you can declare wich service
+        configuration are going to be used. To do this we have two
+        approachs:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Inline declaration: Declaring the service configuration as
+            you see in the previous section. In this case, the ID isn't
+            required</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Inline declaration: Declaring the service configuration as
+            you see in the previous section. In this case, the ID isn't
+            required</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+</section>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+    <title>Deployment</title>
+
+    <para>Drools Server is a war file, which can be deployed in a application
+    server (such as JBoss AS). As the service is stateless, it is possible to
+    have have as many of these services deployed as you need to serve the
+    client load. Deploy on JBoss AS 4.x / Tomcat 6.x works out-of-the-box,
+    instead the configuration must be changed to be deployed in JBoss AS
+    5</para>
+
+</section>
