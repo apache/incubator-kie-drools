@@ -54,8 +54,8 @@
               <entry>Remote</entry>
 
               <entry>used when you've drools session's on a remote JVM. At
-              this moment is the only implementation is using Apache Min, but
-              we're going to add HornetQ support in the next release.</entry>
+              this moment is the only implementation is using Apache Mina, but
+              is planned to add HornetQ support in the next release.</entry>
             </row>
           </tbody>
         </tgroup>

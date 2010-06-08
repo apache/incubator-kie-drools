@@ -6,6 +6,12 @@
          xmlns:m="http://www.w3.org/1998/Math/MathML"
          xmlns:html="http://www.w3.org/1999/xhtml"
          xmlns:db="http://docbook.org/ns/docbook">
-  <title>Drools Execution Server</title>
+  <title>Drools Server</title>
+
+  <xi:include href="Section-Introduction/Section-Introduction.xml" />
+  
+  <xi:include href="Section-Introduction/Section-Deployment.xml" />
+
+  <xi:include href="Section-Configuration/Section-Configuration.xml" />
 
 </chapter>
