@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.io.ResourceFactory;
 
 /**
@@ -141,6 +142,16 @@ public class KnowledgeAgentFactory {
         return getKnowledgeAgentProvider().newKnowledgeAgent( name,
                                                               kbase,
                                                               configuration );
+    }
+
+    public static KnowledgeAgent newKnowledgeAgent(String name,
+                                                   KnowledgeBase kbase,
+                                                   KnowledgeAgentConfiguration configuration,
+                                                   KnowledgeBuilderConfiguration builderConfiguration) {
+        return getKnowledgeAgentProvider().newKnowledgeAgent( name,
+                                                              kbase,
+                                                              configuration,
+                                                              builderConfiguration);
     }
 
     private static synchronized void setKnowledgeAgentProvider(KnowledgeAgentProvider provider) {

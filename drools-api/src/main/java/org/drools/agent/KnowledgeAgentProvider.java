@@ -3,6 +3,7 @@ package org.drools.agent;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 
 /**
  * KnowledgeAgentProvider is used by the KnowledgeAgentFactory to "provide" it's concrete implementation.
@@ -22,4 +23,9 @@ public interface KnowledgeAgentProvider {
     KnowledgeAgent newKnowledgeAgent(String name,
                                      KnowledgeBase kbase,
                                      KnowledgeAgentConfiguration configuration);
+
+    KnowledgeAgent newKnowledgeAgent(String name,
+                                     KnowledgeBase kbase,
+                                     KnowledgeAgentConfiguration configuration,
+                                     KnowledgeBuilderConfiguration builderConfiguration);
 }
