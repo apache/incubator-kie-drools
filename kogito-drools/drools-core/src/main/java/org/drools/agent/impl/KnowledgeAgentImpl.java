@@ -38,6 +38,7 @@ import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.internal.InternalResource;
 import org.drools.agent.ResourceDiffProducer;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -72,6 +73,8 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     private SemanticModules semanticModules;
     private final RegisteredResourceMap registeredResources = new RegisteredResourceMap();
 
+    private KnowledgeBuilderConfiguration builderConfiguration;
+
     /**
      * Default constructor for KnowledgeAgentImpl
      *
@@ -80,9 +83,10 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @param configuration
      */
     public KnowledgeAgentImpl(String name, KnowledgeBase kbase,
-            KnowledgeAgentConfiguration configuration) {
+            KnowledgeAgentConfiguration configuration, KnowledgeBuilderConfiguration builderConfiguration) {
         this.name = name;
         this.kbase = kbase;
+        this.builderConfiguration = builderConfiguration;
         this.resourceDirectories = new HashSet<Resource>();
         // this.listener = listener;
         this.listener = SystemEventListenerFactory.getSystemEventListener();
@@ -553,7 +557,11 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     private KnowledgePackageImp createPackageFromResource(Resource resource,KnowledgeBuilder kbuilder) {
 
         if (kbuilder == null){
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            if (this.builderConfiguration != null){
+                kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
+            }else{
+                kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            }
         }
 
         if (((InternalResource) resource).getResourceType() != ResourceType.PKG) {
@@ -799,7 +807,12 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 
-        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kbuilder =  null;
+        if (this.builderConfiguration != null){
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
+        }else{
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        }
         List<Package> packages = new ArrayList<Package>();
 
 
