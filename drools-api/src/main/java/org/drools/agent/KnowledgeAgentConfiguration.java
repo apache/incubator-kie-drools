@@ -24,5 +24,7 @@ public interface KnowledgeAgentConfiguration
 
     public boolean isNewInstance();
 
+    public boolean isUseKBaseClassLoaderForCompiling();
+
 
 }
