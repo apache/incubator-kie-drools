@@ -58,21 +58,19 @@
 
           <para><programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
-InsertObjectCommand insertObjectCommand = new InsertObjectCommand(new Person("john", 25));
-FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
-command.getCommands().add(insertObjectCommand);
-command.getCommands().add(fireAllRulesCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+RetractCommand retractCommand = new RetractCommand();
+retractCommand.setFactHandleFromString("123:234:345:456:567");
+command.getCommands().add(retractCommand);</programlisting></para>
         </listitem>
 
         <listitem>
-          <para>Create the Fact Handle from a string</para>
+          <para>Set the Fact Handle that you got when the object was
+          inserted</para>
 
           <para><programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 RetractCommand retractCommand = new RetractCommand(factHandle);
-command.getCommands().add(retractCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+command.getCommands().add(retractCommand);</programlisting></para>
         </listitem>
       </orderedlist>
 
@@ -104,7 +102,10 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>TODO</programlisting></para>
+          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;batch-execution lookup="ksession1"&gt;
+    &lt;retract factHandle="0:234:345:456:567"/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
         </listitem>

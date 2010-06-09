@@ -74,8 +74,7 @@ List&lt;Object&gt; objects = new ArrayList&lt;Object&gt;();
 objects.add(new Person("john", 25));
 objects.add(new Person("sarah", 35));
 insertElementsCommand.setObjects(objects);
-command.getCommands().add(insertElementsCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+command.getCommands().add(insertElementsCommand);</programlisting></para>
 
       <para></para>
     </listitem>
@@ -114,7 +113,19 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>TODO</programlisting></para>
+          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;batch-execution lookup="ksession1"&gt;
+    &lt;insert-elements returnObject="true"&gt;
+        &lt;objects xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+            &lt;age&gt;25&lt;/age&gt;
+            &lt;name&gt;john&lt;/name&gt;
+        &lt;/objects&gt;
+        &lt;objects xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+            &lt;age&gt;35&lt;/age&gt;
+            &lt;name&gt;sarah&lt;/name&gt;
+        &lt;/objects&gt;
+    &lt;/insert-elements&gt;
+&lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
         </listitem>

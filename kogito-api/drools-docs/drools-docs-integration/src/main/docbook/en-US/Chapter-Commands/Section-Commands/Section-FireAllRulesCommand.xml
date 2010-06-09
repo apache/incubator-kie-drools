@@ -71,8 +71,9 @@
       <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
-command.getCommands().add(fireAllRulesCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+fireAllRulesCommand.setMax(10);
+fireAllRulesCommand.setOutIdentifier("firedActivations");
+command.getCommands().add(fireAllRulesCommand);</programlisting></para>
 
       <para></para>
     </listitem>
@@ -85,8 +86,9 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
           <para>XStream</para>
 
           <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
-  &lt;fire-all-rules/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+  &lt;fire-all-rules max="10" outIdentifier="firedActivations"/&gt;
+&lt;/batch-execution&gt;
+</programlisting></para>
 
           <para></para>
         </listitem>
@@ -94,7 +96,7 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"fire-all-rules":""}}} </programlisting></para>
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"fire-all-rules":{"max":10,"outIdentifier":"firedActivations"}}}}</programlisting></para>
 
           <para></para>
         </listitem>
@@ -102,7 +104,10 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>TODO</programlisting></para>
+          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;batch-execution lookup="ksession1"&gt;
+   &lt;fire-all-rules outIdentifier="firedActivations" max="10"/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
         </listitem>

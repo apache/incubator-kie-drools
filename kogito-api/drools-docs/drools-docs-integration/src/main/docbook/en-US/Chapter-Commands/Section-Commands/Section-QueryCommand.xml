@@ -72,8 +72,7 @@ command.setLookup("ksession1");
 QueryCommand queryCommand = new QueryCommand();
 queryCommand.setName("persons");
 queryCommand.setOutIdentifier("persons");
-command.getCommands().add(queryCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+command.getCommands().add(queryCommand);</programlisting></para>
 
       <para></para>
     </listitem>
@@ -103,7 +102,10 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>TODO</programlisting></para>
+          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;batch-execution lookup="ksession1"&gt;
+    &lt;query name="persons" out-identifier="persons"/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
         </listitem>
