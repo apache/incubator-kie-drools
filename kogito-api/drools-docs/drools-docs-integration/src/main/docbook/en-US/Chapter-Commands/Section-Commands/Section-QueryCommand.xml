@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>QueryCommand</title>
+
+  <para></para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Description: Executes a query defined in knowledge base.</para>
+    </listitem>
+
+    <listitem>
+      <para>Attributes</para>
+
+      <table>
+        <title>QueryCommand attributes</title>
+
+        <tgroup cols="3">
+          <colspec align="center" />
+
+          <thead>
+            <row>
+              <entry align="center">Name</entry>
+
+              <entry align="center">Description</entry>
+
+              <entry align="center">required</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>name</entry>
+
+              <entry>The query name</entry>
+
+              <entry>true</entry>
+            </row>
+
+            <row>
+              <entry>outIdentifier</entry>
+
+              <entry>The identifier of the query results. The query results
+              are going to be added in the execution results with this
+              identifier</entry>
+
+              <entry>false</entry>
+            </row>
+
+            <row>
+              <entry>arguments</entry>
+
+              <entry>A list of objects to be passed as a query
+              parameter</entry>
+
+              <entry>false</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </listitem>
+
+    <listitem>
+      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+QueryCommand queryCommand = new QueryCommand();
+queryCommand.setName("persons");
+queryCommand.setOutIdentifier("persons");
+command.getCommands().add(queryCommand);
+String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+
+      <para></para>
+    </listitem>
+
+    <listitem>
+      <para>XML output</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>XStream</para>
+
+          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+  &lt;query out-identifier="persons" name="persons"/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JSON</para>
+
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"query":{"out-identifier":"persons","name":"persons"}}}} </programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JAXB</para>
+
+          <para><programlisting>TODO</programlisting></para>
+
+          <para></para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para></para>
+</section>
