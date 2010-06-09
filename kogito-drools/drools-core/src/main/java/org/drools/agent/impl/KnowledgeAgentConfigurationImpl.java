@@ -2,7 +2,6 @@ package org.drools.agent.impl;
 
 import java.util.Properties;
 
-import org.drools.PropertiesConfiguration;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.core.util.StringUtils;
 
@@ -21,6 +20,7 @@ public class KnowledgeAgentConfigurationImpl
     private boolean scanDirectories        = true;
     private boolean monitorChangeSetEvents = true;
     private boolean newInstance            = true;
+    private boolean useKBaseClassLoaderForCompiling = false;
 
     public KnowledgeAgentConfigurationImpl() {
 
@@ -57,6 +57,8 @@ public class KnowledgeAgentConfigurationImpl
             }
         } else if ( name.equals( "drools.agent.newInstance" ) ) {
             setNewInstance( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
+        } else if ( name.equals( "drools.agent.useKBaseClassLoaderForCompiling" ) ) {
+            setUseKBaseClassLoaderForCompiling( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
         }
     }
 
@@ -74,6 +76,8 @@ public class KnowledgeAgentConfigurationImpl
             return Boolean.toString( this.monitorChangeSetEvents );
         } else if ( name.equals( "drools.agent.newInstance" ) ) {
             return Boolean.toString( this.newInstance );
+        } else if ( name.equals( "drools.agent.useKBaseClassLoaderForCompiling" ) ) {
+            return Boolean.toString( this.useKBaseClassLoaderForCompiling );
         }
 
         return null;
@@ -110,4 +114,15 @@ public class KnowledgeAgentConfigurationImpl
     public void setNewInstance(boolean newInstance) {
         this.newInstance = newInstance;
     }
+
+    public boolean isUseKBaseClassLoaderForCompiling() {
+        return this.useKBaseClassLoaderForCompiling;
+    }
+
+    public void setUseKBaseClassLoaderForCompiling(boolean useKBaseClassLoaderForCompiling) {
+        this.useKBaseClassLoaderForCompiling = useKBaseClassLoaderForCompiling;
+    }
+
+    
+
 }

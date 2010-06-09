@@ -39,6 +39,7 @@ import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.internal.InternalResource;
 import org.drools.agent.ResourceDiffProducer;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -67,6 +68,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     private boolean newInstance;
     private SystemEventListener listener;
     private boolean scanDirectories;
+    private boolean useKBaseClassLoaderForCompiling;
     private LinkedBlockingQueue<ChangeSet> queue;
     private Thread thread;
     private ChangeSetNotificationDetector changeSetNotificationDetector;
@@ -96,6 +98,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         if (configuration != null) {
             // New Instance describes if we do incremental builds or not
             this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
+            this.useKBaseClassLoaderForCompiling = ((KnowledgeAgentConfigurationImpl) configuration).isUseKBaseClassLoaderForCompiling();
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
             if (((KnowledgeAgentConfigurationImpl) configuration).isMonitorChangeSetEvents()) {
                 monitor = true;
@@ -557,11 +560,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     private KnowledgePackageImp createPackageFromResource(Resource resource,KnowledgeBuilder kbuilder) {
 
         if (kbuilder == null){
-            if (this.builderConfiguration != null){
-                kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
-            }else{
-                kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            }
+            kbuilder = this.createKBuilder();
         }
 
         if (((InternalResource) resource).getResourceType() != ResourceType.PKG) {
@@ -807,12 +806,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 
-        KnowledgeBuilder kbuilder =  null;
-        if (this.builderConfiguration != null){
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
-        }else{
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        }
+        KnowledgeBuilder kbuilder = this.createKBuilder();
         List<Package> packages = new ArrayList<Package>();
 
 
@@ -1083,6 +1077,19 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         public Set<Resource> getAllResources() {
             return this.map.keySet();
         }
+    }
+
+    private KnowledgeBuilder createKBuilder(){
+        if (this.builderConfiguration != null){
+            return KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
+        }
+
+        if (this.useKBaseClassLoaderForCompiling){
+            return  KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, ((ReteooRuleBase)((KnowledgeBaseImpl)this.getKnowledgeBase()).getRuleBase()).getRootClassLoader()));
+        }
+
+        return KnowledgeBuilderFactory.newKnowledgeBuilder();
+
     }
 
     /*
