@@ -12,6 +12,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.WorkItemHandler;
 
@@ -25,11 +26,11 @@ public class JPAWorkItemManager implements WorkItemManager {
     	this.workingMemory = workingMemory;
     }
     
-
 	public void internalExecuteWorkItem(WorkItem workItem) {
-	    EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        Environment env = this.workingMemory.getEnvironment();
+        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
 	    
-		WorkItemInfo workItemInfo = new WorkItemInfo(workItem);
+        WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
         em.persist(workItemInfo);
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
         workItemInfo.update();
@@ -48,12 +49,13 @@ public class JPAWorkItemManager implements WorkItemManager {
 	}
 
 	public void internalAbortWorkItem(long id) {
-	    EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        Environment env = this.workingMemory.getEnvironment();
+        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
 	    
         WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
         // work item may have been aborted
         if (workItemInfo != null) {
-        	WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem();
+            WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
             WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.abortWorkItem(workItem, this);
@@ -71,7 +73,8 @@ public class JPAWorkItemManager implements WorkItemManager {
 	}
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        Environment env = this.workingMemory.getEnvironment();
+        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -87,7 +90,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         
     	// work item may have been aborted
         if (workItemInfo != null) {
-    		WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem();
+            WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
             workItem.setResults(results);
             ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.COMPLETED);
@@ -104,7 +107,8 @@ public class JPAWorkItemManager implements WorkItemManager {
     }
 
     public void abortWorkItem(long id) {
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        Environment env = this.workingMemory.getEnvironment();
+        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -118,7 +122,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         
     	// work item may have been aborted
         if (workItemInfo != null) {
-    		WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem();
+            WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
             ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
@@ -134,20 +138,23 @@ public class JPAWorkItemManager implements WorkItemManager {
     }
 
 	public WorkItem getWorkItem(long id) {
+        Environment env = this.workingMemory.getEnvironment();
+        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
 	    	workItemInfo = this.workItems.get(id);
     	}
         
-        if (workItemInfo == null) {
-            EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        if (workItemInfo == null && em != null) {
+
         	workItemInfo = em.find(WorkItemInfo.class, id);
         }
 
         if (workItemInfo == null) {
             return null;
         }
-        return workItemInfo.getWorkItem();
+        return workItemInfo.getWorkItem(env);
 	}
 
 	public Set<WorkItem> getWorkItems() {
@@ -163,5 +170,4 @@ public class JPAWorkItemManager implements WorkItemManager {
     		workItems.clear();
     	}
     }
-
 }

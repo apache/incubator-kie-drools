@@ -737,6 +737,10 @@ public class InputMarshaller {
     }
 
     public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
+       return readWorkItem(context, true);
+    }
+
+    public static WorkItem readWorkItem(MarshallerReaderContext context, boolean includeVariables) throws IOException {
         ObjectInputStream stream = context.stream;
 
         WorkItemImpl workItem = new WorkItemImpl();
@@ -745,6 +749,7 @@ public class InputMarshaller {
         workItem.setName( stream.readUTF() );
         workItem.setState( stream.readInt() );
 
+        if(includeVariables){
         int nbParameters = stream.readInt();
 
         for ( int i = 0; i < nbParameters; i++ ) {
@@ -756,6 +761,7 @@ public class InputMarshaller {
             } catch ( ClassNotFoundException e ) {
                 throw new IllegalArgumentException( "Could not reload parameter " + name );
             }
+        }
         }
 
         return workItem;

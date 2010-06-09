@@ -1,5 +1,6 @@
 package org.drools.persistence.session;
 
+import bitronix.tm.TransactionManagerServices;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkflowProcessInstance;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 
 public class VariablePersistenceStrategyTest extends TestCase {
 
@@ -285,6 +287,132 @@ public class VariablePersistenceStrategyTest extends TestCase {
         assertNull( processInstance );
     }
     
+    public void testWorkItemWithVariablePersistence() throws Exception{
+       KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        conf.setProperty("drools.dialect.java.compiler", "JANINO");
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+        kbuilder.add( new ClassPathResource( "VPSProcessWithWorkItems.rf" ), ResourceType.DRF );
+        for (KnowledgeBuilderError error: kbuilder.getErrors()) {
+        	System.out.println(error);
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        EntityManagerFactory emf =
+			Persistence.createEntityManagerFactory("org.drools.persistence.jpa");
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+		env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
+                env.set( EnvironmentName.TRANSACTION_MANAGER,
+         TransactionManagerServices.getTransactionManager() );
+
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        int id = ksession.getId();
+
+
+        System.out.println("### Starting process ###");
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("x", "SomeString");
+        parameters.put("y", new MyEntity("This is a test Entity"));
+        parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
+        	ksession.startProcess( "com.sample.ruleflow", parameters );
+
+        TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull( workItem );
+
+        List<?> result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
+
+        assertEquals(5, result.size());
+
+        System.out.println("### Retrieving process instance ###");
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        processInstance = (WorkflowProcessInstance)
+        	ksession.getProcessInstance( processInstance.getId() );
+        assertNotNull( processInstance );
+        assertEquals("SomeString", processInstance.getVariable("x"));
+        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
+        assertNull(processInstance.getVariable("a"));
+        assertNull(processInstance.getVariable("b"));
+        assertNull(processInstance.getVariable("c"));
+
+        System.out.println("### Completing first work item ###");
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("zeta", processInstance.getVariable("z"));
+        results.put("equis", processInstance.getVariable("x")+"->modifiedResult");
+
+        ksession.getWorkItemManager().completeWorkItem( workItem.getId(),  results );
+
+        workItem = handler.getWorkItem();
+        assertNotNull( workItem );
+
+        System.out.println("### Retrieving variable instance infos ###");
+        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
+        //6 Variables from the process and 2 variables from the workitems
+        assertEquals(8, result.size());
+        for (Object o: result) {
+        	System.out.println(((VariableInstanceInfo) o));
+        }
+
+        System.out.println("### Retrieving process instance ###");
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, null, env);
+		processInstance = (WorkflowProcessInstance)
+			ksession.getProcessInstance(processInstance.getId());
+		assertNotNull(processInstance);
+        System.out.println("######## Getting the already Persisted Variables #########");
+        assertEquals("SomeString->modifiedResult", processInstance.getVariable("x"));
+        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
+        assertEquals("Some new String", processInstance.getVariable("a"));
+        assertEquals("This is a new test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
+        assertEquals("This is a new test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("c")).getText());
+        System.out.println("### Completing second work item ###");
+        results = new HashMap<String, Object>();
+        results.put("zeta", processInstance.getVariable("z"));
+        results.put("equis", processInstance.getVariable("x"));
+        ksession.getWorkItemManager().completeWorkItem( workItem.getId(),  results );
+
+
+        workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+
+        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
+        assertEquals(8, result.size());
+
+        System.out.println("### Retrieving process instance ###");
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, null, env);
+        processInstance = (WorkflowProcessInstance)
+        	ksession.getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        assertEquals("SomeString->modifiedResult", processInstance.getVariable("x"));
+        assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
+        assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
+        assertEquals("Some changed String", processInstance.getVariable("a"));
+        assertEquals("This is a changed test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
+        assertEquals("This is a changed test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("c")).getText());
+        System.out.println("### Completing third work item ###");
+        results = new HashMap<String, Object>();
+        results.put("zeta", processInstance.getVariable("z"));
+        results.put("equis", processInstance.getVariable("x"));
+        ksession.getWorkItemManager().completeWorkItem( workItem.getId(),  results );
+
+        workItem = handler.getWorkItem();
+        assertNull(workItem);
+
+        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
+
+        assertEquals(0, result.size());
+
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, null, env);
+        processInstance = (WorkflowProcessInstance)
+			ksession.getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+    }
+
     public void testEntityWithSuperClassAnnotationField() throws Exception {
     	MySubEntity subEntity = new MySubEntity();
     	subEntity.setId(3L);
