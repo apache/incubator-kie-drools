@@ -78,9 +78,8 @@
 command.setLookup("ksession1");
 SetGlobalCommand setGlobalCommand = new SetGlobalCommand();
 setGlobalCommand.setIdentifier("helper");
-setGlobalCommand.setObject(new Object());
-command.getCommands().add(setGlobalCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+setGlobalCommand.setObject(new Person("kyle", 30));
+command.getCommands().add(setGlobalCommand);</programlisting></para>
 
       <para></para>
     </listitem>
@@ -94,7 +93,10 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
 
           <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;set-global identifier="helper"&gt;
-    &lt;object/&gt;
+    &lt;org.drools.test.Person&gt;
+      &lt;name&gt;kyle&lt;/name&gt;
+      &lt;age&gt;30&lt;/age&gt;
+    &lt;/org.drools.test.Person&gt;
   &lt;/set-global&gt;
 &lt;/batch-execution&gt;</programlisting></para>
 
@@ -104,7 +106,7 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"set-global":{"identifier":"helper","object":{"object":""}}}}} </programlisting></para>
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"set-global":{"identifier":"helper","object":{"org.drools.test.Person":{"name":"kyle","age":30}}}}}}</programlisting></para>
 
           <para></para>
         </listitem>
@@ -112,7 +114,15 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>TODO</programlisting></para>
+          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;batch-execution lookup="ksession1"&gt;
+    &lt;set-global out="false" identifier="helper"&gt;
+        &lt;object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+            &lt;age&gt;30&lt;/age&gt;
+            &lt;name&gt;kyle&lt;/name&gt;
+        &lt;/object&gt;
+    &lt;/set-global&gt;
+&lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
         </listitem>
