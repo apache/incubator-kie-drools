@@ -72,8 +72,6 @@
     </listitem>
   </itemizedlist>
 
-  <para></para>
-
   <para><note>
        In the next snippets code we are going to use a POJO org.drools.test.Person that have two fields 
 
@@ -90,34 +88,68 @@
        
     </note></para>
 
+  <para><note>
+       In the next examples, to marshall the commands we have used the nexts snippet codes: 
+
+      <itemizedlist>
+        <listitem>
+          <para>XStream</para>
+
+          <para>
+            <programlisting>String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>JSON</para>
+
+          <para>
+            <programlisting>String xml = BatchExecutionHelper.newJSonMarshaller().toXML(command);</programlisting>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>JAXB</para>
+
+          <para>
+            <programlisting>Marshaller marshaller = jaxbContext.createMarshaller();
+StringWriter xml = new StringWriter();
+marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+marshaller.marshal(command, xml);</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+
+       
+    </note></para>
+
   <xi:include href="Section-BatchExecutionCommand.xml" />
-  
+
   <xi:include href="Section-InsertObjectCommand.xml" />
-  
+
   <xi:include href="Section-RetractCommand.xml" />
-    
+
   <xi:include href="Section-ModifyCommand.xml" />
-  
+
   <xi:include href="Section-GetObjectCommand.xml" />
-  
+
   <xi:include href="Section-InsertElementsCommand.xml" />
-  
+
   <xi:include href="Section-FireAllRulesCommand.xml" />
-  
+
   <xi:include href="Section-StartProcessCommand.xml" />
-  
+
   <xi:include href="Section-SignalEventCommand.xml" />
-  
+
   <xi:include href="Section-CompleteWorkItemCommand.xml" />
-  
+
   <xi:include href="Section-AbortWorkItemCommand.xml" />
-  
+
   <xi:include href="Section-QueryCommand.xml" />
-  
+
   <xi:include href="Section-SetGlobalCommand.xml" />
-  
+
   <xi:include href="Section-GetGlobalCommand.xml" />
-  
+
   <xi:include href="Section-GetObjectsCommand.xml" />
-    
 </section>

@@ -6,64 +6,121 @@
          xmlns:m="http://www.w3.org/1998/Math/MathML"
          xmlns:html="http://www.w3.org/1999/xhtml"
          xmlns:db="http://docbook.org/ns/docbook">
+  <title>API</title>
 
-    <title>API</title>
+  <para>XML marshalling/unmarshalling of the Drools Commands have to use
+  special classes that are going to be described in the next sections.</para>
 
-    <para>XML marshalling/unmarshalling of the Drools Commands have to use
-    special classes that are going to be described in the next
-    sections.</para>
+  <section>
+    <title>XStream</title>
+
+    <para>To use the XStream commands marshaller you need to use the
+    DroolsHelperProvider to obtain a XStream instance. We need to use this
+    because has the commands converters registered.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Marshalling</para>
+
+        <para>BatchExecutionHelperProviderImpl.newXStreamMarshaller().toXML(command);</para>
+      </listitem>
+
+      <listitem>
+        <para>Unmarshalling</para>
+
+        <para>BatchExecutionHelperProviderImpl.newXStreamMarshaller().fromXML(xml)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>JSON</title>
+
+    <para>JSON API to marshalling/unmarshalling is similar to XStream
+    API:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Marshalling</para>
+
+        <para>BatchExecutionHelper.newJSonMarshaller().toXML(command);</para>
+      </listitem>
+
+      <listitem>
+        <para>Unmarshalling</para>
+
+        <para>BatchExecutionHelper.newJSonMarshaller().fromXML(xml)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>JAXB</title>
+
+    <para>Using JAXB there are two options, you can define your model in a XSD
+    file or you can have a POJO model. In both cases you need to get a
+    JAXBContext that have your classes recognized, and it's why you need to
+    use Drools Helper classes. Once you have the JAXBContext you need to
+    create the Unmarshaller/Marshaller as you needs.</para>
+
+    <para></para>
 
     <section>
-      <title>XStream</title>
+      <title>Using a XSD file to define the model</title>
 
-      <para>To use the XStream commands marshaller you need to use the
-      DroolsHelperProvider to obtain a XStream instance. We need to use this
-      because has the commands converters registered.</para>
+      <para>With your model defined in a XSD file you need to have a
+      KnowledgeBase that has your XSD model added as a resource.</para>
 
-      <itemizedlist>
+      <para>To do this, the XSD file must be added as a XSD ResourceType into
+      the KnowledgeBuilder. Finally you can create the JAXBContext using the
+      KnowledgeBase created with the KnowledgeBuilder</para>
+
+      <para></para>
+
+      <para><programlisting>Options xjcOpts = new Options();
+xjcOpts.setSchemaLanguage(Language.XMLSCHEMA);
+JaxbConfiguration jaxbConfiguration = KnowledgeBuilderFactory.newJaxbConfiguration( xjcOpts, "xsd" );
+kbuilder.add(ResourceFactory.newClassPathResource("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+
+List&lt;String&gt; classesName = new ArrayList&lt;String&gt;();
+classesName.add("org.drools.test.Person");
+   
+JAXBContext jaxbContext = KnowledgeBuilderHelper.newJAXBContext(classesName.toArray(new String[classesName.size()]), kbase);</programlisting></para>
+    </section>
+
+    <section>
+      <title>Using a POJO model</title>
+
+      <para>In this case you need to use DroolsJaxbContextHelper to create the
+      JAXBContext, this class has two parameters:</para>
+
+      <para></para>
+
+      <orderedlist>
         <listitem>
-          <para>Marshalling</para>
-
-          <para>BatchExecutionHelperProviderImpl.newXStreamMarshaller().toXML(command);</para>
+          <para>classNames: A List with the cannonical name of the classes
+          that you want to use in the marshalling/unmarshalling
+          process.</para>
         </listitem>
 
         <listitem>
-          <para>Unmarshalling</para>
-
-          <para>BatchExecutionHelperProviderImpl.newXStreamMarshaller().fromXML(xml)</para>
+          <para>properties: JAXB custom properties</para>
         </listitem>
-      </itemizedlist>
+      </orderedlist>
+
+      <para></para>
+
+      <para><programlisting>List&lt;String&gt; classNames = new ArrayList&lt;String&gt;();
+classNames.add("org.drools.test.Person");
+JAXBContext jaxbContext = DroolsJaxbContextHelper.createDroolsJaxbContext(classNames, null);
+Marshaller marshaller = jaxbContext.createMarshaller();</programlisting></para>
 
       <para></para>
     </section>
-
-    <section>
-      <title>JSON</title>
-
-      <para>The JSON API are similar to the XStream, you only need to know the
-      next:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Marshalling</para>
-
-          <para>BatchExecutionHelper.newJSonMarshaller().toXML(command);</para>
-        </listitem>
-
-        <listitem>
-          <para>Unmarshalling</para>
-
-          <para>BatchExecutionHelper.newJSonMarshaller().fromXML(xml)</para>
-        </listitem>
-      </itemizedlist>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>JAXB</title>
-
-      <para>TODO</para>
-    </section>
-
+  </section>
 </section>

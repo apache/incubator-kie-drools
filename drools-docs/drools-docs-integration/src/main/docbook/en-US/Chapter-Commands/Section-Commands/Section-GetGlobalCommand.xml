@@ -52,7 +52,6 @@
 
               <entry>false</entry>
             </row>
-
           </tbody>
         </tgroup>
       </table>
@@ -64,8 +63,7 @@ command.setLookup("ksession1");
 GetGlobalCommand setGlobalCommand = new GetGlobalCommand();
 setGlobalCommand.setIdentifier("helper");
 setGlobalCommand.setOutIdentifier("helperOutput");
-command.getCommands().add(setGlobalCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+command.getCommands().add(setGlobalCommand);</programlisting></para>
 
       <para></para>
     </listitem>
@@ -95,7 +93,10 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>TODO</programlisting></para>
+          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;batch-execution lookup="ksession1"&gt;
+    &lt;get-global out-identifier="helperOutput" identifier="helper"/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
         </listitem>
