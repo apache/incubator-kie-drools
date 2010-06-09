@@ -733,20 +733,27 @@ public class OutputMarshaller {
         }
         stream.writeShort( PersisterEnums.END );
     }
-
     public static void writeWorkItem(MarshallerWriteContext context,
                                      WorkItem workItem) throws IOException {
+         writeWorkItem(context, workItem, true);
+    }
+
+    public static void writeWorkItem(MarshallerWriteContext context,
+                                     WorkItem workItem, boolean includeVariables) throws IOException {
         ObjectOutputStream stream = context.stream;
         stream.writeLong( workItem.getId() );
         stream.writeLong( workItem.getProcessInstanceId() );
         stream.writeUTF( workItem.getName() );
         stream.writeInt( workItem.getState() );
+
+        if(includeVariables){
         Map<String, Object> parameters = workItem.getParameters();
         stream.writeInt( parameters.size() );
         for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
             stream.writeUTF( entry.getKey() );
             stream.writeObject( entry.getValue() );
         }
+    }
     }
 
     public static void writeTimers(MarshallerWriteContext context) throws IOException {
