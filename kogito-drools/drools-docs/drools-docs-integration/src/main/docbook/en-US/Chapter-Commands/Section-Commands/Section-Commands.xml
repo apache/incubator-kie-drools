@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Commands supported</title>
+
+  <para>At this moment the next commands are supported</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>BatchExecutionCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>InsertObjectCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>RetractCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>ModifyCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>GetObjectCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>InsertElementsCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>FireAllRulesCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>StartProcessCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>SignalEventCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>CompleteWorkItemCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>AbortWorkItemCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>QueryCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>SetGlobalCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>GetGlobalCommand</para>
+    </listitem>
+
+    <listitem>
+      <para>GetObjectsCommand</para>
+    </listitem>
+  </itemizedlist>
+
+  <para></para>
+
+  <para><note>
+       In the next snippets code we are going to use a POJO org.drools.test.Person that have two fields 
+
+      <itemizedlist>
+        <listitem>
+          <para>name: String</para>
+        </listitem>
+
+        <listitem>
+          <para>age: Integer</para>
+        </listitem>
+      </itemizedlist>
+
+       
+    </note></para>
+
+  <xi:include href="Section-BatchExecutionCommand.xml" />
+  
+  <xi:include href="Section-InsertObjectCommand.xml" />
+  
+  <xi:include href="Section-RetractCommand.xml" />
+    
+  <xi:include href="Section-ModifyCommand.xml" />
+  
+  <xi:include href="Section-GetObjectCommand.xml" />
+  
+  <xi:include href="Section-InsertElementsCommand.xml" />
+  
+  <xi:include href="Section-FireAllRulesCommand.xml" />
+  
+  <xi:include href="Section-StartProcessCommand.xml" />
+  
+  <xi:include href="Section-SignalEventCommand.xml" />
+  
+  <xi:include href="Section-CompleteWorkItemCommand.xml" />
+  
+  <xi:include href="Section-AbortWorkItemCommand.xml" />
+  
+  <xi:include href="Section-QueryCommand.xml" />
+  
+  <xi:include href="Section-SetGlobalCommand.xml" />
+  
+  <xi:include href="Section-GetGlobalCommand.xml" />
+  
+  <xi:include href="Section-GetObjectsCommand.xml" />
+    
+</section>

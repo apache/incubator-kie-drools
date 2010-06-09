@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>StartProcessCommand</title>
+
+  <para></para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Description: Allow to start a process using the ID. Also you can
+      pass parameters and initial data to be inserted.</para>
+    </listitem>
+
+    <listitem>
+      <para>Attributes</para>
+
+      <table>
+        <title>StartProcessCommand attributes</title>
+
+        <tgroup cols="3">
+          <colspec align="center" />
+
+          <thead>
+            <row>
+              <entry align="center">Name</entry>
+
+              <entry align="center">Description</entry>
+
+              <entry align="center">required</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>processId</entry>
+
+              <entry>The ID of the process to be started</entry>
+
+              <entry>true</entry>
+            </row>
+
+            <row>
+              <entry>parameters</entry>
+
+              <entry>A Map&lt;String, Object&gt; to pass parameters in the
+              process startup</entry>
+
+              <entry>false</entry>
+            </row>
+
+            <row>
+              <entry>data</entry>
+
+              <entry>A list of objects to be inserted in the knowledge session
+              before the process startup</entry>
+
+              <entry>false</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </listitem>
+
+    <listitem>
+      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+StartProcessCommand startProcessCommand = new StartProcessCommand();
+startProcessCommand.setProcessId("org.drools.task.processOne");
+command.getCommands().add(startProcessCommand);
+String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+
+      <para></para>
+    </listitem>
+
+    <listitem>
+      <para>XML output</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>XStream</para>
+
+          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+  &lt;start-process processId="org.drools.task.processOne"/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JSON</para>
+
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"start-process":{"process-id":"org.drools.task.processOne"}}}} </programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JAXB</para>
+
+          <para><programlisting>TODO</programlisting></para>
+
+          <para></para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para></para>
+</section>

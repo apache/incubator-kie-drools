@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+
+    <title>API</title>
+
+    <para>XML marshalling/unmarshalling of the Drools Commands have to use
+    special classes that are going to be described in the next
+    sections.</para>
+
+    <section>
+      <title>XStream</title>
+
+      <para>To use the XStream commands marshaller you need to use the
+      DroolsHelperProvider to obtain a XStream instance. We need to use this
+      because has the commands converters registered.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Marshalling</para>
+
+          <para>BatchExecutionHelperProviderImpl.newXStreamMarshaller().toXML(command);</para>
+        </listitem>
+
+        <listitem>
+          <para>Unmarshalling</para>
+
+          <para>BatchExecutionHelperProviderImpl.newXStreamMarshaller().fromXML(xml)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>JSON</title>
+
+      <para>The JSON API are similar to the XStream, you only need to know the
+      next:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Marshalling</para>
+
+          <para>BatchExecutionHelper.newJSonMarshaller().toXML(command);</para>
+        </listitem>
+
+        <listitem>
+          <para>Unmarshalling</para>
+
+          <para>BatchExecutionHelper.newJSonMarshaller().fromXML(xml)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>JAXB</title>
+
+      <para>TODO</para>
+    </section>
+
+</section>
