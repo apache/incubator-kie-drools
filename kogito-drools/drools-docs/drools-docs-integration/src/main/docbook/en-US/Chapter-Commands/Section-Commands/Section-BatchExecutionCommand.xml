@@ -52,7 +52,6 @@
 
               <entry>false</entry>
             </row>
-
           </tbody>
         </tgroup>
       </table>
@@ -64,8 +63,7 @@ command.setLookup("ksession1");
 InsertObjectCommand insertObjectCommand = new InsertObjectCommand(new Person("john", 25));
 FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
 command.getCommands().add(insertObjectCommand);
-command.getCommands().add(fireAllRulesCommand);
-String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+command.getCommands().add(fireAllRulesCommand);</programlisting></para>
 
       <para></para>
     </listitem>
@@ -101,7 +99,16 @@ String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</progra
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>TODO</programlisting></para>
+          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;batch-execution lookup="ksession1"&gt;
+    &lt;insert&gt;
+        &lt;object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+            &lt;age&gt;25&lt;/age&gt;
+            &lt;name&gt;john&lt;/name&gt;
+        &lt;/object&gt;
+    &lt;/insert&gt;
+    &lt;fire-all-rules max="-1"/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
         </listitem>
