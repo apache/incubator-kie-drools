@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>InsertObjectCommand</title>
+
+  <para></para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Description: Insert an object in the knowledge session.</para>
+    </listitem>
+
+    <listitem>
+      <para>Attributes</para>
+
+      <table>
+        <title>InsertObjectCommand attributes</title>
+
+        <tgroup cols="3">
+          <colspec align="center" />
+
+          <thead>
+            <row>
+              <entry align="center">Name</entry>
+
+              <entry align="center">Description</entry>
+
+              <entry align="center">required</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>object</entry>
+
+              <entry>The object to be inserted</entry>
+
+              <entry>true</entry>
+            </row>
+
+            <row>
+              <entry>outIdentifier</entry>
+
+              <entry>Id to identify the FactHandle created in the object
+              insertion and added to the execution results</entry>
+
+              <entry>false</entry>
+            </row>
+
+            <row>
+              <entry>returnObject</entry>
+
+              <entry>Boolean to establish if the object must be returned in
+              the execution results. Default value: true</entry>
+
+              <entry>false</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </listitem>
+
+    <listitem>
+      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+InsertObjectCommand insertObjectCommand = new InsertObjectCommand(new Person("john", 25));
+insertObjectCommand.setOutIdentifier("john");
+insertObjectCommand.setReturnObject(false);
+command.getCommands().add(insertObjectCommand);
+String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+
+      <para></para>
+    </listitem>
+
+    <listitem>
+      <para>XML output</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>XStream</para>
+
+          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+  &lt;insert out-identifier="john" return-object="false"&gt;
+    &lt;org.drools.test.Person&gt;
+      &lt;name&gt;john&lt;/name&gt;
+      &lt;age&gt;25&lt;/age&gt;
+    &lt;/org.drools.test.Person&gt;
+  &lt;/insert&gt;
+&lt;/batch-execution&gt;</programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JSON</para>
+
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"insert":{"out-identifier":"john","return-object":false,"object":{"org.drools.test.Person":{"name":"john","age":25}}}}}}
+</programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JAXB</para>
+
+          <para><programlisting>TODO</programlisting></para>
+
+          <para></para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para></para>
+</section>

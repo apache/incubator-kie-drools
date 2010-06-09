@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>GetObjectsCommand</title>
+
+  <para></para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Description: Returns all the objects from the current session as a
+      Collection.</para>
+    </listitem>
+
+    <listitem>
+      <para>Attributes</para>
+
+      <table>
+        <title>GetObjectsCommand attributes</title>
+
+        <tgroup cols="3">
+          <colspec align="center" />
+
+          <thead>
+            <row>
+              <entry align="center">Name</entry>
+
+              <entry align="center">Description</entry>
+
+              <entry align="center">required</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>objectFilter</entry>
+
+              <entry>An ObjectFilter to filter the objects returned from the
+              current session</entry>
+
+              <entry>false</entry>
+            </row>
+
+            <row>
+              <entry>outIdentifier</entry>
+
+              <entry>The identifier to be used in the execution
+              results</entry>
+
+              <entry>false</entry>
+            </row>
+
+          </tbody>
+        </tgroup>
+      </table>
+    </listitem>
+
+    <listitem>
+      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+GetObjectsCommand getObjectsCommand = new GetObjectsCommand();
+command.getCommands().add(getObjectsCommand);
+String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting></para>
+
+      <para></para>
+    </listitem>
+
+    <listitem>
+      <para>XML output</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>XStream</para>
+
+          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+  &lt;get-objects/&gt;
+&lt;/batch-execution&gt;</programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JSON</para>
+
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"get-objects":""}}} </programlisting></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>JAXB</para>
+
+          <para><programlisting>TODO</programlisting></para>
+
+          <para></para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para></para>
+</section>
