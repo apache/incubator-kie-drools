@@ -62,6 +62,7 @@
       <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 GetObjectsCommand getObjectsCommand = new GetObjectsCommand();
+getObjectsCommand.setOutIdentifier("objects");
 command.getCommands().add(getObjectsCommand);</programlisting></para>
 
       <para></para>
@@ -75,7 +76,7 @@ command.getCommands().add(getObjectsCommand);</programlisting></para>
           <para>XStream</para>
 
           <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
-  &lt;get-objects/&gt;
+  &lt;get-objects out-identifier="objects"/&gt;
 &lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>
@@ -84,7 +85,7 @@ command.getCommands().add(getObjectsCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"get-objects":""}}} </programlisting></para>
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"get-objects":{"out-identifier":"objects"}}}}</programlisting></para>
 
           <para></para>
         </listitem>
@@ -94,7 +95,7 @@ command.getCommands().add(getObjectsCommand);</programlisting></para>
 
           <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
-    &lt;get-objects/&gt;
+    &lt;get-objects out-identifier="objects"/&gt;
 &lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>

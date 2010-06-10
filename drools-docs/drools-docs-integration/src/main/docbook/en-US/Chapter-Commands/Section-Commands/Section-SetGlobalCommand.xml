@@ -79,6 +79,8 @@ command.setLookup("ksession1");
 SetGlobalCommand setGlobalCommand = new SetGlobalCommand();
 setGlobalCommand.setIdentifier("helper");
 setGlobalCommand.setObject(new Person("kyle", 30));
+setGlobalCommand.setOut(true);
+setGlobalCommand.setOutIdentifier("output");
 command.getCommands().add(setGlobalCommand);</programlisting></para>
 
       <para></para>
@@ -92,7 +94,7 @@ command.getCommands().add(setGlobalCommand);</programlisting></para>
           <para>XStream</para>
 
           <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
-  &lt;set-global identifier="helper"&gt;
+  &lt;set-global identifier="helper" out-identifier="output"&gt;
     &lt;org.drools.test.Person&gt;
       &lt;name&gt;kyle&lt;/name&gt;
       &lt;age&gt;30&lt;/age&gt;
@@ -106,7 +108,7 @@ command.getCommands().add(setGlobalCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"set-global":{"identifier":"helper","object":{"org.drools.test.Person":{"name":"kyle","age":30}}}}}}</programlisting></para>
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"set-global":{"identifier":"helper","out-identifier":"output","object":{"org.drools.test.Person":{"name":"kyle","age":30}}}}}}</programlisting></para>
 
           <para></para>
         </listitem>
@@ -116,7 +118,7 @@ command.getCommands().add(setGlobalCommand);</programlisting></para>
 
           <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
-    &lt;set-global out="false" identifier="helper"&gt;
+    &lt;set-global out="true" out-identifier="output" identifier="helper"&gt;
         &lt;object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
             &lt;age&gt;30&lt;/age&gt;
             &lt;name&gt;kyle&lt;/name&gt;

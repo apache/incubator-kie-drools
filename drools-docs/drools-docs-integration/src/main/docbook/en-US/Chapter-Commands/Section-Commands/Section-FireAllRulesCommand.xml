@@ -86,7 +86,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
           <para>XStream</para>
 
           <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
-  &lt;fire-all-rules max="10" outIdentifier="firedActivations"/&gt;
+  &lt;fire-all-rules max="10" out-identifier="firedActivations"/&gt;
 &lt;/batch-execution&gt;
 </programlisting></para>
 
@@ -96,7 +96,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"fire-all-rules":{"max":10,"outIdentifier":"firedActivations"}}}}</programlisting></para>
+          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"fire-all-rules":{"max":10,"out-identifier":"firedActivations"}}}}</programlisting></para>
 
           <para></para>
         </listitem>
@@ -106,7 +106,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
 
           <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
-   &lt;fire-all-rules outIdentifier="firedActivations" max="10"/&gt;
+   &lt;fire-all-rules out-identifier="firedActivations" max="10"/&gt;
 &lt;/batch-execution&gt;</programlisting></para>
 
           <para></para>

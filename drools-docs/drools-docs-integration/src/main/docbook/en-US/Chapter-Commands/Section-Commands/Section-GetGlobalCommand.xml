@@ -60,10 +60,10 @@
     <listitem>
       <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
-GetGlobalCommand setGlobalCommand = new GetGlobalCommand();
-setGlobalCommand.setIdentifier("helper");
-setGlobalCommand.setOutIdentifier("helperOutput");
-command.getCommands().add(setGlobalCommand);</programlisting></para>
+GetGlobalCommand getGlobalCommand = new GetGlobalCommand();
+getGlobalCommand.setIdentifier("helper");
+getGlobalCommand.setOutIdentifier("helperOutput");
+command.getCommands().add(getGlobalCommand);</programlisting></para>
 
       <para></para>
     </listitem>
