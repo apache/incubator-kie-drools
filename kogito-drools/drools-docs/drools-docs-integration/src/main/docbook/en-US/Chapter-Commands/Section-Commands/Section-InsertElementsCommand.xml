@@ -115,7 +115,7 @@ command.getCommands().add(insertElementsCommand);</programlisting></para>
 
           <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
-    &lt;insert-elements returnObject="true"&gt;
+    &lt;insert-elements return-objects="true"&gt;
         &lt;objects xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
             &lt;age&gt;25&lt;/age&gt;
             &lt;name&gt;john&lt;/name&gt;
