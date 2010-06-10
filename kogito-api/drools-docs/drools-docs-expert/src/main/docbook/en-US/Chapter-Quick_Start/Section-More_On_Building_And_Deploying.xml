@@ -110,6 +110,49 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
     </para>
 
     <section>
+      <title>Knowledge Agent and Custom ClassLoaders</title>
+      <para>Because Knowledge Agent could scan and process remote resources, it
+      could ends up failing when compiling or executing rules, queries, functions,
+      etc. that use classes outside the agent's classloader.
+      If this is your case, you could take 2 approach: use a custom classloader
+      for agent's kbuilder or force the agent to use the same classloader that
+      its kbase has.</para>
+      <section>
+      <title>Custom ClassLoaders for KnowledgeBuilder</title>
+        <para>Knowledge Agent uses KnowledgeBuilder internally in order to
+        compile managed resources. If you need to pass custom configuration to
+        these compilers you could pass a KnowledgeBuilderConfiguration object
+        to KnowledgeAgentFactory.newKnowledgeAgent(). This object will be used
+        in every builder the agent creates. Using a KnowledgeBuilderConfiguration
+        you can specify a custom classloader.</para>
+      </section>
+      <section>
+      <title>Reuse KnowledgeBase ClassLoader</title>
+        <para>Most of the times, the classloader you wan't to use in the
+        compilation process of remote resources is the same needed in the
+        agent's kbase, so the rules could be executed. If you want to use this
+        approach, you will need to setup the desired ClassLoader to the
+        agen't kbase and use the "drools.agent.useKBaseClassLoaderForCompiling"
+        property of KnowledgeAgentConfiguration object.</para>
+        <para>This approach lets you modify agent's kbuilder classloader in
+        runtime by modifying the classloader the agent's kbase uses. Of course
+        you will need to use incremental change set processing (see the section
+        bellow). Otherwise the kbase will be recreated every time a change set
+        is processed and the custom classloader will be missed.</para>
+<programlisting>KnowledgeBaseConfiguration kbaseConfig =
+    KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, customClassLoader);
+KnowledgeBase kbase =
+    KnowledgeBaseFactory.newKnowledgeBase(kbaseConfig); //kbase with custom classloader
+KnowledgeAgentConfiguration aconf =
+    KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+aconf.setProperty("drools.agent.newInstance", "false"); //incremental change set processing enabled
+aconf.setProperty("drools.agent.useKBaseClassLoaderForCompiling", "true");
+KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                "test agent", kbase, aconf);</programlisting>
+      </section>
+    </section>
+
+    <section>
       <title>Incremental Change Set Processing</title>
         <para>
             Knowledge Agent can process change sets in two different ways:
