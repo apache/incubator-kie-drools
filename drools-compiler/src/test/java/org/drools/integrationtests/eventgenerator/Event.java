@@ -156,7 +156,7 @@ public class Event implements Cloneable{
 	      return super.clone();
 	    }
 	    catch ( CloneNotSupportedException e ) {
-	      // this shouldn’t happen, since we are Cloneable
+	      // this shouldn't happen, since we are Cloneable
 	      throw new InternalError();
 	    }
 	  }
