@@ -369,15 +369,24 @@ public class XStreamJSon {
                 writer.setValue( Integer.toString( cmd.getMax() ) );
                 writer.endNode();
             }
+            
+            if ( cmd.getOutIdentifier() != null ) {
+            	writer.startNode( "out-identifier" );
+            	writer.setValue( cmd.getOutIdentifier() );
+                writer.endNode();
+            }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             String max = null;
+            String outIdentifier = null;
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 if ( "max".equals( reader.getNodeName() ) ) {
                     max = reader.getValue();
+                } else if ( "out-identifier".equals( reader.getNodeName() ) ) {
+                	outIdentifier = reader.getValue();
                 } else {
                     throw new IllegalArgumentException( "fire-all-rules does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
                 }
@@ -390,6 +399,9 @@ public class XStreamJSon {
                 cmd = new FireAllRulesCommand( Integer.parseInt( max ) );
             } else {
                 cmd = new FireAllRulesCommand();
+            }
+            if ( outIdentifier != null ) {
+            	cmd.setOutIdentifier(outIdentifier);
             }
             return cmd;
         }

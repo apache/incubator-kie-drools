@@ -35,9 +35,13 @@ GenericCommand<Object> {
 		return this.handle;
 	}
 
-	@XmlAttribute(name="factHandle", required=true)
+	@XmlAttribute(name="fact-handle", required=true)
 	public void setFactHandleFromString(String factHandleId) {
 		handle = new DisconnectedFactHandle(factHandleId);
+	}
+	
+    public String getFactHandleFromString() {
+    	return handle.toExternalForm();
 	}
 
 	public String toString() {

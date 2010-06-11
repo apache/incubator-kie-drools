@@ -20,6 +20,7 @@ public class FireAllRulesCommand
 	@XmlAttribute
     private int          max          = -1;
     private AgendaFilter agendaFilter = null;
+    @XmlAttribute(name="out-identifier")
     private String       outIdentifier;
 
     public FireAllRulesCommand() {

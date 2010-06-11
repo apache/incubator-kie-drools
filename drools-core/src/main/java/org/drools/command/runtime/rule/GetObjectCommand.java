@@ -40,7 +40,7 @@ public class GetObjectCommand
         this.outIdentifier = outIdentifier;
     }
 
-    @XmlAttribute(name="factHandle", required=true)
+    @XmlAttribute(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
     	factHandle = new DisconnectedFactHandle(factHandleId);
 	}
