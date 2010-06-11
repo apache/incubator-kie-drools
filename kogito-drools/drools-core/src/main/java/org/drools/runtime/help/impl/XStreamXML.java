@@ -486,11 +486,17 @@ public class XStreamXML {
                 writer.addAttribute( "max",
                                      Integer.toString( cmd.getMax() ) );
             }
+            
+            if ( cmd.getOutIdentifier() != null) {
+            	writer.addAttribute( "out-identifier",
+            						cmd.getOutIdentifier());
+            }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             String max = reader.getAttribute( "max" );
+            String outIdentifier = reader.getAttribute( "out-identifier" );
 
             FireAllRulesCommand cmd = null;
 
@@ -499,6 +505,11 @@ public class XStreamXML {
             } else {
                 cmd = new FireAllRulesCommand();
             }
+            
+            if ( outIdentifier != null ) {
+            	cmd.setOutIdentifier( outIdentifier );
+            }
+            
             return cmd;
         }
 

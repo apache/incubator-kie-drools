@@ -23,7 +23,7 @@ public class SetGlobalCommand
 	@XmlElement
     private Object  object;
 
-    @XmlAttribute
+    @XmlAttribute(name="out-identifier")
     private String  outIdentifier;
 
     @XmlAttribute

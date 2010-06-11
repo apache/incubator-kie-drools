@@ -3,13 +3,19 @@ package org.drools.command.runtime.process;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.StatefulKnowledgeSession;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class CompleteWorkItemCommand implements GenericCommand<Object> {
 	
+	@XmlAttribute(name="id", required = true)
 	private long workItemId;
 	private Map<String, Object> results = new HashMap<String, Object>();
 	

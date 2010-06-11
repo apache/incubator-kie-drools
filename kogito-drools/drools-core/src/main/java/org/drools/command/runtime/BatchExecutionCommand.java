@@ -19,11 +19,14 @@ import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
+import org.drools.command.runtime.rule.GetObjectsCommand;
 import org.drools.command.runtime.rule.InsertElementsCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
+
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 
 /**
@@ -64,6 +67,7 @@ public class BatchExecutionCommand implements GenericCommand<Void> {
 	private static final long serialVersionUID = 1L;
 	
 	@XmlAttribute(required=true)
+	@XStreamAsAttribute
 	private String lookup;
 
 	public BatchExecutionCommand(){
@@ -91,7 +95,9 @@ public class BatchExecutionCommand implements GenericCommand<Void> {
         @XmlElement(name = "insert", type = InsertObjectCommand.class),
         @XmlElement(name = "modify", type = ModifyCommand.class),
         @XmlElement(name = "get-object", type = GetObjectCommand.class),
-        @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class)
+        @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
+        @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
+        @XmlElement(name = "get-objects", type = GetObjectsCommand.class)
     })
     protected List<GenericCommand<?>> commands;
 

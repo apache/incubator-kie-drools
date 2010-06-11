@@ -30,7 +30,7 @@ public class InsertElementsCommand
     @XmlAttribute
     private String  outIdentifier;
 
-    @XmlAttribute
+    @XmlAttribute(name="return-objects")
     private boolean returnObject = true;
 
     public InsertElementsCommand() {

@@ -18,7 +18,7 @@ public class GetGlobalCommand
 
 	private static final long serialVersionUID = 1L;
 	
-	@XmlAttribute
+	@XmlAttribute (required=true)
 	private String identifier;
 	@XmlAttribute(name="out-identifier")
     private String outIdentifier;

@@ -40,9 +40,11 @@ import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
+import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.command.runtime.rule.GetObjectsCommand;
 import org.drools.command.runtime.rule.InsertElementsCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
@@ -95,7 +97,9 @@ public class DroolsJaxbHelperProviderImpl
 														DefaultFactHandle.class.getName(),
 														JaxbListWrapper.class.getName(),
 														DisconnectedFactHandle.class.getName(),
-														FlatQueryResults.class.getName()
+														FlatQueryResults.class.getName(),
+														CompleteWorkItemCommand.class.getName(),
+														GetObjectsCommand.class.getName()
 														};
 	
     public static String[] addXsdModel(Resource resource,
