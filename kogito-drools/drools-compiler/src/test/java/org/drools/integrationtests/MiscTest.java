@@ -2403,7 +2403,10 @@ public class MiscTest extends TestCase {
     }
 
     public void testWithInvalidRule() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
+        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        final JavaDialectConfiguration jconf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
+        jconf.setCompiler( JavaDialectConfiguration.ECLIPSE );
+        final PackageBuilder builder = new PackageBuilder( conf );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
         // Mark: please check if the conseqeuence/should/shouldn't be built

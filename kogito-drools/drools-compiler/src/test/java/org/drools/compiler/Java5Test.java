@@ -20,7 +20,7 @@ public class Java5Test extends DroolsTestCase {
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         javaConf.setJavaLanguageLevel( "1.5" );
         
-        final PackageBuilder builder = new PackageBuilder( );
+        final PackageBuilder builder = new PackageBuilder( conf );
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "java5_rule.drl" ) ) );
         assertFalse( builder.hasErrors() );
     }

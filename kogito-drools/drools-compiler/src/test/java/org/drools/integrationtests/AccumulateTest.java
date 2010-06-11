@@ -30,6 +30,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
 public class AccumulateTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -62,6 +63,9 @@ public class AccumulateTest extends TestCase {
             Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
+        JavaDialectConfiguration jconf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
+        // required because JANINO compiler fails for some java 5 code features
+        jconf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         final PackageBuilder builder = new PackageBuilder( conf );
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
