@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0" xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
   <title>Domain Specific Languages</title>
 
   <para>As mentioned previously, <indexterm>
@@ -120,9 +120,13 @@
     <para>The "{" and "}" characters should only be used on the left hand side
     of the mapping (the expression) to mark tokens. On the right hand side you
     can use "{" and "}" on their own if needed - such as <programlisting>if (foo) \{
-    doSomething();\ }</programlisting> as well as with the token names as shown
-    above.</para><para>PLEASE NOTE that if you want curly braces to appear literally as curly braces, then escape them with a backslack (\). Otherwise it may think it is a token to be replaced.
-  </para>
+    doSomething();\ }</programlisting> as well as with the token names as
+    shown above.</para>
+
+    <para>PLEASE NOTE that if you want curly braces to appear literally as
+    curly braces, then escape them with a backslack (\). Otherwise it may
+    think it is a token to be replaced.</para>
+
     <para>Don't forget that if you are capturing strings from users, you will
     also need the quotes on the right hand side of the mapping, just like a
     normal rule, as the result of the mapping must be a valid expression in
@@ -192,7 +196,8 @@ builder.addPackageFromDrl( source, dsl );
     can do things like:</para>
 
     <example>
-	    <title>Chaining DSL Expressions</title>
+      <title>Chaining DSL Expressions</title>
+
       <programlisting>There is a person called Bob who is happy
   Or
 There is a person called Mike who is sad
@@ -259,6 +264,27 @@ There is a person called Mike who is sad
     object-scope of "com.yourcompany.Something" are valid, and suggest only
     them. This is entirely optional (you can leave out that section if needed
     - OR it can be left blank).</para>
+
+    <para>Now, if the Cheese object has several int attributes such as age,
+    rating, etc, in this case, one can create a common operator that can be
+    used by any attribute. NOTE: The order of the entries in the DSL is
+    important. </para>
+
+    <para><programlisting>[when][]is less than or equal to=&lt;=
+[when][]is less than=&lt;
+[when][]is greater than or equal to=&gt;=
+[when][]is greater than=&gt;
+[when][]is equal to===
+[when][]equals===
+[when][]- {field:\w*} {operator} {value:\d*}={field} {operator} {value} 
+[when]There is a Cheese with=Cheese()</programlisting> Now, you can then write
+    rules with conditions like the following: <programlisting>There is a Cheese with
+        - age is less than 42
+        - rating is greater than 50
+        - type equals 'stilton'</programlisting> The parser will pick up the
+    "-" lines (they have to be on their own line) and add them as constraints
+    to the declaration above. So in this specific case, using the above
+    mappings, is the equivalent to doing (in DRL): <programlisting>Cheese(age&lt;42, rating &gt; 50, type=='stilton')</programlisting></para>
   </section>
 
   <section>
@@ -297,8 +323,8 @@ There is a person called Mike who is sad
     in the Matrix, our means of getting stuff into computers is still the old
     fashioned way.</para>
 
-    <para>Rules engines require an object or a data model to operate on - in many
-    cases you may know this up front. In other cases the model will be
+    <para>Rules engines require an object or a data model to operate on - in
+    many cases you may know this up front. In other cases the model will be
     discovered with the rules. In any case, rules generally work better with
     simpler flatter object models. In some cases, this may mean having a rule
     object model which is a subset of the main applications model (perhaps
