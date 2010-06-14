@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -174,7 +175,7 @@ public abstract class AbstractWorkingMemory
 
     protected Queue<WorkingMemoryAction>                         actionQueue;
 
-    protected volatile boolean                                   evaluatingActionQueue;
+    protected AtomicBoolean                                      evaluatingActionQueue;
 
     protected ReentrantLock                                      lock;
 
@@ -353,7 +354,8 @@ public abstract class AbstractWorkingMemory
             this.initialFactHandle = initialFactHandle;
         }
 
-        this.actionQueue = new LinkedList<WorkingMemoryAction>();
+        this.actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
+        this.evaluatingActionQueue = new AtomicBoolean( false );
 
         this.addRemovePropertyChangeListenerArgs = new Object[]{this};
         this.workingMemoryEventSupport = workingMemoryEventSupport;
@@ -1459,9 +1461,8 @@ public abstract class AbstractWorkingMemory
     public void executeQueuedActions() {
         try {
             startOperation();
-            synchronized ( this.actionQueue ) {
-                if ( !this.actionQueue.isEmpty() && !evaluatingActionQueue ) {
-                    evaluatingActionQueue = true;
+            if( evaluatingActionQueue.compareAndSet( false, true ) ) {
+                if ( !this.actionQueue.isEmpty() ) {
                     WorkingMemoryAction action = null;
 
                     while ( (action = actionQueue.poll()) != null ) {
@@ -1472,10 +1473,10 @@ public abstract class AbstractWorkingMemory
                                                               e );
                         }
                     }
-                    evaluatingActionQueue = false;
                 }
             }
         } finally {
+            evaluatingActionQueue.compareAndSet( true, false );
             endOperation();
         }
     }
@@ -1485,14 +1486,12 @@ public abstract class AbstractWorkingMemory
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
-        synchronized ( this.actionQueue ) {
-            try {
-                startOperation();
-                this.actionQueue.add( action );
-                this.agenda.notifyHalt();
-            } finally {
-                endOperation();
-            }
+        try {
+            startOperation();
+            this.actionQueue.add( action );
+            this.agenda.notifyHalt();
+        } finally {
+            endOperation();
         }
     }
 

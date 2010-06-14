@@ -78,6 +78,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
+                System.out.println( knowledgeHelper.getRule() );
                 list.add( knowledgeHelper.getRule() );
             }
 
