@@ -29,7 +29,7 @@ public class ResourceChangeScannerImpl implements ResourceChangeScanner {
 		this.listener = SystemEventListenerFactory.getSystemEventListener();
 		this.resources = new HashMap<Resource, Set<ResourceChangeNotifier>>();
 		this.directories = new HashSet<Resource>();
-		this.interval = 60;
+		this.setInterval(60);
         this.listener.info( "ResourceChangeScanner created with default interval=60" );
 	}
 
@@ -38,7 +38,7 @@ public class ResourceChangeScannerImpl implements ResourceChangeScanner {
 	}
 
 	public void configure(ResourceChangeScannerConfiguration configuration) {
-        this.interval = ((ResourceChangeScannerConfigurationImpl) configuration).getInterval();
+        this.setInterval(((ResourceChangeScannerConfigurationImpl) configuration).getInterval());
         this.listener.info( "ResourceChangeScanner reconfigured with interval=" + getInterval() );
 
 		// restart it if it's already running.
@@ -225,6 +225,10 @@ public class ResourceChangeScannerImpl implements ResourceChangeScanner {
 	}
 
 	public void setInterval(int interval) {
+            if (interval <= 0 ){
+                throw new IllegalArgumentException("Invalid interval time: "+interval+". It should be a positive number bigger than 0");
+            }
+
 		this.interval = interval;
 		this.listener.info("ResourceChangeScanner reconfigured with interval="
 				+ getInterval());
