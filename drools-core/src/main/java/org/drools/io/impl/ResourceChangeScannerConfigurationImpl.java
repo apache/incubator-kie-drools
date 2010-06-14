@@ -10,7 +10,7 @@ public class ResourceChangeScannerConfigurationImpl implements ResourceChangeSca
     private int interval;
     
     public ResourceChangeScannerConfigurationImpl() {
-        
+        interval = 60;
     }
     
     public ResourceChangeScannerConfigurationImpl(Properties properties) {
