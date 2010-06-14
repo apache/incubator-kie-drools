@@ -52,7 +52,6 @@ public class DefaultSignalManager implements SignalManager {
 	
 	public void signalEvent(String type, Object event) {
 		((InternalWorkingMemory) workingMemory).queueWorkingMemoryAction(new SignalAction(type, event));
-		workingMemory.fireAllRules();
 	}
 	
 	public void internalSignalEvent(String type, Object event) {
