@@ -32,15 +32,32 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Child;
 import org.drools.GrandParent;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.Parent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
+import org.drools.StockTick;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.conf.EventProcessingOption;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.ObjectRetractedEvent;
+import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.*;
 
 /**
  * This is a test case for multi-thred issues
@@ -278,7 +295,7 @@ public class MultithreadTest extends TestCase {
         }
 
         public void run() {
-            System.out.println( Thread.currentThread().getName() + " starting..." );
+            //System.out.println( Thread.currentThread().getName() + " starting..." );
             try {
                 count.incrementAndGet();
                 long time = System.currentTimeMillis();
@@ -297,7 +314,7 @@ public class MultithreadTest extends TestCase {
                     MultithreadTest.this.notifyAll();
                 }
             }
-            System.out.println( Thread.currentThread().getName() + " exiting..." );
+            //System.out.println( Thread.currentThread().getName() + " exiting..." );
         }
 
         private Cheese[] getFacts() {
@@ -378,5 +395,64 @@ public class MultithreadTest extends TestCase {
         }
         return pkgBuilder.getPackage();
     }
+    
+    public void testEventExpiration() {
+        String rule = 
+            "package org.drools\n" +
+            "declare StockTick @role(event) @expires(0s) end\n" +
+            "rule test no-loop true\n" + 
+            "when\n" +
+            "   $f : StockTick() from entry-point EntryPoint\n" +
+            "then\n" +
+            "   //System.out.println($f);\n" +
+            "end";
+
+        final StatefulKnowledgeSession session;
+        final WorkingMemoryEntryPoint entryPoint;
+
+        KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory
+            .newKnowledgeBaseConfiguration();
+        kbaseConf.setOption(EventProcessingOption.STREAM);
+            
+        KnowledgeBuilder builder = KnowledgeBuilderFactory
+            .newKnowledgeBuilder();
+            
+        builder.add(ResourceFactory.newReaderResource(new StringReader(rule)),
+            ResourceType.DRL);
+
+        if (builder.hasErrors()) {
+            throw new RuntimeException(builder.getErrors().toString());
+        }
+            
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory
+            .newKnowledgeBase(kbaseConf);
+
+        knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
+            
+        session = knowledgeBase.newStatefulKnowledgeSession();
+        WorkingMemoryEventListener wmel = Mockito.mock( WorkingMemoryEventListener.class );
+        session.addEventListener( wmel );
+            
+        entryPoint = session
+            .getWorkingMemoryEntryPoint("EntryPoint");
+            
+        new Thread(new Runnable() {
+            public void run() {
+                session.fireUntilHalt();
+            }
+        }).start();
+            
+        for (int x = 0; x < 10000; x++) {
+            entryPoint.insert(new StockTick(x, "RHT", 10, 10+x));
+            Thread.yield();
+        }
+        
+        session.halt();
+        session.fireAllRules();
+        
+        // facts are being expired
+        verify( wmel, atLeastOnce() ).objectRetracted( any( ObjectRetractedEvent.class ) );
+    }
+
 
 }
