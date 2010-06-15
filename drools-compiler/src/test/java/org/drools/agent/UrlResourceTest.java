@@ -28,6 +28,7 @@ public class UrlResourceTest extends TestCase {
     private FileManager fileManager;
     private Server server;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         fileManager = new FileManager();
@@ -36,7 +37,7 @@ public class UrlResourceTest extends TestCase {
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
 
-        this.server = new Server( 9000 );
+        this.server = new Server(0);
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setResourceBase( fileManager.getRootDirectory().getPath() );
         System.out.println("root : " + fileManager.getRootDirectory().getPath() );
@@ -46,6 +47,11 @@ public class UrlResourceTest extends TestCase {
         server.start();
     }
 
+    private int getPort(){
+        return this.server.getConnectors()[0].getLocalPort();
+    }
+
+    @Override
     protected void tearDown() throws Exception {
         fileManager.tearDown();
         ResourceFactory.getResourceChangeNotifierService().stop();
@@ -58,7 +64,7 @@ public class UrlResourceTest extends TestCase {
 
 
     public void testWithCache() throws Exception {
-        URL url = new URL("http://localhost:9000/rule1.drl");
+        URL url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
         UrlResource ur = new UrlResource(url);
         UrlResource.CACHE_DIR = new File(".");
 
@@ -91,6 +97,10 @@ public class UrlResourceTest extends TestCase {
         output.close();
 
         server.start();
+
+        url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
+        ur = new UrlResource(url);
+
         assertNotNull(ur.getInputStream());
         assertFalse(ur.getInputStream() instanceof FileInputStream);
         long lm_ = ur.getLastModified();
@@ -121,6 +131,9 @@ public class UrlResourceTest extends TestCase {
         Thread.sleep(1000);
         server.start();
 
+        url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
+        ur = new UrlResource(url);
+
         ur = new UrlResource(url);
         //server is started, so should have latest...
         in_= ur.getInputStream();
@@ -134,7 +147,7 @@ public class UrlResourceTest extends TestCase {
     }
 
     public void testWithoutCache() throws Exception {
-        UrlResource ur = new UrlResource(new URL("http://localhost:9000/rule1.drl"));
+        UrlResource ur = new UrlResource(new URL("http://localhost:"+this.getPort()+"/rule1.drl"));
         UrlResource.CACHE_DIR = null;
 
         File f1 = fileManager.newFile( "rule1.drl" );

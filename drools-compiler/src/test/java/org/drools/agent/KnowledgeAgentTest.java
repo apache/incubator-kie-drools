@@ -51,7 +51,8 @@ public class KnowledgeAgentTest extends TestCase {
 		ResourceFactory.getResourceChangeNotifierService().start();
 		ResourceFactory.getResourceChangeScannerService().start();
 
-		this.server = new Server(9000);
+		this.server = new Server(0);
+                
 		ResourceHandler resourceHandler = new ResourceHandler();
 		resourceHandler.setResourceBase(fileManager.getRootDirectory()
 				.getPath());
@@ -61,7 +62,12 @@ public class KnowledgeAgentTest extends TestCase {
 		server.setHandler(resourceHandler);
 
 		server.start();
+                System.out.println("Server running on port "+this.getPort());
 	}
+
+        private int getPort(){
+            return this.server.getConnectors()[0].getLocalPort();
+        }
 
 	protected void tearDown() throws Exception {
 		fileManager.tearDown();
@@ -107,8 +113,8 @@ public class KnowledgeAgentTest extends TestCase {
 		xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml += "    <add> ";
-		xml += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
-		xml += "        <resource source='http://localhost:9000/rule2.drl' type='DRL' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/rule2.drl' type='DRL' />";
 		xml += "    </add> ";
 		xml += "</change-set>";
 		File fxml = fileManager.newFile("changeset.xml");
@@ -219,8 +225,8 @@ public class KnowledgeAgentTest extends TestCase {
 		xml1 += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml1 += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml1 += "    <add> ";
-		xml1 += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
-		xml1 += "        <resource source='http://localhost:9000/rule2.drl' type='DRL' />";
+		xml1 += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
+		xml1 += "        <resource source='http://localhost:"+this.getPort()+"/rule2.drl' type='DRL' />";
 		xml1 += "    </add> ";
 		xml1 += "</change-set>";
 		File fxml1 = fileManager.newFile("changeset2.xml");
@@ -233,7 +239,7 @@ public class KnowledgeAgentTest extends TestCase {
 		xml2 += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml2 += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml2 += "    <add> ";
-		xml2 += "        <resource source='http://localhost:9000/changeset2.xml' type='CHANGE_SET' />";
+		xml2 += "        <resource source='http://localhost:"+this.getPort()+"/changeset2.xml' type='CHANGE_SET' />";
 		xml2 += "    </add> ";
 		xml2 += "</change-set>";
 		File fxml2 = fileManager.newFile("changeset.xml");
@@ -337,8 +343,8 @@ public class KnowledgeAgentTest extends TestCase {
 		xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml += "    <add> ";
-		xml += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
-		xml += "        <resource source='http://localhost:9000/rule2.drl' type='DRL' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/rule2.drl' type='DRL' />";
 		xml += "    </add> ";
 		xml += "</change-set>";
 		File fxml = fileManager.newFile("changeset.xml");
@@ -441,7 +447,7 @@ public class KnowledgeAgentTest extends TestCase {
 		xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml += "    <add> ";
-		xml += "        <resource source='http://localhost:9000/pkg1.pkg' type='PKG' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg1.pkg' type='PKG' />";
 		xml += "    </add> ";
 		xml += "</change-set>";
 		File fxml = fileManager.newFile("changeset.xml");
@@ -568,8 +574,8 @@ public class KnowledgeAgentTest extends TestCase {
 		xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml += "    <add> ";
-		xml += "        <resource source='http://localhost:9000/pkg1.pkg' type='PKG' />";
-		xml += "        <resource source='http://localhost:9000/pkg2.pkg' type='PKG' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg1.pkg' type='PKG' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg2.pkg' type='PKG' />";
 		xml += "    </add> ";
 		xml += "</change-set>";
 
@@ -614,7 +620,7 @@ public class KnowledgeAgentTest extends TestCase {
 		xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml += "    <remove> ";
-		xml += "        <resource source='http://localhost:9000/pkg2.pkg' type='PKG' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg2.pkg' type='PKG' />";
 		xml += "    </remove> ";
 		xml += "</change-set>";
 
@@ -676,7 +682,7 @@ public class KnowledgeAgentTest extends TestCase {
 		xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
 		xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
 		xml += "    <add> ";
-		xml += "        <resource source='http://localhost:9000/pkgold.pkg' type='PKG' />";
+		xml += "        <resource source='http://localhost:"+this.getPort()+"/pkgold.pkg' type='PKG' />";
 		xml += "    </add> ";
 		xml += "</change-set>";
 		File fxml = fileManager.newFile("changeset.xml");
