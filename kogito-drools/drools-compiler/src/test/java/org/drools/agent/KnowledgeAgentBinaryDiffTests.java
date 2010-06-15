@@ -35,7 +35,7 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
 
-        this.server = new Server(9000);
+        this.server = new Server(0);
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setResourceBase(fileManager.getRootDirectory().getPath());
         System.out.println("root : " + fileManager.getRootDirectory().getPath());
@@ -43,6 +43,12 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         server.setHandler(resourceHandler);
 
         server.start();
+
+        System.out.println("Server running on port "+this.getPort());
+    }
+
+    private int getPort(){
+        return this.server.getConnectors()[0].getLocalPort();
     }
 
     @Override
@@ -306,7 +312,7 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
         xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
         xml += "    <add> ";
-        xml += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
+        xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
         File fxml = fileManager.newFile("changeset.xml");
@@ -383,7 +389,7 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
         xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
         xml += "    <add> ";
-        xml += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
+        xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
         File fxml = fileManager.newFile("changeset.xml");
@@ -466,7 +472,7 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
         xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
         xml += "    <add> ";
-        xml += "        <resource source='http://localhost:9000/rule1.drl' type='DRL' />";
+        xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
         File fxml = fileManager.newFile("changeset.xml");
