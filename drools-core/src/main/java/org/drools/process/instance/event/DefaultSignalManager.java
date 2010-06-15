@@ -52,6 +52,7 @@ public class DefaultSignalManager implements SignalManager {
 	
 	public void signalEvent(String type, Object event) {
 		((InternalWorkingMemory) workingMemory).queueWorkingMemoryAction(new SignalAction(type, event));
+		((InternalWorkingMemory) workingMemory).executeQueuedActions();
 	}
 	
 	public void internalSignalEvent(String type, Object event) {
@@ -68,6 +69,7 @@ public class DefaultSignalManager implements SignalManager {
 		ProcessInstance processInstance = workingMemory.getProcessInstance(processInstanceId);
 		if (processInstance != null) {
 			((InternalWorkingMemory) workingMemory).queueWorkingMemoryAction(new SignalProcessInstanceAction(processInstanceId, type, event));
+			((InternalWorkingMemory) workingMemory).executeQueuedActions();
 		}
 	}
 	
