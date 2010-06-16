@@ -64,7 +64,13 @@
         <artifactId>drools-docs-planner</artifactId>
         <version>${project.version}</version>
       </dependency>
-	  
+
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-integration</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
 	    <dependency>
 			<groupId>org.jboss.docs</groupId>
 			<artifactId>highlight</artifactId>
@@ -120,6 +126,7 @@
                 <module>drools-docs-fusion</module>
                 <module>drools-docs-guvnor</module>
                 <module>drools-docs-planner</module>
+                <module>drools-docs-integration</module>
             </modules>
        </profile>        
     </profiles>
