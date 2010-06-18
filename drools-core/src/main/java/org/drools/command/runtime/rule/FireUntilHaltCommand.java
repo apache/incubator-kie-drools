@@ -11,6 +11,7 @@ import org.drools.runtime.rule.AgendaFilter;
 public class FireUntilHaltCommand
     implements
     GenericCommand<Object> {
+    private static final long serialVersionUID = -482292109159215861L;
 
     private AgendaFilter agendaFilter = null;
 
@@ -23,12 +24,17 @@ public class FireUntilHaltCommand
 
     public Integer execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        ReteooWorkingMemory session = ((StatefulKnowledgeSessionImpl)ksession).session;
-        if ( agendaFilter != null ) {
-            session.fireUntilHalt( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
-        } else {
-            session.fireUntilHalt();
-        }
+        final ReteooWorkingMemory session = ((StatefulKnowledgeSessionImpl)ksession).session;
+        
+        new Thread(new Runnable() {
+            public void run() {
+                if ( agendaFilter != null ) {
+                    session.fireUntilHalt( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
+                } else {
+                    session.fireUntilHalt();
+                }
+            }
+        }).start();
 
         return null;
     }
