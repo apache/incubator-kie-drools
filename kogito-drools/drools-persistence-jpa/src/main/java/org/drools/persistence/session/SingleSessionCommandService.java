@@ -221,8 +221,6 @@ public class SingleSessionCommandService
     }
 
     public synchronized <T> T execute(GenericCommand<T> command) {
-        ksession.halt();
-
         boolean localTransaction = false;
         UserTransaction ut = null;
         try {
