@@ -6,13 +6,11 @@
          xmlns:m="http://www.w3.org/1998/Math/MathML"
          xmlns:html="http://www.w3.org/1999/xhtml"
          xmlns:db="http://docbook.org/ns/docbook">
- 
-    <title>Registering our KnowledgeSession</title>
+  <title>Registering our KnowledgeSession</title>
 
-    <para>Once you have your CamelContext configured is necesary register all
-    the KnowledgeSession's that you are going to use inside the
-    ExecutionNode.</para>
+  <para>Using the previous configured CamelContext it's necessary to register
+  into the ExecutionNode all the KnowledgeSessions that you are going to
+  use.</para>
 
-    <programlisting>node.get(DirectoryLookupFactoryService.class).register("ksession1", ksession);    </programlisting>
-
+  <programlisting>node.get(DirectoryLookupFactoryService.class).register("ksession1", ksession);    </programlisting>
 </section>

@@ -6,53 +6,53 @@
          xmlns:m="http://www.w3.org/1998/Math/MathML"
          xmlns:html="http://www.w3.org/1999/xhtml"
          xmlns:db="http://docbook.org/ns/docbook">
+  <title>Camel Routes creation</title>
 
-    <title>Camel Routes creation</title>
+  <para>This is the most powerful feature of this integration, because of the
+  very large library of <link
+  xlink:href="http://camel.apache.org/component.html">Components</link>
+  provided by Camel to build pipelines.</para>
 
-    <para>This is the most powerful feature of this integration because Camel
-    bring us a very large Components library that we can use to create our
-    pipelines. In this section</para>
+  <note>
+    <para>A Camel Component is a factory of Endpoint instances</para>
+  </note>
 
-    <note>
-      <para>A Camel Component is a factory of Endpoint instances</para>
-    </note>
+  <para>The declaration of a Drools Endpoint needs a few parameters, as shown
+  below:</para>
 
-    <para>The declaration of a Drools Endpoint need a few parameters, that we
-    can see next:</para>
+  <para>drools:{0}/{1}?dataFormat={2}</para>
 
-    <para>drools:{0}/{1}?dataFormat={2}</para>
+  <para>{0} : Execution Node identifier that was registered in the
+  CamelContext</para>
 
-    <para>{0} : Execution Node identifier that was registered in the
-    CamelContext</para>
+  <para>{1} : Knowledge Session identifier that was registered in the
+  Execution Node with identifier {0}</para>
 
-    <para>{1} : Knowledge Session identifier that was registered in the
-    Execution Node with identifier {0}</para>
+  <para>{2} : XML command transformer that is going to be used. Currently, we
+  provide three implementations: drools-xstream, drools-jaxb and
+  drools-json.</para>
 
-    <para>{2} : XML command transformer that is going to be used. At this
-    moment we have two implementations: drools-xstream &amp;
-    drools-jaxb</para>
+  <para></para>
 
-    <para></para>
+  <para>The most important thing in this section is to know how to create your
+  Drools Endpoint, best shown in an example:</para>
 
-    <para>The most important thing in this section is know how create your
-    Drools Endpoint, so what is best that having a example:</para>
-
-    <para><programlisting>RouteBuilder rb = new RouteBuilder() { 
+  <para><programlisting>RouteBuilder rb = new RouteBuilder() { 
    public void configure() throws Exception {
       from("direct:with-session-xstream").to("drools:sm/ksession1?dataFormat=drools-xstream");
    }
 };
 camelContext.addRoutes(rb);</programlisting></para>
 
-    <para></para>
+  <para></para>
 
-    <para>In this example we created a simple route with a Direct Endpoint as
-    the input and a Drools Endpoint as the output. A Direct input allow us to
-    send the commands directly to the next endpoint in the route, invocating
-    their consumer, and which will process the XML command.</para>
+  <para>In this example we created a simple route with a <link
+  xlink:href="http://camel.apache.org/direct.html">Direct Endpoint</link> as
+  the input and a Drools Endpoint as the output. A Direct input allow us to
+  send the commands directly to the next endpoint in the route, invoking their
+  consumer, which in this case will process the XML command.</para>
 
-    <note>
-       When you send a XML command to a route, the format must be equal to the dataFormat transformer used in the route creation. 
-    </note>
-
+  <note>
+    Bear in mind that when you send a XML command to a route, the format must the same as the dataFormat transformer used in the route creation.
+  </note>
 </section>
