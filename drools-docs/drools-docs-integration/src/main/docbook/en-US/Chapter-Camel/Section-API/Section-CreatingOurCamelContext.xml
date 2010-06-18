@@ -6,26 +6,24 @@
          xmlns:m="http://www.w3.org/1998/Math/MathML"
          xmlns:html="http://www.w3.org/1999/xhtml"
          xmlns:db="http://docbook.org/ns/docbook">
+  <title>Creating our Camel Context</title>
 
-    <title>Creating our Camel Context</title>
+  <para>We need to create our own CamelContext to start. The first thing that
+  we should do is create and register the grid node that we are going to use
+  inside the CamelContext. In the most common cases we need to implement the
+  Local grid connection. The next step after the LocalConnection creation is
+  to get a new ExecutionNode and register this inside the CamelContext.</para>
 
-    <para>We need to create our own CamelContext to start. The first thing
-    that we should do is create and register the grid node that we are going
-    to use inside the CamelContext. In the most common cases we use the Local grid connection. 
-    The next step after the LocalConnection creation is get a new ExecutionNode and register this
-    inside the CamelContext.</para>
-
-    <programlisting>LocalConnection connection = new LocalConnection();
+  <programlisting>LocalConnection connection = new LocalConnection();
 ExecutionNode node = connection.getExecutionNode();
-node.setId("sm");
+node.setId("node");
 Context jndiContext = new JndiContext();
-jndiContext.bind("sm", node);
+jndiContext.bind("node", node);
 CamelContext camelContext = new DefaultCamelContext(jndiContext);</programlisting>
 
-    <para>After all this code now we have a properly configured CamelContext
-    with all the configuration to use the DroolsComponent. But isn't ready yet
-    to execute Drools, there're another steps left to reach that.</para>
+  <para>After this code, we have a properly configured CamelContext with all
+  the configurations to use a DroolsComponent. However, before we are ready to
+  execute Drools, we need to configure Camel entry points.</para>
 
-    <para></para>
-
+  <para></para>
 </section>
