@@ -6,69 +6,72 @@
          xmlns:m="http://www.w3.org/1998/Math/MathML"
          xmlns:html="http://www.w3.org/1999/xhtml"
          xmlns:db="http://docbook.org/ns/docbook">
-    <title>Introduction</title>
+  <title>Introduction</title>
 
-    <para>The Apache Camel integration allow us interact with a Drools
-    Stateless or Stateful session through a pipeline. It simple works
-    transforming XML commands into executable commands and executing them. The
-    advantage of this integration is that Apache Camel brings the possibility
-    to implement more advanced enterprise integration patterns than a simple
-    transformation pipeline. This integration with Drools allow us to add any
-    of the current Camel components. Using any of the Apache Components you
-    could, for example, execute commands thats come an a JMS queue/Atom
-    Feed/Mina connection/a Mail/etc and send the execution result to any type
-    of supported components. As you can see, this brings a more powerful
-    connection scenario to implement Drools.</para>
+  <para>The Apache Camel integration allows us to interact with a Drools
+  Stateless or Stateful session through a pipeline. It simply works by
+  transforming XML commands into executable commands and executing them. The
+  advantage of this integration is that Apache Camel makes possible the
+  implemention of more advanced enterprise integration patterns, which is an
+  improvement of drools pipeline.</para>
+
+  <para></para>
+
+  <para>This integration with Drools allows us to add any of the current Camel
+  components. Using the <link
+  xlink:href="http://camel.apache.org/components.html">Apache
+  Components</link> you can, receive commands from several entry points and
+  send the execution result to another entry point. To name a few, JMS
+  queue/Atom Feed/Mina connection/a Mail/etc. As you can see, this brings a
+  more powerful interoperability mechanism to integrate your application with
+  Drools</para>
+
+  <section>
+    <title>Architecture</title>
+
+    <para>&lt;insert architecture graphic here&gt;</para>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>Introduction to drools-grid</title>
+
+    <para>Introduction to drools-grid Camel integration is coupled with
+    another drools module called: drools-grid. This module allow us to
+    interact with Drools sessions independent of the JVM location. At the
+    moment we can use two implementations:</para>
+
+    <table>
+      <title>drools-grid implementations</title>
+
+      <tgroup cols="2">
+        <tbody>
+          <row>
+            <entry>Local</entry>
+
+            <entry>Used when the drools sessions and clients are in the same
+            JVM</entry>
+          </row>
+
+          <row>
+            <entry>Remote</entry>
+
+            <entry>Used when you have drools sessions on a remote JVM.
+            Currently, the only implementation is based on Apache Mina.
+            HornetQ support will be added in the next release</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
 
     <para></para>
 
-    <section>
-      <title>Architecture</title>
+    <para>Drools Grid is embedded inside the Drools Camel component, so don't
+    worry about further implementation information because this is hidden by
+    Drools. With this information we can start to configure our Camel
+    Context.</para>
 
-      <para>&lt;insert architecture graphic here&gt;</para>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Introduction to drools-grid</title>
-
-      <para>Camel integration is coupled with another drools module called:
-      drools-grid. This module allow us to interact with Drools sessions
-      independent of the JVM location. At this moment we can use two
-      implementations:</para>
-
-      <table>
-        <title>drools-grid implementations</title>
-
-        <tgroup cols="2">
-          <tbody>
-            <row>
-              <entry>Local</entry>
-
-              <entry>used when the drools session's and client's are in the
-              same JVM.</entry>
-            </row>
-
-            <row>
-              <entry>Remote</entry>
-
-              <entry>used when you've drools session's on a remote JVM. At
-              this moment is the only implementation is using Apache Mina, but
-              is planned to add HornetQ support in the next release.</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-
-      <para></para>
-
-      <para>Drools Grid is embedded inside the Drools Camel component, so
-      don't worry about more implementation information because this should be
-      enough. With this information we can start to configure our Camel
-      Context.</para>
-
-      <para></para>
-    </section>
-
+    <para></para>
+  </section>
 </section>
