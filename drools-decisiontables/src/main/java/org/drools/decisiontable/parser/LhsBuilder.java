@@ -61,9 +61,9 @@ public class LhsBuilder implements SourceBuilder {
             constraints.put( key,
                              content );            
         } else if (fieldType == FieldType.SINGLE_FIELD) {
-            constraints.put( key, content + " == \"$param\"" );
+            constraints.put( key, content + " == \"" + SnippetBuilder.PARAM_STRING + "\"" );
         } else if (fieldType == FieldType.OPERATOR_FIELD) {
-            constraints.put( key, content + " \"$param\"" );
+            constraints.put( key, content + " \"" + SnippetBuilder.PARAM_STRING + "\"" );
         }
         
     }
@@ -133,14 +133,17 @@ public class LhsBuilder implements SourceBuilder {
      * age 
      * age <
      * age == $param
+     * age == $1 || age == $2
+     * forall{age < $}{,}
      * 
      * etc. as we treat them all differently.
      */
-    public FieldType calcFieldType(String content) {
-        if (content.indexOf( "$param" ) != -1 || content.indexOf( "$1" ) != -1 ) {
-            return FieldType.NORMAL_FIELD;
-        }
-        for ( String op : operators ) {
+	public FieldType calcFieldType(String content) {
+		if (!SnippetBuilder.getType(content).equals(
+				SnippetBuilder.SnippetType.SINGLE)) {
+			return FieldType.NORMAL_FIELD;
+		}
+       for ( String op : operators ) {
             if (content.endsWith( op )) {
                 return FieldType.OPERATOR_FIELD;
             }            

@@ -92,5 +92,59 @@ public class SnippetBuilderTest extends TestCase {
                       result );
 
     }
+    
+	public void testForAllAnd() {
+		final String snippet = "forall(&&){something == $}";
+		final SnippetBuilder snip = new SnippetBuilder(snippet);
+		final String result = snip.build("x");
+		assertEquals("something == x", result);
+	}
 
+	public void testForAllAndCSV() {
+		final String snippet = "forall(&&){something == $}";
+		final SnippetBuilder snip = new SnippetBuilder(snippet);
+		final String result = snip.build("x, y");
+		assertEquals("something == x && something == y", result);
+	}
+
+	public void testForAllAndNone() {
+		final String snippet = "forall(&&){something == $}";
+		final SnippetBuilder snip = new SnippetBuilder(snippet);
+		final String result = snip.build("");
+		assertEquals("forall(&&){something == $}", result);
+	}
+
+	public void testForAllAndCSVMultiple() {
+		final String snippet = "forall(&&){something == $ || something == $}";
+		final SnippetBuilder snip = new SnippetBuilder(snippet);
+		final String result = snip.build("x, y");
+		assertEquals(
+				"something == x || something == x && something == y || something == y",
+				result);
+	}
+
+	public void testForAllOr() {
+		final String snippet = "forall(||){something == $}";
+		final SnippetBuilder snip = new SnippetBuilder(snippet);
+		final String result = snip.build("x");
+		assertEquals("something == x", result);
+	}
+
+	public void testForAllOrMultiple() {
+		final String snippet = "forall(||){something == $} && forall(||){something < $}";
+		final SnippetBuilder snip = new SnippetBuilder(snippet);
+		final String result = snip.build("x, y");
+		assertEquals(
+				"something == x || something == y && something < x || something < y",
+				result);
+	}
+	
+	public void testForAllOrAndMultipleWithPrefix() {
+		final String snippet = "something == this && forall(||){something == $} && forall(&&){something < $}";
+		final SnippetBuilder snip = new SnippetBuilder(snippet);
+		final String result = snip.build("x, y");
+		assertEquals(
+				"something == this && something == x || something == y && something < x && something < y",
+				result);
+	}
 }
