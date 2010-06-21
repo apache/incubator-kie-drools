@@ -135,10 +135,10 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
         agen't kbase and use the "drools.agent.useKBaseClassLoaderForCompiling"
         property of KnowledgeAgentConfiguration object.</para>
         <para>This approach lets you modify agent's kbuilder classloader in
-        runtime by modifying the classloader the agent's kbase uses. Of course
-        you will need to use incremental change set processing (see the section
-        bellow). Otherwise the kbase will be recreated every time a change set
-        is processed and the custom classloader will be missed.</para>
+        runtime by modifying the classloader the agent's kbase uses. This will
+        serve also when not using incremental change set processing (see the
+        section bellow). When the kbase is recreated its configuration is
+        reused, so the classloader is maintained.</para>
 <programlisting>KnowledgeBaseConfiguration kbaseConfig =
     KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, customClassLoader);
 KnowledgeBase kbase =
