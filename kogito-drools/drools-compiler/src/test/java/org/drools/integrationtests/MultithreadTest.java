@@ -84,8 +84,8 @@ public class MultithreadTest extends TestCase {
         super.tearDown();
     }
     
-    public void FIXME_testRuleBaseConcurrentCompilation() {
-        final int THREAD_COUNT = 30;
+    public void testRuleBaseConcurrentCompilation() {
+        final int THREAD_COUNT = 100;
         try {
             boolean success = true;
             final PackageBuilder builder = new PackageBuilder();
