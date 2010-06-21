@@ -263,9 +263,11 @@
         <para>The <code>$param</code> place holder is used in templates to
         indicate where data form the cell will be interpolated. You can also
         use <code>$1</code> to the same effect. If the cell contains a comma
-        separated list of values. Symbols $1, $2, etc. may be used to indicate which
+        separated list of values, the symbols $1, $2, etc. may be used to indicate which
         positional parameter from the list of values in the cell will be
-        used.</para>
+        used. The <code>forall(DELIMITER){SNIPPET}</code> function can be used
+	to loop over all available comma separated values.
+	</para>
 
         <example>
           <title>Interpolating cell data</title>
@@ -273,8 +275,12 @@
           ] then the result will be [Foo(bar == 42)].</para>
 
           <para>If the template is
-          [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then the
-          result will be [Foo(bar &gt; 42, baz ==42)]</para>
+          [Foo(bar &lt; $1, baz == $2)] and the cell is [42,43] then the
+          result will be [Foo(bar &lt; 42, baz ==43)]</para>
+
+          <para>If the template is
+          [forall(&amp;&amp;){Foo(bar != $)}] and the cell is [42,43] then the
+          result will be [Foo(bar != 42) &amp;&amp; Foo(bar != 43)]</para>
         </example>
 
         <para>For conditions: How snippets are rendered depends on the presence
