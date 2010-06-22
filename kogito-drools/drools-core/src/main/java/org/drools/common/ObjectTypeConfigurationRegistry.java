@@ -2,8 +2,8 @@ package org.drools.common;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.drools.facttemplates.Fact;
 import org.drools.reteoo.ClassObjectTypeConf;
@@ -12,15 +12,17 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
+    private static final long serialVersionUID = -7049575828126061047L;
+    
     private InternalRuleBase ruleBase;
-    private Map<Object, ObjectTypeConf> typeConfMap;
+    private ConcurrentMap<Object, ObjectTypeConf> typeConfMap;
     
 
     
     public ObjectTypeConfigurationRegistry(InternalRuleBase ruleBase ) {
         super();
         this.ruleBase = ruleBase;
-        this.typeConfMap = new HashMap<Object, ObjectTypeConf>();
+        this.typeConfMap = new ConcurrentHashMap<Object, ObjectTypeConf>();
     }
 
 
@@ -37,7 +39,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         
         // first see if it's a ClassObjectTypeConf        
         ObjectTypeConf objectTypeConf = null;
-        Class cls = null;
+        Class<?> cls = null;
         if ( object instanceof Fact ) {
             String key = ((Fact) object).getFactTemplate().getName();
             objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( key );            
