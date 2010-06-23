@@ -102,6 +102,10 @@ public class DefaultKnowledgeHelper
         this.rule = agendaItem.getRule();
         this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
+        // -- JBRULES-2558: logical inserts must be properly preserved
+        this.previousJustified = agendaItem.getLogicalDependencies();
+        agendaItem.setLogicalDependencies( null );
+        // -- JBRULES-2558: end
         this.tuple = agendaItem.getTuple();
     }
 
@@ -137,11 +141,6 @@ public class DefaultKnowledgeHelper
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
-        if ( this.previousJustified == null ) {
-            this.previousJustified = this.activation.getLogicalDependencies();
-            this.activation.setLogicalDependencies( null );
-        }
-
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
         if ( this.previousJustified != null ) {
@@ -151,8 +150,6 @@ public class DefaultKnowledgeHelper
                     break;
                 }
             }
-            
-            
         }
 
         if ( dep != null ) {

@@ -22,6 +22,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -93,6 +94,7 @@ import org.drools.Win;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.Order.OrderStatus;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -7186,4 +7188,45 @@ public class MiscTest extends TestCase {
         //        assertThat( values.get( 1 ).getFactHandle(), is( petFH ) );
     }
 
+    public void testRuleChainingWithLogicalInserts() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_RuleChaining.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        // create working memory mock listener
+        org.drools.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.drools.event.rule.WorkingMemoryEventListener.class );
+        org.drools.event.rule.AgendaEventListener ael = Mockito.mock( org.drools.event.rule.AgendaEventListener.class );
+
+        ksession.addEventListener( wml );
+        ksession.addEventListener( ael );
+
+        int fired = ksession.fireAllRules();
+        assertEquals( 3,
+                      fired );
+
+        // capture the arguments and check that the rules fired in the proper sequence
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> actvs = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        verify( ael, times(3) ).afterActivationFired( actvs.capture() );
+        List<org.drools.event.rule.AfterActivationFiredEvent> values = actvs.getAllValues();
+        assertThat( values.get( 0 ).getActivation().getRule().getName(), is( "init" ) );
+        assertThat( values.get( 1 ).getActivation().getRule().getName(), is( "r1" ) );
+        assertThat( values.get( 2 ).getActivation().getRule().getName(), is( "r2" ) );
+        
+        verify( ael, never() ).activationCancelled( any( org.drools.event.rule.ActivationCancelledEvent.class ) );
+        verify( wml, times(2) ).objectInserted( any( org.drools.event.rule.ObjectInsertedEvent.class ) );
+        verify( wml, never() ).objectRetracted( any( org.drools.event.rule.ObjectRetractedEvent.class ) );
+    }
 }
