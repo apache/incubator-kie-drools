@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.WorkingMemory;
 import org.drools.process.instance.ProcessInstance;
@@ -24,7 +25,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     private static final long serialVersionUID = 400L;
 
     private long workItemCounter;
-	private Map<Long, WorkItem> workItems = new HashMap<Long, WorkItem>();
+	private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
 	private WorkingMemory workingMemory;
 	private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
 
