@@ -3,6 +3,7 @@ package org.drools.agent;
 import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListener;
+import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.drools.io.Resource;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatelessKnowledgeSession;
@@ -15,6 +16,16 @@ import org.drools.runtime.StatelessKnowledgeSession;
  * 
  */
 public interface KnowledgeAgent {
+
+    void addEventListener(KnowledgeAgentEventListener listener);
+
+
+    public enum ResourceStatus{
+        RESOURCE_ADDED,
+        RESOURCE_MODIFIED,
+        RESOURCE_REMOVED;
+    }
+
     /**
      * 
      * @return
