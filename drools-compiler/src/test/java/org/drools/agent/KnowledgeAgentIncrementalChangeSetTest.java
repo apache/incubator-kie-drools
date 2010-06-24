@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -50,7 +51,6 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         this.server = new Server(0);
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setResourceBase(fileManager.getRootDirectory().getPath());
-        System.out.println("root : " + fileManager.getRootDirectory().getPath());
 
         server.setHandler(resourceHandler);
 
@@ -1257,6 +1257,93 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         kagent.monitorResourceChangeEvents(false);
     }
 
+    public void testStatefulSessionReuse() throws Exception {
+
+        String header = "";
+        header += "package org.drools.test\n";
+        header += "import org.drools.Person\n";
+        header += "global java.util.List list\n\n";
+
+        Person john = new Person("John");
+        Person peter = new Person("Peter");
+
+        String ruleJohn =  this.createPatternRule("ruleJohn","Person(name==\"John\")\n");
+        String rulePeter =  this.createPatternRule("rulePeter","Person(name==\"Peter\")\n");
+        String ruleJohnPeter =  this.createPatternRule("ruleJohnPeter","Person(name==\"John\")\nPerson(name==\"Peter\")\n");
+        String ruleTmp =  this.createCommonRule("ruleTmp");
+
+        File f1 = fileManager.newFile("rules.drl");
+        Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(ruleJohn);
+        output.write(rulePeter);
+        output.close();
+
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:"+this.getPort()+"/rules.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.newFile("changeset.xml");
+        output = new BufferedWriter(new FileWriter(fxml));
+        output.write(xml);
+        output.close();
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent(kbase);
+
+        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+
+        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(john);
+
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("ruleJohn"));
+
+        list.clear();
+
+        // have to sleep here as linux lastModified does not do milliseconds
+        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        Thread.sleep(2000);
+
+        output = new BufferedWriter(new FileWriter(f1));
+        output.write(header);
+        output.write(ruleJohn);
+        output.write(rulePeter);
+        output.write(ruleJohnPeter);
+        output.write(ruleTmp);
+        output.close();
+        Thread.sleep(3000);
+
+        list.clear();
+
+        // Use the same session for incremental build test
+        // ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        //ksession.setGlobal("list", list);
+        ksession.insert(peter);
+
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals(3, list.size());
+
+        //becuase we inserted a peter
+        assertTrue(list.contains("rulePeter"));
+        //there was already a john. Even after the rule exists in kbase
+        assertTrue(list.contains("ruleJohnPeter"));
+        assertTrue(list.contains("ruleTmp"));
+        kagent.monitorResourceChangeEvents(false);
+    }
+
     private static void writePackage(Object pkg, File p1file)
             throws IOException, FileNotFoundException {
         FileOutputStream out = new FileOutputStream(p1file);
@@ -1331,20 +1418,18 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         return sb.toString();
     }
 
-    private String createCommonDSL() {
+    private String createPatternRule(String ruleName,String patterns) {
         StringBuilder sb = new StringBuilder();
-        sb.append("[condition][]There is a String = String()\n");
-        sb.append("[consequence][]add rule's name to list = list.add( drools.getRule().getName() );\n");
-        return sb.toString();
-    }
-
-    private String createDummyFunction(String functionName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("function void  ");
-        sb.append(functionName);
-        sb.append("(){\n");
-        sb.append(" System.out.println(\"Function executed\");\n");
-        sb.append("}\n");
+        sb.append("rule ");
+        sb.append(ruleName);
+        sb.append("\n");
+        sb.append("when\n");
+        if (patterns != null){
+            sb.append(patterns);
+        }
+        sb.append("then\n");
+        sb.append("list.add( drools.getRule().getName() );\n");
+        sb.append("end\n");
 
         return sb.toString();
     }
