@@ -270,5 +270,9 @@ public class StatelessKnowledgeSessionImpl
         }
         ksession.fireAllRules( );
     }
+    
+    public Environment getEnvironment() {
+    	return environment;
+    }
 
 }
