@@ -8,7 +8,7 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Commands supported</title>
 
-  <para>At this moment the next commands are supported</para>
+  <para>Currently, the following commands are supported:</para>
 
   <itemizedlist>
     <listitem>
@@ -73,7 +73,7 @@
   </itemizedlist>
 
   <para><note>
-       In the next snippets code we are going to use a POJO org.drools.test.Person that have two fields 
+       In the next snippets code we are going to use a POJO org.drools.test.Person that has two fields 
 
       <itemizedlist>
         <listitem>
