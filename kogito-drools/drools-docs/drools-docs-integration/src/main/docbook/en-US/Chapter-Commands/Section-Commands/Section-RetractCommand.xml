@@ -64,7 +64,7 @@ command.getCommands().add(retractCommand);</programlisting></para>
         </listitem>
 
         <listitem>
-          <para>Set the Fact Handle that you got when the object was
+          <para>Set the Fact Handle that you received when the object was
           inserted</para>
 
           <para><programlisting>BatchExecutionCommand command = new BatchExecutionCommand();

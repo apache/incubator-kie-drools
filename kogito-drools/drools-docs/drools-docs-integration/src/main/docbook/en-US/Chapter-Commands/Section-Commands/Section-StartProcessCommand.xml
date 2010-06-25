@@ -12,8 +12,8 @@
 
   <itemizedlist>
     <listitem>
-      <para>Description: Allow to start a process using the ID. Also you can
-      pass parameters and initial data to be inserted.</para>
+      <para>Description: Allows you to start a process using the ID. Also you
+      can pass parameters and initial data to be inserted.</para>
     </listitem>
 
     <listitem>
