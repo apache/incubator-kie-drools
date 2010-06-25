@@ -12,8 +12,8 @@
 
   <itemizedlist>
     <listitem>
-      <para>Description: The main command, used to group a set of commands to
-      are going to be executed.</para>
+      <para>Description: The command that contains a list of commands, which
+      will be sent and executed.</para>
     </listitem>
 
     <listitem>

@@ -8,15 +8,16 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>API</title>
 
-  <para>XML marshalling/unmarshalling of the Drools Commands have to use
-  special classes that are going to be described in the next sections.</para>
+  <para>XML marshalling/unmarshalling of the Drools Commands requires the use
+  of special classes, which are going to be described in the following
+  sections.</para>
 
   <section>
     <title>XStream</title>
 
     <para>To use the XStream commands marshaller you need to use the
-    DroolsHelperProvider to obtain a XStream instance. We need to use this
-    because has the commands converters registered.</para>
+    DroolsHelperProvider to obtain an XStream instance. We need to use this
+    because it has the commands converters registered.</para>
 
     <itemizedlist>
       <listitem>
@@ -61,23 +62,23 @@
   <section>
     <title>JAXB</title>
 
-    <para>Using JAXB there are two options, you can define your model in a XSD
-    file or you can have a POJO model. In both cases you need to get a
-    JAXBContext that have your classes recognized, and it's why you need to
+    <para>There are two options for using JAXB, you can define your model in
+    an XSD file or you can have a POJO model. In both cases you have to
+    declare your model inside JAXBContext, and in order to do that you need to
     use Drools Helper classes. Once you have the JAXBContext you need to
-    create the Unmarshaller/Marshaller as you needs.</para>
+    create the Unmarshaller/Marshaller as needed.</para>
 
     <para></para>
 
     <section>
-      <title>Using a XSD file to define the model</title>
+      <title>Using an XSD file to define the model</title>
 
       <para>With your model defined in a XSD file you need to have a
       KnowledgeBase that has your XSD model added as a resource.</para>
 
       <para>To do this, the XSD file must be added as a XSD ResourceType into
       the KnowledgeBuilder. Finally you can create the JAXBContext using the
-      KnowledgeBase created with the KnowledgeBuilder</para>
+      KnowledgeBase created with the KnowledgeBuilder  </para>
 
       <para></para>
 
@@ -97,15 +98,14 @@ JAXBContext jaxbContext = KnowledgeBuilderHelper.newJAXBContext(classesName.toAr
       <title>Using a POJO model</title>
 
       <para>In this case you need to use DroolsJaxbContextHelper to create the
-      JAXBContext, this class has two parameters:</para>
+      JAXBContext. This class has two parameters:</para>
 
       <para></para>
 
       <orderedlist>
         <listitem>
-          <para>classNames: A List with the cannonical name of the classes
-          that you want to use in the marshalling/unmarshalling
-          process.</para>
+          <para>classNames: A List with the canonical name of the classes that
+          you want to use in the marshalling/unmarshalling process.</para>
         </listitem>
 
         <listitem>
