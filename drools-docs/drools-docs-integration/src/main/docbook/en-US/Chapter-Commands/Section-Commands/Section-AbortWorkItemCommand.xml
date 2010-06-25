@@ -12,7 +12,7 @@
 
   <itemizedlist>
     <listitem>
-      <para>Description: Allow abort an WorkItem. The same as
+      <para>Description: Allows you abort an WorkItem. The same as
       session.getWorkItemManager().abortWorkItem(workItemId)</para>
     </listitem>
 
