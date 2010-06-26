@@ -49,7 +49,7 @@
             &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;forager&gt;
-            &lt;foragerType&gt;MAX_SCORE_OF_ALL&lt;/foragerType&gt;
+            &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
         &lt;/forager&gt;
     &lt;/inheritedLocalSearchSolver&gt;
 
