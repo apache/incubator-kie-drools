@@ -583,7 +583,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     &lt;/forager&gt;</programlisting>
 
         <para>A simulated annealing acceptor should be combined with a low subset selection. The classic algorithm uses
-        a <literal>minimalAcceptedSelection</literal> of <literal>1</literal>, but ussually <literal>4</literal>
+        a <literal>minimalAcceptedSelection</literal> of <literal>1</literal>, but usually <literal>4</literal>
         performs better.</para>
 
         <para>You can even combine it with a tabu acceptor at the same time:</para>
@@ -594,7 +594,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
-        <para>This differs from phasing, another intresting technique, where first simulated annealing is used, followed
+        <para>This differs from phasing, another interesting technique, where first simulated annealing is used, followed
         by tabu search.</para>
       </section>
     </section>
