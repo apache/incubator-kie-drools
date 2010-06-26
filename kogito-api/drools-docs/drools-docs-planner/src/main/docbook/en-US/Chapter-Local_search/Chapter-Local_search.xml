@@ -25,8 +25,8 @@
       </listitem>
 
       <listitem>
-        <para>Most real-life planning problems have an incredible number of possible solutions and only 1 optimal
-        solution.</para>
+        <para>Most real-life planning problems have an incredible number of possible solutions and only 1 or a few
+        optimal solutions.</para>
       </listitem>
     </itemizedlist>
 
@@ -36,15 +36,15 @@
     is also pretty natural to program.</para>
 
     <para>Local search solves a problem by making a move on the current solution which changes it into a better
-    solution. It does that number of times till it is satisfied with the solution. It starts with the starting
-    solution.</para>
+    solution. It does that high number of iterations untill its time runs out and it is satisfied with the solution. It
+    starts with the starting solution.</para>
 
     <para>A local search algorithm and the drools rule engine turn out to be a really nice combination, because:</para>
 
     <itemizedlist>
       <listitem>
-        <para>A rule engine such as Drools is <emphasis role="bold">great for calculating the score</emphasis> of a
-        solution of a planning problem. It make it easy to add additional soft or hard constraints such as "a teacher
+        <para>A rule engine such as Drools Expert is <emphasis role="bold">great for calculating the score</emphasis> of
+        a solution of a planning problem. It make it easy to add additional soft or hard constraints such as "a teacher
         shouldn't teach more then 7 hours a day". However it tends to be too complex to use to actually find new
         solutions.</para>
       </listitem>
@@ -57,7 +57,7 @@
     </itemizedlist>
 
     <para>Drools Planner's local search implementation combines both. On top of that, it also offers additional support
-    for benchmarking etc.</para>
+    for benchmarking, etc.</para>
   </section>
 
   <section>
@@ -149,10 +149,9 @@
         workingMemory.update(queenHandle, queen); // after changes are made
     }</programlisting>
 
-    <para>You need to call the
-    <literal>workingMemory.update(FactHandle, Object)</literal> method after modifying the fact. Note that you can
-    alter multiple facts in a single move and effectively create a big move (also known as a coarse-grained
-    move).</para>
+    <para>You need to call the <literal>workingMemory.update(FactHandle, Object)</literal> method after modifying the
+    fact. Note that you can alter multiple facts in a single move and effectively create a big move (also known as a
+    coarse-grained move).</para>
 
     <para>Drools Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
     <literal>isDoable(WorkingMemory)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
@@ -443,42 +442,24 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
       <para>A selector is currently based on a <literal>MoveFactory</literal>.</para>
 
-      <programlisting>    &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
-    &lt;/selector&gt;</programlisting>
+      <programlisting>  &lt;selector&gt;
+    &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+  &lt;/selector&gt;</programlisting>
 
-      <para>You're not obligated to generate the same stable set of moves at each step. You could start with generating
-      only big moves initially, and gradually switch to small moves. There's no build-in support for this yet
-      though.</para>
+      <para>You're not obligated to generate the same set of moves at each step. It's generally a good idea to use
+      several selectors, mixing fine grained moves and course grained moves:</para>
 
-      <para>If there are many possible moves, it can become inefficient to evaluate all of them at every step. To
-      evaluate only a random subset of all the moves, use:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>An <literal>absoluteSelection</literal> integer, which specifies how many moves can be maximally
-          evaluated each step.</para>
-
-          <programlisting>    &lt;selector&gt;
-       &lt;moveFactoryClass&gt;org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory&lt;/moveFactoryClass&gt;
-       &lt;absoluteSelection&gt;500&lt;/absoluteSelection&gt;
-    &lt;/selector&gt;</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>A <literal>relativeSelection</literal> double, which specifies how many moves of the total number of
-          moves must be evaluated each step.</para>
-
-          <programlisting>    &lt;selector&gt;
-       &lt;moveFactoryClass&gt;org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory&lt;/moveFactoryClass&gt;
-       &lt;relativeSelection&gt;0.002&lt;/relativeSelection&gt;
-    &lt;/selector&gt;</programlisting>
-        </listitem>
-      </itemizedlist>
-
-      <para>Unlike the n queens problem, real world problems require the use of subset selection. We recommend to start
-      from an <literal>absoluteSelection</literal> that takes a step in less then 2 seconds and use the
-      <literal>Benchmarker</literal> to tune it. Turn on INFO logging to see the step times.</para>
+      <programlisting>  &lt;selector&gt;
+    &lt;selector&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory&lt;/moveFactoryClass&gt;
+    &lt;/selector&gt;
+    &lt;selector&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory&lt;/moveFactoryClass&gt;
+    &lt;/selector&gt;
+    &lt;selector&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory&lt;/moveFactoryClass&gt;
+    &lt;/selector&gt;
+  &lt;/selector&gt;</programlisting>
     </section>
 
     <section>
@@ -576,77 +557,116 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
         the walls. Use the benchmarker to fine tweak your configuration. Experiments teach us that it is generally best
         to use a prime number for the move tabu, undo move tabu or property tabu size.</para>
 
-        <para>A tabu search acceptor should be combined with a <emphasis>maximum score of all</emphasis> or
-        <emphasis>first best score improving</emphasis> forager.</para>
+        <para>A tabu search acceptor should be combined with a high or no subset selection.</para>
       </section>
 
       <section>
         <title>Simulated annealing acceptor</title>
 
-        <para>Simulated annealing does not pick the move with the highest score, neither does it evaluate all moves. At
-        least at first.</para>
-
-        <para>It gives unimproving moves a chance, depending on it's score and the temperature. The
-        <emphasis>temperature</emphasis> is relative to how long it has been solving. In the end, it gradually turns
+        <para>Simulated annealing does not always pick the move with the highest score, neither does it evaluate all
+        moves. At least at first. It gives unimproving moves also a chance, depending on it's score and the temperature.
+        The <emphasis>temperature</emphasis> is relative to how long it has been solving. In the end, it gradually turns
         into a simple local search, only accepting improving moves.</para>
 
-        <para>A simulated annealing acceptor should be combined with a <emphasis>first randomly accepted</emphasis>
-        forager.</para>
+        <para>Unlike the tabu search acceptor, tweaking a simulated annealing is difficult and a wrong setting can make
+        the entire solver useless. However, in many cases, simulated annealing surpasses tabu search.</para>
+
+        <para>Set your <literal>simulatedAnnealingStartingTemperature</literal> to the maximum score delta a single move
+        can cause.</para>
+
+        <programlisting>    &lt;acceptor&gt;
+      &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
+      &lt;simulatedAnnealingTemperatureSurvival&gt;0.997&lt;/simulatedAnnealingTemperatureSurvival&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+        &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;
+    &lt;/forager&gt;</programlisting>
+
+        <para>A simulated annealing acceptor should be combined with a low subset selection. The classic algorithm uses
+        a <literal>minimalAcceptedSelection</literal> of <literal>1</literal>, but ussually <literal>4</literal>
+        performs better.</para>
+
+        <para>You can even combine it with a tabu acceptor at the same time:</para>
+
+        <programlisting>    &lt;acceptor&gt;
+      &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
+      &lt;simulatedAnnealingTemperatureSurvival&gt;0.997&lt;/simulatedAnnealingTemperatureSurvival&gt;
+      &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+
+        <para>This differs from phasing, another intresting technique, where first simulated annealing is used, followed
+        by tabu search.</para>
       </section>
     </section>
 
     <section>
       <title>Forager</title>
 
-      <para>A forager gathers all accepted moves and picks the move which is the next step. A forager can choose to
-      allow only a subset of all selected moves to be evaluated, by quitting early if a suitable move has been
-      accepted.</para>
+      <para>A forager gathers all accepted moves and picks the move which is the next step. Normally it picks the
+      accepted move with the highest score. If several accepted moves have the highest score, one is picked randomly,
+      weighted on their accept chance.</para>
 
-      <para>You can implement your own <literal>Forager</literal>, although the build-in foragers should suffice for
-      most needs.</para>
+      <para>You can implement your own <literal>Forager</literal>, although the build-in forager should suffice for most
+      needs.</para>
 
       <section>
-        <title>Maximum score of all forager</title>
+        <title>Subset selection</title>
 
-        <para>Allows all selected moves to be evaluated and picks the accepted move with the highest score. If several
-        accepted moves have the highest score, one is picked randomly, weighted on their accept chance.</para>
+        <para>When there are many possible moves, it becomes inefficient to evaluate all of them at every step. To
+        evaluate only a random subset of all the moves, use:</para>
 
-        <programlisting>    &lt;forager&gt;
-        &lt;foragerType&gt;MAX_SCORE_OF_ALL&lt;/foragerType&gt;
-    &lt;/forager&gt;</programlisting>
+        <itemizedlist>
+          <listitem>
+            <para>An <literal>minimalAcceptedSelection</literal> integer, which specifies how many accepted moves should
+            have be evaluated during each step. By default it is positive infinity, so all accepted moves are evaluated
+            at every step.</para>
+
+            <programlisting>  &lt;forager&gt;
+    &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
+  &lt;/forager&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
+
+        <para>Unlike the n queens problem, real world problems require the use of subset selection. We recommend to
+        start from an <literal>minimalAcceptedSelection</literal> that takes a step in less then 2 seconds and use the
+        <literal>Benchmarker</literal> to tune it. Turn on INFO logging to see the step times.</para>
       </section>
 
       <section>
-        <title>First best score improving forager</title>
+        <title>Pick early type</title>
 
-        <para>Picks the first accepted move that improves the best score. If none improve the best score, it behaves
-        exactly like the maximum score of all forager.</para>
+        <para>A forager can pick a move early during a step, ignoring subsequent selected moves. There are 3 pick early
+        types:</para>
 
-        <programlisting>    &lt;forager&gt;
-        &lt;foragerType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/foragerType&gt;
+        <itemizedlist>
+          <listitem>
+            <para><literal>NEVER</literal>: A move is never picked early: all accepted moves are evaluated that the
+            selection allows. This is the default.</para>
+
+            <programlisting>    &lt;forager&gt;
+        &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
-      </section>
+          </listitem>
 
-      <section>
-        <title>First last step score improving forager</title>
+          <listitem>
+            <para><literal>FIRST_BEST_SCORE_IMPROVING</literal>: Pick the first accepted move that improves the best
+            score. If none improve the best score, it behaves exactly like the pickEarlyType NEVER.</para>
 
-        <para>Picks the first accepted move that improves the last step score. If none improve the last step score, it
-        behaves exactly like the maximum score of all forager.</para>
-
-        <programlisting>    &lt;forager&gt;
-        &lt;foragerType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/foragerType&gt;
+            <programlisting>    &lt;forager&gt;
+        &lt;pickEarlyType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
-      </section>
+          </listitem>
 
-      <section>
-        <title>First randomly accepted forager</title>
+          <listitem>
+            <para><literal>FIRST_LAST_STEP_SCORE_IMPROVING</literal>: Pick the first accepted move that improves the
+            last step score. If none improve the last step score, it behaves exactly like the pickEarlyType NEVER.
+            </para>
 
-        <para>Generates a random number for each accepted move and if the move's accept chance is higher, it picks that
-        move as the next move.</para>
-
-        <programlisting>    &lt;forager&gt;
-        &lt;foragerType&gt;FIRST_RANDOMLY_ACCEPTED&lt;/foragerType&gt;
+            <programlisting>    &lt;forager&gt;
+        &lt;pickEarlyType&gt;FIRST_LAST_STEP_SCORE_IMPROVING&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
       </section>
     </section>
   </section>
