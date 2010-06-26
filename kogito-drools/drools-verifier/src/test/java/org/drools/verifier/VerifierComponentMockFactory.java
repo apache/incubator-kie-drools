@@ -44,8 +44,9 @@ public class VerifierComponentMockFactory {
 
     public static Pattern createPattern(int i) {
         Pattern pattern = new Pattern( createRule( i ) );
+        pattern.setObjectTypePath( "objectType" + i );
 
-        pattern.setName( "testPattern" + 1 );
+        pattern.setName( "testPattern" + i );
 
         return pattern;
     }
