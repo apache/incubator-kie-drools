@@ -226,8 +226,8 @@ end</programlisting>
       </listitem>
 
       <listitem>
-        <para>If you use tabu search, combine it with a <literal>relativeSelection</literal> selector. Take some time to
-        tweak the value of <literal>relativeSelection</literal>.</para>
+        <para>If you use tabu search, combine it with a <literal>minimalAcceptedSelection</literal> selector. Take some
+        time to tweak the value of <literal>minimalAcceptedSelection</literal>.</para>
       </listitem>
 
       <listitem>
