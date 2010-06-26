@@ -266,7 +266,7 @@
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-        &lt;foragerType&gt;MAX_SCORE_OF_ALL&lt;/foragerType&gt;
+        &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
     &lt;/forager&gt;
 &lt;/localSearchSolver&gt;</programlisting>
 
