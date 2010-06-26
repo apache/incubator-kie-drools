@@ -4,16 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -150,32 +144,15 @@ public class VerifierImpl
         return result;
     }
 
-    private void updateRuleBase() throws Exception {
+    private void updateRuleBase() {
 
-        verifierKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        VerifierKnowledgeBaseBuilder verifierKnowledgeBaseBuilder = new VerifierKnowledgeBaseBuilder();
 
-        KnowledgeBuilderConfiguration kbuilderConfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbuilderConfiguration.setProperty( "drools.dialect.java.compiler",
-                                           "JANINO" );
+        verifierKnowledgeBase = verifierKnowledgeBaseBuilder.newVerifierKnowledgeBase( conf );
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbuilderConfiguration );
-
-        if ( conf.getVerifyingResources() != null ) {
-            for ( Resource resource : conf.getVerifyingResources().keySet() ) {
-                kbuilder.add( resource,
-                              conf.getVerifyingResources().get( resource ) );
-            }
+        if ( verifierKnowledgeBaseBuilder.hasErrors() ) {
+            this.errors.addAll( verifierKnowledgeBaseBuilder.getErrors() );
         }
-
-        if (kbuilder.hasErrors()){
-            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
-            while(errors.hasNext()){
-                this.errors.add(new VerifierError("Error compiling verifier rules: "+errors.next().getMessage()));
-            }
-            throw new IllegalStateException("Error compiling verifier rules");
-        }
-
-        verifierKnowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     }
 
     /*
