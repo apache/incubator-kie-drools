@@ -1,6 +1,4 @@
 /*
- *  Copyright 2009 salaboy.
- * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -20,38 +18,50 @@ package org.drools.event;
 import org.drools.runtime.process.ProcessInstance;
 
 /**
- *
+ * @author krisv
  * @author salaboy
  */
 public class RuleFlowVariableChangeEvent extends ProcessEvent {
 
-    private String name;
+	private static final long serialVersionUID = 4L;
+	
+	private String variableId;
+	private String variableInstanceId;
+    private Object value;
 
-    public String getName() {
-        return name;
+    public String getVariableId() {
+        return variableId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVariableId(String variableId) {
+        this.variableId = variableId;
     }
 
-    public Object getValue() {
+    public String getVariableInstanceId() {
+		return variableInstanceId;
+	}
+
+	public void setVariableInstanceId(String variableInstanceId) {
+		this.variableInstanceId = variableInstanceId;
+	}
+
+	public Object getValue() {
         return value;
     }
 
     public void setValue(Object value) {
         this.value = value;
     }
-    private Object value;
-    public RuleFlowVariableChangeEvent(ProcessInstance instance,String name, Object value) {
+    
+    public RuleFlowVariableChangeEvent(ProcessInstance instance, String variableId, String variableInstanceId, Object value) {
         super(instance);
-        this.name = name;
+        this.variableId = variableId;
+        this.variableInstanceId = variableInstanceId;
         this.value = value;
-
     }
 
     public String toString() {
-        return "==>[VariableChangeEvent(name=" + getName() + "; value=" + getValue()
+        return "==>[VariableChangeEvent(variableId=" + getVariableId() + "; variableInstanceId=" + getVariableInstanceId() + "; value=" + getValue()
             + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 

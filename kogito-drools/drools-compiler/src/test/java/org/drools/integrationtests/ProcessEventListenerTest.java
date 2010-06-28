@@ -1,5 +1,4 @@
 /*
- *  Copyright 2009 salaboy.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,8 +40,6 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
-
-
 
 /**
  *
@@ -177,9 +174,9 @@ public class ProcessEventListenerTest extends TestCase{
         assertEquals( 26, processEventList.size() );
         assertEquals( "org.drools.event", ((RuleFlowStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
 
-        assertEquals("MyVar",((RuleFlowVariableChangeEvent) processEventList.get(4)).getName());
+        assertEquals("MyVar",((RuleFlowVariableChangeEvent) processEventList.get(4)).getVariableId());
         assertEquals("SomeText",((RuleFlowVariableChangeEvent) processEventList.get(4)).getValue());
-        assertEquals("MyVar",((RuleFlowVariableChangeEvent) processEventList.get(5)).getName());
+        assertEquals("MyVar",((RuleFlowVariableChangeEvent) processEventList.get(5)).getVariableId());
         assertEquals("MyValue",((RuleFlowVariableChangeEvent) processEventList.get(5)).getValue());
     }
 }

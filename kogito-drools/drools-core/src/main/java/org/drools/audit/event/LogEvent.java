@@ -28,7 +28,7 @@ import java.io.ObjectOutput;
  */
 public class LogEvent { // implements Externalizable { This breaks XStream serialization !
 
-public static final int INSERTED                                = 1;
+	public static final int INSERTED                            = 1;
     public static final int UPDATED                             = 2;
     public static final int RETRACTED                           = 3;
 
@@ -64,6 +64,9 @@ public static final int INSERTED                                = 1;
     public static final int AFTER_TASK_INSTANCE_CREATED         = 29;
     public static final int BEFORE_TASK_INSTANCE_COMPLETED      = 30;
     public static final int AFTER_TASK_INSTANCE_COMPLETED       = 31;
+    
+    public static final int BEFORE_VARIABLE_INSTANCE_CHANGED    = 32;
+    public static final int AFTER_VARIABLE_INSTANCE_CHANGED     = 33;
     
     private int             type;
 
