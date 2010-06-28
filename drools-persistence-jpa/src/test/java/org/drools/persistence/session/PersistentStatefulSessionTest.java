@@ -27,7 +27,6 @@ import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.drools.runtime.Environment;
@@ -715,7 +714,40 @@ public class PersistentStatefulSessionTest extends TestCase {
 
         assertEquals( 3,
                       list.size() );
-
     }
 
+    public void testPersistenceTimer() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ClassPathResource( "TimerProcess.rf" ),
+                      ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
+        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        int id = ksession.getId();
+        ksession.dispose();
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ksession.dispose();
+
+        assertNotNull(TestWorkItemHandler.getInstance().getWorkItem());
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        processInstance = ksession.getProcessInstance( processInstance.getId() );
+        assertNotNull( processInstance );
+        
+        Thread.sleep(2000);
+        
+        ksession.dispose();
+
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        processInstance = ksession.getProcessInstance( processInstance.getId() );
+        assertNull( processInstance );
+    }
+    
 }
