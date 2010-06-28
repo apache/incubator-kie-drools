@@ -1,6 +1,5 @@
 package org.drools.common;
 
-import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -42,15 +41,7 @@ public class DisconnectedFactHandle
     }
     
     public DisconnectedFactHandle(String externalFormat) {
-        String[] elements = externalFormat.split( ":" );
-        if ( elements.length != 5 ) {
-            throw new IllegalArgumentException( "externalFormat did not have enough elements" );
-        }
-        
-        this.id = Integer.parseInt( elements[1] );
-        this.identityHashCode = Integer.parseInt( elements[2] );
-        this.objectHashCode = Integer.parseInt( elements[3] );
-        this.recency = Long.parseLong( elements[4] );
+        createFromExternalFormat(externalFormat);
     }
 
     public int getId() {
@@ -140,7 +131,10 @@ public class DisconnectedFactHandle
     public String getExternalForm() {
     	return toExternalForm();
     }
-
+    
+    public void setExternalForm(String externalForm) {
+    	createFromExternalFormat(externalForm);
+    }
     
     public LeftTuple getFirstLeftTuple() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
@@ -174,5 +168,17 @@ public class DisconnectedFactHandle
     public String toTupleTree(int indent) {
         return null;
     }
+    
+    private void createFromExternalFormat(String externalFormat) {
+		String[] elements = externalFormat.split( ":" );
+        if ( elements.length != 5 ) {
+            throw new IllegalArgumentException( "externalFormat did not have enough elements" );
+        }
+        
+        this.id = Integer.parseInt( elements[1] );
+        this.identityHashCode = Integer.parseInt( elements[2] );
+        this.objectHashCode = Integer.parseInt( elements[3] );
+        this.recency = Long.parseLong( elements[4] );
+	}
 
 }
