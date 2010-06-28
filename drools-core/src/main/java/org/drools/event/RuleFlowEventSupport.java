@@ -189,13 +189,15 @@ public class RuleFlowEventSupport extends AbstractEventSupport<RuleFlowEventList
     }
 
     public void fireBeforeVariableChange(final ProcessInstance instance,
-                                         final String name,
+                                         final String variableId,
+                                         final String variableInstanceId,
                                          final Object value,
                                          WorkingMemory workingMemory) {
         final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value);
+            final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(
+        		instance, variableId, variableInstanceId, value);
 
             do{
                 RuleFlowEventListener listener = iter.next();
@@ -207,13 +209,15 @@ public class RuleFlowEventSupport extends AbstractEventSupport<RuleFlowEventList
     }
 
     public void fireAfterVariableChange(final ProcessInstance instance,
-                                        final String name,
+                                        final String variableId,
+                                        final String variableInstanceId,
                                         final Object value,
                                         WorkingMemory workingMemory) {
         final Iterator<RuleFlowEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-            final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(instance, name, value);
+            final RuleFlowVariableChangeEvent event = new RuleFlowVariableChangeEvent(
+        		instance, variableId, variableInstanceId, value);
 
             do{
                 RuleFlowEventListener listener = iter.next();

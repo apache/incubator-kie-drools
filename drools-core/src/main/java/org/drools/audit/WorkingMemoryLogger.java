@@ -35,6 +35,7 @@ import org.drools.audit.event.RuleBaseLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
+import org.drools.audit.event.RuleFlowVariableLogEvent;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
@@ -69,10 +70,12 @@ import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowEventListener;
+import org.drools.event.RuleFlowEventListenerExtension;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
+import org.drools.event.RuleFlowVariableChangeEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
@@ -103,7 +106,7 @@ public abstract class WorkingMemoryLogger
     implements
     WorkingMemoryEventListener,
     AgendaEventListener,
-    RuleFlowEventListener,
+    RuleFlowEventListenerExtension,
     RuleBaseEventListener {
 
     private List<ILogEventFilter>    filters = new ArrayList<ILogEventFilter>();
@@ -458,6 +461,28 @@ public abstract class WorkingMemoryLogger
                 event.getProcessInstance().getId()) );
     }
     
+    public void beforeVariableChange(RuleFlowVariableChangeEvent event,
+                                     WorkingMemory workingMemory) {
+		filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.BEFORE_VARIABLE_INSTANCE_CHANGED,
+			event.getVariableId(),
+			event.getVariableInstanceId(),
+			event.getProcessInstance().getProcessId(),
+			event.getProcessInstance().getProcessName(),
+			event.getProcessInstance().getId(),
+			event.getValue() == null ? "null" : event.getValue().toString() ));
+    }
+
+    public void afterVariableChange(RuleFlowVariableChangeEvent event,
+                                    WorkingMemory workingMemory) {
+		filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED,
+			event.getVariableId(),
+			event.getVariableInstanceId(),
+			event.getProcessInstance().getProcessId(),
+			event.getProcessInstance().getProcessName(),
+			event.getProcessInstance().getId(),
+			event.getValue() == null ? "null" : event.getValue().toString() ));
+    }
+
     private String createNodeId(NodeInstance nodeInstance) {
     	Node node = ((org.drools.workflow.instance.NodeInstance) nodeInstance).getNode();
     	if (node == null) {
