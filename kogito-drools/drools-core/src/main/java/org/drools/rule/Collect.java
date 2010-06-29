@@ -40,12 +40,12 @@ public class Collect extends ConditionalElement
     implements
     PatternSource {
 
-    private static final long      serialVersionUID = 400L;
+    private static final long         serialVersionUID = 400L;
 
-    private Pattern                sourcePattern;
-    private Pattern                resultPattern;
+    private Pattern                   sourcePattern;
+    private Pattern                   resultPattern;
 
-    private Class<Collection< Object >> cls;
+    private Class<Collection<Object>> cls;
 
     public Collect() {
     }
@@ -69,8 +69,18 @@ public class Collect extends ConditionalElement
     }
 
     public Object clone() {
-        return new Collect( this.sourcePattern,
-                            this.resultPattern );
+        PatternSource source = this.resultPattern.getSource();
+        if ( source == this ) {
+            this.resultPattern.setSource( null );
+        }
+        Pattern clonedResultPattern = (Pattern) this.resultPattern.clone();
+
+        Collect collect = new Collect( (Pattern) this.sourcePattern.clone(),
+                                       clonedResultPattern );
+        if ( source == this ) {
+            collect.getResultPattern().setSource( collect );
+        }
+        return collect;
     }
 
     public Pattern getResultPattern() {
@@ -82,14 +92,16 @@ public class Collect extends ConditionalElement
     }
 
     @SuppressWarnings("unchecked")
-    public Collection< Object > instantiateResultObject(InternalWorkingMemory wm) throws RuntimeDroolsException {
+    public Collection<Object> instantiateResultObject(InternalWorkingMemory wm) throws RuntimeDroolsException {
         try {
             // Collect can only be used with a Collection implementation, so
             // FactTemplateObject type is not allowed
             if ( this.cls == null ) {
                 ClassObjectType objType = ((ClassObjectType) this.resultPattern.getObjectType());
                 String className = determineResultClassName( objType );
-                this.cls = (Class<Collection<Object>>) Class.forName( className, true, ((InternalRuleBase) wm.getRuleBase()).getRootClassLoader() );
+                this.cls = (Class<Collection<Object>>) Class.forName( className,
+                                                                      true,
+                                                                      ((InternalRuleBase) wm.getRuleBase()).getRootClassLoader() );
             }
             return this.cls.newInstance();
         } catch ( final ClassCastException cce ) {

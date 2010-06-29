@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
@@ -96,7 +96,7 @@ public class FromNode extends LeftTupleSource
         Map<Object, RightTuple> matches = null;
         if ( this.tupleMemoryEnabled ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-            matches = new HashMap<Object, RightTuple>();
+            matches = new LinkedHashMap<Object, RightTuple>();
             memory.betaMemory.getCreatedHandles().put( leftTuple,
                                                        matches );
         }
@@ -181,7 +181,7 @@ public class FromNode extends LeftTupleSource
         memory.betaMemory.getLeftTupleMemory().add( leftTuple );
 
         final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().remove( leftTuple );
-        final Map<Object, RightTuple> newMatches = new HashMap<Object, RightTuple>();
+        final Map<Object, RightTuple> newMatches = new LinkedHashMap<Object, RightTuple>();
         memory.betaMemory.getCreatedHandles().put( leftTuple,
                                                    newMatches );
 

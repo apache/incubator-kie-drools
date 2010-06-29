@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -81,7 +82,6 @@ public class SerializationHelper {
         // bytes should be the same.
         if ( !areByteArraysEqual( b1,
                                   b2 ) ) {
-
             throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
         }
 
@@ -145,6 +145,7 @@ public class SerializationHelper {
     public static boolean areByteArraysEqual(byte[] b1,
                                              byte[] b2) {
         if ( b1.length != b2.length ) {
+            System.out.println( "Different length: b1=" + b1.length + " b2=" + b2.length );
             return false;
         }
 
@@ -157,4 +158,5 @@ public class SerializationHelper {
 
         return true;
     }
+    
 }

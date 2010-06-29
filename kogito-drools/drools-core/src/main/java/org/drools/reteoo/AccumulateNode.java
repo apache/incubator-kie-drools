@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuntimeDroolsException;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;

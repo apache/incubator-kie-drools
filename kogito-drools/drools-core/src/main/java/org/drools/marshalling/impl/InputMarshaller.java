@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 
@@ -51,6 +52,7 @@ import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
@@ -371,7 +373,8 @@ public class InputMarshaller {
                                       InternalFactHandle factHandle) throws IOException {
         ObjectInputStream stream = context.stream;
 
-        RightTupleSink sink = (RightTupleSink) context.sinks.get( stream.readInt() );
+        int sinkId = stream.readInt();
+        RightTupleSink sink = (sinkId >= 0) ? (RightTupleSink) context.sinks.get( sinkId ) : null;
 
         RightTuple rightTuple = new RightTuple( factHandle,
                                                 sink );
@@ -379,18 +382,20 @@ public class InputMarshaller {
                                                     sink ),
                                  rightTuple );
 
-        BetaMemory memory = null;
-        switch ( sink.getType() ) {
-            case NodeTypeEnums.AccumulateNode : {
-                memory = ((AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink )).betaMemory;
-                break;
+        if( sink != null ) {
+            BetaMemory memory = null;
+            switch ( sink.getType() ) {
+                case NodeTypeEnums.AccumulateNode : {
+                    memory = ((AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink )).betaMemory;
+                    break;
+                }
+                default : {
+                    memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                    break;
+                }
             }
-            default : {
-                memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
-                break;
-            }
+            memory.getRightTupleMemory().add( rightTuple );
         }
-        memory.getRightTupleMemory().add( rightTuple );
     }
 
     public static void readLeftTuples(MarshallerReaderContext context) throws IOException,
@@ -568,6 +573,40 @@ public class InputMarshaller {
                 readRightTuples( handle, context );
                 
                 stream.readShort(); // Persistence.END
+                break;
+            }
+            case NodeTypeEnums.FromNode: {
+//              context.out.println( "FromNode" );
+                // FNs generate new fact handles on-demand to wrap objects and need special procedures when serializing to persistent storage
+                FromMemory memory = (FromMemory) context.wm.getNodeMemory( (NodeMemory) sink );
+                
+                memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );                
+                Map<Object, RightTuple> matches =  new LinkedHashMap<Object, RightTuple>();
+                memory.betaMemory.getCreatedHandles().put( parentLeftTuple, matches );
+                
+                while( stream.readShort() == PersisterEnums.FACT_HANDLE ) {
+                    // we de-serialize the generated fact handle ID
+                    InternalFactHandle handle = readFactHandle( context );
+                    context.handles.put( handle.getId(),
+                                         handle );
+                    readRightTuples( handle, 
+                                     context );
+                    matches.put( handle.getObject(), handle.getFirstRightTuple() );
+                }
+                while( stream.readShort() == PersisterEnums.RIGHT_TUPLE ) {
+                    LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                    int factHandleId = stream.readInt();
+                    RightTupleKey key = new RightTupleKey( factHandleId,
+                                                           null ); // created tuples in from node always use null sink
+                    RightTuple rightTuple = context.rightTuples.get( key );
+                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
+                                                              rightTuple,
+                                                              childSink,
+                                                              true );
+                    readLeftTuple( childLeftTuple,
+                                   context );
+                }
+//                context.out.println( "FromNode   ---   END" );
                 break;
             }
             case NodeTypeEnums.RuleTerminalNode : {
