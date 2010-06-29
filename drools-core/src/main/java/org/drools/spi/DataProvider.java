@@ -6,10 +6,13 @@ import java.util.Iterator;
 import org.drools.rule.Declaration;
 import org.drools.WorkingMemory;
 
-public interface DataProvider extends Serializable, Cloneable {
+public interface DataProvider
+    extends
+    Serializable,
+    Cloneable {
 
     public Declaration[] getRequiredDeclarations();
-    
+
     public Object createContext();
 
     public Iterator getResults(Tuple tuple,
@@ -18,5 +21,8 @@ public interface DataProvider extends Serializable, Cloneable {
                                Object providerContext);
 
     public DataProvider clone();
+
+    public void replaceDeclaration(Declaration declaration,
+                                   Declaration resolved);
 
 }

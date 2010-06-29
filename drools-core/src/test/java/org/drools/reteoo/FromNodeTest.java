@@ -40,16 +40,17 @@ import org.drools.spi.Tuple;
 public class FromNodeTest extends TestCase {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
-    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    private ReteooRuleBase ruleBase;
-    private BuildContext buildContext;
+    ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
+    private ReteooRuleBase       ruleBase;
+    private BuildContext         buildContext;
 
     protected void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
 
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        buildContext = new BuildContext( ruleBase, new ReteooBuilder.IdGenerator() );
+        buildContext = new BuildContext( ruleBase,
+                                         new ReteooBuilder.IdGenerator() );
     }
 
     public void testAlphaNode() {
@@ -58,15 +59,17 @@ public class FromNodeTest extends TestCase {
                                                                        null,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1, ruleBase );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           ruleBase );
 
         final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                                  "type",
-                                                                  getClass().getClassLoader() );
+                                                            "type",
+                                                            getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
+                                                                    equals.getEvaluator( ValueType.STRING_TYPE,
+                                                                                         Operator.EQUAL ),
                                                                     field );
 
         final List list = new ArrayList();
@@ -91,11 +94,12 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from,
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle,
+                                                from,
                                                 true );
         from.assertLeftTuple( tuple1,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         // nothing should be asserted, as cheese1 is cheddar and we are filtering on stilton
         assertEquals( 0,
@@ -106,11 +110,12 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from,
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle,
+                                                from,
                                                 true );
         from.assertLeftTuple( tuple2,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         final List asserted = sink.getAsserted();
         assertEquals( 1,
@@ -125,11 +130,12 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from,
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle,
+                                                from,
                                                 true );
         from.assertLeftTuple( tuple3,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         assertEquals( 3,
                       asserted.size() );
@@ -159,12 +165,12 @@ public class FromNodeTest extends TestCase {
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
-                                                                       "price",
-                                                                       getClass().getClassLoader() );
+                                                                 "price",
+                                                                 getClass().getClassLoader() );
 
         final ClassFieldReader ageExtractor = store.getReader( Person.class,
-                                                                     "age",
-                                                                     getClass().getClassLoader() );
+                                                               "age",
+                                                               getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Person.class ) );
@@ -175,7 +181,8 @@ public class FromNodeTest extends TestCase {
 
         final VariableConstraint variableConstraint = new VariableConstraint( priceExtractor,
                                                                               declaration,
-                                                                              equals.getEvaluator( ValueType.PINTEGER_TYPE, Operator.EQUAL ) );
+                                                                              equals.getEvaluator( ValueType.PINTEGER_TYPE,
+                                                                                                   Operator.EQUAL ) );
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
         configuration.setIndexRightBetaMemory( false );
         configuration.setIndexLeftBetaMemory( false );
@@ -204,11 +211,12 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from,
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle,
+                                                from,
                                                 true );
         from.assertLeftTuple( tuple1,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         // nothing should be asserted, as cheese1 is cheddar and we are filtering on stilton
         assertEquals( 0,
@@ -219,11 +227,12 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from,
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle,
+                                                from,
                                                 true );
         from.assertLeftTuple( tuple2,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         final List asserted = sink.getAsserted();
         assertEquals( 1,
@@ -238,11 +247,12 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from,
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle,
+                                                from,
                                                 true );
         from.assertLeftTuple( tuple3,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         assertEquals( 3,
                       asserted.size() );
@@ -270,12 +280,13 @@ public class FromNodeTest extends TestCase {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                                  "type",
-                                                                  getClass().getClassLoader() );
+                                                            "type",
+                                                            getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
+                                                                    equals.getEvaluator( ValueType.STRING_TYPE,
+                                                                                         Operator.EQUAL ),
                                                                     field );
 
         final List list = new ArrayList();
@@ -302,11 +313,12 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx2",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple = new LeftTuple( (DefaultFactHandle) person1Handle, from,
+        final LeftTuple tuple = new LeftTuple( (DefaultFactHandle) person1Handle,
+                                               from,
                                                true );
         from.assertLeftTuple( tuple,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         assertEquals( 2,
                       asserted.size() );
@@ -316,10 +328,9 @@ public class FromNodeTest extends TestCase {
                       memory.betaMemory.getLeftTupleMemory().size() );
         assertNull( memory.betaMemory.getRightTupleMemory() );
         RightTuple rightTuple2 = tuple.firstChild.getRightParent();
-        RightTuple rightTuple1= tuple.firstChild.getLeftParentNext().getRightParent();
+        RightTuple rightTuple1 = tuple.firstChild.getLeftParentNext().getRightParent();
         assertFalse( rightTuple1.equals( rightTuple2 ) );
         assertNull( tuple.firstChild.getLeftParentNext().getLeftParentNext() );
-
 
         final InternalFactHandle handle2 = rightTuple2.getFactHandle();
         final InternalFactHandle handle1 = rightTuple1.getFactHandle();
@@ -329,8 +340,8 @@ public class FromNodeTest extends TestCase {
                       cheese1 );
 
         from.retractLeftTuple( tuple,
-                           context,
-                           workingMemory );
+                               context,
+                               workingMemory );
         assertEquals( 0,
                       memory.betaMemory.getLeftTupleMemory().size() );
         assertNull( memory.betaMemory.getRightTupleMemory() );
@@ -341,8 +352,8 @@ public class FromNodeTest extends TestCase {
         DataProvider {
 
         private static final long serialVersionUID = -6003158511821491524L;
-        
-        private Collection collection;
+
+        private Collection        collection;
 
         public Declaration[] getRequiredDeclarations() {
             return null;
@@ -355,16 +366,20 @@ public class FromNodeTest extends TestCase {
         public Iterator getResults(final Tuple tuple,
                                    final WorkingMemory wm,
                                    final PropagationContext ctx,
-                                   final Object providerContext ) {
+                                   final Object providerContext) {
             return this.collection.iterator();
         }
 
         public Object createContext() {
             return null;
         }
-        
+
         public DataProvider clone() {
             return this;
+        }
+
+        public void replaceDeclaration(Declaration declaration,
+                                       Declaration resolved) {
         }
     }
 

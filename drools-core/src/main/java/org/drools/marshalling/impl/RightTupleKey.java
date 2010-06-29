@@ -28,7 +28,7 @@ public class RightTupleKey {
         final int prime = 31;
         int result = 1;
         result = prime * result + id;
-        result = prime * result + sink.getId();
+        result = prime * result + ((sink!=null) ? sink.getId() : 17 );
         return result;
     }
 
@@ -43,6 +43,11 @@ public class RightTupleKey {
             if ( other.sink != null ) return false;
         } else if ( sink.getId() != other.sink.getId() ) return false;
         return true;
+    }
+    
+    @Override
+    public String toString() {
+        return "RightTupleKey( id="+id+" sink="+sink+" )";
     }
 
 }

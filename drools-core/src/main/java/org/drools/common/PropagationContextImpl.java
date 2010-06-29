@@ -20,12 +20,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.util.ObjectHashMap;
+import org.drools.FactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.FactHandle;
-import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
 public class PropagationContextImpl
@@ -49,6 +47,8 @@ public class PropagationContextImpl
     public int                 dormantActivations;
 
     private EntryPoint         entryPoint;
+    
+    private int                originOffset;
 
     public PropagationContextImpl() {
 
@@ -67,6 +67,7 @@ public class PropagationContextImpl
         this.activeActivations = 0;
         this.dormantActivations = 0;
         this.entryPoint = EntryPoint.DEFAULT;
+        this.originOffset = -1;
     }
 
     public PropagationContextImpl(final long number,
@@ -85,6 +86,7 @@ public class PropagationContextImpl
         this.activeActivations = activeActivations;
         this.dormantActivations = dormantActivations;
         this.entryPoint = entryPoint;
+        this.originOffset = -1;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -96,6 +98,7 @@ public class PropagationContextImpl
         this.rule = (Rule) in.readObject();
         this.leftTuple = (LeftTuple) in.readObject();
         this.entryPoint = (EntryPoint) in.readObject();
+        this.originOffset = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -106,6 +109,7 @@ public class PropagationContextImpl
         out.writeObject( this.rule );
         out.writeObject( this.leftTuple );
         out.writeObject( this.entryPoint );
+        out.writeInt( this.originOffset );
     }
 
     public long getPropagationNumber() {
@@ -176,4 +180,13 @@ public class PropagationContextImpl
     public void setFactHandle(InternalFactHandle factHandle) {
         this.factHandle = factHandle;
     }
+    
+    public int getOriginOffset() {
+        return originOffset;
+    }
+
+    public void setOriginOffset(int originOffset) {
+        this.originOffset = originOffset;
+    }
+
 }

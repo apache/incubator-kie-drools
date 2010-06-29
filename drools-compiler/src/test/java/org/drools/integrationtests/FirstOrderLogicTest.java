@@ -1318,4 +1318,39 @@ public class FirstOrderLogicTest extends TestCase {
 
     }
 
+    public void testCollectFromMVELAfterOr() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectFromMVELAfterOr.drl" ) );
+        RuleBase ruleBase = loadRuleBase( reader );
+
+        StatefulSession wm = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        Person jill = new Person( "jill" );
+
+        Person bob = new Person( "bob" );
+        List addresses = new ArrayList();
+        addresses.add( new Address( "a" ) );
+        addresses.add( new Address( "b" ) );
+        addresses.add( new Address( "c" ) );
+        bob.setAddresses( addresses );
+
+        wm.insert( jill );
+        wm.insert( bob );
+
+        wm = SerializationHelper.getSerialisedStatefulSession( wm );
+        results = (List) wm.getGlobal( "results" );
+
+        wm.fireAllRules();
+
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Collection) results.get( 0 )).size() );
+    }
+
 }

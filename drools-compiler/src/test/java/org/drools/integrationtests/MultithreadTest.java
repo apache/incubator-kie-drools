@@ -85,7 +85,7 @@ public class MultithreadTest extends TestCase {
     }
     
     public void testRuleBaseConcurrentCompilation() {
-        final int THREAD_COUNT = 100;
+        final int THREAD_COUNT = 30;
         try {
             boolean success = true;
             final PackageBuilder builder = new PackageBuilder();

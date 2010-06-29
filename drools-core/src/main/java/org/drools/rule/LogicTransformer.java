@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.drools.spi.Constraint;
+import org.drools.spi.DataProvider;
 import org.drools.spi.DeclarationScopeResolver;
 
 /**
@@ -75,8 +76,7 @@ class LogicTransformer {
 
     public GroupElement[] transform(final GroupElement cloned) throws InvalidPatternException {
         //moved cloned to up
-    	//final GroupElement cloned = (GroupElement) and.clone();
-        
+        //final GroupElement cloned = (GroupElement) and.clone();
 
         processTree( cloned );
         cloned.pack();
@@ -157,11 +157,12 @@ class LogicTransformer {
                 Constraint constraint = (Constraint) next;
                 Declaration[] decl = constraint.getRequiredDeclarations();
                 for ( int i = 0; i < decl.length; i++ ) {
-                    Declaration resolved = resolver.getDeclaration(null, decl[i].getIdentifier() );
+                    Declaration resolved = resolver.getDeclaration( null,
+                                                                    decl[i].getIdentifier() );
                     if ( resolved != null && resolved != decl[i] ) {
                         constraint.replaceDeclaration( decl[i],
                                                        resolved );
-                    } else if( resolved == null ) {
+                    } else if ( resolved == null ) {
                         // it is probably an implicit declaration, so find the corresponding pattern
                         Pattern old = decl[i].getPattern();
                         Pattern current = resolver.findPatternByIndex( old.getIndex() );
@@ -169,7 +170,8 @@ class LogicTransformer {
                             resolved = new Declaration( decl[i].getIdentifier(),
                                                         decl[i].getExtractor(),
                                                         current );
-                            constraint.replaceDeclaration( decl[i], resolved );
+                            constraint.replaceDeclaration( decl[i],
+                                                           resolved );
                         }
                     }
                 }
@@ -177,10 +179,33 @@ class LogicTransformer {
         } else if ( element instanceof EvalCondition ) {
             Declaration[] decl = ((EvalCondition) element).getRequiredDeclarations();
             for ( int i = 0; i < decl.length; i++ ) {
-                Declaration resolved = resolver.getDeclaration(null, decl[i].getIdentifier() );
+                Declaration resolved = resolver.getDeclaration( null,
+                                                                decl[i].getIdentifier() );
                 if ( resolved != null && resolved != decl[i] ) {
                     ((EvalCondition) element).replaceDeclaration( decl[i],
                                                                   resolved );
+                }
+            }
+        } else if ( element instanceof From ) {
+            DataProvider provider = ((From) element).getDataProvider();
+            Declaration[] decl = provider.getRequiredDeclarations();
+            for ( int i = 0; i < decl.length; i++ ) {
+                Declaration resolved = resolver.getDeclaration( null,
+                                                                decl[i].getIdentifier() );
+                if ( resolved != null && resolved != decl[i] ) {
+                    provider.replaceDeclaration( decl[i],
+                                                 resolved );
+                } else if ( resolved == null ) {
+                    // it is probably an implicit declaration, so find the corresponding pattern
+                    Pattern old = decl[i].getPattern();
+                    Pattern current = resolver.findPatternByIndex( old.getIndex() );
+                    if ( current != null && old != current ) {
+                        resolved = new Declaration( decl[i].getIdentifier(),
+                                                    decl[i].getExtractor(),
+                                                    current );
+                        provider.replaceDeclaration( decl[i],
+                                                     resolved );
+                    }
                 }
             }
         } else {
