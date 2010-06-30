@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
@@ -101,7 +102,7 @@ public class EntryPointNode extends ObjectSource
                objectSource,
                999 ); // irrelevant for this node, since it overrides sink management
         this.entryPoint = entryPoint;
-        this.objectTypeNodes = new HashMap<ObjectType, ObjectTypeNode>();
+        this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
     }
 
     // ------------------------------------------------------------

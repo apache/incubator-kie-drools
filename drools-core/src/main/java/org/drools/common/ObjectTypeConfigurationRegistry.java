@@ -39,14 +39,8 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         
         // first see if it's a ClassObjectTypeConf        
         ObjectTypeConf objectTypeConf = null;
-        Class<?> cls = null;
-        if ( object instanceof Fact ) {
-            String key = ((Fact) object).getFactTemplate().getName();
-            objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( key );            
-        } else {
-            cls = object.getClass();
-            objectTypeConf = this.typeConfMap.get( cls );            
-        }                       
+        Object key = ( object instanceof Fact ) ? ((Fact) object).getFactTemplate().getName() : object.getClass();
+        objectTypeConf = this.typeConfMap.get( key );            
         
         // it doesn't exist, so create it.
         if ( objectTypeConf == null ) {
@@ -54,16 +48,17 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
                 objectTypeConf = new FactTemplateTypeConf( entrypoint,
                                                            ((Fact) object).getFactTemplate(),
                                                            this.ruleBase );           
-                this.typeConfMap.put( ((Fact) object).getFactTemplate().getName(), 
-                                      objectTypeConf );
             } else {
                 objectTypeConf = new ClassObjectTypeConf( entrypoint,
-                                                          cls,
+                                                          (Class<?>) key,
                                                           this.ruleBase );
-                this.typeConfMap.put( cls, objectTypeConf );
             }            
         }
-
+        ObjectTypeConf existing = this.typeConfMap.putIfAbsent( key, objectTypeConf );
+        if ( existing != null ) {
+            // Raced, take the (now) existing.
+            objectTypeConf = existing;
+        }
         return objectTypeConf;
     }
 
