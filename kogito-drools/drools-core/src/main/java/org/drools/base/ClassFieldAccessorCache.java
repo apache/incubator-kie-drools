@@ -4,16 +4,17 @@ import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.core.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorCache {
 
-    private Map<ClassLoader, CacheEntry>   cacheByClassLoader;
+    private Map<ClassLoader, CacheEntry> cacheByClassLoader;
 
-    private ClassLoader                    classLoader;
-
+    private ClassLoader                  classLoader;
 
     public ClassFieldAccessorCache(ClassLoader classLoader) {
         //        lookup = new HashMap<AccessorKey, LookupEntry>();
@@ -28,25 +29,29 @@ public class ClassFieldAccessorCache {
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
-    
+
     public ClassObjectType getClassObjectType(ClassObjectType objectType) {
         // always lookup the class, as the ClassObjectType might refer to the class from another ClassLoader
         Class cls = getClass( objectType.getClassName() );
         CacheEntry cache = getCacheEntry( cls );
-        return cache.getClassObjectType( cls, objectType );                
+        return cache.getClassObjectType( cls,
+                                         objectType );
     }
-    
+
     public static class ClassObjectTypeKey {
-        private Class cls;
+        private Class   cls;
         private boolean event;
+
         public ClassObjectTypeKey(Class cls,
                                   boolean event) {
             this.cls = cls;
             this.event = event;
         }
+
         public Class getCls() {
             return cls;
         }
+
         public boolean isEvent() {
             return event;
         }
@@ -71,8 +76,6 @@ public class ClassFieldAccessorCache {
             return true;
         }
 
-        
-        
     }
 
     public BaseClassFieldReader getReadAcessor(ClassFieldReader reader) {
@@ -92,29 +95,28 @@ public class ClassFieldAccessorCache {
     public BaseClassFieldWriter getWriteAcessor(ClassFieldWriter writer) {
         String className = writer.getClassName();
         String fieldName = writer.getFieldName();
-        
+
         Class cls = getClass( className );
         CacheEntry cache = getCacheEntry( cls );
-        
+
         // get the ReaderAccessor for this key
         return cache.getWriteAccessor( new AccessorKey( className,
                                                         fieldName,
                                                         AccessorKey.AccessorType.FieldAccessor ),
                                        cls );
     }
-    
-    public Class getClass(String className) { 
+
+    public Class getClass(String className) {
         try {
             return this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeDroolsException( "Unable to resolve class '" + className + "'" );
         }
-    }    
-        
+    }
+
     public CacheEntry getCacheEntry(Class cls) {
         // System classloader classes return null on some JVMs
-        ClassLoader cl = cls.getClassLoader() != null ? 
-        		         cls.getClassLoader() : this.classLoader;
+        ClassLoader cl = cls.getClassLoader() != null ? cls.getClassLoader() : this.classLoader;
 
         CacheEntry cache = this.cacheByClassLoader.get( cl );
         if ( cache == null ) {
@@ -123,18 +125,18 @@ public class ClassFieldAccessorCache {
             this.cacheByClassLoader.put( cl,
                                          cache );
         }
-        
+
         return cache;
     }
 
     public static class CacheEntry {
-        private ByteArrayClassLoader                         byteArrayClassLoader;
-        private final Map<AccessorKey, BaseClassFieldReader> readCache   = new HashMap<AccessorKey, BaseClassFieldReader>();
-        private final Map<AccessorKey, BaseClassFieldWriter> writeCache  = new HashMap<AccessorKey, BaseClassFieldWriter>();
+        private ByteArrayClassLoader                                     byteArrayClassLoader;
+        private final ConcurrentMap<AccessorKey, BaseClassFieldReader>   readCache   = new ConcurrentHashMap<AccessorKey, BaseClassFieldReader>();
+        private final ConcurrentMap<AccessorKey, BaseClassFieldWriter>   writeCache  = new ConcurrentHashMap<AccessorKey, BaseClassFieldWriter>();
 
-        private final Map<Class< ? >, ClassFieldInspector>   inspectors  = new HashMap<Class< ? >, ClassFieldInspector>();
+        private final ConcurrentMap<Class< ? >, ClassFieldInspector>     inspectors  = new ConcurrentHashMap<Class< ? >, ClassFieldInspector>();
 
-        private final Map<ClassObjectTypeKey, ClassObjectType>       objectTypes = new HashMap<ClassObjectTypeKey, ClassObjectType>();
+        private final ConcurrentMap<ClassObjectTypeKey, ClassObjectType> objectTypes = new ConcurrentHashMap<ClassObjectTypeKey, ClassObjectType>();
 
         public CacheEntry(ClassLoader parentClassLoader) {
             if ( parentClassLoader == null ) {
@@ -142,7 +144,7 @@ public class ClassFieldAccessorCache {
             }
             this.byteArrayClassLoader = new ByteArrayClassLoader( parentClassLoader );
         }
-        
+
         public ByteArrayClassLoader getByteArrayClassLoader() {
             return byteArrayClassLoader;
         }
@@ -154,8 +156,12 @@ public class ClassFieldAccessorCache {
                 reader = ClassFieldAccessorFactory.getInstance().getClassFieldReader( cls,
                                                                                       key.getFieldName(),
                                                                                       this );
-                this.readCache.put( key,
-                                    reader );
+                BaseClassFieldReader existingReader = this.readCache.putIfAbsent( key,
+                                                                                  reader );
+                if ( existingReader != null ) {
+                    // Raced, use the (now) existing entry
+                    reader = existingReader;
+                }
             }
 
             return reader;
@@ -163,34 +169,42 @@ public class ClassFieldAccessorCache {
 
         public BaseClassFieldWriter getWriteAccessor(AccessorKey key,
                                                      Class cls) {
-            BaseClassFieldWriter reader = this.writeCache.get( key );
-            if ( reader == null ) {
-                reader = ClassFieldAccessorFactory.getInstance().getClassFieldWriter( cls,
+            BaseClassFieldWriter writer = this.writeCache.get( key );
+            if ( writer == null ) {
+                writer = ClassFieldAccessorFactory.getInstance().getClassFieldWriter( cls,
                                                                                       key.getFieldName(),
                                                                                       this );
-                this.writeCache.put( key,
-                                     reader );
+                BaseClassFieldWriter existingWriter = this.writeCache.putIfAbsent( key,
+                                                                                   writer );
+                if ( existingWriter != null ) {
+                    // Raced, use the (now) existing entry
+                    writer = existingWriter;
+                }
             }
 
-            return reader;
+            return writer;
         }
 
         public Map<Class< ? >, ClassFieldInspector> getInspectors() {
             return inspectors;
         }
-        
-        public ClassObjectType getClassObjectType(Class cls, ClassObjectType objectType) {
-            ClassObjectTypeKey key = new ClassObjectTypeKey(cls, objectType.isEvent() );            
+
+        public ClassObjectType getClassObjectType(Class<?> cls,
+                                                  ClassObjectType objectType) {
+            ClassObjectTypeKey key = new ClassObjectTypeKey( cls,
+                                                             objectType.isEvent() );
             ClassObjectType existing = objectTypes.get( key );
-            
-            if ( existing != null ) {
-                objectType = existing;
-            } else {
+
+            if ( existing == null ) {
                 objectType.setClassType( cls ); // most likely set, but set anyway.
-                objectTypes.put(  key, objectType );
+                existing = objectTypes.putIfAbsent( key, objectType );
+                if ( existing == null ) {
+                    // Not raced, use the one we created.
+                    existing = objectType;
+                }
             }
-            
-            return objectType;            
+
+            return existing;
         }
 
     }
