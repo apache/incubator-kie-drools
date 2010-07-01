@@ -5,6 +5,7 @@ import java.util.jar.JarInputStream;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
+import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
 
 public interface Verifier {
@@ -20,7 +21,7 @@ public interface Verifier {
     /**
      * Give model info optionally as a jar. This way verifier doesn't have to figure out the field types.
      */
-     public void addObjectModel(JarInputStream jar);
+    public void addObjectModel(JarInputStream jar);
 
     /**
      * 
@@ -29,6 +30,8 @@ public interface Verifier {
      * @return true if everything worked.
      */
     public boolean fireAnalysis();
+
+    public boolean fireAnalysis(ScopesAgendaFilter scopesAgendaFilter);
 
     public VerifierReport getResult();
 

@@ -8,7 +8,6 @@ import java.util.jar.JarInputStream;
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderErrors;
 import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
@@ -98,6 +97,15 @@ public class VerifierImpl
      * @see org.drools.verifier.Verifier#fireAnalysis()
      */
     public boolean fireAnalysis() {
+        return analyse( new ScopesAgendaFilter( true,
+                                                ScopesAgendaFilter.ALL_SCOPES ) );
+    }
+
+    public boolean fireAnalysis(ScopesAgendaFilter scopesAgendaFilter) {
+        return analyse( scopesAgendaFilter );
+    }
+
+    private boolean analyse(ScopesAgendaFilter scopesAgendaFilter) {
         try {
 
             if ( this.verifierKnowledgeBase == null ) {
@@ -114,9 +122,7 @@ public class VerifierImpl
             // Object that returns the results.
             ksession.setGlobal( "result",
                                 result );
-            ksession.fireAllRules( new MetaDataAgendaFilter( conf.acceptRulesWithoutVerifiyingScope(),
-                                                             "verifying_scopes",
-                                                             conf.getVerifyingScopes() ) );
+            ksession.fireAllRules( scopesAgendaFilter );
 
         } catch ( Throwable t ) {
             t.printStackTrace();

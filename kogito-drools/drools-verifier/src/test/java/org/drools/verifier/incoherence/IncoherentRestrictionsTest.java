@@ -13,7 +13,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.Verifier;
-import org.drools.verifier.VerifierConfiguration;
+import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.Pattern;
@@ -49,9 +49,6 @@ public class IncoherentRestrictionsTest extends TestBase {
         str += "end";
 
         DefaultVerifierConfiguration conf = new DefaultVerifierConfiguration();
-        conf.getVerifyingScopes().clear();
-        conf.getVerifyingScopes().add( VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
-        conf.setAcceptRulesWithoutVerifiyingScope( true );
         Verifier verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier( conf );
         verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( str ) ),
                                        ResourceType.DRL );
@@ -60,7 +57,8 @@ public class IncoherentRestrictionsTest extends TestBase {
         assertEquals( 0,
                       verifier.getErrors().size() );
 
-        boolean works = verifier.fireAnalysis();
+        boolean works = verifier.fireAnalysis( new ScopesAgendaFilter( true,
+                                                                       ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
 
         assertTrue( works );
 
