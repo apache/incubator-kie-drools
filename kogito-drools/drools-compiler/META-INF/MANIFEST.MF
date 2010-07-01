@@ -42,12 +42,12 @@ Private-Package: org.drools.commons.jci.problems;version="5.1.0.SNAPSH
  .dsl;version="5.1.0.SNAPSHOT"
 Tool: Bnd-0.0.357
 Bundle-Name: Drools :: Compiler
-Created-By: 1.6.0_18 (Sun Microsystems Inc.)
+Created-By: 1.6.0_20 (Apple Inc.)
 Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1275904975141
+Bnd-LastModified: 1277898071940
 Bundle-Activator: org.drools.osgi.compiler.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system

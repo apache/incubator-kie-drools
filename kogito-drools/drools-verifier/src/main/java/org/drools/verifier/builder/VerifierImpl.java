@@ -1,17 +1,15 @@
 package org.drools.verifier.builder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
 import org.drools.KnowledgeBase;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderErrors;
 import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -42,11 +40,13 @@ public class VerifierImpl
 
     private final VerifierConfiguration conf;
 
-    private List<VerifierError>         errors = new ArrayList<VerifierError>();
+    private List<VerifierError>         errors                 = new ArrayList<VerifierError>();
 
-    private VerifierReport              result = VerifierReportFactory.newVerifierReport();
+    private VerifierReport              result                 = VerifierReportFactory.newVerifierReport();
 
-    private List<JarInputStream>        jars   = new ArrayList<JarInputStream>();
+    private List<JarInputStream>        jars                   = new ArrayList<JarInputStream>();
+
+    private VerifierPackageBuilder      verifierPackageBuilder = new VerifierPackageBuilder();
 
     public VerifierImpl(VerifierConfiguration conf) {
         this.conf = conf;
@@ -171,50 +171,26 @@ public class VerifierImpl
     public void addResourcesToVerify(Resource resource,
                                      ResourceType type) {
 
-        // TODO: Other than DRL
-        if ( type.matchesExtension( ".drl" ) ) {
-            DrlParser drlParser = new DrlParser();
+        verifierPackageBuilder.addKnowledgeResource( resource,
+                                                     type,
+                                                     null );
 
-            try {
+        if ( verifierPackageBuilder.hasErrors() ) {
+            addVerifierErrors( verifierPackageBuilder.getErrors() );
+        }
 
-                BufferedReader reader = new BufferedReader( resource.getReader() );
+        PackageDescr pkg = verifierPackageBuilder.getPackageDescr();
+        if ( pkg != null ) {
+            addPackageDescr( pkg );
 
-                StringBuffer drl = new StringBuffer( "" );
-                String line = null;
-                do {
-                    line = reader.readLine();
-                    if ( line != null ) {
-                        drl.append( line );
-                        drl.append( "\n" );
-
-                    }
-                } while ( line != null );
-
-                PackageDescr pkg = drlParser.parse( drl.toString() );
-
-                if ( drlParser.hasErrors() ) {
-                    addVerifierErrors( drlParser );
-                } else if ( pkg == null ) {
-                    errors.add( new VerifierError( "Verifier could not form a PackageDescr from the resources that it was trying to verify." ) );
-                } else {
-                    addPackageDescr( pkg );
-
-                    addDrlData( drl.toString() );
-                }
-
-                reader.close();
-
-            } catch ( DroolsParserException e ) {
-                errors.add( new VerifierError( e.getMessage() ) );
-            } catch ( IOException e ) {
-                errors.add( new VerifierError( e.getMessage() ) );
-            }
+        } else {
+            errors.add( new VerifierError( "Verifier could not form a PackageDescr from the resources that it was trying to verify." ) );
         }
     }
 
-    private void addVerifierErrors(DrlParser p) {
-        for ( DroolsError droolsError : p.getErrors() ) {
-            errors.add( new VerifierError( droolsError.getMessage() ) );
+    private void addVerifierErrors(PackageBuilderErrors packageBuilderErrors) {
+        for ( KnowledgeBuilderError knowledgeBuilderError : packageBuilderErrors ) {
+            errors.add( new VerifierError( knowledgeBuilderError.getMessage() ) );
         }
     }
 
