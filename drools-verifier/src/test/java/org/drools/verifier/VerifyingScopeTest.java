@@ -1,9 +1,12 @@
 package org.drools.verifier;
 
+import java.util.Collections;
+
 import junit.framework.TestCase;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
@@ -26,8 +29,6 @@ public class VerifyingScopeTest extends TestCase {
                                                                            Verifier.class ),
                                                     ResourceType.DRL );
 
-        vConfiguration.addVerifyingScopes( VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE );
-
         Verifier verifier = vBuilder.newVerifier( vConfiguration );
 
         verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
@@ -38,7 +39,8 @@ public class VerifyingScopeTest extends TestCase {
         assertEquals( 0,
                       verifier.getErrors().size() );
 
-        boolean works = verifier.fireAnalysis();
+        boolean works = verifier.fireAnalysis( new ScopesAgendaFilter( true,
+                                                                       ScopesAgendaFilter.VERIFYING_SCOPE_SINGLE_RULE ) );
 
         if ( !works ) {
             for ( VerifierError error : verifier.getErrors() ) {
@@ -84,7 +86,8 @@ public class VerifyingScopeTest extends TestCase {
         assertEquals( 0,
                       verifier.getErrors().size() );
 
-        boolean works = verifier.fireAnalysis();
+        boolean works = verifier.fireAnalysis( new ScopesAgendaFilter( true,
+                                                                       Collections.EMPTY_LIST));
 
         assertTrue( works );
 
@@ -114,9 +117,6 @@ public class VerifyingScopeTest extends TestCase {
                                                                            Verifier.class ),
                                                     ResourceType.DRL );
 
-        vConfiguration.addVerifyingScopes( VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE );
-        vConfiguration.setAcceptRulesWithoutVerifiyingScope( false );
-
         Verifier verifier = vBuilder.newVerifier( vConfiguration );
 
         verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
@@ -127,7 +127,8 @@ public class VerifyingScopeTest extends TestCase {
         assertEquals( 0,
                       verifier.getErrors().size() );
 
-        boolean works = verifier.fireAnalysis();
+        boolean works = verifier.fireAnalysis( new ScopesAgendaFilter( false,
+                                                                       ScopesAgendaFilter.VERIFYING_SCOPE_DECISION_TABLE ) );
 
         assertTrue( works );
 
