@@ -22,7 +22,7 @@ public class VerifierKnowledgeBaseBuilder {
 
     private List<VerifierError> errors = new ArrayList<VerifierError>();
 
-    public KnowledgeBase newVerifierKnowledgeBase(VerifierConfiguration conf) {
+    public KnowledgeBase newVerifierKnowledgeBase(VerifierConfiguration configuration) {
 
         KnowledgeBase verifierKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -32,10 +32,10 @@ public class VerifierKnowledgeBaseBuilder {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbuilderConfiguration );
 
-        if ( conf.getVerifyingResources() != null ) {
-            for ( Resource resource : conf.getVerifyingResources().keySet() ) {
+        if ( configuration.getVerifyingResources() != null ) {
+            for ( Resource resource : configuration.getVerifyingResources().keySet() ) {
                 kbuilder.add( resource,
-                              conf.getVerifyingResources().get( resource ) );
+                              configuration.getVerifyingResources().get( resource ) );
             }
         }
 

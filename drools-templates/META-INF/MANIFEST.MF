@@ -8,12 +8,12 @@ Export-Package: org.drools.template.model;version="5.1.0.SNAPSHOT",org
  rser,org.drools.template.objects";version="5.1.0.SNAPSHOT"
 Tool: Bnd-0.0.357
 Bundle-Name: Drools :: Templates
-Created-By: 1.6.0_18 (Sun Microsystems Inc.)
+Created-By: 1.6.0_20 (Apple Inc.)
 Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: org.drools.*
 Bundle-Version: 5.1.0.SNAPSHOT
-Bnd-LastModified: 1275721230797
+Bnd-LastModified: 1277898115614
 Bundle-ManifestVersion: 2
 Bundle-Description: A rule production system
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt

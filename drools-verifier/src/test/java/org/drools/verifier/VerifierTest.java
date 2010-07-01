@@ -73,7 +73,7 @@ public class VerifierTest extends TestCase {
 
         assertTrue( verifier.hasErrors() );
 
-        assertEquals( 3,
+        assertEquals( 4,
                       verifier.getErrors().size() );
 
     }
