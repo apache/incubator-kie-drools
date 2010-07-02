@@ -1,0 +1,10 @@
+package com.misc.someData
+
+import com.sample.DroolsTest.Message;
+
+rule "Test Rule"
+	when
+		Foo( bar > 10, bar <= 20 )
+	then
+		System.out.println("Test");
+end
