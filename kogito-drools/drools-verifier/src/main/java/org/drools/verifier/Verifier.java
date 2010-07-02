@@ -23,6 +23,8 @@ public interface Verifier {
      */
     public void addObjectModel(JarInputStream jar);
 
+    public void flushKnowledgeSession();
+
     /**
      * 
      * This will run the verifier.

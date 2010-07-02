@@ -9,6 +9,13 @@ import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderErrors;
+import org.drools.event.rule.ActivationCancelledEvent;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.AgendaGroupPoppedEvent;
+import org.drools.event.rule.AgendaGroupPushedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -122,6 +129,7 @@ public class VerifierImpl
             // Object that returns the results.
             ksession.setGlobal( "result",
                                 result );
+
             ksession.fireAllRules( scopesAgendaFilter );
 
         } catch ( Throwable t ) {
@@ -131,6 +139,10 @@ public class VerifierImpl
         }
 
         return true;
+    }
+
+    public void flushKnowledgeSession() {
+        updateKnowledgeSession();
     }
 
     private void updateKnowledgeSession() {
