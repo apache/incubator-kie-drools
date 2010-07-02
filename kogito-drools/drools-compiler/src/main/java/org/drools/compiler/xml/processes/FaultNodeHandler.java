@@ -42,7 +42,13 @@ public class FaultNodeHandler extends AbstractNodeHandler {
 		if (faultVariable != null && faultVariable.length() != 0) {
             xmlDump.append("faultVariable=\"" + faultVariable + "\" ");
         }
-        endNode(xmlDump);
+        if (includeMeta && containsMetaData(faultNode)) {
+        	xmlDump.append(">" + EOL);
+        	writeMetaData(faultNode, xmlDump);
+        	endNode("fault", xmlDump);
+        } else {
+            endNode(xmlDump);
+        }
 	}
 
 }

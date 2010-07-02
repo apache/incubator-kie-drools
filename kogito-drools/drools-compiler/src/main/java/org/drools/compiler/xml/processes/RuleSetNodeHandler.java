@@ -35,9 +35,14 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         if (ruleFlowGroup != null) {
             xmlDump.append("ruleFlowGroup=\"" + ruleFlowGroup + "\" ");
         }
-        if (ruleSetNode.getTimers() != null) {
+        if (ruleSetNode.getTimers() != null || (includeMeta && containsMetaData(ruleSetNode))) {
             xmlDump.append(">\n");
-            writeTimers(ruleSetNode.getTimers(), xmlDump);
+            if (ruleSetNode.getTimers() != null) {
+            	writeTimers(ruleSetNode.getTimers(), xmlDump);
+            }
+            if (includeMeta) {
+            	writeMetaData(ruleSetNode, xmlDump);
+            }
             endNode("ruleSet", xmlDump);
         } else {
             endNode(xmlDump);

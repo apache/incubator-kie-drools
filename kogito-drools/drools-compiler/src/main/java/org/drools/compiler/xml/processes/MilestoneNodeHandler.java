@@ -35,6 +35,9 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
         String constraint = milestoneNode.getConstraint();
         if (constraint != null || milestoneNode.getTimers() != null || milestoneNode.containsActions()) {
             xmlDump.append(">\n");
+            if (includeMeta) {
+            	writeMetaData(milestoneNode, xmlDump);
+            }
             if (constraint != null) {
             	xmlDump.append("      <constraint type=\"rule\" dialect=\"mvel\" >"
             			+ XmlDumper.replaceIllegalChars(constraint.trim()) + "</constraint>" + EOL);

@@ -36,6 +36,9 @@ public class StateNodeHandler extends AbstractNodeHandler {
 		StateNode stateNode = (StateNode) node;
 		writeNode("state", stateNode, xmlDump, includeMeta);
         xmlDump.append(">\n");
+        if (includeMeta) {
+        	writeMetaData(stateNode, xmlDump);
+        }
     	for (String eventType: stateNode.getActionTypes()) {
         	writeActions(eventType, stateNode.getActions(eventType), xmlDump);
         }

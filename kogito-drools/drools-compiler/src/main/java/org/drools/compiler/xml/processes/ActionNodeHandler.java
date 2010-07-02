@@ -36,9 +36,14 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 		ActionNode actionNode = (ActionNode) node;
 		writeNode("actionNode", actionNode, xmlDump, includeMeta);
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
-        if (action != null) {
+        if (action != null || (includeMeta && containsMetaData(actionNode))) {
         	xmlDump.append(">" + EOL);
-        	writeAction(action, xmlDump);
+        	if (action != null) {
+        		writeAction(action, xmlDump);
+        	}
+        	if (includeMeta) {
+        		writeMetaData(actionNode, xmlDump);
+        	}
             endNode("actionNode", xmlDump);
         } else {
         	endNode(xmlDump);

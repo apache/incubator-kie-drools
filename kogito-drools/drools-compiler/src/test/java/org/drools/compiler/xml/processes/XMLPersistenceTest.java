@@ -191,6 +191,8 @@ public class XMLPersistenceTest extends TestCase {
         startNode.setMetaData("y", 2);
         startNode.setMetaData("width", 3);
         startNode.setMetaData("height", 4);
+        startNode.setMetaData("meta1", "someValue");
+        startNode.setMetaData("meta2", "someOtherValue");
         ConstraintTrigger constraintTrigger = new ConstraintTrigger();
         constraintTrigger.setConstraint("constraint");
         Map<String, String> inMapping = new HashMap<String, String>();

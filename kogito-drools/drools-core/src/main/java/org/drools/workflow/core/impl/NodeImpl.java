@@ -256,4 +256,12 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         return this.metaData.get(name);
     }
     
+    public Map<String, Object> getMetaData() {
+    	return this.metaData;
+    }
+    
+    public void setMetaData(Map<String, Object> metaData) {
+    	this.metaData = metaData;
+    }
+    
 }
