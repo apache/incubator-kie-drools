@@ -41,7 +41,7 @@ rule "Opposite LiteralRestrictions"
 			path != $left.path,
 			# Operator needs to be reversed to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $left.getOperator() )),
-			valueAsString == valueAsString
+			valueAsString == $left.valueAsString
 		)
 
 		# Check that there is not already a pair with these values.
@@ -54,6 +54,7 @@ rule "Opposite LiteralRestrictions"
 			left == $right 
 		)
 	then
+		System.out.println( $left + " " + $right );
 		insert( new Opposites( $left, $right ));
 end
 
