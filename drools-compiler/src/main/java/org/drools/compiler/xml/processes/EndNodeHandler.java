@@ -34,7 +34,13 @@ public class EndNodeHandler extends AbstractNodeHandler {
         if (!terminate) {
             xmlDump.append("terminate=\"false\" ");
         }
-        endNode(xmlDump);
+        if (includeMeta && containsMetaData(endNode)) {
+        	xmlDump.append(">" + EOL);
+        	writeMetaData(endNode, xmlDump);
+        	endNode("end", xmlDump);
+        } else {
+            endNode(xmlDump);
+        }
 	}
 
 }

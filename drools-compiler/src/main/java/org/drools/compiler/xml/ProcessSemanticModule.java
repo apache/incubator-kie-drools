@@ -18,6 +18,7 @@ import org.drools.compiler.xml.processes.ImportHandler;
 import org.drools.compiler.xml.processes.InPortHandler;
 import org.drools.compiler.xml.processes.JoinNodeHandler;
 import org.drools.compiler.xml.processes.MappingHandler;
+import org.drools.compiler.xml.processes.MetaDataHandler;
 import org.drools.compiler.xml.processes.MilestoneNodeHandler;
 import org.drools.compiler.xml.processes.OutPortHandler;
 import org.drools.compiler.xml.processes.ParameterHandler;
@@ -115,5 +116,7 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
      		               new StateNodeHandler() );        
         addHandler( "dynamic",
  		                   new DynamicNodeHandler() );        
+        addHandler( "metaData",
+                           new MetaDataHandler() );        
     }
 }

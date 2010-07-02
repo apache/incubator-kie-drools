@@ -46,6 +46,9 @@ public class EventNodeHandler extends AbstractNodeHandler {
             xmlDump.append("scope=\"" + scope + "\" ");
         }
         xmlDump.append(">" + EOL);
+        if (includeMeta) {
+        	writeMetaData(eventNode, xmlDump);
+        }
         xmlDump.append("      <eventFilters>" + EOL);
         for (EventFilter filter: eventNode.getEventFilters()) {
         	if (filter instanceof EventTypeFilter) {

@@ -50,7 +50,13 @@ public class TimerNodeHandler extends AbstractNodeHandler {
                 xmlDump.append(" period=\"" + timer.getPeriod() + "\" ");
             }
         }
-        endNode(xmlDump);
+        if (includeMeta && containsMetaData(timerNode)) {
+        	xmlDump.append(">" + EOL);
+        	writeMetaData(timerNode, xmlDump);
+        	endNode("timerNode", xmlDump);
+        } else {
+            endNode(xmlDump);
+        }
 	}
 
 }

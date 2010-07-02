@@ -44,7 +44,13 @@ public class JoinNodeHandler extends AbstractNodeHandler {
 	            xmlDump.append("n=\"" + n + "\" ");
 	        }
         }
-        endNode(xmlDump);
+        if (includeMeta && containsMetaData(joinNode)) {
+        	xmlDump.append(">" + EOL);
+        	writeMetaData(joinNode, xmlDump);
+        	endNode("join", xmlDump);
+        } else {
+            endNode(xmlDump);
+        }
 	}
 
 }

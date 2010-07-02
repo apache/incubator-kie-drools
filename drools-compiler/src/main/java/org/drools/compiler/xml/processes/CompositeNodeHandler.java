@@ -41,6 +41,9 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         CompositeNode compositeNode = (CompositeNode) node;
         writeAttributes(compositeNode, xmlDump, includeMeta);
         xmlDump.append(">" + EOL);
+        if (includeMeta) {
+        	writeMetaData(compositeNode, xmlDump);
+        }
     	for (String eventType: compositeNode.getActionTypes()) {
         	writeActions(eventType, compositeNode.getActions(eventType), xmlDump);
         }

@@ -51,6 +51,9 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
             xmlDump.append("independent=\"false\" ");
         }
         xmlDump.append(">" + EOL);
+        if (includeMeta) {
+        	writeMetaData(subProcessNode, xmlDump);
+        }
         Map<String, String> inMappings = subProcessNode.getInMappings();
         for (Map.Entry<String, String> inMapping: inMappings.entrySet()) {
             xmlDump.append(

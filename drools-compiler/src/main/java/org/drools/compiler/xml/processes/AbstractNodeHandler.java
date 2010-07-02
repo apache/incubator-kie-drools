@@ -14,6 +14,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -177,6 +178,37 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             if (color != null && color != 0) {
                 xmlDump.append("color=\"" + color + "\" ");
             }
+        }
+    }
+    
+    protected boolean containsMetaData(final Node node) {
+        for (Map.Entry<String, Object> entry: ((NodeImpl) node).getMetaData().entrySet()) {
+        	String name = entry.getKey();
+        	if (!"x".equals(name)
+        			 && !"y".equals(name)
+        			 && !"width".equals(name)
+        			 && !"height".equals(name)
+        			 && !"color".equals(name)
+        			 && entry.getValue() instanceof String) {
+        		return true;
+        	}
+        }
+        return false;
+    }
+    
+    protected void writeMetaData(final Node node, final StringBuilder xmlDump) {
+        for (Map.Entry<String, Object> entry: ((NodeImpl) node).getMetaData().entrySet()) {
+        	String name = entry.getKey();
+        	if (!"x".equals(name)
+        			 && !"y".equals(name)
+        			 && !"width".equals(name)
+        			 && !"height".equals(name)
+        			 && !"color".equals(name)
+        			 && entry.getValue() instanceof String) {
+        		xmlDump.append("      <metaData name=\"" + name + "\">" + EOL);
+        		xmlDump.append("        <value>" + entry.getValue() + "</value>" + EOL);
+        		xmlDump.append("      </metaData>" + EOL);
+        	}
         }
     }
     

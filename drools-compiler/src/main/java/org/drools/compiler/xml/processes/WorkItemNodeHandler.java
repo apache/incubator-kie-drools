@@ -43,6 +43,9 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
 		writeNode("workItem", workItemNode, xmlDump, includeMeta);
         visitParameters(workItemNode, xmlDump);
         xmlDump.append(">" + EOL);
+        if (includeMeta) {
+        	writeMetaData(workItemNode, xmlDump);
+        }
         Work work = workItemNode.getWork();
         visitWork(work, xmlDump, includeMeta);
         visitInMappings(workItemNode.getInMappings(), xmlDump);

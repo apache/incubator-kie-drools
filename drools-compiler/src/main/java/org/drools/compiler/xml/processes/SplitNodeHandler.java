@@ -44,6 +44,9 @@ public class SplitNodeHandler extends AbstractNodeHandler {
             endNode(xmlDump);
         } else {
             xmlDump.append(">" + EOL);
+            if (includeMeta) {
+            	writeMetaData(splitNode, xmlDump);
+            }
             xmlDump.append("      <constraints>" + EOL);
             for (Map.Entry<ConnectionRef, Constraint> entry: splitNode.getConstraints().entrySet()) {
                 ConnectionRef connection = entry.getKey();
