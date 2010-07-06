@@ -15,7 +15,7 @@ public class Import extends PackageComponent {
 
     @Override
     public String getPath() {
-        return String.format( "%s.import[name=%s]",
+        return String.format( "%s/import[@name='%s']",
                               getPackagePath(),
                               getName() );
     }

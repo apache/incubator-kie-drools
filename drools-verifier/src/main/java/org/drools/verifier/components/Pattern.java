@@ -30,13 +30,15 @@ public class Pattern extends RuleComponent
         String parentPath = getParentPath();
 
         if ( parentPath == null ) {
-            return String.format( "%s.pattern[%s]",
+            return String.format( "%s/ruleComponent[@type=%s @orderNumber=%s]",
                                   getRulePath(),
+                                  getVerifierComponentType().getType(),
                                   getOrderNumber() );
 
         } else {
-            return String.format( "%s.pattern[%s]",
+            return String.format( "%s/ruleComponent[@type=%s @orderNumber=%s]",
                                   getParentPath(),
+                                  getVerifierComponentType().getType(),
                                   getOrderNumber() );
         }
     }

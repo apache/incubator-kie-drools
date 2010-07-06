@@ -34,7 +34,7 @@ public class ObjectType extends VerifierComponent
 
     @Override
     public String getPath() {
-        return String.format( "objectType[name=%s]",
+        return String.format( "objectType[@name='%s']",
                               getName() );
     }
 

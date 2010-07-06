@@ -27,7 +27,7 @@ public abstract class PackageComponent extends VerifierComponent {
     }
 
     public String getPackagePath() {
-        return String.format( "package[name=%s]",
+        return String.format( "package[@name='%s']",
                               getPackageName() );
     }
 

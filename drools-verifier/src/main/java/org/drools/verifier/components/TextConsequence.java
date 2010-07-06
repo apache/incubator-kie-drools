@@ -12,7 +12,7 @@ public class TextConsequence extends RuleComponent
 
     @Override
     public String getPath() {
-        return getRulePath() + ".consequence";
+        return getRulePath() + "/consequence";
     }
 
     public ConsequenceType getConsequenceType() {

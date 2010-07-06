@@ -29,7 +29,7 @@ public class SubPattern extends PatternComponent
 
     @Override
     public String getPath() {
-        return String.format( "%s.subPattern[%s]",
+        return String.format( "%s/subPattern[%s]",
                               getPatternPath(),
                               getOrderNumber() );
     }
