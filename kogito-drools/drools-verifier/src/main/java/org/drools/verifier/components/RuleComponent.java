@@ -31,7 +31,7 @@ public abstract class RuleComponent extends PackageComponent
      * @return Rule package name + rule name.
      */
     public String getFullRulePath() {
-        return getPackageName() + "." + getRuleName();
+        return getPackageName() + "/" + getRuleName();
     }
 
     public String getRuleName() {
@@ -43,14 +43,14 @@ public abstract class RuleComponent extends PackageComponent
     }
 
     public String getRulePath() {
-        return String.format( "%s.rule[name=%s]",
+        return String.format( "%s/rule[@name='%s']",
                               getPackagePath(),
                               getRuleName() );
     }
 
     @Override
     public String getPath() {
-        return String.format( "%s.ruleComponent[%s]",
+        return String.format( "%s/ruleComponent[%s]",
                               getRulePath(),
                               getOrderNumber() );
     }

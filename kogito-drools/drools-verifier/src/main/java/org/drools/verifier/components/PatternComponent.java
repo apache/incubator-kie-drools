@@ -25,14 +25,15 @@ public abstract class PatternComponent extends RuleComponent {
     }
 
     public String getPatternPath() {
-        return String.format( "%s.pattern[%s]",
+        return String.format( "%s/ruleComponent[@type=%s @orderNumber=%s]",
                               getRulePath(),
+                              VerifierComponentType.PATTERN.getType(),
                               patternOrderNumber );
     }
 
     @Override
     public String getPath() {
-        return String.format( "%s.patternComponent[%s]",
+        return String.format( "%s/patternComponent[%s]",
                               getPatternPath(),
                               getOrderNumber() );
     }

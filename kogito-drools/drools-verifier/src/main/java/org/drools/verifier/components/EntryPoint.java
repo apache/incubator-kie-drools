@@ -10,7 +10,7 @@ public class EntryPoint extends VerifierComponentSource {
 
     @Override
     public String getPath() {
-        return String.format( "source[type=%s entryPointName=%s]",
+        return String.format( "source[@type=%s @entryPointName=%s]",
                               getVerifierComponentType().getType(),
                               getEntryPointName() );
     }

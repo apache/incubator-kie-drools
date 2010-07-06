@@ -8,7 +8,7 @@ public class WorkingMemory extends VerifierComponentSource {
 
     @Override
     public String getPath() {
-        return String.format( "source[type=%s]",
+        return String.format( "source[@type=%s]",
                               getVerifierComponentType().getType() );
     }
 

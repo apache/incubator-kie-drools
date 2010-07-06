@@ -28,7 +28,7 @@ public class Field extends VerifierComponent
 
     @Override
     public String getPath() {
-        return String.format( "%s.field[name=%s]",
+        return String.format( "%s/field[@name='%s']",
                               getObjectTypePath(),
                               getName() );
     }

@@ -49,7 +49,7 @@ public class VerifierRule extends PackageComponent
 
     @Override
     public String getPath() {
-        return String.format( "%s.rule[name=%s]",
+        return String.format( "%s/rule[@name='%s']",
                               getPackagePath(),
                               getName() );
     }

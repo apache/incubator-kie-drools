@@ -30,7 +30,7 @@ public class RulePackage extends VerifierComponent {
 
     @Override
     public String getPath() {
-        return String.format( "package[name=%s]",
+        return String.format( "package[@name=%s]",
                               getName() );
     }
 

@@ -9,13 +9,6 @@ import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderErrors;
-import org.drools.event.rule.ActivationCancelledEvent;
-import org.drools.event.rule.ActivationCreatedEvent;
-import org.drools.event.rule.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.AgendaGroupPoppedEvent;
-import org.drools.event.rule.AgendaGroupPushedEvent;
-import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -25,6 +18,7 @@ import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierError;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.misc.DrlPackageParser;
@@ -122,8 +116,8 @@ public class VerifierImpl
                 }
             }
 
-            for ( Object o : result.getVerifierData().getAll() ) {
-                ksession.insert( o );
+            for ( Object object : result.getVerifierData().getAll() ) {
+                ksession.insert( object );
             }
 
             // Object that returns the results.

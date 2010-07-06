@@ -33,7 +33,7 @@ public class SubRule extends RuleComponent
 
     @Override
     public String getPath() {
-        return String.format( "%s.subRule[%s]",
+        return String.format( "%s/subRule[%s]",
                               getRulePath(),
                               getOrderNumber() );
     }
