@@ -1,18 +1,53 @@
 package org.drools.definition.rule;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.definition.KnowledgeDefinition;
 
+/**
+ * Public Rule interface for runtime rule inspection.
+ */
 public interface Rule
     extends
     KnowledgeDefinition {
-    
+
+    /**
+     * Returns the package name (namespace) this rule is tied to.
+     *  
+     * @return the package name.
+     */
     String getPackageName();
     
+    /**
+     * Returns this rule's name.
+     * 
+     * @return the rule name
+     */
     String getName();
 
+    /**
+     * This method is deprecated. Please use {@link Rule#getMetaAttributes()} instead.
+     * 
+     * @return a collection with all the meta attribute keys associated with this Rule.
+     * @deprecated
+     */
+    @Deprecated
     Collection<String> listMetaAttributes();
     
-    String getMetaAttribute(final String identifier);
+    /**
+     * Returns an immutable Map<String key, String value> of all meta attributes associated with this rule object.
+     * 
+     * @return an immutable Map<String key, String value> of meta attributes.
+     */
+    Map<String, String> getMetaAttributes();
+
+    /**
+     * Returns the value of the meta attribute identified by the "key"
+     * 
+     * @param key the meta attribute key
+     * 
+     * @return the meta attribute value or null if there is no value for that key.
+     */
+    String getMetaAttribute(final String key);
 }
