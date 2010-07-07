@@ -1,6 +1,7 @@
 package org.drools.definitions.rule.impl;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.rule.Rule;
 
@@ -23,7 +24,14 @@ public class RuleImpl implements org.drools.definition.rule.Rule {
 	    return this.rule.getMetaAttribute( identifier );
 	}
 
+	@Deprecated
     public Collection<String> listMetaAttributes() {
         return this.rule.getMetaAttributes().keySet();
     }
+
+    public Map<String, String> getMetaAttributes() {
+        return this.rule.getMetaAttributes();
+    }
+	
+	
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,11 +26,7 @@ public class SerializedRule
     public SerializedRule(Rule rule) {
         this.name = rule.getName();
         this.packageName = rule.getPackageName();
-        Collection<String> identifiers = rule.listMetaAttributes();
-        this.metaAttributes = new HashMap<String, String>(identifiers.size());
-        for ( String identifier : identifiers ) {
-            this.metaAttributes.put( identifier, rule.getMetaAttribute( identifier ) );
-        }
+        this.metaAttributes = new HashMap<String, String>( rule.getMetaAttributes() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -38,6 +35,7 @@ public class SerializedRule
         out.writeObject( this.metaAttributes );
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         name = in.readUTF();
@@ -61,4 +59,7 @@ public class SerializedRule
         return this.metaAttributes.keySet();
     }
 
+    public Map<String, String> getMetaAttributes() {
+        return Collections.unmodifiableMap( this.metaAttributes );
+    }
 }

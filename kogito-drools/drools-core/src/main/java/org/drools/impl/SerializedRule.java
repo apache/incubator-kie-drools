@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,8 +58,13 @@ public class SerializedRule
         return this.metaAttributes.get( identifier );
     }
 
+    @Deprecated
     public Collection<String> listMetaAttributes() {
         return this.metaAttributes.keySet();
+    }
+
+    public Map<String, String> getMetaAttributes() {
+        return Collections.unmodifiableMap( this.metaAttributes );
     }    
 
 }
