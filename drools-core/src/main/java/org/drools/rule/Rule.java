@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -80,7 +81,7 @@ public class Rule
 
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
-    private Map                      declarations;
+    private Map<String, Declaration> declarations;
     private Declaration[]            declarationArray;
 
     private GroupElement             lhsRoot;
@@ -164,6 +165,7 @@ public class Rule
         out.writeObject( resource );
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         pkg = (String) in.readObject();
@@ -172,7 +174,7 @@ public class Rule
         salience = (Salience) in.readObject();
 
         dirty = in.readBoolean();
-        declarations = (Map) in.readObject();
+        declarations = (Map<String, Declaration>) in.readObject();
         declarationArray = (Declaration[]) in.readObject();
         lhsRoot = (GroupElement) in.readObject();
         dialect = (String) in.readObject();
@@ -425,14 +427,15 @@ public class Rule
      * @return The declaration or <code>null</code> if no declaration matches
      *         the <code>identifier</code>.
      */
+    @SuppressWarnings("unchecked")
     public Declaration getDeclaration(final String identifier) {
         if ( this.dirty || (this.declarations == null) ) {
-            this.declarations = this.getExtendedLhs( this,
-                                                     null ).getOuterDeclarations();
+            this.declarations = (Map<String, Declaration>) this.getExtendedLhs( this,
+                                                                                null ).getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
-        return (Declaration) this.declarations.get( identifier );
+        return this.declarations.get( identifier );
     }
 
     /**
@@ -463,10 +466,11 @@ public class Rule
      * @return The Set of <code>Declarations</code> in order which specify the
      *         <i>root fact objects</i>.
      */
+    @SuppressWarnings("unchecked")
     public Declaration[] getDeclarations() {
         if ( this.dirty || (this.declarationArray == null) ) {
-            this.declarations = this.getExtendedLhs( this,
-                                                     null ).getOuterDeclarations();
+            this.declarations = (Map<String, Declaration>) this.getExtendedLhs( this,
+                                                                                null ).getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
@@ -716,13 +720,14 @@ public class Rule
     }
 
     public Map<String, String> getMetaAttributes() {
-        return metaAttributes;
+        return Collections.unmodifiableMap( metaAttributes );
     }
 
     public String getMetaAttribute(final String identifier) {
         return (String) this.metaAttributes.get( identifier );
     }
 
+    @Deprecated
     public Collection<String> listMetaAttributes() {
         return this.metaAttributes.keySet();
     }
