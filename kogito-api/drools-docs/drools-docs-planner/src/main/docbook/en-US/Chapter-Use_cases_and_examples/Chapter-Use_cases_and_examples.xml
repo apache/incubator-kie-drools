@@ -10,8 +10,8 @@
     <title>Introduction</title>
 
     <para>Drools Planner has several examples. In this manual we explain Drools Planner mainly using the n queens
-    example. So it's advisable to read at least the section about that example. For advanced users, the Examination
-    example is recommended.</para>
+    example. So it's advisable to read at least the section about that example. For advanced users, the following
+    examples are recommended: curriculum course, examination and nurse rostering.</para>
 
     <para>You can find the source code of all these examples in the drools source distribution and also in subversion
     under <literal>drools-planner/drools-planner-examples</literal>.</para>
@@ -309,232 +309,15 @@
   </section>
 
   <section>
-    <title>The traveling tournament example</title>
-
-    <section>
-      <title>Screenshot</title>
-
-      <para>Here is a screenshot of the example:</para>
-
-      <figure>
-        <title>Screenshot of the traveling tournament example</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotTravelingTournament.png"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-    </section>
+    <title>The ITC 2007 curriculum course example</title>
 
     <section>
       <title>Problem statement</title>
 
-      <para>Schedule matches between N teams with the following hard constraints:</para>
+      <para>Schedule lectures into rooms and time periods.</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>Each team plays twice against every other team: once home and once away.</para>
-        </listitem>
-
-        <listitem>
-          <para>Each team has exactly 1 match on each timeslot.</para>
-        </listitem>
-
-        <listitem>
-          <para>No team must have more than 3 consecutive home or 3 consecutive away matches.</para>
-        </listitem>
-
-        <listitem>
-          <para>No repeaters: no 2 consecutive matches of the same 2 opposing teams.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>and the following soft constraint:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Minimize the total distance traveled by all teams.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para><link xlink:href="http://mat.gsia.cmu.edu/TOURN/">You can find a detailed description as well as several
-      records of this problem here.</link></para>
-    </section>
-
-    <section>
-      <title>Simple and smart implementation</title>
-
-      <para>There are 2 implementations (simple and smart) to demonstrate the importance of some performance tips. The
-      <literal>ExamplesApp</literal> always runs the smart implementation, but with these commands you can compare the 2
-      implementations yourself:</para>
-
-      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
-...
-$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
-...</programlisting>
-
-      <para>The smart implementation performs and scales exponentially better than the simple implementation.</para>
-    </section>
-
-    <section>
-      <title>Problem size</title>
-
-      <para>These numbers might give you some insight on the size of this problem.</para>
-
-      <table>
-        <title>Traveling tournament problem size</title>
-
-        <tgroup cols="7">
-          <thead>
-            <row>
-              <entry># teams</entry>
-
-              <entry># days</entry>
-
-              <entry># matches</entry>
-
-              <entry># possible solutions (simple)</entry>
-
-              <entry># possible solutions (smart)</entry>
-
-              <entry># feasible solutions</entry>
-
-              <entry># optimal solutions</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry>4</entry>
-
-              <entry>6</entry>
-
-              <entry>12</entry>
-
-              <entry>2176782336</entry>
-
-              <entry>&lt;= 518400</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>6</entry>
-
-              <entry>10</entry>
-
-              <entry>30</entry>
-
-              <entry>1000000000000000000000000000000</entry>
-
-              <entry>&lt;= 47784725839872000000</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>8</entry>
-
-              <entry>14</entry>
-
-              <entry>56</entry>
-
-              <entry>1.52464943788290465606136043e+64</entry>
-
-              <entry>&lt;= 5.77608277425558771434498864e+43</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>10</entry>
-
-              <entry>18</entry>
-
-              <entry>90</entry>
-
-              <entry>9.43029892325559280477052413e+112</entry>
-
-              <entry>&lt;= 1.07573451027871200629339068e+79</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>12</entry>
-
-              <entry>22</entry>
-
-              <entry>132</entry>
-
-              <entry>1.58414112478195320415135060e+177</entry>
-
-              <entry>&lt;= 2.01650616733413376416949843e+126</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>14</entry>
-
-              <entry>26</entry>
-
-              <entry>182</entry>
-
-              <entry>3.35080635695103223315189511e+257</entry>
-
-              <entry>&lt;= 1.73513467024013808570420241e+186</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>16</entry>
-
-              <entry>30</entry>
-
-              <entry>240</entry>
-
-              <entry>3.22924601799855400751522483e+354</entry>
-
-              <entry>&lt;= 2.45064610271441678267620602e+259</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>n</entry>
-
-              <entry>2 * (n - 1)</entry>
-
-              <entry>n * (n - 1)</entry>
-
-              <entry>(2 * (n - 1)) ^ (n * (n - 1))</entry>
-
-              <entry>&lt;= (((2 * (n - 1))!) ^ (n / 2))</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
+      <para><link xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">You can find a
+      more detailed description of this problem here.</link></para>
     </section>
   </section>
 
@@ -868,15 +651,245 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>The ITC 2007 curriculum course example</title>
+    <title>The INRC 2010 nurse rostering example</title>
 
     <section>
       <title>Problem statement</title>
 
-      <para>Schedule lectures into rooms and time periods.</para>
+      <para>Schedule nurses into shifts.</para>
 
-      <para><link xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">You can find a
-      more detailed description of this problem here.</link></para>
+      <para><link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">You can find a more detailed description
+      of this problem here.</link></para>
+    </section>
+  </section>
+
+  <section>
+    <title>The traveling tournament example</title>
+
+    <section>
+      <title>Screenshot</title>
+
+      <para>Here is a screenshot of the example:</para>
+
+      <figure>
+        <title>Screenshot of the traveling tournament example</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotTravelingTournament.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>Schedule matches between N teams with the following hard constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Each team plays twice against every other team: once home and once away.</para>
+        </listitem>
+
+        <listitem>
+          <para>Each team has exactly 1 match on each timeslot.</para>
+        </listitem>
+
+        <listitem>
+          <para>No team must have more than 3 consecutive home or 3 consecutive away matches.</para>
+        </listitem>
+
+        <listitem>
+          <para>No repeaters: no 2 consecutive matches of the same 2 opposing teams.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>and the following soft constraint:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Minimize the total distance traveled by all teams.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><link xlink:href="http://mat.gsia.cmu.edu/TOURN/">You can find a detailed description as well as several
+      records of this problem here.</link></para>
+    </section>
+
+    <section>
+      <title>Simple and smart implementation</title>
+
+      <para>There are 2 implementations (simple and smart) to demonstrate the importance of some performance tips. The
+      <literal>ExamplesApp</literal> always runs the smart implementation, but with these commands you can compare the 2
+      implementations yourself:</para>
+
+      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
+...
+$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
+...</programlisting>
+
+      <para>The smart implementation performs and scales exponentially better than the simple implementation.</para>
+    </section>
+
+    <section>
+      <title>Problem size</title>
+
+      <para>These numbers might give you some insight on the size of this problem.</para>
+
+      <table>
+        <title>Traveling tournament problem size</title>
+
+        <tgroup cols="7">
+          <thead>
+            <row>
+              <entry># teams</entry>
+
+              <entry># days</entry>
+
+              <entry># matches</entry>
+
+              <entry># possible solutions (simple)</entry>
+
+              <entry># possible solutions (smart)</entry>
+
+              <entry># feasible solutions</entry>
+
+              <entry># optimal solutions</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>4</entry>
+
+              <entry>6</entry>
+
+              <entry>12</entry>
+
+              <entry>2176782336</entry>
+
+              <entry>&lt;= 518400</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>6</entry>
+
+              <entry>10</entry>
+
+              <entry>30</entry>
+
+              <entry>1000000000000000000000000000000</entry>
+
+              <entry>&lt;= 47784725839872000000</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>8</entry>
+
+              <entry>14</entry>
+
+              <entry>56</entry>
+
+              <entry>1.52464943788290465606136043e+64</entry>
+
+              <entry>&lt;= 5.77608277425558771434498864e+43</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>10</entry>
+
+              <entry>18</entry>
+
+              <entry>90</entry>
+
+              <entry>9.43029892325559280477052413e+112</entry>
+
+              <entry>&lt;= 1.07573451027871200629339068e+79</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>12</entry>
+
+              <entry>22</entry>
+
+              <entry>132</entry>
+
+              <entry>1.58414112478195320415135060e+177</entry>
+
+              <entry>&lt;= 2.01650616733413376416949843e+126</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>14</entry>
+
+              <entry>26</entry>
+
+              <entry>182</entry>
+
+              <entry>3.35080635695103223315189511e+257</entry>
+
+              <entry>&lt;= 1.73513467024013808570420241e+186</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>16</entry>
+
+              <entry>30</entry>
+
+              <entry>240</entry>
+
+              <entry>3.22924601799855400751522483e+354</entry>
+
+              <entry>&lt;= 2.45064610271441678267620602e+259</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>n</entry>
+
+              <entry>2 * (n - 1)</entry>
+
+              <entry>n * (n - 1)</entry>
+
+              <entry>(2 * (n - 1)) ^ (n * (n - 1))</entry>
+
+              <entry>&lt;= (((2 * (n - 1))!) ^ (n / 2))</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
     </section>
   </section>
 
@@ -914,7 +927,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>Patient admission scheduling (PAS)</title>
+    <title>The patient admission scheduling (PAS) example</title>
 
     <para>In this problem, we have to assign each patient (that will come to the hospital) a bed for each night that the
     patient will stay in the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and
