@@ -419,23 +419,30 @@
     }</programlisting>
 
       <para>The <literal>cloneSolution()</literal> method should clone no more and no less than the parts of the
-      <literal>Solution</literal> that can change during solving. For example, in the lesson schedule example the
-      lessons are cloned, but teachers, groups and timeslots are not cloned because only a lesson's appointed timeslot
-      changes during solving:</para>
+      <literal>Solution</literal> that can change during planning. For example, in the curriculum course schedule
+      example the lectures are cloned, but teachers, courses, timeslots, periods, rooms, ... are not cloned because only
+      a lecture's appointed period or room changes during solving:</para>
 
       <programlisting>    /**
-     * Clone will only deep copy the lessons
+     * Clone will only deep copy the {@link #lectureList}.
      */
-    public LessonSchedule cloneSolution() {
-        LessonSchedule clone = new LessonSchedule();
-        clone.timeslotList = timeslotList; // No Deep copy
-        clone.teacherList = teacherList; // No Deep copy
-        clone.groupList = groupList; // No Deep copy
-        List&lt;Lesson&gt; clonedLessonList = new ArrayList&lt;Lesson&gt;(lessonList.size());
-        for (Lesson lesson : lessonList) {
-            clonedLessonList.add(lesson.clone());
+    public CurriculumCourseSchedule cloneSolution() {
+        CurriculumCourseSchedule clone = new CurriculumCourseSchedule();
+        ...
+        clone.teacherList = teacherList;
+        clone.curriculumList = curriculumList;
+        clone.courseList = courseList;
+        clone.dayList = dayList;
+        clone.timeslotList = timeslotList;
+        clone.periodList = periodList;
+        clone.roomList = roomList;
+        clone.unavailablePeriodConstraintList = unavailablePeriodConstraintList;
+        List&lt;Lecture&gt; clonedLectureList = new ArrayList&lt;Lecture&gt;(lectureList.size());
+        for (Lecture lecture : lectureList) {
+            Lecture clonedLecture = lecture.clone();
+            clonedLectureList.add(clonedLecture);
         }
-        clone.lessonList = clonedLessonList;
+        clone.lectureList = clonedLectureList;
         clone.score = score;
         return clone;
     }</programlisting>
