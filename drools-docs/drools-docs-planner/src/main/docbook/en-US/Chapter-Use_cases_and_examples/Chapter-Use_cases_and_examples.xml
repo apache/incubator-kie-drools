@@ -309,42 +309,6 @@
   </section>
 
   <section>
-    <title>The lesson schedule example</title>
-
-    <section>
-      <title>Screenshot</title>
-
-      <para>Here is a screenshot of the example:</para>
-
-      <figure>
-        <title>Screenshot of the lesson schedule example</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotLessonSchedule.png"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-    </section>
-
-    <section>
-      <title>Problem statement</title>
-
-      <para>Schedule lessons with the follow constraints:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>No teacher with 2 lessons in the same timeslot</para>
-        </listitem>
-
-        <listitem>
-          <para>No group with 2 lessons in the same timeslot</para>
-        </listitem>
-      </itemizedlist>
-    </section>
-  </section>
-
-  <section>
     <title>The traveling tournament example</title>
 
     <section>
