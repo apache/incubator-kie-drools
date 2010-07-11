@@ -105,7 +105,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>It's scalable</para>
+          <para>It's scalable.</para>
         </listitem>
 
         <listitem>
@@ -359,7 +359,7 @@
 
 }</programlisting>
 
-    <para>For example, an NQueens instance just holds a list of all it's queens:</para>
+    <para>For example, an NQueens instance just holds a list of all its queens:</para>
 
     <programlisting>public class NQueens implements Solution {
 
