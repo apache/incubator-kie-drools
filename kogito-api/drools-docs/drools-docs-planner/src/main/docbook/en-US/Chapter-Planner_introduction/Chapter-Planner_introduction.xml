@@ -132,11 +132,11 @@
     </section>
 
     <section>
-      <title>Get it with maven 2</title>
+      <title>Get it with maven</title>
 
       <para>The Drools Planner jars are available on <link xlink:href="http://repository.jboss.com/maven2/">the jboss
-      maven repository</link>. If you use maven 2, just add a dependency to <literal>drools-planner-core</literal> in
-      your project's <filename>pom.xml</filename>:</para>
+      maven repository</link>. If you use maven 2 or 3, just add a dependency to <literal>drools-planner-core</literal>
+      in your project's <filename>pom.xml</filename>:</para>
 
       <programlisting>    &lt;dependency&gt;
         &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
@@ -200,9 +200,9 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
     the dev mailing list to get the issue fixed fast. By open sourcing your improvements, you 'll benefit from our peer
     review, improvements made upon your improvements and maybe even a thank you on our blog.</para>
 
-    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link> for news. If Drools
-    Planner helps you, don't forget to blog or to <link
-    xlink:href="http://twitter.com/#search?q=%23droolsplanner">twitter (hashtag #droolsplanner)</link> about it
-    yourself!</para>
+    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link> and twitter (<link
+    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey</link>) for news. If Drools Planner helps you, don't forget
+    to blog or to <link xlink:href="http://twitter.com/#search?q=%23DroolsPlanner">twitter (hashtag
+    #DroolsPlanner)</link> about it yourself!</para>
   </section>
 </chapter>
