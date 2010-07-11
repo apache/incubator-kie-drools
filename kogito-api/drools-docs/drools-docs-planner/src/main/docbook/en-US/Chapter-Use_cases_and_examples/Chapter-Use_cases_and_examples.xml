@@ -111,7 +111,7 @@
             <row>
               <entry># queens (n)</entry>
 
-              <entry># possible solutions (each queen it's own column)</entry>
+              <entry># possible solutions (each queen its own column)</entry>
 
               <entry># feasible solutions (distinct)</entry>
 
