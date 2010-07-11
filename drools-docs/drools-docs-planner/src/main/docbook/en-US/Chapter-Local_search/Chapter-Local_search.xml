@@ -137,7 +137,7 @@
 
 }</programlisting>
 
-    <para>An instance of <literal>YChangeMove</literal> moves a queen from it's current y to a different y.</para>
+    <para>An instance of <literal>YChangeMove</literal> moves a queen from its current y to a different y.</para>
 
     <para>Drools Planner calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
     <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
@@ -168,7 +168,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>In the n queens example, a move which moves the queen from it's current row to the same row isn't
+    <para>In the n queens example, a move which moves the queen from its current row to the same row isn't
     doable:</para>
 
     <programlisting>    public boolean isMoveDoable(WorkingMemory workingMemory) {
@@ -379,7 +379,7 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
       </listitem>
 
       <listitem>
-        <para>It can start walking in it's own footsteps, picking the same next step at every step.</para>
+        <para>It can start walking in its own footsteps, picking the same next step at every step.</para>
       </listitem>
     </itemizedlist>
 
@@ -563,38 +563,40 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       <section>
         <title>Simulated annealing acceptor</title>
 
-        <para>Simulated annealing does not always pick the move with the highest score, neither does it evaluate all
-        moves. At least at first. It gives unimproving moves also a chance, depending on it's score and the temperature.
-        The <emphasis>temperature</emphasis> is relative to how long it has been solving. In the end, it gradually turns
-        into a simple local search, only accepting improving moves.</para>
+        <para>Simulated annealing does not always pick the move with the highest score, neither does it evaluate many
+        moves per step. At least at first. Instead, it gives unimproving moves also a chance to be picked, depending on
+        its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into a
+        simple local search, only accepting improving moves.</para>
 
-        <para>Unlike the tabu search acceptor, tweaking a simulated annealing is difficult and a wrong setting can make
-        the entire solver useless. However, in many cases, simulated annealing surpasses tabu search.</para>
+        <para>In many use cases, simulated annealing surpasses tabu search. By changing a few lines of configuration,
+        you can easily switch from tabu search to simulated annealing and back.</para>
 
-        <para>Set your <literal>simulatedAnnealingStartingTemperature</literal> to the maximum score delta a single move
-        can cause.</para>
+        <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
+        single move can cause. Use the <literal>Benchmarker</literal> to tweak the value.</para>
 
         <programlisting>    &lt;acceptor&gt;
       &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
-      &lt;simulatedAnnealingTemperatureSurvival&gt;0.997&lt;/simulatedAnnealingTemperatureSurvival&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
         &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;
     &lt;/forager&gt;</programlisting>
 
         <para>A simulated annealing acceptor should be combined with a low subset selection. The classic algorithm uses
-        a <literal>minimalAcceptedSelection</literal> of <literal>1</literal>, but usually <literal>4</literal>
-        performs better.</para>
+        a <literal>minimalAcceptedSelection</literal> of <literal>1</literal>, but usually <literal>4</literal> performs
+        better.</para>
 
-        <para>You can even combine it with a tabu acceptor at the same time:</para>
+        <para>You can even combine it with a tabu acceptor at the same time. Use a lower tabu size than in a pure tabu
+        search configuration.</para>
 
         <programlisting>    &lt;acceptor&gt;
       &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
-      &lt;simulatedAnnealingTemperatureSurvival&gt;0.997&lt;/simulatedAnnealingTemperatureSurvival&gt;
       &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+        &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;
+    &lt;/forager&gt;</programlisting>
 
-        <para>This differs from phasing, another interesting technique, where first simulated annealing is used, followed
+        <para>This differs from phasing, another powerfull technique, where first simulated annealing is used, followed
         by tabu search.</para>
       </section>
     </section>
@@ -627,9 +629,9 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
           </listitem>
         </itemizedlist>
 
-        <para>Unlike the n queens problem, real world problems require the use of subset selection. We recommend to
-        start from an <literal>minimalAcceptedSelection</literal> that takes a step in less then 2 seconds and use the
-        <literal>Benchmarker</literal> to tune it. Turn on INFO logging to see the step times.</para>
+        <para>Unlike the n queens problem, real world problems require the use of subset selection. Start from an
+        <literal>minimalAcceptedSelection</literal> that takes a step in less then 2 seconds. Turn on INFO logging to
+        see the step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
       </section>
 
       <section>
@@ -659,8 +661,8 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
           <listitem>
             <para><literal>FIRST_LAST_STEP_SCORE_IMPROVING</literal>: Pick the first accepted move that improves the
-            last step score. If none improve the last step score, it behaves exactly like the pickEarlyType NEVER.
-            </para>
+            last step score. If none improve the last step score, it behaves exactly like the pickEarlyType
+            NEVER.</para>
 
             <programlisting>    &lt;forager&gt;
         &lt;pickEarlyType&gt;FIRST_LAST_STEP_SCORE_IMPROVING&lt;/pickEarlyType&gt;
@@ -701,8 +703,12 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     optimal solution. For real-life problems this doesn't turn out to be much of a problem, because finding the optimal
     solution would take billions of years, so you 'll want to terminate sooner anyway.</para>
 
-    <para>You can configure when a local search solver needs to stop by configuring a Termination. You can implement
-    your own <literal>Termination</literal>, although the build-in Terminations should suffice for most needs.</para>
+    <para>You can configure when a local search solver needs to stop by configuring a <literal>Termination</literal>. A
+    <literal>Termination</literal> can calculate a time gradient, which is a ratio between the time already spend
+    solving and the expected entire solving time.</para>
+
+    <para>You can implement your own <literal>Termination</literal>, although the build-in Terminations should suffice
+    for most needs.</para>
 
     <section>
       <title>TimeMillisSpendTermination</title>
