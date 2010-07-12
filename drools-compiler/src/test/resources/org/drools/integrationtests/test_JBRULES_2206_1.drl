@@ -1,0 +1,15 @@
+package org.drools;
+
+rule "notNotRule"
+    when        
+        exists ( Cheese() );        
+    then     
+        //System.out.println("Rule fired...");      
+end
+
+rule "existsRule"
+    when        
+        exists ( Cheese() );        
+    then     
+        //System.out.println("exists rule fired...");      
+end
