@@ -1,0 +1,9 @@
+package org.drools;
+
+rule "notNotRule"
+    when        
+        not ( not ( Cheese() ) );        
+    then     
+        //System.out.println("Rule fired...");      
+end
+

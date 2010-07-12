@@ -45,6 +45,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.marshalling.MarshallerFactory;
@@ -1160,14 +1161,15 @@ public class DynamicRulesTest extends TestCase {
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         // rule should be reactivated, since data is still in the session
         verify( alistener,
                 times( 2 ) ).activationCreated( any( org.drools.event.rule.ActivationCreatedEvent.class ) );
-        
+
     }
 
-    public void testSharedLIANodeRemoval() throws IOException, DroolsParserException {
+    public void testSharedLIANodeRemoval() throws IOException,
+                                          DroolsParserException {
         String str = "global java.util.List list;\n";
         str += "rule \"test\"\n";
         str += "when\n";
@@ -1175,33 +1177,81 @@ public class DynamicRulesTest extends TestCase {
         str += "then\n";
         str += " list.add(\"fired\");\n";
         str += "end\n";
-        
+
         PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackageFromDrl(new StringReader(str));
-        Assert.assertTrue("Should not have errors", pkgBuilder.getErrors().isEmpty());
+        pkgBuilder.addPackageFromDrl( new StringReader( str ) );
+        Assert.assertTrue( "Should not have errors",
+                           pkgBuilder.getErrors().isEmpty() );
 
         // Add once ...
-        ReteooRuleBase rb = new ReteooRuleBase("dummy");
-        rb.addPackage(pkgBuilder.getPackage());
+        ReteooRuleBase rb = new ReteooRuleBase( "dummy" );
+        rb.addPackage( pkgBuilder.getPackage() );
 
         // This one works
         List list = new ArrayList();
         StatefulSession session = rb.newStatefulSession();
-        session.setGlobal( "list", list );
-        session.fireAllRules();       
-        assertEquals(1, list.size() );
+        session.setGlobal( "list",
+                           list );
+        session.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
 
-        
         list.clear();
         // ... remove ...
-        rb.removePackage(pkgBuilder.getPackage().getName());
-        rb.addPackage(pkgBuilder.getPackage());          
+        rb.removePackage( pkgBuilder.getPackage().getName() );
+        rb.addPackage( pkgBuilder.getPackage() );
         session = rb.newStatefulSession();
-        session.setGlobal( "list", list );
-        session.fireAllRules();   
-        assertEquals(1, list.size() );
+        session.setGlobal( "list",
+                           list );
+        session.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
     }
-    
+
+    public void testJBRULES_2206() {
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        session.addEventListener( ael );
+
+        for ( int i = 0; i < 5; i++ ) {
+            session.insert( new Cheese() );
+        }
+
+        addDrlToKBase( kbase, "test_JBRULES_2206_1.drl" );
+        
+        // two matching rules were added, so 2 activations should have been created 
+        verify( ael, times(2) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        int fireCount = session.fireAllRules();
+        // both should have fired
+        assertEquals( 2, fireCount );
+        
+        addDrlToKBase( kbase, "test_JBRULES_2206_2.drl" );
+        
+        // one rule was overridden and should activate 
+        verify( ael, times(3) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        fireCount = session.fireAllRules();
+        // that rule should fire again
+        assertEquals( 1, fireCount );
+
+        session.dispose();
+    }
+
+    private void addDrlToKBase(KnowledgeBase kbase, String drlName) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( drlName,
+                                                            DynamicRulesTest.class ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    }
+
     public class SubvertedClassLoader extends URLClassLoader {
 
         private static final long serialVersionUID = 400L;
