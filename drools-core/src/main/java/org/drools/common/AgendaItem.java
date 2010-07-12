@@ -21,16 +21,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.FactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
+import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
@@ -314,16 +314,41 @@ public class AgendaItem
         return this.subrule;
     }
 
-    public Collection<FactHandle> getFactHandles() {
+    public List<FactHandle> getFactHandles() {
         FactHandle[] factHandles = this.tuple.getFactHandles();
         List<FactHandle> list = new ArrayList<FactHandle>( factHandles.length );
         for ( FactHandle factHandle : factHandles ) {
             list.add( factHandle );
         }
-        return Collections.unmodifiableCollection( list );
+        return Collections.unmodifiableList( list );
     }
     
     public String toExternalForm() {
         return "[ "+this.getRule().getName()+" active="+this.activated+ " ]";
+    }
+
+    public List<Object> getObjects() {
+        FactHandle[] factHandles = this.tuple.getFactHandles();
+        List<Object> list = new ArrayList<Object>( factHandles.length );
+        for ( FactHandle factHandle : factHandles ) {
+            list.add( ((InternalFactHandle) factHandle).getObject() );
+        }
+        return Collections.unmodifiableList( list );
+    }
+
+    public Object getDeclarationValue(String variableName) {
+        Declaration decl = this.getRule().getDeclaration( variableName ); 
+        InternalFactHandle handle = this.tuple.get( decl );
+        // need to double check, but the working memory reference is only used for resolving globals, right?
+        return decl.getValue( null, handle.getObject() );
+    }
+
+    public List<String> getDeclarationIDs() {
+        Declaration[] declArray = this.getRule().getDeclarations(); 
+        List<String> declarations = new ArrayList<String>();
+        for( Declaration decl : declArray ) {
+            declarations.add( decl.getIdentifier() );
+        }
+        return Collections.unmodifiableList( declarations );
     }
 }

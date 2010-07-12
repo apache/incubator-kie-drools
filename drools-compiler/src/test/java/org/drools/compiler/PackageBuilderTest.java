@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,18 +28,16 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
-import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
+import org.drools.common.ActivationNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
-import org.drools.common.ActivationNode;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
@@ -65,19 +62,17 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.process.core.Context;
 import org.drools.process.core.Process;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Behavior;
-import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.Declaration;
+import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -1579,7 +1574,22 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         }
 
-        public Collection<FactHandle> getFactHandles() {
+        public List<FactHandle> getFactHandles() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public List<Object> getObjects() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public Object getDeclarationValue(String variableName) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public List<String> getDeclarationIDs() {
             // TODO Auto-generated method stub
             return null;
         }

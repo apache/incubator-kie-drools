@@ -1,0 +1,15 @@
+package org.drools;
+
+declare Sensor
+	@role (event)
+end
+
+rule 'dupa2'
+when
+Number( $avg : intValue ) from accumulate(
+        Sensor( $v : temperature ) over window:length( 2 ),
+        average( $v ) )
+then
+	// noop
+end
+

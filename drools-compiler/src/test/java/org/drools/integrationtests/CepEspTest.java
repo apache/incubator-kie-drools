@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,6 +27,7 @@ import org.drools.OrderEvent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.Sensor;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
@@ -642,10 +644,10 @@ public class CepEspTest extends TestCase {
 
         final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
         clock.setStartupTime( 1000 );
-        
+
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
-        
+
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
                                          50,
@@ -705,13 +707,14 @@ public class CepEspTest extends TestCase {
         clock.advanceTime( 2,
                            TimeUnit.MILLISECONDS );
         ksession.insert( tick8 );
-        
+
         ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
         verify( ael ).activationCreated( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(), is( "before" ) );
+        assertThat( arg.getValue().getActivation().getRule().getName(),
+                    is( "before" ) );
 
         ksession.fireAllRules();
-        
+
         verify( ael ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
     }
 
@@ -730,10 +733,10 @@ public class CepEspTest extends TestCase {
 
         final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
         clock.setStartupTime( 1000 );
-        
+
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
-        
+
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
                                          50,
@@ -793,17 +796,19 @@ public class CepEspTest extends TestCase {
         clock.advanceTime( 2,
                            TimeUnit.MILLISECONDS );
         ksession.insert( tick8 );
-        
+
         ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
         verify( ael ).activationCreated( arg.capture() );
-        Activation activation = arg.getValue().getActivation(); 
-        assertThat( activation.getRule().getName(), is( "metby" ) );
+        Activation activation = arg.getValue().getActivation();
+        assertThat( activation.getRule().getName(),
+                    is( "metby" ) );
 
         ksession.fireAllRules();
-        
+
         ArgumentCaptor<AfterActivationFiredEvent> aaf = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
         verify( ael ).afterActivationFired( aaf.capture() );
-        assertThat( (InternalFactHandle) aaf.getValue().getActivation().getFactHandles().toArray()[0], is( fh2 ));
+        assertThat( (InternalFactHandle) aaf.getValue().getActivation().getFactHandles().toArray()[0],
+                    is( fh2 ) );
     }
 
     public void testAfterOnArbitraryDates() throws Exception {
@@ -1208,11 +1213,11 @@ public class CepEspTest extends TestCase {
 
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
-        
+
         StockTick st1O = new StockTick( 1,
-                                       "DROO",
-                                       100,
-                                       clock.getCurrentTime() ); 
+                                        "DROO",
+                                        100,
+                                        clock.getCurrentTime() );
 
         EventFactHandle st1 = (EventFactHandle) wm.insert( st1O );
 
@@ -1632,5 +1637,82 @@ public class CepEspTest extends TestCase {
     public static class A
         implements
         Serializable {
+    }
+
+    public void testStreamModeNoSerialization() throws IOException,
+                                               ClassNotFoundException {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_CEP_StreamMode.drl",
+                                                            CepEspTest.class ),
+                      ResourceType.DRL );
+        if ( kbuilder.getErrors().size() > 0 ) {
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+
+        KnowledgeBaseConfiguration kbaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbaseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfig );
+        kbase1.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase2 = (KnowledgeBase) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( kbase1 ),
+                                                                           null );
+
+        final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
+        AgendaEventListener ael1 = mock( AgendaEventListener.class );
+        ksession1.addEventListener( ael1 );
+        
+        final StatefulKnowledgeSession ksession2 = kbase2.newStatefulKnowledgeSession();
+        AgendaEventListener ael2 = mock( AgendaEventListener.class );
+        ksession2.addEventListener( ael2 );
+
+        // -------------
+        // first, check the non-serialized session
+        // -------------
+        ksession1.insert( new Sensor( 10,
+                                      10 ) );
+        ksession1.fireAllRules();
+        
+        ArgumentCaptor<AfterActivationFiredEvent> aafe1 = ArgumentCaptor.forClass(AfterActivationFiredEvent.class);
+        verify( ael1, times(1) ).afterActivationFired( aafe1.capture() );
+        List<AfterActivationFiredEvent> events1 = aafe1.getAllValues();
+        assertThat( events1.get( 0 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 10 ) );
+
+        ksession1.insert( new Sensor( 20,
+                                      20 ) );
+        ksession1.fireAllRules();
+        verify( ael1, times(2) ).afterActivationFired( aafe1.capture() );
+        assertThat( events1.get( 1 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 15 ) );
+        ksession1.insert( new Sensor( 30,
+                                      30 ) );
+        ksession1.fireAllRules();
+        verify( ael1, times(3) ).afterActivationFired( aafe1.capture() );
+        assertThat( events1.get( 2 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 25 ) );
+        
+        ksession1.dispose();
+        
+        // -------------
+        // now we check the serialized session
+        // -------------
+        ArgumentCaptor<AfterActivationFiredEvent> aafe2 = ArgumentCaptor.forClass(AfterActivationFiredEvent.class);
+
+        ksession2.insert( new Sensor( 10,
+                                      10 ) );
+        ksession2.fireAllRules();
+        verify( ael2, times(1) ).afterActivationFired( aafe2.capture() );
+        List<AfterActivationFiredEvent> events2 = aafe2.getAllValues();
+        assertThat( events2.get( 0 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 10 ) );
+        
+        ksession2.insert( new Sensor( 20,
+                                      20 ) );
+        ksession2.fireAllRules();
+        verify( ael2, times(2) ).afterActivationFired( aafe2.capture() );
+        assertThat( events2.get( 1 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 15 ) );
+
+        ksession2.insert( new Sensor( 30,
+                                      30 ) );
+        ksession2.fireAllRules();
+        verify( ael2, times(3) ).afterActivationFired( aafe2.capture() );
+        assertThat( events2.get( 2 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 25 ) );
+        ksession2.dispose();
     }
 }

@@ -1,16 +1,16 @@
 package org.drools.util;
 
-import java.util.Collection;
+import java.util.List;
 
+import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
-import org.drools.common.LogicalDependency;
 import org.drools.common.ActivationNode;
+import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.FactHandle;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
@@ -134,7 +134,22 @@ public class BaseQueueable
         
     }
 
-    public Collection<FactHandle> getFactHandles() {
+    public List<FactHandle> getFactHandles() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<Object> getObjects() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Object getDeclarationValue(String variableName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<String> getDeclarationIDs() {
         // TODO Auto-generated method stub
         return null;
     }
