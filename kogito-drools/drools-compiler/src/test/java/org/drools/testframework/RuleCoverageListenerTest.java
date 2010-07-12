@@ -1,14 +1,14 @@
 package org.drools.testframework;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
-import org.drools.common.LogicalDependency;
 import org.drools.common.ActivationNode;
+import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.rule.GroupElement;
@@ -68,6 +68,7 @@ public class RuleCoverageListenerTest extends TestCase {
 
 }
 
+@SuppressWarnings("serial")
 class MockActivation
     implements
     Activation {
@@ -139,7 +140,22 @@ class MockActivation
     public void setActivationNode(ActivationNode ruleFlowGroupNode) {
     }
 
-    public Collection<FactHandle> getFactHandles() {
+    public List<FactHandle> getFactHandles() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<Object> getObjects() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Object getDeclarationValue(String variableName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<String> getDeclarationIDs() {
         // TODO Auto-generated method stub
         return null;
     }
