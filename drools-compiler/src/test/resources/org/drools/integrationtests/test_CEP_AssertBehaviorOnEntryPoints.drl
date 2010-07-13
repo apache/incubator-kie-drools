@@ -1,0 +1,14 @@
+package org.drools;
+
+declare StockTick
+    @role( event )
+    @timestamp( time )
+end
+
+rule "test assert behavior on entry-points"
+when
+    $a : StockTick( ) from entry-point "stocktick stream"
+then
+    // no-op
+end
+

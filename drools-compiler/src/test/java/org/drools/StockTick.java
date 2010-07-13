@@ -85,6 +85,30 @@ public class StockTick implements Serializable {
     public Date getDateTimestamp() {
         return new Date( this.time );
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((company == null) ? 0 : company.hashCode());
+        result = prime * result + (int) (seq ^ (seq >>> 32));
+        result = prime * result + (int) (time ^ (time >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        StockTick other = (StockTick) obj;
+        if ( company == null ) {
+            if ( other.company != null ) return false;
+        } else if ( !company.equals( other.company ) ) return false;
+        if ( seq != other.seq ) return false;
+        if ( time != other.time ) return false;
+        return true;
+    }
     
 
 }
