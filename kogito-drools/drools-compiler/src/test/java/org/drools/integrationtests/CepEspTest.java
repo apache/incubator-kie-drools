@@ -43,6 +43,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
@@ -60,6 +61,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
@@ -121,6 +123,27 @@ public class CepEspTest extends TestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         kbase = SerializationHelper.serializeObject( kbase );
+        return kbase;
+    }
+
+    private KnowledgeBase loadKnowledgeBase(final String resource,
+                                            final KnowledgeBaseConfiguration conf,
+                                            final boolean serialize) throws IOException,
+                                                                    ClassNotFoundException {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( resource,
+                                                            CepEspTest.class ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        // add the packages to a rulebase
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        if ( serialize ) {
+            kbase = SerializationHelper.serializeObject( kbase );
+        }
         return kbase;
     }
 
@@ -1476,19 +1499,11 @@ public class CepEspTest extends TestCase {
     }
 
     public void testCollectWithWindows() throws Exception {
-        // read in the source
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_CollectWithWindows.drl" ) ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_CollectWithWindows.drl",
+                                                       kbconf,
+                                                       true );
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
@@ -1641,18 +1656,11 @@ public class CepEspTest extends TestCase {
 
     public void testStreamModeNoSerialization() throws IOException,
                                                ClassNotFoundException {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_CEP_StreamMode.drl",
-                                                            CepEspTest.class ),
-                      ResourceType.DRL );
-        if ( kbuilder.getErrors().size() > 0 ) {
-            throw new IllegalArgumentException( "Could not parse knowledge." );
-        }
-
-        KnowledgeBaseConfiguration kbaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbaseConfig.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfig );
-        kbase1.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase1 = loadKnowledgeBase( "test_CEP_StreamMode.drl",
+                                                        kbconf,
+                                                        false );
 
         KnowledgeBase kbase2 = (KnowledgeBase) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( kbase1 ),
                                                                            null );
@@ -1660,7 +1668,7 @@ public class CepEspTest extends TestCase {
         final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
         ksession1.addEventListener( ael1 );
-        
+
         final StatefulKnowledgeSession ksession2 = kbase2.newStatefulKnowledgeSession();
         AgendaEventListener ael2 = mock( AgendaEventListener.class );
         ksession2.addEventListener( ael2 );
@@ -1671,48 +1679,157 @@ public class CepEspTest extends TestCase {
         ksession1.insert( new Sensor( 10,
                                       10 ) );
         ksession1.fireAllRules();
-        
-        ArgumentCaptor<AfterActivationFiredEvent> aafe1 = ArgumentCaptor.forClass(AfterActivationFiredEvent.class);
-        verify( ael1, times(1) ).afterActivationFired( aafe1.capture() );
+
+        ArgumentCaptor<AfterActivationFiredEvent> aafe1 = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael1,
+                times( 1 ) ).afterActivationFired( aafe1.capture() );
         List<AfterActivationFiredEvent> events1 = aafe1.getAllValues();
-        assertThat( events1.get( 0 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 10 ) );
+        assertThat( events1.get( 0 ).getActivation().getDeclarationValue( "$avg" ),
+                    is( (Object) 10 ) );
 
         ksession1.insert( new Sensor( 20,
                                       20 ) );
         ksession1.fireAllRules();
-        verify( ael1, times(2) ).afterActivationFired( aafe1.capture() );
-        assertThat( events1.get( 1 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 15 ) );
+        verify( ael1,
+                times( 2 ) ).afterActivationFired( aafe1.capture() );
+        assertThat( events1.get( 1 ).getActivation().getDeclarationValue( "$avg" ),
+                    is( (Object) 15 ) );
         ksession1.insert( new Sensor( 30,
                                       30 ) );
         ksession1.fireAllRules();
-        verify( ael1, times(3) ).afterActivationFired( aafe1.capture() );
-        assertThat( events1.get( 2 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 25 ) );
-        
+        verify( ael1,
+                times( 3 ) ).afterActivationFired( aafe1.capture() );
+        assertThat( events1.get( 2 ).getActivation().getDeclarationValue( "$avg" ),
+                    is( (Object) 25 ) );
+
         ksession1.dispose();
-        
+
         // -------------
         // now we check the serialized session
         // -------------
-        ArgumentCaptor<AfterActivationFiredEvent> aafe2 = ArgumentCaptor.forClass(AfterActivationFiredEvent.class);
+        ArgumentCaptor<AfterActivationFiredEvent> aafe2 = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
 
         ksession2.insert( new Sensor( 10,
                                       10 ) );
         ksession2.fireAllRules();
-        verify( ael2, times(1) ).afterActivationFired( aafe2.capture() );
+        verify( ael2,
+                times( 1 ) ).afterActivationFired( aafe2.capture() );
         List<AfterActivationFiredEvent> events2 = aafe2.getAllValues();
-        assertThat( events2.get( 0 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 10 ) );
-        
+        assertThat( events2.get( 0 ).getActivation().getDeclarationValue( "$avg" ),
+                    is( (Object) 10 ) );
+
         ksession2.insert( new Sensor( 20,
                                       20 ) );
         ksession2.fireAllRules();
-        verify( ael2, times(2) ).afterActivationFired( aafe2.capture() );
-        assertThat( events2.get( 1 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 15 ) );
+        verify( ael2,
+                times( 2 ) ).afterActivationFired( aafe2.capture() );
+        assertThat( events2.get( 1 ).getActivation().getDeclarationValue( "$avg" ),
+                    is( (Object) 15 ) );
 
         ksession2.insert( new Sensor( 30,
                                       30 ) );
         ksession2.fireAllRules();
-        verify( ael2, times(3) ).afterActivationFired( aafe2.capture() );
-        assertThat( events2.get( 2 ).getActivation().getDeclarationValue( "$avg" ), is( (Object) 25 ) );
+        verify( ael2,
+                times( 3 ) ).afterActivationFired( aafe2.capture() );
+        assertThat( events2.get( 2 ).getActivation().getDeclarationValue( "$avg" ),
+                    is( (Object) 25 ) );
         ksession2.dispose();
     }
+
+    public void testIdentityAssertBehaviorOnEntryPoints() throws IOException,
+                                                         ClassNotFoundException {
+        StockTick st1 = new StockTick( 1,
+                                       "RHT",
+                                       10,
+                                       10 );
+        StockTick st2 = new StockTick( 1,
+                                       "RHT",
+                                       10,
+                                       10 );
+        StockTick st3 = new StockTick( 2,
+                                       "RHT",
+                                       15,
+                                       20 );
+
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        kbconf.setOption( AssertBehaviorOption.IDENTITY );
+        final KnowledgeBase kbase1 = loadKnowledgeBase( "test_CEP_AssertBehaviorOnEntryPoints.drl",
+                                                        kbconf,
+                                                        true );
+
+        final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
+        AgendaEventListener ael1 = mock( AgendaEventListener.class );
+        ksession1.addEventListener( ael1 );
+        WorkingMemoryEntryPoint ep1 = ksession1.getWorkingMemoryEntryPoint( "stocktick stream" );
+
+        FactHandle fh1 = ep1.insert( st1 );
+        FactHandle fh1_2 = ep1.insert( st1 );
+        FactHandle fh2 = ep1.insert( st2 );
+        FactHandle fh3 = ep1.insert( st3 );
+
+        assertSame( fh1,
+                    fh1_2 );
+        assertNotSame( fh1,
+                       fh2 );
+        assertNotSame( fh1,
+                       fh3 );
+        assertNotSame( fh2,
+                       fh3 );
+
+        ksession1.fireAllRules();
+        // must have fired 3 times, one for each event identity
+        verify( ael1,
+                times( 3 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+
+        ksession1.dispose();
+    }
+
+    public void testEqualityAssertBehaviorOnEntryPoints() throws IOException,
+                                                         ClassNotFoundException {
+        StockTick st1 = new StockTick( 1,
+                                       "RHT",
+                                       10,
+                                       10 );
+        StockTick st2 = new StockTick( 1,
+                                       "RHT",
+                                       10,
+                                       10 );
+        StockTick st3 = new StockTick( 2,
+                                       "RHT",
+                                       15,
+                                       20 );
+
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        kbconf.setOption( AssertBehaviorOption.EQUALITY );
+        final KnowledgeBase kbase1 = loadKnowledgeBase( "test_CEP_AssertBehaviorOnEntryPoints.drl",
+                                                        kbconf,
+                                                        true );
+
+        final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
+        AgendaEventListener ael1 = mock( AgendaEventListener.class );
+        ksession1.addEventListener( ael1 );
+        WorkingMemoryEntryPoint ep1 = ksession1.getWorkingMemoryEntryPoint( "stocktick stream" );
+
+        FactHandle fh1 = ep1.insert( st1 );
+        FactHandle fh1_2 = ep1.insert( st1 );
+        FactHandle fh2 = ep1.insert( st2 );
+        FactHandle fh3 = ep1.insert( st3 );
+
+        assertSame( fh1,
+                    fh1_2 );
+        assertSame( fh1,
+                    fh2 );
+        assertNotSame( fh1,
+                       fh3 );
+
+        ksession1.fireAllRules();
+        // must have fired 2 times, one for each event equality
+        verify( ael1,
+                times( 2 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+
+        ksession1.dispose();
+    }
+
 }

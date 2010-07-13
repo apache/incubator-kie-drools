@@ -102,14 +102,22 @@ public class NamedEntryPoint
             // you cannot assert a null object
             return null;
         }
-        
+
         try {
             this.wm.startOperation();
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
-            InternalFactHandle handle = this.handleFactory.newFactHandle( object,
-                                                                          typeConf,
-                                                                          wm );
+            // check if the object already exists in the WM
+            InternalFactHandle handle = (InternalFactHandle) this.objectStore.getHandleForObject( object );
+
+            if ( handle != null ) {
+                // already inserted, so return the same handle
+                return handle;
+            }
+
+            handle = this.handleFactory.newFactHandle( object,
+                                                       typeConf,
+                                                       wm );
             handle.setEntryPoint( this );
             this.objectStore.addHandle( handle,
                                         object );
@@ -176,9 +184,9 @@ public class NamedEntryPoint
     }
 
     public void update(final org.drools.runtime.rule.FactHandle factHandle,
-                          final Object object,
-                          final Rule rule,
-                          final Activation activation) throws FactException {
+                       final Object object,
+                       final Rule rule,
+                       final Activation activation) throws FactException {
         try {
             this.ruleBase.readLock();
             this.lock.lock();
@@ -188,7 +196,7 @@ public class NamedEntryPoint
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = handle.getObject();
 
-            if ( handle.getId() == -1 || object == null || ( handle.isEvent() && ((EventFactHandle)handle).isExpired() )) {
+            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so
                 // return
                 // and we cannot assert a null object
@@ -234,7 +242,7 @@ public class NamedEntryPoint
                                               this.wm );
 
             this.wm.getWorkingMemoryEventSupport().fireObjectUpdated( propagationContext,
-                                                                      (org.drools.FactHandle)factHandle,
+                                                                      (org.drools.FactHandle) factHandle,
                                                                       originalObject,
                                                                       object,
                                                                       this.wm );
@@ -285,9 +293,9 @@ public class NamedEntryPoint
                                                                                       -1,
                                                                                       -1,
                                                                                       this.entryPoint );
-            
+
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                          handle.getObject() );            
+                                                                          handle.getObject() );
 
             this.entryPointNode.retractObject( handle,
                                                propagationContext,
@@ -302,7 +310,7 @@ public class NamedEntryPoint
                                                                         this.wm );
 
             this.objectStore.removeHandle( handle );
-            
+
             this.handleFactory.destroyFactHandle( handle );
 
             this.wm.executeQueuedActions();
@@ -333,7 +341,7 @@ public class NamedEntryPoint
             // ((ShadowProxy) handle.getObject()).getShadowedObject() :
             // handle.getObject();
 
-            if ( handle.getId() == -1 || ( handle.isEvent() && ((EventFactHandle)handle).isExpired() ) ) {
+            if ( handle.getId() == -1 || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so
                 // return
                 return;
@@ -352,9 +360,9 @@ public class NamedEntryPoint
                                                                                       -1,
                                                                                       -1,
                                                                                       entryPoint );
-            
+
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                          handle.getObject() );            
+                                                                          handle.getObject() );
 
             this.entryPointNode.retractObject( handle,
                                                propagationContext,
@@ -401,7 +409,7 @@ public class NamedEntryPoint
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = handle.getObject();
 
-            if ( handle.getId() == -1 || ( handle.isEvent() && ((EventFactHandle)handle).isExpired() ) ) {
+            if ( handle.getId() == -1 || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so
                 // return
                 return;
@@ -422,9 +430,9 @@ public class NamedEntryPoint
                                                                                       -1,
                                                                                       -1,
                                                                                       entryPoint );
-            
+
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                          handle.getObject() );            
+                                                                          handle.getObject() );
 
             this.entryPointNode.assertObject( handle,
                                               propagationContext,
@@ -510,7 +518,7 @@ public class NamedEntryPoint
     public RuleBase getRuleBase() {
         return this.ruleBase;
     }
-        
+
     public FactHandle getFactHandle(Object object) {
         return this.objectStore.getHandleForObject( object );
     }
@@ -518,40 +526,42 @@ public class NamedEntryPoint
     public EntryPoint getEntryPoint() {
         return this.entryPoint;
     }
-    
+
     public InternalWorkingMemory getInternalWorkingMemory() {
         return this.wm;
     }
+
     public FactHandle getFactHandleByIdentity(final Object object) {
         return this.objectStore.getHandleForObjectIdentity( object );
     }
+
     public Object getObject(org.drools.runtime.rule.FactHandle factHandle) {
         return this.objectStore.getObjectForHandle( (InternalFactHandle) factHandle );
-    }    
-    
+    }
+
     @SuppressWarnings("unchecked")
-    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles() {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends org.drools.runtime.rule.FactHandle> Collection< T > getFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
     @SuppressWarnings("unchecked")
-    public Collection< Object > getObjects() {
+    public Collection<Object> getObjects() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
     @SuppressWarnings("unchecked")
-    public Collection< Object > getObjects(org.drools.runtime.ObjectFilter filter) {
+    public Collection<Object> getObjects(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
@@ -563,6 +573,6 @@ public class NamedEntryPoint
 
     public long getFactCount() {
         return this.objectStore.size();
-    }    
+    }
 
 }
