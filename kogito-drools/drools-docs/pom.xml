@@ -202,7 +202,7 @@
           <options>
             <xmlTransformerType>saxon</xmlTransformerType>
             <xincludeSupported>true</xincludeSupported>
-            <useRelativeImageUris>false</useRelativeImageUris>
+            <useRelativeImageUris>true</useRelativeImageUris>
             <docbookVersion>1.72.0</docbookVersion>
             <!-- <localeSeparator>-</localeSeparator> -->
           </options>
