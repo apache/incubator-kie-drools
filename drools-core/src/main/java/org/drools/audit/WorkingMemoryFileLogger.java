@@ -118,14 +118,18 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         try {
             fileWriter = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true );
             final XStream xstream = new XStream();
-            for (LogEvent event : this.events) {
+            List<LogEvent> eventsToWrite = null; 
+            synchronized (this.events) {
+            	eventsToWrite = new ArrayList<LogEvent>(this.events);
+                clear();
+            }
+            for (LogEvent event : eventsToWrite) {
                 fileWriter.write(xstream.toXML(event) + "\n");
             }
             if (split) {
                 this.nbOfFile++;
                 initialized = false;
             }
-            clear();
             fileWriter.write("</object-stream>");
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
@@ -153,7 +157,9 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * Clears all the events in the log.
      */
     private void clear() {
-        this.events.clear();
+        synchronized (this.events) {
+        	this.events.clear();
+        }
     }
 
     /**
@@ -171,9 +177,11 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * @see org.drools.audit.WorkingMemoryLogger
      */
     public void logEventCreated(final LogEvent logEvent) {
-        this.events.add( logEvent );
-        if ( this.events.size() > this.maxEventsInMemory ) {
-            writeToDisk();
+        synchronized (this.events) {
+        	this.events.add( logEvent );
+	        if ( this.events.size() > this.maxEventsInMemory ) {
+	            writeToDisk();
+	        }
         }
     }
     
