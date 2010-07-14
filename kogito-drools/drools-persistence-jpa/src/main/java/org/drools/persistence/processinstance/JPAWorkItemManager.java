@@ -28,7 +28,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     
 	public void internalExecuteWorkItem(WorkItem workItem) {
         Environment env = this.workingMemory.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 	    
         WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
         em.persist(workItemInfo);
@@ -50,7 +50,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
 	public void internalAbortWorkItem(long id) {
         Environment env = this.workingMemory.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 	    
         WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
         // work item may have been aborted
@@ -74,7 +74,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void completeWorkItem(long id, Map<String, Object> results) {
         Environment env = this.workingMemory.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -108,7 +108,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void abortWorkItem(long id) {
         Environment env = this.workingMemory.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -139,7 +139,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
 	public WorkItem getWorkItem(long id) {
         Environment env = this.workingMemory.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {

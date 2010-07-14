@@ -1,5 +1,6 @@
 package org.drools.command.impl;
 
+import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
 
@@ -15,8 +16,8 @@ public class DefaultCommandService implements CommandService {
 		return context;
 	}
 	
-	public <T> T execute(GenericCommand<T> command) {
-		return command.execute(context);
+	public <T> T execute(Command<T> command) {
+		return ((GenericCommand<T>)command).execute(context);
 	}
 
 }

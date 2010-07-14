@@ -104,7 +104,7 @@ public class ProcessTimerTest extends TestCase {
 
         // test that the delay works
         try {
-            Thread.sleep(600);
+            Thread.sleep(400);
         } catch (InterruptedException e) {
             // do nothing
         }

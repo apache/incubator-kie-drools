@@ -38,29 +38,30 @@ public class SignalEventCommand implements GenericCommand<Object> {
         this.event = event;
     }
 
+
     public long getProcessInstanceId() {
-		return processInstanceId;
-	}
+        return processInstanceId;
+    }
 
-	public void setProcessInstanceId(long processInstanceId) {
-		this.processInstanceId = processInstanceId;
-	}
+    public void setProcessInstanceId(long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-	public String getEventType() {
-		return eventType;
-	}
+    public String getEventType() {
+        return eventType;
+    }
 
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
 
-	public Object getEvent() {
-		return event;
-	}
+    public Object getEvent() {
+        return event;
+    }
 
-	public void setEvent(Object event) {
-		this.event = event;
-	}
+    public void setEvent(Object event) {
+        this.event = event;
+    }
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
@@ -78,9 +79,9 @@ public class SignalEventCommand implements GenericCommand<Object> {
 
 	public String toString() {
 		if (processInstanceId == -1) {
-			return "session.getSignalManager().signalEvent(" + eventType + ", " + event + ");";
+			return "ksession.signalEvent(" + eventType + ", " + event + ");";
 		} else {
-			return "processInstance.signalEvent(" + eventType + ", " + event + ");";
+			return "ksession.signalEvent(" + processInstanceId + ", " + eventType + ", " + event + ");";
 		}
 	}
 

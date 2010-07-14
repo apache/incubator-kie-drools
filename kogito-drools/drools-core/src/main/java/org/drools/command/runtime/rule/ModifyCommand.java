@@ -1,5 +1,8 @@
 package org.drools.command.runtime.rule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,6 +11,8 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
 import org.drools.command.Setter;
@@ -16,6 +21,8 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DisconnectedFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.xml.jaxb.util.JaxbListAdapter;
+import org.drools.xml.jaxb.util.JaxbListWrapper;
 import org.mvel2.MVEL;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -31,7 +38,10 @@ public class ModifyCommand
 
 
     private FactHandle       handle;
-    @XmlAnyElement
+
+
+    @XmlJavaTypeAdapter(JaxbSetterAdapter.class)
+    @XmlElement
     private List<Setter> setters;
 
     public ModifyCommand() {
@@ -68,6 +78,9 @@ public class ModifyCommand
 	}
 
     public List<Setter> getSetters() {
+        if ( this.setters == null ) {
+            this.setters = new ArrayList<Setter>();
+        }
         return this.setters;
     }
     
@@ -122,6 +135,46 @@ public class ModifyCommand
         public String getValue() {
             return value;
         }
-
     }
+    
+//    public static class JaxbSetterWrapper<SetterImpl> extends ArrayList<SetterImpl> {
+//
+//        public JaxbSetterWrapper() {
+//            super();
+//        }
+//
+//        public JaxbSetterWrapper(Collection<SetterImpl> c) {
+//            super(c);
+//        }
+//
+//        public JaxbSetterWrapper(int initialCapacity) {
+//            super(initialCapacity);
+//        }
+//
+//        @XmlElement(name="setters")
+//        public List<SetterImpl> getElements() {
+//            return this;
+//        }
+//        
+//        public void setElements(List<SetterImpl> elems) {
+//            clear();
+//            if (elems != null) {
+//                addAll(elems);
+//            }
+//        }
+//    }    
+    
+    public static class JaxbSetterAdapter extends XmlAdapter<SetterImpl[], List<SetterImpl>> {
+
+        @Override
+        public SetterImpl[] marshal(List<SetterImpl> v) throws Exception {
+            return v.toArray( new SetterImpl[ v.size() ] );
+        }
+
+        @Override
+        public List<SetterImpl> unmarshal(SetterImpl[] v) throws Exception {
+            return Arrays.asList( v );
+        }
+
+    }    
 }

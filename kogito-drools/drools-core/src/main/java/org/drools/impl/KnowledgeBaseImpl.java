@@ -65,6 +65,9 @@ public class KnowledgeBaseImpl
     KnowledgeBase,
     Externalizable {
     public RuleBase                                                          ruleBase;
+    
+    // This is just a hack, so spring can find the list of generated classes
+    public List jaxbClasses;
 
     public Map<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
 

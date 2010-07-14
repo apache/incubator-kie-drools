@@ -28,8 +28,7 @@ public class JPASessionMarshallingHelper {
      * @param conf
      * @param marshallingConfiguration
      */
-    public JPASessionMarshallingHelper(SessionInfo info,
-                                       KnowledgeBase kbase,
+    public JPASessionMarshallingHelper(KnowledgeBase kbase,
                                        KnowledgeSessionConfiguration conf,
                                        Environment env) {
         this.kbase = kbase;
@@ -42,9 +41,6 @@ public class JPASessionMarshallingHelper {
         } else {
             this.marshaller = MarshallerFactory.newMarshaller( kbase ) ;  
         }
-
-        loadSnapshot( info.getData() );
-        info.setJPASessionMashallingHelper( this );
     }
 
     /** 
@@ -88,25 +84,13 @@ public class JPASessionMarshallingHelper {
         this.ksession = ksession;
         ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
         try {
-            this.marshaller.unmarshall( bais,
-                                        ksession );
-        } catch ( Exception e ) {
-            throw new RuntimeException( "Unable to load session snapshot",
-                                        e );
-        }
-        return this.ksession;
-    }
-
-    public StatefulKnowledgeSession loadSnapshot(byte[] bytes) {
-        try {
-            ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-            if ( this.ksession == null ) {
+            if ( this.ksession != null ) {
+                this.marshaller.unmarshall( bais,
+                                            this.ksession );                
+            } else {
                 this.ksession = this.marshaller.unmarshall( bais,
                                                             this.conf,
-                                                            this.env );
-            } else {
-                loadSnapshot( bytes,
-                              this.ksession );
+                                                            this.env );                
             }
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to load session snapshot",
@@ -115,8 +99,18 @@ public class JPASessionMarshallingHelper {
         return this.ksession;
     }
 
+
     public StatefulKnowledgeSession getObject() {
         return ksession;
     }
 
+    public KnowledgeBase getKbase() {
+        return kbase;
+    }
+
+    public KnowledgeSessionConfiguration getConf() {
+        return conf;
+    }
+
+    
 }

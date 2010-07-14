@@ -7,6 +7,11 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.drools.FactHandle;
+import org.drools.common.DisconnectedFactHandle;
+import org.drools.runtime.rule.impl.FlatQueryResults;
+import org.drools.runtime.rule.impl.NativeQueryResults;
+
 
 public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<String,Object>> {
 
@@ -15,9 +20,24 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<String,Object>> {
 		if (value == null || value.isEmpty()) {
 			return new JaxbPair[0];
 		}
+		
 		List<JaxbPair> ret = new ArrayList<JaxbPair>(value.size());
 		for (Map.Entry<String, Object> entry : value.entrySet()) {
-			ret.add(new JaxbPair(entry.getKey(), entry.getValue()));
+		    Object obj = entry.getValue();
+		    Class<? extends Object> vClass = obj.getClass();
+		    
+		    if ( obj instanceof NativeQueryResults ) {
+		        obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
+		    } else if (obj instanceof FactHandle && !(obj instanceof DisconnectedFactHandle)) {
+		        obj = new DisconnectedFactHandle(((FactHandle) obj).toExternalForm());
+	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
+	                JaxbListWrapper<Object> wrapper = new JaxbListWrapper<Object>(((List<?>) obj).size());
+	                for (Object item : ((List<?>) obj)) {
+	                    wrapper.add(item);
+	                }	     
+	                obj = wrapper;
+	        }
+			ret.add(new JaxbPair(entry.getKey(), obj));
 		}
 		
 		return ret.toArray(new JaxbPair[value.size()]);

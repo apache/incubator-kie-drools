@@ -3,12 +3,14 @@ package org.drools.common;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name="fact-handle")
 public class DisconnectedFactHandle
     implements
     InternalFactHandle {

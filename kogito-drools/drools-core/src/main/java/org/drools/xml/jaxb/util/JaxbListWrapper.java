@@ -7,9 +7,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlRootElement(name="list")
 public class JaxbListWrapper<T> extends ArrayList<T> {
 
 	public JaxbListWrapper() {
@@ -24,7 +26,7 @@ public class JaxbListWrapper<T> extends ArrayList<T> {
 		super(initialCapacity);
 	}
 
-	@XmlElement
+	@XmlElement(name="element")
 	public List<T> getElements() {
 		return this;
 	}

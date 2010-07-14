@@ -62,6 +62,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.FlatQueryResults;
+import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.xml.jaxb.util.JaxbListWrapper;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
@@ -79,11 +80,11 @@ public class DroolsJaxbHelperProviderImpl
     implements
     DroolsJaxbHelperProvider {
 	
-	private static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommand.class.getName(),
-														SetGlobalCommand.class.getName(),
-														GetGlobalCommand.class.getName(),
-														FireAllRulesCommand.class.getName(),
-														InsertElementsCommand.class.getName(),
+	public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommand.class.getName(),
+													   SetGlobalCommand.class.getName(),
+													   GetGlobalCommand.class.getName(),
+													   FireAllRulesCommand.class.getName(),
+													   InsertElementsCommand.class.getName(),
 														InsertObjectCommand.class.getName(),
 														ModifyCommand.class.getName(),
 														SetterImpl.class.getName(),

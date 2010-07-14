@@ -6,8 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
 import junit.framework.TestCase;
@@ -179,7 +184,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         assertEquals( 2,
                       list.size() );
 
-        // insert and commit
+//        // insert and commit
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         ksession.insert( 3 );
@@ -199,10 +204,7 @@ public class PersistentStatefulSessionTest extends TestCase {
                       list.size() );
         
         // now load the ksession
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-        ut.begin();
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getId(), kbase, null, env );
-        ut.commit();
         
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
@@ -385,6 +387,8 @@ public class PersistentStatefulSessionTest extends TestCase {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
+                 TransactionManagerServices.getTransactionManager() );        
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
@@ -417,6 +421,8 @@ public class PersistentStatefulSessionTest extends TestCase {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
+                 TransactionManagerServices.getTransactionManager() );        
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );

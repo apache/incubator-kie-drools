@@ -219,7 +219,7 @@ public class StatelessKnowledgeSessionImpl
         return this.sessionGlobals;
     }    
 
-    public ExecutionResults execute(Command command) {
+    public <T> T execute(Command<T> command) {
         StatefulKnowledgeSession ksession = newWorkingMemory();
 
         KnowledgeCommandContext context = new KnowledgeCommandContext( new ContextImpl( "ksession",
@@ -232,7 +232,7 @@ public class StatelessKnowledgeSessionImpl
         try {
             ((StatefulKnowledgeSessionImpl) ksession).session.startBatchExecution( new ExecutionResultImpl() );
 
-            ((GenericCommand) command).execute( context );
+            Object o = ((GenericCommand) command).execute( context );
             // did the user take control of fireAllRules, if not we will auto execute
             boolean autoFireAllRules = true;
             if ( command instanceof FireAllRulesCommand ) {
@@ -241,15 +241,19 @@ public class StatelessKnowledgeSessionImpl
                 for ( Command nestedCmd : ((BatchExecutionCommand) command).getCommands() ) {
                     if ( nestedCmd instanceof FireAllRulesCommand ) {
                         autoFireAllRules = false;
-                        break;
+                        break; 
                     }
                 }
             }
             if ( autoFireAllRules ) {
                 ksession.fireAllRules( );
             }
-            ExecutionResults result = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
-            return result;
+            if ( command instanceof BatchExecutionCommand) {
+                ExecutionResults result = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
+                return (T) result;                
+            } else {
+                return (T) o;
+            }
         } finally {
             ((StatefulKnowledgeSessionImpl) ksession).session.endBatchExecution();
         }

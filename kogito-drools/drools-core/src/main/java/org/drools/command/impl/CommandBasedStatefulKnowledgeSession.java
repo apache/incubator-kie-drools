@@ -16,6 +16,7 @@ import org.drools.command.runtime.GetChannelsCommand;
 import org.drools.command.runtime.GetEnvironmentCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.GetGlobalsCommand;
+import org.drools.command.runtime.GetIdCommand;
 import org.drools.command.runtime.GetKnowledgeBaseCommand;
 import org.drools.command.runtime.RegisterChannelCommand;
 import org.drools.command.runtime.RegisterExitPointCommand;
@@ -59,6 +60,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
+import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
@@ -84,7 +86,7 @@ public class CommandBasedStatefulKnowledgeSession
     implements
     StatefulKnowledgeSession {
 
-    private CommandService            commandService;
+    private CommandService           commandService;
     private transient WorkItemManager workItemManager;
     private transient Agenda          agenda;
 
@@ -93,7 +95,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public int getId() {
-        return ((StatefulKnowledgeSessionImpl) ((KnowledgeCommandContext) this.commandService.getContext()).getStatefulKnowledgesession()).getId();
+        return commandService.execute( new GetIdCommand() );
     }
 
     public ProcessInstance getProcessInstance(long id) {
@@ -412,8 +414,8 @@ public class CommandBasedStatefulKnowledgeSession
         return commandService.execute( new GetEnvironmentCommand() );
     }
 
-    public ExecutionResults execute(Command command) {
-        return this.commandService.execute( new ExecuteCommand( command ) );
+    public <T> T execute(Command<T> command) {
+        return (T) this.commandService.execute( new ExecuteCommand( command ) );
     }
 
     public QueryResults getQueryResults(String query) {
@@ -443,6 +445,7 @@ public class CommandBasedStatefulKnowledgeSession
     public LiveQuery openLiveQuery(String query,
                                    Object[] arguments,
                                    ViewChangedEventListener listener) {
+        // TODO: implement thiss        
         return null;
     }
 

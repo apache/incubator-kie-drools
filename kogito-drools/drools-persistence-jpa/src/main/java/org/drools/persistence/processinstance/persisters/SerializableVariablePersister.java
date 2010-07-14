@@ -25,7 +25,7 @@ public class SerializableVariablePersister implements VariablePersister {
 	public VariableInstanceInfo persistExternalVariable(String name, Object o,
 			VariableInstanceInfo oldValue, Environment env) {
                 boolean newVariable = false;
-		EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+		EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 		SerializablePersistedVariable result = null;
                 if(o == null || (oldValue != null && oldValue.getPersister().equals(""))){
                     return null;

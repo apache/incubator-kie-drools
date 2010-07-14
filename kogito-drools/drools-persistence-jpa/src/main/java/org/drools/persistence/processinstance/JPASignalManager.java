@@ -46,7 +46,7 @@ public class JPASignalManager extends DefaultSignalManager {
 
     @SuppressWarnings("unchecked")
     private List<Long> getProcessInstancesForEvent(String type) {
-        EntityManager em = (EntityManager) getWorkingMemory().getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        EntityManager em = (EntityManager) getWorkingMemory().getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         
         Query processInstancesForEvent = em.createNamedQuery( "ProcessInstancesWaitingForEvent" );
         processInstancesForEvent.setFlushMode(FlushModeType.COMMIT);

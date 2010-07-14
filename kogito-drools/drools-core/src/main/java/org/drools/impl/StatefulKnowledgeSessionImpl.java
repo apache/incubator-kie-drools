@@ -16,6 +16,7 @@ import org.drools.command.Context;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -843,13 +844,21 @@ public class StatefulKnowledgeSessionImpl
                                                                                   this,
                                                                                   null );
 
-    public ExecutionResults execute(Command command) {
+    public <T> T execute(Command<T> command) {
         return execute( null,
                         command );
     }
 
-    public ExecutionResults execute(Context context,
-                                    Command command) {
+    public <T> T execute(Context context,
+                         Command<T> command) {
+        if ( !( command instanceof BatchExecutionCommand ) ) {
+            return (T) ((GenericCommand) command).execute( new KnowledgeCommandContext( context,
+                                                                             null,
+                                                                             this.kbase,
+                                                                             this,
+                                                                             null ) ) ;            
+        }
+        
         ExecutionResultImpl results = null;
         if ( context != null ) {
             results = (ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults();
@@ -867,7 +876,7 @@ public class StatefulKnowledgeSessionImpl
                                                                              this,
                                                                              results ) );
             ExecutionResults result = session.getExecutionResult();
-            return result;
+            return (T) result;
         } finally {
             session.endBatchExecution();
         }

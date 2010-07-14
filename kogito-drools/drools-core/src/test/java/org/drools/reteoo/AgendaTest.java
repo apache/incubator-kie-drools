@@ -152,7 +152,7 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
             }
@@ -192,18 +192,18 @@ public class AgendaTest extends DroolsTestCase {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
-        
-        final Boolean[] filtered = new Boolean[] { false };
-        
+
+        final Boolean[] filtered = new Boolean[]{false};
+
         workingMemory.addEventListener( new DefaultAgendaEventListener() {
-         
+
             public void activationCancelled(ActivationCancelledEvent event,
                                             WorkingMemory workingMemory) {
                 if ( event.getCause() == ActivationCancelledCause.FILTER ) {
                     filtered[0] = true;
                 }
             }
-        });
+        } );
 
         final Rule rule = new Rule( "test-rule" );
         final RuleTerminalNode node = new RuleTerminalNode( 3,
@@ -234,10 +234,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }            
+            }
         } );
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
@@ -278,13 +278,14 @@ public class AgendaTest extends DroolsTestCase {
         // make sure it also fired
         assertEquals( new Boolean( true ),
                       results.get( "fired" ) );
-        
-        assertEquals( false, filtered[0].booleanValue() );
+
+        assertEquals( false,
+                      filtered[0].booleanValue() );
 
         // clear the agenda and the result map
         agenda.clearAndCancel();
         results.clear();
-        
+
         // False filter, activations should always be denied
         final AgendaFilter filterFalse = new AgendaFilter() {
             public boolean accept(Activation item) {
@@ -308,8 +309,9 @@ public class AgendaTest extends DroolsTestCase {
 
         // check the consequence never fired
         assertNull( results.get( "fired" ) );
-        
-        assertEquals( true, filtered[0].booleanValue() );
+
+        assertEquals( true,
+                      filtered[0].booleanValue() );
     }
 
     public void testFocusStack() throws ConsequenceException {
@@ -332,10 +334,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
@@ -584,10 +586,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
@@ -736,10 +738,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
@@ -947,10 +949,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         // create a rule for each rule flow groups
@@ -1119,10 +1121,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final Rule rule1 = new Rule( "test-rule1" );
@@ -1166,10 +1168,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
@@ -1249,10 +1251,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final Rule rule1 = new Rule( "test-rule1" );
@@ -1297,10 +1299,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
@@ -1381,10 +1383,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
@@ -1488,10 +1490,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
@@ -1617,10 +1619,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
@@ -1734,10 +1736,10 @@ public class AgendaTest extends DroolsTestCase {
             public void writeExternal(ObjectOutput out) throws IOException {
 
             }
-            
+
             public String getName() {
                 return "default";
-            }             
+            }
         };
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
@@ -1961,15 +1963,15 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
     }
-    
-    public void testNullErrorOnGetScheduledActivations() { 
+
+    public void testNullErrorOnGetScheduledActivations() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         try {
             ((DefaultAgenda) workingMemory.getAgenda()).getScheduledActivations();
         } catch ( NullPointerException e ) {
             fail( "Exception Should not have been thrown" );
         }
-        
+
     }
 
 }

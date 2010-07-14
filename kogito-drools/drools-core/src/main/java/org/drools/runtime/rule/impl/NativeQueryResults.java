@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
@@ -15,7 +18,6 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.spi.ObjectType;
 
-@XmlAccessorType( XmlAccessType.FIELD )
 public class NativeQueryResults
     implements
     QueryResults {
