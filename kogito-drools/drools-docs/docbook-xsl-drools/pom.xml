@@ -1,79 +1,79 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>drools-docs</artifactId>
-		<groupId>org.drools</groupId>
-		<version>5.1.0.SNAPSHOT</version>
-	</parent>
+  <parent>
+    <artifactId>drools-docs</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.1.0.SNAPSHOT</version>
+  </parent>
 
-	<groupId>org.drools</groupId>
-	<artifactId>docbook-xsl-drools</artifactId>
-	<version>1.1.0</version>
-	<packaging>jar</packaging>
+  <groupId>org.drools</groupId>
+  <artifactId>docbook-xsl-drools</artifactId>
+  <version>1.1.0</version>
+  <packaging>jar</packaging>
 
-	<name>Drools DocBook XSLT</name>
-	<description>Based on jbossorg-docbook-xslt 1.1.0</description>
-	<url>http://www.jboss.org</url>
+  <name>Drools DocBook XSLT</name>
+  <description>Based on jbossorg-docbook-xslt 1.1.0</description>
+  <url>http://www.jboss.org</url>
 
-	<organization>
-		<name>JBoss.org</name>
-		<url>http://www.jboss.org</url>
-	</organization>
+  <organization>
+    <name>JBoss.org</name>
+    <url>http://www.jboss.org</url>
+  </organization>
 
-	<scm>
-		<developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/trunk/docbook-support/jbossorg-docbook-xslt/</developerConnection>
-		<connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/trunk/docbook-support/jbossorg-docbook-xslt/</connection>
-	</scm>
+  <scm>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/trunk/docbook-support/jbossorg-docbook-xslt/</developerConnection>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/trunk/docbook-support/jbossorg-docbook-xslt/</connection>
+  </scm>
 
-	<dependencies>
-		<dependency>
-			<groupId>net.sf.docbook</groupId>
-			<artifactId>docbook-xsl-ns</artifactId>
-			<version>1.74.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.docs</groupId>
-			<artifactId>highlight</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.docbook</groupId>
+      <artifactId>docbook-xsl-ns</artifactId>
+      <version>1.74.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.docs</groupId>
+      <artifactId>highlight</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-webdav</artifactId>
-				<version>1.0-beta-2</version>
-			</extension>
-		</extensions>
-	</build>
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+        <version>1.0-beta-2</version>
+      </extension>
+    </extensions>
+  </build>
 
-	<distributionManagement>
-		<repository>
-			<!--
-				Copy the dist to the local checkout of the JBoss Repository at
-				${maven.repository.root}
-			-->
-			<!--
-				It is anticipated that ${maven.repository.root} is set in user's
-				settings.xml file
-			-->
-			<!--
-				TODO : Replace this with direct svn access once the svnkit providers
-				are available
-			-->
-			<id>repository.jboss.org</id>
-			<name>JBoss Repository</name>
-			<url>file://${maven.repository.root}</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots.jboss.org</id>
-			<name>JBoss Snapshot Repository</name>
-			<url>dav:https://snapshots.jboss.org/maven2</url>
-		</snapshotRepository>
-	</distributionManagement>
+  <distributionManagement>
+    <repository>
+      <!--
+         Copy the dist to the local checkout of the JBoss Repository at
+         ${maven.repository.root}
+       -->
+      <!--
+         It is anticipated that ${maven.repository.root} is set in user's
+         settings.xml file
+       -->
+      <!--
+         TODO : Replace this with direct svn access once the svnkit providers
+         are available
+       -->
+      <id>repository.jboss.org</id>
+      <name>JBoss Repository</name>
+      <url>file://${maven.repository.root}</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots.jboss.org</id>
+      <name>JBoss Snapshot Repository</name>
+      <url>dav:https://snapshots.jboss.org/maven2</url>
+    </snapshotRepository>
+  </distributionManagement>
 
 </project>
