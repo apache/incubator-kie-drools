@@ -43,7 +43,7 @@
           <mediaobject>
             <imageobject>
 	        <imagedata align="center" format="BMP" role="" 
-                         fileref="images/Chapter-Debugging/example.bmp"/>
+                         fileref="images/Chapter-Debugging/example.png"/>
             </imageobject>
           </mediaobject>
 
@@ -122,7 +122,7 @@ Goodbye cruel world</programlisting>
       <mediaobject>
         <imageobject>
 	    <imagedata align="center" format="BMP" role="" 
-                     fileref="images/Chapter-Debugging/process-instances.bmp"/>
+                     fileref="images/Chapter-Debugging/process-instances.png"/>
         </imageobject>
       </mediaobject>
 
@@ -138,7 +138,7 @@ Goodbye cruel world</programlisting>
           <mediaobject>
             <imageobject>
               <imagedata align="center" format="BMP" role="" 
-                         fileref="images/Chapter-Debugging/example-debug-1.bmp"/>
+                         fileref="images/Chapter-Debugging/example-debug-1.png"/>
             </imageobject>
           </mediaobject>
         </listitem>
@@ -152,13 +152,13 @@ Goodbye cruel world</programlisting>
           <mediaobject>
             <imageobject>
               <imagedata align="center" format="BMP" role="" 
-                         fileref="images/Chapter-Debugging/example-debug-2a.bmp"/>
+                         fileref="images/Chapter-Debugging/example-debug-2a.png"/>
             </imageobject>
           </mediaobject>
           <mediaobject>
             <imageobject>
               <imagedata align="center" format="BMP" role="" 
-                         fileref="images/Chapter-Debugging/example-debug-2b.bmp"/>
+                         fileref="images/Chapter-Debugging/example-debug-2b.png"/>
             </imageobject>
           </mediaobject>
         </listitem>
@@ -171,13 +171,13 @@ Goodbye cruel world</programlisting>
           <mediaobject>
             <imageobject>
               <imagedata align="center" format="BMP" role="" 
-                         fileref="images/Chapter-Debugging/example-debug-3a.bmp"/>
+                         fileref="images/Chapter-Debugging/example-debug-3a.png"/>
             </imageobject>
           </mediaobject>
           <mediaobject>
             <imageobject>
               <imagedata align="center" format="BMP" role="" 
-                         fileref="images/Chapter-Debugging/example-debug-2b.bmp"/>
+                         fileref="images/Chapter-Debugging/example-debug-2b.png"/>
             </imageobject>
           </mediaobject>
         </listitem>
@@ -191,7 +191,7 @@ Goodbye cruel world</programlisting>
           <mediaobject>
             <imageobject>
               <imagedata align="center" format="BMP" role="" 
-                         fileref="images/Chapter-Debugging/example-debug-4.bmp"/>
+                         fileref="images/Chapter-Debugging/example-debug-4.png"/>
             </imageobject>
           </mediaobject>
         </listitem>
@@ -213,7 +213,7 @@ Goodbye cruel world</programlisting>
       <mediaobject>
         <imageobject>
           <imagedata align="center" format="BMP" role="" 
-                     fileref="images/Chapter-Debugging/audit.bmp"/>
+                     fileref="images/Chapter-Debugging/audit.png"/>
         </imageobject>
       </mediaobject>
     </section>
