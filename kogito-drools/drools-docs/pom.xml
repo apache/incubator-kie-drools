@@ -203,6 +203,7 @@
             <xmlTransformerType>saxon</xmlTransformerType>
             <xincludeSupported>true</xincludeSupported>
             <useRelativeImageUris>true</useRelativeImageUris>
+            <!-- TODO Probably obsolete after the upgrade to maven-jdocbook-plugin 2.3.0 -->
             <docbookVersion>1.72.0</docbookVersion>
             <!-- <localeSeparator>-</localeSeparator> -->
           </options>
