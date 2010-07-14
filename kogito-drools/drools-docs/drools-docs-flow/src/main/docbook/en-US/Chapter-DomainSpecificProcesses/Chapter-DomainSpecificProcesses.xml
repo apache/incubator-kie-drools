@@ -42,7 +42,7 @@
 <mediaobject>
   <imageobject>
     <imagedata align="center" format="BMP" role="" 
-               fileref="images/Chapter-DomainSpecificProcesses/CDSSExample.bmp"/>
+               fileref="images/Chapter-DomainSpecificProcesses/CDSSExample.png"/>
   </imageobject>
 </mediaobject>
 </section>
@@ -106,7 +106,7 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 <mediaobject>
   <imageobject>
     <imagedata align="center" format="BMP" role="" 
-               fileref="images/Chapter-DomainSpecificProcesses/NotificationPalette.bmp"/>
+               fileref="images/Chapter-DomainSpecificProcesses/NotificationPalette.png"/>
   </imageobject>
 </mediaobject>
 

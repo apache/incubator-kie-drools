@@ -124,7 +124,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" format="BMP" role="" 
-                   fileref="images/Chapter-RulesAndProcesses/rulesAndProcesses.bmp"/>
+                   fileref="images/Chapter-RulesAndProcesses/rulesAndProcesses.png"/>
       </imageobject>
     </mediaobject>
 
@@ -205,7 +205,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" format="BMP" role="" 
-                   fileref="images/Chapter-RulesAndProcesses/orderProcess.bmp"/>
+                   fileref="images/Chapter-RulesAndProcesses/orderProcess.png"/>
       </imageobject>
     </mediaobject>
 
@@ -240,7 +240,7 @@ end</programlisting>
         <mediaobject>
           <imageobject>
             <imagedata align="center" format="BMP" role="" 
-                       fileref="images/Chapter-RulesAndProcesses/validation.bmp"/>
+                       fileref="images/Chapter-RulesAndProcesses/validation.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -266,7 +266,7 @@ end</programlisting>
     <mediaobject>
       <imageobject>
         <imagedata align="center" format="BMP" role="" 
-                   fileref="images/Chapter-RulesAndProcesses/constraints.bmp"/>
+                   fileref="images/Chapter-RulesAndProcesses/constraints.png"/>
       </imageobject>
     </mediaobject>
 
@@ -408,7 +408,7 @@ private static KnowledgeBase createKnowledgeBase() throws Exception {
     <mediaobject>
       <imageobject>
         <imagedata align="center" format="BMP" role="" 
-                   fileref="images/Chapter-RulesAndProcesses/audit.bmp"/>
+                   fileref="images/Chapter-RulesAndProcesses/audit.png"/>
       </imageobject>
     </mediaobject>
 
