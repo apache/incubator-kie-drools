@@ -2,8 +2,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>  
-  
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <artifactId>drools-docs</artifactId>
     <groupId>org.drools</groupId>
@@ -23,29 +23,29 @@
     <name>JBoss.org</name>
     <url>http://www.jboss.org</url>
   </organization>
-  
-   <repositories>
-        <repository>
-            <id>repository.jboss.org</id>
-            <url>http://repository.jboss.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-               <enabled>true</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>snapshots.jboss.org</id>
-            <url>http://snapshots.jboss.org/maven2</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-               <enabled>false</enabled>
-            </releases>
-        </repository>
-        </repositories>
+
+  <repositories>
+    <repository>
+      <id>repository.jboss.org</id>
+      <url>http://repository.jboss.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>snapshots.jboss.org</id>
+      <url>http://snapshots.jboss.org/maven2</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <!-- 
   <scm>
@@ -63,7 +63,7 @@
         <extensions>true</extensions>
       </plugin>
     </plugins>
-    
+
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -71,11 +71,11 @@
         <version>${project.version}</version>
       </dependency>
 
-	    <dependency>
-			<groupId>org.jboss.docs</groupId>
-			<artifactId>highlight</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+      <dependency>
+        <groupId>org.jboss.docs</groupId>
+        <artifactId>highlight</artifactId>
+        <version>1.0.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -93,43 +93,43 @@
   </contributors>
 
 
-    <profiles>
-        <profile>
-            <id>soa</id>
-            <activation>
-                <property>
-                    <name>soa</name>
-                </property>
-            </activation>
-            <modules>
-                <!--module>docbook-style-drools</module>
-                <module>docbook-xsl-drools</module-->
-                <module>drools-docs-introduction</module>
-                <module>drools-docs-expert</module>
-                <module>drools-docs-flow</module>
-                <module>drools-docs-fusion</module>
-                <module>drools-docs-guvnor</module>
-                <!--module>drools-docs-planner</module-->
-            </modules>
-        </profile>             
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault> 
-            </activation>            
-            <modules>
-                <!--module>docbook-style-drools</module>
-                <module>docbook-xsl-drools</module-->
-                <module>drools-docs-introduction</module>
-                <module>drools-docs-expert</module>
-                <module>drools-docs-flow</module>
-                <module>drools-docs-fusion</module>
-                <module>drools-docs-guvnor</module>
-                <module>drools-docs-planner</module>
-                <module>drools-docs-integration</module>
-            </modules>
-       </profile>        
-    </profiles>
+  <profiles>
+    <profile>
+      <id>soa</id>
+      <activation>
+        <property>
+          <name>soa</name>
+        </property>
+      </activation>
+      <modules>
+        <!--module>docbook-style-drools</module>
+        <module>docbook-xsl-drools</module-->
+        <module>drools-docs-introduction</module>
+        <module>drools-docs-expert</module>
+        <module>drools-docs-flow</module>
+        <module>drools-docs-fusion</module>
+        <module>drools-docs-guvnor</module>
+        <!--module>drools-docs-planner</module-->
+      </modules>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <!--module>docbook-style-drools</module>
+        <module>docbook-xsl-drools</module-->
+        <module>drools-docs-introduction</module>
+        <module>drools-docs-expert</module>
+        <module>drools-docs-flow</module>
+        <module>drools-docs-fusion</module>
+        <module>drools-docs-guvnor</module>
+        <module>drools-docs-planner</module>
+        <module>drools-docs-integration</module>
+      </modules>
+    </profile>
+  </profiles>
 
 
   <build>
@@ -141,11 +141,11 @@
         <extensions>true</extensions>
         <!-- executions>
           <execution -->
-            <!--
-              here we are attaching the translate goal so that the
-              translations are processed before compilation so that the
-              transated XML is also transformed during generation
-            -->
+        <!--
+          here we are attaching the translate goal so that the
+          translations are processed before compilation so that the
+          translated XML is also transformed during generation
+        -->
             <!-- phase>process-resources</phase>
             <goals>
               <goal>translate</goal>
@@ -155,11 +155,10 @@
 
         <dependencies>
           <dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jbossorg-jdocbook-style</artifactId>
-			<version>1.1.0</version>
-			<type>jdocbook-style</type>
-
+            <groupId>org.jboss</groupId>
+            <artifactId>jbossorg-jdocbook-style</artifactId>
+            <version>1.1.0</version>
+            <type>jdocbook-style</type>
           </dependency>
 
           <dependency>
@@ -197,29 +196,29 @@
           <formats>
             <format>
               <formatName>html_single</formatName>
-			  <!--stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource-->
+              <!--stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource-->
               <finalName>index.html</finalName>
               <!-- <profilingTypeName>two_pass</profilingTypeName> -->
             </format>
 
             <format>
               <formatName>html</formatName>
-			  <!--stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource-->			  
+              <!--stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource-->
               <finalName>index.html</finalName>
               <!-- <profilingTypeName>two_pass</profilingTypeName> -->
             </format>
 
             <format>
               <formatName>eclipse</formatName>
-              <!--stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource-->			  
+              <!--stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource-->
               <finalName>${artifactId}.html</finalName>
             </format>
-			
-			<format>
+
+            <format>
               <formatName>pdf</formatName>
-			  <!--stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource-->
-			  <finalName>${artifactId}.pdf</finalName>
-			</format>
+              <!--stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource-->
+              <finalName>${artifactId}.pdf</finalName>
+            </format>
           </formats>
           <options>
             <xmlTransformerType>saxon</xmlTransformerType>
