@@ -5,7 +5,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public interface JPAKnowledgeServiceProvider {
+public interface KnowledgeStoreService {
 
     StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
                                                          KnowledgeSessionConfiguration configuration,

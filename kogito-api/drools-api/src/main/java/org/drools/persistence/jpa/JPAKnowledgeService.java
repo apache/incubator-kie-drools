@@ -85,7 +85,7 @@ import org.drools.util.ServiceRegistryImpl;
  * </pre>
  */
 public class JPAKnowledgeService {
-    private static JPAKnowledgeServiceProvider provider;
+    private static KnowledgeStoreService provider;
 
     public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
                                                                        KnowledgeSessionConfiguration configuration,
@@ -105,11 +105,11 @@ public class JPAKnowledgeService {
                                                                               environment );
     }
 
-    private static synchronized void setJPAKnowledgeServiceProvider(JPAKnowledgeServiceProvider provider) {
+    private static synchronized void setJPAKnowledgeServiceProvider(KnowledgeStoreService provider) {
         JPAKnowledgeService.provider = provider;
     }
 
-    private static synchronized JPAKnowledgeServiceProvider getJPAKnowledgeServiceProvider() {
+    private static synchronized KnowledgeStoreService getJPAKnowledgeServiceProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -120,11 +120,11 @@ public class JPAKnowledgeService {
     private static void loadProvider() {
         try {
             // we didn't find anything in properties so lets try and us reflection
-            Class<JPAKnowledgeServiceProvider> cls = (Class<JPAKnowledgeServiceProvider>) Class.forName( "org.drools.persistence.jpa.impl.JPAKnowledgeServiceProviderImpl" );
+            Class<KnowledgeStoreService> cls = (Class<KnowledgeStoreService>) Class.forName( "org.drools.persistence.jpa.impl.KnowledgeStoreServiceImpl" );
             setJPAKnowledgeServiceProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new RuntimeException( "Provider org.drools.persistence.jpa.impl.JPAKnowledgeServiceProviderImpl could not be set.",
-                                                       e );
+            throw new RuntimeException( "Provider org.drools.persistence.jpa.impl.JPAKnowledgeStoreServiceImpl could not be set.",
+                                        e );
         }
     }
 

@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.agent.KnowledgeAgentProvider;
 import org.drools.builder.KnowledgeBuilderFactoryService;
-import org.drools.persistence.jpa.JPAKnowledgeServiceProvider;
+import org.drools.persistence.jpa.KnowledgeStoreService;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 
@@ -16,7 +16,7 @@ public interface ServiceManager extends CommandExecutor {
 
     KnowledgeAgentProvider getKnowledgeAgentFactory();
     
-    JPAKnowledgeServiceProvider JPAKnowledgeService();
+    KnowledgeStoreService JPAKnowledgeService();
 
     HumanTaskServiceProvider getHumanTaskService();
 

@@ -45,5 +45,5 @@ public interface CommandExecutor {
      * @param command
      * @return
      */
-    public ExecutionResults execute(Command command);
+    public <T> T execute(Command<T> command);
 }
