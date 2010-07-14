@@ -3,7 +3,7 @@ Drools Documentation Authoring Guideline and Cheat Sheet
 
 Guideline
 =========
-* please markup all package names, class names, method names, etc. with 
+* Please markup all package names, class names, method names, etc. with 
   <code></code>.
   
   example:
@@ -14,17 +14,17 @@ Guideline
     <code>ChainedProperties</code> instance will find, or you can do it 
     at runtime as shown below.</para>
 
-* keywords may be enclosed in <kw></kw>, rendered in boldface Courier
+* Keywords may be enclosed in <kw></kw>, rendered in boldface Courier
 
-* please link svg image files instead of png bitmaps in the text whenever
+* Please link svg image files instead of png bitmaps in the text whenever
   possible.
   
 * Please avoid using .bmp bitmaps, since it will bloat size of the end 
   doc. Use any image processing program such as GIMP to convert your bmp 
   images to png images first. Better yet, use any vector graphic program
   such as InkScape to scan your bmp image and make a true svg image out
-  of it. But this approach may take time and effort, recommanded for 
-  processing diagrams but not screenshots.
+  of it. But this approach may take time and effort, recommended for
+  processing diagrams but not for screenshots.
   
 
 Cheat Sheet
