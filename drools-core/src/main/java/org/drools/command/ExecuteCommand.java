@@ -17,7 +17,7 @@ public class ExecuteCommand
     GenericCommand<ExecutionResults> {
 
     private String   outIdentifier;
-    private Command  command;
+    private Command<ExecutionResults>  command;
 
     public ExecuteCommand(Command  command) {
         this.command = command;

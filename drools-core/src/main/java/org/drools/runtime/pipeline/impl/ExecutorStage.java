@@ -9,10 +9,10 @@ import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
 import org.drools.runtime.pipeline.PipelineContext;
 
-public class ExecutorStage extends BaseEmitter
+public class ExecutorStage<T> extends BaseEmitter
     implements
     KnowledgeRuntimeCommand {
-    private ExecutionResults result = null;
+    private T result = null;
     public void receive(Object object,
                         PipelineContext context) {
         BasePipelineContext kContext = (BasePipelineContext) context;
@@ -20,13 +20,13 @@ public class ExecutorStage extends BaseEmitter
         emit( result,
               kContext );
     }
-    public ExecutionResults execute(Object object, PipelineContext kContext){
+    public T execute(Object object, PipelineContext kContext){
         
         if ( object instanceof Collection ) {
             object = CommandFactory.newBatchExecution( (List<Command>) object );
         }
          
-        return kContext.getCommandExecutor().execute( (Command) object );
+        return ( T ) kContext.getCommandExecutor().execute( (Command) object );
     }
 
 }

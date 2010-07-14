@@ -6,8 +6,11 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
@@ -15,6 +18,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.xml.jaxb.util.JaxbListAdapter;
 import org.drools.xml.jaxb.util.JaxbListWrapper;
 
 @XmlAccessorType( XmlAccessType.NONE )
@@ -24,7 +28,8 @@ public class InsertElementsCommand
 
 	private static final long serialVersionUID = 501L;
 
-    @XmlElement
+	@XmlJavaTypeAdapter(JaxbListAdapter.class)
+	@XmlElement(name="list")
 	public List<Object> objects;
 
     @XmlAttribute

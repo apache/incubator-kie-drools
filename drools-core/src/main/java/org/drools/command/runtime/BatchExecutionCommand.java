@@ -25,6 +25,7 @@ import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
+import org.drools.runtime.ExecutionResults;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -62,7 +63,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XmlType(name = "batch-execution", propOrder = {
     "lookup", "commands"
 })
-public class BatchExecutionCommand implements GenericCommand<Void> {
+public class BatchExecutionCommand implements GenericCommand<ExecutionResults> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -83,7 +84,6 @@ public class BatchExecutionCommand implements GenericCommand<Void> {
 	}
 	
     @XmlElements({
-//        @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
         @XmlElement(name = "abort-work-item", type = AbortWorkItemCommand.class),
         @XmlElement(name = "signal-event", type = SignalEventCommand.class),
         @XmlElement(name = "start-process", type = StartProcessCommand.class),
@@ -139,7 +139,7 @@ public class BatchExecutionCommand implements GenericCommand<Void> {
         return this.commands;
     }
 
-    public Void execute(Context context) {
+    public ExecutionResults execute(Context context) {
         for ( GenericCommand<?> command : commands ) {
             ((GenericCommand<?>)command).execute( context );
         }

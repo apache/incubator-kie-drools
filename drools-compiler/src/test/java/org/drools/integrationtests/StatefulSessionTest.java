@@ -93,7 +93,7 @@ public class StatefulSessionTest extends TestCase {
         
         Command cmds = CommandFactory.newBatchExecution( Arrays.asList( new Command[] { insertCmd,fireCmd} ) );
         
-        ExecutionResults result = ksession.execute( cmds );
+        ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
         stilton = ( Cheese ) result.getValue( "outStilton" );
         assertEquals( 30,
                       stilton.getPrice() );      

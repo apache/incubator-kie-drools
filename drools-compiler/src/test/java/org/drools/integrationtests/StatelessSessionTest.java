@@ -29,6 +29,8 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -112,8 +114,10 @@ public class StatelessSessionTest extends TestCase {
         Cheese stilton = new Cheese( "stilton", 5 );
         
         StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
-        Command cmd = CommandFactory.newInsert( stilton, "outStilton" );
-        ExecutionResults result = ksession.execute( cmd );
+        GenericCommand cmd = ( GenericCommand ) CommandFactory.newInsert( stilton, "outStilton" );
+        BatchExecutionCommand batch = new BatchExecutionCommand(  Arrays.asList( new GenericCommand<?>[] { cmd } ) );
+        
+        ExecutionResults result = ( ExecutionResults ) ksession.execute( batch );
         stilton = ( Cheese ) result.getValue( "outStilton" );
         assertEquals( 30,
                       stilton.getPrice() );       
@@ -154,7 +158,7 @@ public class StatelessSessionTest extends TestCase {
         cmds.add( setGlobal3 );
         cmds.add(  insert );
         
-        ExecutionResults result = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+        ExecutionResults result = ( ExecutionResults ) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
         assertEquals( 30,
                       stilton.getPrice() ); 
@@ -227,7 +231,7 @@ public class StatelessSessionTest extends TestCase {
         
         cmds.add(  CommandFactory.newQuery( "cheeses", "cheeses" ) );
         
-        ExecutionResults batchResult = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+        ExecutionResults batchResult = (ExecutionResults) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
         org.drools.runtime.rule.QueryResults results = ( org.drools.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
         assertEquals( 3, results.size() );        

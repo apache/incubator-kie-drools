@@ -28,7 +28,7 @@ public class JPAVariablePersister implements VariablePersister {
 		}
 		try {
 			boolean newVariable = false;
-			EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+			EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 			JPAPersistedVariable result = null;
 			if (oldValue instanceof JPAPersistedVariable) {
 				result = (JPAPersistedVariable) oldValue;
@@ -70,7 +70,7 @@ public class JPAVariablePersister implements VariablePersister {
 
 	public Object getExternalPersistedVariable(
 			VariableInstanceInfo variableInstanceInfo, Environment env) {
-		EntityManager em = (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+		EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 		if (((JPAPersistedVariable) variableInstanceInfo) == null
 				|| ((JPAPersistedVariable) variableInstanceInfo).getEntityId() == null) {
 			return null;

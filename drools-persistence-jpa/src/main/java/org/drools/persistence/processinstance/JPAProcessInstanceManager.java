@@ -29,8 +29,11 @@ public class JPAProcessInstanceManager
 
     public void addProcessInstance(ProcessInstance processInstance) {
         ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo( processInstance, this.workingMemory.getEnvironment() );
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         em.persist( processInstanceInfo );
+        //em.refresh( processInstanceInfo  );
+//        em.flush();
+        //em.getTransaction().commit();
         ((ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
         processInstanceInfo.updateLastReadDate();
         internalAddProcessInstance(processInstance);
@@ -52,7 +55,7 @@ public class JPAProcessInstanceManager
 	    	}
     	}
     	
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         ProcessInstanceInfo processInstanceInfo = em.find( ProcessInstanceInfo.class,
                                                            id );
         if ( processInstanceInfo == null ) {
@@ -78,7 +81,7 @@ public class JPAProcessInstanceManager
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         ProcessInstanceInfo processInstanceInfo = em.find( ProcessInstanceInfo.class,
                                                            processInstance.getId() );
         if ( processInstanceInfo != null ) {

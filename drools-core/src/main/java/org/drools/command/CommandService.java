@@ -1,10 +1,9 @@
 package org.drools.command;
 
-import org.drools.command.impl.GenericCommand;
+import org.drools.runtime.CommandExecutor;
 
-public interface CommandService {
-	
-	<T> T execute(GenericCommand<T> command);
+public interface CommandService extends CommandExecutor {
 
-	Context getContext();	
+    public Context getContext();
+
 }
