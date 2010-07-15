@@ -16,6 +16,7 @@ import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
+import org.drools.StatefulSession;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
@@ -77,9 +78,8 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     private ChangeSetNotificationDetector changeSetNotificationDetector;
     private SemanticModules semanticModules;
     private final RegisteredResourceMap registeredResources = new RegisteredResourceMap();
-    private Map<Resource,String> dslResources = new HashMap<Resource, String>();
+    private Map<Resource, String> dslResources = new HashMap<Resource, String>();
     private KnowledgeAgentEventSupport eventSupport = new KnowledgeAgentEventSupport();
-
     private KnowledgeBuilderConfiguration builderConfiguration;
 
     /**
@@ -188,14 +188,14 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
              */
             for (Resource resource : changeSet.getResourcesAdded()) {
                 this.eventSupport.fireBeforeResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_ADDED);
-                if (((InternalResource) resource).getResourceType() == ResourceType.DSL){
+                if (((InternalResource) resource).getResourceType() == ResourceType.DSL) {
                     this.notifier.subscribeResourceChangeListener(this,
                             resource);
                     try {
                         this.retrieveDSLResource(resource);
                     } catch (IOException ex) {
                         this.listener.exception("KnowledgeAgent Fails trying to read DSL Resource: "
-                            + resource,ex);
+                                + resource, ex);
                     }
                 } else if (((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET) {
                     // @TODO We should not ignore an added change set
@@ -241,7 +241,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
              */
             for (Resource resource : changeSet.getResourcesRemoved()) {
                 this.eventSupport.fireBeforeResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_MODIFIED);
-                if (((InternalResource) resource).getResourceType() == ResourceType.DSL){
+                if (((InternalResource) resource).getResourceType() == ResourceType.DSL) {
                     this.notifier.unsubscribeResourceChangeListener(this,
                             resource);
                     this.dslResources.remove(resource);
@@ -275,12 +275,12 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
              */
             for (Resource resource : changeSet.getResourcesModified()) {
                 this.eventSupport.fireBeforeResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_REMOVED);
-                if (((InternalResource) resource).getResourceType() == ResourceType.DSL){
+                if (((InternalResource) resource).getResourceType() == ResourceType.DSL) {
                     try {
                         this.retrieveDSLResource(resource);
                     } catch (IOException ex) {
                         this.listener.exception("KnowledgeAgent Fails trying to read DSL Resource: "
-                            + resource,ex);
+                                + resource, ex);
                     }
                 } else if (((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET) {
                     // processChangeSet(resource, changeSetState);
@@ -596,9 +596,9 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * is already a package, this builder is not used.
      * @return the package resulting of the compilation of resource.
      */
-    private KnowledgePackageImp createPackageFromResource(Resource resource,KnowledgeBuilder kbuilder) {
+    private KnowledgePackageImp createPackageFromResource(Resource resource, KnowledgeBuilder kbuilder) {
 
-        if (kbuilder == null){
+        if (kbuilder == null) {
             kbuilder = this.createKBuilder();
         }
 
@@ -609,7 +609,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
                 this.listener.warning(
                         "KnowledgeAgent has KnowledgeBuilder errors ", kbuilder.getErrors());
             }
-            if (kbuilder.getKnowledgePackages().iterator().hasNext()){
+            if (kbuilder.getKnowledgePackages().iterator().hasNext()) {
                 return (KnowledgePackageImp) kbuilder.getKnowledgePackages().iterator().next();
             }
             return null;
@@ -737,13 +737,13 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
                 KnowledgePackageImp kpkg = createPackageFromResource(entry.getKey());
 
-                if (kpkg == null){
-                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: "+entry.getKey());
+                if (kpkg == null) {
+                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: " + entry.getKey());
                     continue;
                 }
 
 
-                this.listener.debug("KnowledgeAgent: Diffing: "+entry.getKey());
+                this.listener.debug("KnowledgeAgent: Diffing: " + entry.getKey());
 
 
                 ResourceDiffProducer rdp = new BinaryResourceDiffProducerImpl();
@@ -754,7 +754,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
                 ResourceDiffResult diff = rdp.diff(entry.getValue(), kpkg, (KnowledgePackageImp) this.kbase.getKnowledgePackage(kpkg.getName()));
 
                 for (KnowledgeDefinition kd : diff.getRemovedDefinitions()) {
-                    this.listener.debug("KnowledgeAgent: Removing: "+kd);
+                    this.listener.debug("KnowledgeAgent: Removing: " + kd);
                     removeKnowledgeDefinitionFromBase(kd);
                 }
 
@@ -775,13 +775,13 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
             for (Resource resource : changeSetState.addedResources) {
                 ///compile the new resource
                 KnowledgePackageImp kpkg = createPackageFromResource(resource);
-                if (kpkg == null){
-                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: "+resource);
+                if (kpkg == null) {
+                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: " + resource);
                     continue;
                 }
                 changeSetState.createdPackages.put(resource, kpkg);
             }
-            
+
             //the added and modified resources were already processed and 
             //converted to createdPackages. We must clear the lists.
             changeSetState.addedResources.clear();
@@ -922,6 +922,26 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @boolean monitor True if monitoring should take place, false otherwise
      */
     public void monitorResourceChangeEvents(boolean monitor) {
+
+        Set<Resource> allResources = new HashSet<Resource>();
+        allResources.addAll(this.resourceDirectories);
+        allResources.addAll(this.registeredResources.getAllResources());
+        allResources.addAll(this.dslResources.keySet());
+
+
+        //subscribe/unsubscribe from resources
+        for (Resource resource : allResources) {
+            if (monitor){
+                this.listener.debug("KnowledgeAgent subscribing from resource="
+                        + resource);
+                this.notifier.subscribeResourceChangeListener(this, resource);
+            }else{
+                this.listener.debug("KnowledgeAgent unsubscribing from resource="
+                        + resource);
+                this.notifier.unsubscribeResourceChangeListener(this, resource);
+            }
+        }
+
         if (!monitor && this.changeSetNotificationDetector != null) {
             // we are running, but it wants to stop
             // this will stop the thread
@@ -1123,17 +1143,17 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         }
     }
 
-    private KnowledgeBuilder createKBuilder(){
+    private KnowledgeBuilder createKBuilder() {
         KnowledgeBuilder kbuilder = null;
-        if (this.builderConfiguration != null){
+        if (this.builderConfiguration != null) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
-        }else if (this.useKBaseClassLoaderForCompiling){
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, ((ReteooRuleBase)((KnowledgeBaseImpl)this.getKnowledgeBase()).getRuleBase()).getRootClassLoader()));
-        }else{
+        } else if (this.useKBaseClassLoaderForCompiling) {
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, ((ReteooRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeBase()).getRuleBase()).getRootClassLoader()));
+        } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         }
 
-        if (this.dslResources != null){
+        if (this.dslResources != null) {
             for (Map.Entry<Resource, String> entry : this.dslResources.entrySet()) {
                 kbuilder.add(ResourceFactory.newByteArrayResource(entry.getValue().getBytes()), ResourceType.DSL);
             }
@@ -1142,11 +1162,11 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         return kbuilder;
     }
 
-    private void retrieveDSLResource(Resource resource) throws IOException{
+    private void retrieveDSLResource(Resource resource) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(resource.getReader());
         String line = null;
         StringBuilder content = new StringBuilder();
-        while((line = bufferedReader.readLine()) != null){
+        while ((line = bufferedReader.readLine()) != null) {
             content.append(line);
             content.append("\n");
         }
@@ -1156,6 +1176,23 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
     public void addEventListener(KnowledgeAgentEventListener listener) {
         this.eventSupport.addEventListener(listener);
+    }
+
+    public void dispose() {
+        synchronized (this.registeredResources) {
+            //all kbase's ksessions must be disposed
+            if (this.kbase != null) {
+                StatefulSession[] statefulSessions = ((AbstractRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getStatefulSessions();
+                if (statefulSessions != null && statefulSessions.length > 0){
+                    String message = "The kbase still contains "+statefulSessions.length+" stateful sessions. You must dispose them first.";
+                    this.listener.warning(message);
+                    throw new IllegalStateException(message);
+                }
+            }
+
+            //stop changeSet Notification Detector
+            this.monitorResourceChangeEvents(false);
+        }
     }
 
     /*
