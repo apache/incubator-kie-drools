@@ -488,7 +488,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerLessOrEqualEvaluator();
 
-        private BigIntegerLessOrEqualEvaluator() {
+        //TODO - fix deserialization so that same instances will be used.
+        public BigIntegerLessOrEqualEvaluator() {
             super( ValueType.BIG_INTEGER_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
