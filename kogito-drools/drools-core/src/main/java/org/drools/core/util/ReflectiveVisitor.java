@@ -17,6 +17,8 @@ package org.drools.core.util;
  */
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.Visitor;
@@ -35,7 +37,8 @@ public abstract class ReflectiveVisitor
     implements
     Visitor {
     static final String newline = System.getProperty( "line.separator" );
-
+    private Map<Class<?>, Method> methodCache = new HashMap<Class<?>, Method>();
+    
     public void visit(final Object object) {
         Method method = null;
         try {
@@ -49,39 +52,43 @@ public abstract class ReflectiveVisitor
                 method.invoke( this,
                                (Object[]) null );
             }
-        } catch ( final Exception e ) {
+        } catch ( Exception e ) {
             throw new RuntimeDroolsException( e.toString() + " : " + object,
-                                              e.getCause() );
+                                              e);
         }
     }
 
-    private Method getMethod(final Class clazz) {
-        Class newClazz = clazz;
+    private Method getMethod(final Class<?> clazz) {
+    	if (methodCacheContains(clazz)) {
+    		return getMethodFromCache(clazz);
+    	}
+    	
+    	Class<?> newClazz = clazz;
         Method method = null;
-
+        
         // Try the superclasses
         while ( method == null && newClazz != Object.class ) {
             String methodName = newClazz.getName();
             methodName = "visit" + methodName.substring( methodName.lastIndexOf( '.' ) + 1 );
             try {
-                method = getClass().getMethod( methodName,
-                                               new Class[]{newClazz} );
-            } catch ( final NoSuchMethodException e ) {
-                newClazz = newClazz.getSuperclass();
+            	method = getClass().getMethod(methodName, 
+            			new Class[] { newClazz });
+            } catch (final NoSuchMethodException e) {
+            	newClazz = newClazz.getSuperclass();
             }
         }
 
         // Try the interfaces.
         if ( newClazz == Object.class ) {
-            final Class[] interfaces = clazz.getInterfaces();
-            for ( int i = 0; i < interfaces.length; i++ ) {
+            final Class<?>[] interfaces = clazz.getInterfaces();
+            for ( int i = 0; i < interfaces.length && method == null; i++ ) {
                 String methodName = interfaces[i].getName();
                 methodName = "visit" + methodName.substring( methodName.lastIndexOf( '.' ) + 1 );
                 try {
-                    method = getClass().getMethod( methodName,
-                                                   new Class[]{interfaces[i]} );
-                } catch ( final NoSuchMethodException e ) {
-                    // swallow
+                	method = getClass().getMethod(methodName,
+                			new Class[] { interfaces[i] });
+                } catch (final NoSuchMethodException e) {
+                	// swallow
                 }
             }
         }
@@ -96,10 +103,23 @@ public abstract class ReflectiveVisitor
                                                   e.getCause() );
             }
         }
+        addMethodToCache(clazz, method);
         return method;
     }
 
     public void visitObject(final Object object) {
         System.err.println( "no visitor implementation for : " + object.getClass() + " : " + object );
+    }
+    
+    private void addMethodToCache(Class<?> clazz, Method m) {
+    	methodCache.put(clazz, m);
+    }
+    
+    private Method getMethodFromCache(Class<?> clazz) {
+    	return methodCache.get(clazz);
+    }
+    
+    private boolean methodCacheContains(Class<?> clazz) {
+    	return methodCache.containsKey(clazz);
     }
 }
