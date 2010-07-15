@@ -60,4 +60,6 @@ public interface KnowledgeAgent {
     void applyChangeSet(ChangeSet changeSet);
 
     void setSystemEventListener(SystemEventListener listener);
+
+    void dispose();
 }
