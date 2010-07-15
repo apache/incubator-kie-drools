@@ -8,7 +8,7 @@ Import-Package: com.sun.tools.xjc;resolution:=optional,com.thoughtwork
  tional,org.milyn;resolution:=optional,org.osgi.framework;resolution:=
  optional;version="1.5",org.osgi.util.tracker;resolution:=optional;ver
  sion="1.4",org.quartz;resolution:=optional
-Bnd-LastModified: 1279113493194
+Bnd-LastModified: 1279156563611
 Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command,org.drools
  .time,org.drools.event,org.drools,org.drools.runtime.process,org.droo
@@ -28,8 +28,8 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  ",org.drools.osgi.api;uses:="org.osgi.framework,org.drools,org.drools
  .util,org.osgi.util.tracker";version="5.1.0.SNAPSHOT",org.drools;uses
  :="org.drools.io,org.drools.event.knowledgebase,org.drools.runtime,or
- g.drools.definition,org.drools.definition.rule,org.drools.definition.
- type,org.drools.definition.process,org.drools.conf,org.drools.util";v
+ g.drools.definition,org.drools.definition.type,org.drools.definition.
+ rule,org.drools.definition.process,org.drools.conf,org.drools.util";v
  ersion="5.1.0.SNAPSHOT",org.drools.runtime.conf;uses:="org.drools.con
  f";version="5.1.0.SNAPSHOT",org.drools.runtime.process;uses:="org.dro
  ols.runtime";version="5.1.0.SNAPSHOT",org.drools.event.rule;uses:="or
@@ -61,8 +61,8 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  uses:="org.drools.command";version="5.1.0.SNAPSHOT",org.drools.defini
  tion.type;version="5.1.0.SNAPSHOT",org.drools.definition.process;uses
  :="org.drools.definition";version="5.1.0.SNAPSHOT",org.drools.agent;u
- ses:="org.drools.runtime,org.drools.event.knowledgeagent,org.drools.i
- o,org.drools,org.drools.builder";version="5.1.0.SNAPSHOT"
+ ses:="org.drools.runtime,org.drools.event.knowledgeagent,org.drools,o
+ rg.drools.io,org.drools.builder";version="5.1.0.SNAPSHOT"
 Bundle-Version: 5.1.0.SNAPSHOT
 Bundle-Name: Drools :: API
 Bundle-Description: A rule production system
