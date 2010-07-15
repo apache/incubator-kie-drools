@@ -17,7 +17,7 @@ Import-Package: com.sun.tools.xjc,com.thoughtworks.xstream,com.thought
  g.mvel2.optimizers;version="2.0",org.mvel2.templates;version="2.0",or
  g.mvel2.util;version="2.0",org.osgi.framework;version="1.5",org.w3c.d
  om,org.xml.sax,org.xml.sax.helpers
-Bnd-LastModified: 1279113530147
+Bnd-LastModified: 1279156590475
 Export-Package: org.drools.ruleflow.instance;uses:="org.drools.workflo
  w.instance.impl,org.drools.workflow.instance,org.drools.ruleflow.core
  ,org.drools.workflow.core.node,org.drools.process.instance";version="
@@ -39,7 +39,7 @@ Export-Package: org.drools.ruleflow.instance;uses:="org.drools.workflo
  org.drools.process.core";version="5.1.0.SNAPSHOT",org.drools.audit;us
  es:="org.drools.event,org.drools,org.drools.audit.event,com.thoughtwo
  rks.xstream,org.drools.impl,org.drools.workflow.core.node,org.drools.
- command,org.drools.workflow.instance.node,org.drools.workflow.instanc
+ command,org.drools.workflow.instance,org.drools.workflow.instance.nod
  e,org.drools.rule,org.drools.spi,org.drools.command.impl,org.drools.c
  ommon";version="5.1.0.SNAPSHOT",org.drools.base.extractors;uses:="org
  .drools.base,org.drools,org.drools.spi,org.drools.core.util,org.drool
@@ -49,8 +49,8 @@ Export-Package: org.drools.ruleflow.instance;uses:="org.drools.workflo
  g.drools.core.util,org.drools.rule,org.drools,org.drools.impl,org.mve
  l2.integration,org.mvel2.compiler,org.mvel2.optimizers,org.mvel2.inte
  gration.impl,org.mvel2.templates";version="5.1.0.SNAPSHOT",org.drools
- .process.core.context.variable;uses:="org.drools.process.core,org.dro
- ols.process.core.datatype,org.drools.process.core.datatype.impl.type,
+ .process.core.context.variable;uses:="org.drools.process.core.datatyp
+ e,org.drools.process.core,org.drools.process.core.datatype.impl.type,
  org.drools.process.core.context";version="5.1.0.SNAPSHOT",org.drools.
  base.accumulators;uses:="org.drools,org.drools.rule,org.drools.spi,or
  g.drools.common,org.mvel2,org.mvel2.integration,org.drools.base.mvel"
@@ -170,18 +170,18 @@ Export-Package: org.drools.ruleflow.instance;uses:="org.drools.workflo
  .1.0.SNAPSHOT",org.drools.ruleflow.core.validation;uses:="org.mvel2.c
  ompiler,org.drools.process.core.timer,org.drools.process.core.validat
  ion,org.drools.process.core.datatype,org.drools.workflow.core.node,or
- g.drools.process.core.context.variable,org.drools.time,org.mvel2,org.
- drools.workflow.core.impl,org.drools.process.core.validation.impl,org
- .drools,org.drools.ruleflow.core,org.drools.process.core,org.drools.w
+ g.drools.process.core.context.variable,org.drools.workflow.core.impl,
+ org.mvel2,org.drools.time,org.drools,org.drools.process.core.validati
+ on.impl,org.drools.ruleflow.core,org.drools.process.core,org.drools.w
  orkflow.core";version="5.1.0.SNAPSHOT",org.drools.command.runtime.pro
  cess;uses:="org.drools.command,org.drools.command.impl,javax.xml.bind
  .annotation,org.drools.process.instance,org.drools.xml.jaxb.util,java
  x.xml.bind.annotation.adapters";version="5.1.0.SNAPSHOT",org.drools.o
- sgi.core;uses:="org.drools.impl,org.drools,org.osgi.framework,org.dro
+ sgi.core;uses:="org.drools,org.drools.impl,org.osgi.framework,org.dro
  ols.io.impl";version="5.1.0.SNAPSHOT",org.drools.ruleflow.core.factor
  y;uses:="org.drools.workflow.core.impl,org.drools.ruleflow.core,org.d
  rools.workflow.core.node,org.drools.workflow.core,org.drools.process.
- core.datatype,org.drools.process.core,org.drools.process.core.context
+ core,org.drools.process.core.datatype,org.drools.process.core.context
  .exception,org.drools.process.core.context.variable,org.drools.proces
  s.core.event,org.drools.process.core.timer,org.drools.process.core.im
  pl";version="5.1.0.SNAPSHOT",org.drools.workflow.core.impl;uses:="org
@@ -193,8 +193,8 @@ Export-Package: org.drools.ruleflow.instance;uses:="org.drools.workflo
  .drools.process.instance,org.drools.process.instance.context.exclusiv
  e,org.drools.workflow.instance.node,org.drools.workflow.instance,org.
  drools.process.core,org.drools.process.instance.context.variable,org.
- drools.common,org.drools.core.util,org.drools.impl,org.drools,org.dro
- ols.concurrent,org.drools.spi,org.drools.process.instance.timer,org.d
+ drools.common,org.drools.core.util,org.drools.impl,org.drools.concurr
+ ent,org.drools,org.drools.spi,org.drools.process.instance.timer,org.d
  rools.base,org.drools.rule,org.drools.process.instance.impl,org.drool
  s.process.instance.event,org.drools.ruleflow.instance";version="5.1.0
  .SNAPSHOT",org.drools.rule;uses:="org.drools.spi,org.drools.common,or
@@ -277,8 +277,8 @@ Export-Package: org.drools.ruleflow.instance;uses:="org.drools.workflo
  .impl,org.drools.io.internal,org.drools.builder.conf.impl,org.drools.
  core.util";version="5.1.0.SNAPSHOT",org.drools.process.instance.conte
  xt.exception;uses:="org.drools.base,org.drools.workflow.instance,org.
- drools,org.drools.spi,org.drools.process.instance,org.drools.workflow
- .core,org.drools.process.core.context.exception,org.drools.common,org
+ drools,org.drools.spi,org.drools.process.instance,org.drools.process.
+ core.context.exception,org.drools.workflow.core,org.drools.common,org
  .drools.process.core,org.drools.process.instance.context";version="5.
  1.0.SNAPSHOT",org.drools.process.instance.impl.factory;uses:="org.dro
  ols.process.core,org.drools.process.instance,org.drools.process.insta
@@ -297,8 +297,8 @@ Export-Package: org.drools.ruleflow.instance;uses:="org.drools.workflo
  on="5.1.0.SNAPSHOT",org.drools.process.core.datatype.impl.type;uses:=
  "org.drools.process.core.datatype,org.drools.process.core,com.thought
  works.xstream";version="5.1.0.SNAPSHOT",org.drools.command.runtime.ru
- le;uses:="org.drools.command,org.drools.command.impl,org.drools.impl,
- org.drools,org.drools.spi,org.drools.runtime.impl,javax.xml.bind.anno
+ le;uses:="org.drools.command,org.drools.command.impl,org.drools,org.d
+ rools.impl,org.drools.spi,org.drools.runtime.impl,javax.xml.bind.anno
  tation,org.drools.common,javax.xml.bind.annotation.adapters,org.drool
  s.xml.jaxb.util,org.mvel2";version="5.1.0.SNAPSHOT"
 Bundle-Version: 5.1.0.SNAPSHOT
