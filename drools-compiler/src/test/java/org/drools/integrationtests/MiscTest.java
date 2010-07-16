@@ -20,9 +20,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -94,7 +94,6 @@ import org.drools.Win;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.Order.OrderStatus;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -303,6 +302,38 @@ public class MiscTest extends TestCase {
         assertTrue( results.contains( "2" ) );
         assertTrue( results.contains( "3" ) );
 
+    }
+    
+    public void testGetStatefulKnowledgeSessions() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource("empty.drl", getClass()), ResourceType.DRL);
+        assertFalse(kbuilder.hasErrors());
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession_1 = kbase.newStatefulKnowledgeSession();
+        String expected_1 = "expected_1";
+        String expected_2 = "expected_2";
+        org.drools.runtime.rule.FactHandle handle_1 = ksession_1.insert(expected_1);
+        org.drools.runtime.rule.FactHandle handle_2 = ksession_1.insert(expected_2);
+        ksession_1.fireAllRules();
+        Collection<StatefulKnowledgeSession> coll_1 = kbase.getStatefulKnowledgeSessions();
+        assertTrue(coll_1.size() == 1);
+        
+        StatefulKnowledgeSession ksession_2 = coll_1.iterator().next();
+        Object actual_1 = ksession_2.getObject(handle_1);
+        Object actual_2 = ksession_2.getObject(handle_2);
+        assertEquals(expected_1, actual_1);
+        assertEquals(expected_2, actual_2);
+        
+        ksession_1.dispose();
+        Collection<StatefulKnowledgeSession> coll_2 = kbase.getStatefulKnowledgeSessions();
+        assertTrue(coll_2.size() == 0);
+        
+        // here to make sure it's safe to call dispose() twice
+        ksession_1.dispose();
+        Collection<StatefulKnowledgeSession> coll_3 = kbase.getStatefulKnowledgeSessions();
+        assertTrue(coll_3.size() == 0);
     }
 
     public void testPrimitiveArray() throws Exception {

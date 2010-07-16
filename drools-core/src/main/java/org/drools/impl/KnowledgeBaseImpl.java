@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
+import org.drools.StatefulSession;
 import org.drools.command.CommandService;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.common.InternalRuleBase;
@@ -156,7 +156,21 @@ public class KnowledgeBaseImpl
     		                                                                                          environment );
     		return new StatefulKnowledgeSessionImpl( session, this );
     	}
-    }    
+    }  
+    
+    public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions()
+    {
+    	Collection<StatefulKnowledgeSession> c = new ArrayList<StatefulKnowledgeSession>();
+    	StatefulSession[] sss = this.ruleBase.getStatefulSessions();
+    	if (sss != null) {
+    		for (StatefulSession ss : sss) {
+    			if (ss instanceof ReteooStatefulSession) {
+	    			c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
+    			}
+    		}
+    	}
+    	return c;
+    }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession() {
         return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, null );
