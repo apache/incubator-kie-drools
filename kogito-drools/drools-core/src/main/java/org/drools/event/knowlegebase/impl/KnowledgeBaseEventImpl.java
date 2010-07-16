@@ -14,4 +14,9 @@ public class KnowledgeBaseEventImpl implements KnowledgeBaseEvent {
         return this.knowledgeBase;
     }
 
+	@Override
+	public String toString() {
+		return "==>[KnowledgeBaseEventImpl: getKnowledgeBase()=" + getKnowledgeBase() + "]";
+	}
+
 }

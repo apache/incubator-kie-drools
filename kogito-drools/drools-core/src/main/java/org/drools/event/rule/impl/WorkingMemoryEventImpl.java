@@ -8,7 +8,6 @@ import java.io.ObjectOutput;
 import org.drools.event.rule.WorkingMemoryEvent;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.PropagationContext;
-import org.drools.runtime.rule.WorkingMemory;
 
 public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizable {
     private KnowledgeRuntime kruntime;
@@ -41,5 +40,11 @@ public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizabl
         this.kruntime = null; // null because we don't serialise this
         this.propagationContext = new SerializablePropagationContext();
         ((SerializablePropagationContext)this.propagationContext).readExternal( in );
-    }      
+    }
+
+	@Override
+	public String toString() {
+		return "==>[WorkingMemoryEventImpl: getKnowledgeRuntime()=" + getKnowledgeRuntime()
+				+ ", getPropagationContext()=" + getPropagationContext() + "]";
+	}
 }

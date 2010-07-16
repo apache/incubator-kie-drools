@@ -48,4 +48,9 @@ public class ProcessEventImpl implements ProcessEvent, Externalizable {
         return this.kruntime;
     }
 
+	@Override
+	public String toString() {
+		return "==>[ProcessEventImpl: getProcessInstance()=" + getProcessInstance() + ", getKnowledgeRuntime()="
+				+ getKnowledgeRuntime() + "]";
+	}
 }
