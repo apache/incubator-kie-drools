@@ -58,6 +58,4 @@ public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{
         return "==>[BeforeResourceProcessedEvent(" + getStatus() + "): " + getResource() + "]";
     }
 
-
-
 }
