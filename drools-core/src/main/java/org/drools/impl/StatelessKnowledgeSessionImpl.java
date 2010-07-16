@@ -87,6 +87,10 @@ public class StatelessKnowledgeSessionImpl
         }
         return this.ruleBase;
     }
+    
+    public KnowledgeAgent getKnowledgeAgent() {
+        return this.kagent;
+    }
 
     public StatefulKnowledgeSession newWorkingMemory() {
         if ( this.kagent != null ) {
