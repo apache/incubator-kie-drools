@@ -33,6 +33,7 @@ import org.drools.process.instance.event.SignalManagerFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.conf.KeepReferenceOption;
 import org.drools.runtime.conf.KnowledgeSessionOption;
 import org.drools.runtime.conf.MultiValueKnowledgeSessionOption;
 import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
@@ -129,10 +130,10 @@ public class SessionConfiguration
             this.chainedProperties.addProperties( properties );
         }
 
-        setKeepReference( Boolean.valueOf( this.chainedProperties.getProperty( "drools.keepReference",
+        setKeepReference( Boolean.valueOf( this.chainedProperties.getProperty( KeepReferenceOption.PROPERTY_NAME,
                                                                                "true" ) ).booleanValue() );
 
-        setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( "drools.clockType",
+        setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( ClockTypeOption.PROPERTY_NAME,
                                                                                       "realtime" ) ) );
     }
     
@@ -149,9 +150,9 @@ public class SessionConfiguration
             return;
         }
         
-        if ( name.equals( "drools.keepReference" ) ) {
+        if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
             setKeepReference(  StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
-        } else if ( name.equals( "drools.clockType" ) ) {
+        } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             setClockType( ClockType.resolveClockType(  StringUtils.isEmpty( value ) ? "realtime" : value ) );
         }
     }   
@@ -162,9 +163,9 @@ public class SessionConfiguration
             return null;
         }
         
-        if ( name.equals( "drools.keepReference" ) ) {
+        if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
             return Boolean.toString( this.keepReference );
-        } else if ( name.equals( "drools.clockType" ) ) {
+        } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             return this.clockType.toExternalForm();
         }
         
@@ -403,6 +404,8 @@ public class SessionConfiguration
     public <T extends SingleValueKnowledgeSessionOption> T getOption(Class<T> option) {
         if ( ClockTypeOption.class.equals( option ) ) {
             return (T) ClockTypeOption.get( getClockType().toExternalForm() );
+        } else if( KeepReferenceOption.class.equals( option ) ) {
+            return (T) ( this.keepReference ? KeepReferenceOption.YES : KeepReferenceOption.NO );
         }
         return null;
     }
@@ -415,6 +418,8 @@ public class SessionConfiguration
     public <T extends KnowledgeSessionOption> void setOption(T option) {
         if ( option instanceof ClockTypeOption ) {
             setClockType( ClockType.resolveClockType( ((ClockTypeOption) option ).getClockType() ) );
+        } else if( option instanceof KeepReferenceOption ) {
+            setKeepReference( ((KeepReferenceOption) option).isKeepReference() );
         }
     }
 
