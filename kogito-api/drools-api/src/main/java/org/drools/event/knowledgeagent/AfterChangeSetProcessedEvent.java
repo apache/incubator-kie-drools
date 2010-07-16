@@ -56,8 +56,6 @@ public class AfterChangeSetProcessedEvent extends ChangeSetProcessingEvent {
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
-    
-    
 
     @Override
     public String toString() {

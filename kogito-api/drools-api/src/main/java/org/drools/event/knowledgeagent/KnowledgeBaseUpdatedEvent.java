@@ -38,7 +38,7 @@ public class KnowledgeBaseUpdatedEvent extends EventObject{
     }
 
     @Override
-     public String toString() {
+    public String toString() {
         return "==>[KnowledgeBaseUpdatedEvent: " + getKnowledgeBase()+ "]";
     }
 
