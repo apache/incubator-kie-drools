@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
