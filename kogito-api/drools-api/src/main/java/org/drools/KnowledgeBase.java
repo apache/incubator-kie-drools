@@ -145,6 +145,14 @@ public interface KnowledgeBase
      *     The StatefulKnowledgeSession.
      */
     StatefulKnowledgeSession newStatefulKnowledgeSession();
+    
+    /**
+     * Return a collection of the StatefulKnowledgeSessions that exist in this KnowledgeBase.
+     * Be careful as sessions are not thread-safe and could be in use elsewhere.
+     * 
+     * @return a Collection of StatefulKnowledgeSessions
+     */
+    Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions();
 
     /**
      * Create a new StatelessKnowledgeSession using the given session configuration.
