@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -16,12 +17,13 @@ import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
-import org.drools.StatefulSession;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
+import org.drools.agent.ResourceDiffProducer;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
@@ -31,7 +33,9 @@ import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.event.KnowledgeAgentEventSupport;
 import org.drools.event.io.ResourceChangeListener;
+import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.io.Resource;
@@ -39,16 +43,13 @@ import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.internal.InternalResource;
-import org.drools.agent.ResourceDiffProducer;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.KnowledgeAgentEventSupport;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.SemanticModules;
@@ -1190,9 +1191,9 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         synchronized (this.registeredResources) {
             //all kbase's ksessions must be disposed
             if (this.kbase != null) {
-                StatefulSession[] statefulSessions = ((AbstractRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getStatefulSessions();
-                if (statefulSessions != null && statefulSessions.length > 0){
-                    String message = "The kbase still contains "+statefulSessions.length+" stateful sessions. You must dispose them first.";
+                Collection<StatefulKnowledgeSession> statefulSessions = this.kbase.getStatefulKnowledgeSessions();
+                if (statefulSessions != null && statefulSessions.size() > 0){
+                    String message = "The kbase still contains "+statefulSessions.size()+" stateful sessions. You must dispose them first.";
                     this.listener.warning(message);
                     throw new IllegalStateException(message);
                 }
