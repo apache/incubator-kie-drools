@@ -27,7 +27,7 @@ import org.drools.runtime.rule.AgendaGroup;
 
 public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
     private AgendaGroup agendaGroup;
-    KnowledgeRuntime kruntime;
+    private KnowledgeRuntime kruntime;
 
     public AgendaGroupEventImpl(AgendaGroup agendaGroup, KnowledgeRuntime kruntime) {
         this.agendaGroup = agendaGroup;
@@ -51,5 +51,11 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
         this.agendaGroup = new SerializableAgendaGroup( );
         ((SerializableAgendaGroup)this.agendaGroup).readExternal( in );
         this.kruntime = null; // we null this as it isn't serializable; 
-    }       
+    }
+
+	@Override
+	public String toString() {
+		return "==>[AgendaGroupEventImpl: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="
+				+ getKnowledgeRuntime() + "]";
+	}
 }

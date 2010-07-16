@@ -15,4 +15,11 @@ public class AfterRuleAddedEventImpl extends KnowledgeBaseEventImpl implements A
     public Rule getRule() {
         return this.rule;
     }
+
+	@Override
+	public String toString() {
+		return "==>[AfterRuleAddedEventImpl: getRule()=" + getRule() + ", getKnowledgeBase()=" + getKnowledgeBase()
+				+ "]";
+	}
+    
 }

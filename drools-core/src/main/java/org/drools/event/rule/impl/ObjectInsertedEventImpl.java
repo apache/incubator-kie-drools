@@ -4,13 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.event.rule.ObjectInsertedEvent;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.FactHandle;
-import org.drools.runtime.rule.WorkingMemory;
 
 public class ObjectInsertedEventImpl extends WorkingMemoryEventImpl
     implements
@@ -44,4 +40,11 @@ public class ObjectInsertedEventImpl extends WorkingMemoryEventImpl
     public Object getObject() {
         return this.object;
     }
+
+	@Override
+	public String toString() {
+		return "==>[ObjectInsertedEventImpl: getFactHandle()=" + getFactHandle() + ", getObject()=" + getObject()
+				+ ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + ", getPropagationContext()="
+				+ getPropagationContext() + "]";
+	}
 }

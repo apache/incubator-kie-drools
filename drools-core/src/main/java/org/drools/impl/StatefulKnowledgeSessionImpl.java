@@ -59,7 +59,6 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
-import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
@@ -83,7 +82,6 @@ import org.drools.time.SessionClock;
 public class StatefulKnowledgeSessionImpl
     implements
     StatefulKnowledgeSession,
-    CommandExecutor,
     InternalWorkingMemoryEntryPoint {
     public ReteooWorkingMemory session;
     public KnowledgeBaseImpl   kbase;

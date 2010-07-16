@@ -15,4 +15,11 @@ public class AfterKnowledgePackageAddedEventImpl extends KnowledgeBaseEventImpl 
     public KnowledgePackage getKnowledgePackage() {
         return this.knowledgePackage;
     }
+
+	@Override
+	public String toString() {
+		return "==>[AfterKnowledgePackageAddedEventImpl: getKnowledgePackage()=" + getKnowledgePackage()
+				+ ", getKnowledgeBase()=" + getKnowledgeBase() + "]";
+	}
+    
 }

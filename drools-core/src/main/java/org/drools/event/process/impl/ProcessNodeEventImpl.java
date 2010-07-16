@@ -33,4 +33,9 @@ public class ProcessNodeEventImpl extends ProcessEventImpl implements ProcessNod
 		return nodeInstance;
 	}
 
+	@Override
+	public String toString() {
+		return "==>[ProcessNodeEventImpl: getNodeInstance()=" + getNodeInstance() + ", getProcessInstance()="
+				+ getProcessInstance() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
+	}
 }
