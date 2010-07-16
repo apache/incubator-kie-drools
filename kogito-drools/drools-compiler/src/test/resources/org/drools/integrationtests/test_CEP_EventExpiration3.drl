@@ -1,0 +1,27 @@
+package org.drools;
+
+import org.drools.StockTick;
+
+global java.util.List results;
+
+declare StockTick 
+    @role( event )
+    @timestamp( dateTimestamp )
+    // this will override individual rule requirements
+    @expires( 10m )
+end
+
+rule "Check event"
+when
+    $st1 : StockTick( company == "ACME" )
+    $st2 : StockTick( company == "RHT", this after[0,5m] $st1 )
+then
+    results.add( $st1 );
+end
+
+rule "Check event2"
+when
+    $st1 : StockTick( company == "RHT" ) over window:time( 5m )
+then
+    results.add( $st1 );
+end

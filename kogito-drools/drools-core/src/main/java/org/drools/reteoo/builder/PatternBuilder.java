@@ -310,22 +310,28 @@ public class PatternBuilder
         if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
             long expirationOffset = getExpiratioOffsetForType( context,
                                                                objectType );
-            for ( Behavior behavior : pattern.getBehaviors() ) {
-                if ( behavior.getExpirationOffset() != -1 ) {
-                    expirationOffset = Math.max( behavior.getExpirationOffset(),
-                                                 expirationOffset );
-                }
-            }
-            long distance = context.getTemporalDistance().getExpirationOffset( pattern );
-            if( distance == -1 ) {
-                // it means the rules have no temporal constraints, or
-                // the constraints require events to be hold forever. In this 
-                // case, we allow type declarations to override the implicit 
-                // expiration offset by defining an expiration policy with the
-                // @expires tag
+            if( expirationOffset != -1 ) {
+                // expiration policy is set, so use it
                 otn.setExpirationOffset( expirationOffset );
             } else {
-                otn.setExpirationOffset( Math.max( distance, expirationOffset ) );
+                // otherwise calculate it based on behaviours and temporal constraints
+                for ( Behavior behavior : pattern.getBehaviors() ) {
+                    if ( behavior.getExpirationOffset() != -1 ) {
+                        expirationOffset = Math.max( behavior.getExpirationOffset(),
+                                                     expirationOffset );
+                    }
+                }
+                long distance = context.getTemporalDistance().getExpirationOffset( pattern );
+                if( distance == -1 ) {
+                    // it means the rules have no temporal constraints, or
+                    // the constraints require events to be hold forever. In this 
+                    // case, we allow type declarations to override the implicit 
+                    // expiration offset by defining an expiration policy with the
+                    // @expires tag
+                    otn.setExpirationOffset( expirationOffset );
+                } else {
+                    otn.setExpirationOffset( Math.max( distance, expirationOffset ) );
+                }
             }
         }
 

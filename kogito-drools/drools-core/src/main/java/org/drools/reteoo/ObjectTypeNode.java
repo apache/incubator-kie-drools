@@ -73,7 +73,6 @@ public class ObjectTypeNode extends ObjectSource
     ObjectSink,
     Externalizable,
     NodeMemory
-
 {
     // ------------------------------------------------------------
     // Instance members
