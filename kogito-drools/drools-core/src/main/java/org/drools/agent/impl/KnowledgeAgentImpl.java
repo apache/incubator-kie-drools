@@ -137,7 +137,15 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     public void setSystemEventListener(SystemEventListener listener) {
         this.listener = listener;
     }
+    
+    public Set<Resource> getResourceDirectories() {
+    	return this.resourceDirectories;
+    }
 
+    public boolean isNewInstance() {
+        return this.newInstance;
+    }
+    
     public void applyChangeSet(Resource resource) {
         applyChangeSet(getChangeSet(resource));
     }
