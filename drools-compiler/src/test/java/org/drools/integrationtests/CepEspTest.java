@@ -15,6 +15,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
@@ -32,6 +33,7 @@ import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.audit.WorkingMemoryFileLogger;
+import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -54,6 +56,8 @@ import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -62,6 +66,7 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.spi.ObjectType;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
@@ -441,6 +446,46 @@ public class CepEspTest extends TestCase {
 
         assertEquals( parser.parse( "1h30m" )[0].longValue(),
                       internal.getTypeDeclaration( StockTick.class ).getExpirationOffset() );
+    }
+
+    public void testEventExpiration2() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration2.drl" ) );
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setEventProcessingMode( EventProcessingOption.STREAM );
+        final RuleBase ruleBase = loadRuleBase( reader, conf );
+
+        final InternalRuleBase internal = (InternalRuleBase) ruleBase;
+        final TimeIntervalParser parser = new TimeIntervalParser();
+
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes(EntryPoint.DEFAULT);
+        ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
+        
+        assertNotNull( node );
+        
+        // the expiration policy @expires(10m) should override the temporal operator usage 
+        assertEquals( parser.parse( "10m" )[0].longValue()+1,
+                      node.getExpirationOffset() );
+    }
+
+    public void testEventExpiration3() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration3.drl" ) );
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setEventProcessingMode( EventProcessingOption.STREAM );
+        final RuleBase ruleBase = loadRuleBase( reader, conf );
+
+        final InternalRuleBase internal = (InternalRuleBase) ruleBase;
+        final TimeIntervalParser parser = new TimeIntervalParser();
+
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes(EntryPoint.DEFAULT);
+        ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
+        
+        assertNotNull( node );
+        
+        // the expiration policy @expires(10m) should override the temporal operator usage 
+        assertEquals( parser.parse( "10m" )[0].longValue()+1,
+                      node.getExpirationOffset() );
     }
 
     public void testTimeRelationalOperators() throws Exception {
