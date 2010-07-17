@@ -39,6 +39,7 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StockTick;
+import org.drools.StockTickInterface;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -119,19 +120,19 @@ public class StreamsTest extends TestCase {
         session.setGlobal( "results",
                            results );
 
-        StockTick tick1 = new StockTick( 1,
+        StockTickInterface tick1 = new StockTick( 1,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
-        StockTick tick2 = new StockTick( 2,
+        StockTickInterface tick2 = new StockTick( 2,
                                          "ACME",
                                          10,
                                          System.currentTimeMillis() );
-        StockTick tick3 = new StockTick( 3,
+        StockTickInterface tick3 = new StockTick( 3,
                                          "ACME",
                                          10,
                                          System.currentTimeMillis() );
-        StockTick tick4 = new StockTick( 4,
+        StockTickInterface tick4 = new StockTick( 4,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
@@ -156,19 +157,19 @@ public class StreamsTest extends TestCase {
         assertEquals( 0,
                       results.size() );
 
-        StockTick tick5 = new StockTick( 5,
+        StockTickInterface tick5 = new StockTick( 5,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
-        StockTick tick6 = new StockTick( 6,
+        StockTickInterface tick6 = new StockTick( 6,
                                          "ACME",
                                          10,
                                          System.currentTimeMillis() );
-        StockTick tick7 = new StockTick( 7,
+        StockTickInterface tick7 = new StockTick( 7,
                                          "ACME",
                                          15,
                                          System.currentTimeMillis() );
-        StockTick tick8 = new StockTick( 8,
+        StockTickInterface tick8 = new StockTick( 8,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
@@ -208,19 +209,19 @@ public class StreamsTest extends TestCase {
         session.setGlobal( "results",
                            results );
 
-        StockTick tick5 = new StockTick( 5,
+        StockTickInterface tick5 = new StockTick( 5,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
-        StockTick tick6 = new StockTick( 6,
+        StockTickInterface tick6 = new StockTick( 6,
                                          "ACME",
                                          10,
                                          System.currentTimeMillis() );
-        StockTick tick7 = new StockTick( 7,
+        StockTickInterface tick7 = new StockTick( 7,
                                          "ACME",
                                          30,
                                          System.currentTimeMillis() );
-        StockTick tick8 = new StockTick( 8,
+        StockTickInterface tick8 = new StockTick( 8,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
@@ -260,19 +261,19 @@ public class StreamsTest extends TestCase {
         session.setGlobal( "results",
                            results );
 
-        StockTick tick5 = new StockTick( 5,
+        StockTickInterface tick5 = new StockTick( 5,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
-        StockTick tick6 = new StockTick( 6,
+        StockTickInterface tick6 = new StockTick( 6,
                                          "ACME",
                                          10,
                                          System.currentTimeMillis() );
-        StockTick tick7 = new StockTick( 7,
+        StockTickInterface tick7 = new StockTick( 7,
                                          "ACME",
                                          30,
                                          System.currentTimeMillis() );
-        StockTick tick8 = new StockTick( 8,
+        StockTickInterface tick8 = new StockTick( 8,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
@@ -348,11 +349,11 @@ public class StreamsTest extends TestCase {
 
         PseudoClockScheduler clock = ksession.getSessionClock();
 
-        final StockTick st1 = new StockTick( 1,
+        final StockTickInterface st1 = new StockTick( 1,
                                              "RHT",
                                              100,
                                              1000 );
-        final StockTick st2 = new StockTick( 2,
+        final StockTickInterface st2 = new StockTick( 2,
                                              "RHT",
                                              100,
                                              1000 );
@@ -396,11 +397,11 @@ public class StreamsTest extends TestCase {
 
         PseudoClockScheduler clock = ksession.getSessionClock();
 
-        final StockTick st1 = new StockTick( 1,
+        final StockTickInterface st1 = new StockTick( 1,
                                              "RHT",
                                              100,
                                              1000 );
-        final StockTick st2 = new StockTick( 2,
+        final StockTickInterface st2 = new StockTick( 2,
                                              "RHT",
                                              100,
                                              1000 );

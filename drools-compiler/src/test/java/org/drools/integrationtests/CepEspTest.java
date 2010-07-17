@@ -32,6 +32,7 @@ import org.drools.Sensor;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
+import org.drools.StockTickInterface;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
@@ -172,22 +173,22 @@ public class CepEspTest extends TestCase {
         session.setGlobal( "results",
                            results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         10000 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         10010 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         10100 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         11000 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  10000 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  10010 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  10100 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  11000 );
 
         InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
         clock.advanceTime( 10,
@@ -256,14 +257,14 @@ public class CepEspTest extends TestCase {
         session.setGlobal( "results",
                            results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         10000 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         10010 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  10000 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  10010 );
 
         InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
@@ -298,26 +299,26 @@ public class CepEspTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         10000,
-                                         5 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         11000,
-                                         10 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         12000,
-                                         8 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         13000,
-                                         7 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  10000,
+                                                  5 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  11000,
+                                                  10 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  12000,
+                                                  8 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  13000,
+                                                  7 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
@@ -379,26 +380,26 @@ public class CepEspTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         10000,
-                                         5 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         11000,
-                                         10 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         12000,
-                                         8 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         13000,
-                                         7 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  10000,
+                                                  5 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  11000,
+                                                  10 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  12000,
+                                                  8 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  13000,
+                                                  7 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
@@ -453,18 +454,19 @@ public class CepEspTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration2.drl" ) );
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader, conf );
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                conf );
 
         final InternalRuleBase internal = (InternalRuleBase) ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes(EntryPoint.DEFAULT);
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPoint.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
-        
+
         assertNotNull( node );
-        
+
         // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( parser.parse( "10m" )[0].longValue()+1,
+        assertEquals( parser.parse( "10m" )[0].longValue() + 1,
                       node.getExpirationOffset() );
     }
 
@@ -473,18 +475,19 @@ public class CepEspTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration3.drl" ) );
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setEventProcessingMode( EventProcessingOption.STREAM );
-        final RuleBase ruleBase = loadRuleBase( reader, conf );
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                conf );
 
         final InternalRuleBase internal = (InternalRuleBase) ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes(EntryPoint.DEFAULT);
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPoint.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
-        
+
         assertNotNull( node );
-        
+
         // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( parser.parse( "10m" )[0].longValue()+1,
+        assertEquals( parser.parse( "10m" )[0].longValue() + 1,
                       node.getExpirationOffset() );
     }
 
@@ -545,46 +548,46 @@ public class CepEspTest extends TestCase {
         wm.setGlobal( "results_finished_by",
                       results_finished_by );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick5 = new StockTick( 5,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick6 = new StockTick( 6,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick7 = new StockTick( 7,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick8 = new StockTick( 8,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick5 = new StockTick( 5,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick6 = new StockTick( 6,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick7 = new StockTick( 7,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick8 = new StockTick( 8,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         clock.advanceTime( 4,
@@ -716,46 +719,46 @@ public class CepEspTest extends TestCase {
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick5 = new StockTick( 5,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick6 = new StockTick( 6,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick7 = new StockTick( 7,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick8 = new StockTick( 8,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick5 = new StockTick( 5,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick6 = new StockTick( 6,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick7 = new StockTick( 7,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick8 = new StockTick( 8,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
 
         ksession.insert( tick1 );
         clock.advanceTime( 4,
@@ -805,46 +808,46 @@ public class CepEspTest extends TestCase {
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick5 = new StockTick( 5,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick6 = new StockTick( 6,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
-        StockTick tick7 = new StockTick( 7,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick8 = new StockTick( 8,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         3 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick5 = new StockTick( 5,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick6 = new StockTick( 6,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
+        StockTickInterface tick7 = new StockTick( 7,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  5 );
+        StockTickInterface tick8 = new StockTick( 8,
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis(),
+                                                  3 );
 
         InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( tick1 );
         clock.advanceTime( 4,
@@ -896,16 +899,16 @@ public class CepEspTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         100000, // arbitrary timestamp
-                                         3 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         104000, // 4 seconds after DROO
-                                         3 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  100000, // arbitrary timestamp
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  104000, // 4 seconds after DROO
+                                                  3 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
@@ -948,16 +951,16 @@ public class CepEspTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         104000, // arbitrary timestamp
-                                         3 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         100000, // 4 seconds after DROO
-                                         3 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  104000, // arbitrary timestamp
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  100000, // 4 seconds after DROO
+                                                  3 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
@@ -1000,16 +1003,16 @@ public class CepEspTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         100000, // arbitrary timestamp
-                                         3 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         100050, // 50 milliseconds after DROO
-                                         3 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  100000, // arbitrary timestamp
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  100050, // 50 milliseconds after DROO
+                                                  3 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
@@ -1282,10 +1285,10 @@ public class CepEspTest extends TestCase {
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
 
-        StockTick st1O = new StockTick( 1,
-                                        "DROO",
-                                        100,
-                                        clock.getCurrentTime() );
+        StockTickInterface st1O = new StockTick( 1,
+                                                 "DROO",
+                                                 100,
+                                                 clock.getCurrentTime() );
 
         EventFactHandle st1 = (EventFactHandle) wm.insert( st1O );
 
@@ -1360,22 +1363,22 @@ public class CepEspTest extends TestCase {
         session.setGlobal( "results",
                            results );
 
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         10000 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         10010 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         10100 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         11000 );
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  10000 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  10010 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  10100 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  11000 );
 
         assertEquals( 0,
                       iwm.getIdleTime() );
@@ -1783,18 +1786,18 @@ public class CepEspTest extends TestCase {
 
     public void testIdentityAssertBehaviorOnEntryPoints() throws IOException,
                                                          ClassNotFoundException {
-        StockTick st1 = new StockTick( 1,
-                                       "RHT",
-                                       10,
-                                       10 );
-        StockTick st2 = new StockTick( 1,
-                                       "RHT",
-                                       10,
-                                       10 );
-        StockTick st3 = new StockTick( 2,
-                                       "RHT",
-                                       15,
-                                       20 );
+        StockTickInterface st1 = new StockTick( 1,
+                                                "RHT",
+                                                10,
+                                                10 );
+        StockTickInterface st2 = new StockTick( 1,
+                                                "RHT",
+                                                10,
+                                                10 );
+        StockTickInterface st3 = new StockTick( 2,
+                                                "RHT",
+                                                15,
+                                                20 );
 
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
@@ -1832,18 +1835,18 @@ public class CepEspTest extends TestCase {
 
     public void testEqualityAssertBehaviorOnEntryPoints() throws IOException,
                                                          ClassNotFoundException {
-        StockTick st1 = new StockTick( 1,
-                                       "RHT",
-                                       10,
-                                       10 );
-        StockTick st2 = new StockTick( 1,
-                                       "RHT",
-                                       10,
-                                       10 );
-        StockTick st3 = new StockTick( 2,
-                                       "RHT",
-                                       15,
-                                       20 );
+        StockTickInterface st1 = new StockTick( 1,
+                                                "RHT",
+                                                10,
+                                                10 );
+        StockTickInterface st2 = new StockTick( 1,
+                                                "RHT",
+                                                10,
+                                                10 );
+        StockTickInterface st3 = new StockTick( 2,
+                                                "RHT",
+                                                15,
+                                                20 );
 
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
@@ -1875,6 +1878,42 @@ public class CepEspTest extends TestCase {
                 times( 2 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
 
         ksession1.dispose();
+    }
+
+    public void testEventDeclarationForInterfaces() throws Exception {
+        // read in the source
+        final KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventInterfaces.drl",
+                                                       null,
+                                                       true );
+
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  10000 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  10010 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  10100 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  11000 );
+
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
+
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+        assertTrue( handle3.isEvent() );
+        assertTrue( handle4.isEvent() );
     }
 
 }

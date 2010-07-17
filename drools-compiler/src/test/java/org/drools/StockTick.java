@@ -3,7 +3,7 @@ package org.drools;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StockTick implements Serializable {
+public class StockTick implements Serializable, StockTickInterface {
     private static final long serialVersionUID = -1702366432018395425L;
     
     private long seq;
@@ -39,27 +39,51 @@ public class StockTick implements Serializable {
         this.duration = duration;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#getCompany()
+     */
     public String getCompany() {
         return company;
     }
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#setCompany(java.lang.String)
+     */
     public void setCompany(String company) {
         this.company = company;
     }
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#getPrice()
+     */
     public double getPrice() {
         return price;
     }
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#setPrice(double)
+     */
     public void setPrice(double price) {
         this.price = price;
     }
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#getSeq()
+     */
     public long getSeq() {
         return seq;
     }
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#setSeq(long)
+     */
     public void setSeq(long seq) {
         this.seq = seq;
     }
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#getTime()
+     */
     public long getTime() {
         return time;
     }
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#setTime(long)
+     */
     public void setTime(long time) {
         this.time = time;
     }
@@ -68,20 +92,23 @@ public class StockTick implements Serializable {
         return "StockTick( "+this.seq+" : " +this.company +" : "+ this.price +" )";
     }
 
-    /**
-     * @return the duration
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#getDuration()
      */
     public long getDuration() {
         return duration;
     }
 
-    /**
-     * @param duration the duration to set
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#setDuration(long)
      */
     public void setDuration(long duration) {
         this.duration = duration;
     }
     
+    /* (non-Javadoc)
+     * @see org.drools.StockTickInterface#getDateTimestamp()
+     */
     public Date getDateTimestamp() {
         return new Date( this.time );
     }
