@@ -29,7 +29,6 @@ import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.mortbay.jetty.Server;
@@ -1447,16 +1446,4 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         return sb.toString();
     }
 
-    public static class ResultHandlerImpl implements ResultHandler {
-
-        Object object;
-
-        public void handleResult(Object object) {
-            this.object = object;
-        }
-
-        public Object getObject() {
-            return this.object;
-        }
-    }
 }
