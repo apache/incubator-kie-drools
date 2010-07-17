@@ -16,11 +16,11 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.agent.KnowledgeAgentTest.ResultHandlerImpl;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
@@ -39,11 +39,6 @@ import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.pipeline.Action;
-import org.drools.runtime.pipeline.KnowledgeRuntimeCommand;
-import org.drools.runtime.pipeline.Pipeline;
-import org.drools.runtime.pipeline.PipelineFactory;
-import org.drools.runtime.pipeline.ResultHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 
@@ -768,7 +763,7 @@ public class KnowledgeAgentTest extends TestCase {
         kagent.monitorResourceChangeEvents(false);
     }
 
-    public void testStatelessWithPipeline() throws Exception {
+    public void testStatelessWithCommands() throws Exception {
         String rule1 = this.createDefaultRule("rule1");
         File f1 = fileManager.newFile("rule1.drl");
 
@@ -811,22 +806,7 @@ public class KnowledgeAgentTest extends TestCase {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
-
-        Action assignResult = PipelineFactory.newAssignObjectAsResult();
-        assignResult.setReceiver(executeResultHandler);
-
-        KnowledgeRuntimeCommand batchExecution = PipelineFactory.newCommandExecutor();
-        batchExecution.setReceiver(assignResult);
-
-        KnowledgeRuntimeCommand insertStage = PipelineFactory.newInsertObjectCommand();
-        insertStage.setReceiver(batchExecution);
-
-        Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline(ksession);
-        pipeline.setReceiver(insertStage);
-
-        ResultHandlerImpl resultHandler = new ResultHandlerImpl();
-        pipeline.insert("hello", resultHandler);
+        ksession.execute( new InsertObjectCommand("hello") );
 
         assertEquals(2, list.size());
         assertTrue(list.contains("rule1"));
@@ -840,19 +820,6 @@ public class KnowledgeAgentTest extends TestCase {
             DroolsStreamUtils.streamOut(out, pkg);
         } finally {
             out.close();
-        }
-    }
-
-    public static class ResultHandlerImpl implements ResultHandler {
-
-        Object object;
-
-        public void handleResult(Object object) {
-            this.object = object;
-        }
-
-        public Object getObject() {
-            return this.object;
         }
     }
 

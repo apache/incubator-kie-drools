@@ -45,7 +45,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <plugin>
             <groupId>org.apache.felix</groupId>
             <artifactId>maven-bundle-plugin</artifactId>
-            <version>2.0.1</version>
             <extensions>true</extensions>
             <executions>
                <execution>

@@ -28,7 +28,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>com.google.collections</groupId>
          <artifactId>google-collections</artifactId>
-         <version>0.8</version>
       </dependency>
       <dependency>
          <groupId>com.thoughtworks.xstream</groupId>
