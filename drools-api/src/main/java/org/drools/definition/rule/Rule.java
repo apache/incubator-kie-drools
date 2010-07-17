@@ -27,6 +27,14 @@ public interface Rule
     String getName();
 
     /**
+     * Returns an immutable Map<String key, Object value> of all meta data attributes associated with 
+     * this rule object.
+     * 
+     * @return an immutable Map<String key, Object value> of meta data attributes.
+     */
+    Map<String, Object> getMetaData();
+
+    /**
      * This method is deprecated. Please use {@link Rule#getMetaAttributes()} instead.
      * 
      * @return a collection with all the meta attribute keys associated with this Rule.
@@ -39,8 +47,10 @@ public interface Rule
      * Returns an immutable Map<String key, String value> of all meta attributes associated with this rule object.
      * 
      * @return an immutable Map<String key, String value> of meta attributes.
+     * @deprecated
      */
-    Map<String, String> getMetaAttributes();
+    @Deprecated
+    Map<String, Object> getMetaAttributes();
 
     /**
      * Returns the value of the meta attribute identified by the "key"
@@ -48,6 +58,8 @@ public interface Rule
      * @param key the meta attribute key
      * 
      * @return the meta attribute value or null if there is no value for that key.
+     * @deprecated
      */
+    @Deprecated
     String getMetaAttribute(final String key);
 }
