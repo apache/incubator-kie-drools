@@ -17,7 +17,7 @@ public class SerializedRule
     Externalizable {
     private String name;
     private String packageName;
-    private Map<String, String> metaAttributes;
+    private Map<String, Object> metaAttributes;
     
     public SerializedRule() {
         
@@ -26,11 +26,7 @@ public class SerializedRule
     public SerializedRule(Rule rule) {
         this.name = rule.getName();
         this.packageName = rule.getPackageName();
-        Collection<String> identifiers = rule.listMetaAttributes();
-        this.metaAttributes = new HashMap<String, String>(identifiers.size());
-        for ( String identifier : identifiers ) {
-            this.metaAttributes.put( identifier, rule.getMetaAttribute( identifier ) );
-        }
+        this.metaAttributes = new HashMap<String, Object>( rule.getMetaData() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -43,7 +39,7 @@ public class SerializedRule
                                             ClassNotFoundException {
         name = in.readUTF();
         packageName = in.readUTF();
-        this.metaAttributes = ( Map<String, String> ) in.readObject();
+        this.metaAttributes = ( Map<String, Object> ) in.readObject();
     }
 
     public String getName() {
@@ -54,8 +50,9 @@ public class SerializedRule
         return this.packageName;
     }
     
+    @Deprecated
     public String getMetaAttribute(String identifier) {
-        return this.metaAttributes.get( identifier );
+        return this.metaAttributes.get( identifier ).toString();
     }
 
     @Deprecated
@@ -63,7 +60,12 @@ public class SerializedRule
         return this.metaAttributes.keySet();
     }
 
-    public Map<String, String> getMetaAttributes() {
+    @Deprecated
+    public Map<String, Object> getMetaAttributes() {
+        return Collections.unmodifiableMap( this.metaAttributes );
+    }    
+
+    public Map<String, Object> getMetaData() {
         return Collections.unmodifiableMap( this.metaAttributes );
     }    
 
