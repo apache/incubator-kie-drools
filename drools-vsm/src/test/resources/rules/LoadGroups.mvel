@@ -1,5 +1,0 @@
-groups = [ 'simple' : new Group( "Simple Group" ),
-           'empty' : new Group( "Empty Group" )
-         ];
-return groups;
-        

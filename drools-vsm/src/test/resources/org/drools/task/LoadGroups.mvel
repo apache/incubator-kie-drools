@@ -1,6 +1,0 @@
-groups = [ 'knightsTempler' : new Group( "Knights Templer" ),
-           'crusaders' : new Group( "Crusaders" )
-         ];
-
-return groups;
-        
