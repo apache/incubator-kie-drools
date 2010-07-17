@@ -200,7 +200,7 @@ abstract public class AbstractRuleBase
 
         // must write this option first in order to properly deserialize later
         droolsStream.writeBoolean( this.config.isClassLoaderCacheEnabled() );
-        
+
         droolsStream.writeObject( this.config );
         droolsStream.writeObject( this.pkgs );
 
@@ -253,7 +253,8 @@ abstract public class AbstractRuleBase
         }
 
         boolean classLoaderCacheEnabled = droolsStream.readBoolean();
-        this.rootClassLoader = new DroolsCompositeClassLoader( droolsStream.getParentClassLoader(), classLoaderCacheEnabled );
+        this.rootClassLoader = new DroolsCompositeClassLoader( droolsStream.getParentClassLoader(),
+                                                               classLoaderCacheEnabled );
         droolsStream.setClassLoader( this.rootClassLoader );
         droolsStream.setRuleBase( this );
 
@@ -619,8 +620,72 @@ abstract public class AbstractRuleBase
         //        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
+    private static class TypeDeclarationCandidate {
+        public TypeDeclaration candidate = null;
+        public int             score     = Integer.MAX_VALUE;
+    }
+
     public TypeDeclaration getTypeDeclaration(Class< ? > clazz) {
-        return this.classTypeDeclaration.get( clazz );
+        TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( clazz );
+        if ( typeDeclaration == null ) {
+            // check super classes and keep a score of how up in the hierarchy is there a declaration
+            TypeDeclarationCandidate candidate = checkSuperClasses( clazz );
+            // now check interfaces
+            candidate = checkInterfaces( clazz,
+                                         candidate,
+                                         1 );
+            if( candidate != null ) {
+                typeDeclaration = candidate.candidate;
+            }
+        }
+        return typeDeclaration;
+    }
+
+    private TypeDeclarationCandidate checkSuperClasses(Class< ? > clazz) {
+        TypeDeclarationCandidate candidate = null;
+        TypeDeclaration typeDeclaration = null;
+        Class< ? > current = clazz.getSuperclass();
+        int score = 0;
+        while ( typeDeclaration == null && current != null ) {
+            score++;
+            typeDeclaration = this.classTypeDeclaration.get( current );
+            current = current.getSuperclass();
+        }
+        if ( typeDeclaration == null ) {
+            // no type declaration found for superclasses
+            score = Integer.MAX_VALUE;
+        } else {
+            candidate = new TypeDeclarationCandidate();
+            candidate.candidate = typeDeclaration;
+            candidate.score = score;
+        }
+        return candidate;
+    }
+
+    private TypeDeclarationCandidate checkInterfaces(Class< ? > clazz,
+                                                     TypeDeclarationCandidate baseline,
+                                                     int level) {
+        TypeDeclarationCandidate candidate = null;
+        TypeDeclaration typeDeclaration = null;
+        if ( baseline == null || level < baseline.score ) {
+            // search
+            for ( Class< ? > ifc : clazz.getInterfaces() ) {
+                typeDeclaration = this.classTypeDeclaration.get( ifc );
+                if ( typeDeclaration != null ) {
+                    candidate = new TypeDeclarationCandidate();
+                    candidate.candidate = typeDeclaration;
+                    candidate.score = level;
+                    break;
+                } else {
+                    candidate = checkInterfaces( ifc,
+                                                 baseline,
+                                                 level + 1 );
+                }
+            }
+        } else {
+            candidate = baseline;
+        }
+        return candidate;
     }
 
     public Collection<TypeDeclaration> getTypeDeclarations() {
