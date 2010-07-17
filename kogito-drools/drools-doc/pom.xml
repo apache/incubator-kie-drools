@@ -20,7 +20,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.0.1</version>
           <configuration>
             <source>1.5</source>
             <target>1.5</target>
@@ -40,7 +39,6 @@
     <dependency>
 	    <groupId>com.lowagie</groupId>
 	    <artifactId>itext</artifactId>
-	    <version>2.1.2</version>
 	</dependency> 
    
   </dependencies>
