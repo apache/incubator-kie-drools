@@ -90,7 +90,7 @@ public class Rule
 
     private String                   agendaGroup;
 
-    private Map<String, String>      metaAttributes;
+    private Map<String, Object>      metaAttributes;
 
     /** Consequence. */
     private Consequence              consequence;
@@ -179,7 +179,7 @@ public class Rule
         lhsRoot = (GroupElement) in.readObject();
         dialect = (String) in.readObject();
         agendaGroup = (String) in.readObject();
-        metaAttributes = (Map<String, String>) in.readObject();
+        metaAttributes = (Map<String, Object>) in.readObject();
 
         consequence = (Consequence) in.readObject();
         namedConsequence = (Map<String, Consequence>) in.readObject();
@@ -222,7 +222,7 @@ public class Rule
         this.semanticallyValid = true;
         this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
-        this.metaAttributes = new HashMap<String, String>();
+        this.metaAttributes = new HashMap<String, Object>();
 
     }
 
@@ -709,22 +709,24 @@ public class Rule
                                       workingMemory );
     }
 
-    public void setMetaAttributes(Map<String, String> metaAttributes) {
-        this.metaAttributes = metaAttributes;
-    }
-
     public void addMetaAttribute(String key,
-                                 String value) {
+                                 Object value) {
         this.metaAttributes.put( key,
                                  value );
     }
 
-    public Map<String, String> getMetaAttributes() {
+    public Map<String, Object> getMetaData() {
         return Collections.unmodifiableMap( metaAttributes );
     }
 
+    @Deprecated
+    public Map<String, Object> getMetaAttributes() {
+        return Collections.unmodifiableMap( metaAttributes );
+    }
+
+    @Deprecated
     public String getMetaAttribute(final String identifier) {
-        return (String) this.metaAttributes.get( identifier );
+        return this.metaAttributes.get( identifier ).toString();
     }
 
     @Deprecated

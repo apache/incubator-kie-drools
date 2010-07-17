@@ -20,6 +20,7 @@ public class RuleImpl implements org.drools.definition.rule.Rule {
 		return this.rule.getPackage();
 	}
 	
+	@Deprecated
 	public String getMetaAttribute(String identifier) {
 	    return this.rule.getMetaAttribute( identifier );
 	}
@@ -29,8 +30,13 @@ public class RuleImpl implements org.drools.definition.rule.Rule {
         return this.rule.getMetaAttributes().keySet();
     }
 
-    public Map<String, String> getMetaAttributes() {
+    @Deprecated
+    public Map<String, Object> getMetaAttributes() {
         return this.rule.getMetaAttributes();
+    }
+
+    public Map<String, Object> getMetaData() {
+        return this.rule.getMetaData();
     }
 	
 	
