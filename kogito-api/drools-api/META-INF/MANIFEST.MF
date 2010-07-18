@@ -7,7 +7,7 @@ Import-Package: com.sun.tools.xjc;resolution:=optional,com.thoughtwork
  javax.xml.bind;resolution:=optional,org.osgi.framework;resolution:=op
  tional;version="1.5",org.osgi.util.tracker;resolution:=optional;versi
  on="1.4",org.quartz;resolution:=optional
-Bnd-LastModified: 1279436494555
+Bnd-LastModified: 1279481885994
 Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command,org.drools
  .time,org.drools.event,org.drools,org.drools.runtime.process,org.droo
@@ -27,8 +27,8 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  ",org.drools.osgi.api;uses:="org.osgi.framework,org.drools,org.drools
  .util,org.osgi.util.tracker";version="5.1.0.SNAPSHOT",org.drools;uses
  :="org.drools.io,org.drools.event.knowledgebase,org.drools.runtime,or
- g.drools.definition,org.drools.definition.rule,org.drools.definition.
- type,org.drools.definition.process,org.drools.conf,org.drools.util";v
+ g.drools.definition,org.drools.definition.type,org.drools.definition.
+ rule,org.drools.definition.process,org.drools.conf,org.drools.util";v
  ersion="5.1.0.SNAPSHOT",org.drools.runtime.conf;uses:="org.drools.con
  f";version="5.1.0.SNAPSHOT",org.drools.runtime.process;uses:="org.dro
  ols.runtime";version="5.1.0.SNAPSHOT",org.drools.event.rule;uses:="or
@@ -55,7 +55,7 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  on="5.1.0.SNAPSHOT",org.drools.definition.type;version="5.1.0.SNAPSHO
  T",org.drools.definition.process;uses:="org.drools.definition";versio
  n="5.1.0.SNAPSHOT",org.drools.agent;uses:="org.drools.runtime,org.dro
- ols.event.knowledgeagent,org.drools.io,org.drools,org.drools.builder"
+ ols.event.knowledgeagent,org.drools,org.drools.io,org.drools.builder"
  ;version="5.1.0.SNAPSHOT"
 Bundle-Version: 5.1.0.SNAPSHOT
 Bundle-Name: Drools :: API
