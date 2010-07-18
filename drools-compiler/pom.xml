@@ -47,8 +47,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          </exclusions>
       </dependency>
       <dependency>
-         <groupId>org.apache.jasper.springsource</groupId>
-         <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+            <artifactId>ecj</artifactId>
       </dependency>
       <dependency>
          <groupId>janino</groupId>
