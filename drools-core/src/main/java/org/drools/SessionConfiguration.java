@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.builder.conf.AccumulateFunctionOption;
 import org.drools.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -37,6 +38,7 @@ import org.drools.runtime.conf.KeepReferenceOption;
 import org.drools.runtime.conf.KnowledgeSessionOption;
 import org.drools.runtime.conf.MultiValueKnowledgeSessionOption;
 import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
+import org.drools.runtime.conf.WorkItemHandlerOption;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
@@ -64,24 +66,24 @@ public class SessionConfiguration
     implements
     KnowledgeSessionConfiguration,
     Externalizable {
-    private static final long serialVersionUID = 500L;
+    private static final long             serialVersionUID = 500L;
 
-    private ChainedProperties chainedProperties;
+    private ChainedProperties             chainedProperties;
 
-    private volatile boolean  immutable;
+    private volatile boolean              immutable;
 
-    private boolean           keepReference;
+    private boolean                       keepReference;
 
-    private ClockType         clockType;
+    private ClockType                     clockType;
 
-    private Map<String, WorkItemHandler>   workItemHandlers;
-    private ProcessInstanceManagerFactory  processInstanceManagerFactory;
-    private SignalManagerFactory           processSignalManagerFactory;
-    private WorkItemManagerFactory         workItemManagerFactory;
-    private CommandService                 commandService; 
+    private Map<String, WorkItemHandler>  workItemHandlers;
+    private ProcessInstanceManagerFactory processInstanceManagerFactory;
+    private SignalManagerFactory          processSignalManagerFactory;
+    private WorkItemManagerFactory        workItemManagerFactory;
+    private CommandService                commandService;
 
-    private transient ClassLoader          classLoader;
-    
+    private transient ClassLoader         classLoader;
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
         out.writeBoolean( immutable );
@@ -104,27 +106,32 @@ public class SessionConfiguration
      * @param properties
      */
     public SessionConfiguration(Properties properties) {
-        init( null, properties );
+        init( null,
+              properties );
     }
 
     /**
      * Creates a new session configuration with default configuration options.
      */
     public SessionConfiguration() {
-        init( null, null );
-    }
-    
-    public SessionConfiguration(ClassLoader classLoader) {
-    	init ( classLoader, null );
+        init( null,
+              null );
     }
 
-    private void init(ClassLoader classLoader, Properties properties) {
-    	this.classLoader =  ClassLoaderUtil.getClassLoader( classLoader, 
-    	                                                    getClass(),
-    	                                                    false );
-    	
+    public SessionConfiguration(ClassLoader classLoader) {
+        init( classLoader,
+              null );
+    }
+
+    private void init(ClassLoader classLoader,
+                      Properties properties) {
+        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
+                                                           getClass(),
+                                                           false );
+
         this.immutable = false;
-        this.chainedProperties = new ChainedProperties( "session.conf",  this.classLoader );
+        this.chainedProperties = new ChainedProperties( "session.conf",
+                                                        this.classLoader );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
@@ -136,41 +143,41 @@ public class SessionConfiguration
         setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( ClockTypeOption.PROPERTY_NAME,
                                                                                       "realtime" ) ) );
     }
-    
+
     public void addProperties(Properties properties) {
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
-        }        
+        }
     }
-    
+
     public void setProperty(String name,
                             String value) {
         name = name.trim();
         if ( StringUtils.isEmpty( name ) ) {
             return;
         }
-        
+
         if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
-            setKeepReference(  StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
+            setKeepReference( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
-            setClockType( ClockType.resolveClockType(  StringUtils.isEmpty( value ) ? "realtime" : value ) );
+            setClockType( ClockType.resolveClockType( StringUtils.isEmpty( value ) ? "realtime" : value ) );
         }
-    }   
-    
+    }
+
     public String getProperty(String name) {
         name = name.trim();
         if ( StringUtils.isEmpty( name ) ) {
             return null;
         }
-        
+
         if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
             return Boolean.toString( this.keepReference );
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             return this.clockType.toExternalForm();
         }
-        
+
         return null;
-    } 
+    }
 
     /**
      * Makes the configuration object immutable. Once it becomes immutable,
@@ -360,21 +367,25 @@ public class SessionConfiguration
             throw new IllegalArgumentException( "Work item manager factory '" + className + "' not found" );
         }
     }
-    
-    public CommandService getCommandService(KnowledgeBase kbase, Environment environment) {
+
+    public CommandService getCommandService(KnowledgeBase kbase,
+                                            Environment environment) {
         if ( this.commandService == null ) {
-            initCommandService(kbase, environment);
+            initCommandService( kbase,
+                                environment );
         }
         return this.commandService;
     }
 
     @SuppressWarnings("unchecked")
-    private void initCommandService(KnowledgeBase kbase, Environment environment) {
-        String className = this.chainedProperties.getProperty( "drools.commandService", null );
-        if (className == null) {
-        	return;
+    private void initCommandService(KnowledgeBase kbase,
+                                    Environment environment) {
+        String className = this.chainedProperties.getProperty( "drools.commandService",
+                                                               null );
+        if ( className == null ) {
+            return;
         }
-        
+
         Class<CommandService> clazz = null;
         try {
             clazz = (Class<CommandService>) Thread.currentThread().getContextClassLoader().loadClass( className );
@@ -390,7 +401,11 @@ public class SessionConfiguration
 
         if ( clazz != null ) {
             try {
-                this.commandService = clazz.getConstructor(KnowledgeBase.class, KnowledgeSessionConfiguration.class, Environment.class).newInstance(kbase, this, environment);
+                this.commandService = clazz.getConstructor( KnowledgeBase.class,
+                                                            KnowledgeSessionConfiguration.class,
+                                                            Environment.class ).newInstance( kbase,
+                                                                                             this,
+                                                                                             environment );
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to instantiate command service '" + className + "'",
                                                     e );
@@ -404,22 +419,30 @@ public class SessionConfiguration
     public <T extends SingleValueKnowledgeSessionOption> T getOption(Class<T> option) {
         if ( ClockTypeOption.class.equals( option ) ) {
             return (T) ClockTypeOption.get( getClockType().toExternalForm() );
-        } else if( KeepReferenceOption.class.equals( option ) ) {
-            return (T) ( this.keepReference ? KeepReferenceOption.YES : KeepReferenceOption.NO );
+        } else if ( KeepReferenceOption.class.equals( option ) ) {
+            return (T) (this.keepReference ? KeepReferenceOption.YES : KeepReferenceOption.NO);
         }
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends MultiValueKnowledgeSessionOption> T getOption(Class<T> option,
                                                                     String key) {
+        if ( WorkItemHandlerOption.class.equals( option ) ) {
+            return (T) WorkItemHandlerOption.get( key,
+                                                  getWorkItemHandlers().get( key ) );
+        }
         return null;
     }
 
     public <T extends KnowledgeSessionOption> void setOption(T option) {
         if ( option instanceof ClockTypeOption ) {
-            setClockType( ClockType.resolveClockType( ((ClockTypeOption) option ).getClockType() ) );
-        } else if( option instanceof KeepReferenceOption ) {
+            setClockType( ClockType.resolveClockType( ((ClockTypeOption) option).getClockType() ) );
+        } else if ( option instanceof KeepReferenceOption ) {
             setKeepReference( ((KeepReferenceOption) option).isKeepReference() );
+        } else if ( option instanceof WorkItemHandlerOption ) {
+            getWorkItemHandlers().put( ((WorkItemHandlerOption)option).getName(),
+                                       ((WorkItemHandlerOption)option).getHandler() );
         }
     }
 
