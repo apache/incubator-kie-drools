@@ -60,9 +60,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  */
 @XmlRootElement(name="batch-execution")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "batch-execution", propOrder = {
-    "lookup", "commands"
-})
+@XmlType(name = "batch-execution", propOrder = {"lookup", "commands"})
 public class BatchExecutionCommand implements GenericCommand<ExecutionResults> {
 	
 	private static final long serialVersionUID = 1L;

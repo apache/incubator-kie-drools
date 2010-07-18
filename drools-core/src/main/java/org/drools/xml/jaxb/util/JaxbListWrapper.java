@@ -1,6 +1,7 @@
 package org.drools.xml.jaxb.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,31 +11,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name="list")
-public class JaxbListWrapper<T> extends ArrayList<T> {
-
-	public JaxbListWrapper() {
-		super();
-	}
-
-	public JaxbListWrapper(Collection<? extends T> c) {
-		super(c);
-	}
-
-	public JaxbListWrapper(int initialCapacity) {
-		super(initialCapacity);
-	}
-
+public class JaxbListWrapper<T>  {
+    
+    Object[] elements;
+    
+    public JaxbListWrapper() {
+        
+    }
+    
+    public JaxbListWrapper(Object[] elements) {
+        this.elements = elements;
+    }
+    
 	@XmlElement(name="element")
-	public List<T> getElements() {
-		return this;
+	public Object[] getElements() {
+		return elements;
 	}
 	
-	public void setElements(List<T> elems) {
-		clear();
-		if (elems != null) {
-			addAll(elems);
-		}
+	public void setElements(Object[] elements) {
+	    this.elements = elements;
 	}
 }

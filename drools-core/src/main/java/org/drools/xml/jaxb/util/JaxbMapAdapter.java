@@ -1,6 +1,7 @@
 package org.drools.xml.jaxb.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,8 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<String,Object>> {
 		        obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
 		    } else if (obj instanceof FactHandle && !(obj instanceof DisconnectedFactHandle)) {
 		        obj = new DisconnectedFactHandle(((FactHandle) obj).toExternalForm());
-	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
-	                JaxbListWrapper<Object> wrapper = new JaxbListWrapper<Object>(((List<?>) obj).size());
-	                for (Object item : ((List<?>) obj)) {
-	                    wrapper.add(item);
-	                }	     
-	                obj = wrapper;
+	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {    
+	                obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
 	        }
 			ret.add(new JaxbPair(entry.getKey(), obj));
 		}
@@ -47,7 +44,11 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<String,Object>> {
 	public Map<String, Object> unmarshal(JaxbPair[] value) throws Exception {
 		Map<String, Object> r = new HashMap<String, Object>();
 		for( JaxbPair p : value ) {
-			r.put(p.getKey(), p.getValue());
+		    if ( p.getValue() instanceof JaxbListWrapper) {
+		        r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );
+		    } else {
+		        r.put(p.getKey(), p.getValue());
+		    }
 		}
 		return r;
 	}
