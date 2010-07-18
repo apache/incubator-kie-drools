@@ -3,7 +3,7 @@ Bundle-Activator: org.drools.osgi.decisiontables.Activator
 Created-By: 1.5.0_21 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: jxl,jxl.read.biff,org.osgi.framework;version="1.5"
-Bnd-LastModified: 1279436671476
+Bnd-LastModified: 1279483734088
 Export-Package: org.drools.decisiontable;uses:="org.drools.decisiontab
  le.parser.csv,org.drools.decisiontable.parser,org.drools.decisiontabl
  e.parser.xls";version="5.1.0.SNAPSHOT",org.drools.decisiontable.parse

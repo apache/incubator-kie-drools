@@ -4,7 +4,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: javax.naming,javax.persistence,javax.transaction,org.h
  ibernate.annotations,org.hibernate.ejb,org.osgi.framework;version="1.
  5",org.slf4j;version="1.6"
-Bnd-LastModified: 1279436620744
+Bnd-LastModified: 1279483625699
 Export-Package: org.drools.persistence.processinstance.persisters;uses
  :="org.drools.persistence.processinstance.variabletypes,javax.persist
  ence";version="5.1.0.SNAPSHOT",org.drools.persistence.session;uses:="
@@ -18,8 +18,8 @@ Export-Package: org.drools.persistence.processinstance.persisters;uses
  rools.persistence.processinstance.variabletypes;uses:="javax.persiste
  nce";version="5.1.0.SNAPSHOT",org.drools.persistence.jpa.grid;uses:="
  org.drools.persistence.session,org.drools.persistence.processinstance
- ";version="5.1.0.SNAPSHOT",org.drools.persistence.osgi;uses:="org.osg
- i.framework,org.hibernate.ejb";version="5.1.0.SNAPSHOT"
+ ";version="5.1.0.SNAPSHOT",org.drools.persistence.osgi;uses:="org.hib
+ ernate.ejb,org.osgi.framework";version="5.1.0.SNAPSHOT"
 Bundle-Version: 5.1.0.SNAPSHOT
 Bundle-Name: Drools :: Persistence :: JPA
 Bundle-Description: A rule production system
