@@ -7,7 +7,7 @@ Import-Package: com.sun.tools.xjc;resolution:=optional,com.thoughtwork
  javax.xml.bind;resolution:=optional,org.osgi.framework;resolution:=op
  tional;version="1.5",org.osgi.util.tracker;resolution:=optional;versi
  on="1.4",org.quartz;resolution:=optional
-Bnd-LastModified: 1279342997724
+Bnd-LastModified: 1279436494555
 Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  1.0.SNAPSHOT",org.drools.runtime;uses:="org.drools.command,org.drools
  .time,org.drools.event,org.drools,org.drools.runtime.process,org.droo
@@ -35,31 +35,28 @@ Export-Package: org.drools.logger;uses:="org.drools.event";version="5.
  g.drools.event,org.drools.runtime.rule,org.drools.event.knowledgeagen
  t";version="5.1.0.SNAPSHOT",org.drools.builder.help;uses:="com.sun.to
  ols.xjc,org.drools.builder,org.drools.io,org.drools,javax.xml.bind";v
- ersion="5.1.0.SNAPSHOT",org.drools.vsm;uses:="org.drools.command,org.
- drools.runtime,org.drools.persistence.jpa,org.drools.builder,org.droo
- ls,org.drools.agent";version="5.1.0.SNAPSHOT",org.drools.builder.conf
- ;uses:="org.drools.runtime.rule,org.drools.conf";version="5.1.0.SNAPS
- HOT",org.drools.definition;uses:="org.drools.definition.rule,org.droo
- ls.definition.process";version="5.1.0.SNAPSHOT",org.drools.definition
- .rule;uses:="org.drools.definition";version="5.1.0.SNAPSHOT",org.droo
- ls.runtime.help;uses:="com.thoughtworks.xstream,org.drools.time,org.q
- uartz";version="5.1.0.SNAPSHOT",org.drools.grid;uses:="org.drools.com
- mand";version="5.1.0.SNAPSHOT",org.drools.event.knowledgebase;uses:="
- org.drools.definition.rule,org.drools.definition,org.drools";version=
- "5.1.0.SNAPSHOT",org.drools.event;uses:="org.drools.runtime,org.drool
- s.event.rule,org.drools.event.process";version="5.1.0.SNAPSHOT",org.d
- rools.persistence.jpa;uses:="org.drools.runtime,org.drools";version="
- 5.1.0.SNAPSHOT",org.drools.builder;uses:="org.drools.runtime,org.droo
- ls,com.sun.tools.xjc,org.drools.io,org.drools.definition,org.drools.b
- uilder.conf,org.drools.util";version="5.1.0.SNAPSHOT",org.drools.io;u
- ses:="org.drools,org.drools.event.io,org.drools.util";version="5.1.0.
- SNAPSHOT",org.drools.util;uses:="org.drools,org.drools.builder,org.dr
- ools.io";version="5.1.0.SNAPSHOT",org.drools.command.impl;uses:="org.
- drools.command";version="5.1.0.SNAPSHOT",org.drools.definition.type;v
- ersion="5.1.0.SNAPSHOT",org.drools.definition.process;uses:="org.droo
- ls.definition";version="5.1.0.SNAPSHOT",org.drools.agent;uses:="org.d
- rools.runtime,org.drools.event.knowledgeagent,org.drools.io,org.drool
- s,org.drools.builder";version="5.1.0.SNAPSHOT"
+ ersion="5.1.0.SNAPSHOT",org.drools.builder.conf;uses:="org.drools.run
+ time.rule,org.drools.conf";version="5.1.0.SNAPSHOT",org.drools.defini
+ tion;uses:="org.drools.definition.rule,org.drools.definition.process"
+ ;version="5.1.0.SNAPSHOT",org.drools.definition.rule;uses:="org.drool
+ s.definition";version="5.1.0.SNAPSHOT",org.drools.runtime.help;uses:=
+ "com.thoughtworks.xstream,org.drools.time,org.quartz";version="5.1.0.
+ SNAPSHOT",org.drools.event.knowledgebase;uses:="org.drools.definition
+ .rule,org.drools.definition,org.drools";version="5.1.0.SNAPSHOT",org.
+ drools.event;uses:="org.drools.runtime,org.drools.event.rule,org.droo
+ ls.event.process";version="5.1.0.SNAPSHOT",org.drools.persistence.jpa
+ ;uses:="org.drools.runtime,org.drools";version="5.1.0.SNAPSHOT",org.d
+ rools.builder;uses:="org.drools.runtime,org.drools,com.sun.tools.xjc,
+ org.drools.io,org.drools.definition,org.drools.builder.conf,org.drool
+ s.util";version="5.1.0.SNAPSHOT",org.drools.io;uses:="org.drools,org.
+ drools.event.io,org.drools.util";version="5.1.0.SNAPSHOT",org.drools.
+ util;uses:="org.drools,org.drools.builder,org.drools.io";version="5.1
+ .0.SNAPSHOT",org.drools.command.impl;uses:="org.drools.command";versi
+ on="5.1.0.SNAPSHOT",org.drools.definition.type;version="5.1.0.SNAPSHO
+ T",org.drools.definition.process;uses:="org.drools.definition";versio
+ n="5.1.0.SNAPSHOT",org.drools.agent;uses:="org.drools.runtime,org.dro
+ ols.event.knowledgeagent,org.drools.io,org.drools,org.drools.builder"
+ ;version="5.1.0.SNAPSHOT"
 Bundle-Version: 5.1.0.SNAPSHOT
 Bundle-Name: Drools :: API
 Bundle-Description: A rule production system
