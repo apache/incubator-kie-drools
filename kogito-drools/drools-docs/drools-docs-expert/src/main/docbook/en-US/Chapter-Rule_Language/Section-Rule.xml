@@ -734,9 +734,8 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
               <title>soundslike</title>
 
               <para>Similar to <literal>'matches'</literal>, but checks if a word has
-              almost the same sound as the given value. Uses the 'Soundex'
-              algorithm
-              (<literal>http://en.wikipedia.org/wiki/Soundex</literal>).</para>
+              almost the same sound as the given value. Uses the
+              <link xlink:href="http://en.wikipedia.org/wiki/Soundex">Soundex</link> algorithm.</para>
 
               <example>
                 <title>Text with soundslike (Sounds Like)</title>
