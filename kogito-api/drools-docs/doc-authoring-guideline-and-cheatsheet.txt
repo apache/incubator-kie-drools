@@ -30,6 +30,10 @@ Guideline
 Cheat Sheet
 ===========
 
+JBoss.org guidelines:
+---------------------
+http://docs.jboss.org/docbook/userguide/html_single/index.html
+
 Text boxes implemented in the jboss docbook styles:
 ---------------------------------------------------
 * <caution><para></para></caution>
