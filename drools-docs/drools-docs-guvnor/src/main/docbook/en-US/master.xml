@@ -44,4 +44,6 @@
 
   <xi:include href="Chapter-Guvnor/Chapter-Guvnor.xml" />
 
+  <index/>
+
 </book>

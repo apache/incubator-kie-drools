@@ -42,4 +42,6 @@
   <xi:include href="Chapter-Commands/Chapter-Commands.xml" />
   <xi:include href="Chapter-OSGI/Chapter-OSGI.xml" />
 
+  <index/>
+
 </book>
