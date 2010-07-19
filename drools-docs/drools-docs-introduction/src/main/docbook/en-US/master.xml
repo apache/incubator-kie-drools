@@ -29,7 +29,7 @@
     <cover>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/droolsLogo.png" />
+          <imagedata fileref="images/droolsPlatformLogo.png" />
         </imageobject>
       </mediaobject>
     </cover>
@@ -39,7 +39,7 @@
   <preface>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/droolsLogo.png" />
+        <imagedata fileref="images/droolsPlatformLogo.png" />
       </imageobject>
     </mediaobject>
   </preface>
