@@ -16,6 +16,10 @@ Guideline
 
 * Keywords may be enclosed in <kw></kw>, rendered in boldface Courier
 
+* Use <literal> for class names, method names, ...
+
+* Use <filename> for filenames
+
 * Please link svg image files instead of png bitmaps in the text whenever
   possible.
   
