@@ -87,6 +87,10 @@ public class Variable implements TypeObject, ValueObject, Serializable {
         return this.metaData.get(name);
     }
     
+    public Map<String, Object> getMetaData() {
+    	return this.metaData;
+    }
+    
     public String toString() {
         return this.name;
     }
