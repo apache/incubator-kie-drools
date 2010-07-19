@@ -1,31 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<book version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook">
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+                          http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+      version="5.0">
 
   <info>
     <title>Drools Integration User Guide</title>
-
     <releaseinfo>5.1.0.SNAPSHOT</releaseinfo>
-    
+    <authorgroup>
+      <author>
+        <personname>
+          <firstname>Lucaz</firstname>
+          <surname>Amador</surname>
+        </personname>
+      </author>
+      <!-- TODO add your name if you worked on this manual -->
+    </authorgroup>
+
+    <cover>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/droolsIntegrationLogo.png" />
+        </imageobject>
+      </mediaobject>
+    </cover>
   </info>
 
-<title>Drools Integration</title>
+  <!-- TODO remove preface after docbook upgrade when cover actually shows the logo before the TOC -->
+  <preface>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/droolsIntegrationLogo.png" />
+      </imageobject>
+    </mediaobject>
+  </preface>
 
-	<xi:include href="Chapter-Camel/Chapter-Camel.xml" />
+  <xi:include href="Chapter-Camel/Chapter-Camel.xml" />
+  <xi:include href="Chapter-Spring/Chapter-Spring.xml" />
+  <xi:include href="Chapter-Server/Chapter-Server.xml" />
+  <xi:include href="Chapter-Commands/Chapter-Commands.xml" />
+  <xi:include href="Chapter-OSGI/Chapter-OSGI.xml" />
 
-	<xi:include href="Chapter-Spring/Chapter-Spring.xml" />
-	
-	<xi:include href="Chapter-Server/Chapter-Server.xml" />
-	
-	<xi:include href="Chapter-Commands/Chapter-Commands.xml" />
-	
-	<xi:include href="Chapter-OSGI/Chapter-OSGI.xml" />
-
-   <index/>
 </book>
