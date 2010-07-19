@@ -331,7 +331,7 @@
 
       <para>Step 1. Use the Eclipse help menu to find the feature installer.
       <screenshot>
-          <screeninfo>Access the software updates menu</screeninfo>
+          <info>Access the software updates menu</info>
 
           <mediaobject>
             <imageobject>
@@ -343,7 +343,7 @@
       <para>Step 2: Choose the option for installing a new feature (obviously
       in future, if you want to check for updates, you use the other option
       !). <screenshot>
-          <screeninfo>Search for new features</screeninfo>
+          <info>Search for new features</info>
 
           <mediaobject>
             <imageobject>
@@ -354,7 +354,7 @@
 
       <para>Step 3: This screen will show what update sites are already
       configured for your Eclipse instance. <screenshot>
-          <screeninfo>Update sites</screeninfo>
+          <info>Update sites</info>
 
           <mediaobject>
             <imageobject>
@@ -367,7 +367,7 @@
       You give it a name eg "JBoss Drools" and the url. <programlisting> Check the Drools IDE Update Site section of the Drools Downloads webpage: 
 				http://labs.jboss.com/drools/downloads.html</programlisting>
       <screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -379,7 +379,7 @@
       <para>Step 5: Select the new update site you just added. Eclipse will
       remember this for when it checks for updates automatically in the
       future. <screenshot>
-          <screeninfo>Choose the newly added update site</screeninfo>
+          <info>Choose the newly added update site</info>
 
           <mediaobject>
             <imageobject>
@@ -390,7 +390,7 @@
 
       <para>Step 6: You should see the available features (Drools IDE)
       retrieved from the update site. <screenshot>
-          <screeninfo>Available features</screeninfo>
+          <info>Available features</info>
 
           <mediaobject>
             <imageobject>
@@ -402,7 +402,7 @@
       <para>Step 7: The license agreement. Choose the option to accept the
       license agreement. Once this happens, the workbench will start
       downloading. Might be an opportune time to go have a coffee. <screenshot>
-          <screeninfo>License</screeninfo>
+          <info>License</info>
 
           <mediaobject>
             <imageobject>
@@ -412,7 +412,7 @@
         </screenshot></para>
 
       <para>Step 8: Confirm that this is the feature you want. <screenshot>
-          <screeninfo>Confirmation</screeninfo>
+          <info>Confirmation</info>
 
           <mediaobject>
             <imageobject>
@@ -424,7 +424,7 @@
       <para>Step 9: Press Accept to accept the fact that the feature is not
       digitally signed. No one signs their features, its a silly default
       screen in Eclipse. <screenshot>
-          <screeninfo>Verify</screeninfo>
+          <info>Verify</info>
 
           <mediaobject>
             <imageobject>
@@ -435,7 +435,7 @@
 
       <para>Step 10: The workbench will need to restart now for the feature to
       take effect. <screenshot>
-          <screeninfo>Restart the workbench</screeninfo>
+          <info>Restart the workbench</info>
 
           <mediaobject>
             <imageobject>
