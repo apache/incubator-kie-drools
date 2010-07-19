@@ -61,10 +61,8 @@
     <para>This testing framework is built on FIT and JSR-94, and is kept as a
     separate project to JBoss Rules. Due to it being built on FIT, it requires
     a different license (but is still open source). You can download and read
-    more about this tool from this web page: <ulink
-        url="http://fit-for-rules.sourceforge.net/">
-        <citetitle>Fit for rules</citetitle>
-      </ulink> http://fit-for-rules.sourceforge.net/</para>
+    more about this tool from this web page:
+    <link xlink:href="http://fit-for-rules.sourceforge.net/">Fit for rules</link></para>
 
     <para>The following screen captures show the fit for rules framework in
     action.</para>
@@ -92,9 +90,6 @@
       </mediaobject>
     </screenshot>
 
-    <para>More information and downloads from <ulink
-        url="http://fit-for-rules.sourceforge.net/">
-        <citetitle>Here</citetitle>
-      </ulink></para>
+    <para>More information and downloads from <link xlink:href="http://fit-for-rules.sourceforge.net/">here</link></para>
   </section>
 </section>
