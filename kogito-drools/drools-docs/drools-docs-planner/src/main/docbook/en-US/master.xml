@@ -42,4 +42,6 @@
   <xi:include href="Chapter-Local_search/Chapter-Local_search.xml" />
   <xi:include href="Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.xml" />
 
+  <index/>
+
 </book>

@@ -57,4 +57,6 @@
   <xi:include href="Chapter-BPMN2/Chapter-BPMN2.xml" />
   <xi:include href="Chapter-Console/Chapter-Console.xml" />
 
+  <index/>
+
 </book>
