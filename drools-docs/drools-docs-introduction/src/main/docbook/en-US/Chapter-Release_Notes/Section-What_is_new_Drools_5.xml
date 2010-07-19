@@ -142,9 +142,7 @@ ResourceFactory.getResourceChangeNotifierService().addResourceChangeMonitor( myJ
     <title>Drools Guvnor</title>
 
     <itemizedlist>
-      <listitem>
-        <para> 
-      	New look web tooling
+      <listitem><para>New look web tooling
   	<figure>
 	<mediaobject>
 		<title>New Look</title>
@@ -157,9 +155,7 @@ ResourceFactory.getResourceChangeNotifierService().addResourceChangeMonitor( myJ
 	</para>
       </listitem>	
 
-      <listitem>
-        <para>
-	Web based decision table editor
+      <listitem><para>Web based decision table editor
 	<figure>
       	<title>Web based decision table editor</title>
 	<mediaobject>
@@ -173,9 +169,7 @@ ResourceFactory.getResourceChangeNotifierService().addResourceChangeMonitor( myJ
       </listitem>
 
 
-      <listitem>
-        <para>
-	Integrated scenario testing
+      <listitem><para>Integrated scenario testing
 	<figure>
       	<title>Running all scenarios</title>
 	<mediaobject>
@@ -198,9 +192,7 @@ ResourceFactory.getResourceChangeNotifierService().addResourceChangeMonitor( myJ
       </listitem>
 	
 
-      <listitem>
-        <para>
-	WebDAV file based interface to repository
+      <listitem><para>WebDAV file based interface to repository
 	<figure>
       	<title>WebDAV</title>
 	<mediaobject>
@@ -226,45 +218,25 @@ ResourceFactory.getResourceChangeNotifierService().addResourceChangeMonitor( myJ
       		</mediaobject>
     	</figure>
 
-	This works with the new "declare" statement - you can now declare types in drl itself. You can then populate these without using a pojo (if you like). These types are then available in the rulebase.</para>
-      </listitem>
+	This works with the new "declare" statement - you can now declare types in drl itself. You can then populate these without using a pojo (if you like). These types are then available in the rulebase.</para></listitem>
 
-      <listitem>
-        <para>Fine grained security (lock down access to the app per package or per category). Users who only have category permissions have limited UI capability (ideal for business users)</para>
-      </listitem>
+      <listitem><para>Fine grained security (lock down access to the app per package or per category). Users who only have category permissions have limited UI capability (ideal for business users)</para></listitem>
 
-      <listitem>
-        <para>Execution server - access rules via XML or JSON for execution</para>
-      </listitem>
+      <listitem><para>Execution server - access rules via XML or JSON for execution</para></listitem>
 
-      <listitem>
-        <para>Category rules allows you to set 'parent rules' for a category. Any rules appearing in the given category will 'extend' the rule specified - ie inherit the conditions/LHS. The base rule for the category can be set on package configuration tab. RHS is not inherited, only the LHS</para>
-      </listitem>
+      <listitem><para>Category rules allows you to set 'parent rules' for a category. Any rules appearing in the given category will 'extend' the rule specified - ie inherit the conditions/LHS. The base rule for the category can be set on package configuration tab. RHS is not inherited, only the LHS</para></listitem>
 
-      <listitem>
-        <para>Scenario runner detects infinite loops</para>
-      </listitem>
+      <listitem><para>Scenario runner detects infinite loops</para></listitem>
 
-      <listitem>
-        <para>Scenario runner can show event trace that was recorded by audit logger</para>
-      </listitem>
+      <listitem><para>Scenario runner can show event trace that was recorded by audit logger</para></listitem>
 
+      <listitem><para>DSL sentences in guided editor can now be set to show enums as a dropdown, dates as a date picker, booleans as a checkbox and use regular expressions to validate the inputs (DSL Widgets in Guvnor)</para></listitem>
 
-      <listitem>
-        <para>DSL sentences in guided editor can now be set to show enums as a dropdown, dates as a date picker, booleans as a checkbox and use regular expressions to validate the inputs (DSL Widgets in Guvnor)</para>
-      </listitem>
+      <listitem><para>Functions can be edited with text editor</para></listitem>
 
-      <listitem>
-        <para>Functions can be edited with text editor</para>
-      </listitem> 
+      <listitem><para>It is possible to add objects to global collections.</para></listitem>
 
-      <listitem>
-        <para>It is possible to add objects to global collections.</para>
-      </listitem>
-
-      <listitem>
-        <para>Translations to English, Spanish, Chinese and Japanese</para>
-      </listitem>
+      <listitem><para>Translations to English, Spanish, Chinese and Japanese</para></listitem>
     </itemizedlist>
   </section>
 
