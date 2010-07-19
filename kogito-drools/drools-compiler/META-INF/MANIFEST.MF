@@ -7,17 +7,15 @@ Import-Package: com.sun.codemodel,com.sun.tools.xjc,com.sun.tools.xjc.
  x.xml.transform,javax.xml.transform.stream,org.antlr.runtime,org.antl
  r.runtime.tree,org.codehaus.janino,org.codehaus.janino.util,org.codeh
  aus.janino.util.enumerator,org.codehaus.janino.util.resource,org.ecli
- pse.jdt.core.compiler;provider=jasper;version="3.3",org.eclipse.jdt.i
- nternal.compiler;provider=jasper;version="3.3",org.eclipse.jdt.intern
- al.compiler.classfmt;provider=jasper;version="3.3",org.eclipse.jdt.in
- ternal.compiler.env;provider=jasper;version="3.3",org.eclipse.jdt.int
- ernal.compiler.problem;provider=jasper;version="3.3",org.mvel2;versio
- n="2.0",org.mvel2.ast;version="2.0",org.mvel2.compiler;version="2.0",
- org.mvel2.integration;version="2.0",org.mvel2.integration.impl;versio
- n="2.0",org.mvel2.optimizers;version="2.0",org.mvel2.templates;versio
- n="2.0",org.mvel2.util;version="2.0",org.osgi.framework;version="1.5"
- ,org.osgi.util.tracker;version="1.4",org.w3c.dom,org.xml.sax
-Bnd-LastModified: 1279483556947
+ pse.jdt.core.compiler,org.eclipse.jdt.internal.compiler,org.eclipse.j
+ dt.internal.compiler.classfmt,org.eclipse.jdt.internal.compiler.env,o
+ rg.eclipse.jdt.internal.compiler.problem,org.mvel2;version="2.0",org.
+ mvel2.ast;version="2.0",org.mvel2.compiler;version="2.0",org.mvel2.in
+ tegration;version="2.0",org.mvel2.integration.impl;version="2.0",org.
+ mvel2.optimizers;version="2.0",org.mvel2.templates;version="2.0",org.
+ mvel2.util;version="2.0",org.osgi.framework;version="1.5",org.osgi.ut
+ il.tracker;version="1.4",org.w3c.dom,org.xml.sax
+Bnd-LastModified: 1279508141065
 Export-Package: org.drools.builder.impl;uses:="org.drools.compiler,com
  .sun.tools.xjc";version="5.1.0.SNAPSHOT",org.drools.rule.builder;uses
  :="org.drools.compiler,org.mvel2.compiler,org.mvel2,org.drools.rule.b
