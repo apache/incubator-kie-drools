@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section  version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Eclipse</title>
 
   <section>
@@ -18,7 +16,7 @@
     subversion checkout.</para>
 
     <screenshot>
-      <screeninfo>Open Eclipse Workspace</screeninfo>
+      <info>Open Eclipse Workspace</info>
 
       <mediaobject>
         <imageobject>
@@ -28,7 +26,7 @@
     </screenshot>
 
     <screenshot>
-      <screeninfo>Select Import</screeninfo>
+      <info>Select Import</info>
 
       <mediaobject>
         <imageobject>
@@ -38,7 +36,7 @@
     </screenshot>
 
     <screenshot>
-      <screeninfo>Import Existing Projects</screeninfo>
+      <info>Import Existing Projects</info>
 
       <mediaobject>
         <imageobject>
@@ -48,7 +46,7 @@
     </screenshot>
 
     <screenshot>
-      <screeninfo>Select all ticked projects</screeninfo>
+      <info>Select all ticked projects</info>
 
       <mediaobject>
         <imageobject>
@@ -63,7 +61,7 @@
     repository is. To do this setup an M2_REPO classpath variable.</para>
 
     <screenshot>
-      <screeninfo>Open the Preferences dialogue window</screeninfo>
+      <info>Open the Preferences dialogue window</info>
 
       <mediaobject>
         <imageobject>
@@ -73,7 +71,7 @@
     </screenshot>
 
     <screenshot>
-      <screeninfo>Select New Classpath Variable</screeninfo>
+      <info>Select New Classpath Variable</info>
 
       <mediaobject>
         <imageobject>
@@ -83,7 +81,7 @@
     </screenshot>
 
     <screenshot>
-      <screeninfo>Set the M2_REPO location</screeninfo>
+      <info>Set the M2_REPO location</info>
 
       <mediaobject>
         <imageobject>
@@ -93,7 +91,7 @@
     </screenshot>
 
     <screenshot>
-      <screeninfo>M2_REPO is now set</screeninfo>
+      <info>M2_REPO is now set</info>
 
       <mediaobject>
         <imageobject>
