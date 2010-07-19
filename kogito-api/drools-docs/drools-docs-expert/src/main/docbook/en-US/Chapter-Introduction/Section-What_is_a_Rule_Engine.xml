@@ -31,7 +31,7 @@
     is described as "an abstract structure that describes a formal language
     precisely, i.e., a set of rules that mathematically delineates a (usually
     infinite) set of finite-length strings over a (usually finite) alphabet"
-    (<ulink url="http://en.wikipedia.org/wiki/Formal_grammar"><citetitle>wikipedia</citetitle></ulink>).</para>
+    (<citetitle><link xlink:href="http://en.wikipedia.org/wiki/Formal_grammar">Wikipedia</link></citetitle>).</para>
 
     <para>Business Rule Management Systems build additional value on top of a
     general purpose Rule Engine by providing business user focused systems for

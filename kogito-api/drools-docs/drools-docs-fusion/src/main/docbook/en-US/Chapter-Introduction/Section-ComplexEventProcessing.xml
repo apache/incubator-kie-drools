@@ -63,14 +63,9 @@
 
   <important>
     <blockquote>
-      <attribution><ulink
-          url="http://en.wikipedia.org/wiki/Complex_event_processing">
-          <citetitle>wikipedia</citetitle>
-        </ulink></attribution>
+      <attribution><citetitle><link xlink:href="http://en.wikipedia.org/wiki/Complex_event_processing">Wikipedia</link></citetitle></attribution>
 
-      <para>"<indexterm>
-          <primary>Complex Event Processing</primary>
-        </indexterm> <emphasis role="bold">Complex Event
+      <para>"<indexterm><primary>Complex Event Processing</primary></indexterm><emphasis role="bold">Complex Event
       Processing</emphasis>, or CEP, is primarily an event processing concept
       that deals with the task of processing multiple events with the goal of
       identifying the meaningful events within the event cloud. CEP employs
