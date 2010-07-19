@@ -30,9 +30,11 @@ Guideline
 Cheat Sheet
 ===========
 
-JBoss.org guidelines:
----------------------
-http://docs.jboss.org/docbook/userguide/html_single/index.html
+External documentation
+----------------------
+JDocBook plugin: http://docs.jboss.org/docbook/userguide/html_single/index.html
+DocBook: http://www.docbook.org/tdg5/en/html/docbook.html
+         http://www.sagehill.net/docbookxsl/
 
 Text boxes implemented in the jboss docbook styles:
 ---------------------------------------------------
