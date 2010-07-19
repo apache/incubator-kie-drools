@@ -49,7 +49,7 @@
 
       <para>A window will be displayed with a relatively simple partially
       filled grid. <screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -79,7 +79,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
       solution is complete and valid. In this case it is, and the "Solve"
       button is disabled and displays a text like
       <code>"Solved (1052ms)"</code>.<screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -93,7 +93,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
       challenging grid. Note that the solve button is enabled when the new
       grid is loaded.
       <screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -104,7 +104,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
 
       <para>Click on the "Solve" button again to solve this new grid.
       <screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -117,7 +117,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
       on "File", "Samples" and "!DELIBERATELY BROKEN!". Note that this grid
       starts with some issues, for example the value 5 appears twice in the
       first row.<screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -129,7 +129,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
       <para>Nevertheless, click on the "Solve" button to apply the solving
       rules to this invalid grid. Note that the "Solve" button is relabelled
       to indicate that the resulting solution is invalid. <screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -162,7 +162,7 @@ There are two cells on the same column with the same value at (6,3) and (7,3)</p
       can not be solved by the engine as it stands. Click on
       "File", "Samples" and then "Hard 3" to load a sparsely populated grid.
       <screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
@@ -175,7 +175,7 @@ There are two cells on the same column with the same value at (6,3) and (7,3)</p
       are unable to complete the grid, even though (if you are a Sudoku
       aficionado) you may be able to see a way forward with the solution.
       <screenshot>
-          <screeninfo>New remote site</screeninfo>
+          <info>New remote site</info>
 
           <mediaobject>
             <imageobject>
