@@ -18,7 +18,6 @@ package org.drools.verifier.report.html;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -54,13 +53,12 @@ abstract class ReportModeller {
                          String filename) throws IOException {
         zout.putNextEntry( new JarEntry( destination + File.separator + filename ) );
 
-        File source = new File( HTMLReportWriter.class.getResource( filename ).getFile() );
-        InputStream in = new FileInputStream( source );
+        InputStream in = HTMLReportWriter.class.getResourceAsStream( filename );
 
         // Transfer bytes from in to out
         byte[] buf = new byte[1024];
         int len;
-        while ( (len = in.read( buf )) > 0 ) {
+        while ( (len = in.read( buf )) != -1 ) {
             zout.write( buf,
                         0,
                         len );
