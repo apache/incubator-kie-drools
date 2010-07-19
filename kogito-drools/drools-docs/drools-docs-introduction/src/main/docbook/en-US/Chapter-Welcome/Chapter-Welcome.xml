@@ -8,16 +8,6 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Welcome</title>
 
-  <screenshot>
-    <screeninfo>Setup TortoiseSVN checkout</screeninfo>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="images/Chapter-Welcome/drools_logo.png" />
-      </imageobject>
-    </mediaobject>
-  </screenshot>
-
   <para>I've always stated that end business users struggle understanding the
   differences between rules and processes, and more recently rules and event
   processing. For them they have this problem in their mind and they just want
