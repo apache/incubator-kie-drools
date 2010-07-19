@@ -40,31 +40,37 @@
     <para>Here are some examples of real world decision tables (slightly edited to protect the innocent).</para>
 
     <screenshot>
-      <info>Using excel to edit a decision table</info>
+      <info>
+        Using excel to edit a decision table
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Decision_Tables/excel.png" format="PNG" />
+          <imagedata fileref="images/Chapter-Decision_Tables/excel.png" format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
     <screenshot>
-      <info>Can have multiple actions for a rule row</info>
+      <info>
+        Can have multiple actions for a rule row
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Decision_Tables/actions.png" />
+          <imagedata fileref="images/Chapter-Decision_Tables/actions.png"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
     <screenshot>
-      <info>Using OpenOffice.org</info>
+      <info>
+        Using OpenOffice.org
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Decision_Tables/open_office.png" />
+          <imagedata fileref="images/Chapter-Decision_Tables/open_office.png"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -91,11 +97,13 @@
     automatically.</para>
 
     <screenshot>
-      <info>A real world example using multiple tables for grouping like rules</info>
+      <info>
+        A real world example using multiple tables for grouping like rules
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Decision_Tables/multi_table.png" />
+          <imagedata fileref="images/Chapter-Decision_Tables/multi_table.png"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -108,11 +116,13 @@
     either a condition or action for that rule.</para>
 
     <screenshot>
-      <info>Rows and columns</info>
+      <info>
+        Rows and columns
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Decision_Tables/row_col.png" />
+          <imagedata fileref="images/Chapter-Decision_Tables/row_col.png"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -127,11 +137,13 @@
     C.</para>
 
     <screenshot>
-      <info>Expanded for rule templates</info>
+      <info>
+        Expanded for rule templates
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Decision_Tables/expanded.png" />
+          <imagedata fileref="images/Chapter-Decision_Tables/expanded.png"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -201,11 +213,11 @@ end
     <section>
       <title>Syntax of templates</title>
 
-      <para>The syntax of what goes in the templates is dependent on if it is a CONDITION column or ACTION column. In
+      <para>The syntax of what goes in the templates is dependent on if it is a CONDITION column or an ACTION column. In
       most cases, it is identical to <emphasis>vanilla</emphasis> DRL for the LHS or RHS respectively. This means in the
       LHS, the constraint language must be used, and in the RHS it is a snippet of code to be executed.</para>
 
-      <para>The <code>$param</code> place holder is used in templates to indicate where data form the cell will be
+      <para>The <code>$param</code> place holder is used in templates to indicate where data from the cell will be
       interpolated. You can also use <code>$1</code> to the same effect. If the cell contains a comma separated list of
       values, then $1, $2, etc. can be used to indicate which positional parameter from the list of values in the cell
       will be used.</para>
@@ -234,9 +246,9 @@ end
               <imagedata fileref="images/Chapter-Decision_Tables/spanned_column.png"></imagedata>
             </imageobject>
           </mediaobject>
-        </screenshot> The above shows how the Person ObjectType declaration spans 2 columns in the spreadsheet, thus
-      both constraints will appear as Person(age == ... , type == ...). As before, as only the field names are present
-      in the snippet, they imply an equality test. <screenshot>
+        </screenshot>The above shows how the Person ObjectType declaration spans 2 columns in the spreadsheet, thus both
+      constraints will appear as Person(age == ... , type == ...). As before, as only the field names are present in the
+      snippet, they imply an equality test. <screenshot>
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/Chapter-Decision_Tables/with_param.png"></imagedata>
@@ -256,7 +268,7 @@ end
               <imagedata fileref="images/Chapter-Decision_Tables/with_binding.png"></imagedata>
             </imageobject>
           </mediaobject>
-        </screenshot> A binding can be put in before the column (the constraints will be added from the cells below).
+        </screenshot>A binding can be put in before the column (the constraints will be added from the cells below).
       Anything can be placed in the ObjectType row (eg it could be a pre-condition for the columns in the spreadsheet
       columns that follow).<screenshot>
           <mediaobject>
@@ -264,9 +276,9 @@ end
               <imagedata fileref="images/Chapter-Decision_Tables/consequence.png"></imagedata>
             </imageobject>
           </mediaobject>
-        </screenshot> This shows how the consequence could be done the by simple interpolation (just leave the cell
-      above blank, the same applies to condition columns). With this style anything can be placed in the consequence
-      (not just one method call).</para>
+        </screenshot>This shows how the consequence could be done by simple interpolation (just leave the cell above
+      blank, the same applies to condition columns). With this style anything can be placed in the consequence (not just
+      one method call).</para>
     </section>
 
     <section>
@@ -433,16 +445,18 @@ end
         </tgroup>
       </table>
 
-      <para>Below you will find examples of using the HEADER keywords, which effects the rules generated for each row.
-      Note that the header name is what is important in most cases. If no value appears in the cells below it, then the
-      attribute will not apply (it will be ignored) for that specific row.</para>
+      <para>Below you can find examples of these keywords, which affect the rules generated for each row. Note that the
+      header name is what is important in most cases. If no value appears in the cells below it, then the attribute will
+      not apply (it will be ignored) for that specific row.</para>
 
       <screenshot>
-        <info>Example usage of keywords for imports, headers, etc.</info>
+        <info>
+          Example usage of keywords for imports, headers, etc.
+        </info>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/Key.png" />
+            <imagedata fileref="images/Chapter-Decision_Tables/Key.png"></imagedata>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -452,11 +466,13 @@ end
       "RuleSet" keyword, and can be below all the rule rows if you desire.</para>
 
       <screenshot>
-        <info>Example usage of keywords for functions, etc.</info>
+        <info>
+          Example usage of keywords for functions, etc.
+        </info>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/keywords.png" />
+            <imagedata fileref="images/Chapter-Decision_Tables/keywords.png"></imagedata>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -467,29 +483,31 @@ end
     <title>Creating and integrating Spreadsheet based Decision Tables</title>
 
     <para>The API to use spreadsheet based decision tables is in the drools-decisiontables module. There is really only
-    one class to look at: SpreadsheetCompiler. This class will take spreadsheets in various formats, and generate rules
-    in DRL (which you can then use in the normal way). The SpreadsheetComiler can just be used to generate partial rule
-    files if it is wished, and assemble it into a complete rule package after the fact (this allows the separation of
-    technical and non-technical aspects of the rules if needed).</para>
+    one class to look at: <literal>SpreadsheetCompiler</literal>. This class will take spreadsheets in various formats,
+    and generate rules in DRL (which you can then use in the normal way). The <literal>SpreadsheetCompiler</literal> can
+    just be used to generate partial rule files if it is wished, and assemble it into a complete rule package after the
+    fact (this allows the separation of technical and non-technical aspects of the rules if needed).</para>
 
-    <para>To get started, a sample spreadsheet can be used as base. Alternatively, if the plug-in is being used (Rule
+    <para>To get started, a sample spreadsheet can be used as a base. Alternatively, if the plug-in is being used (Rule
     Workbench IDE), the wizard can generate a spreadsheet from a template (to edit it an xls compatible spreadsheet
     editor will need to be used). <screenshot>
-        <info>Wizard in the IDE</info>
+        <info>
+          Wizard in the IDE
+        </info>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/wizard.png" />
+            <imagedata fileref="images/Chapter-Decision_Tables/wizard.png"></imagedata>
           </imageobject>
         </mediaobject>
       </screenshot></para>
   </section>
 
   <section>
-    <title>Managing business rules in decision tables.</title>
+    <title>Managing business rules in decision tables</title>
 
     <section>
-      <title>Workflow and collaboration.</title>
+      <title>Workflow and collaboration</title>
 
       <para>Spreadsheets are well established business tools (in use for over 25 years). Decision tables lend themselves
       to close collaboration between IT and domain experts, while making the business rules clear to business analysts,
@@ -538,19 +556,20 @@ end
       <para>Features of applications like Excel can be used to provide assistance in entering data into spreadsheets,
       such as validating fields. Lists that are stored in other worksheets can be used to provide valid lists of values
       for cells, like in the following diagram. <screenshot>
-          <info>Wizard in the IDE</info>
+          <info>
+            Wizard in the IDE
+          </info>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Decision_Tables/lists.png" />
+              <imagedata fileref="images/Chapter-Decision_Tables/lists.png"></imagedata>
             </imageobject>
           </mediaobject>
         </screenshot></para>
 
-      <para>Some applications provide a limited ability to keep a history of changes, but it is recommended that an
-      alternative means of revision control is also used. When changes are being made to rules over time, older versions
-      are archived (many solutions exist for this which are also open source, such as Subversion).
-      http://www.drools.org/Business+rules+in+decision+tables+explained</para>
+      <para>Some applications provide a limited ability to keep a history of changes, but it is recommended to use an
+      alternative means of revision control. When changes are being made to rules over time, older versions are archived
+      (many open source solutions exist for this, such as Subversion or Git).</para>
     </section>
   </section>
 
@@ -559,7 +578,7 @@ end
 
     <para>Related to decision tables (but not necessarily requiring a spreadsheet) are "Rule Templates" (in the
     drools-templates module). These use any tabular data source as a source of rule data - populating a template to
-    generate many rules. This can allow both for more flexible spreadsheets, but also rules in existing databases, for
+    generate many rules. This can allow both for more flexible spreadsheets, but also rules in existing databases for
     instance (at the cost of developing the template up front to generate the rules).</para>
 
     <para>With Rule Templates the data is separated from the rule and there are no restrictions on which part of the
@@ -591,16 +610,18 @@ end
       (so the spreadsheet only contains the raw data to generate the rules).</para>
 
       <screenshot>
-        <info>Template data</info>
+        <info>
+          Template data
+        </info>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/template1.png" />
+            <imagedata fileref="images/Chapter-Decision_Tables/template1.png"></imagedata>
           </imageobject>
         </mediaobject>
       </screenshot>
 
-      <para>See the "ExampleCheese.xls" in the examples download for the above spreadsheet.</para>
+      <para>See the <filename>ExampleCheese.xls</filename> in the examples download for the above spreadsheet.</para>
 
       <para>If this was a regular decision table there would be hidden rows before row 1 and between rows 1 and 2
       containing rule metadata. With rule templates the data is completely separate from the rules. This has two handy
