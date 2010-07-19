@@ -25,7 +25,14 @@ Guideline
   such as InkScape to scan your bmp image and make a true svg image out
   of it. But this approach may take time and effort, recommended for
   processing diagrams but not for screenshots.
-  
+
+* At the head of a docbook file, the xml:base property should be set to
+  the relative path to the translation base directory ("en-US").
+  For example: a file under en-US/Chapter-Introduction/ has xml:base="../"
+  while a file under en-US/Chapter-Introduction/Section-WhatIs/ has xml:base="../../"
+  If it is not set correctly, the images won't show up in a visual docbook editor like XmlMind.
+  There is one exception: files that use xinclude to include other files usually have xml:base="./"
+  and they should not contain images.
 
 Cheat Sheet
 ===========
