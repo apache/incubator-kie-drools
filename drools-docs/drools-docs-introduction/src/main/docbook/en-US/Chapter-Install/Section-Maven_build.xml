@@ -43,7 +43,7 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
 
     <para>As maven builds each module it will install the resulting jars in
     the local Maven 2 repository automatically. Where it can be easily used
-    from other project <literal>pom.xml</literal> or copied else where.</para>
+    from other project <filename>pom.xml</filename> or copied else where.</para>
 
     <screenshot>
       <info>Installed Drools Jars</info>
@@ -92,10 +92,10 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
       </listitem>
     </itemizedlist>
 
-    <para>The manual can be generated from the project pom.xml by
-    calling <literal>'mvn package'</literal> in the drools-docs directory or adding the -Ddocumentation switch when you build the sources.
-    Documentation is generated into each drools-docs subdirectory's <literal>'target/'</literal> directory. Running <literal>'mvn -Ddocumentation package assembly:assembly'</literal>
-    in the Drools project root generates and copies the documentation into a zip file. This zip file is located in the root folders <literal>'target/'</literal>
+    <para>The manual can be generated from the project <filename>pom.xml</filename> by
+    calling <command>mvn package</command> in the drools-docs directory or adding the -Ddocumentation switch when you build the sources.
+    Documentation is generated into each drools-docs subdirectory's <filename>target/</filename> directory. Running <command>mvn -Ddocumentation package assembly:assembly</command>
+    in the Drools project root generates and copies the documentation into a zip file. This zip file is located in the root folders <filename>target/</filename>
     directory.
 
     <programlisting>[trikkola@trikkola trunk]$ mvn -Ddocumentation clean package assembly:assembly
@@ -197,7 +197,7 @@ WAGON_VERSION: 1.0-beta-2
 [INFO] ------------------------------------------------------------------------&gt;</programlisting>
     </para>
     <para>The generated manual can be found in the
-    <literal>target\drools-docs$VERSION.jar'</literal> file, a compressed archive with all formats.</para>
+    <filename>target/drools-docs-$VERSION.jar</filename> file, a compressed archive with all formats.</para>
 
   </section>
 

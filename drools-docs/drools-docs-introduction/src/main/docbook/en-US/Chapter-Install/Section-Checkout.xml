@@ -100,7 +100,7 @@ Checked out revision 13656.</programlisting>
   <para>Although, we highly recommend command line tools to work with repository you can also use both Eclipse's integrated SVN client or TortoiseSVN</para> 
 
   <para>Setup TortoiseSVN to checkout from the subversion repository and click
-  <literal>'OK'</literal> Once the checkout has finished you should see the
+  <literal>OK</literal>. Once the checkout has finished you should see the
   folders as shown below.</para>
 
   <screenshot>
