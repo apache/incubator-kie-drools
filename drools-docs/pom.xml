@@ -150,27 +150,26 @@
         <configuration>
           <sourceDocumentName>master.xml</sourceDocumentName>
           <masterTranslation>en-US</masterTranslation>
-          <translations>
-            <!-- translation>zh-CN</translation>
-            <translation>de-DE</translation -->
-            <!--
-              <translation>es-ES</translation>
-              <translation>fr-FR</translation>
-              <translation>ja-JP</translation>
-              <translation>ko-KR</translation>
-              <translation>pt-BR</translation>
-            -->
-          </translations>
+          <!--<translations>-->
+            <!--<translation>zh-CN</translation>-->
+            <!--<translation>de-DE</translation>-->
+            <!--<translation>es-ES</translation>-->
+            <!--<translation>fr-FR</translation>-->
+            <!--<translation>ja-JP</translation>-->
+            <!--<translation>ko-KR</translation>-->
+            <!--<translation>pt-BR</translation>-->
+          <!--</translations>-->
           <imageResource>
-            <directory>${basedir}/src/main/docbook</directory>
+            <directory>${basedir}/src/main/docbook/en-US</directory>
             <includes>
               <include>images/</include>
             </includes>
-            <!--
-              <excludes> <exclude>*.xml</exclude>
-              <exclude>**/*.xml</exclude> <exclude>*.html</exclude>
-              <exclude>**/*.html</exclude> </excludes>
-            -->
+            <!--<excludes>-->
+              <!--<exclude>*.xml</exclude>-->
+              <!--<exclude>**/*.xml</exclude>-->
+              <!--<exclude>*.html</exclude>-->
+              <!--<exclude>**/*.html</exclude>-->
+            <!--</excludes>-->
           </imageResource>
           <formats>
             <format>
