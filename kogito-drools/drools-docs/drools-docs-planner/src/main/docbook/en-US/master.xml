@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
-                             http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         version="5.0">
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+                          http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+      version="5.0">
 
   <info>
     <title>Drools Planner User Guide</title>
-
     <releaseinfo>5.1.0.SNAPSHOT</releaseinfo>
+    <authorgroup>
+      <author>
+        <personname>
+          <firstname>Geoffrey</firstname>
+          <surname>De Smet</surname>
+        </personname>
+      </author>
+    </authorgroup>
 
-    <author>
-      <personname>
-        <firstname>Geoffrey</firstname>
-        <surname>De Smet</surname>
-      </personname>
-    </author>
+    <cover>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/droolsPlannerLogo.png" />
+        </imageobject>
+      </mediaobject>
+    </cover>
   </info>
 
-	<xi:include href="Chapter-Planner_introduction/Chapter-Planner_introduction.xml" />
+  <!-- TODO remove preface after docbook upgrade when cover actually shows the logo before the TOC -->
+  <preface>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/droolsPlannerLogo.png" />
+      </imageobject>
+    </mediaobject>
+  </preface>
 
-	<xi:include href="Chapter-Use_cases_and_examples/Chapter-Use_cases_and_examples.xml" />
+  <xi:include href="Chapter-Planner_introduction/Chapter-Planner_introduction.xml" />
+  <xi:include href="Chapter-Use_cases_and_examples/Chapter-Use_cases_and_examples.xml" />
+  <xi:include href="Chapter-Planner_configuration/Chapter-Planner_configuration.xml" />
+  <xi:include href="Chapter-Score_calculation/Chapter-Score_calculation.xml" />
+  <xi:include href="Chapter-Local_search/Chapter-Local_search.xml" />
+  <xi:include href="Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.xml" />
 
-	<xi:include href="Chapter-Planner_configuration/Chapter-Planner_configuration.xml" />
-
-	<xi:include href="Chapter-Score_calculation/Chapter-Score_calculation.xml" />
-
-	<xi:include href="Chapter-Local_search/Chapter-Local_search.xml" />
-
-	<xi:include href="Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.xml" />
-
-  <index/>
 </book>
