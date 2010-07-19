@@ -153,15 +153,13 @@ Show source of reference:
     is described as "an abstract structure that describes a formal language
     precisely, i.e., a set of rules that mathematically delineates a (usually
     infinite) set of finite-length strings over a (usually finite) alphabet"
-    (<ulink url="http://en.wikipedia.org/wiki/Formal_grammar">
-    <citetitle>wikipedia</citetitle>
-    </ulink>).
+    (<citetitle><link xlink:href="http://en.wikipedia.org/wiki/Formal_grammar">Wikipedia</ulink></citetitle>).
 </para>
 
 You can see the the effect of the above example code here:
 https://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/docs/drools-expert/html/ch01.html#d0e41
 
-You can of course combine the <blockquote>, <ulink> and <citetitle> together.
+You can of course combine the <blockquote>, <link> and <citetitle> together.
 
 
 Footnotes:
