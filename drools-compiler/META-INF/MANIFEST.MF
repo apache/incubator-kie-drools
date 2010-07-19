@@ -15,7 +15,7 @@ Import-Package: com.sun.codemodel,com.sun.tools.xjc,com.sun.tools.xjc.
  mvel2.optimizers;version="2.0",org.mvel2.templates;version="2.0",org.
  mvel2.util;version="2.0",org.osgi.framework;version="1.5",org.osgi.ut
  il.tracker;version="1.4",org.w3c.dom,org.xml.sax
-Bnd-LastModified: 1279508141065
+Bnd-LastModified: 1279515966791
 Export-Package: org.drools.builder.impl;uses:="org.drools.compiler,com
  .sun.tools.xjc";version="5.1.0.SNAPSHOT",org.drools.rule.builder;uses
  :="org.drools.compiler,org.mvel2.compiler,org.mvel2,org.drools.rule.b
