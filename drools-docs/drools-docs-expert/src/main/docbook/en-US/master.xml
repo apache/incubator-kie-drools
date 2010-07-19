@@ -1,21 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+                          http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+      version="5.0">
 
-<book version="5.0" xmlns="http://docbook.org/ns/docbook"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
-	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
-	<info>
-		<title>Drools Expert User Guide</title>
+  <info>
+    <title>Drools Expert User Guide</title>
+    <releaseinfo>5.1.0.SNAPSHOT</releaseinfo>
+    <authorgroup>
+      <author>
+        <personname>
+          <firstname>Mark</firstname>
+          <surname>Proctor</surname>
+        </personname>
+      </author>
+      <author>
+        <personname>
+          <firstname>Edson</firstname>
+          <surname>Tirelli</surname>
+        </personname>
+      </author>
+      <!-- TODO add your name if you worked on this manual -->
+    </authorgroup>
 
-		<releaseinfo>5.1.0.SNAPSHOT</releaseinfo>
-	</info>
-    <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
-	<xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />    
-    <xi:include href="Chapter-User_Guide/Chapter-User_Guide.xml" />    
-    <xi:include href="Chapter-Language_Reference/Chapter-Language_Reference.xml" />    
-    <xi:include href="Chapter-Authoring/Chapter-Authoring.xml" />        
-    <xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />      
-    <xi:include href="Chapter-IDE/Chapter-QuickStart.xml" /> 
-    <xi:include href="Chapter-Examples/Chapter-Examples.xml" />   
-	<!--index /-->
+    <cover>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/droolsExpertLogo.png" />
+        </imageobject>
+      </mediaobject>
+    </cover>
+  </info>
+
+  <!-- TODO remove preface after docbook upgrade when cover actually shows the logo before the TOC -->
+  <preface>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/droolsExpertLogo.png" />
+      </imageobject>
+    </mediaobject>
+  </preface>
+
+  <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
+  <xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />
+  <xi:include href="Chapter-User_Guide/Chapter-User_Guide.xml" />
+  <xi:include href="Chapter-Language_Reference/Chapter-Language_Reference.xml" />
+  <xi:include href="Chapter-Authoring/Chapter-Authoring.xml" />
+  <xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />
+  <xi:include href="Chapter-IDE/Chapter-QuickStart.xml" />
+  <xi:include href="Chapter-Examples/Chapter-Examples.xml" />
+
 </book>

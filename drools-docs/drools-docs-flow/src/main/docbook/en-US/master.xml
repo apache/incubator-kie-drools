@@ -1,53 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<book version="5.0" xmlns="http://docbook.org/ns/docbook"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                    xmlns:svg="http://www.w3.org/2000/svg"
-                    xmlns:m="http://www.w3.org/1998/Math/MathML"
-                    xmlns:html="http://www.w3.org/1999/xhtml"
-                    xmlns:db="http://docbook.org/ns/docbook">
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+                          http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+      version="5.0">
 
   <info>
     <title>Drools Flow User Guide</title>
-
     <releaseinfo>5.1.0.SNAPSHOT</releaseinfo>
+    <authorgroup>
+      <author>
+        <personname>
+          <firstname>Kris</firstname>
+          <surname>Verlaenen</surname>
+        </personname>
+      </author>
+      <author>
+        <personname>
+          <firstname>Mark</firstname>
+          <surname>Proctor</surname>
+        </personname>
+      </author>
+      <!-- TODO add your name if you worked on this manual -->
+    </authorgroup>
 
-    <!--author>
-      <firstname>Kris</firstname>
-      <surname>Verlaenen</surname>
-    </author>
-
-    <author>
-      <firstname>Mark</firstname>
-      <surname>Proctor</surname>
-    </author>
-
-    <author>
-      <firstname>Michael</firstname>
-      <surname>Neale</surname>
-    </author>
-
-    <author>
-      <firstname>Edson</firstname>
-      <surname>Tirelli</surname>
-    </author-->
-    
+    <cover>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/droolsFlowLogo.png" />
+        </imageobject>
+      </mediaobject>
+    </cover>
   </info>
 
-<!--
-  <preface id="preface" revision="2">
-    <title>Preface</title>
-
+  <!-- TODO remove preface after docbook upgrade when cover actually shows the logo before the TOC -->
+  <preface>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="drools_logo.png" />
+        <imagedata fileref="images/droolsFlowLogo.png" />
       </imageobject>
     </mediaobject>
-
-    <para />
   </preface>
--->      
 
   <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
   <xi:include href="Chapter-GettingStarted/Chapter-GettingStarted.xml" />
@@ -63,6 +58,5 @@
   <xi:include href="Chapter-BAM/Chapter-BAM.xml" />
   <xi:include href="Chapter-BPMN2/Chapter-BPMN2.xml" />
   <xi:include href="Chapter-Console/Chapter-Console.xml" />
-    
-  <index/>
+
 </book>
