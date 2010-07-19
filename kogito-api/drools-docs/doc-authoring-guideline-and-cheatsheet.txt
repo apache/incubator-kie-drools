@@ -16,9 +16,11 @@ Guideline
 
 * Keywords may be enclosed in <kw></kw>, rendered in boldface Courier
 
-* Use <literal> for class names, method names, ...
+* Use <literal> for class names, method names, ...: <literal>Serializable</literal>
 
-* Use <filename> for filenames
+* Use <filename> for directories and filenames: <filename>pom.xml</filename>
+
+* Use <command> for commands: <command>mvn clean install</command>
 
 * Please link svg image files instead of png bitmaps in the text whenever
   possible.
