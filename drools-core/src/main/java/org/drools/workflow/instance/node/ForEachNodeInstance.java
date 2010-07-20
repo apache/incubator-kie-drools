@@ -80,21 +80,25 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
             ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
-            for (Object o: collection) {
-                String variableName = getForEachNode().getVariableName();
-                CompositeNodeInstance nodeInstance = (CompositeNodeInstance)
-                    ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-                variableScopeInstance.setVariable(variableName, o);
-                nodeInstances.add(nodeInstance);
-            }
-            for (NodeInstance nodeInstance: nodeInstances) {
-                ((org.drools.workflow.instance.NodeInstance) nodeInstance).trigger(this, getForEachSplitNode().getTo().getToType());
-            }
-            if (!getForEachNode().isWaitForCompletion()) {
-            	ForEachNodeInstance.this.triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, false);
+            if (collection.isEmpty()) {
+            	ForEachNodeInstance.this.triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+            } else {
+	            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
+	            for (Object o: collection) {
+	                String variableName = getForEachNode().getVariableName();
+	                CompositeNodeInstance nodeInstance = (CompositeNodeInstance)
+	                    ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
+	                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	                    nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+	                variableScopeInstance.setVariable(variableName, o);
+	                nodeInstances.add(nodeInstance);
+	            }
+	            for (NodeInstance nodeInstance: nodeInstances) {
+	                ((org.drools.workflow.instance.NodeInstance) nodeInstance).trigger(this, getForEachSplitNode().getTo().getToType());
+	            }
+	            if (!getForEachNode().isWaitForCompletion()) {
+	            	ForEachNodeInstance.this.triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, false);
+	            }
             }
         }
         
