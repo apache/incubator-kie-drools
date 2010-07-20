@@ -56,7 +56,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                 try {
                     NumberRestriction restriction = (NumberRestriction) r;
 
-                    dt.put( restriction.getValue(),
+                    dt.put( restriction.getValue().toString(),
                             new DataRow( restriction.getRulePath(),
                                          restriction.getRuleName(),
                                          restriction.getOperator(),
@@ -78,7 +78,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                     // Combine these two.
                     stringRows.add( "Missing : " + previous + " .. " + current );
 
-                    current = iterator.next();
+                    if ( iterator.hasNext() ) current = iterator.next();
 
                 } else if ( previous.ruleId != null && previous.ruleId.equals( current.ruleId ) ) {
                     // Combine these two.
@@ -86,7 +86,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                                                            current.ruleId,
                                                            current.ruleName ) + " : " + previous.toString() + " " + current.toString() );
 
-                    current = iterator.next();
+                    if ( iterator.hasNext() ) current = iterator.next();
 
                 } else if ( !iterator.hasNext() ) { // If this is last row
                     // Print previous and current if they were not merged.
