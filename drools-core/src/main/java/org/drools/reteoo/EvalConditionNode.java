@@ -408,7 +408,7 @@ public class EvalConditionNode extends LeftTupleSource
      */
     private static class LeftTupleSinkUpdateAdapter
         implements
-        LeftTupleSink {
+        LeftTupleSink, LeftTupleSinkAdapter {
         private final EvalConditionNode node;
         private final LeftTupleSink     sink;
         private final EvalCondition     constraint;
@@ -426,6 +426,8 @@ public class EvalConditionNode extends LeftTupleSource
                                     final InternalWorkingMemory workingMemory) {
 
             final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( node );
+            // need to be overridden, because it was pointing to the adapter instead
+            leftTuple.setLeftTupleSink( this.node );
 
             final boolean allowed = this.constraint.isAllowed( leftTuple,
                                                                workingMemory,
@@ -485,6 +487,10 @@ public class EvalConditionNode extends LeftTupleSource
 
         public RuleBasePartitionId getPartitionId() {
             return sink.getPartitionId();
+        }
+
+        public LeftTupleSink getRealSink() {
+            return this.node;
         }
 
     }

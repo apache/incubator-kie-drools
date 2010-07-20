@@ -314,6 +314,13 @@ public class LeftTuple
     public LeftTupleSink getLeftTupleSink() {
         return sink;
     }
+    
+    /* Had to add the set method because sink adapters must override 
+     * the tuple sink set when the tuple was created.
+     */
+    public void setLeftTupleSink( LeftTupleSink sink ) {
+        this.sink = sink;
+    }
 
     public LeftTuple getLeftParent() {
         return leftParent;
