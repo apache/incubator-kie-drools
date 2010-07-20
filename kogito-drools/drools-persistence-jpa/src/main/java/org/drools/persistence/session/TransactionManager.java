@@ -1,7 +1,5 @@
 package org.drools.persistence.session;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 public interface TransactionManager {
     /** Completion status in case of proper commit */

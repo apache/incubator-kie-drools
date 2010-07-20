@@ -110,7 +110,6 @@ public class SingleSessionCommandServiceTest extends TestCase {
     protected void tearDown() {
         emf.close();
         ds1.close();
-
     }
 
     public void testPersistenceWorkItems() throws Exception {
@@ -358,7 +357,8 @@ public class SingleSessionCommandServiceTest extends TestCase {
         service.dispose();
     }
 
-    private Collection<KnowledgePackage> getProcessWorkItems() {
+    @SuppressWarnings("unused")
+	private Collection<KnowledgePackage> getProcessWorkItems() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -512,7 +512,8 @@ public class SingleSessionCommandServiceTest extends TestCase {
         service.dispose();
     }
 
-    private Package getProcessSubProcess() {
+    @SuppressWarnings("unused")
+	private Package getProcessSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -654,7 +655,8 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNull( processInstance );
     }
 
-    private List<KnowledgePackage> getProcessTimer() {
+    @SuppressWarnings("unused")
+	private List<KnowledgePackage> getProcessTimer() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -747,7 +749,8 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNull( processInstance );
     }
 
-    private List<KnowledgePackage> getProcessTimer2() {
+    @SuppressWarnings("unused")
+	private List<KnowledgePackage> getProcessTimer2() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
