@@ -1,5 +1,7 @@
 package org.drools.definition.process;
 
+import java.util.Map;
+
 public interface Connection {
 
     Node getFrom();
@@ -10,6 +12,8 @@ public interface Connection {
 
     String getToType();
 
-    Object getMetaData(String name);
+    Map<String, Object> getMetaData();
+
+    @Deprecated Object getMetaData(String name);
 
 }

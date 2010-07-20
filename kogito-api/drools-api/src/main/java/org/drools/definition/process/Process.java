@@ -1,5 +1,7 @@
 package org.drools.definition.process;
 
+import java.util.Map;
+
 import org.drools.definition.KnowledgeDefinition;
 
 public interface Process
@@ -15,7 +17,9 @@ public interface Process
     String getPackageName();
 
     String getType();
+    
+    Map<String, Object> getMetaData();
 
-    Object getMetaData(String name);
+    @Deprecated Object getMetaData(String name);
 
 }
