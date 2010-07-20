@@ -115,6 +115,10 @@ public class ConnectionImpl implements Connection, Serializable {
 	public void setToType(String toType) {
 		this.toType = toType;
 	}
+	
+	public Map<String, Object> getMetaData() {
+		return this.metaData;
+	}
 
 	public void setMetaData(String name, Object value) {
         this.metaData.put(name, value);

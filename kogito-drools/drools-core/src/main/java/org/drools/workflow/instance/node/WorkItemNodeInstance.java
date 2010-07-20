@@ -16,6 +16,7 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

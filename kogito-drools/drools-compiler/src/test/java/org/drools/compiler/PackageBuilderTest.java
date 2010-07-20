@@ -1439,6 +1439,10 @@ public class PackageBuilderTest extends DroolsTestCase {
                                   long id) {
             return null;
         }
+        
+    	public Map<String, Object> getMetaData() {
+    		return null;
+    	}
 
         public Object getMetaData(String name) {
             return null;
