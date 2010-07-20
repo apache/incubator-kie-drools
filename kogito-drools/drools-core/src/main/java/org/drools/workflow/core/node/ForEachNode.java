@@ -98,6 +98,14 @@ public class ForEachNode extends CompositeNode {
         return (CompositeContextNode) super.getNode(2); 
     }
     
+    public ForEachSplitNode getForEachSplitNode() {
+        return (ForEachSplitNode) super.getNode(1); 
+    }
+    
+    public ForEachJoinNode getForEachJoinNode() {
+        return (ForEachJoinNode) super.getNode(3); 
+    }
+    
     public void addNode(Node node) {
     	getCompositeNode().addNode(node);
     }
