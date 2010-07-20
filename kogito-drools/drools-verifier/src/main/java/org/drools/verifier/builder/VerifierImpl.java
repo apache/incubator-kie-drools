@@ -142,10 +142,8 @@ public class VerifierImpl
 
             ksession.fireAllRules( scopesAgendaFilter );
 
-        } catch ( Throwable t ) {
-            t.printStackTrace();
-
-            return false;
+        } catch ( Exception e ) {
+           throw new RuntimeException( e );
         }
 
         return true;
