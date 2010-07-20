@@ -375,6 +375,89 @@ public class ProcessActionTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 	
+    public void testActionNameConflict() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions1\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "\n" +
+            "  <header>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
+			"      <action type=\"expression\" dialect=\"java\" >list.add(\"Action1\");</action>\n" +
+			"    </actionNode>\n" + 
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\" />\n" +
+            "    <connection from=\"2\" to=\"3\" />\n" +
+            "  </connections>\n" +
+            "\n" +
+            "</process>");
+        builder.addRuleFlow(source);
+        source = new StringReader(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions2\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "\n" +
+            "  <header>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
+			"      <action type=\"expression\" dialect=\"java\" >list.add(\"Action2\");</action>\n" +
+			"    </actionNode>\n" + 
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\" />\n" +
+            "    <connection from=\"2\" to=\"3\" />\n" +
+            "  </connections>\n" +
+            "\n" +
+            "</process>");
+        builder.addRuleFlow(source);
+        PackageBuilderErrors errors = builder.getErrors();
+        if (!errors.isEmpty()) {
+        	for (DroolsError error: errors.getErrors()) {
+        		System.err.println(error);
+        	}
+        	fail("Errors while building package");
+        }
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<String> list = new ArrayList<String>();
+        workingMemory.setGlobal("list", list);
+        ProcessInstance processInstance = ( ProcessInstance )
+            workingMemory.startProcess("org.drools.actions1");
+        assertEquals(1, list.size());
+        assertEquals("Action1", list.get(0));
+        list.clear();
+        processInstance = ( ProcessInstance )
+        	workingMemory.startProcess("org.drools.actions2");
+        assertEquals(1, list.size());
+        assertEquals("Action2", list.get(0));
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+	
 	private static class TestWorkItemHandler implements WorkItemHandler {
         private WorkItem workItem;
         public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
