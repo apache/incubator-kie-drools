@@ -19,6 +19,8 @@ public interface Node {
 
     NodeContainer getNodeContainer();
 
-    Object getMetaData(String name);
+    Map<String, Object> getMetaData();
+
+    @Deprecated Object getMetaData(String name);
 
 }
