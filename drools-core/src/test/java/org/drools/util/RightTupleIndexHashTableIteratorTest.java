@@ -1,5 +1,12 @@
 package org.drools.util;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +29,12 @@ import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.SingleBetaConstraints;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LeftTupleIndexHashTable;
-import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.RightTupleIndexHashTable;
 import org.drools.core.util.RightTupleList;
+import org.drools.core.util.RightTupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
@@ -150,6 +157,46 @@ public class RightTupleIndexHashTableIteratorTest extends TestCase {
              
     }
     
+    public void testLastBucketInTheTable() {
+        // JBRULES-2574
+        // setup the entry array with an element in the first bucket, one 
+        // in the middle and one in the last bucket
+        Entry[] entries = new Entry[10];
+        entries[0] = mock( RightTupleList.class );
+        entries[5] = mock( RightTupleList.class );
+        entries[9] = mock( RightTupleList.class );
+
+        RightTuple[] tuples = new RightTuple[]{mock( RightTuple.class ), mock( RightTuple.class ), mock( RightTuple.class )};
+
+        // set return values for methods
+        when( entries[0].getNext() ).thenReturn( null );
+        when( ((RightTupleList) entries[0]).getFirst( any( RightTuple.class ) ) ).thenReturn( tuples[0] );
+        
+        when( entries[5].getNext() ).thenReturn( null );
+        when( ((RightTupleList) entries[5]).getFirst( any( RightTuple.class ) ) ).thenReturn( tuples[1] );
+
+        when( entries[9].getNext() ).thenReturn( null );
+        when( ((RightTupleList) entries[9]).getFirst( any( RightTuple.class ) ) ).thenReturn( tuples[2] );
+
+        // create the mock table for the iterator
+        AbstractHashTable table = mock( AbstractHashTable.class );
+        when( table.getTable() ).thenReturn( entries );
+
+        // create the iterator
+        FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator( table );
+
+        // test it
+        assertThat( iterator.next(),
+                    sameInstance( (Object) tuples[0] ) );
+        assertThat( iterator.next(),
+                    sameInstance( (Object) tuples[1] ) );
+        assertThat( iterator.next(),
+                    sameInstance( (Object) tuples[2] ) );
+        assertThat( iterator.next(),
+                    is( (Object) null ) );
+
+    }
+
     protected BetaNodeFieldConstraint getConstraint(String identifier,
                                                     Operator operator,
                                                     String fieldName,

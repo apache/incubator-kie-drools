@@ -77,9 +77,9 @@ public abstract class AbstractHashTable
     public Iterator iterator() {
         if ( this.iterator == null ) {
             this.iterator = new HashTableIterator( this );
+        } else {
+            this.iterator.reset();
         }
-
-        this.iterator.reset();
         return this.iterator;
     }
 
@@ -268,6 +268,7 @@ public abstract class AbstractHashTable
 
         public HashTableIterator(final AbstractHashTable hashTable) {
             this.hashTable = hashTable;
+            reset();
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -296,11 +297,7 @@ public abstract class AbstractHashTable
             }
 
             // if no entry keep skipping rows until we come to the end, or find one that is populated
-            while ( this.entry == null ) {
-                this.row++;
-                if ( this.row == this.length ) {
-                    return null;
-                }
+            while ( this.entry == null && ++this.row < this.length ){
                 this.entry = this.table[this.row];
             }
 
