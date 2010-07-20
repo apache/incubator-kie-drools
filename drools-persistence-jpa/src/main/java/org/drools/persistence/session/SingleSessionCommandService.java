@@ -6,16 +6,6 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory; //import javax.transaction.RollbackException;
-//import javax.transaction.Status;
-//import javax.transaction.Synchronization;
-//import javax.transaction.SystemException;
-//import javax.transaction.TransactionManager;
-//import javax.transaction.UserTransaction;
-
-import org.apache.commons.collections.map.HashedMap;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -37,7 +27,6 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,14 +46,11 @@ public class SingleSessionCommandService
     private TransactionManager          txm;
     private JpaManager                  jpm;
     
-    private boolean                     internalAppScopedEntityManager;
-    private boolean                     internalCmdScopedEntityManager;
-    
     private volatile boolean  doRollback;
     
-    private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap() );
+    private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
     
-    public static Map<Object, Object> txManagerClasses = Collections.synchronizedMap( new IdentityHashMap() );
+    public static Map<Object, Object> txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null ) {
@@ -233,8 +219,8 @@ public class SingleSessionCommandService
         Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
         if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
             try {
-                Class cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
-                Constructor con = cls.getConstructors()[0];
+                Class<?> cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
+                Constructor<?> con = cls.getConstructors()[0];
                 this.txm = (TransactionManager) con.newInstance( tm );
                 logger.debug( "Instantiating  DroolsSpringTransactionManager" );
                                 
@@ -322,7 +308,6 @@ public class SingleSessionCommandService
         return sessionInfo.getId();
     }
 
-    @SuppressWarnings("unchecked")
     private void registerRollbackSync() {
         if ( synchronizations.get( this ) == null ) {
             txm.registerTransactionSynchronization( new SynchronizationImpl( this ) );
@@ -342,22 +327,21 @@ public class SingleSessionCommandService
             this.service = service;
         }
 
-        @SuppressWarnings("unchecked")
         public void afterCompletion(int status) {
             if ( status != TransactionManager.STATUS_COMMITTED ) {
                 this.service.rollback();                
             }
 
             // always cleanup thread local whatever the result
-            this.service.synchronizations.remove( this.service );
+            SingleSessionCommandService.synchronizations.remove( this.service );
             
             this.service.jpm.endCommandScopedEntityManager();
 
             StatefulKnowledgeSessionImpl ksession = ((StatefulKnowledgeSessionImpl) this.service.ksession);
             // clean up cached process and work item instances
             if ( ksession != null ) {
-                ((JPAProcessInstanceManager) ((StatefulKnowledgeSessionImpl) ksession).session.getProcessInstanceManager()).clearProcessInstances();
-                ((JPAWorkItemManager) ((StatefulKnowledgeSessionImpl) ksession).session.getWorkItemManager()).clearWorkItems();
+                ((JPAProcessInstanceManager) ksession.session.getProcessInstanceManager()).clearProcessInstances();
+                ((JPAWorkItemManager) ksession.session.getWorkItemManager()).clearWorkItems();
             }
 
         }

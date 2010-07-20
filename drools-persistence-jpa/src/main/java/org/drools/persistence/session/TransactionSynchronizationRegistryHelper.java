@@ -1,6 +1,5 @@
 package org.drools.persistence.session;
 
-import javax.transaction.Synchronization;
 import javax.transaction.TransactionSynchronizationRegistry;
 
 public class TransactionSynchronizationRegistryHelper {

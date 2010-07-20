@@ -6,13 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
 import junit.framework.TestCase;
@@ -101,7 +96,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        List list = new ArrayList();
+        List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal( "list",
                             list );
@@ -159,7 +154,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         //      //System.out.println( "session creation : " + sInfo.getVersion() );
         //      em.close();
 
-        List list = new ArrayList();
+        List<?> list = new ArrayList<Object>();
 
         // insert and commit
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
@@ -191,7 +186,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         ksession.insert( 4 );
         ut.commit();
 
-        // rollback again, this is testing that we can do consequetive rollbacks and commits without issue
+        // rollback again, this is testing that we can do consecutive rollbacks and commits without issue
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         ksession.insert( 5 );
@@ -402,7 +397,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         assertNotNull( processInstance );
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
-        ksession.insert(new ArrayList());
+        ksession.insert(new ArrayList<Object>());
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
@@ -428,7 +423,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         int id = ksession.getId();
         
-        ksession.insert(new ArrayList());
+        ksession.insert(new ArrayList<Object>());
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
@@ -706,7 +701,7 @@ public class PersistentStatefulSessionTest extends TestCase {
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        List list = new ArrayList();
+        List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal( "list",
                             list );
