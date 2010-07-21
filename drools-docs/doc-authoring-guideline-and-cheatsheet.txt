@@ -7,37 +7,56 @@ JDocBook plugin: http://docs.jboss.org/docbook/userguide/html_single/index.html
 DocBook: http://www.docbook.org/tdg5/en/html/docbook.html
          http://www.sagehill.net/docbookxsl/
 
-Word styles
------------
+Marking words in a paragraph
+----------------------------
 
 * Use <code> for package names, class names, method names, ...:
-  - the class <code>JavaDialectConfiguration</code>
-  - the package <code>drools.dialect.java.compiler</code>
-  - the method <code>toString()</code>
+    the class <code>JavaDialectConfiguration</code>
+    the package <code>drools.dialect.java.compiler</code>
+    the method <code>toString()</code>
 
 * Use <filename> for directories and files:
-  - the directory <filename>drools-docs/target/</filename>
-  - the file <filename>pom.xml</filename>
+    the directory <filename>drools-docs/target/</filename>
+    the file <filename>pom.xml</filename>
 
 * Use <command> for commands:
-  - run the command <command>mvn clean install</command>
+    run the command <command>mvn clean install</command>
 
 * Use <literal> for literals and keywords:
-  - the value <literal>null</literal>
-  - the keyword <literal>not</literal>
+    the value <literal>null</literal>
+    the keyword <literal>not</literal>
 
 * Use <emphasis> to emphasis something (turns bold).
   Note that you can use <emphasis> on <literal>, etc:
-  - <emphasis><literal>null</literal></emphasis>
+    <emphasis><literal>null</literal></emphasis>
 
-Paragraph styles
-----------------
+Marking paragraphs
+------------------
 
 * <caution><para></para></caution>
+
 * <important><para></para></important>
+
 * <note><para></para></note>
+
 * <tip><para></para></tip>
+
 * <warning><para></para></warning>
+
+* Use <programlisting> for code listings:
+    <programlisting><![CDATA[public interface Move ...]]></programlisting>
+
+* Use <programlisting role="JAVA"> for java code to get color highlighting.
+
+* Use <programlisting role="XML"> for XML code to get color highlighting.
+
+* Use <example> with <programlisting> for example code:
+    <example>
+      <title>Configuring the <code>JavaDialectConfiguration</code> to use JANINO via a setter</title>
+      <programlisting><![CDATA[PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( );
+JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+javaConf.setCompiler( JavaDialectConfiguration.JANINO );]]></programlisting>
+    </example>
 
 Images
 ------
@@ -58,55 +77,29 @@ Images
   There is one exception: any file that use xinclude to include other files usually have a xml:base="./"
   and it should not contain images.
 
+* Use <mediaobject> with <imageobject> to show an image.
+
+* Use <figure> for diagrams with a title:
+    <figure>
+      <title>High-level View of a Rule Engine</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+              fileref="images/Chapter-Rule_Engine/rule-engine-inkscape.svg"
+              format="SVG" contentwidth="540px" contentdepth="300px" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+* For HTML, width="100%" ensures that imagedata is scaled down to the
+  current width of the browser's window.
+
 Linking syntax in DocBook 5.0+:
 -------------------------------
 http://www.sagehill.net/docbookxsl/Db5Tools.html#Db5UnivLinking
 
 Note: The jboss docbook xsl does not support docbook 5.0 syntax yet,
-so please use the docbook 4.5 linking syntax for the links. 
-
-Markup program list or console output:
---------------------------------------
-
-* as Example:
-
-    <example>
-      <title>Configuring the <code>JavaDialectConfiguration</code> 
-      to use JANINO via a setter</title>
-
-      <programlisting><![CDATA[PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( );
-JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
-javaConf.setCompiler( JavaDialectConfiguration.JANINO );]]></programlisting>
-    </example>
-
-* Simple (not as Example):
-
-  <programlisting><![CDATA[ your code here...  ]]></programlisting>
-  
-
-Link image files:
------------------
-
-* suitable for diagrams:
-
-  <figure>
-    <title>High-level View of a Rule Engine</title>
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" 
-        fileref="images/Chapter-Rule_Engine/rule-engine-inkscape.svg" 
-        format="SVG" contentwidth="540px" contentdepth="300px" />
-      </imageobject>
-    </mediaobject>
-  </figure>
-
-  For HTML, width="100%" ensures that imagedata is scaled down to the
-  current width of the browser's window.
-
-
-* suitable for screenshots:
-
-  TODO
+so please use the docbook 4.5 linking syntax for the links.
 
 Lists
 -----

@@ -24,7 +24,7 @@
     <para>You can build a <literal>Benchmarker</literal> instance with the<literal>XmlSolverBenchmarker</literal>.
     Configure it with a benchmarker configuration xml file:</para>
 
-    <programlisting>    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
+    <programlisting role="JAVA">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
     benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
     benchmarker.benchmark();
     benchmarker.writeResults(resultFile);</programlisting>

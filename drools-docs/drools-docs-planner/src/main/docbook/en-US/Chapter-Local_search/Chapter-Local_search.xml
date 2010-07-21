@@ -110,7 +110,7 @@
 
     <para>Each of your move types will be an implementation of the <literal>Move</literal> interface:</para>
 
-    <programlisting>public interface Move {
+    <programlisting role="JAVA">public interface Move {
 
     boolean isMoveDoable(EvaluationHandler evaluationHandler);
 
@@ -123,7 +123,7 @@
     <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
     different row:</para>
 
-    <programlisting>public class YChangeMove implements Move {
+    <programlisting role="JAVA">public class YChangeMove implements Move {
 
     private Queen queen;
     private int toY;
@@ -143,7 +143,7 @@
     <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
     facts:</para>
 
-    <programlisting>    public void doMove(WorkingMemory workingMemory) {
+    <programlisting role="JAVA">    public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
         queen.setY(toY);
         workingMemory.update(queenHandle, queen); // after changes are made
@@ -171,7 +171,7 @@
     <para>In the n queens example, a move which moves the queen from its current row to the same row isn't
     doable:</para>
 
-    <programlisting>    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    <programlisting role="JAVA">    public boolean isMoveDoable(WorkingMemory workingMemory) {
         int fromY = queen.getY();
         return fromY != toY;
     }</programlisting>
@@ -184,7 +184,7 @@
     C0</emphasis>. An undo move can be created from a move, but only before the move has been done on the current
     solution.</para>
 
-    <programlisting>    public Move createUndoMove(WorkingMemory workingMemory) {
+    <programlisting role="JAVA">    public Move createUndoMove(WorkingMemory workingMemory) {
         return new YChangeMove(queen, queen.getY());
     }</programlisting>
 
@@ -197,7 +197,7 @@
     <para>A move must implement the <literal>equals()</literal> and <literal>hashcode()</literal> methods. 2 moves which
     make the same change on a solution, must be equal.</para>
 
-    <programlisting>    public boolean equals(Object o) {
+    <programlisting role="JAVA">    public boolean equals(Object o) {
         if (this == o) {
             return true;
         } else if (o instanceof YChangeMove) {
@@ -226,7 +226,7 @@
     <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read Drools
     Planner's logging more easily:</para>
 
-    <programlisting>    public String toString() {
+    <programlisting role="JAVA">    public String toString() {
         return queen + " =&gt; " + toY;
     }</programlisting>
 
@@ -271,7 +271,7 @@
 
     <para>Move generation currently happens with a <literal>MoveFactory</literal>:</para>
 
-    <programlisting>public class NQueensMoveFactory extends CachedMoveListMoveFactory {
+    <programlisting role="JAVA">public class NQueensMoveFactory extends CachedMoveListMoveFactory {
 
     public List&lt;Move&gt; createMoveList(Solution solution) {
         NQueens nQueens = (NQueens) solution;
@@ -518,7 +518,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             <para>To use property tabu, your moves must implement the <literal>TabuPropertyEnabled</literal> interface,
             for example:</para>
 
-            <programlisting>public class YChangeMove implements Move, TabuPropertyEnabled {
+            <programlisting role="JAVA">public class YChangeMove implements Move, TabuPropertyEnabled {
 
     private Queen queen;
     private int toY;
@@ -533,12 +533,12 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
             <para>You can also make multiple properties tabu (with OR or AND semantics):</para>
 
-            <programlisting>    public List&lt;? extends Object&gt; getTabuPropertyList() {
+            <programlisting role="JAVA">    public List&lt;? extends Object&gt; getTabuPropertyList() {
         // tabu with other moves that contain the same leftExam OR the same rightExam
         return Arrays.asList(leftExam, rightExam);
     }</programlisting>
 
-            <programlisting>    public List&lt;? extends Object&gt; getTabuPropertyList() {
+            <programlisting role="JAVA">    public List&lt;? extends Object&gt; getTabuPropertyList() {
         // tabu with other moves that contain the same exam AND the same toPeriod (but not necessary the same toRoom)
         return Collections.singletonList(Arrays.asList(exam, toPeriod));
     }</programlisting>
@@ -684,7 +684,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     <para>You can listen to solver events, including when the best solution changes during solving, by adding a
     <literal>SolverEventListener</literal> to the <literal>Solver</literal>:</para>
 
-    <programlisting>public interface Solver {
+    <programlisting role="JAVA">public interface Solver {
 
     // ...
 
@@ -808,7 +808,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       a server restart. That cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
       and if it will occur. Therefor the <literal>Solver</literal> interface has these 2 thread-safe methods:</para>
 
-      <programlisting>public interface Solver {
+      <programlisting role="JAVA">public interface Solver {
 
     // ...
 
