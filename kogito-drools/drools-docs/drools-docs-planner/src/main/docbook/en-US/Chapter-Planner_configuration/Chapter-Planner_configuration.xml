@@ -250,7 +250,7 @@
 
     <para>A basic solver configuration file looks something like this:</para>
 
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting role="XML">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;localSearchSolver&gt;
     &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;scoreDefinition&gt;
@@ -290,7 +290,7 @@
 
       <para>You can set the environment mode in the solver configuration XML file:</para>
 
-      <programlisting>&lt;localSearchSolver&gt;
+      <programlisting role="XML">&lt;localSearchSolver&gt;
     &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
     ...
 &lt;/localSearchSolver&gt;</programlisting>
@@ -541,7 +541,7 @@
       <para>Here's an example on how you add the <literal>StartingSolutionInitializer</literal> to the
       configuration:</para>
 
-      <programlisting>&lt;localSearchSolver&gt;
+      <programlisting role="XML">&lt;localSearchSolver&gt;
     ...
     &lt;startingSolutionInitializerClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/startingSolutionInitializerClass&gt;
     ...

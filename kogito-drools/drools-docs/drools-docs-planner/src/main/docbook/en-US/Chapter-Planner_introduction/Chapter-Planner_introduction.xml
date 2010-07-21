@@ -138,7 +138,7 @@
       maven repository</link>. If you use maven 2 or 3, just add a dependency to <literal>drools-planner-core</literal>
       in your project's <filename>pom.xml</filename>:</para>
 
-      <programlisting>    &lt;dependency&gt;
+      <programlisting role="XML">    &lt;dependency&gt;
         &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
         &lt;artifactId&gt;drools-planner-core&lt;/artifactId&gt;
         &lt;version&gt;5.x&lt;/version&gt;
@@ -147,7 +147,7 @@
       <para>You might also need to add the jboss repository in your repository manager (nexus, archiva, ...) or your
       <filename>~/settings.xml</filename>:</para>
 
-      <programlisting>    &lt;repositories&gt;
+      <programlisting role="XML">    &lt;repositories&gt;
         &lt;repository&gt;
             &lt;id&gt;repository.jboss.org&lt;/id&gt;
             &lt;url&gt;http://repository.jboss.org/maven2&lt;/url&gt;
