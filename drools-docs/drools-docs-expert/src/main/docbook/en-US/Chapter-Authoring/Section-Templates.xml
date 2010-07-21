@@ -32,7 +32,7 @@
       <para>A rule template file begins with a header defining the
       placeholders, or <emphasis>formal template parameters</emphasis> 
       for the strings that are to be inserted during instantiation. 
-      After the first line, which invariably contains <kw>template header</kw>,
+      After the first line, which invariably contains <literal>template header</literal>,
       you should write a number of lines, each of which contains a single
       parameter name.</para>
 
@@ -49,11 +49,11 @@
 
       <para>The template header is followed by the text that is to
       be replicated and interpolated with the actual parameters. It
-      may begin with a <kw>package</kw> statement, followed by some
+      may begin with a <literal>package</literal> statement, followed by some
       additional lines. These 
       may be sectioned into one or more templates, each of them
-      between a pair of matching <kw>template</kw> and
-      <kw>end template</kw> statements. The <kw>template</kw> takes
+      between a pair of matching <literal>template</literal> and
+      <literal>end template</literal> statements. The <literal>template</literal> takes
       an argument, which puts a name to the template. The name
       can be a simple unquoted name or an arbitrary string enclosed
       in double quotes. The template text between these lines may
@@ -86,8 +86,8 @@
       the generator iterates over the sections and then over the
       set of actual parameters.</para>
 
-      <para>Any interpolation takes place between a pair of <kw>template</kw>
-      and <kw>end template</kw> statements, when this template is
+      <para>Any interpolation takes place between a pair of <literal>template</literal>
+      and <literal>end template</literal> statements, when this template is
       expanded. The template text is scanned for occurrences of
       <emphasis>parameter expansions</emphasis> written according to:
       <programlisting>

@@ -318,9 +318,9 @@ then
 end</programlisting>
 
       <para>Whereas the Stateless Session uses standard Java syntax to modify
-      a field, in the above rule we use the <kw>modify</kw> statement, which acts as a
+      a field, in the above rule we use the <literal>modify</literal> statement, which acts as a
       sort of "with" statement. It may contain a series of comma separated Java
-      expressions, i.e., calls to setters of the object selected by the <kw>modify</kw>
+      expressions, i.e., calls to setters of the object selected by the <literal>modify</literal>
       statement's control
       expression. This modifies the data, and makes the engine aware of those changes
       so it can reason over them once more. This process is called inference, and
@@ -336,7 +336,7 @@ end</programlisting>
       to Propositional Logic,
       where the engine is constraining against individual intances. Drools also has
       support for First Order Logic that allows you to look at sets of data.
-      A pattern under the keyword <kw>not</kw> matches when something does not exist.
+      A pattern under the keyword <literal>not</literal> matches when something does not exist.
       The rule given below turns the sprinkler off as soon as the fire in that
       room has disappeared.</para>
 
@@ -353,8 +353,8 @@ end</programlisting>
       <para>While there is one sprinkler per room, there is just a single alarm
       for the building. An <code>Alarm</code> object is created when a fire occurs,
       but only one <code>Alarm</code> is needed for the entire building, no matter
-      how many fires occur. Previously <kw>not</kw> was introduced to match the absence of
-      a fact; now we use its complement <kw>exists</kw> which matches for one or more
+      how many fires occur. Previously <literal>not</literal> was introduced to match the absence of
+      a fact; now we use its complement <literal>exists</literal> which matches for one or more
       instances of some category.</para>
 
       <programlisting>rule "Raise the alarm when we have one or more fires"
@@ -366,7 +366,7 @@ then
 end</programlisting>
 
       <para>Likewise, when there are no fires we want to remove the alarm, so
-      the <kw>not</kw> keyword can be used again.</para>
+      the <literal>not</literal> keyword can be used again.</para>
 
       <programlisting>rule "Cancel the alarm when all the fires have gone"
 when
