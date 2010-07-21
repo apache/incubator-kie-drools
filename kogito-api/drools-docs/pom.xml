@@ -20,6 +20,7 @@
     <module>drools-docs-fusion</module>
     <module>drools-docs-guvnor</module>
     <module>drools-docs-planner</module>
+    <module>drools-docs-integration</module>
   </modules>
 
   <dependencyManagement>
@@ -91,21 +92,7 @@
         <module>drools-docs-fusion</module>
         <module>drools-docs-guvnor</module>
         <!--module>drools-docs-planner</module-->
-      </modules>
-    </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>drools-docs-introduction</module>
-        <module>drools-docs-expert</module>
-        <module>drools-docs-flow</module>
-        <module>drools-docs-fusion</module>
-        <module>drools-docs-guvnor</module>
-        <module>drools-docs-planner</module>
-        <module>drools-docs-integration</module>
+        <!--module>drools-docs-integration</module-->
       </modules>
     </profile>
   </profiles>
