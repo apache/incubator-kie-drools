@@ -118,7 +118,7 @@
     use.</para>
 
     <para>All the <code>Cell</code> objects are inserted into the Session
-    and the rules in the <kw>ruleflow-group</kw> "register neighbor" are
+    and the rules in the <literal>ruleflow-group</literal> "register neighbor" are
     allowed to execute by the Rule Flow process. This group of four rules
     creates <code>Neighbor</code> relations between some cell and its
     northeastern, northern, northwestern and western neighbors. This

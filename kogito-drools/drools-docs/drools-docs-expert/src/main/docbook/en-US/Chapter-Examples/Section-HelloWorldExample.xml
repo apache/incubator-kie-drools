@@ -189,20 +189,20 @@ Goodbye cruel world</programlisting>
 [AfterActivationFired(4): rule=Good Bye]  </programlisting>
   </example>
 
-  <para>The LHS (after <kw>when</kw>) section of the rule states that it will be
+  <para>The LHS (after <literal>when</literal>) section of the rule states that it will be
   activated for each <code>Message</code> object inserted into the Working
   Memory whose status is <code>Message.HELLO</code>. Besides that, two 
   variable bindings are created: the variable <code>message</code> is bound
   to the <code>message</code> attribute and the variable <code>m</code>
   is bound to the matched <code>Message</code> object itself.</para>
 
-  <para>The RHS (after <kw>then</kw>) or consequence part of the rule is
+  <para>The RHS (after <literal>then</literal>) or consequence part of the rule is
   written using the MVEL expression language, as declared by
   the rule's attribute <code>dialect</code>. After printing the content of
   the bound variable <code>message</code> to <code>System.out</code>,
   the rule changes the values of the <code>message</code> and
   <code>status</code> attributes of the <code>Message</code> object
-  bound to <code>m</code>. This is done MVEL's <kw>modify</kw> statement,
+  bound to <code>m</code>. This is done MVEL's <literal>modify</literal> statement,
   which allows you to apply a block of assignments in one statement, with the
   engine being automatically notified of the changes at the end of the 
   block.</para>
@@ -221,7 +221,7 @@ Goodbye cruel world</programlisting>
 end</programlisting>
   </example>
 
-  <para>We can set a breakpoint into the DRL, on the <kw>modify</kw>
+  <para>We can set a breakpoint into the DRL, on the <literal>modify</literal>
   call, and inspect the Agenda view again during the execution of the
   rule's consequence. This time we start the execution via "Debug As"
   and "Drools application" and not by running a "Java application":</para>

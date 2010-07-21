@@ -24,39 +24,39 @@
 
     <itemizedlist>
       <listitem>
-        <para><kw>true</kw></para>
+        <para><literal>true</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>false</kw></para>
+        <para><literal>false</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>accumulate</kw></para>
+        <para><literal>accumulate</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>collect</kw></para>
+        <para><literal>collect</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>from</kw></para>
+        <para><literal>from</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>null</kw></para>
+        <para><literal>null</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>over</kw></para>
+        <para><literal>over</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>then</kw></para>
+        <para><literal>then</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>when</kw></para>
+        <para><literal>when</literal></para>
       </listitem>
     </itemizedlist>
 
@@ -66,143 +66,143 @@
 
     <itemizedlist>
       <listitem>
-        <para><kw>lock-on-active</kw></para>
+        <para><literal>lock-on-active</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>date-effective</kw></para>
+        <para><literal>date-effective</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>date-expires</kw></para>
+        <para><literal>date-expires</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>no-loop</kw></para>
+        <para><literal>no-loop</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>auto-focus</kw></para>
+        <para><literal>auto-focus</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>activation-group</kw></para>
+        <para><literal>activation-group</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>agenda-group</kw></para>
+        <para><literal>agenda-group</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>ruleflow-group</kw></para>
+        <para><literal>ruleflow-group</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>entry-point</kw></para>
+        <para><literal>entry-point</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>duration</kw></para>
+        <para><literal>duration</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>package</kw></para>
+        <para><literal>package</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>import</kw></para>
+        <para><literal>import</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>dialect</kw></para>
+        <para><literal>dialect</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>salience</kw></para>
+        <para><literal>salience</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>enabled</kw></para>
+        <para><literal>enabled</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>attributes</kw></para>
+        <para><literal>attributes</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>rule</kw></para>
+        <para><literal>rule</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>extend</kw></para>
+        <para><literal>extend</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>template</kw></para>
+        <para><literal>template</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>query</kw></para>
+        <para><literal>query</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>declare</kw></para>
+        <para><literal>declare</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>function</kw></para>
+        <para><literal>function</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>global</kw></para>
+        <para><literal>global</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>eval</kw></para>
+        <para><literal>eval</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>not</kw></para>
+        <para><literal>not</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>in</kw></para>
+        <para><literal>in</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>or</kw></para>
+        <para><literal>or</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>and</kw></para>
+        <para><literal>and</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>exists</kw></para>
+        <para><literal>exists</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>forall</kw></para>
+        <para><literal>forall</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>action</kw></para>
+        <para><literal>action</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>reverse</kw></para>
+        <para><literal>reverse</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>result</kw></para>
+        <para><literal>result</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>end</kw></para>
+        <para><literal>end</literal></para>
       </listitem>
 
       <listitem>
-        <para><kw>init</kw></para>
+        <para><literal>init</literal></para>
       </listitem>
     </itemizedlist>
 

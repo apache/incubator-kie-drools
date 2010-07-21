@@ -77,7 +77,7 @@
 }</programlisting>
     </example>
 
-    <para>The first simple rule to execute has a single <kw>eval</kw>
+    <para>The first simple rule to execute has a single <literal>eval</literal>
     condition that will alway be true, so that this rule will match and
     fire, once, after the start.</para>
 

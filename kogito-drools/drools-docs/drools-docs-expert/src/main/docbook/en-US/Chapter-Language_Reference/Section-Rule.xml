@@ -38,9 +38,9 @@
   <para>Attributes - described below - are optional. They are best written
   one per line.</para>
 
-  <para>The LHS of the rule follows the <kw>when</kw> keyword (ideally on a new
-  line), similarly the RHS follows the <kw>then</kw> keyword (again, ideally on
-  a newline). The rule is terminated by the keyword <kw>end</kw>. Rules cannot
+  <para>The LHS of the rule follows the <literal>when</literal> keyword (ideally on a new
+  line), similarly the RHS follows the <literal>then</literal> keyword (again, ideally on
+  a newline). The rule is terminated by the keyword <literal>end</literal>. Rules cannot
   be nested.</para>
 
   <example>
@@ -92,7 +92,7 @@ end</programlisting>
 
     <variablelist>
       <varlistentry>
-	<term><kw>no-loop</kw></term>
+	<term><literal>no-loop</literal></term>
 	
 	<listitem>
 	  <para>default value: false</para>
@@ -108,7 +108,7 @@ end</programlisting>
       </varlistentry>
 
       <varlistentry>
-	<term><kw>ruleflow-group</kw></term>
+	<term><literal>ruleflow-group</literal></term>
 	
 	<listitem>
 	  <para>default value: N/A</para>
@@ -123,7 +123,7 @@ end</programlisting>
       </varlistentry>
 	
       <varlistentry>
-	<term><kw>lock-on-active</kw></term>
+	<term><literal>lock-on-active</literal></term>
 	
 	<listitem>
 	  <para>default value: false</para>
@@ -147,7 +147,7 @@ end</programlisting>
       </varlistentry>
 	
       <varlistentry>
-	<term><kw>salience</kw></term>
+	<term><literal>salience</literal></term>
 	
 	<listitem>
 	  <para>default value : 0</para>
@@ -164,7 +164,7 @@ end</programlisting>
 	
 	
       <varlistentry>
-	<term><kw>agenda-group</kw></term>
+	<term><literal>agenda-group</literal></term>
 	
 	<listitem>
 	  <para>default value: MAIN</para>
@@ -178,7 +178,7 @@ end</programlisting>
       </varlistentry>
 		
       <varlistentry>
-	<term><kw>auto-focus</kw></term>
+	<term><literal>auto-focus</literal></term>
 	
 	<listitem>
 	  <para>default value: false</para>
@@ -193,7 +193,7 @@ end</programlisting>
       </varlistentry>
 	
       <varlistentry>
-	<term><kw>activation-group</kw></term>
+	<term><literal>activation-group</literal></term>
 	
 	<listitem>
 	  <para>default value: N/A</para>
@@ -212,7 +212,7 @@ end</programlisting>
       </varlistentry>
 	
       <varlistentry>
-	<term><kw>dialect</kw></term>
+	<term><literal>dialect</literal></term>
 	
 	<listitem>
 	  <para>default value: as specified by the package</para>
@@ -231,7 +231,7 @@ end</programlisting>
 	
 	
       <varlistentry>
-	<term><kw>date-effective</kw></term>
+	<term><literal>date-effective</literal></term>
 	
 	<listitem>
 	  <para>default value: N/A</para>	
@@ -244,7 +244,7 @@ end</programlisting>
       </varlistentry>
 	
       <varlistentry>
-	<term><kw>date-expires</kw></term>
+	<term><literal>date-expires</literal></term>
 	
 	<listitem>
 	  <para>default value: N/A</para>
@@ -257,7 +257,7 @@ end</programlisting>
       </varlistentry>
 	
       <varlistentry>
-	<term><kw>duration</kw></term>
+	<term><literal>duration</literal></term>
 	
 	<listitem>
 	  <para>default value: no default value</para>
@@ -320,11 +320,11 @@ end</programlisting>
     </example>
 
     <para>Conditional elements work on one or more <emphasis>patterns</emphasis> (which are
-    described below). The most common one is <kw>and</kw>, which is implicit when you
+    described below). The most common one is <literal>and</literal>, which is implicit when you
     have multiple patterns in the LHS of a rule that are not connected in
-    any way. Note that an <kw>and</kw> cannot have a leading declaration binding like
-    <kw>or</kw>. This is obvious, since a declaration can only
-    reference a single fact, and when the <kw>and</kw> is satisfied it matches more
+    any way. Note that an <literal>and</literal> cannot have a leading declaration binding like
+    <literal>or</literal>. This is obvious, since a declaration can only
+    reference a single fact, and when the <literal>and</literal> is satisfied it matches more
     than one fact - so which fact would the declaration bind to?</para>
 
     <section>
@@ -625,7 +625,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature")</prog
           </figure>
 
           <para>You can do checks against fields that are or may be null, using
-          '==' and '!=' as you would expect, and the literal <kw>null</kw> keyword, as
+          '==' and '!=' as you would expect, and the literal <literal>null</literal> keyword, as
           in <code>Cheese(type != null)</code>, where the evaluator will not
           throw an exception and return true if the value is null.
           Type coercion is always attempted if the field and the value are
@@ -672,14 +672,14 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature")</prog
 
             <para>The operators '==' and '!=' are valid for all types. Other
             relational operatory may be used whenever the type values are
-            ordered; for date fields, '&lt;' means "before". The pair <kw>matches</kw> and
-            <kw>not matches</kw> is only applicable to string fields, <kw>contains</kw> and
-            <kw>not contains</kw> require the field to be of some  Collection type.
+            ordered; for date fields, '&lt;' means "before". The pair <literal>matches</literal> and
+            <literal>not matches</literal> is only applicable to string fields, <literal>contains</literal> and
+            <literal>not contains</literal> require the field to be of some  Collection type.
             Coercion to the correct value for the evaluator and the field will be 
             attempted, as mentioned in the "Values" section.</para>
 
             <simplesect>
-              <title>The Operator <kw>matches</kw></title>
+              <title>The Operator <literal>matches</literal></title>
 
               <para>Matches a field against any valid Java <indexterm>
                   <primary>regular expression</primary>
@@ -697,10 +697,10 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature")</prog
             </simplesect>
 
             <simplesect>
-              <title>The Operator <kw>not matches</kw></title>
+              <title>The Operator <literal>not matches</literal></title>
 
               <para>The operator returns true if the string does not match the
-              regular expression. The same rules apply as for the <kw>matches</kw> operator.
+              regular expression. The same rules apply as for the <literal>matches</literal> operator.
               Example:</para>
 
               <example>
@@ -711,9 +711,9 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature")</prog
             </simplesect>
 
             <simplesect>
-              <title>The Operator <kw>contains</kw></title>
+              <title>The Operator <literal>contains</literal></title>
 
-              <para>The operator <kw>contains</kw> is used to check whether a
+              <para>The operator <literal>contains</literal> is used to check whether a
               field that is a <indexterm>
                   <primary>Collection</primary>
                 </indexterm>Collection or array contains the specified
@@ -728,9 +728,9 @@ CheeseCounter( cheeses contains $var ) // contains with a variable</programlisti
             </simplesect>
 
             <simplesect>
-              <title>The Operator <kw>not contains</kw></title>
+              <title>The Operator <literal>not contains</literal></title>
 
-              <para>The operator <kw>not contains</kw> is used to check whether a
+              <para>The operator <literal>not contains</literal> is used to check whether a
               field that is a <indexterm>
                   <primary>Collection</primary>
                 </indexterm>Collection or array does <emphasis>not</emphasis> contain the
@@ -744,15 +744,15 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
               </example>
 
               <blockquote>
-                <note><para>For backward compatibility, the <kw>excludes</kw>
-                  operator is supported as a synonym for <kw>not contains</kw>.</para></note>
+                <note><para>For backward compatibility, the <literal>excludes</literal>
+                  operator is supported as a synonym for <literal>not contains</literal>.</para></note>
               </blockquote>
             </simplesect>
 
             <simplesect>
-              <title>The Operator <kw>memberOf</kw></title>
+              <title>The Operator <literal>memberOf</literal></title>
 
-              <para>The operator <kw>memberOf</kw> is used to check whether a field is a
+              <para>The operator <literal>memberOf</literal> is used to check whether a field is a
               member of a collection or array; that collection must be a variable.</para>
 
               <example>
@@ -763,9 +763,9 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             </simplesect>
 
             <simplesect>
-              <title>The Operator <kw>not memberOf</kw></title>
+              <title>The Operator <literal>not memberOf</literal></title>
 
-              <para>The operator <kw>not memberOf</kw> is used to check whether a
+              <para>The operator <literal>not memberOf</literal> is used to check whether a
               field is not a
               member of a collection or array; that collection must be a variable.</para>
 
@@ -777,9 +777,9 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             </simplesect>
 
             <simplesect>
-              <title>The Operator <kw>soundslike</kw></title>
+              <title>The Operator <literal>soundslike</literal></title>
 
-              <para>This operator is similar to <kw>matches</kw>, but it checks
+              <para>This operator is similar to <literal>matches</literal>, but it checks
               whether a word has almost the same sound (using English pronounciation)
               as the given value. This is based on the Soundex algorithm
               (see <code>http://en.wikipedia.org/wiki/Soundex</code>).</para>
@@ -967,8 +967,8 @@ Person( age == ( girlAge + 2) ), sex == 'M' )
           <title>Compound Value Restriction</title>
 
           <para>The compound value restriction is used where there is more
-          than one possible value to match. Currently only the <kw>in</kw> and
-          <kw>not in</kw> evaluators support this. The second operand of this operator must be
+          than one possible value to match. Currently only the <literal>in</literal> and
+          <literal>not in</literal> evaluators support this. The second operand of this operator must be
           a comma-separated list of values, enclosed in parentheses. Values may
           be given as variables, literals, return values or qualified identifiers.
           Both evaluators are actually "syntactic sugar", internally rewritten as
@@ -1095,7 +1095,7 @@ Person( eval( age == girlAge + 2 ), sex = 'M' )
         you wish to modify a nested value you should remove the parent objects
         first and re-assert afterwards. If you only have a single parent at
         the root of the graph, when in the MVEL dialect, you can use the
-        <kw>modify</kw> construct and its block setters to write the nested accessor
+        <literal>modify</literal> construct and its block setters to write the nested accessor
         assignments while retracting and inserting the the root parent object
         as required. Nested accessors can be used on either side of the operator
         symbol.</para>
@@ -1120,12 +1120,12 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) </programlisting>
     </section>
 
     <section>
-      <title>Conditional Element <kw>and</kw></title>
+      <title>Conditional Element <literal>and</literal></title>
 
-      <para>The Conditional Element <kw>and</kw> is used to group other Conditional
+      <para>The Conditional Element <literal>and</literal> is used to group other Conditional
       Elements into a logical conjunction. The root element of the LHS is an
-      implicit prefix <kw>and</kw> and doesn't need to be specified. Drools supports
-      both prefix <kw>and</kw> and infix <kw>and</kw>, but prefix is the preferred option
+      implicit prefix <literal>and</literal> and doesn't need to be specified. Drools supports
+      both prefix <literal>and</literal> and infix <literal>and</literal>, but prefix is the preferred option
       as its implicit grouping avoids confusion.</para>
 
       <figure>
@@ -1157,9 +1157,9 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) </programlisting>
      Person( favouriteCheese == cheeseType )</programlisting>
       </example>
 
-      <para>Infix <kw>and</kw> is supported along with explicit grouping with
+      <para>Infix <literal>and</literal> is supported along with explicit grouping with
       parentheses, should it be needed. The symbol '&amp;&amp;', as an
-      alternative to <kw>and</kw>, is deprecated although it is still supported in
+      alternative to <literal>and</literal>, is deprecated although it is still supported in
       the syntax for legacy support reasons.</para>
 
       <figure>
@@ -1186,17 +1186,17 @@ Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )
     </section>
 
     <section>
-      <title>Conditional Element <kw>or</kw></title>
+      <title>Conditional Element <literal>or</literal></title>
 
-      <para>The Conditional Element <kw>or</kw> is used to group other Conditional
-      Elements into a logical disjunction. Drools supports both prefix <kw>or</kw> and
-      infix <kw>or</kw>, but prefix is the preferred option as its implicit grouping
-      avoids confusion. The behavior of the Conditional Element <kw>or</kw> is different
+      <para>The Conditional Element <literal>or</literal> is used to group other Conditional
+      Elements into a logical disjunction. Drools supports both prefix <literal>or</literal> and
+      infix <literal>or</literal>, but prefix is the preferred option as its implicit grouping
+      avoids confusion. The behavior of the Conditional Element <literal>or</literal> is different
       from the connective '||' for constraints and restrictions in field
       constraints. The engine actually has no understanding of the Conditional
-      Element <kw>or</kw>; instead, via a number of different logic transformations,
-      a rule with <kw>or</kw> is rewritten as a number of subrules. This process ultimately
-      results in a rule that has a single <kw>or</kw> as the root node and one subrule
+      Element <literal>or</literal>; instead, via a number of different logic transformations,
+      a rule with <literal>or</literal> is rewritten as a number of subrules. This process ultimately
+      results in a rule that has a single <literal>or</literal> as the root node and one subrule
       for each of its CEs. Each subrule can activate and fire like any normal rule;
       there is no special behavior or interaction between these subrules. - This can
       be most confusing to new rule authors.</para>
@@ -1220,9 +1220,9 @@ Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )
 </programlisting>
       </example>
 
-      <para>Infix <kw>or</kw> is supported along with explicit grouping with
+      <para>Infix <literal>or</literal> is supported along with explicit grouping with
       parentheses, should it be needed. The symbol '||', as an alternative to
-      <kw>or</kw>, is deprecated although it is still supported in the syntax for
+      <literal>or</literal>, is deprecated although it is still supported in the syntax for
       legacy support reasons.</para>
 
       <figure>
@@ -1247,7 +1247,7 @@ Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )
     Person( favouriteCheese == cheeseType ) )</programlisting>
       </example>
 
-      <para>The Conditional Element <kw>or</kw> also allows for optional pattern
+      <para>The Conditional Element <literal>or</literal> also allows for optional pattern
       binding. This means that each resulting subrule will bind its pattern to
       the pattern binding. Each pattern must be bound separately,
       using eponymous variables:</para>
@@ -1259,13 +1259,13 @@ Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )
     pensioner : Person( sex == "m", age &gt; 65 ) )</programlisting>
       </example>
 
-      <para>Since the conditional element <kw>or</kw> results in multiple subrule
+      <para>Since the conditional element <literal>or</literal> results in multiple subrule
       generation, one for each possible logically outcome, the example above
       would result in the internal generation of two rules. These two rules
       work independently within the Working Memory, which means both can
       match, activate and fire - there is no shortcutting.</para>
 
-      <para>The best way to think of the conditional element <kw>or</kw> is as a
+      <para>The best way to think of the conditional element <literal>or</literal> is as a
       shortcut for generating two or more similar rules. When you think
       of it that
       way, it's clear that for a single rule there could be multiple
@@ -1273,7 +1273,7 @@ Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )
     </section>
 
     <section>
-      <title>Conditional Element <kw>eval</kw></title>
+      <title>Conditional Element <literal>eval</literal></title>
 
       <figure>
         <title>eval</title>
@@ -1285,11 +1285,11 @@ Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )
         </mediaobject>
       </figure>
 
-      <para>The CE <kw>eval</kw> is essentially a catch-all which allows any semantic code
+      <para>The CE <literal>eval</literal> is essentially a catch-all which allows any semantic code
       (that returns a primitive boolean) to be executed. This code can refer to
       variables that were bound in the LHS of the rule, and functions in the
       rule package. Overuse of eval reduces the declarativeness of your rules
-      and can result in a poorly performing engine. While <kw>eval</kw> can be used
+      and can result in a poorly performing engine. While <literal>eval</literal> can be used
       anywhere in the patterns, the best practice is to add it as the last
       conditional element in the LHS of a rule.</para>
 
@@ -1314,7 +1314,7 @@ eval( isValid(p1, p2) )</programlisting>
     </section>
 
     <section>
-      <title>Conditional Element <kw>not</kw></title>
+      <title>Conditional Element <literal>not</literal></title>
 
       <figure>
         <title>not</title>
@@ -1327,11 +1327,11 @@ eval( isValid(p1, p2) )</programlisting>
         </mediaobject>
       </figure>
 
-      <para>The CE <kw>not</kw> is first order logic's non-existential quantifier and checks
+      <para>The CE <literal>not</literal> is first order logic's non-existential quantifier and checks
       for the non-existence of something in the Working Memory. Think of "not"
       as meaning "there must be none of...".</para>
 
-      <para>The keyword <kw>not</kw> be followed by parentheses around the CEs
+      <para>The keyword <literal>not</literal> be followed by parentheses around the CEs
       that it applies to. In the simplest case of a single pattern (like
       below) you may optionally omit the parentheses.</para>
 
@@ -1348,7 +1348,7 @@ eval( isValid(p1, p2) )</programlisting>
 not Bus(color == "red")
 // Brackets are optional:
 not ( Bus(color == "red", number == 42) )
-// "not" with nested infix <kw>and</kw> - two patterns,
+// "not" with nested infix <literal>and</literal> - two patterns,
 // brackets are requires:
 not ( Bus(color == "red") and
       Bus(color == "blue") )</programlisting>
@@ -1356,7 +1356,7 @@ not ( Bus(color == "red") and
     </section>
 
     <section>
-      <title>Conditional Element <kw>exists</kw></title>
+      <title>Conditional Element <literal>exists</literal></title>
 
       <figure>
         <title>exists</title>
@@ -1369,16 +1369,16 @@ not ( Bus(color == "red") and
         </mediaobject>
       </figure>
 
-      <para>The CE <kw>exists</kw> is first order logic's existential quantifier and checks
+      <para>The CE <literal>exists</literal> is first order logic's existential quantifier and checks
       for the existence of something in the Working Memory. Think of "exists" as
       meaning "there is at least one..". It is different from just having the pattern
       on its own, which is more like saying "for each one of...". If you use
-      <kw>exists</kw> with a pattern, the rule will only activate at most once, regardless
+      <literal>exists</literal> with a pattern, the rule will only activate at most once, regardless
       of how much data there is in working memory that matches the
-      condition inside of the <kw>exists</kw> pattern. Since only the existence matters, 
+      condition inside of the <literal>exists</literal> pattern. Since only the existence matters,
       no bindings will be established.</para>
 
-      <para>The keyword <kw>exists</kw> must be followed by parentheses around the
+      <para>The keyword <literal>exists</literal> must be followed by parentheses around the
       CEs that it applies to. In the simplest case of a single pattern (like
       below) you may optionally omit the parentheses.</para>
 
@@ -1394,7 +1394,7 @@ not ( Bus(color == "red") and
         <programlisting>exists Bus(color == "red")
 // brackets are optional:
 exists ( Bus(color == "red", number == 42) )
-// "exists" with nested infix <kw>and</kw>,
+// "exists" with nested infix <literal>and</literal>,
 // brackets are required:
 exists ( Bus(color == "red") and
          Bus(color == "blue") )</programlisting>
@@ -1402,7 +1402,7 @@ exists ( Bus(color == "red") and
     </section>
 
     <section>
-      <title>Conditional Element <kw>forall</kw></title>
+      <title>Conditional Element <literal>forall</literal></title>
 
       <figure>
         <title>forall</title>
@@ -1415,8 +1415,8 @@ exists ( Bus(color == "red") and
         </mediaobject>
       </figure>
 
-      <para>The Conditional Element <kw>forall</kw> completes the First Order Logic
-      support in Drools. The Conditional Element <kw>forall</kw> evaluates to true
+      <para>The Conditional Element <literal>forall</literal> completes the First Order Logic
+      support in Drools. The Conditional Element <literal>forall</literal> evaluates to true
       when all facts that match the first pattern match all the remaining
       patterns. Example:</para>
 
@@ -1435,7 +1435,7 @@ end
       true.</para>
 
       <para>To state that all facts of a given type in the working memory must
-      match a set of constraints, <kw>forall</kw> can be written with a single pattern
+      match a set of constraints, <literal>forall</literal> can be written with a single pattern
       for simplicity. Example:</para>
 
       <para><example>
@@ -1450,7 +1450,7 @@ end
 </programlisting>
         </example></para>
 
-      <para>Another example shows multiple patterns inside the <kw>forall</kw>:<example>
+      <para>Another example shows multiple patterns inside the <literal>forall</literal>:<example>
           <title>Multi-Pattern Forall</title>
 
           <programlisting>rule "all employees have health and dental care programs"
@@ -1466,7 +1466,7 @@ end
         </example></para>
 
       <para>Forall can be nested inside other CEs for complete expressiveness.
-      For instance, <kw>forall</kw> can be used inside a <kw>not</kw> CE. Note that only single
+      For instance, <literal>forall</literal> can be used inside a <literal>not</literal> CE. Note that only single
       patterns have optional parentheses, so that with a nested forall parentheses
       must be used :<example>
           <title>Combining Forall with Not CE</title>
@@ -1488,14 +1488,14 @@ end
 
       <programlisting>not(p1 and not(and p2 p3...))</programlisting>
 
-      <para>Also, it is important to note that <kw>forall</kw> is a <emphasis>scope
+      <para>Also, it is important to note that <literal>forall</literal> is a <emphasis>scope
       delimiter</emphasis>. Therefore, it can use any previously bound
       variable, but no variable bound inside it will be available for use
       outside of it.</para>
     </section>
 
     <section>
-      <title>Conditional Element <kw>from</kw></title>
+      <title>Conditional Element <literal>from</literal></title>
 
       <figure>
         <title>from</title>
@@ -1507,7 +1507,7 @@ end
         </mediaobject>
       </figure>
 
-      <para>The Conditional Element <kw>from</kw> enables users to specify an arbitrary
+      <para>The Conditional Element <literal>from</literal> enables users to specify an arbitrary
       source for data to be matched by LHS patterns. This
       allows the engine to reason over data not in the Working Memory. The data
       source could be a sub-field on a bound variable or the results of a method
@@ -1547,8 +1547,8 @@ end
 </programlisting></para>
 
       <para>Previous examples were evaluations using a single pattern. The
-      CE <kw>from</kw> also support object sources that return a collection of objects.
-      In that case, <kw>from</kw> will iterate  over all objects in the
+      CE <literal>from</literal> also support object sources that return a collection of objects.
+      In that case, <literal>from</literal> will iterate  over all objects in the
       collection and try to match each of them individually. For instance, if
       we want a rule that applies 10% discount to each item in an order, we
       could do:</para>
@@ -1565,9 +1565,9 @@ end
       <para>The above example will cause the rule to fire once for each item
       whose value is greater than 100 for each given order.</para>
 
-      <para>You must take caution, however, when using <kw>from</kw>, 
+      <para>You must take caution, however, when using <literal>from</literal>,
       especially in conjunction with the
-      <kw>lock-on-active</kw> rule attribute 
+      <literal>lock-on-active</literal> rule attribute
       as it may produce unexpected results. Consider the example provided earlier, but
       now slightly modified as follows:</para>
       
@@ -1598,27 +1598,27 @@ end
 	  will find that only the second rule fires.</para>
 	  
 	  <para>If you were to turn on the audit log, you would also see that when the second rule fires,
-	  it deactivates the first rule. Since the rule attribute <kw>lock-on-active</kw>
+	  it deactivates the first rule. Since the rule attribute <literal>lock-on-active</literal>
 	  prevents a rule from creating new activations when a set of facts change, the first rule fails to
 	  reactivate. Though the set of facts have not changed, the use of
-	  <kw>from</kw> returns a new fact for all intents and purposes each time
+	  <literal>from</literal> returns a new fact for all intents and purposes each time
 	  it is evaluated. 
 	  </para>
 	  
 	  <para>First, it's important to review why you would use the above pattern. You may have
 	  many rules across different rule-flow groups. When rules modify working memory and other rules
 	  downstream of your RuleFlow (in different rule-flow groups) need to be reevaluated,
-          the use of <kw>modify</kw> is critical. You don't, however, want other rules in the
+          the use of <literal>modify</literal> is critical. You don't, however, want other rules in the
           same rule-flow group to place activations on one another recursively. In this case,
-          the <kw>no-loop</kw> attribute is ineffective, as it would only prevent a rule from
-          activating itself recursively. Hence, you resort to <kw>lock-on-active</kw>.</para>
+          the <literal>no-loop</literal> attribute is ineffective, as it would only prevent a rule from
+          activating itself recursively. Hence, you resort to <literal>lock-on-active</literal>.</para>
 	  
 	  <para>
 	  There are several ways to address this issue:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Avoid the use of <kw>from</kw> when you can assert all facts into working memory 
+          <para>Avoid the use of <literal>from</literal> when you can assert all facts into working memory
           or use nested object references in your constraint expressions (shown below).</para>
         </listitem>
         <listitem>
@@ -1626,13 +1626,13 @@ end
           in your condition (LHS).</para>
         </listitem>
         <listitem>
-          <para>Avoid the use of <kw>lock-on-active</kw> when you
+          <para>Avoid the use of <literal>lock-on-active</literal> when you
           can explicitly manage how rules within the same rule-flow group place
           activations on one another (explained below).</para>
         </listitem>
       </itemizedlist>
 
-	<para>The preferred solution is to minimize use of <kw>from</kw> when you can assert
+	<para>The preferred solution is to minimize use of <literal>from</literal> when you can assert
         all your facts into working memory directly. In the example above, both the 
         Person and Address instance can be asserted into working memory. In this case,
         because the graph is fairly simple, an even easier solution is to modify your
@@ -1662,12 +1662,12 @@ end
 	  holds one or more Addresses and you wish to use an existential quantifier to
 	  match people with at least one address that meets certain conditions. 
 	  In this case, you would have to resort to 
-	  the use of <kw>from</kw> to reason over the collection.</para>
+	  the use of <literal>from</literal> to reason over the collection.</para>
 	  
 	  <para>
-	  There are several ways to use <kw>from</kw> to achieve this and not all of them
-          exhibit an issue with the use of <kw>lock-on-active</kw>.
-          For example, the following use of <kw>from</kw> causes both rules to fire as
+	  There are several ways to use <literal>from</literal> to achieve this and not all of them
+          exhibit an issue with the use of <literal>lock-on-active</literal>.
+          For example, the following use of <literal>from</literal> causes both rules to fire as
           expected:</para>
 	  
 	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
@@ -1718,15 +1718,15 @@ then
 end</programlisting></para>
 	  
 	  <para>In the above example, the $addresses variable is returned from the
-	  use of <kw>from</kw>. The example also introduces
+	  use of <literal>from</literal>. The example also introduces
 	  a new object, assessment, to highlight one possible solution in this case.
 	  If the $assessment variable assigned in the condition (LHS) is moved to the last condition
 	  in each rule, both rules fire as expected.
 	  </para>
 	  
 	  <para>
-	  Though the above examples demonstrate how to combine the use of <kw>from</kw>
-	  with <kw>lock-on-active</kw> where no loss of rule activations occurs, they
+	  Though the above examples demonstrate how to combine the use of <literal>from</literal>
+	  with <literal>lock-on-active</literal> where no loss of rule activations occurs, they
           carry the drawback of placing a dependency
           on the order of conditions on the LHS. In addition, the solutions present
           greater complexity for the rule author in terms of keeping track of
@@ -1734,12 +1734,12 @@ end</programlisting></para>
 	  
 	  <para>A better alternative is to 
 	  assert more facts into working memory. In this case, a person's addresses
-	  may be asserted into working memory and the use of <kw>from</kw>
+	  may be asserted into working memory and the use of <literal>from</literal>
 	  would not be necessary.</para>
 	  
 	  <para>There are cases, however, where asserting all data into working memory is not
 	  practical and we need to find other solutions. Another option is to reevaluate the
-	  need for <kw>lock-on-active</kw>. An alternative to <kw>lock-on-active</kw> is to 
+	  need for <literal>lock-on-active</literal>. An alternative to <literal>lock-on-active</literal> is to
 	  directly manage how rules within the same rule-flow group activate one another
 	  by including conditions in each rule that prevent rules from activating
           each other recursively when working memory is modified. For example, in the 
@@ -1750,7 +1750,7 @@ end</programlisting></para>
     </section>
 
     <section>
-      <title>Conditional Element <kw>collect</kw></title>
+      <title>Conditional Element <literal>collect</literal></title>
 
       <figure>
         <title>collect</title>
@@ -1763,7 +1763,7 @@ end</programlisting></para>
         </mediaobject>
       </figure>
 
-      <para>The Conditional Element <kw>collect</kw> allows rules to reason over a collection
+      <para>The Conditional Element <literal>collect</literal> allows rules to reason over a collection
       of objects obtained from the given source or from the working memory. In First 
       Oder Logic terms this is the cardinality quantifier. A simple example:</para>
 
@@ -1786,7 +1786,7 @@ end
       If 3 or more alarms are found for a given system, the rule will
       fire.</para>
 
-      <para>The result pattern of <kw>collect</kw> can
+      <para>The result pattern of <literal>collect</literal> can
       be any concrete class that implements the <code>java.util.Collection</code>
       interface
       and provides a default no-arg public constructor. This means that you can use
@@ -1797,13 +1797,13 @@ end
       <para>Both source and result patterns can be constrained as any other
       pattern.</para>
 
-      <para>Variables bound before the <kw>collect</kw> CE are in the scope of both source and
+      <para>Variables bound before the <literal>collect</literal> CE are in the scope of both source and
       result patterns and therefore you can use them to constrain both your
-      source and result patterns. But note that <kw>collect</kw> is a scope delimiter for
+      source and result patterns. But note that <literal>collect</literal> is a scope delimiter for
       bindings, so that any binding made inside of it is not available for use
       outside of it.</para>
 
-      <para>Collect accepts nested <kw>from</kw> CEs. The following example is a valid
+      <para>Collect accepts nested <literal>from</literal> CEs. The following example is a valid
       use of "collect":</para>
 
       <programlisting>import java.util.LinkedList;
@@ -1822,7 +1822,7 @@ end
     </section>
 
     <section>
-      <title>Conditional Element <kw>accumulate</kw></title>
+      <title>Conditional Element <literal>accumulate</literal></title>
 
       <figure>
         <title>accumulate</title>
@@ -1834,20 +1834,20 @@ end
         </mediaobject>
       </figure>
 
-      <para>The Conditional Element <kw>accumulate</kw> is a more flexible and powerful
-      form of <kw>collect</kw>, the sense that it can be used to do what <kw>collect</kw> does
-      and also achieve things that the CE <kw>collect</kw> is not capable of doing.
+      <para>The Conditional Element <literal>accumulate</literal> is a more flexible and powerful
+      form of <literal>collect</literal>, the sense that it can be used to do what <literal>collect</literal> does
+      and also achieve things that the CE <literal>collect</literal> is not capable of doing.
       Basically, what it does is that it allows a rule to iterate
       over a collection of objects, executing custom actions for each of the
       elements, and at the end it returns a result object.</para>
 
-      <para>The general syntax of the <kw>accumulate</kw> CE is:</para>
+      <para>The general syntax of the <literal>accumulate</literal> CE is:</para>
 
-      <programlisting><replaceable>&lt;result pattern&gt;</replaceable> <kw>from accumulate(</kw> <replaceable>&lt;source pattern&gt;</replaceable><kw>,</kw>
-                                  <kw>init(</kw> <replaceable>&lt;init code&gt;</replaceable> <kw>),</kw>
-                                  <kw>action(</kw> <replaceable>&lt;action code&gt;</replaceable> <kw>),</kw>
-                                  <kw>reverse(</kw> <replaceable>&lt;reverse code&gt;</replaceable> <kw>),</kw>
-                                  <kw>result(</kw> <replaceable>&lt;result expression&gt;</replaceable> <kw>) )</kw>
+      <programlisting><replaceable>&lt;result pattern&gt;</replaceable> <literal>from accumulate(</literal> <replaceable>&lt;source pattern&gt;</replaceable><literal>,</literal>
+                                  <literal>init(</literal> <replaceable>&lt;init code&gt;</replaceable> <literal>),</literal>
+                                  <literal>action(</literal> <replaceable>&lt;action code&gt;</replaceable> <literal>),</literal>
+                                  <literal>reverse(</literal> <replaceable>&lt;reverse code&gt;</replaceable> <literal>),</literal>
+                                  <literal>result(</literal> <replaceable>&lt;result expression&gt;</replaceable> <literal>) )</literal>
 </programlisting>
 
       <para>The meaning of each of the elements is the following:</para>
@@ -1893,10 +1893,10 @@ end
           <para><emphasis>&lt;result pattern&gt;</emphasis>: this
           is a regular pattern that the engine tries to match against the
           object returned from the <emphasis>&lt;result expression&gt;</emphasis>.
-          If it matches, the <kw>accumulate</kw> conditional element
+          If it matches, the <literal>accumulate</literal> conditional element
           evaluates to <emphasis>true</emphasis> and the engine
           proceeds with the evaluation of the next CE in the rule. If it does
-          not matches, the <kw>accumulate</kw> CE
+          not matches, the <literal>accumulate</literal> CE
           evaluates to <emphasis>false</emphasis> and the engine
           stops evaluating CEs for that rule.</para>
         </listitem>
@@ -1941,7 +1941,7 @@ end
       but it is strongly recommended that the user writes it in order to benefit
       from the <emphasis>improved performance on update and retract</emphasis>.</para>
 
-      <para>The <kw>accumulate</kw> CE can be used to
+      <para>The <literal>accumulate</literal> CE can be used to
       execute any action on source objects. The following example instantiates
       and populates a custom object:</para>
 
@@ -2035,7 +2035,7 @@ end
         line to the configuration file or set a system property to let the
         engine know about the new function. As an example of an Accumulate
         Function implementation, the following is the implementation of the
-        <kw>average</kw> function:</para>
+        <literal>average</literal> function:</para>
 
         <programlisting>/*
  * Copyright 2007 JBoss Inc
@@ -2164,26 +2164,26 @@ public class AverageAccumulateFunction implements AccumulateFunction {
       memory; without having to first reference a working memory
       instance.</para>
 
-      <para><kw>update(</kw><emphasis>object, handle</emphasis><kw>);</kw>
+      <para><literal>update(</literal><emphasis>object, handle</emphasis><literal>);</literal>
       will tell the engine that an object has
       changed (one that has been bound to something on the LHS) and rules may
       need to be reconsidered.</para>
     
-      <para><kw>update(</kw><emphasis>object</emphasis><kw>);</kw>  can
+      <para><literal>update(</literal><emphasis>object</emphasis><literal>);</literal>  can
       also be used; here the Knowledge Helper will look up the facthandle for you,
       via an identity check, for the passed object. (Note that if you  provide
       Property Change Listeners to your Java beans that you are inserting into
       the engine, you can avoid the need to call  <code>update()</code> when the
       object changes.)</para>
 
-      <para><kw>insert(new</kw> <emphasis>Something</emphasis><kw>());</kw>
+      <para><literal>insert(new</literal> <emphasis>Something</emphasis><literal>());</literal>
       will place a new object of your creation into the Working Memory.</para>
 
-      <para><kw>insertLogical(new</kw> <emphasis>Something</emphasis><kw>());</kw>
+      <para><literal>insertLogical(new</literal> <emphasis>Something</emphasis><literal>());</literal>
       is similar to insert, but the object will be automatically retracted when there are
       no more facts to support the truth of the currently firing rule.</para>
 
-      <para><kw>retract(</kw><emphasis>handle</emphasis><kw>);</kw>
+      <para><literal>retract(</literal><emphasis>handle</emphasis><literal>);</literal>
       removes an object from Working Memory.</para>
  
       <para>These convenience methods are basically macros that provide short
@@ -2293,16 +2293,16 @@ kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus(
     </section>
 
     <section>
-      <title>The <kw>modify</kw> Statement</title>
+      <title>The <literal>modify</literal> Statement</title>
 
       <para>This language extension provides a structured approach to
       fact updates. It combines the update operation with a number of
       setter calls to change the object's fields. This is the syntax
-      schema for the <kw>modify</kw> statement:</para>
+      schema for the <literal>modify</literal> statement:</para>
 
-      <programlisting><kw>modify ( </kw><replaceable>&lt;fact-expression&gt;</replaceable><kw> ) {</kw>
-    <replaceable>&lt;expression&gt;</replaceable> [ <kw>,</kw> <replaceable>&lt;expression&gt;</replaceable> ]*
-<kw>}</kw></programlisting>
+      <programlisting><literal>modify ( </literal><replaceable>&lt;fact-expression&gt;</replaceable><literal> ) {</literal>
+    <replaceable>&lt;expression&gt;</replaceable> [ <literal>,</literal> <replaceable>&lt;expression&gt;</replaceable> ]*
+<literal>}</literal></programlisting>
 
       <para>The parenthesized <emphasis>&lt;fact-expression&gt;</emphasis> must yield
       a fact object reference.  The expression list in the block should consist of

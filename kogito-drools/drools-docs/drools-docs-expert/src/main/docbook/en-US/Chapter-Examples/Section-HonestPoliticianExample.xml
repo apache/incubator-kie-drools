@@ -119,7 +119,7 @@ end</programlisting>
     </example>
 
     <para>With the <code>Hope</code> object being automatically retracted,
-    via the truth maintenance system, the conditional element <kw>not</kw>
+    via the truth maintenance system, the conditional element <literal>not</literal>
     applied to <code>Hope</code> is no longer true so that the following
     rule will match and fire.</para>
 
@@ -149,7 +149,7 @@ end</programlisting>
 
     <para>The moment we insert the first politician we have two activations.
     The rule "We have an honest Politician" is activated only once for the first
-    inserted politician because it uses an <kw>exists</kw> conditional
+    inserted politician because it uses an <literal>exists</literal> conditional
     element, which matches once for any number. The rule "Hope is Dead" is
     also activated at this stage, because we have not yet inserted the
     <code>Hope</code> object. Rule "We have an honest Politician" fires first,

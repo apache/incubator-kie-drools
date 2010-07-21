@@ -316,9 +316,9 @@ There are two cells on the same column with the same value at (6,3) and (7,3)</p
       this case so that the GUI can display the new state of the grid.</para>
 
       <para>Rule #2 identifies cells in the grid which have only one possible
-      value. The first line of the <kw>when</kw> clause matches all of the
+      value. The first line of the <literal>when</literal> clause matches all of the
       <code>PossibleCellValue</code> objects in the Working Memory. The
-      second line demonstrates a use of the <kw>not</kw> keyword. This rule
+      second line demonstrates a use of the <literal>not</literal> keyword. This rule
       will only fire if no other <code>PossibleCellValue</code> objects
       exist in the Working Memory at the same
       row and column but with a different value. When the rule fires, the
