@@ -177,7 +177,7 @@
           </listitem>
 
           <listitem>
-            <para>It's possible to change the <kw>not</kw> Conditional
+            <para>It's possible to change the <literal>not</literal> Conditional
             Element so that the test algorithm only uses the
             "first-best-match", which is, basically, transforming
             the test algorithm to backward chaining. The results are only
@@ -198,7 +198,7 @@
 
           <listitem>
             <para>If no facts are retracted in the reasoning cycle, as a
-            result of the <kw>not</kw> CE, the port is incorrect.</para>
+            result of the <literal>not</literal> CE, the port is incorrect.</para>
           </listitem>
         </itemizedlist>
       </section>

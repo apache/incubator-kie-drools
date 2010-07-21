@@ -104,7 +104,7 @@
         <emphasis>assert</emphasis> or <emphasis>assertion</emphasis> to refer
         to facts made available to the system. However, due to "assert" being
         a keyword in most languages, we have decided to use the
-        <kw>insert</kw> keyword; so expect to hear the two used
+        <literal>insert</literal> keyword; so expect to hear the two used
         interchangeably.</para>
 
         <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
@@ -171,7 +171,7 @@ ksession.retract( stiltonHandle );            </programlisting>
         objects. The <code>update()</code> method can only be used with
         objects that have shadow proxies turned on. The update method is only
         available within Java code. On the right hand side of a rule, also the
-        <kw>modify</kw> statement is supported, providing simplified calls to
+        <literal>modify</literal> statement is supported, providing simplified calls to
         the object's setters.</para>
 
         <programlisting>Cheese stilton = new Cheese("stilton");
@@ -1697,11 +1697,11 @@ pipeline.insert( inXml, resultHandler );
     </example>
 
     <para><code>&lt;set-global&gt;</code> also supports two other optional
-    attributes, <kw>out</kw> and <kw>out-identifier</kw>. A true value for the
-    boolean <kw>out</kw> will add the global to the
+    attributes, <literal>out</literal> and <literal>out-identifier</literal>. A true value for the
+    boolean <literal>out</literal> will add the global to the
     <code>&lt;batch-execution-results&gt;</code> payload, using the name from
-    the <kw>identifier</kw> attribute. <kw>out-identifier</kw> works like
-    <kw>out</kw> but additionally allows you to override the identifier used
+    the <literal>identifier</literal> attribute. <literal>out-identifier</literal> works like
+    <literal>out</literal> but additionally allows you to override the identifier used
     in the <code>&lt;batch-execution-results&gt;</code> payload.</para>
 
     <example>
@@ -1723,8 +1723,8 @@ pipeline.insert( inXml, resultHandler );
     </example>
 
     <para>There is also a <code>&lt;get-global&gt;</code> element, without
-    contents, with just an <kw>out-identifier</kw> attribute. (There is no
-    need for an <kw>out</kw> attribute because retrieving the value is the
+    contents, with just an <literal>out-identifier</literal> attribute. (There is no
+    need for an <literal>out</literal> attribute because retrieving the value is the
     sole purpose of a <code>&lt;get-global&gt;</code> element.</para>
 
     <example>
@@ -1737,11 +1737,11 @@ pipeline.insert( inXml, resultHandler );
 </programlisting>
     </example>
 
-    <para>While the <kw>out</kw> attribute is useful in returning specific
+    <para>While the <literal>out</literal> attribute is useful in returning specific
     instances as a result payload, we often wish to run actual queries. Both
-    parameter and parameterless queries are supported. The <kw>name</kw>
+    parameter and parameterless queries are supported. The <literal>name</literal>
     attribute is the name of the query to be called, and the
-    <kw>out-identifier</kw> is the identifier to be used for the query results
+    <literal>out-identifier</literal> is the identifier to be used for the query results
     in the <code>&lt;execution-results&gt;</code> payload.</para>
 
     <example>

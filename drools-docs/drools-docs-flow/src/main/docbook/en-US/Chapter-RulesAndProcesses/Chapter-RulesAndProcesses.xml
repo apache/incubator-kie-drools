@@ -212,12 +212,12 @@
 
       <para>Drools Flow can easily include a set of rules as part of the process.
       The rules that need to be evaluated should be grouped in a ruleflow
-      group, using the <kw>ruleflow-group</kw> rule attribute. Activating a
+      group, using the <literal>ruleflow-group</literal> rule attribute. Activating a
       RuleSet node for the group triggers the evaluation of these rules in your
       process.  This example uses two RuleSet nodes in the process: one for the
       validation of the order and one for calculating the discount.  For example,
       one of the rules for validiting an order is shown below. Note the
-      <kw>ruleflow-group</kw> attribute, which ensures that this rule is evaluated
+      <literal>ruleflow-group</literal> attribute, which ensures that this rule is evaluated
       as part of the RuleSet node with the same ruleflow group shown in the
       figure.</para>
         <programlisting>
