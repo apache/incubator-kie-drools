@@ -31,7 +31,7 @@
 
     <para>A basic benchmarker configuration file looks something like this:</para>
 
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting role="XML">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solverBenchmarkSuite&gt;
     &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
 
@@ -120,7 +120,7 @@
     <para>To configure graph and CSV output of the best score over time, just add a
     <literal>solverStatisticType</literal> line:</para>
 
-    <programlisting>&lt;solverBenchmarkSuite&gt;
+    <programlisting role="XML">&lt;solverBenchmarkSuite&gt;
     &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
     &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
     ...
