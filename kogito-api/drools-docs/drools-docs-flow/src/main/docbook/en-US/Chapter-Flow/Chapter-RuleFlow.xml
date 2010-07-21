@@ -501,7 +501,7 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
         of rules that need to be evaluated.  The rules are evaluated when the node
         is reached.  A RuleFlowGroup node should have one incoming connection and
         one outgoing connection.  Rules can become part of a specific ruleflow group
-        using the <kw>ruleflow-group</kw> attribute in the header. When a RuleFlowGroup node
+        using the <literal>ruleflow-group</literal> attribute in the header. When a RuleFlowGroup node
         is reached in the ruleflow, the engine will start executing rules that are
         part of the corresponding ruleflow-group (if any).  Execution will
         automatically continue to the next node if there are no more active rules in
@@ -511,7 +511,7 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
         the other rules. Note that the ruleflow will immediately continue with the
         next node if it encounters a ruleflow group where there are no active rules
         at that time.  If the ruleflow group was already active, the ruleflow group
-        will remain active and exeution will only continue if all active rules of the
+        will remain active and execution will only continue if all active rules of the
         ruleflow group has been completed.  It contains the following properties:</para>
         <itemizedlist>
           <listitem>
@@ -1595,7 +1595,7 @@ WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
 
   <para>To use a ruleflow to describe the order in which rules should be
   evaluated, you should first group rules into ruleflow groups using the 
-  <kw>ruleflow-group</kw> rule attribute ("options" in the GUI).  Then you
+  <literal>ruleflow-group</literal> rule attribute ("options" in the GUI).  Then you
   should create a ruleflow  graph (which is a flow chart) that graphically
   describe the order in which the rules should be considered, by specifying
   the order in which the ruleflow-groups should be evaluated.</para>

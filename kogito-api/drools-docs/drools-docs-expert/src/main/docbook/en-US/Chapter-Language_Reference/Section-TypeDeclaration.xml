@@ -59,8 +59,8 @@
     <title>Declaring New Types</title>
 
     <para>To declare a new type, all you need to do is use the keyword
-    <kw>declare</kw>, followed by the list of fields,  and the keyword
-    <kw>end</kw>.</para>
+    <literal>declare</literal>, followed by the list of fields,  and the keyword
+    <literal>end</literal>.</para>
 
     <example>
       <title>Declaring a new fact type: Address</title>
@@ -98,7 +98,7 @@
     defined fact type Address.</para>
 
     <para>You may avoid having to write the fully qualified name of a class
-    every time you write it by using the <kw>import</kw> clause, as previously
+    every time you write it by using the <literal>import</literal> clause, as previously
     discussed.</para>
 
     <para><example>

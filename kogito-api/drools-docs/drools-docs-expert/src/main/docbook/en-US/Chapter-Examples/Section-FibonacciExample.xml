@@ -11,7 +11,7 @@
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> Fibonacci.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates Recursion,
-  the CE <kw>not</kw> and cross product matching</screen>
+  the CE <literal>not</literal> and cross product matching</screen>
 
     <para>The Fibonacci Numbers (see <ulink url="http://en.wikipedia.org/wiki/Fibonacci_number">http://en.wikipedia.org/wiki/Fibonacci_number</ulink>)
     discovered by Leonardo of Pisa (see <ulink url="http://en.wikipedia.org/wiki/Fibonacci">http://en.wikipedia.org/wiki/Fibonacci</ulink>) is a sequence 
@@ -91,7 +91,7 @@ recurse for 2
     to insert the other 49 <code>Fibonacci</code> objects. This example
     doesn't use
     <code>PropertyChangeSupport</code>. It uses the MVEL dialect, which
-    means we can use the <kw>modify</kw> keyword, which allows a block
+    means we can use the <literal>modify</literal> keyword, which allows a block
     setter action which also notifies the engine of changes.</para>
 
     <example>
@@ -107,7 +107,7 @@ ksession.fireAllRules();</programlisting>
     one less than the currently matched object. Each time a Fibonacci
     object is added while the one with a sequence field equal to 1
     does not exist, the rule re-matches and fires again. The
-    <kw>not</kw> conditional element is used to stop the rule's matching
+    <literal>not</literal> conditional element is used to stop the rule's matching
     once we have all 50 Fibonacci objects in memory. The rule also has a
     salience value, because we need to have all 50 <code>Fibonacci</code>
     objects asserted before we execute the Bootstrap rule.</para>
@@ -177,7 +177,7 @@ end</programlisting>
     <para>When a <code>Fibonacci</code> object with a sequence of 1 is
     asserted the Bootstrap rule is matched again, causing two activations
     for this rule. Note that the "Recurse" rule does not match and activate
-    because the <kw>not</kw> conditional element stops the rule's matching
+    because the <literal>not</literal> conditional element stops the rule's matching
     as soon as a <code>Fibonacci</code> object with a sequence of 1
     exists.</para>
 
@@ -235,7 +235,7 @@ end
 </programlisting>
     </example>
 
-    <para>The <kw>modify</kw> statement updated the value of the
+    <para>The <literal>modify</literal> statement updated the value of the
     <code>Fibonacci</code> object bound to <code>f3</code>. This means
     we now have another new Fibonacci object with a value not equal to -1,
     which allows the "Calculate" rule to rematch and calculate the next

@@ -143,7 +143,7 @@ ksession.dispose();</programlisting>
         a Rule Flow Groups defined in our rules (DRL) file that we will
         look at later. For example, when the flow reaches the Rule Flow Group
         "Too High", only those rules marked with an attribute of
-        <kw>ruleflow-group</kw> <code>"Too High"</code> can potentially fire.</para>
+        <literal>ruleflow-group</literal> <code>"Too High"</code> can potentially fire.</para>
       </listitem>
 
       <listitem>
@@ -168,7 +168,7 @@ ksession.dispose();</programlisting>
   <para>The various nodes in combination with the rules make the
   Number Guess game work. For example, the "Guess" Rule Flow Group
   allows only the rule "Get user Guess" to fire, because only that rule
-  has a matching attribute of <kw>ruleflow-group</kw> <code>"Guess"</code>.</para>
+  has a matching attribute of <literal>ruleflow-group</literal> <code>"Guess"</code>.</para>
 
   <example>
     <title>A Rule firing only at a specific point in the Rule Flow:
@@ -195,13 +195,13 @@ end</programlisting>
       </example>
 
       <para>The rest of this rule is fairly standard. The LHS section
-      (after <kw>when</kw>) of the rule states that it will be activated
+      (after <literal>when</literal>) of the rule states that it will be activated
       for each <code>RandomNumber</code> object inserted into the Working
       Memory where <code>guessCount</code> is less than
       <code>allowedGuesses</code> from the <code>GameRules</code> object
       and where the user has not guessed the correct number.</para>
 
-      <para>The RHS section (or consequence, after <kw>then</kw>) prints a
+      <para>The RHS section (or consequence, after <literal>then</literal>) prints a
       message to the user and then awaits user input from
       <code>System.in</code>. After obtaining this input (the
       <code>readLine()</code> method call blocks until the return key is
@@ -237,7 +237,7 @@ end</programlisting>
         </orderedlist>
 	
 	<para>One point of integration between the standard Rules and
-      the RuleFlow is via the <kw>ruleflow-group</kw> attribute on the
+      the RuleFlow is via the <literal>ruleflow-group</literal> attribute on the
       rules, as dicussed above. A
       <emphasis>second point of integration between the rules (.drl) file
       and the Rules Flow .rf files</emphasis> is

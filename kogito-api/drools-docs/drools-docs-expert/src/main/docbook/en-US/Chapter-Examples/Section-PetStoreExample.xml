@@ -291,7 +291,7 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
       <para>We'll see the rules that call these functions later on. The
       next set of examples are from the Pet Store rules themselves. The
       first extract is the one that happens to fire first, partly because
-      it has the <kw>auto-focus</kw> attribute set to true.</para>
+      it has the <literal>auto-focus</literal> attribute set to true.</para>
         
       <example>
         <title>Putting items into working memory: extract from PetStore.drl</title>
@@ -322,15 +322,15 @@ end]]></programlisting>
 
       <itemizedlist>
         <listitem>
-          <para><kw>agenda-group</kw> <code>"init"</code> defines the name
+          <para><literal>agenda-group</literal> <code>"init"</code> defines the name
            of the agenda group. In this case, there is only one rule in the
            group. However, neither the Java code nor a rule consequence sets
            the focus to this group, and therefore it relies on the next
-           attibute for its chance to fire.</para>
+           attribute for its chance to fire.</para>
         </listitem>
 
         <listitem>
-          <para><kw>auto-focus</kw> <code>true</code> ensures that this rule,
+          <para><literal>auto-focus</literal> <code>true</code> ensures that this rule,
           while being the only rule in the agenda group, gets a chance to fire
           when <code>fireAllRules()</code> is called from the Java code.</para>
         </listitem>
@@ -620,7 +620,7 @@ end
 
         <listitem>
           <para>The <code>"Explode Cart"</code> rule is the first to fire,
-          given that it has <kw>auto-focus</kw> set to true. It loops through
+          given that it has <literal>auto-focus</literal> set to true. It loops through
           all the products in the cart, ensures that the products are in the
           Working Memory, and then gives the <code>"Show Items"</code> and
           <code>Evaluation</code> agenda groups a chance to fire. The rules

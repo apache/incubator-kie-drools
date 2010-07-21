@@ -246,11 +246,11 @@ end</programlisting>
       documentation, in order for the engine to see and react to changes of
       fact properties, the application must tell the engine that changes
       occurred. This can be done explicitly in the rules by using the
-      <kw>modify</kw> statement, or implicitly by letting the engine know
+      <literal>modify</literal> statement, or implicitly by letting the engine know
       that the facts implement <code>PropertyChangeSupport</code> as defined
       by the <emphasis>JavaBeans specification</emphasis>. This example
       demonstrates how to use <code>PropertyChangeSupport</code> to avoid
-      the need for explicit <kw>modify</kw> statements in the rules. To
+      the need for explicit <literal>modify</literal> statements in the rules. To
       make use of this feature, ensure that your facts implement
       <code>PropertyChangeSupport</code>, the same way the class
       <code>org.drools.example.State</code> does, and use the following
@@ -300,7 +300,7 @@ session.insert( fact, dynamic );
       a Working Memory has its focus on the Agenda group "MAIN". A group's
       rules will only fire when the group receives the focus. This can be
       achieved either ny using the method by <code>setFocus()</code> or the
-      rule attribute <kw>auto-focus</kw>. "auto-focus" means that the rule
+      rule attribute <literal>auto-focus</literal>. "auto-focus" means that the rule
       automatically sets the focus to its agenda group when the rule is
       matched and activated. It is this "auto-focus" that enables rule
       "B to C" to fire before "B to D".</para>

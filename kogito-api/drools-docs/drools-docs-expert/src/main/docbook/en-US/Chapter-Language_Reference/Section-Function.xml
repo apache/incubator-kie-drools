@@ -22,7 +22,7 @@
   for you behind the scenes.) The main advantage of using functions in a rule
   is that you can keep the logic all in one place, and you can change the
   functions as needed (which can be a good or a bad thing). Functions are most
-  useful for invoking actions on the consequence (<kw>then</kw>) part of a rule,
+  useful for invoking actions on the consequence (<literal>then</literal>) part of a rule,
   especially if that particular action is used over and over again, perhaps
   with only differing parameters for each rule.</para>
 
@@ -33,7 +33,7 @@
 }
 </programlisting>
 
-  <para>Note that the <kw>function</kw> keyword is used, even though its not really
+  <para>Note that the <literal>function</literal> keyword is used, even though its not really
   part of Java. Parameters to the function are defined as for a method, and
   you don't have to have parameters if they are not needed. The return type
   is defined just like in a regular method.</para>
