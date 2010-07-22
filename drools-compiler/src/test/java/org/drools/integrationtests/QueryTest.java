@@ -71,19 +71,52 @@ public class QueryTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        //ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
         session.insert( stilton );
-        //        session = SerializationHelper.getSerialisedStatefulSession( session,
-        //                                                                    ruleBase );
+                session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                            ruleBase );
         final QueryResults results = session.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
 
     }
+    
+
+    public void testQueryRemoval() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        final Cheese stilton = new Cheese( "stinky",
+                                           5 );
+        session.insert( stilton );
+                session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                            ruleBase );
+        QueryResults results = session.getQueryResults( "simple query" );
+        assertEquals( 1,
+                      results.size() );
+
+        assertNotNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
+        
+        ruleBase.removeQuery( "org.drools.test", "simple query" );
+       
+        assertNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
+       
+        results = session.getQueryResults( "simple query" );
+        assertEquals( 0,
+                      results.size() );       
+
+    }    
     
     public void testQuery2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

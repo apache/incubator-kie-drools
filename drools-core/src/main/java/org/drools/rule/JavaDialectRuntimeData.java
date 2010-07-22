@@ -215,16 +215,20 @@ public class JavaDialectRuntimeData
 
     public void removeRule(Package pkg,
                            Rule rule) {
-        final String consequenceName = rule.getConsequence().getClass().getName();
-
-        // check for compiled code and remove if present.
-        if ( remove( consequenceName ) ) {
-            removeClasses( rule.getLhs() );
-
-            // Now remove the rule class - the name is a subset of the consequence name
-            String sufix = StringUtils.ucFirst( rule.getConsequence().getName() ) + "ConsequenceInvoker";
-            remove( consequenceName.substring( 0,
-                                               consequenceName.indexOf( sufix ) ) );
+        
+        if ( !(rule instanceof Query) ) {
+            // Query's don't have a consequence, so skip those
+            final String consequenceName = rule.getConsequence().getClass().getName();
+    
+            // check for compiled code and remove if present.
+            if ( remove( consequenceName ) ) {
+                removeClasses( rule.getLhs() );
+    
+                // Now remove the rule class - the name is a subset of the consequence name
+                String sufix = StringUtils.ucFirst( rule.getConsequence().getName() ) + "ConsequenceInvoker";
+                remove( consequenceName.substring( 0,
+                                                   consequenceName.indexOf( sufix ) ) );
+            }
         }
     }
 

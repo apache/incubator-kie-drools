@@ -20,6 +20,7 @@ import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
+import org.drools.definition.rule.Query;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -189,6 +190,12 @@ public class KnowledgeBaseImpl
         this.ruleBase.removeRule( packageName,
                                   ruleName );
     }
+    
+    public void removeQuery(String packageName,
+                            String queryName) {
+        this.ruleBase.removeQuery( packageName,
+                                   queryName );
+    }    
 
     public void removeFunction(String packageName,
                            String ruleName) {
@@ -227,6 +234,12 @@ public class KnowledgeBaseImpl
                         String ruleName) {
         return this.ruleBase.getPackage( packageName ).getRule( ruleName );
     }
+    
+    public Query getQuery(String packageName,
+                          String queryName) {
+        return this.ruleBase.getPackage( packageName ).getRule( queryName );
+    }
+    
 
     public static class KnowledgeBaseEventListenerWrapper
         implements

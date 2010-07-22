@@ -3,9 +3,10 @@ package org.drools.definitions.rule.impl;
 import java.util.Collection;
 import java.util.Map;
 
+import org.drools.definition.rule.Query;
 import org.drools.rule.Rule;
 
-public class RuleImpl implements org.drools.definition.rule.Rule {
+public class RuleImpl implements org.drools.definition.rule.Rule, Query {
 	private Rule rule;
 	
 	public RuleImpl(Rule rule) {

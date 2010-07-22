@@ -178,4 +178,10 @@ public class MockRuleBase implements RuleBase {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public void removeQuery(String packageName,
+                            String queryName) {
+        // TODO Auto-generated method stub
+        
+    }
 }
