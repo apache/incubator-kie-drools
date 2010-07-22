@@ -20,16 +20,16 @@ import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.BaseDescr;
 
 public class DescrBuildError extends DroolsError {
-    private BaseDescr      parentDescr;
+    private BaseDescr parentDescr;
     private BaseDescr descr;
     private Object    object;
     private String    message;
     private int[]     errorLines = new int[0];
 
     public DescrBuildError(final BaseDescr parentDescr,
-                     final BaseDescr descr,
-                     final Object object,
-                     final String message) {
+                           final BaseDescr descr,
+                           final Object object,
+                           final String message) {
         super();
         this.parentDescr = parentDescr;
         this.descr = descr;
@@ -48,7 +48,7 @@ public class DescrBuildError extends DroolsError {
     public Object getObject() {
         return this.object;
     }
-    
+
     public int[] getErrorLines() {
         return this.errorLines;
     }
@@ -66,7 +66,7 @@ public class DescrBuildError extends DroolsError {
         if ( this.object instanceof CompilationProblem[] ) {
             final CompilationProblem[] problem = (CompilationProblem[]) this.object;
             for ( int i = 0; i < problem.length; i++ ) {
-                if (i != 0) {
+                if ( i != 0 ) {
                     summary = summary + "\n" + problem[i].getMessage();
                 } else {
                     summary = summary + " " + problem[i].getMessage();
@@ -96,29 +96,28 @@ public class DescrBuildError extends DroolsError {
         return buf.toString();
     }
 
-//    private String createMessage( String message ) {
-//        StringBuilder detail = new StringBuilder();
-//        detail.append( this.message );
-//        detail.append( " : " );
-//        detail.append( this.rule );
-//        detail.append( "\n" );
-//        if( object instanceof CompilationProblem[] ) {
-//            CompilationProblem[] cp = (CompilationProblem[]) object;
-//            this.errorLines = new int[cp.length];
-//            for( int i = 0; i < cp.length ; i ++ ) {
-//               this.errorLines[i] = cp[i].getStartLine() - this.descr.getOffset() + this.descr.getLine() - 1; 
-//               detail.append( this.rule.getName() );
-//               detail.append( " (line:" );
-//               detail.append( this.errorLines[i] );
-//               detail.append( "): " );
-//               detail.append( cp[i].getMessage() );
-//               detail.append( "\n" );
-//            }
-//        } else {
-//            this.errorLines = new int[0];
-//        }
-//        return "[ "+this.rule.getName()+" : "+message + "\n"+detail.toString()+" ]";
-//    }
-    
-    
+    //    private String createMessage( String message ) {
+    //        StringBuilder detail = new StringBuilder();
+    //        detail.append( this.message );
+    //        detail.append( " : " );
+    //        detail.append( this.rule );
+    //        detail.append( "\n" );
+    //        if( object instanceof CompilationProblem[] ) {
+    //            CompilationProblem[] cp = (CompilationProblem[]) object;
+    //            this.errorLines = new int[cp.length];
+    //            for( int i = 0; i < cp.length ; i ++ ) {
+    //               this.errorLines[i] = cp[i].getStartLine() - this.descr.getOffset() + this.descr.getLine() - 1; 
+    //               detail.append( this.rule.getName() );
+    //               detail.append( " (line:" );
+    //               detail.append( this.errorLines[i] );
+    //               detail.append( "): " );
+    //               detail.append( cp[i].getMessage() );
+    //               detail.append( "\n" );
+    //            }
+    //        } else {
+    //            this.errorLines = new int[0];
+    //        }
+    //        return "[ "+this.rule.getName()+" : "+message + "\n"+detail.toString()+" ]";
+    //    }
+
 }

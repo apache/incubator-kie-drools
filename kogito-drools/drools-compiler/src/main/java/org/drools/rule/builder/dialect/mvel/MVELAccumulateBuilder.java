@@ -16,7 +16,6 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +55,7 @@ public class MVELAccumulateBuilder
                       null );
     }
 
+    @SuppressWarnings("unchecked")
     public RuleConditionElement build(final RuleBuildContext context,
                                       final BaseDescr descr,
                                       final Pattern prefixPattern) {
@@ -87,6 +87,16 @@ public class MVELAccumulateBuilder
 
             if ( accumDescr.isExternalFunction() ) {
                 // build an external function executor
+                AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
+
+                if( function == null ) {
+                    context.getErrors().add( new DescrBuildError( accumDescr,
+                                                                  context.getRuleDescr(),
+                                                                  null,
+                                                                  "Unknown accumulate function: '"+accumDescr.getFunctionIdentifier()+"' on rule '"+context.getRuleDescr().getName()+"'. All accumulate functions must be registered before building a resource." ) );
+                    return null;
+                }
+
                 Map<String, Class< ? >> declarationsMap = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
                 final Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                                    accumDescr,
@@ -99,8 +109,6 @@ public class MVELAccumulateBuilder
                                                                            (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] ),
                                                                            null,
                                                                            context );
-
-                AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
 
                 accumulator = new MVELAccumulatorFunctionExecutor( unit,
                                                                    function );
