@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -55,6 +56,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                       null );
     }
 
+    @SuppressWarnings("unchecked")
     public RuleConditionElement build(final RuleBuildContext context,
                                       final BaseDescr descr,
                                       final Pattern prefixPattern) {
@@ -78,6 +80,15 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
 
         if ( accumDescr.isExternalFunction() ) {
             // if it is an external function, build a method for it
+            AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
+
+            if( function == null ) {
+                context.getErrors().add( new DescrBuildError( accumDescr,
+                                                              context.getRuleDescr(),
+                                                              null,
+                                                              "Unknown accumulate function: '"+accumDescr.getFunctionIdentifier()+"' on rule '"+context.getRuleDescr().getName()+"'. All accumulate functions must be registered before building a resource." ) );
+                return null;
+            }
 
             final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                         accumDescr,
@@ -107,10 +118,8 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             map.put( "readLocalsFromTuple",
                      accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
 
-            AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
-
             JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
-
+            
             accumulate = new Accumulate( source,
                                          previousDeclarations,
                                          sourceDeclArr,
@@ -239,19 +248,18 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
         return accumulate;
     }
 
+    @SuppressWarnings("unchecked")
     protected String fixInitCode(JavaAnalysisResult analysis,
                                  final String originalCode) {
-        TreeSet locals = new TreeSet( new Comparator() {
-            public int compare(Object o1,
-                               Object o2) {
-                JavaLocalDeclarationDescr d1 = (JavaLocalDeclarationDescr) o1;
-                JavaLocalDeclarationDescr d2 = (JavaLocalDeclarationDescr) o2;
-                return d1.getStart() - d2.getStart();
+        TreeSet<JavaLocalDeclarationDescr> locals = new TreeSet<JavaLocalDeclarationDescr>( new Comparator<JavaLocalDeclarationDescr>() {
+            public int compare(JavaLocalDeclarationDescr o1,
+                               JavaLocalDeclarationDescr o2) {
+                return o1.getStart() - o2.getStart();
             }
         } );
 
         for ( Iterator it = analysis.getLocalVariablesMap().values().iterator(); it.hasNext(); ) {
-            locals.add( it.next() );
+            locals.add( (JavaLocalDeclarationDescr) it.next() );
         }
 
         StringBuilder initCode = new StringBuilder();
