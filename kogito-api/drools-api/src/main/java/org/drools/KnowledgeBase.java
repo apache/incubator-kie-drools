@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
+import org.drools.definition.rule.Query;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
 import org.drools.event.knowledgebase.KnowledgeBaseEventManager;
@@ -91,12 +92,30 @@ public interface KnowledgeBase
                     String ruleName);
     
     /**
+     * Returns a reference to the Rule identified by the given package and rule names.
+     * 
+     * @param packageName the package name to which the rule belongs to.
+     * @param ruleName the name of the rule.
+     * 
+     * @return the Rule object or null if not found.
+     */
+    Query getQuery( String packageName, 
+                  String queryName );
+    /**
+     * Remove a rule from the specified package.
+     * @param packageName
+     * @param ruleName
+     */
+    void removeQuery(String packageName,
+                    String queryName);    
+    
+    /**
      * Remove a function from the specified package.
      * @param packageName
      * @param ruleName
      */
     void removeFunction(String packageName,
-                    String ruleName);
+                        String ruleName);
 
     /**
      * Returns the FactType identified by the given package and type names.
