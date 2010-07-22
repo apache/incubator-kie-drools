@@ -759,6 +759,11 @@ abstract public class AbstractRuleBase
             unlock();
         }
     }
+    
+    public void removeQuery(final String packageName,
+                           final String ruleName) {
+        removeRule(packageName, ruleName);
+    }
 
     public void removeRule(final String packageName,
                            final String ruleName) {

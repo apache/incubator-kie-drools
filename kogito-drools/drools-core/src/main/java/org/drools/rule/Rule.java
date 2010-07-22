@@ -57,7 +57,8 @@ public class Rule
     Externalizable,
     Wireable,
     Dialectable,
-    org.drools.definition.rule.Rule {
+    org.drools.definition.rule.Rule,
+    org.drools.definition.rule.Query {
     /**
      *
      */

@@ -129,6 +129,14 @@ public interface RuleBase
      */
     void removeRule(String packageName,
                     String ruleName);
+    
+    /**
+     * Remove a specific Query in a Package
+     * @param packageName
+     * @param ruleName
+     */
+    void removeQuery(String packageName,
+                     String queryName);    
 
     /**
      * Removes a specific function in a specific package.
