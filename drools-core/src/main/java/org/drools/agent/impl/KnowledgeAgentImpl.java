@@ -46,6 +46,7 @@ import org.drools.io.internal.InternalResource;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
+import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -138,15 +139,15 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     public void setSystemEventListener(SystemEventListener listener) {
         this.listener = listener;
     }
-    
+
     public Set<Resource> getResourceDirectories() {
-    	return this.resourceDirectories;
+        return this.resourceDirectories;
     }
 
     public boolean isNewInstance() {
         return this.newInstance;
     }
-    
+
     public void applyChangeSet(Resource resource) {
         applyChangeSet(getChangeSet(resource));
     }
@@ -607,11 +608,12 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     private KnowledgePackageImp createPackageFromResource(Resource resource, KnowledgeBuilder kbuilder) {
 
-        if (kbuilder == null) {
-            kbuilder = this.createKBuilder();
-        }
-
         if (((InternalResource) resource).getResourceType() != ResourceType.PKG) {
+
+            if (kbuilder == null) {
+                kbuilder = this.createKBuilder();
+            }
+
             kbuilder.add(resource, ((InternalResource) resource).getResourceType());
             if (kbuilder.hasErrors()) {
                 this.eventSupport.fireResourceCompilationFailed(kbuilder, resource, ((InternalResource) resource).getResourceType());
@@ -940,11 +942,11 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
         //subscribe/unsubscribe from resources
         for (Resource resource : allResources) {
-            if (monitor){
+            if (monitor) {
                 this.listener.debug("KnowledgeAgent subscribing from resource="
                         + resource);
                 this.notifier.subscribeResourceChangeListener(this, resource);
-            }else{
+            } else {
                 this.listener.debug("KnowledgeAgent unsubscribing from resource="
                         + resource);
                 this.notifier.unsubscribeResourceChangeListener(this, resource);
@@ -1150,9 +1152,34 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         public Set<Resource> getAllResources() {
             return this.map.keySet();
         }
+
+        public boolean onlyHasPKGResources() {
+            for (Resource resource : map.keySet()) {
+                if (((InternalResource) resource).getResourceType() != ResourceType.PKG) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
+    /**
+     * Creates a kbuilder if necessary. The built kbuilder will contain all the
+     * DSL resources the agent is managing. It will also apply any
+     * KnowledgeBuilderConfiguration present in {@link #builderConfiguration} or
+     * will copy any KnowledgeBuilderConfiguration from the current kbase if
+     * {@link #useKBaseClassLoaderForCompiling} is true.
+     * This method will return null if the agent is only managing binary resources.
+     * This avoids drools-compiler dependency.
+     *
+     * @return a new kbuilder or null if all the managed resources are binaries.
+     */
     private KnowledgeBuilder createKBuilder() {
+
+        if (this.registeredResources.onlyHasPKGResources()){
+            return null;
+        }
+
         KnowledgeBuilder kbuilder = null;
         if (this.builderConfiguration != null) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
@@ -1192,8 +1219,8 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
             //all kbase's ksessions must be disposed
             if (this.kbase != null) {
                 Collection<StatefulKnowledgeSession> statefulSessions = this.kbase.getStatefulKnowledgeSessions();
-                if (statefulSessions != null && statefulSessions.size() > 0){
-                    String message = "The kbase still contains "+statefulSessions.size()+" stateful sessions. You must dispose them first.";
+                if (statefulSessions != null && statefulSessions.size() > 0) {
+                    String message = "The kbase still contains " + statefulSessions.size() + " stateful sessions. You must dispose them first.";
                     this.listener.warning(message);
                     throw new IllegalStateException(message);
                 }
