@@ -43,7 +43,7 @@ Marking paragraphs
 
 * <warning><para></para></warning>
 
-* Use <programlisting> for code listings:
+* Use <programlisting> for longer code, commands or log listings:
     <programlisting><![CDATA[public interface Move ...]]></programlisting>
 
 * Use <programlisting role="JAVA"> for java code to get color highlighting.

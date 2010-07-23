@@ -14,7 +14,7 @@
     examples are recommended: curriculum course, examination and nurse rostering.</para>
 
     <para>You can find the source code of all these examples in the drools source distribution and also in subversion
-    under <literal>drools-planner/drools-planner-examples</literal>.</para>
+    under <filename>drools-planner/drools-planner-examples</filename>.</para>
   </section>
 
   <section>

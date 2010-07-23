@@ -63,13 +63,13 @@
       of the main drools build.</para>
 
       <para>Initially, go into the root of the jboss-rules checked out source
-      tree, and run mvn install to install all the components for the inter
+      tree, and run <command>mvn install</command> to install all the components for the inter
       project dependencies. If the build is broken (all care is taken for this
       eventuality not to occur), the flag -Dmaven.test.skip=true can be used
       to prevent failing unit tests from preventing the build.</para>
 
       <para>When wishing to build Guvnor, go into the drools-guvnor
-      directory, and run <code>mvn package</code>. This will run the tests,
+      directory, and run <command>mvn package</command>. This will run the tests,
       and then build a deployable war. The only thing this will not do is
       rebuild the GWT front end (see the next section for details on that).
       Once the war file is in the target directory, the BRMS is ready to
