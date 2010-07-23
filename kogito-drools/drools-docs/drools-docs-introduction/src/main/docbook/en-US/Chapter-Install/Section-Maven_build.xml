@@ -21,13 +21,13 @@
     following builds all the jars, the documentation and the Eclipse zip with
     a local folder specified to avoid downloading Eclipse:</para>
 
-    <para><programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror </programlisting></para>
+    <programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror</programlisting>
 
     <para>You can produce distribution builds, which puts everything into
-    zips, as follows:
+    zips, as follows:</para>
 <programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror
 mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror
-</programlisting></para>
+</programlisting>
 
     <para>Note that install must be done first as javadoc:javadoc won't work
     unless the jars are in the local maven repo, but the tests can be skipped
@@ -35,7 +35,7 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
     available memory to Maven, on windows the following command worked well:
     set MAVEN_OPTS=-Xmx512m</para>
 
-    <para>Type mvn clean to clear old artifacts, and then test and built the
+    <para>Type <command>mvn clean</command> to clear old artifacts, and then test and built the
     source, and report on any errors.</para>
 
     <para>The resulting jars are put in the /target directory from the top
