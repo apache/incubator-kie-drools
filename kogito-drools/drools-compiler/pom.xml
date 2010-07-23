@@ -83,7 +83,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
-    </dependency>      
+    </dependency>    
+    
+      <dependency>  	
+		<groupId>net.java.dev.glazedlists</groupId>
+		<artifactId>glazedlists_java15</artifactId>
+		<scope>test</scope>	
+      </dependency>
    </dependencies>
    <profiles>
       <profile>
