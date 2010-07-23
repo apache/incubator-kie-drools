@@ -221,18 +221,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                                         queryObject ) );
             
             return new LiveQueryImpl( this, handle );
-
-//            this.handleFactory.destroyFactHandle( handle );
-//
-//            Declaration[] declarations = new Declaration[0];
-//            if ( queryObject.getQuery() != null ) {
-//                // this is null when there are no query results, thus the query object is never set
-//                declarations = queryObject.getQuery().getDeclarations();
-//            }
-//
-//            return new QueryResults( ((DefaultQueryResultsCollector) queryObject.getQueryResultCollector()).getResults(),
-//                                     declarations,
-//                                     this );
         } finally {
             this.lock.unlock();
             this.ruleBase.readUnlock();

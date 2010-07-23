@@ -86,4 +86,16 @@ public class RowAdapter implements Row {
 			return false;
 		return true;
 	}
+	
+	public String toString() {
+	    StringBuilder sbuilder = new StringBuilder();
+	    for ( int i = 0, length = this.factHandles.length -1; i < length; i++ ) {
+	        sbuilder.append( this.factHandles[i].getObject().toString() );
+	        if ( i < length - 1 ) {
+	            sbuilder.append( ", " );
+	        }
+	    }
+	    
+	    return "Row[" +  sbuilder.toString() +"]";
+	}
 }
