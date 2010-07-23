@@ -65,7 +65,7 @@
       <para>Initially, go into the root of the jboss-rules checked out source
       tree, and run <command>mvn install</command> to install all the components for the inter
       project dependencies. If the build is broken (all care is taken for this
-      eventuality not to occur), the flag -Dmaven.test.skip=true can be used
+      eventuality not to occur), the flag -DskipTests can be used
       to prevent failing unit tests from preventing the build.</para>
 
       <para>When wishing to build Guvnor, go into the drools-guvnor
