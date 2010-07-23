@@ -899,19 +899,13 @@ public class ExecutionFlowControlTest extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
         
-        new Thread(new Runnable() {
-			public void run() {
-				workingMemory.fireUntilHalt();
-			}
-        }).start();
-
         workingMemory.insert( "Test" );
+        workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
         workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
-
-        Thread.sleep(1000);
+        workingMemory.fireAllRules();
         
         assertEquals( 1,
                       list.size() );
