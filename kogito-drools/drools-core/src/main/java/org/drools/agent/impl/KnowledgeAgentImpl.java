@@ -810,7 +810,12 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     private void removeKnowledgeDefinitionFromBase(KnowledgeDefinition kd) {
         try {
-            if (kd instanceof Rule) {
+            if (kd instanceof Query) {
+                Query query = (Query) kd;
+                this.listener.debug("KnowledgeAgent removing Query=" + query
+                        + " from package=" + query.getPackageName());
+                this.kbase.removeQuery(query.getPackageName(), query.getName());
+            }else if (kd instanceof Rule) {
                 Rule rule = (Rule) kd;
                 this.listener.debug("KnowledgeAgent removing Rule=" + rule
                         + " from package=" + rule.getPackageName());
