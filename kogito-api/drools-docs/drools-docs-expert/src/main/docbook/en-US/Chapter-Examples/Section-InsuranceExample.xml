@@ -154,7 +154,7 @@ then
 	
 			<itemizedlist>
 				<listitem>
-					<para>Go into your downloaded project and execute <programlisting>mvn clean package</programlisting></para>
+					<para>Go into your downloaded project and execute <command>mvn clean package</command></para>
 				</listitem>
 	
 				<listitem>
