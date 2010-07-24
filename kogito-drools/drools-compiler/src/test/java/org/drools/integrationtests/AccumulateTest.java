@@ -1552,8 +1552,10 @@ public class AccumulateTest extends TestCase {
         // should report a proper error, not raise an exception
         assertTrue( "It must report a proper error when trying to use a non-registered funcion",
                     kbuilder.hasErrors() );
-        assertEquals( 2,
-                      kbuilder.getErrors().size() );
+
+        assertTrue( kbuilder.getErrors().toString().contains( "Unknown accumulate function: 'nonExistingFunction' on rule 'Accumulate non existing function - Java'." ) );
+        assertTrue( kbuilder.getErrors().toString().contains( "Unknown accumulate function: 'nonExistingFunction' on rule 'Accumulate non existing function - MVEL'." ) );
+
     }
 
     public static class DataSet {
