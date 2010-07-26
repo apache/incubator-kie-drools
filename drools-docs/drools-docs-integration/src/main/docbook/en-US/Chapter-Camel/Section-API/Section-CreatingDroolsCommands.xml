@@ -77,7 +77,7 @@ cmd.getCommands().add(new FireAllRulesCommand());</programlisting>
   <para>In the next sections you will see how to marshall/unmarshall the
   commands to XML to XStream and JAXB</para>
 
-  <para><note>
-      For more information check the Drools Commands documentation
-    </note></para>
+  <note>
+      <para>For more information check the Drools Commands documentation</para>
+    </note>
 </section>
