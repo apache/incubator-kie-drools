@@ -102,10 +102,10 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
     KnowledgeAgentConfiguration object passed to the agent.
     </para>
 
-    <para>For polling to occur, the polling and notifier services must be started: 
+    <para>For polling to occur, the polling and notifier services must be started:</para>
 <programlisting role="JAVA">ResourceFactory.getResourceChangeNotifierService().start();
 ResourceFactory.getResourceChangeScannerService().start();</programlisting>
-    </para>
+
 
     <section>
       <title>Knowledge Agent and Custom ClassLoaders</title>
@@ -174,11 +174,11 @@ KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
         <para>
             The following code snippet creates a new Knowledge Agent with its
             "newInstace" property set to false
+        </para>
             <programlisting role="JAVA">KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
 aconf.setProperty("drools.agent.newInstance", "false");
 KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("test agent", null, aconf);
             </programlisting>
-        </para>
     </section>
 
     <section>

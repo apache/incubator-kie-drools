@@ -172,13 +172,16 @@ There is a Person with name of "bob" and Person is at least 30 years old and liv
     is to make things as fluent as possible.</para>
 
     <para>To use the DSL when you want to compile and run the rules, you will
-    need to pass the DSL configuration source along with the rule source.
+    need to pass the DSL configuration source along with the rule source.</para>
     <programlisting>PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( source, dsl );
 //source is a reader for the rule source, dsl is a reader for the DSL configuration
-</programlisting> You will also need to specify the expander by name in the
-    rule source file: <programlisting>expander your-expander.dsl
-</programlisting>Typically you keep the DSL in the same directory as the rule,
+</programlisting>
+    <para>You will also need to specify the expander by name in the
+    rule source file:</para>
+    <programlisting>expander your-expander.dsl
+</programlisting>
+    <para>Typically you keep the DSL in the same directory as the rule,
     but this is not required if you are using the above API (you only need to
     pass a reader). Otherwise everything is just the same.</para>
 
@@ -217,15 +220,16 @@ There is a person called Mike who is sad
 
     <para>This is easier to explain with an example. Lets take look at Cheese
     class, with the following fields: type, price, age, country. We can
-    express some LHS condition in normal DRL like the following
+    express some LHS condition in normal DRL like the following</para>
     <programlisting>Cheese(age &lt; 5, price == 20, type=="stilton", country=="ch")</programlisting>
-    If you know ahead of time that you will use all the fields, all the time,
+    <para>If you know ahead of time that you will use all the fields, all the time,
     it is easy to do a mapping using the above techniques. However, chances
     are that you will have many fields, and many combinations. If this is the
-    case, you can setup your mappings like so: <programlisting>[when]There is a Cheese with=Cheese()
+    case, you can setup your mappings like so:</para>
+    <programlisting>[when]There is a Cheese with=Cheese()
 [when]- age is less than {age}=age&lt;{age}
 [when]- type is '{type}'=type=='{type}'
-[when]- country equal to '{country}'=country=='{country}'</programlisting></para>
+[when]- country equal to '{country}'=country=='{country}'</programlisting>
 
     <para><emphasis role="bold">IMPORTANT:</emphasis> It is NOT possible to
     use the "-" feature after an <emphasis role="bold">accumulate</emphasis>

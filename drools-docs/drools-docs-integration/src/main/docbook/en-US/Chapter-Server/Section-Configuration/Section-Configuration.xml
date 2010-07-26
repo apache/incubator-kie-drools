@@ -115,8 +115,9 @@
         classloader.</para>
 
         <para>If you want to deploy in a AS5 you simply must add this bean
-        definition line.<programlisting>&lt;bean id="jbossResolver" class="org.apache.camel.jboss.JBossPackageScanClassResolver"/&gt;</programlisting>Another
-        important configuration is the Camel Context declaration, as you can
+        definition line.</para>
+        <programlisting>&lt;bean id="jbossResolver" class="org.apache.camel.jboss.JBossPackageScanClassResolver"/&gt;</programlisting>
+        <para>Another important configuration is the Camel Context declaration, as you can
         see below:</para>
 
         <programlisting>&lt;camelContext id="executionContext" xmlns="http://camel.apache.org/schema/spring" /&gt;</programlisting>
@@ -157,7 +158,8 @@
         classes needs to be included in the JAXBContext. This will allow us to
         copy our JAR model to the servlet container in which the drools-server
         has been deployed and use them in JAXB commands without using a XSD
-        file that declare the same model definition.<programlisting>&lt;drools-service:class&gt;org.drools.model.Person&lt;/drools-service:class&gt;</programlisting></para>
+        file that declare the same model definition.</para>
+        <programlisting>&lt;drools-service:class&gt;org.drools.model.Person&lt;/drools-service:class&gt;</programlisting>
 
         <para>Also we can add commands that are going to be executed when
         drools-server got deployed. To use this just add the next tag with the

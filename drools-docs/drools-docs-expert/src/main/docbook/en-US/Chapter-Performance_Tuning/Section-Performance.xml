@@ -93,14 +93,15 @@ end
     situations where a user has a limited amount of memory or for some reason
     does not want to incur in the indexing overhead, indexing can be disabled
     for each of the memories, by setting the following system properties to
-    false: <programlisting>org.drools.reteoo.beta.index-left
+    <literal>false</literal>:</para>
+    <programlisting>org.drools.reteoo.beta.index-left
 org.drools.reteoo.beta.index-right
 
 For example:
 ..when you launch the application (or in the container as appropriate).
 -Dorg.drools.reteoo.beta.index-right=false
 -Dorg.drools.reteoo.beta.index-left=false
-</programlisting></para>
+</programlisting>
   </section>
 
   <section>
@@ -123,8 +124,9 @@ For example:
     lets use Manners 64 benchmark test results on a Pentium IV 3 Ghz HT
     machine with 1.0 Gb memory. This is not really a detailed benchmark test,
     but simply some rough numbers in order to make the scenario easier to
-    understand: <programlisting>Manners 64 without indexes: 135000 millisec to run 
-Manners 64 with BetaNode indexes: 10078 millisec to run on average</programlisting></para>
+    understand:</para>
+    <programlisting>Manners 64 without indexes: 135000 millisec to run 
+Manners 64 with BetaNode indexes: 10078 millisec to run on average</programlisting>
 
     <para>It is obvious by the previous run times that indexes overall
     benefits pays off the overhead to keep them, at least in terms of
