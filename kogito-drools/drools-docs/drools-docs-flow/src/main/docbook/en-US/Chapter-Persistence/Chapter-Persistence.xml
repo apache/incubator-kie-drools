@@ -108,7 +108,7 @@
     environment.  The environment needs to contain a reference to your
     Entity Manager Factory.</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
 // create the entity manager factory and register it in the environment
 EntityManagerFactory emf =
     Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
@@ -127,7 +127,7 @@ ksession.dispose();</programlisting>
     <para>You can also yse the <code>JPAKnowledgeService</code> to recreate
     a session based on a specific session id:</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
 // recreate the session from database using the sessionId
 ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );</programlisting>
 
@@ -199,7 +199,7 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
     The following Java fragment could be used to set up this data source, where
     we are using the file-based H2 database.</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
 PoolingDataSource ds = new PoolingDataSource();
 ds.setUniqueName("jdbc/processInstanceDS");
 ds.setClassName("org.h2.jdbcx.JdbcDataSource");
@@ -220,7 +220,7 @@ ds.init();</programlisting>
     that was started in another session), as the runtime state is persisted safely in a database, and can be
     retrieved whenever necessary.</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
   StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
   long processInstanceId = session.startProcess("org.drools.test.TestProcess").getId();
   session.dispose();</programlisting-->
@@ -240,7 +240,7 @@ ds.init();</programlisting>
     transaction manager.  Next, we use the Java Transaction API (JTA)
     to specify transaction boundaries, as shown below:</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
 // create the entity manager factory and register it in the environment
 EntityManagerFactory emf =
     Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
@@ -346,7 +346,7 @@ ut.commit();</programlisting>
       <para>To log process history information in a database like this, you
       need to register the logger on your session (or working memory) like
       this:</para>
-      <programlisting>
+      <programlisting role="JAVA">
 StatefulKnowledgeSession ksession = ...;
 WorkingMemoryDbLogger logger = new WorkingMemoryDbLogger(ksession);
 

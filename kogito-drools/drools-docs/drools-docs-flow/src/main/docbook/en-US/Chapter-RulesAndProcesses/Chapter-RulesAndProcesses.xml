@@ -381,7 +381,7 @@ end</programlisting>
       or a set of rules into the engine is very similar. Also, different
       rule implementations, such DRL or DSL, are handled in a uniform way.</para>
 
-      <programlisting>
+      <programlisting role="JAVA">
 private static KnowledgeBase createKnowledgeBase() throws Exception {
     KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
     kbuilder.add( ResourceFactory.newClassPathResource(
