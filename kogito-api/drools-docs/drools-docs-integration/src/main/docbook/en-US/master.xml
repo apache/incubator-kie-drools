@@ -10,12 +10,8 @@
     <releaseinfo>5.1.0.SNAPSHOT</releaseinfo>
     <authorgroup>
       <author>
-        <personname>
-          <firstname>Lucaz</firstname>
-          <surname>Amador</surname>
-        </personname>
+        <orgname><link xlink:href="http://www.jboss.org/drools/team.html">The JBoss Drools team</link></orgname>
       </author>
-      <!-- TODO add your name if you worked on this manual -->
     </authorgroup>
 
     <cover>
