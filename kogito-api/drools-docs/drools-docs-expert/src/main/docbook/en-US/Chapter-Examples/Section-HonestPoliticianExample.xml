@@ -28,7 +28,7 @@
   <para><example>
     <title>Class Politician</title>
 
-      <programlisting>public class Politician {
+      <programlisting role="JAVA">public class Politician {
     private String name;
     private boolean honest;
     ...
@@ -36,7 +36,7 @@
       </example><example>
     <title>Honest Politician: Execution</title>
 
-    <programlisting>Politician blair = new Politician("blair", true);
+    <programlisting role="JAVA">Politician blair = new Politician("blair", true);
 Politician bush = new Politician("bush", true);
 Politician chirac = new Politician("chirac", true);
 Politician schroder = new Politician("schroder", true);
