@@ -139,7 +139,7 @@ byte[] xmlOutput = (byte[]) template.requestBodyAndHeader("direct:test-with-sess
     <para></para>
 
     <note>
-      The XML output conversion is not required, but is recommended to have a more legible data output. 
+      <para>The XML output conversion is not required, but is recommended to have a more legible data output.</para>
     </note>
 
     <para></para>

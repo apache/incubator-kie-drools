@@ -49,6 +49,6 @@ camelContext.addRoutes(rb);</programlisting>
   consumer, which in this case will process the XML command.</para>
 
   <note>
-    Bear in mind that when you send a XML command to a route, the format must the same as the dataFormat transformer used in the route creation.
+    <para>Bear in mind that when you send a XML command to a route, the format must the same as the dataFormat transformer used in the route creation.</para>
   </note>
 </section>

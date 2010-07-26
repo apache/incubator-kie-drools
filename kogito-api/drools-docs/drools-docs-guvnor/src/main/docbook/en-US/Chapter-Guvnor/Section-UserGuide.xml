@@ -1694,8 +1694,8 @@ public class SampleDataSource2 {
         to click any button, and the errors/warnings are shown in a more
         fashionable way!</para>
 
-        <caution>The problem with real-time validation is that right now only
-        support "top level" Patterns.</caution>
+        <caution><para>The problem with real-time validation is that right now only
+        support "top level" Patterns.</para></caution>
 
     </section>
 

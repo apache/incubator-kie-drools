@@ -178,7 +178,7 @@
 &lt;drools-service:startup-command/&gt;</programlisting></para>
 
         <note>
-          Remember to add the &lt;![CDATA[  ]]&gt; tag to don't break the XML parser.
+          <para>Remember to add the &lt;![CDATA[  ]]&gt; tag to don't break the XML parser.</para>
         </note>
       </section>
 
