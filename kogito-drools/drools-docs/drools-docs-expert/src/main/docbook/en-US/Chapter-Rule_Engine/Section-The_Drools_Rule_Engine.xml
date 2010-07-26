@@ -972,7 +972,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
     <para>This can be confusing on a first read, so hopefully the flow charts
     below help. When it says that it returns a new <code>FactHandle</code>, this also
-    indicates the <code>Object</code> was propagated through the network.
+    indicates the <code>Object</code> was propagated through the network.</para>
 
     <figure>
       <title>Stated Insertion</title>
@@ -992,7 +992,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
                      format="PNG" />
         </imageobject>
       </mediaobject>
-    </figure></para>
+    </figure>
 
     <section>
       <title>Example Scenario</title>
