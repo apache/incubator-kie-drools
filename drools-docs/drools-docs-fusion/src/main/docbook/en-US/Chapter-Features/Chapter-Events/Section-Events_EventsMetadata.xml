@@ -18,15 +18,15 @@
   <example>
     <title>the VoiceCall fact class</title>
 
-    <programlisting><emphasis>/**
+    <programlisting role="JAVA">/**
  * A class that represents a voice call in 
  * a Telecom domain model
- */</emphasis>
-<emphasis role="bold">public class</emphasis> VoiceCall {
-    <emphasis role="bold">private</emphasis> String  originNumber;
-    <emphasis role="bold">private</emphasis> String  destinationNumber;
-    <emphasis role="bold">private</emphasis> Date    callDateTime;
-    <emphasis role="bold">private</emphasis> long    callDuration;          // in milliseconds
+ */
+public class VoiceCall {
+    private String  originNumber;
+    private String  destinationNumber;
+    private Date    callDateTime;
+    private long    callDuration;          // in milliseconds
 
     // constructors, getters and setters
 }
