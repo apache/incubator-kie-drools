@@ -57,11 +57,12 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 GetObjectsCommand getObjectsCommand = new GetObjectsCommand();
 getObjectsCommand.setOutIdentifier("objects");
-command.getCommands().add(getObjectsCommand);</programlisting></para>
+command.getCommands().add(getObjectsCommand);</programlisting>
 
       <para></para>
     </listitem>
@@ -73,9 +74,9 @@ command.getCommands().add(getObjectsCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;get-objects out-identifier="objects"/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
@@ -83,7 +84,7 @@ command.getCommands().add(getObjectsCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"get-objects":{"out-identifier":"objects"}}}}</programlisting></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"get-objects":{"out-identifier":"objects"}}}}</programlisting>
 
           <para></para>
         </listitem>
@@ -91,10 +92,10 @@ command.getCommands().add(getObjectsCommand);</programlisting></para>
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;get-objects out-identifier="objects"/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>

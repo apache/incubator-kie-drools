@@ -65,13 +65,12 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 StartProcessCommand startProcessCommand = new StartProcessCommand();
 startProcessCommand.setProcessId("org.drools.task.processOne");
-command.getCommands().add(startProcessCommand);</programlisting></para>
-
-      <para></para>
+command.getCommands().add(startProcessCommand);</programlisting>
     </listitem>
 
     <listitem>
@@ -81,36 +80,28 @@ command.getCommands().add(startProcessCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;start-process processId="org.drools.task.processOne"/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
-
-          <para></para>
+&lt;/batch-execution&gt;</programlisting>
         </listitem>
 
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"start-process":{"process-id":"org.drools.task.processOne"}}}} </programlisting></para>
-
-          <para></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"start-process":{"process-id":"org.drools.task.processOne"}}}} </programlisting>
         </listitem>
 
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;start-process processId="org.drools.task.processOne"&gt;
         &lt;parameter/&gt;
     &lt;/start-process&gt;
-&lt;/batch-execution&gt;</programlisting></para>
-
-          <para></para>
+&lt;/batch-execution&gt;</programlisting>
         </listitem>
       </itemizedlist>
     </listitem>
   </itemizedlist>
-
-  <para></para>
 </section>

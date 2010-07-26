@@ -65,14 +65,15 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 InsertElementsCommand insertElementsCommand = new InsertElementsCommand();
 List&lt;Object&gt; objects = new ArrayList&lt;Object&gt;();
 objects.add(new Person("john", 25));
 objects.add(new Person("sarah", 35));
 insertElementsCommand.setObjects(objects);
-command.getCommands().add(insertElementsCommand);</programlisting></para>
+command.getCommands().add(insertElementsCommand);</programlisting>
 
       <para></para>
     </listitem>
@@ -84,7 +85,7 @@ command.getCommands().add(insertElementsCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;insert-elements&gt;
     &lt;org.drools.test.Person&gt;
       &lt;name&gt;john&lt;/name&gt;
@@ -95,7 +96,7 @@ command.getCommands().add(insertElementsCommand);</programlisting></para>
       &lt;age&gt;35&lt;/age&gt;
     &lt;/org.drools.test.Person&gt;
   &lt;/insert-elements&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
@@ -103,7 +104,7 @@ command.getCommands().add(insertElementsCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"insert-elements":{"objects":[{"containedObject":{"@class":"org.drools.test.Person","name":"john","age":25}},{"containedObject":{"@class":"org.drools.test.Person","name":"sarah","age":35}}]}}}} </programlisting></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"insert-elements":{"objects":[{"containedObject":{"@class":"org.drools.test.Person","name":"john","age":25}},{"containedObject":{"@class":"org.drools.test.Person","name":"sarah","age":35}}]}}}} </programlisting>
 
           <para></para>
         </listitem>
@@ -111,7 +112,7 @@ command.getCommands().add(insertElementsCommand);</programlisting></para>
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;insert-elements return-objects="true"&gt;
         &lt;objects xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
@@ -123,7 +124,7 @@ command.getCommands().add(insertElementsCommand);</programlisting></para>
             &lt;name&gt;sarah&lt;/name&gt;
         &lt;/objects&gt;
     &lt;/insert-elements&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
