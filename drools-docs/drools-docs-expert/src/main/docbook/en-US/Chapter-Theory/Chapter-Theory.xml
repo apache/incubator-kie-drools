@@ -47,7 +47,9 @@
     <para>This can be confusing on a first read, so hopefully the flow charts
     below help. When it says that it returns a new <code>FactHandle</code>,
     this also indicates the <code>Object</code> was propagated through the
-    network. <figure>
+    network.</para>
+
+    <figure>
         <title>Stated Insertion</title>
 
         <mediaobject>
@@ -57,7 +59,8 @@
                        format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
-      </figure> <figure>
+    </figure>
+    <figure>
         <title>Logical Insertion</title>
 
         <mediaobject>
@@ -67,7 +70,7 @@
                        format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
-      </figure></para>
+      </figure>
 
     <section>
       <title>Example Scenario</title>
@@ -124,7 +127,7 @@
     </section>
   </section>
 
-  <section xml:base="">
+  <section>
     <title>Rete Algorithm</title>
 
     <para>The <emphasis>Rete</emphasis> algorithm was invented by Dr. Charles
