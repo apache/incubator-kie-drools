@@ -1460,27 +1460,27 @@ end
       <para>Here is a simple example of reasoning and binding on another
       pattern sub-field:</para>
 
-      <para><programlisting>rule "validate zipcode"
+      <programlisting>rule "validate zipcode"
 when
     Person( $personAddress : address ) 
     Address( zipcode == "23920W") from $personAddress 
 then
     # zip code is ok
 end
-</programlisting></para>
+</programlisting>
 
       <para>With all the flexibility from the new expressiveness in the Drools
       engine you can slice and dice this problem many ways. This is the same
       but shows how you can use a graph notation with the 'from':</para>
 
-      <para><programlisting>rule "validate zipcode"
+      <programlisting>rule "validate zipcode"
 when
     $p : Person( ) 
     $a : Address( zipcode == "23920W") from $p.address 
 then
     # zip code is ok
 end
-</programlisting></para>
+</programlisting>
 
       <para>Previous examples were reasoning over a single pattern. The
       <emphasis role="bold">from</emphasis> CE also support object sources
@@ -1508,7 +1508,7 @@ end
       as it may produce unexpected results. Consider the example provided earlier, but
       now slightly modified as follows:</para>
       
-      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+      <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1527,7 +1527,7 @@ when
 then
     modify ($p) {} #Apply discount to person in a modify block
 end
-</programlisting></para>
+</programlisting>
 
 	  <para>
 	  In the above example, persons in Raleigh, NC should be assigned to sales region 1 and 
@@ -1575,7 +1575,7 @@ end
 		the graph is fairly simple, an even easier solution is to modify your rules as follows:
 		</para>
 
-      <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+      <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1592,7 +1592,7 @@ when
 then
     modify ($p) {} #Apply discount to person in a modify block
 end
-</programlisting></para>
+</programlisting>
 
 	  <para>Now, you will find that both rules fire as expected. However, it is not 
 	  always possible to access nested facts as above. Consider an example where a Person
@@ -1608,7 +1608,7 @@ end
 	  the following use of <emphasis role="bold">from</emphasis> causes both rules to fire as expected:	  
 	  </para>
 	  
-	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+	  <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1627,11 +1627,11 @@ when
 then
     modify ($p) {} #Apply discount to person in a modify block
 end
-</programlisting></para>
+</programlisting>
 	
 	  <para>However, the following slightly different approach does exhibit the problem:</para>
 	  
-	  <para><programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+	  <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1653,7 +1653,7 @@ when
     exists (Address( city == "Raleigh") from $addresses)
 then
     modify ($assessment) {} #Modify assessment in a modify block
-end</programlisting></para>
+end</programlisting>
 	  
 	  <para>In the above example, the $addresses variable is returned from the
 	  use of <emphasis role="bold">from</emphasis>. The example also introduces

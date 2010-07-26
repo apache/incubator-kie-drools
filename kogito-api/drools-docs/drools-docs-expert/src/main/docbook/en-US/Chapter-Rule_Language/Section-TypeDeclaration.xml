@@ -146,8 +146,9 @@
     <emphasis role="bold">@</emphasis> symbol to introduce metadata, and it
     always uses the form:</para>
 
-    <para><programlisting>@matadata_key( metadata_value )</programlisting>The
-    parenthesis and the metadata_value are optional.</para>
+    <programlisting>@matadata_key( metadata_value )</programlisting>
+    
+    <para>The parenthesis and the metadata_value are optional.</para>
 
     <para>For instance, if you want to declare a metadata attribute like
     <emphasis>author</emphasis>, whose value is <emphasis>Bob</emphasis>, you
