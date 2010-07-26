@@ -10,7 +10,7 @@
     option:</para>
 
     <example>
-      <title>enabling multithread evaluation (partitioning)</title>
+      <title>Enabling multithread evaluation (partitioning)</title>
 
       <programlisting role="JAVA">KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( MultithreadEvaluationOption.YES );
