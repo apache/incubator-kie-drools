@@ -27,7 +27,7 @@
 	<xi:include href="Section-PricingExample.xml" />
 	<xi:include href="Section-PetStoreExample.xml" />
 	<xi:include href="Section-HonestPoliticianExample.xml" />
-	<xi:include href="Section-SodukiExample.xml" />
+	<xi:include href="Section-SudokuExample.xml" />
 	<xi:include href="Section-NumberGuessExample.xml" />
 	<xi:include href="Section-MannersExample.xml" />
 	<xi:include href="Section-ConwaysGameOfLifeExample.xml" />
