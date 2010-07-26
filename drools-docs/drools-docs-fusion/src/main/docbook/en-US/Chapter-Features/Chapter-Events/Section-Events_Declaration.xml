@@ -25,7 +25,7 @@
   <para>For instance, the example bellow is declaring that the fact type
   StockTick in a stock broker application shall be handled as an event.</para>
 
-  <para><example>
+  <example>
       <title>declaring a fact type as an event</title>
 
       <programlisting><emphasis role="bold">import</emphasis> some.package.StockTick
@@ -34,13 +34,13 @@
     <emphasis>@role</emphasis>( event )
 <emphasis role="bold">end</emphasis>
 </programlisting>
-    </example></para>
+    </example>
 
   <para>The same applies to facts declared inline. So, if StockTick was a fact
   type declared in the DRL itself, instead of a previously existing class, the
   code would be:</para>
 
-  <para><example>
+  <example>
       <title>declaring a fact type and assiging it the event role</title>
 
       <programlisting><emphasis role="bold">declare</emphasis> StockTick 
@@ -51,7 +51,8 @@
     price : double
 <emphasis role="bold">end</emphasis>
 </programlisting>
-    </example>For more information on type declarations, please check the Rule
+    </example>
+  <para>For more information on type declarations, please check the Rule
   Language section of the Drools Expert documentation.</para>
 
   <para></para>

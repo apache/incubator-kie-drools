@@ -117,9 +117,10 @@
 
     <para>The "{" and "}" characters should only be used on the left hand side
     of the mapping (the expression) to mark tokens. On the right hand side you
-    can use "{" and "}" on their own if needed - such as <programlisting>if (foo) \{
-    doSomething();\ }</programlisting> as well as with the token names as
-    shown above.</para>
+    can use "{" and "}" on their own if needed - such as</para>
+    <programlisting>if (foo) \{
+    doSomething();\ }</programlisting>
+    <para> as well as with the token names as shown above.</para>
 
     <para>PLEASE NOTE that if you want curly braces to appear literally as
     curly braces, then escape them with a backslack (\). Otherwise it may

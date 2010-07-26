@@ -10,7 +10,7 @@
   given event is implicitly, by analyzing the temporal constraints in the
   rules. For instance, given the following rule:</para>
 
-  <para><example>
+  <example>
       <title>example rule with temporal constraints</title>
 
       <programlisting>rule "correlate orders"
@@ -21,7 +21,8 @@ then
     // do something
 end
 </programlisting>
-    </example>Analyzing the above rule, the engine automatically calculates
+    </example>
+  <para>Analyzing the above rule, the engine automatically calculates
   that whenever a BuyOrderEvent matches, it needs to store it for up to 10
   seconds to wait for matching AckEvent's. So, the implicit expiration offset
   for BuyOrderEvent will be 10 seconds. AckEvent, on the other hand, can only

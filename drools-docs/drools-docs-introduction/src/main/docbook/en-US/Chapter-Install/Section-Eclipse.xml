@@ -118,7 +118,7 @@
     <para>Eclipse refreshing plug-ins in features and sites seems to not work,
     so what is best is to manually edit the site.xml project and the
     feature.xml. To do this, open the site.xml file in the drools-ide-update
-    project, it should look something like this: <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    project, it should look something like this:</para> <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;site&gt;
    &lt;!- change both the jar and the version number, make sure the new features jar is named
         the same as what you put in -&gt;
@@ -127,13 +127,15 @@
    &lt;/feature&gt;
    &lt;category-def name="JBossRules" label="JBoss Rules"/&gt;
 &lt;/site&gt;
-</programlisting> Change the version attribute to be something new, and also
+</programlisting>
+    <para>Change the version attribute to be something new, and also
     the name of the feature jar to have a new version number at the
     end.</para>
 
     <para>Go into the /feature directory, and unzip the feature jar to get to
     the feature.xml. (the feature jar really just contains the feature.xml).
-    Open the feature.xml, and it should look like: <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    Open the feature.xml, and it should look like:</para>
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;feature
   id="org.drools.ide"
   label="Drools Rule Workbench"
@@ -168,7 +170,8 @@
  version="1.0.0"/&gt; &lt;!- THIS JUST HAS TO BE CONSISTENT WITH THE plug-in -&gt;
 
 &lt;/feature&gt;
-</programlisting> Change the version number in the FEATURE tag to be the same
+</programlisting>
+    <para>Change the version number in the FEATURE tag to be the same
     as what you referred to in the site.xml. If you changed the version number
     of the main plug-in, you will need to put the version number in the plug
     in tag (which refers to org.drools.ide plug-in). Then zip up the
