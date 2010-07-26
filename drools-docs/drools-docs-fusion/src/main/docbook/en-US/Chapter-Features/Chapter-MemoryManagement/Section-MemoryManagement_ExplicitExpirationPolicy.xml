@@ -11,7 +11,7 @@
   just use the declare statement and define an expiration for the fact
   type:</para>
 
-  <para><example>
+  <example>
       <title>explicitly defining an expiration offset of 30 minutes for
       StockTick events</title>
 
@@ -19,7 +19,8 @@
     @expires( 30m )
 end
 </programlisting>
-    </example>The above example declares an expiration offset of 30 minutes
+    </example>
+  <para>The above example declares an expiration offset of 30 minutes
   for StockTick events. After that time, assuming no rule still needs the
   event, the engine will expire and remove the event from the session
   automatically.</para>

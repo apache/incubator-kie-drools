@@ -490,12 +490,13 @@ Cheese( type == "stilton" || price &lt; 10, age == "mature" )</programlisting>
       <para>It is possible to change the evaluation priority by using
       parentheses, as in any logic or mathematical expression. Example:</para>
 
-      <para><example>
+      <example>
           <title>Using parentheses to change evaluation priority</title>
 
           <programlisting># Cheese type is stilton and ( price is less than 20 or age is mature ).
 Cheese( type == "stilton" &amp;&amp; ( price &lt; 20 || age == "mature" ) ) </programlisting>
-        </example>In the above example, the use of parentheses evaluates the
+        </example>
+      <para>In the above example, the use of parentheses evaluates the
       connective '||' before the connective '&amp;&amp;'.</para>
 
       <para>Also, it is important to note that besides having the same
@@ -1438,7 +1439,7 @@ end
       match a set of constraints, <literal>forall</literal> can be written with a single pattern
       for simplicity. Example:</para>
 
-      <para><example>
+      <example>
           <title>Single Pattern Forall</title>
 
           <programlisting>rule "All Buses are Red"
@@ -1448,7 +1449,7 @@ then
     # all asserted Bus facts are red
 end
 </programlisting>
-        </example></para>
+        </example>
 
       <para>Another example shows multiple patterns inside the <literal>forall</literal>:<example>
           <title>Multi-Pattern Forall</title>
@@ -2236,7 +2237,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
       variable, <code>kcontext</code>, of type <code>KnowledgeContext</code>. Its
       method <code>getKnowledgeRuntime()</code> delivers an object of type
       <code>KnowledgeRuntime</code>, which, in turn, provides access to a wealth
-      of methods, many of which are quite useful for coding RHS logic.
+      of methods, many of which are quite useful for coding RHS logic.</para>
 
       <itemizedlist>
         <listitem>
@@ -2249,12 +2250,11 @@ public class AverageAccumulateFunction implements AccumulateFunction {
           to this session's <code>Agenda</code>, which in turn provides access
           to the various rule groups: activation groups, agenda groups, and
           rule flow groups. A fairly common paradigm is the activation of some
-          agenda group, which could be done with the lengthy call:
+          agenda group, which could be done with the lengthy call:</para>
           <programlisting role="JAVA">
 // give focus to the agenda group CleanUp
 kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();</programlisting>
-          (You can achieve the same using <code>drools.setFocus( "CleanUp" )</code>.)
-          </para>
+          <para>(You can achieve the same using <code>drools.setFocus( "CleanUp" )</code>.)</para>
         </listitem>
 
         <listitem>
@@ -2288,7 +2288,6 @@ kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus(
           your operating system's environment.</para>
         </listitem>
       </itemizedlist>
-      </para>
 
     </section>
 

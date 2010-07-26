@@ -21,7 +21,7 @@
   case the average temperature over the last 10 minutes read from a sensor is
   above the threshold value, the rule would look like:</para>
 
-  <para><example>
+  <example>
       <title>aggregating values over time windows</title>
 
       <programlisting>rule "Sound the alarm in case temperature rises above threshold"
@@ -34,6 +34,7 @@ then
     // sound the alarm
 end
 </programlisting>
-    </example>The engine will automatically discard any SensorReading older
+    </example>
+  <para>The engine will automatically discard any SensorReading older
   than 10 minutes and keep the calculated average consistent.</para>
 </section>

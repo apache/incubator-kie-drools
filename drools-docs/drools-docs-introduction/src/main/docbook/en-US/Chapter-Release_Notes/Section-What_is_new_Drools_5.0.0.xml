@@ -1173,14 +1173,14 @@ end</programlisting>
 
       <para></para>
 
-      <para><example>
+      <example>
           <title>To insert facts into an entry point</title>
 
           <programlisting>
 WorkingMemoryEntryPoint entry = wm.getWorkingMemoryEntryPoint( "stock stream" );
 entry.insert( ticker );
 </programlisting>
-        </example></para>
+        </example>
 
       <para>StreamTest shows a unit for this.</para>
     </section>
@@ -1325,7 +1325,7 @@ StatefulSession session = ruleBase.newStatefulSession( conf );
     <section>
       <title>Support to temporal operations over arbitrary dates.</title>
 
-      <para><example>
+      <example>
           <title>added the ability for point-in-time operators (before, after
           and coincides) to be used with any arbitrary date field</title>
 
@@ -1337,7 +1337,7 @@ then
 // allow access
 end
 </programlisting>
-        </example></para>
+        </example>
     </section>
   </section>
 

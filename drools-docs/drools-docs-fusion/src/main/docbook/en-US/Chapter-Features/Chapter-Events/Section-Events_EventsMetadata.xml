@@ -140,7 +140,7 @@ public class VoiceCall {
     hour and 35 minutes after they are inserted into the working memory, the
     user would write:</para>
 
-    <para><example>
+    <example>
         <title>declaring the expiration offset for the VoiceCall
         events</title>
 
@@ -150,7 +150,7 @@ public class VoiceCall {
     <emphasis>@duration</emphasis>( callDuration )
     <emphasis>@expires</emphasis>( 1h35m )
 <emphasis role="bold">end</emphasis></programlisting>
-      </example></para>
+      </example>
 
     <para></para>
   </section>
