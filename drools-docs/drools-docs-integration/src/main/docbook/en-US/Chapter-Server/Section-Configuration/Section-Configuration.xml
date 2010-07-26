@@ -23,7 +23,7 @@
       created two Knowledge Sessions, one stateless and another stateful,
       using two diferents Knowledge Base.</para>
 
-      <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:context="http://www.springframework.org/schema/context"
@@ -50,7 +50,7 @@
 
     &lt;drools:ksession id="ksession2" type="stateless" kbase="kbase2" node="node1"/&gt;
 
-&lt;/beans&gt;</programlisting></para>
+&lt;/beans&gt;</programlisting>
 
       <para>For further configuration details, check the Drools Spring
       documentation</para>
@@ -63,7 +63,7 @@
       exposed through drools-server. The first thing that you should notice is
       that there's a new xml namespace for this, named drools-service.</para>
 
-      <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:context="http://www.springframework.org/schema/context"
@@ -103,7 +103,7 @@
         &lt;drools-service:configuration-ref id="service-conf-2" /&gt;
     &lt;/drools-service:definition&gt;
 
-&lt;/beans&gt;</programlisting></para>
+&lt;/beans&gt;</programlisting>
 
       <section>
         <title>Initial Configuration</title>
@@ -119,7 +119,7 @@
         important configuration is the Camel Context declaration, as you can
         see below:</para>
 
-        <para><programlisting>&lt;camelContext id="executionContext" xmlns="http://camel.apache.org/schema/spring" /&gt;</programlisting></para>
+        <programlisting>&lt;camelContext id="executionContext" xmlns="http://camel.apache.org/schema/spring" /&gt;</programlisting>
 
         <para>After all this initial configuration, you can start config your
         own Knowledge Services.</para>
@@ -163,7 +163,7 @@
         drools-server got deployed. To use this just add the next tag with the
         XML command inside them</para>
 
-        <para><programlisting>&lt;drools-service:startup-command&gt;
+        <programlisting>&lt;drools-service:startup-command&gt;
 &lt;![CDATA[ 
    &lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
    &lt;batch-execution lookup="ksession1" xmlns:ns2="http://drools.org/model"&gt;
@@ -175,7 +175,7 @@
       &lt;/insert&gt;
    &lt;/batch-execution&gt;
 ]]&gt;
-&lt;drools-service:startup-command/&gt;</programlisting></para>
+&lt;drools-service:startup-command/&gt;</programlisting>
 
         <note>
           <para>Remember to add the &lt;![CDATA[  ]]&gt; tag to don't break the XML parser.</para>
@@ -185,16 +185,17 @@
       <section>
         <title>Creating our own knowledge service definition</title>
 
-        <para>The idea of a knowledge servide definition is group diferents
+        <para>The idea of a knowledge service definition is to group different
         knowledge service configurations to be exposed as a service.</para>
 
-        <para><programlisting>&lt;drools-service:definition id="service" node="node1" camelContext="executionContext"&gt;
+        <programlisting>&lt;drools-service:definition id="service" node="node1" camelContext="executionContext"&gt;
    &lt;drools-service:configuration marshaller="JAXB" session="ksession1"&gt;
       &lt;drools-service:class&gt;org.drools.model.Person&lt;/drools-service:class&gt;
    &lt;/drools-service:configuration&gt;
    &lt;drools-service:configuration-ref id="service-conf-2" /&gt;
-&lt;/drools-service:definition&gt;</programlisting>The service definition has
-        three required attributes:</para>
+&lt;/drools-service:definition&gt;</programlisting>
+        
+        <para>The service definition has three required attributes:</para>
 
         <orderedlist>
           <listitem>
