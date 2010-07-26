@@ -1906,9 +1906,10 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
         the service so</para>
 
         <para>Once this is done, the server is accessed via a url of the
-        pattern: http://your-server/drools-server/knowledgebase/{agent
-        configuration name}. So in the example above it would be:
-        <programlisting>http://your-server/drools-server/knowledgebase/teamallocation</programlisting>
+        pattern:
+        <literal>http://your-server/drools-server/knowledgebase/{agent configuration name}</literal>.
+        So in the example above it would be:
+        <literal>http://your-server/drools-server/knowledgebase/teamallocation</literal>
         You can see from this that you can have as many agents configured as
         you like, perhaps for many concurrent versions of
         knowledgebases.</para>
