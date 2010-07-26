@@ -29,17 +29,19 @@
       Sessions. In Drools 3.0.x, the code to create a working memory
       was:</para>
 
-      <para><example>
+      <example>
           <title>Drools 3.0.x: Working Memory Creation</title>
 
           <programlisting>WorkingMemory wm = rulebase.newWorkingMemory();</programlisting>
-        </example>In Drools 4.0.x it must be changed to:</para>
+        </example>
+      <para>In Drools 4.0.x it must be changed to:</para>
 
-      <para><example>
+      <example>
           <title>Drools 4.0.x: Stateful Rule Session Creation</title>
 
           <programlisting>StatefulSession wm = rulebase.newStatefulSession();</programlisting>
-        </example>The StatefulSession object has the same behavior as the
+        </example>
+      <para>The StatefulSession object has the same behavior as the
       Drools 3.0.x WorkingMemory (it even extends the WorkingMemory
       interface), so there should be no other problems with this fix.</para>
     </section>

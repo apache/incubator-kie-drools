@@ -24,7 +24,7 @@
   100 readings from a sensor is above the threshold value, the rule would look
   like:</para>
 
-  <para><example>
+  <example>
       <title>aggregating values over length windows</title>
 
       <programlisting>rule "Sound the alarm in case temperature rises above threshold"
@@ -36,5 +36,6 @@ when
 then
     // sound the alarm
 end</programlisting>
-    </example>The engine will keep only the last 100 readings.</para>
+    </example>
+  <para>The engine will keep only the last 100 readings.</para>
 </section>

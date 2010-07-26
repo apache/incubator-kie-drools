@@ -19,7 +19,7 @@
     class is loaded using Class.forNamem, in much the same way as JDBC
     drivers.</para>
 
-    <para><example>
+    <example>
         <title>Automatic RuleServiceProvider Registration</title>
 
         <programlisting role="JAVA">// RuleServiceProviderImpl is registered to "http://drools.org/"
@@ -29,7 +29,8 @@ Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
 // Get the rule service provider from the provider manager.
 RuleServiceProvider ruleServiceProvider =
   RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");</programlisting>
-      </example>The RuleServiceProvider provides access to the RuleRuntime and
+      </example>
+    <para>The RuleServiceProvider provides access to the RuleRuntime and
     RuleAdministrator APIs. The RuleAdministrator provides an administration
     API for the management of RuleExecutionSet objects, making it possible to
     register a RuleExecutionSet that can then be retrieved via the

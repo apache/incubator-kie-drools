@@ -65,7 +65,7 @@
     iterate over all elements of the opposite memory in order to find its
     matches.</para>
 
-    <para>So, for example, if we have a Rule like the following:
+    <para>So, for example, if we have a Rule like the following:</para>
     <programlisting>rule "find brothers"
     when
         p1: Person( $mother : mother )
@@ -73,7 +73,8 @@
     then
         // do something
 end
-</programlisting> If no indexing is used, each new Person object asserted into
+</programlisting>
+    <para>If no indexing is used, each new Person object asserted into
     working memory will try to match each other previously asserted Person
     object to find those that have the same mother. So, if we have 1000 Person
     objects already asserted into working memory, and we assert a new one, the
@@ -135,13 +136,16 @@ Manners 64 with BetaNode indexes: 10078 millisec to run on average</programlisti
     <para>Although, every system has its own peculiarities and sometimes it is
     possible to do some fine tuning on performance. For example, in our
     Manners 64 example, if we disable the right memory indexing we would have
-    the following result: <programlisting>Manners 64 with BetaNode indexing only for left memory: 142000 millisec to run on average
-</programlisting> The above is even worse than no using any indexing. This
+    the following result:</para>
+    <programlisting>Manners 64 with BetaNode indexing only for left memory: 142000 millisec to run on average
+</programlisting>
+    <para>The above is even worse than no using any indexing. This
     happens clearly because for Manners 64, the left indexing overhead is
     bigger than its benefit. So, if we do the contrary, leaving right indexing
-    enabled and disabling the left indexing, we get the following result:
+    enabled and disabling the left indexing, we get the following result:</para>
     <programlisting>Manners 64 with BetaNode indexing only for right memory: 8765 millisec to run on average
-</programlisting> So, we have the best scenario now. For Manners 64, the best
+</programlisting>
+    <para>So, we have the best scenario now. For Manners 64, the best
     would be to disable left indexing, leaving only right indexing
     enabled.</para>
 

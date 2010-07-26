@@ -12,14 +12,14 @@
     <para>To define the maximum size for the thread pool, the user may use the
     following configuration option:</para>
 
-    <para><example>
+    <example>
         <title>setting the maximum number of threads for rule evaluation to
         5</title>
 
         <programlisting role="JAVA">KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( MaxThreadsOption.get(5) );
 </programlisting>
-      </example></para>
+      </example>
 
     <para>The equivalent property is:</para>
 

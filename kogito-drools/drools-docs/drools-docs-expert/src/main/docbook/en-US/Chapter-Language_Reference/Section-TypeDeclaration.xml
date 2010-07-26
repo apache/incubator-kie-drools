@@ -83,7 +83,7 @@
     <para>For instance, we may want to declare another fact type
     <code>Person</code>:</para>
 
-    <para><example>
+    <example>
         <title>declaring a new fact type: Person</title>
 
         <programlisting><emphasis role="bold">declare</emphasis> Person
@@ -92,7 +92,8 @@
     address : Address
 <emphasis role="bold">end</emphasis>
 </programlisting>
-      </example>As we can see on the previous example,
+      </example>
+    <para>As we can see on the previous example,
     <code>dateOfBirth</code> is of type <code>java.util.Date</code>,
     from the Java API, while <code>address</code> is of the previously
     defined fact type Address.</para>
@@ -101,7 +102,7 @@
     every time you write it by using the <literal>import</literal> clause, as previously
     discussed.</para>
 
-    <para><example>
+    <example>
         <title>Avoiding the need to use fully qualified class names by using
         import</title>
 
@@ -112,7 +113,7 @@
     dateOfBirth : Date
     address : Address
 <emphasis role="bold">end</emphasis></programlisting>
-      </example></para>
+      </example>
 
     <para>When you declare a new fact type, Drools will, at compile time,
     generate bytecode that implements a Java class representing the fact
@@ -121,25 +122,25 @@
     definition. So, for the previous example, the generated Java class would
     be:</para>
 
-    <para><example>
+    <example>
         <title>generated Java class for the previous Person fact type
         declaration</title>
 
-        <programlisting><emphasis role="bold">public</emphasis> <emphasis
-            role="bold">class</emphasis> Person implements Serializable {
-    <emphasis role="bold">private</emphasis> String name;
-    <emphasis role="bold">private</emphasis> java.util.Date dateOfBirth;
-    <emphasis role="bold">private</emphasis> Address address;
+        <programlisting role="JAVA">public class Person implements Serializable {
+    private String name;
+    private java.util.Date dateOfBirth;
+    private Address address;
 
     // getters and setters
     // equals/hashCode
     // toString
 }
 </programlisting>
-      </example>Since the generated class is a simple Java class, it can
+      </example>
+    <para>Since the generated class is a simple Java class, it can
       be used transparently in the rules, like any other fact.</para>
 
-    <para><example>
+    <example>
         <title>Using the declared types in rules</title>
 
         <programlisting><emphasis role="bold">rule</emphasis> "Using a declared Type"
@@ -152,7 +153,7 @@
     insert( mark );
 <emphasis role="bold">end</emphasis>
 </programlisting>
-      </example></para>
+      </example>
   </section>
 
   <section>

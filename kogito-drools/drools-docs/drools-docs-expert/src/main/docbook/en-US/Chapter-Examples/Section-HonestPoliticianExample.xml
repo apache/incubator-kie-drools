@@ -25,7 +25,7 @@
   name and a boolean value for being honest. Four politicians with honest
   state set to true are inserted.</para>
 
-  <para><example>
+  <example>
     <title>Class Politician</title>
 
       <programlisting role="JAVA">public class Politician {
@@ -33,7 +33,8 @@
     private boolean honest;
     ...
 }</programlisting>
-      </example><example>
+  </example>
+  <example>
     <title>Honest Politician: Execution</title>
 
     <programlisting role="JAVA">Politician blair = new Politician("blair", true);
@@ -47,10 +48,12 @@ ksession.insert( chirac );
 ksession.insert( schroder );
 
 ksession.fireAllRules();</programlisting>
-    </example>The Console window output shows that, while there is at
+  </example>
+  <para>The Console window output shows that, while there is at
     least one honest politician, democracy lives. However, as each
     politician is in turn corrupted by an evil corporation, so that
-    all politicians become dishonest, democracy is dead.<example>
+    all politicians become dishonest, democracy is dead.</para>
+  <example>
     <title>Honest Politician: Console Output</title>
 
     <programlisting>Hurrah!!! Democracy Lives
@@ -60,7 +63,8 @@ I'm an evil corporation and I have corrupted bush
 I'm an evil corporation and I have corrupted blair
 We are all Doomed!!! Democracy is Dead
 </programlisting>
-    </example>As soon as there is at least one honest politician in the
+  </example>
+  <para>As soon as there is at least one honest politician in the
     Working Memory a new <code>Hope</code> object is logically asserted.
     This object will only exist while there is at least one honest
     politician. As soon as all politicians are dishonest, the
