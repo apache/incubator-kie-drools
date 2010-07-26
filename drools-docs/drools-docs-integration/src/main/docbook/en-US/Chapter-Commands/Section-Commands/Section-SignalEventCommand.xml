@@ -62,15 +62,14 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 SignalEventCommand signalEventCommand = new SignalEventCommand();
 signalEventCommand.setProcessInstanceId(1001);
 signalEventCommand.setEventType("start");
 signalEventCommand.setEvent(new Person("john", 25));
-command.getCommands().add(signalEventCommand);</programlisting></para>
-
-      <para></para>
+command.getCommands().add(signalEventCommand);</programlisting>
     </listitem>
 
     <listitem>
@@ -80,14 +79,14 @@ command.getCommands().add(signalEventCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;signal-event process-instance-id="1001" event-type="start"&gt;
     &lt;org.drools.pipeline.camel.Person&gt;
       &lt;name&gt;john&lt;/name&gt;
       &lt;age&gt;25&lt;/age&gt;
     &lt;/org.drools.pipeline.camel.Person&gt;
   &lt;/signal-event&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
@@ -95,15 +94,13 @@ command.getCommands().add(signalEventCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"signal-event":{"process-instance-id":1001,"@event-type":"start","event-type":"start","object":{"org.drools.pipeline.camel.Person":{"name":"john","age":25}}}}}}</programlisting></para>
-
-          <para></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"signal-event":{"process-instance-id":1001,"@event-type":"start","event-type":"start","object":{"org.drools.pipeline.camel.Person":{"name":"john","age":25}}}}}}</programlisting>
         </listitem>
 
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;signal-event event-type="start" process-instance-id="1001"&gt;
         &lt;event xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
@@ -111,9 +108,7 @@ command.getCommands().add(signalEventCommand);</programlisting></para>
             &lt;name&gt;john&lt;/name&gt;
         &lt;/event&gt;
     &lt;/signal-event&gt;
-&lt;/batch-execution&gt;</programlisting></para>
-
-          <para></para>
+&lt;/batch-execution&gt;</programlisting>
         </listitem>
       </itemizedlist>
     </listitem>

@@ -56,14 +56,15 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 ModifyCommand modifyCommand = new ModifyCommand();
 modifyCommand.setFactHandleFromString("123:234:345:456:567");
 List&lt;Setter&gt; setters = new ArrayList&lt;Setter&gt;();
 setters.add(new SetterImpl("age", "30"));
 modifyCommand.setSetters(setters);
-command.getCommands().add(modifyCommand);</programlisting></para>
+command.getCommands().add(modifyCommand);</programlisting>
 
       <para></para>
     </listitem>
@@ -75,11 +76,11 @@ command.getCommands().add(modifyCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;modify fact-handle="0:234:345:456:567"&gt;
     &lt;set accessor="age" value="30"/&gt;
   &lt;/modify&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
@@ -87,18 +88,18 @@ command.getCommands().add(modifyCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"modify":{"fact-handle":"0:234:345:456:567","setters":{"accessor":"age","value":30}}}}} </programlisting></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"modify":{"fact-handle":"0:234:345:456:567","setters":{"accessor":"age","value":30}}}}} </programlisting>
         </listitem>
 
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;modify fact-handle="0:234:345:456:567"&gt;
         &lt;set value="30" accessor="age"/&gt;
     &lt;/modify&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>

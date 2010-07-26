@@ -56,12 +56,13 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 InsertObjectCommand insertObjectCommand = new InsertObjectCommand(new Person("john", 25));
 FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
 command.getCommands().add(insertObjectCommand);
-command.getCommands().add(fireAllRulesCommand);</programlisting></para>
+command.getCommands().add(fireAllRulesCommand);</programlisting>
 
       <para></para>
     </listitem>
@@ -73,7 +74,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;insert&gt;
     &lt;org.drools.test.Person&gt;
       &lt;name&gt;john&lt;/name&gt;
@@ -81,7 +82,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
     &lt;/org.drools.test.Person&gt;
   &lt;/insert&gt;
   &lt;fire-all-rules/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
@@ -89,7 +90,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":[{"insert":{"object":{"org.drools.test.Person":{"name":"john","age":25}}}},{"fire-all-rules":""}]}} </programlisting></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":[{"insert":{"object":{"org.drools.test.Person":{"name":"john","age":25}}}},{"fire-all-rules":""}]}} </programlisting>
 
           <para></para>
         </listitem>
@@ -97,7 +98,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;insert&gt;
         &lt;object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
@@ -106,7 +107,7 @@ command.getCommands().add(fireAllRulesCommand);</programlisting></para>
         &lt;/object&gt;
     &lt;/insert&gt;
     &lt;fire-all-rules max="-1"/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>

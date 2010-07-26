@@ -13,12 +13,12 @@
 
   <para></para>
 
-  <para><programlisting>BatchExecutionCommand cmd = new BatchExecutionCommand();
+  <programlisting role="JAVA">BatchExecutionCommand cmd = new BatchExecutionCommand();
 cmd.setLookup("ksession1");
 cmd.getCommands().add(new InsertObjectCommand(new Person("lucaz", 25), "person1"));
 cmd.getCommands().add(new InsertObjectCommand(new Person("hadrian", 25), "person2"));
 cmd.getCommands().add(new InsertObjectCommand(new Person("baunax", 21), "person3"));
-cmd.getCommands().add(new FireAllRulesCommand());</programlisting></para>
+cmd.getCommands().add(new FireAllRulesCommand());</programlisting>
 
   <para>At this moment, the supported commands are:</para>
 
