@@ -36,7 +36,7 @@
       you insert a new number it should be unique in its particular
       3x3 zone, row and column.</para>
 
-      <para>See <programlisting>URL: http://en.wikipedia.org/wiki/Sudoku</programlisting>
+      <para>See <link xlink:href="http://en.wikipedia.org/wiki/Sudoku">Wikipedia</link>
       for a more detailed description.</para>
     </section>
 
