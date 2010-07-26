@@ -40,7 +40,7 @@
   <example>
     <title>HelloWorld: Creating the KnowledgeBase and Session</title>
 
-    <programlisting>final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    <programlisting role="JAVA">final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
 // this will parse and compile in one step
 kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
@@ -80,7 +80,7 @@ final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</
   <example>
     <title>HelloWorld: Event logging and Auditing</title>
 
-    <programlisting>// setup the debug listeners
+    <programlisting role="JAVA">// setup the debug listeners
 ksession.addEventListener( new DebugAgendaEventListener() );
 ksession.addEventListener( new DebugWorkingMemoryEventListener() );
         
@@ -96,7 +96,7 @@ KnowledgeRuntimeLogger logger =
   <example>
     <title>HelloWorld example: Message Class</title>
 
-    <programlisting>public static class Message {
+    <programlisting role="JAVA">public static class Message {
     public static final int HELLO   = 0;
     public static final int GOODBYE = 1;
 
@@ -117,7 +117,7 @@ KnowledgeRuntimeLogger logger =
   <example>
     <title>HelloWorld: Execution</title>
 
-    <programlisting>final Message message = new Message();
+    <programlisting role="JAVA">final Message message = new Message();
 message.setMessage("Hello World");
 message.setStatus(Message.HELLO);
 ksession.insert(message);

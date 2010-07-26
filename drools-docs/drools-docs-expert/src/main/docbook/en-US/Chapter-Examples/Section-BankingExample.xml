@@ -28,7 +28,7 @@
     <example>
       <title>Banking Tutorial: RuleRunner</title>
 
-      <programlisting><![CDATA[public class RuleRunner {
+      <programlisting role="JAVA"><![CDATA[public class RuleRunner {
 
     public RuleRunner() {
     }
@@ -69,7 +69,7 @@
     <example>
       <title>Banking Tutorial : Java Example1</title>
 
-      <programlisting>public class Example1 {
+      <programlisting role="JAVA">public class Example1 {
     public static void main(String[] args) throws Exception {
         new RuleRunner().runRules( new String[] { "Example1.drl" },
                                    new Object[0] );
@@ -108,7 +108,7 @@ Rule 01 Works</programlisting>
     <example>
       <title>Banking Tutorial: Java Example2</title>
 
-      <programlisting>public class Example2 {
+      <programlisting role="JAVA">public class Example2 {
     public static void main(String[] args) throws Exception {
         Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
         new RuleRunner().runRules( new String[] { "Example2.drl" },
@@ -131,7 +131,7 @@ Rule 01 Works</programlisting>
     <example>
       <title>Banking Tutorial: Rule in Example2.drl</title>
 
-      <programlisting>rule "Rule 02"   
+      <programlisting>rule "Rule 02"
     when
         Number( $intValue : intValue )
     then
@@ -175,7 +175,7 @@ Number found with value: 3
     <example>
       <title>Banking Tutorial: Example3.java</title>
 
-      <programlisting>public class Example3 {
+      <programlisting role="JAVA">public class Example3 {
     public static void main(String[] args) throws Exception {
         Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
         new RuleRunner().runRules( new String[] { "Example3.drl" },
@@ -238,7 +238,7 @@ Number found with value: 5
     <example>
       <title>Banking Tutorial: Class Cashflow</title>
 
-      <programlisting>public class Cashflow {
+      <programlisting role="JAVA">public class Cashflow {
     private Date   date;
     private double amount;
 
@@ -284,7 +284,7 @@ Number found with value: 5
     <example>
       <title>Banking Tutorial: Example4.java</title>
 
-      <programlisting>public class Example4 {    
+      <programlisting role="JAVA">public class Example4 {
     public static void main(String[] args) throws Exception {
         Object[] cashflows = {
             new Cashflow(new SimpleDate("01/01/2007"), 300.00),
@@ -308,7 +308,7 @@ Number found with value: 5
     <example>
       <title>Banking Tutorial: Class SimpleDate</title>
 
-      <programlisting>public class SimpleDate extends Date {
+      <programlisting role="JAVA">public class SimpleDate extends Date {
     private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
     
     public SimpleDate(String datestr) throws Exception {             
@@ -365,7 +365,7 @@ Cashflow: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     <example>
       <title>Banking Tutorial: Class TypedCashflow</title>
 
-      <programlisting>public class TypedCashflow extends Cashflow {
+      <programlisting role="JAVA">public class TypedCashflow extends Cashflow {
     public static final int CREDIT = 0;
     public static final int DEBIT  = 1;
 
@@ -403,7 +403,7 @@ Cashflow: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     <example>
       <title>Banking Tutorial: Example5.java</title>
 
-      <programlisting>public class Example5 {    
+      <programlisting role="JAVA">public class Example5 {
     public static void main(String[] args) throws Exception {      
         Object[] cashflows = {
             new TypedCashflow(new SimpleDate("01/01/2007"),    
@@ -484,7 +484,7 @@ Credit: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     <example>
       <title>Banking Tutorial: Class Account</title>
 
-      <programlisting>public class Account {
+      <programlisting role="JAVA">public class Account {
     private long   accountNo;
     private double balance = 0;
 
@@ -524,7 +524,7 @@ Credit: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     <example>
       <title>Banking Tutorial: Class AllocatedCashflow</title>
 
-      <programlisting>public class AllocatedCashflow extends TypedCashflow {
+      <programlisting role="JAVA">public class AllocatedCashflow extends TypedCashflow {
     private Account account;
 
     public AllocatedCashflow() {
@@ -560,7 +560,7 @@ Credit: Thu Jan 11 00:00:00 GMT 2007 :: 500.0
     <example>
       <title>Banking Tutorial: Example5.java</title>
 
-      <programlisting>public class Example6 {    
+      <programlisting role="JAVA">public class Example6 {
     public static void main(String[] args) throws Exception {      
         Account acc1 = new Account(1);
         Account acc2 = new Account(2);

@@ -15,7 +15,7 @@
       feeling like a rule expert and the answer to that is obvious, but let's
       summarize the differences nonetheless.</para>
 
-      <programlisting>public void helloWorld(Person person) {
+      <programlisting role="JAVA">public void helloWorld(Person person) {
     if ( person.getName().equals( "Chuck" ) ) {
         System.out.println( "Hello Chuck" );
     }
@@ -136,7 +136,7 @@ room:bedroom sprinkler:bedroom</programlisting>
       of what is actually going on under the hood. Three classes will be used,
       as shown below.</para>
 
-      <programlisting>public class CashFlow {
+      <programlisting role="JAVA">public class CashFlow {
     private Date   date;
     private double amount;
     private int    type;

@@ -81,7 +81,7 @@
     <example>
       <title>Building a Package from Multiple Sources</title>
 
-      <programlisting>PackageBuilder builder = new PackageBuilder();
+      <programlisting role="JAVA">PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
 builder.addPackageFromXml( new InputStreamReader( getClass().getResourceAsStream( "package2.xml" ) ) );
 builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
@@ -98,7 +98,7 @@ Package pkg = builder.getPackage();      </programlisting>
     <example>
       <title>Checking the PackageBuilder for errors</title>
 
-      <programlisting>PackageBuilder builder = new PackageBuilder();
+      <programlisting role="JAVA">PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
 PackageBuilderErrors errors = builder.getErrors();</programlisting>
     </example>
@@ -158,7 +158,7 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
       <title>Configuring the <code>JavaDialectConfiguration</code> to use JANINO via a
       setter</title>
 
-      <programlisting>PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( );
+      <programlisting role="JAVA">PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( );
 JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
 javaConf.setCompiler( JavaDialectConfiguration.JANINO );            </programlisting>
     </example>
@@ -173,7 +173,7 @@ javaConf.setCompiler( JavaDialectConfiguration.JANINO );            </programlis
     <example>
       <title>Configuring the <code>JavaDialectConfiguration</code> to use JANINO</title>
 
-      <programlisting>Properties properties = new Properties();
+      <programlisting role="JAVA">Properties properties = new Properties();
 properties.setProperty( "drools.dialect.java.compiler",
                         "JANINO" );
 PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( properties );
@@ -195,7 +195,7 @@ assertEquals( JavaDialectConfiguration.JANINO,
       <title>Configuring the <code>PackageBuilder</code> to use JANINO via a
       property</title>
 
-      <programlisting>PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+      <programlisting role="JAVA">PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
 conf.setCompiler( PackageBuilderConfiguration.JANINO );
 PackageBuilder builder = new PackageBuilder( conf );</programlisting>
     </example>
@@ -238,7 +238,7 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
     <example>
       <title>Adding a Package to a new RuleBase</title>
 
-      <programlisting>RuleBase ruleBase  = RuleBaseFactory.newRuleBase();
+      <programlisting role="JAVA">RuleBase ruleBase  = RuleBaseFactory.newRuleBase();
 ruleBase.addPackage( pkg  );        </programlisting>
     </example>
 
@@ -271,14 +271,14 @@ ruleBase.addPackage( pkg  );        </programlisting>
     to maintain a reference, but only do so if you know the <code>RuleBase</code> will not
     be updated. References are not stored for stateless sessions.</para>
 
-    <programlisting>ruleBase.newStatefulSession();  // maintains a reference.
+    <programlisting role="JAVA">ruleBase.newStatefulSession();  // maintains a reference.
 ruleBase.newStatefulSession( false ); // do not maintain a reference    </programlisting>
 
     <para>Packages can be added and removed at any time, and all changes will be
     propagated to the existing stateful sessions, but don't forget to call
     <code>fireAllRules()</code> for resulting Activations to fire.</para>
 
-    <programlisting>ruleBase.addPackage( pkg );  // Add a package instance
+    <programlisting role="JAVA">ruleBase.addPackage( pkg );  // Add a package instance
 ruleBase.removePackage( "org.com.sample" );  // remove a package, and all its parts, by its namespace
 ruleBase.removeRule( "org.com.sample", "my rule" ); // remove a specific rule from a namespace         </programlisting>
 
@@ -294,7 +294,7 @@ ruleBase.removeRule( "org.com.sample", "my rule" ); // remove a specific rule fr
     cross product behavior (remove or keep identity equals across
     products).</para>
 
-    <programlisting>RuleBaseConfiguration conf = new RuleBaseConfiguration();
+    <programlisting role="JAVA">RuleBaseConfiguration conf = new RuleBaseConfiguration();
 conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
 conf.setRemoveIdentities( true );
 RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
@@ -368,7 +368,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
       <code>WorkingMemory</code>. It is also used for interactions with the <code>WorkingMemory</code>
       when you wish to retract or modify an object.</para>
 
-      <programlisting>Cheese stilton = new Cheese("stilton");
+      <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = session.insert( stilton );      </programlisting>
 
       <para>As mentioned in the Rule Base section a Working Memory may operate
@@ -397,7 +397,7 @@ FactHandle stiltonHandle = session.insert( stilton );      </programlisting>
       (see the <code>not</code> and <code>exist</code> keywords). Retraction is done using the
       <code>FactHandle</code> that was returned during the assert.</para>
 
-      <programlisting>Cheese stilton = new Cheese("stilton");
+      <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = session.insert( stilton );
 ....
 session.retract( stiltonHandle );            </programlisting>
@@ -419,7 +419,7 @@ session.retract( stiltonHandle );            </programlisting>
       call <code>wm.modifyRetract()</code> before making your changes and
       <code>wm.modifyInsert()</code> after the changes.</para>
 
-      <programlisting>Cheese stilton = new Cheese("stilton");
+      <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );
 ....
 stilton.setPrice( 100 );
@@ -443,7 +443,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
       the global type and identifier first will result in an exception being
       thrown. To set the global on the session use <code>session.setGlobal(identifier, value)</code>:</para>
 
-      <programlisting>List list = new ArrayList();
+      <programlisting role="JAVA">List list = new ArrayList();
 session.setGlobal("list", list);           </programlisting>
 
       <para>If a rule evaluates on a global before you set it you will get a
@@ -550,7 +550,7 @@ end</programlisting>
         <example>
           <title>Safely modifying attributes in the application
           code</title>
-          <programlisting>         // create session
+          <programlisting role="JAVA">         // create session
          StatefulSession session = ruleBase.newStatefulSession();
 
          // get facts
@@ -584,7 +584,7 @@ end</programlisting>
         <para>Alternatively, it is possible to disable shadow facts through an API
         call:</para>
 
-        <programlisting>RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        <programlisting role="JAVA">RuleBaseConfiguration conf = new RuleBaseConfiguration();
 conf.setShadowProxy( false );
 ...
 RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
@@ -611,7 +611,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
       of Drools will bundle some to make it easier.) To use an object in
       dynamic mode specify true for the second assertObject parameter.</para>
 
-      <programlisting>Cheese stilton = new Cheese("stilton");
+      <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton, true );  //specifies that this is a dynamic fact            </programlisting>
 
       <para>To make a JavaBean dynamic add a <code>PropertyChangeSupport</code> field
@@ -619,7 +619,7 @@ FactHandle stiltonHandle = workingMemory.insert( stilton, true );  //specifies t
       calls the <code>PropertyChangeSupport</code> instance with
       <code>firePropertyChange</code>.</para>
 
-      <programlisting>private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
+      <programlisting role="JAVA">private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
 ...
 public void addPropertyChangeListener(final PropertyChangeListener l) {
     this.changes.addPropertyChangeListener( l );
@@ -679,7 +679,7 @@ public void setState(final String newState) {
 
     <example>
       <title>Createing a <code>StatefulSession</code></title>
-      <programlisting>StatefulSession session = ruleBase.newStatefulSession();</programlisting>
+      <programlisting role="JAVA">StatefulSession session = ruleBase.newStatefulSession();</programlisting>
     </example>
   </section>
 
@@ -701,7 +701,7 @@ public void setState(final String newState) {
 
     <example>
       <title>Creating a <code>StatelessSession</code></title>
-      <programlisting>StatelessSession session = ruleBase.newStatelessSession();
+      <programlisting role="JAVA">StatelessSession session = ruleBase.newStatelessSession();
 session.execute( new Cheese( "cheddar" ) );</programlisting>
     </example>
 
@@ -771,7 +771,7 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
     <example>
       <title><code>GlobalExporter</code> with <code>StatelessSession</code>s</title>
 
-      <programlisting>StatelessSession session = ruleBase.newStatelessSession();
+      <programlisting role="JAVA">StatelessSession session = ruleBase.newStatelessSession();
 session.setGlobalExporter( new CopyIdentifiersGlobalExporter( new String[]{"list"} ) );
 StatelessSessionResult result = session.executeWithResults( new Cheese( "stilton" ) );
 List list = ( List ) result.getGlobal( "list" );</programlisting>
@@ -925,7 +925,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
       <para>To use a filter specify it while calling <code>FireAllRules</code>. The
       following example permits only rules ending in the string <emphasis>Test</emphasis>.
       All others will be filtered out.
-      <programlisting>workingMemory.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
+      <programlisting role="JAVA">workingMemory.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
     </section>
   </section>
 
@@ -1116,7 +1116,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
     instance to the session. It prints events resulting from rules being 
     fired.</para>
 
-    <programlisting>session.addEventListener( new DefaultAgendaEventListener() {                            
+    <programlisting role="JAVA">session.addEventListener( new DefaultAgendaEventListener() {
    public void afterActivationFired(AfterActivationFiredEvent event) {
        super.afterActivationFired( event );
        System.out.println( event );
@@ -1129,7 +1129,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
     each method with a debug print statement. To print all Working
     Memory events, you add a listener like this:</para>
 
-    <programlisting>session.addEventListener( new DebugWorkingMemoryEventListener() );        </programlisting>
+    <programlisting role="JAVA">session.addEventListener( new DebugWorkingMemoryEventListener() );        </programlisting>
 
     <para>The Eclipse-based Rule IDE also provides an audit logger and
     graphical viewer, so that the rule engine can log events for later

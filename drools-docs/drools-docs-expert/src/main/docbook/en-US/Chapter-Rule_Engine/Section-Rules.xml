@@ -142,7 +142,7 @@
     </indexterm>
     Rule Set. A Package declares imports, global variables, functions and rules.</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
 <![CDATA[
 package com.sample
 
@@ -185,7 +185,7 @@ end
 
     <para>The example above is analogous to :</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
 <![CDATA[
 public void cheddarCheese(Cheese cheese) {
   if ( cheese.getType().equals("cheddar") {

@@ -61,7 +61,7 @@
     <example>
       <title>Creating a new KnowledgeBuilder</title>
 
-      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();</programlisting>
+      <programlisting role="JAVA">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();</programlisting>
     </example>
 
     <para>A configuration can be created using the <code>KnowledgeBuilderFactory</code>.
@@ -75,7 +75,7 @@
     <example>
       <title>Creating a new KnowledgeBuilder with a custom ClassLoader</title>
 
-      <programlisting>KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader );
+      <programlisting role="JAVA">KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader );
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
 </programlisting>
     </example>
@@ -88,7 +88,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     <example>
       <title>Adding DRL Resources</title>
 
-      <programlisting>kbuilder.add( ResourceFactory.newFileResource( "/project/myrules.drl" ),
+      <programlisting role="JAVA">kbuilder.add( ResourceFactory.newFileResource( "/project/myrules.drl" ),
               ResourceType.DRL);
 </programlisting>
     </example>
@@ -101,7 +101,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     <example>
       <title>Validating</title>
 
-      <programlisting>if( kbuilder.hasErrors() ) {
+      <programlisting role="JAVA">if( kbuilder.hasErrors() ) {
     System.out.println( kbuilder.getErrors() );
     return;
 }
@@ -117,7 +117,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     <example>
       <title>Getting the KnowledgePackages</title>
 
-      <programlisting>Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
+      <programlisting role="JAVA">Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
@@ -126,7 +126,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     <example>
       <title>Putting it all together</title>
 
-      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+      <programlisting role="JAVA">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 if( kbuilder.hasErrors() ) {
     System.out.println( kbuilder.getErrors() );
     return;
@@ -262,7 +262,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>Loading the ChangeSet XML</title>
 
-      <programlisting>kbuilder.add( ResourceFactory.newUrlResource( url ), ResourceType.CHANGE_SET );
+      <programlisting role="JAVA">kbuilder.add( ResourceFactory.newUrlResource( url ), ResourceType.CHANGE_SET );
 </programlisting>
     </example>
 

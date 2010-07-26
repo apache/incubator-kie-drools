@@ -60,7 +60,7 @@
       <para>So let's start with a very simple example using a driving license
       application.</para>
 
-      <programlisting>public class Applicant {
+      <programlisting role="JAVA">public class Applicant {
     private String name;
     private int age;
     private boolean valid;
@@ -105,7 +105,7 @@ end</programlisting>
       <code>KnowledgeBase</code>. A Knowledge Base is what we call our collection of
       compiled rules, which are compiled using the <code>KnowledgeBuilder</code>.</para>
 
-      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+      <programlisting role="JAVA">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClassPathResource( "licenseApplication.drl", getClass() ),
               ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
@@ -122,7 +122,7 @@ kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );</programlisting>
       Now we are ready to build our session and execute against some
       data:</para>
 
-      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 Applicant applicant = new Applicant( "Mr John Smith", 16 );
 assertTrue( applicant.isValid() );
 ksession.execute( applicant );
@@ -138,7 +138,7 @@ assertFalse( applicant.isValid() );
       date of the application, and we'll also move the boolean valid field to the
       <code>Application</code> class.</para>
 
-      <programlisting>public class Applicant {
+      <programlisting role="JAVA">public class Applicant {
     private String name;
     private int age;
     // getter and setter methods here
@@ -178,7 +178,7 @@ end
       shown below executes against an iterable list, where all collection
       elements are inserted before any matched rules are fired.</para>
 
-      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 Applicant applicant = new Applicant( "Mr John Smith", 16 );
 Application application = new Application();
 assertTrue( application() );
@@ -193,13 +193,13 @@ assertFalse( application() );
       <para>A <code>CommandFactory</code> is used to create commands, so that the following is
       equivalent to <code>execute(Iterable it)</code>:</para>
 
-      <programlisting>ksession.execute( CommandFactory.newInsertIterable( new Object[] { application, applicant } ) );
+      <programlisting role="JAVA">ksession.execute( CommandFactory.newInsertIterable( new Object[] { application, applicant } ) );
 </programlisting>
 
       <para>Batch Executor and Command Factory are particularly useful when working
       with multiple Commands and with output identifiers for obtaining results.</para>
 
-      <programlisting>List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
+      <programlisting role="JAVA">List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
 cmds.add( CommandFactory.newInsert( new Person( "Mr John Smith" ), "mrSmith" );
 cmds.add( CommandFactory.newInsert( new Person( "Mr John Doe" ), "mrDoe" );
 BatchExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
@@ -275,7 +275,7 @@ assertEquals( new Person( "Mr John Smith" ), results.getValue( "mrSmith" ) );
       has one sprinkler. If a fire starts in a room, we
       represent that with a single <code>Fire</code> instance.</para>
 
-      <programlisting>public class Room {
+      <programlisting role="JAVA">public class Room {
     private String name
     // getter and setter methods here
 }
@@ -400,7 +400,7 @@ end</programlisting>
       this time we create a Stateful Session from the Knowledge Base, whereas
       before we created a Stateless Session.</para>
 
-      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+      <programlisting role="JAVA">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClassPathResource( "fireAlarm.drl", getClass() ),
               ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
@@ -417,7 +417,7 @@ StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</progra
       allows the matched rules to fire, but without a fire that will
       just produce the health message.</para>
 
-      <programlisting>String[] names = new String[]{"kitchen", "bedroom", "office", "livingroom"};
+      <programlisting role="JAVA">String[] names = new String[]{"kitchen", "bedroom", "office", "livingroom"};
 Map&lt;String,Room&gt; name2room = new HashMap&lt;String,Room&gt;();
 for( String name: names ){
     Room room = new Room( name );
@@ -439,7 +439,7 @@ ksession.fireAllRules()
       the engine, once <code>fireAllRules()</code> is called, the alarm is raised and the
       respective sprinklers are turned on.</para>
 
-      <programlisting>Fire kitchenFire = new Fire( name2room.get( "kitchen" ) );
+      <programlisting role="JAVA">Fire kitchenFire = new Fire( name2room.get( "kitchen" ) );
 Fire officeFire = new Fire( name2room.get( "office" ) );
 
 FactHandle kitchenFireHandle = ksession.insert( kitchenFire );
@@ -455,7 +455,7 @@ ksession.fireAllRules();</programlisting>
       instances are retracted. This results in the sprinklers being turned off, the alarm
       being cancelled, and eventually the health message is printed again.</para>
 
-      <programlisting>ksession.retract( kitchenFireHandle );
+      <programlisting role="JAVA">ksession.retract( kitchenFireHandle );
 ksession.retract( officeFireHandle );
 
 ksession.fireAllRules();</programlisting>
