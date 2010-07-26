@@ -14,41 +14,31 @@
 
     <itemizedlist>
       <listitem>
-        <para>Employee shift rostering</para>
+        <para>Employee shift rostering, such as nurse rostering</para>
       </listitem>
 
       <listitem>
-        <para>Freight routing</para>
+        <para>Verhicle routing, freight routing and people routing, such as <link
+        xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The traveling salesman problem</link> and
+        <link xlink:href="http://mat.gsia.cmu.edu/TOURN/">The traveling tournament problem</link></para>
       </listitem>
 
       <listitem>
-        <para>Supply sorting</para>
+        <para>Educational timetabling, such as lesson scheduling, course schedule, exam scheduling and conference
+        scheduling</para>
       </listitem>
 
       <listitem>
-        <para>Lesson or course scheduling</para>
+        <para>Bin packaging, stock sorting and storage organizing</para>
       </listitem>
 
       <listitem>
-        <para>Exam scheduling</para>
+        <para>Machine queue planning</para>
       </listitem>
 
       <listitem>
-        <para>Bin packaging</para>
-      </listitem>
-
-      <listitem>
-        <para><link xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The traveling salesman
-        problem</link></para>
-      </listitem>
-
-      <listitem>
-        <para><link xlink:href="http://mat.gsia.cmu.edu/TOURN/">The traveling tournament problem</link></para>
-      </listitem>
-
-      <listitem>
-        <para>Miss manners too (although the Drools Planner example solves this differently than the pure Drools rule
-        engine example)</para>
+        <para>Miss manners too (although the Drools Planner example solves this differently than the pure Drools Expert
+        example)</para>
       </listitem>
     </itemizedlist>
 
@@ -203,6 +193,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
     <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link> and twitter (<link
     xlink:href="http://twitter.com/geoffreydesmet">Geoffrey</link>) for news. If Drools Planner helps you, don't forget
     to blog or to <link xlink:href="http://twitter.com/#search?q=%23DroolsPlanner">twitter (hashtag
-    #DroolsPlanner)</link> about it yourself!</para>
+    #DroolsPlanner)</link> about it!</para>
   </section>
 </chapter>
