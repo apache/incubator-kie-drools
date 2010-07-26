@@ -31,7 +31,7 @@
   <para>Given that the above requirements are met, the application may enable
   the STREAM mode using the following API:</para>
 
-  <programlisting>KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+  <programlisting role="JAVA">KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( EventProcessingOption.STREAM );</programlisting>
 
   <para>Or, the equivalent property: </para>

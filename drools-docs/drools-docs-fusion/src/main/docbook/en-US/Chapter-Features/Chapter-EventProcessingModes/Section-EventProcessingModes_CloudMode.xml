@@ -55,7 +55,7 @@
   either by setting a system property, using configuration property files or
   using the API. The corresponding property is:</para>
 
-  <programlisting>KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+  <programlisting role="JAVA">KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( EventProcessingOption.CLOUD );</programlisting>
 
   <para>The equivalent property is:</para>
