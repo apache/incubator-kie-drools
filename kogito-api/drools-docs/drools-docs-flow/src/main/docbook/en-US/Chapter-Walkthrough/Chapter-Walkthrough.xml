@@ -131,7 +131,7 @@
     event request.  The following code snippet shows how this looks.  For more detail on how to create
     the knowledge base and session, you can take a look at the source code in drools-examples.</para>
 
-<programlisting>public static final void main(String[] args) {
+<programlisting role="JAVA">public static final void main(String[] args) {
   try {
     // load up the knowledge base
     KnowledgeBase kbase = readKnowledgeBase();
