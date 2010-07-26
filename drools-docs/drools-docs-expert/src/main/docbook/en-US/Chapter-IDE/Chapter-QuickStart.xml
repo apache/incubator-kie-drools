@@ -305,7 +305,7 @@
       you can then deploy it as a binary file. Alternatively, you can use the
       following snippet of code to convert the brl to a drl rule.</para>
 
-    <programlisting role="JAVA">BRXMLPersitence read = BRXMLPersitence.getInstance();
+    <programlisting role="JAVA">BRXMLPersistence read = BRXMLPersistence.getInstance();
 BRDRLPersistence write = BRDRLPersistence.getInstance();
 String brl = ... // read from the .brl file as needed...
 String outputDRL = write.marshall(read.unmarshal(brl));
