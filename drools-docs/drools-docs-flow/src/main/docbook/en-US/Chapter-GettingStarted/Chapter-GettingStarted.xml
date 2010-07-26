@@ -236,7 +236,7 @@ Hello World
       </listitem>
     </orderedlist>
 
-<programlisting>
+<programlisting role="JAVA">
 package com.sample;
 
 import org.drools.KnowledgeBase;
