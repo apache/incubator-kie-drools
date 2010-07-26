@@ -1,8 +1,4 @@
-package org.drools;
-
-import java.io.Serializable;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +13,10 @@ import java.io.Serializable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools;
+
+import java.io.Serializable;
 
 /**
  * Initial fact, automatically put into the network. This fact is needed by 'not' CEs

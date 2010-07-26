@@ -1,10 +1,4 @@
-package org.drools.spi;
-
-import java.io.Externalizable;
-
-import org.drools.rule.Declaration;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +13,12 @@ import org.drools.rule.Declaration;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.spi;
+
+import java.io.Externalizable;
+
+import org.drools.rule.Declaration;
 
 public interface Constraint
     extends

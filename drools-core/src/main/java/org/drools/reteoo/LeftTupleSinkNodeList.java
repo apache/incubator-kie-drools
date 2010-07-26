@@ -1,13 +1,4 @@
-package org.drools.reteoo;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +13,15 @@ import java.util.NoSuchElementException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.reteoo;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references

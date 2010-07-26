@@ -1,6 +1,4 @@
-package org.drools.base;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +13,8 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.base;
 
 import java.io.Externalizable;
 import java.io.IOException;

@@ -1,5 +1,3 @@
-package org.drools.rule;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.rule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.rule;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

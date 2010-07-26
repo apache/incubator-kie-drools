@@ -1,9 +1,4 @@
-package org.drools.reteoo;
-
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalFactHandle;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +13,11 @@ import org.drools.common.InternalFactHandle;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.reteoo;
+
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 
 public class InitialFactHandle extends DefaultFactHandle {
     /**

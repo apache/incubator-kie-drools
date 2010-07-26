@@ -1,7 +1,5 @@
-package org.drools.reteoo;
-
-/*
- * Copyright 20059 JBoss Inc
+/**
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +13,8 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.reteoo;
 
 import java.io.IOException;
 import java.io.ObjectInput;

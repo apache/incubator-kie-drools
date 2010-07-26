@@ -1,12 +1,4 @@
-package org.drools.base;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.rule.Query;
-import org.drools.rule.Variable;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +13,14 @@ import org.drools.rule.Variable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.base;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.rule.Query;
+import org.drools.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String         name;

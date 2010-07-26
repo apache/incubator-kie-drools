@@ -1,12 +1,4 @@
-package org.drools.spi;
-
-import java.io.Externalizable;
-import java.util.Collection;
-
-import org.drools.common.DefaultAgenda;
-import org.drools.runtime.rule.Activation;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +13,14 @@ import org.drools.runtime.rule.Activation;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.spi;
+
+import java.io.Externalizable;
+import java.util.Collection;
+
+import org.drools.common.DefaultAgenda;
+import org.drools.runtime.rule.Activation;
 
 /**
  *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
