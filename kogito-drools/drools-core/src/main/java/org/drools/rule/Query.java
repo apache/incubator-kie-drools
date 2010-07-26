@@ -1,19 +1,4 @@
-package org.drools.rule;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Calendar;
-import java.util.Map;
-
-import org.drools.io.Resource;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Consequence;
-import org.drools.spi.Duration;
-import org.drools.spi.Enabled;
-import org.drools.spi.Salience;
-
-/*
+/**
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +13,21 @@ import org.drools.spi.Salience;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.rule;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Calendar;
+import java.util.Map;
+
+import org.drools.io.Resource;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
+import org.drools.spi.Duration;
+import org.drools.spi.Enabled;
+import org.drools.spi.Salience;
 
 public class Query extends Rule {
 

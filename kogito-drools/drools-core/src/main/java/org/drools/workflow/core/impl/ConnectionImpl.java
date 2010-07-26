@@ -1,5 +1,3 @@
-package org.drools.workflow.core.impl;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +13,8 @@ package org.drools.workflow.core.impl;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.workflow.core.impl;
 
 import java.io.Serializable;
 import java.util.HashMap;
