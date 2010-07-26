@@ -629,18 +629,18 @@ etc </programlisting>
       is important to determine what should happen to the already running
       process instances. We have improved our support for migrating running
       process instances to a newer version of the process definition. Check
-      out this section in the documentation for more information.</para>
+      out the Drools Flow documentation for more information.</para>
     </section>
 
     <section>
-      <title>Installation Scripot</title>
+      <title>Installation Script</title>
 
-      <para>The Drools build now contains an install folder that simplifies
+      <para>The Drools build now exports an installer that simplifies
       installing the Eclipse plugin, Guvnor and the gwt-console. It creates
       and copies the necessary jars and wars and deploys them to the JBoss AS.
       It also includes a simple evaluation process example you can use to test
-      your setup. For more info, take a look at the readme in the install
-      folder.</para>
+      your setup. For more info, download the drools installer and take a look
+      at the readme within.</para>
     </section>
   </section>
 
