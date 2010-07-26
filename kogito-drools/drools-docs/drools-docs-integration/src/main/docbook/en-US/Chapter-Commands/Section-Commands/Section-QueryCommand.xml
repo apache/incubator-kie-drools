@@ -65,14 +65,13 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 QueryCommand queryCommand = new QueryCommand();
 queryCommand.setName("persons");
 queryCommand.setOutIdentifier("persons");
-command.getCommands().add(queryCommand);</programlisting></para>
-
-      <para></para>
+command.getCommands().add(queryCommand);</programlisting>
     </listitem>
 
     <listitem>
@@ -82,9 +81,9 @@ command.getCommands().add(queryCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;query out-identifier="persons" name="persons"/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
@@ -92,20 +91,18 @@ command.getCommands().add(queryCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"query":{"out-identifier":"persons","name":"persons"}}}} </programlisting></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"query":{"out-identifier":"persons","name":"persons"}}}} </programlisting>
 
-          <para></para>
         </listitem>
 
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;query name="persons" out-identifier="persons"/&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
-          <para></para>
         </listitem>
       </itemizedlist>
     </listitem>

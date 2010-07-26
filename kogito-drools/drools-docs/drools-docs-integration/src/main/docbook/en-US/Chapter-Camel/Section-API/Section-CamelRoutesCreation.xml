@@ -35,14 +35,12 @@
   <para>The most important thing in this section is to know how to create your
   Drools Endpoint, best shown in an example:</para>
 
-  <para><programlisting>RouteBuilder rb = new RouteBuilder() { 
+  <programlisting role="JAVA">RouteBuilder rb = new RouteBuilder() {
    public void configure() throws Exception {
       from("direct:with-session-xstream").to("drools:sm/ksession1?dataFormat=drools-xstream");
    }
 };
-camelContext.addRoutes(rb);</programlisting></para>
-
-  <para></para>
+camelContext.addRoutes(rb);</programlisting>
 
   <para>In this example we created a simple route with a <link
   xlink:href="http://camel.apache.org/direct.html">Direct Endpoint</link> as

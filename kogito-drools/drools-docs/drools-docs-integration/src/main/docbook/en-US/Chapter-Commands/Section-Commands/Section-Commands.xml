@@ -70,8 +70,8 @@
     </listitem>
   </itemizedlist>
 
-  <para><note>
-       In the next snippets code we are going to use a POJO org.drools.test.Person that has two fields 
+  <note>
+      <para>In the next snippets code we are going to use a POJO org.drools.test.Person that has two fields</para>
 
       <itemizedlist>
         <listitem>
@@ -83,43 +83,35 @@
         </listitem>
       </itemizedlist>
 
-       
-    </note></para>
+  </note>
 
-  <para><note>
-       In the next examples, to marshall the commands we have used the nexts snippet codes: 
+  <note>
+      <para>In the next examples, to marshall the commands we have used the nexts snippet codes:</para>
 
       <itemizedlist>
         <listitem>
           <para>XStream</para>
 
-          <para>
-            <programlisting>String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting>
-          </para>
+          <programlisting role="JAVA">String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting>
         </listitem>
 
         <listitem>
           <para>JSON</para>
 
-          <para>
-            <programlisting>String xml = BatchExecutionHelper.newJSonMarshaller().toXML(command);</programlisting>
-          </para>
+          <programlisting role="JAVA">String xml = BatchExecutionHelper.newJSonMarshaller().toXML(command);</programlisting>
         </listitem>
 
         <listitem>
           <para>JAXB</para>
 
-          <para>
-            <programlisting>Marshaller marshaller = jaxbContext.createMarshaller();
+          <programlisting role="JAVA">Marshaller marshaller = jaxbContext.createMarshaller();
 StringWriter xml = new StringWriter();
 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 marshaller.marshal(command, xml);</programlisting>
-          </para>
         </listitem>
       </itemizedlist>
 
-       
-    </note></para>
+  </note>
 
   <xi:include href="Section-BatchExecutionCommand.xml" />
   <xi:include href="Section-InsertObjectCommand.xml" />

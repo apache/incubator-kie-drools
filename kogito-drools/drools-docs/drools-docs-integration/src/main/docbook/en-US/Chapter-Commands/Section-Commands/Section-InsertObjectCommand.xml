@@ -64,12 +64,13 @@
     </listitem>
 
     <listitem>
-      <para>Command creation<programlisting>BatchExecutionCommand command = new BatchExecutionCommand();
+      <para>Command creation</para>
+      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 InsertObjectCommand insertObjectCommand = new InsertObjectCommand(new Person("john", 25));
 insertObjectCommand.setOutIdentifier("john");
 insertObjectCommand.setReturnObject(false);
-command.getCommands().add(insertObjectCommand);</programlisting></para>
+command.getCommands().add(insertObjectCommand);</programlisting>
 
       <para></para>
     </listitem>
@@ -81,14 +82,14 @@ command.getCommands().add(insertObjectCommand);</programlisting></para>
         <listitem>
           <para>XStream</para>
 
-          <para><programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
   &lt;insert out-identifier="john" return-object="false"&gt;
     &lt;org.drools.test.Person&gt;
       &lt;name&gt;john&lt;/name&gt;
       &lt;age&gt;25&lt;/age&gt;
     &lt;/org.drools.test.Person&gt;
   &lt;/insert&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
@@ -96,8 +97,8 @@ command.getCommands().add(insertObjectCommand);</programlisting></para>
         <listitem>
           <para>JSON</para>
 
-          <para><programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"insert":{"out-identifier":"john","return-object":false,"object":{"org.drools.test.Person":{"name":"john","age":25}}}}}}
-</programlisting></para>
+          <programlisting>{"batch-execution":{"lookup":"ksession1","commands":{"insert":{"out-identifier":"john","return-object":false,"object":{"org.drools.test.Person":{"name":"john","age":25}}}}}}
+</programlisting>
 
           <para></para>
         </listitem>
@@ -105,7 +106,7 @@ command.getCommands().add(insertObjectCommand);</programlisting></para>
         <listitem>
           <para>JAXB</para>
 
-          <para><programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;insert out-identifier="john"&gt;
         &lt;object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
@@ -113,7 +114,7 @@ command.getCommands().add(insertObjectCommand);</programlisting></para>
             &lt;name&gt;john&lt;/name&gt;
         &lt;/object&gt;
     &lt;/insert&gt;
-&lt;/batch-execution&gt;</programlisting></para>
+&lt;/batch-execution&gt;</programlisting>
 
           <para></para>
         </listitem>
