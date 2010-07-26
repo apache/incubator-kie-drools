@@ -130,7 +130,7 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 
 <para>The Drools engine contains a WorkItemManager that is responsible for executing work items whenever necessary.  The WorkItemManager is responsible for delegating the work items to WorkItemHandlers that execute the work item and notify the WorkItemManager when the work item has been completed.  For executing notification work items, a NotificationWorkItemHandler should be created (implementing the WorkItemHandler interface):</para>
 
-<programlisting>
+<programlisting role="JAVA">
 package com.sample;
 
 import org.drools.process.instance.WorkItem;
@@ -163,7 +163,7 @@ public class NotificationWorkItemHandler implements WorkItemHandler {
 
 <para>WorkItemHandlers should be registered at the WorkItemManager, using the following API:</para>
 
-<programlisting>
+<programlisting role="JAVA">
   workingMemory.getWorkItemManager().registerWorkItemHandler(
     "Notification", new NotificationWorkItemHandler());
 </programlisting>

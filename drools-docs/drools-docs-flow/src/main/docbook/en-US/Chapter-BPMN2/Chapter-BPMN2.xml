@@ -302,7 +302,7 @@
 
   <para>The following code fragment shows you how to load a BPMN process into your knowledge base ...</para>
 
-  <programlisting>
+  <programlisting role="JAVA">
 private static KnowledgeBase readKnowledgeBase() throws Exception {
   KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
   kbuilder.add(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
@@ -311,7 +311,7 @@ private static KnowledgeBase readKnowledgeBase() throws Exception {
 
   <para> ... and how to execute this process.</para>
 
-  <programlisting>
+  <programlisting role="JAVA">
 KnowledgeBase kbase = readKnowledgeBase();
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
