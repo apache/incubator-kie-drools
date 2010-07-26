@@ -96,7 +96,7 @@ mvn -Ddocumentation -Declipse -DskipTests package javadoc:javadoc assembly:assem
     calling <command>mvn package</command> in the drools-docs directory or adding the -Ddocumentation switch when you build the sources.
     Documentation is generated into each drools-docs subdirectory's <filename>target/</filename> directory. Running <command>mvn -Ddocumentation package assembly:assembly</command>
     in the Drools project root generates and copies the documentation into a zip file. This zip file is located in the root folders <filename>target/</filename>
-    directory.
+    directory.</para>
 
     <programlisting>[trikkola@trikkola trunk]$ mvn -Ddocumentation clean package assembly:assembly
 [INFO] Scanning for projects...
@@ -195,7 +195,6 @@ WAGON_VERSION: 1.0-beta-2
 [INFO] Finished at: Tue Apr 07 15:11:14 EEST 2009
 [INFO] Final Memory: 48M/178M
 [INFO] ------------------------------------------------------------------------&gt;</programlisting>
-    </para>
     <para>The generated manual can be found in the
     <filename>target/drools-docs-$VERSION.jar</filename> file, a compressed archive with all formats.</para>
 

@@ -154,8 +154,8 @@
       <section>
         <title>Example 1</title>
 
-      <para>This is a simple example of a basic process with a ruleset node only:
-        <programlisting role="JAVA">
+      <para>This is a simple example of a basic process with a ruleset node only:</para>
+      <programlisting role="JAVA">
 RuleFlowProcessFactory factory =
     RuleFlowProcessFactory.createProcess("org.drools.HelloWorldRuleSet");
 factory
@@ -173,7 +173,6 @@ factory
     .connection(1, 2)
     .connection(2, 3);
 RuleFlowProcess process = factory.validate().getProcess();</programlisting>
-      </para>
         
       <para>You can see that we start by calling the static <code>createProcess()</code>
       method from the <code>RuleFlowProcessFactory</code> class.  This method creates
@@ -209,7 +208,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
       <section>
         <title>Example 2</title>
 
-      <para>This example is using Split and Join nodes:
+      <para>This example is using Split and Join nodes:</para>
         <programlisting role="JAVA">
 RuleFlowProcessFactory factory =
     RuleFlowProcessFactory.createProcess("org.drools.HelloWorldJoinSplit");
@@ -235,7 +234,6 @@ factory
     .connection(4, 5)
     .connection(5, 6);
 RuleFlowProcess process = factory.validate().getProcess();</programlisting>
-      </para>
 
       <para>This shows a simple example using Split and Join nodes.  As you can see,
       a Split node can have multiple outgoing connections, and a Join node multiple
@@ -248,8 +246,8 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
       <section>
         <title>Example 3</title>
 
-      <para>Now we show a more complex example with a ForEach node, where we have nested nodes:
-        <programlisting role="JAVA">
+      <para>Now we show a more complex example with a ForEach node, where we have nested nodes:</para>
+      <programlisting role="JAVA">
 RuleFlowProcessFactory factory =
     RuleFlowProcessFactory.createProcess("org.drools.HelloWorldForeach");
 factory
@@ -278,7 +276,6 @@ factory
     .connection(1, 2)
     .connection(2, 5);
 RuleFlowProcess process = factory.validate().getProcess();</programlisting>
-      </para>
 
       <para>Here you can see how we can include a ForEach node with nested action nodes.
       Note the <code>linkIncomingConnections()</code> and
@@ -355,10 +352,10 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
       are then copied to the newly created process instance as top-level variables
       of the process.</para>
 
-      <para>You can also start a process from within a rule consequence, using
+      <para>You can also start a process from within a rule consequence, using</para>
       <programlisting role="JAVA">
 kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlisting>
-      </para></listitem>
+      </listitem>
 
     </orderedlist>
     
@@ -1395,9 +1392,9 @@ workingMemory.signalEvent(type, eventData);</programlisting></listitem>
     to respond to the given fault.  In most cases, the behavior that is
     needed to react to the given fault cannot be expressed in one action.
     It is therefore recommended to have the exception handler signal an
-    event of a specific type (in this case "Fault") using <programlisting role="JAVA">
+    event of a specific type (in this case "Fault") using</para>
+    <programlisting role="JAVA">
 context.getProcessInstance().signalEvent("FaultType", context.getVariable("FaultVariable");</programlisting>
-    </para>
 
   </section>
   

@@ -99,8 +99,7 @@
       <para>An important parameter is available without having to be
       included in the data source providing the actual values. The
       parameter substitution
-      <programlisting>
-<emphasis role="bold">@{row.rowNumber}</emphasis></programlisting>
+      <emphasis role="bold"><code>@{row.rowNumber}</code></emphasis>
       expands to the integers 0, 1, 2, etc., providing a unique distinction
       for the instantiation derived from a parameter set. You would use this
       as part of each rule name, because, without this precaution, there
@@ -126,13 +125,13 @@
       
         <para>You may use a Java object that provides getter methods
         corresponding to all of the parameter names of your template
-        file. If, for instance, you have defined a header
+        file. If, for instance, you have defined a header</para>
         <programlisting>
 template header
 type
 limit
 word</programlisting>
-        the following Java class could be used:
+        <para>the following Java class could be used:</para>
         <programlisting role="JAVA">
 public class ParamSet {
     //...
@@ -143,7 +142,7 @@ public class ParamSet {
     public int     getLimit(){...}
     public boolean isWord(){...}
 }</programlisting>
-        Although interpolation is pure text manipulation, the actual values
+        <para>Although interpolation is pure text manipulation, the actual values
         supplied may be of any type, just as long as this type provides a
         reasonable <code>toString()</code> method. (For simple types, the
         eponymous static method of the related class from <code>java.lang</code>

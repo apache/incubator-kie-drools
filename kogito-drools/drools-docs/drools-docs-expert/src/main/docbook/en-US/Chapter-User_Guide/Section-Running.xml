@@ -335,7 +335,8 @@ ksession.setGlobal("list", list);           </programlisting>
         <para>To use a filter specify it while calling
         <code>fireAllRules()</code>. The following example permits only rules
         ending in the string <code>"Test"</code>. All others will be filtered
-        out. <programlisting role="JAVA">ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
+        out.</para>
+        <programlisting role="JAVA">ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting>
       </section>
     </section>
   </section>
@@ -460,7 +461,7 @@ ksession.setGlobal("list", list);           </programlisting>
       this group. It is also always the first group on the stack, given focus
       initially, by default.</para>
 
-      <para><programlisting role="JAVA">ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting></para>
+      <programlisting role="JAVA">ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting>
     </section>
 
     <section>
@@ -481,8 +482,8 @@ ksession.setGlobal("list", list);           </programlisting>
       "activation-group" rule attribute. In this group only one rule can fire,
       and after that rule has fired all the other rules are cancelled from the
       agenda. The <code>clear()</code> method can be called at any time, which
-      cancels all of the activations before one has had a chance to fire.
-      <programlisting role="JAVA">ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting></para>
+      cancels all of the activations before one has had a chance to fire.</para>
+      <programlisting role="JAVA">ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting>
     </section>
 
     <section>
@@ -504,8 +505,8 @@ ksession.setGlobal("list", list);           </programlisting>
       group is activate. The group itself can only become active when the
       elaboration of the ruleflow diagram reaches the node representing the
       group. Here too, the <code>clear()</code> method can be called at any
-      time to cancels all activations still remaining on the Agenda.
-      <programlisting role="JAVA">ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting></para>
+      time to cancels all activations still remaining on the Agenda.</para>
+      <programlisting role="JAVA">ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting>
     </section>
   </section>
 
