@@ -1451,7 +1451,8 @@ end
 </programlisting>
         </example>
 
-      <para>Another example shows multiple patterns inside the <literal>forall</literal>:<example>
+      <para>Another example shows multiple patterns inside the <literal>forall</literal>:</para>
+      <example>
           <title>Multi-Pattern Forall</title>
 
           <programlisting>rule "all employees have health and dental care programs"
@@ -1464,12 +1465,12 @@ then
     # all employees have health and dental care
 end
 </programlisting>
-        </example></para>
+        </example>
 
       <para>Forall can be nested inside other CEs for complete expressiveness.
       For instance, <literal>forall</literal> can be used inside a <literal>not</literal> CE. Note that only single
       patterns have optional parentheses, so that with a nested forall parentheses
-      must be used :<example>
+      must be used:</para><example>
           <title>Combining Forall with Not CE</title>
 
           <programlisting>rule "not all employees have health and dental care"
@@ -1482,7 +1483,7 @@ then
     # not all employees have health and dental care
 end
 </programlisting>
-        </example></para>
+        </example>
 
       <para>As a side note, <code>not( forall( p1 p2 p3...))</code> is
 	equivalent to writing:</para>
