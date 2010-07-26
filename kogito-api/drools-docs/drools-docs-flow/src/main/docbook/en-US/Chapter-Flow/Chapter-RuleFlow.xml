@@ -333,11 +333,11 @@ kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());</programlisting>
       Knowledge Base and the engine has no way to know when you would like
       to start each of these.  To activate a particular process, you will need
       to start it by calling the <code>startProcess</code> method on your session.
-      For example:
+      For example:</para>
       <programlisting role="JAVA">
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 ksession.startProcess("com.sample.MyProcess");</programlisting>
-      The parameter of the <code>startProcess</code> method represents the id
+      <para>The parameter of the <code>startProcess</code> method represents the id
       of the process that needs to be started. This process id needs to be
       specified as a property of the process, shown in the Properties View
       when you click the background canvas of your process. If your process
@@ -1097,7 +1097,7 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             parameter mapping that will copy the value of the given variable
             in this process to the given parameter; if both are specified, the
             mapping will have precedence.  Parameters of type <code>String</code> can use
-            <code>#{<emphasis>expression</emphasis>}</code> to embed a value in the
+            <emphasis><code>#{expression}</code></emphasis> to embed a value in the
             string.  The value will be retrieved when creating the work item, and the
             substitution expression will be replaced by the result of calling
             <code>toString()</code> on the variable.  The expression could
@@ -1138,36 +1138,35 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
     access produces an error message, with the process continuing its
     execution.</para>
 
-    <para>Variables can be used in various ways:
+    <para>Variables can be used in various ways:</para>
       <itemizedlist>
-        <listitem>Process-level variables can be set when starting a process
+        <listitem><para>Process-level variables can be set when starting a process
         by providing a map of parameters to the invocation of the
         <code>startProcess</code> method.  These parameters will be set as
-        variables on the process scope.
+        variables on the process scope.</para>
         </listitem>
-        <listitem>Actions can access variables directly, simply by using the
-        name of the variable as a parameter name.
+        <listitem><para>Actions can access variables directly, simply by using the
+        name of the variable as a parameter name.</para>
           <programlisting role="JAVA">
 // call method on the process variable "person"
 person.setAge(10);</programlisting>
-        Changing the value of a variable can be done through the Knowledge Context:
+        <para>Changing the value of a variable can be done through the Knowledge Context:</para>
           <programlisting role="JAVA">
 kcontext.setVariable(variableName, value);</programlisting>
         </listitem>
-        <listitem>WorkItem and SubFlow nodes can pass the value of parameters
+        <listitem><para>WorkItem and SubFlow nodes can pass the value of parameters
         to the outside world by mapping the variable to one of the work item
         parameters, either by using a parameter mapping or by interpolating
         it into a String parameter, using
-        <code>#{<emphasis>expression</emphasis>}</code>. The results of a WorkItem
-        can also be copied to a variable using a result mapping.
+        <emphasis><code>#{expression}</code></emphasis>. The results of a WorkItem
+        can also be copied to a variable using a result mapping.</para>
         </listitem>
-        <listitem>Various other nodes can also access data. Event nodes, for
+        <listitem><para>Various other nodes can also access data. Event nodes, for
         example, can store the data associated to the event in a variable,
         exception handlers can read error data from a specific variable, etc. 
-        Check the properties of the different node types for more information.
+        Check the properties of the different node types for more information.</para>
         </listitem>
       </itemizedlist>
-    </para>
 
     <para>Finally, processes and rules all have access to globals, i.e.,
     globally defined variables that are considered immutable with regard
@@ -1183,32 +1182,31 @@ kcontext.getKnowledgeRuntime().insert( new Person(...) );</programlisting>
 
     <para>Constraints can be used in various locations in your processes,
     for example in a Split node using OR or XOR decisions, or as a
-    constraint for an EventWait. Drools Flow supports two types of constraints:
+    constraint for an EventWait. Drools Flow supports two types of constraints:</para>
       <itemizedlist>
-        <listitem><emphasis>Code constraints</emphasis> are boolean expressions,
+        <listitem><para><emphasis>Code constraints</emphasis> are boolean expressions,
         evaluated directly whenever they are reached. We currently support two
         dialects for expressing these code constraints: Java and MVEL.
         Both Java and MVEL code constraints have direct access
         to the globals and variables defined in the process.  Here is an example
         of a valid Java code constraint, <code>person</code> being a variable
-        in the process:
+        in the process:</para>
           <programlisting role="JAVA">
 return person.getAge() > 20;</programlisting>
-A similar example of a valid MVEL code constraint is:
+        <para>A similar example of a valid MVEL code constraint is:</para>
           <programlisting>
 return person.age > 20;</programlisting>
         </listitem>
-        <listitem><emphasis>Rule constraints</emphasis> are equals to normal
+        <listitem><para><emphasis>Rule constraints</emphasis> are equals to normal
         Drools rule conditions.  They use the Drools Rule Language syntax to
         express possibly complex constraints.  These rules can, like any other
         rule, refer to data in the Working Memory.  They can also refer to
-        globals directly.  Here is an example of a valid rule constraint:
+        globals directly.  Here is an example of a valid rule constraint:</para>
           <programlisting
 >Person( age > 20 )</programlisting>
-        This tests for a person older than 20 being in the Working
-        Memory.</listitem>
+        <para>This tests for a person older than 20 being in the Working
+        Memory.</para></listitem>
       </itemizedlist>
-    </para>
 
     <para>Rule constraints do not have direct access to variables defined
     inside the process.  It is however possible to refer to the current process
@@ -1245,28 +1243,27 @@ Person( name == ( processInstance.getVariable("name") ) )
     for the process and the predefined variable <code>context</code>.  This
     variable is of type
     <code>org.drools.runtime.process.ProcessContext</code> and can be used for
-    several tasks:
+    several tasks:</para>
       <itemizedlist>
-        <listitem>Getting the current node instance (if applicable).  The node
+        <listitem><para>Getting the current node instance (if applicable).  The node
         instance could be queried for data, such as its name and type.  You can
-        also cancel the current node instance.
+        also cancel the current node instance.</para>
         <programlisting role="JAVA">
 NodeInstance node = context.getNodeInstance();
 String name = node.getNodeName();</programlisting>
         </listitem>
-        <listitem>Getting the current process instance.  A process instance
+        <listitem><para>Getting the current process instance.  A process instance
         can be queried for data (name, id, processId, etc.), aborted or
-        signalled an internal event.
+        signalled an internal event.</para>
         <programlisting role="JAVA">
 WorkflowProcessInstance proc = context.getProcessInstance();
 proc.signalEvent( type, eventObject );</programlisting>
         </listitem>
-        <listitem>Getting or setting the value of variables.</listitem>
-        <listitem>Accessing the Knowledge Runtime allows you do things
+        <listitem><para>Getting or setting the value of variables.</para></listitem>
+        <listitem><para>Accessing the Knowledge Runtime allows you do things
         like starting a process, signalling external events, inserting data,
-        etc.</listitem>
+        etc.</para></listitem>
       </itemizedlist>
-    </para>
 
     <para>Drools currently supports two dialects, Java and MVEL.
     Java actions should be valid Java code.  MVEL actions can use the business
@@ -1315,30 +1312,29 @@ System.out.println( person.name );
     This allows subsequent nodes in the process to access the event data and take appropriate
     action based on this data.</para>
 
-    <para>An event can be signalled to a running instance of a process in a number of ways:
+    <para>An event can be signalled to a running instance of a process in a number of ways:</para>
       <itemizedlist>
-        <listitem>Internal event: Any action inside a process (e.g., the action of an
+        <listitem><para>Internal event: Any action inside a process (e.g., the action of an
         action node, or an on-entry or on-exit action of some node) can signal the
         occurence of an internal event to the surrounding process instance, using code
-        like the following:
+        like the following:</para>
         <programlisting role="JAVA">
 context.getProcessInstance().signalEvent(type, eventData);</programlisting></listitem>
-        <listitem>External event: A process instance can be notified of an event
-        from outside using code such as:
+        <listitem><para>External event: A process instance can be notified of an event
+        from outside using code such as:</para>
         <programlisting role="JAVA">
 processInstance.signalEvent(type, eventData);</programlisting></listitem>
-        <listitem>External event using event correlation: Instead of notifying a
+        <listitem><para>External event using event correlation: Instead of notifying a
         process instance directly, it is also possible to have the engine
         automatically determine which process instances might be interested
         in an event using <emphasis>event correlation</emphasis>, which is based
         on the event type.  A process instance that contains an event node
         listening to external events of some type is notified whenever such
         an event occurs. To signal such an event to the process engine, write
-        code such as:
+        code such as:</para>
         <programlisting role="JAVA">
 workingMemory.signalEvent(type, eventData);</programlisting></listitem>
       </itemizedlist>
-    </para>
 
     <para>Events could also be used to start a process.  Whenever a Start node
     defines an event trigger of a specific type, a new process instance will be
@@ -1415,24 +1411,23 @@ context.getProcessInstance().signalEvent("FaultType", context.getVariable("Fault
     triggered at the appropriate times.  Timers can also be cancelled, meaning
     that the timer will no longer be triggered.</para>
 
-    <para>Timers can be used in two ways inside a process:
+    <para>Timers can be used in two ways inside a process:</para>
       <itemizedlist>
-        <listitem>A Timer node may be added to the process flow. Its activation
+        <listitem><para>A Timer node may be added to the process flow. Its activation
         starts the timer, and its triggers, once or repeatedly, activate the
         Timer node's successor.  This means that the outgoing connection of a
         timer with a positive perios is triggered multiple times. Cancelling a
         Timer node also cancels the associated timer, whereafter no more triggerings
-        will occur.</listitem>
-        <listitem>Timers may be associated with event-based nodes like WorkItem,
+        will occur.</para></listitem>
+        <listitem><para>Timers may be associated with event-based nodes like WorkItem,
         SubFlow, etc.  A timer associated with a node is activated whenever
         the node becomes active.  The associated action is executed whenever
         the timer triggers.  You may use this, for instance, to send out
         notifications, at regular intervals, when the execution of a task takes
         too long, or to signal an event or a fault in case a time supervision
         expires.  When the node owning the timer completes, the timer is
-        automatically cancelled.</listitem>
+        automatically cancelled.</para></listitem>
       </itemizedlist>
-    </para>
 
     <para>By default, the Drools engine is a passive component, meaning that
     it will start processing only if you tell it to. Typically, you first
@@ -1482,21 +1477,20 @@ ksession.startProcess("...");
 
   <para>Whenever a process is updated, it is important to determine what should happen
   to the already running process instances.  There are various strategies one could
-  consider for each running instance:
+  consider for each running instance:</para>
     <itemizedlist>
-      <listitem><emphasis>Proceed</emphasis>: The running process instance proceeds as
+      <listitem><para><emphasis>Proceed</emphasis>: The running process instance proceeds as
       normal, following the process (definition) as it was defined when the process
       instance was started.  As a result, the already running instance will proceed as
       if the process was never updated.  New instances can be started using the updated
-      process.</listitem>
-      <listitem><emphasis>Abort (and restart)</emphasis>: The already running instance
+      process.</para></listitem>
+      <listitem><para><emphasis>Abort (and restart)</emphasis>: The already running instance
       is aborted.  If necessary, the process instance can be restarted using the new
-      process definition.</listitem>
-      <listitem><emphasis>Transfer</emphasis>: The process instance is migrated to the
+      process definition.</para></listitem>
+      <listitem><para><emphasis>Transfer</emphasis>: The process instance is migrated to the
       new process definition, meaning that - once it has been migrated successfully -
-      it will continue executing based on the updated process logic.</listitem>
+      it will continue executing based on the updated process logic.</para></listitem>
     </itemizedlist>
-  </para>
 
   <para>By default, Drools Flow uses the proceed approach, meaning that multiple
   versions of the same process can be deployed, but existing process instances will
