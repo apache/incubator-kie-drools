@@ -53,7 +53,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku1.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku1.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -83,7 +83,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku2.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku2.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -97,7 +97,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku3.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku3.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -108,7 +108,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku4.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku4.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -121,7 +121,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku5.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku5.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -133,7 +133,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku6.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku6.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -166,7 +166,7 @@ There are two cells on the same column with the same value at (6,3) and (7,3)</p
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku7.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku7.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -179,7 +179,7 @@ There are two cells on the same column with the same value at (6,3) and (7,3)</p
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SodukiExample/sudoku8.png" />
+              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku8.png" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
