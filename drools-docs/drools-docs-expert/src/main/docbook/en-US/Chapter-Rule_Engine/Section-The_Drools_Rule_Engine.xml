@@ -924,8 +924,8 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <para>To use a filter specify it while calling <code>FireAllRules</code>. The
       following example permits only rules ending in the string <emphasis>Test</emphasis>.
-      All others will be filtered out.
-      <programlisting role="JAVA">workingMemory.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
+      All others will be filtered out.</para>
+      <programlisting role="JAVA">workingMemory.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting>
     </section>
   </section>
 

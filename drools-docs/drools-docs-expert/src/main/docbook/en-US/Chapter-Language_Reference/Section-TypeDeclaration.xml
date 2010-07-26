@@ -162,8 +162,8 @@
     Drools: fact types, fact attributes and rules. Drools uses the
     at sign ('@') to introduce metadata, and it always uses the form:</para>
 
-    <para><programlisting>@<emphasis>metadata_key</emphasis>( <emphasis>metadata_value</emphasis> )</programlisting>The
-    parenthesized <emphasis>metadata_value</emphasis> is optional.</para>
+    <programlisting>@<emphasis>metadata_key</emphasis>( <emphasis>metadata_value</emphasis> )</programlisting>
+    <para>The parenthesized <emphasis>metadata_value</emphasis> is optional.</para>
 
     <para>For instance, if you want to declare a metadata attribute like
     <code>author</code>, whose value is <emphasis>Bob</emphasis>, you
