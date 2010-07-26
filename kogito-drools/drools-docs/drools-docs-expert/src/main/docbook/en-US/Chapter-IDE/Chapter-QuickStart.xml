@@ -305,7 +305,7 @@
       you can then deploy it as a binary file. Alternatively, you can use the
       following snippet of code to convert the brl to a drl rule.</para>
 
-    <programlisting>BRXMLPersitence read = BRXMLPersitence.getInstance();
+    <programlisting role="JAVA">BRXMLPersitence read = BRXMLPersitence.getInstance();
 BRDRLPersistence write = BRDRLPersistence.getInstance();
 String brl = ... // read from the .brl file as needed...
 String outputDRL = write.marshall(read.unmarshal(brl));
@@ -436,7 +436,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       created when executing the rules engine. To create an audit log, use the
       following code:</para>
 
-      <programlisting>WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+      <programlisting role="JAVA">WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 // Create a new Working Memory Logger, that logs to file.
 WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
 // An event.log file is created in the subdirectory log (which must exist)

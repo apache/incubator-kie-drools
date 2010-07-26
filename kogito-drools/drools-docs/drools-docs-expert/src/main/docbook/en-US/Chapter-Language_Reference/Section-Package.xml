@@ -120,7 +120,7 @@ end
         practice to set all global values before asserting any fact to the
         working memory. Example:</para>
 
-        <programlisting>List list = new ArrayList();
+        <programlisting role="JAVA">List list = new ArrayList();
 WorkingMemory wm = rulebase.newStatefulSession();
 wm.setGlobal( "myGlobalList", list );
 </programlisting>

@@ -2037,7 +2037,7 @@ end
         Function implementation, the following is the implementation of the
         <literal>average</literal> function:</para>
 
-        <programlisting>/*
+        <programlisting role="JAVA">/*
  * Copyright 2007 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -2250,7 +2250,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
           to the various rule groups: activation groups, agenda groups, and
           rule flow groups. A fairly common paradigm is the activation of some
           agenda group, which could be done with the lengthy call:
-          <programlisting>
+          <programlisting role="JAVA">
 // give focus to the agenda group CleanUp
 kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();</programlisting>
           (You can achieve the same using <code>drools.setFocus( "CleanUp" )</code>.)

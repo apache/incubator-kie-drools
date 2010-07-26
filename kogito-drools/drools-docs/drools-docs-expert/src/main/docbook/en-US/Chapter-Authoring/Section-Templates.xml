@@ -133,7 +133,7 @@ type
 limit
 word</programlisting>
         the following Java class could be used:
-        <programlisting>
+        <programlisting role="JAVA">
 public class ParamSet {
     //...
     public ParamSet( String t, int l, boolean w ) {
@@ -153,7 +153,7 @@ public class ParamSet {
         for a template file <code>template.drl</code>, we can now proceed to
         request its expansion.</para>
 
-        <programlisting>
+        <programlisting role="JAVA">
 Collection&lt;ParamSet&gt; paramSets = new ArrayList&lt;ParamSet&gt;();
 // populate paramSets
 paramSets.add( new ParamSet( "Foo", 42, true ) );
@@ -168,7 +168,7 @@ String drl = converter.compile( objs, templateStream );</programlisting>
         feed this to a <code>KnowledgeBuilder</code> and continue with the
         resulting Knowledge Packages.
 
-        <programlisting>
+        <programlisting role="JAVA">
 KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
 KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 Reader rdr = new StringReader( drl );
@@ -190,7 +190,7 @@ kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );</programlisting>
         would use the same approach, just differing in the way the
         map collection is composed.</para>
 
-        <programlisting>
+        <programlisting role="JAVA">
 Collection&lt;Map&lt;String,Object&gt;&gt; paramMaps = new ArrayList&lt;Map&lt;String,Object&gt;&gt;();
 // populate paramMaps
 ObjectDataCompiler converter = new ObjectDataCompiler();
@@ -207,7 +207,7 @@ String drl = converter.compile( objs, templateStream );</programlisting>
        objects of class <code>Item</code> containing a couple of integer fields and an
        <code>enum</code> field of type <code>ItemCode</code>.</para>
 
-       <programlisting>
+       <programlisting role="JAVA">
 public class Item {
     // ...
     public Item( String n, int p, int w, ItemCode c ){...}
@@ -248,7 +248,7 @@ end template</programlisting>
          parameter sets have to be set up. First, there is class
          <code>ParamSet</code>, for storing a set of actual parameters.</para>
 
-         <programlisting>
+         <programlisting role="JAVA">
 public class ParamSet {
     //...
     private EnumSet&lt;ItemCode&gt; codeSet;
@@ -281,7 +281,7 @@ public class ParamSet {
         takes care of this, using a Knowledge Base, the <code>InputStream</code>
         with the rule template and the collection of parameter sets.</para>     
 
-        <programlisting>
+        <programlisting role="JAVA">
 public class Expander {
 	
     public void expand( KnowledgeBase kBase, InputStream is, Collection&lt;?&gt; act )
@@ -309,7 +309,7 @@ public class Expander {
         method shown above. Then we launch a stateful session, insert a
         few <code>Item</code>, and watch what happens.</para>
 
-        <programlisting>
+        <programlisting role="JAVA">
 Collection&lt;ParamSet&gt; cfl = new ArrayList&lt;ParamSet&gt;();
 cfl.add( new ParamSet( "weight",  10,  99, EnumSet.of( ItemCode.LOCK, ItemCode.STOCK ) ) );
 cfl.add( new ParamSet( "price",   10,  50, EnumSet.of( ItemCode.BARREL ) ) );

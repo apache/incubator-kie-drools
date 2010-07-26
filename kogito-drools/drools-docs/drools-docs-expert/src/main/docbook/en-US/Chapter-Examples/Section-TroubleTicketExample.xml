@@ -13,7 +13,7 @@
 			<example>
 				<title>Trouble Ticket Example : Creating and Inserting Facts</title>
 
-				<programlisting>Customer a = new Customer( "A",
+				<programlisting role="JAVA">Customer a = new Customer( "A",
                            "Gold" );
 Customer b = new Customer( "B",
                            "Platinum" );
@@ -180,7 +180,7 @@ Email : [Ticket [Customer D : Silver] : Escalate]
 			<para>Referring to the above audit log, we can see the events as they happen. Once the rules start firing, the first items are the "Activation Executed" for the new tickets, as expected (they do nothing, just log the fact). Note the "Activation executed" item for the platinum ticket - that is the next one to go (remember it has the default salience, so it happens after the "New ticket" rule, but otherwise it is immediate - there is no "duration" delay for it). The platinum activation results in a Object modification (which is the escalation) - this in turn creates an activation record for the "escalate ticket" rule - which is what we wanted. Straight after that it executes the action to escalate the ticket.</para>
 
 			<para>The next event to occur is due to the:</para>
-			<programlisting>t3.setStatus( "Done" );
+			<programlisting role="JAVA">t3.setStatus( "Done" );
 
 session.update( ft3,
                 t3 );

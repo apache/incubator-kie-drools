@@ -20,7 +20,7 @@
 
 			<para>The following is a listing of the interesting parts that are used to launch the example:</para>
 
-			<programlisting>Customer mark = new Customer( "mark",
+			<programlisting role="JAVA">Customer mark = new Customer( "mark",
                               0 );
 session.insert( mark );
 Product shoes = new Product( "shoes",
