@@ -8,12 +8,5 @@
 
 	<xi:include href="Section-What_is_a_Rule_Engine.xml" />
   <xi:include href="Section-Why_use_a_Rule_Engine.xml" />
-  <!--xi:include href="Section-Rules.xml" />
-  <xi:include href="Section-Rete_Algorithm.xml" /-->
-  <!--xi:include href="Section-The_Drools_Rule_Engine.xml" /-->
-  <!--xi:include href="Chapter-Rule_Engine/Section-Rule_Base.xml" />
-  <xi:include href="Chapter-Rule_Engine/Section-Working_Memory.xml" />
-  <xi:include href="Chapter-Rule_Engine/Section-Agenda.xml" />
-  <xi:include href="Chapter-Rule_Engine/Section-Event_Model.xml" /-->
 
 </chapter>    
