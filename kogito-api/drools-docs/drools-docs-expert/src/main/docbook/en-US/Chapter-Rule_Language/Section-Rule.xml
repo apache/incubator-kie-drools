@@ -444,12 +444,13 @@ Cheese( type == "stilton" || price &lt; 10, age == "mature" ) // Cheese type is 
       <para>It is possible to change the evaluation priority by using
       parenthesis, as in any logic or mathematical expression. Example:</para>
 
-      <para><example>
+      <example>
           <title>Using parenthesis to change evaluation priority</title>
 
           <programlisting># Cheese type is stilton and ( price is less than 20 or age is mature ).
 Cheese( type == "stilton" &amp;&amp; ( price &lt; 20 || age == "mature" ) ) </programlisting>
-        </example>In the above example, the use of parenthesis makes the ||
+        </example>
+      <para>In the above example, the use of parenthesis makes the ||
       connective be evaluated before the &amp;&amp; connective.</para>
 
       <para>Also, it is important to note that besides having the same
@@ -1373,7 +1374,7 @@ end
       match a set of constraints, forall can be written with a single pattern
       for simplicity. Example</para>
 
-      <para><example>
+      <example>
           <title>Single Pattern Forall</title>
 
           <programlisting>rule "All Buses are Red"
@@ -1383,7 +1384,7 @@ then
     # all asserted Bus facts are red
 end
 </programlisting>
-        </example></para>
+        </example>
 
       <para>Another example of multi-pattern forall:<example>
           <title>Multi-Pattern Forall</title>

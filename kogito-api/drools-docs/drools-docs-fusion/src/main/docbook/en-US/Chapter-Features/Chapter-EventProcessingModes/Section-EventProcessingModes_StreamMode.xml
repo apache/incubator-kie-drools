@@ -93,7 +93,7 @@ config.setOption( EventProcessingOption.STREAM );</programlisting>
 
     <para>For instance:</para>
 
-    <para><example>
+    <example>
         <title>a rule that activates immediately upon matching</title>
 
         <programlisting>rule "Sound the alarm"
@@ -104,12 +104,13 @@ then
     // sound the alarm
 end
 </programlisting>
-      </example>The above rule has no temporal constraints that would require
+      </example>
+    <para>The above rule has no temporal constraints that would require
     delaying the rule, and so, the rule activates immediately. The following
     rule on the other hand, must wait for 10 seconds before activating, since
     it may take up to 10 seconds for the sprinklers to activate:</para>
 
-    <para><example>
+    <example>
         <title>a rule that automatically delays activation due to temporal
         constraints</title>
 
@@ -120,11 +121,13 @@ when
 then
     // sound the alarm
 end</programlisting>
-      </example>This behaviour allows the engine to keep consistency when
+      </example>
+    <para>This behaviour allows the engine to keep consistency when
     dealing with negative patterns and temporal constraints at the same time.
     The above would be the same as writing the rule as bellow, but does not
     burden the user to calculate and explicitly write the appropriate duration
-    parameter:<example>
+    parameter:</para>
+    <example>
         <title>same rule with explicit duration parameter</title>
 
         <programlisting>rule "Sound the alarm"
@@ -135,6 +138,6 @@ when
 then
     // sound the alarm
 end</programlisting>
-      </example></para>
+      </example>
   </section>
 </section>

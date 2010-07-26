@@ -1109,7 +1109,7 @@ messenger.start();
     <section>
       <title>Xstream Transformer</title>
 
-      <para><example>
+      <example>
           <title>XStream FromXML transformer stage</title>
 
           <programlisting role="JAVA">XStream xstream = new XStream();
@@ -1121,7 +1121,7 @@ transformer.setReceiver( nextStage );</programlisting>
           <programlisting role="JAVA">XStream xstream = new XStream();
 Transformer transformer = PipelineFactory.newXStreamToXmlTransformer( xstream );
 transformer.setReceiver( receiver );</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -1146,7 +1146,7 @@ transformer.setReceiver( receiver );</programlisting>
       context of a pipeline by a custom Transformer that emits the nodes one
       by one to its receiver.</para>
 
-      <para><example>
+      <example>
           <title>JAXB XSD Generation into the KnowlegeBuilder</title>
 
           <programlisting role="JAVA">Options xjcOpts = new Options();
@@ -1159,7 +1159,8 @@ String[] classNames =
     kbuilder,
     xjcOpts,
     "xsd" );</programlisting>
-        </example> <example>
+        </example>
+      <example>
           <title>JAXB From XML transformer stage</title>
 
           <programlisting role="JAVA">JAXBContext jaxbCtx =
@@ -1168,32 +1169,34 @@ Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
 Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
 transformer.setReceiver( receiver );
  </programlisting>
-        </example> <example>
+        </example>
+      <example>
           <title>JAXB to XML transformer stage</title>
 
           <programlisting role="JAVA">Marshaller marshaller = jaxbCtx.createMarshaller();
 Transformer transformer = PipelineFactory.newJaxbToXmlTransformer( marshaller );
 transformer.setReceiver( receiver );</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
       <title>Smooks Transformer</title>
 
-      <para><example>
+      <example>
           <title>Smooks FromSource transformer stage</title>
 
           <programlisting role="JAVA">Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
 Transformer transformer =
   PipelineFactory.newSmooksFromSourceTransformer( smooks, "orderItem" );
 transformer.setReceiver( receiver );</programlisting>
-        </example> <example>
+        </example>
+      <example>
           <title>Smooks ToSource transformer stage</title>
 
           <programlisting role="JAVA">Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
 Transformer transformer = PipelineFactory.newSmooksToSourceTransformer( smooks );
 transformer.setReceiver( receiver );</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>

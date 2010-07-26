@@ -17,7 +17,7 @@
   rules says: a withdraw is authorized if and only if the account balance is
   over the requested withdraw amount, the rule would look like:</para>
 
-  <para><example>
+  <example>
       <title>Example of Stream Usage</title>
 
       <programlisting>rule "authorize withdraw"
@@ -28,7 +28,8 @@ then
     // authorize withdraw
 end
 </programlisting>
-    </example>In the previous example, the engine compiler will identify that
+    </example>
+  <para>In the previous example, the engine compiler will identify that
   the pattern is tied to the entry point "ATM Stream" and will both create all
   the necessary structures for the rulebase to support the "ATM Stream" and
   will only match WithdrawRequests coming from the "ATM Stream". In the
@@ -39,7 +40,7 @@ end
   applied to any account for which a withdraw request is placed at a bank
   branch:</para>
 
-  <para><example>
+  <example>
       <title>Using a different Stream</title>
 
       <programlisting>rule "apply fee on withdraws on branches"
@@ -50,7 +51,8 @@ then
     // apply a $2 fee on the account
 end
 </programlisting>
-    </example>The previous rule will match events of the exact same type as
+    </example>
+  <para>The previous rule will match events of the exact same type as
   the first rule (WithdrawRequest), but from two different streams, so an
   event inserted into "ATM Stream" will never be evaluated against the pattern
   on the second rule, because the rule states that it is only interested in
@@ -65,7 +67,7 @@ end
   inserting events directly into the working memory, insert them into the
   entry point as shown in the example bellow:</para>
 
-  <para><example>
+  <example>
       <title>Inserting facts into an entry point</title>
 
       <programlisting role="JAVA">// create your rulebase and your session as usual
@@ -77,7 +79,7 @@ WorkingMemoryEntryPoint atmStream = session.getWorkingMemoryEntryPoint( "ATM Str
 // and start inserting your facts into the entry point
 atmStream.insert( aWithdrawRequest );
 </programlisting>
-    </example></para>
+    </example>
 
   <para>The previous example shows how to manually insert facts into a given
   entry point. Although, usually, the application will use one of the many
