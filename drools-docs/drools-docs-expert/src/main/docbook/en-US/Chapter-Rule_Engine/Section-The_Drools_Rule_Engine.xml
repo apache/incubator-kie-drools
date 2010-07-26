@@ -506,11 +506,12 @@ session.setGlobal("list", list);           </programlisting>
         instance is asserted into the working memory, no attribute will change
         until it is retracted.</para></listitem>
 
-        <listitem><para><emphasis role="bold">Inside your rules, attributes are only
+        <listitem>
+        <para><emphasis role="bold">Inside your rules, attributes are only
         changed using modify() blocks.</emphasis> Both Drools dialects (MVEL
         and Java) have the modify block construct. If all attribute value
         changes for a given class happen inside modify() blocks, you can
-        disable shadow facts for that class.
+        disable shadow facts for that class.</para>
         <example>
           <title>modify() block using Java dialect</title>
 
@@ -542,11 +543,12 @@ then
       age = $p.age + 1
   }
 end</programlisting>
-        </example></para></listitem>
+        </example>
+        </listitem>
         <listitem><para><emphasis role="bold">In your application, attributes are
         only changed between calls to modifyRetract() and
         modifyInsert().</emphasis> This way, the engine becomes aware that
-        attributes will be changed and can prepare itself for them.
+        attributes will be changed and can prepare itself for them.</para>
         <example>
           <title>Safely modifying attributes in the application
           code</title>
@@ -569,7 +571,7 @@ end</programlisting>
          person.setLikes( "chocolate" );
          session.modifyInsert( handle, person ); // call modifyInsert() after the changes
 </programlisting>
-        </example></para></listitem>
+        </example></listitem>
         </orderedlist></para>
       </section>
 

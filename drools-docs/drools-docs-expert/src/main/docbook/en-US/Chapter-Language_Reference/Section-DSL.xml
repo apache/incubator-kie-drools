@@ -142,7 +142,8 @@
     </example>
 
     <para>Referring to the above examples, this would render the following
-    input as shown below: <example>
+    input as shown below:</para>
+    <example>
         <title>Some examples as processed</title>
 
         <programlisting>There is a Person with name of "kitty" ---&gt; Person(name="kitty")
@@ -150,7 +151,7 @@ Person is at least 42 years old and lives in "atlanta" ---&gt; Person(age &gt; 4
 Log "boo" ---&gt; System.out.println("boo");
 There is a Person with name of "bob" and Person is at least 30 years old and lives in "atlanta" 
           ---&gt; Person(name="kitty") and Person(age &gt; 30, location="atlanta")</programlisting>
-      </example></para>
+      </example>
   </section>
 
   <section>
