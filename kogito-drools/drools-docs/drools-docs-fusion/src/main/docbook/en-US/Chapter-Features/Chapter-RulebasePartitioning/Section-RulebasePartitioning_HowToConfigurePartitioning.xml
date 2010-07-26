@@ -12,7 +12,7 @@
     <example>
       <title>enabling multithread evaluation (partitioning)</title>
 
-      <programlisting>KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+      <programlisting role="JAVA">KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( MultithreadEvaluationOption.YES );
 </programlisting>
     </example>

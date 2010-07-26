@@ -20,7 +20,7 @@
     <para>To explicitly configure the engine to use the real time clock, just
     set the session configuration parameter to real time:</para>
 
-    <programlisting>KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+    <programlisting role="JAVA">KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 config.setOption( ClockTypeOption.get("realtime") );
 </programlisting>
   </section>
@@ -36,12 +36,12 @@ config.setOption( ClockTypeOption.get("realtime") );
 
     <para>To configure the pseudo session clock, do:</para>
 
-    <programlisting>KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+    <programlisting role="JAVA">KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 config.setOption( ClockTypeOption.get("pseudo") );</programlisting>
 
     <para>As an example of how to control the pseudo session clock:</para>
 
-    <programlisting>KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+    <programlisting role="JAVA">KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 conf.setOption( ClockTypeOption.get( "pseudo" ) );
 StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf, null );
         
