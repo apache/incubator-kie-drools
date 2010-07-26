@@ -10,13 +10,13 @@
   <link
   xlink:href="http://camel.apache.org/producertemplate.html">ProducerTemplate</link></para>
 
-  <para><programlisting>ProducerTemplate template = camelContext.createProducerTemplate();</programlisting></para>
+  <programlisting role="JAVA">ProducerTemplate template = camelContext.createProducerTemplate();</programlisting>
 
   <para>After you have a template, you can start to send message exchange to
   your route:</para>
 
-  <para><programlisting>String xml = "&lt;xml&gt;example&lt;/xml&gt;";
-template.requestBody("direct:with-session-xstream", xml);</programlisting></para>
+  <programlisting role="JAVA">String xml = "&lt;xml&gt;example&lt;/xml&gt;";
+template.requestBody("direct:with-session-xstream", xml);</programlisting>
 
   <note>
     <para>When we use commands created with JAXB we need to use a special
@@ -81,16 +81,17 @@ template.requestBody("direct:with-session-xstream", xml);</programlisting></para
         <para>Here we are adding our XSD model definition to our
         KnowledgeBuilder as a resource</para>
 
-        <para><programlisting>Options xjcOpts = new Options();
+        <programlisting role="JAVA">Options xjcOpts = new Options();
 xjcOpts.setSchemaLanguage( Language.XMLSCHEMA );
 JaxbConfiguration jaxbConfiguration = KnowledgeBuilderFactory.newJaxbConfiguration( xjcOpts, "xsd" );
-kbuilder.add( ResourceFactory.newClassPathResource("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);</programlisting>Then
+kbuilder.add( ResourceFactory.newClassPathResource("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);</programlisting>
+        <para>Then
         you need to add your knowledge resources into the kbuilder and create
         your KnowledgeBase. These steps are the same as those in the Drools
         Expert documentation. Finally, we are going to create the
         JAXBContext</para>
 
-        <para><programlisting>// Add object model to classes array
+        <programlisting role="JAVA">// Add object model to classes array
 List&lt;String&gt; classesName = new ArrayList&lt;String&gt;();
 classesName.add("org.drools.model.AddressType");
 classesName.add("org.drools.model.ObjectFactory");
@@ -102,14 +103,15 @@ try {
 catch (Exception e) {
    LOG.info("Errors while creating JAXB Context.", e);
    throw new RuntimeException(e);
-}</programlisting></para>
+}</programlisting>
       </listitem>
 
       <listitem>
-        <para>BatchExecutionCommand marshalling <programlisting>StringWriter xmlReq = new StringWriter();
+        <para>BatchExecutionCommand marshalling</para>
+        <programlisting role="JAVA">StringWriter xmlReq = new StringWriter();
 Marshaller marshaller = jaxbContext.createMarshaller();
 marshaller.setProperty("jaxb.formatted.output", true);
-marshaller.marshal(batchExecutionCommand, xmlReq);</programlisting></para>
+marshaller.marshal(batchExecutionCommand, xmlReq);</programlisting>
       </listitem>
 
       <listitem>
@@ -117,10 +119,10 @@ marshaller.marshal(batchExecutionCommand, xmlReq);</programlisting></para>
 
         <para>In this step we need to use another ProducerTemplate method
         called requestBodyAndHeader() because the Drools Component needs to
-        know wich JAXBContext must use to unmarshall the XML.</para>
+        know which JAXBContext must use to unmarshall the XML.</para>
 
-        <para><programlisting>String xml = xmlReq.toString();
-byte[] xmlOutput = (byte[]) template.requestBodyAndHeader("direct:test-with-session", xmlReq.toString(), "jaxb-context", jaxbContext);</programlisting></para>
+        <programlisting role="JAVA">String xml = xmlReq.toString();
+byte[] xmlOutput = (byte[]) template.requestBodyAndHeader("direct:test-with-session", xmlReq.toString(), "jaxb-context", jaxbContext);</programlisting>
       </listitem>
 
       <listitem>
@@ -130,9 +132,7 @@ byte[] xmlOutput = (byte[]) template.requestBodyAndHeader("direct:test-with-sess
         <para>And the final step is to convert the XML output to an
         ExecutionResults instance</para>
 
-        <para><programlisting>ExecutionResults resp = (ExecutionResults) jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(xmlOutput));</programlisting></para>
-
-        <para></para>
+        <programlisting role="JAVA">ExecutionResults resp = (ExecutionResults) jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(xmlOutput));</programlisting>
       </listitem>
     </orderedlist>
 

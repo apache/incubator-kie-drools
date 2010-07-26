@@ -12,7 +12,7 @@
   Local grid connection. The next step after the LocalConnection creation is
   to get a new ExecutionNode and register this inside the CamelContext.</para>
 
-  <programlisting>LocalConnection connection = new LocalConnection();
+  <programlisting role="JAVA">LocalConnection connection = new LocalConnection();
 ExecutionNode node = connection.getExecutionNode();
 node.setId("node");
 Context jndiContext = new JndiContext();

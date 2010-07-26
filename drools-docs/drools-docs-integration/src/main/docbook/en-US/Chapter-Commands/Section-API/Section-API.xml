@@ -80,7 +80,7 @@
 
       <para></para>
 
-      <para><programlisting>Options xjcOpts = new Options();
+      <programlisting role="JAVA">Options xjcOpts = new Options();
 xjcOpts.setSchemaLanguage(Language.XMLSCHEMA);
 JaxbConfiguration jaxbConfiguration = KnowledgeBuilderFactory.newJaxbConfiguration( xjcOpts, "xsd" );
 kbuilder.add(ResourceFactory.newClassPathResource("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);
@@ -89,7 +89,7 @@ KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 List&lt;String&gt; classesName = new ArrayList&lt;String&gt;();
 classesName.add("org.drools.test.Person");
    
-JAXBContext jaxbContext = KnowledgeBuilderHelper.newJAXBContext(classesName.toArray(new String[classesName.size()]), kbase);</programlisting></para>
+JAXBContext jaxbContext = KnowledgeBuilderHelper.newJAXBContext(classesName.toArray(new String[classesName.size()]), kbase);</programlisting>
     </section>
 
     <section>
@@ -113,10 +113,10 @@ JAXBContext jaxbContext = KnowledgeBuilderHelper.newJAXBContext(classesName.toAr
 
       <para></para>
 
-      <para><programlisting>List&lt;String&gt; classNames = new ArrayList&lt;String&gt;();
+      <programlisting role="JAVA">List&lt;String&gt; classNames = new ArrayList&lt;String&gt;();
 classNames.add("org.drools.test.Person");
 JAXBContext jaxbContext = DroolsJaxbContextHelper.createDroolsJaxbContext(classNames, null);
-Marshaller marshaller = jaxbContext.createMarshaller();</programlisting></para>
+Marshaller marshaller = jaxbContext.createMarshaller();</programlisting>
 
       <para></para>
     </section>
