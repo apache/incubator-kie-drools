@@ -7,30 +7,7 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>What is new in Drools 5.0.0</title>
-
-  <para>Drools 5.0 will be the launch of what we call the Business Logic
-  integration Platform (BLiP) - the BRMs is dead :) The future is for a
-  unified and integrated solution for Rules, Processes and CEP - this is what
-  users want and this is what we are aiming for. Drools 5.0 will split up into
-  4 main sub projects, the documentation has already been split to reflect
-  this: <itemizedlist>
-      <listitem>
-        <para>Drools Guvnor (BRMS/BPMS)</para>
-      </listitem>
-
-      <listitem>
-        <para>Drools Expert (rule engine),</para>
-      </listitem>
-
-      <listitem>
-        <para>Drools Flow (process/workflow)</para>
-      </listitem>
-
-      <listitem>
-        <para>Drools Fusion (cep/temporal reasoning)</para>
-      </listitem>
-    </itemizedlist></para>
+  <title>What is New and Noteworthy in Drools 5.0.0</title>
 
   <section>
     <title>Drools API</title>
