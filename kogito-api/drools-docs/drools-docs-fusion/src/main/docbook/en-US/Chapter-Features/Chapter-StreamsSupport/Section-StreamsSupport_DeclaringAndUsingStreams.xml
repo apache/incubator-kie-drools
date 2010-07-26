@@ -68,7 +68,7 @@ end
   <para><example>
       <title>Inserting facts into an entry point</title>
 
-      <programlisting>// create your rulebase and your session as usual
+      <programlisting role="JAVA">// create your rulebase and your session as usual
 StatefulKnowledgeSession session = ...
 
 // get a reference to the entry point
