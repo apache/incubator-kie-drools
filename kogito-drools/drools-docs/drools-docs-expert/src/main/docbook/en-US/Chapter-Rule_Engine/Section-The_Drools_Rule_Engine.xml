@@ -399,7 +399,7 @@ FactHandle stiltonHandle = session.insert( stilton );      </programlisting>
 
       <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = session.insert( stilton );
-....
+...
 session.retract( stiltonHandle );            </programlisting>
     </section>
 
@@ -421,7 +421,7 @@ session.retract( stiltonHandle );            </programlisting>
 
       <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );
-....
+...
 stilton.setPrice( 100 );
 workingMemory.update( stiltonHandle, stilton );              </programlisting>
     </section>
@@ -678,7 +678,7 @@ public void setState(final String newState) {
     from the <code>RuleBase</code>, because without it you can get memory leaks.</para>
 
     <example>
-      <title>Createing a <code>StatefulSession</code></title>
+      <title>Creating a <code>StatefulSession</code></title>
       <programlisting role="JAVA">StatefulSession session = ruleBase.newStatefulSession();</programlisting>
     </example>
   </section>
