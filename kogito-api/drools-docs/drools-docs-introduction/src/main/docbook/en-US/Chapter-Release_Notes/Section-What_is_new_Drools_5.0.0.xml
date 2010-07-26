@@ -21,7 +21,8 @@
     than we did before. Drools-api also helps clearly show what is intended as
     a user api and what is just an engine api, drools-core and drools-compiler
     did not make this clear enough. The most common interfaces you will use
-    are: <itemizedlist>
+    are:</para>
+    <itemizedlist>
         <listitem>
           <para>org.drools.builder.KnowledgeBuilder</para>
         </listitem>
@@ -41,10 +42,12 @@
         <listitem>
           <para>org.drools.runtime.StatelessKnowledgeSession</para>
         </listitem>
-      </itemizedlist> Factory classes, with static methods, provide instances
+      </itemizedlist>
+    <para>Factory classes, with static methods, provide instances
     of the above interfaces. A pluggable provider approach is used to allow
     provider implementations to be wired up to the factories at runtime. The
-    Factories you will most commonly used are: <itemizedlist>
+    Factories you will most commonly used are:</para>
+    <itemizedlist>
         <listitem>
           <para>org.drools.builder.KnowledgeBuilderFactory</para>
         </listitem>
@@ -60,10 +63,11 @@
         <listitem>
           <para>org.drools.agent.KnowledgeAgentFactory</para>
         </listitem>
-      </itemizedlist> <example>
+      </itemizedlist>
+    <example>
         <title>A Typical example to load a rule resource</title>
 
-        <programlisting>
+        <programlisting role="JAVA">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
             ResourceType.DRL );
@@ -79,14 +83,16 @@ ksession.insert( new Fibonacci( 10 ) );
 ksession.fireAllRules();
 
 ksession.dispose();</programlisting>
-      </example> A Typical example to load a process resource. Notice the
+      </example>
+    <para> A Typical example to load a process resource. Notice the
     <code>ResourceType</code> is changed, in accordance with the
-    <code>Resource</code> type: <example>
+    <code>Resource</code> type:</para>
+    <example>
         <title>A Typical example to load a process resource. Notice the
         <code>ResourceType</code> is changed, in accordance with the
         <code>Resource</code> type</title>
 
-        <programlisting>
+        <programlisting role="JAVA">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
             ResourceType.DRF );
@@ -102,13 +108,15 @@ ksession.startProcess( "Buy Order Process" );
 
 ksession.dispose();
 </programlisting>
-      </example> 'kbuilder', 'kbase', 'ksession' are the variable identifiers
-    often used, the k prefix is for 'knowledge'. <example>
+      </example>
+    <para> 'kbuilder', 'kbase', 'ksession' are the variable identifiers
+    often used, the k prefix is for 'knowledge'.</para>
+    <example>
         <title>We have uniformed how decision trees are loaded, and they are
         now consistent with no need to pre generate the DRL with the
         spreadsheet compiler</title>
 
-        <programlisting>
+        <programlisting role="JAVA">
 DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
 dtconf.setInputType( DecisionTableInputType.XLS );
 dtconf.setWorksheetName( "Tables_2" );
@@ -116,8 +124,9 @@ kbuilder.add( ResourceFactory.newUrlResource( "file://IntegrationExampleTest.xls
             ResourceType.DTABLE,
             dtconf );
 </programlisting>
-      </example> It is also possible to configure a <code>KnowledgeBase</code>
-    using configuration, via a xml change set, instead of programmatically.
+      </example>
+    <para>It is also possible to configure a <code>KnowledgeBase</code>
+    using configuration, via a xml change set, instead of programmatically.</para>
     <example>
         <title>Here is a simple change set</title>
 
@@ -131,27 +140,31 @@ xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-5.0.xsd' &
   &lt;/add&gt;
 &lt;/change-set&gt;
 </programlisting>
-      </example> <example>
+      </example>
+    <example>
         <title>And it is added just like any other ResourceType</title>
 
-        <programlisting>
+        <programlisting role="JAVA">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
             ResourceType.ChangeSet );
 </programlisting>
-      </example> The other big change for the <code>KnowledgeAgent</code>,
+      </example>
+    <para> The other big change for the <code>KnowledgeAgent</code>,
     compared to the <code>RuleAgent</code>, is that polling scanner is now a
     service. further to this there is an abstraction between the agent
     notification and the resource monitoring, to allow other mechanisms to be
-    used other than polling. <example>
+    used other than polling.</para>
+    <example>
         <title>These services currently are not started by default, to start
         them do the following</title>
 
-        <programlisting>
+        <programlisting role="JAVA">
 ResourceFactory.getResourceChangeNotifierService().start();
 ResourceFactory.getResourceChangeScannerService().start();
 </programlisting>
-      </example> There are two new interfaces added,
+      </example>
+    <para> There are two new interfaces added,
     <code>ResourceChangeNotifier</code> and
     <code>ResourceChangeMonitor</code>. <code>KnowlegeAgents</code> subscribe
     for resource change notifications using the
@@ -322,11 +335,12 @@ ResourceFactory.getResourceChangeScannerService().start();
       <para>You no longer need to confine one <code>PackageBuilder</code> to
       one package namespace. Just keeping adding your DRLs for any namespace
       and <code>getPackages()</code> returns an array of Packages for each of
-      the used namespaces. <example>
+      the used namespaces.</para>
+      <example>
           <title>Getting multiple packages</title>
 
-          <programlisting>Package[] packages = pkgBuilder.getPackages();</programlisting>
-        </example></para>
+          <programlisting role="JAVA">Package[] packages = pkgBuilder.getPackages();</programlisting>
+        </example>
     </section>
 
     <section>
@@ -338,13 +352,14 @@ ResourceFactory.getResourceChangeScannerService().start();
       to the rulebase at the same time. <code>PackageBuilder</code> uses the
       <code>Package</code> instances of the actual <code>RuleBase</code> as
       it's source, removing the need for additional <code>Package</code>
-      creation and merging that happens in the existing approach. <example>
+      creation and merging that happens in the existing approach.</para>
+      <example>
           <title>Attaching <code>RuleBase</code> to
           <code>PackageBuilder</code></title>
 
-          <programlisting>RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+          <programlisting role="JAVA">RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 PackageBuilder pkgBuilder = new PackageBuilder( ruleBase, null );</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -363,7 +378,8 @@ PackageBuilder pkgBuilder = new PackageBuilder( ruleBase, null );</programlistin
       This construct fulfils two purposes: the ability to declare fact
       metadata, and the ability to dynamically generate new fact types local
       to the rule engine. The Guvnor modelling tool uses this underneath. One
-      example of the construct is: <example>
+      example of the construct is:</para>
+      <example>
           <title>Declaring <code>StockTick</code></title>
 
           <programlisting>declare StockTick
@@ -374,28 +390,30 @@ PackageBuilder pkgBuilder = new PackageBuilder( ruleBase, null );</programlistin
   stockPrice : double
   timestampAttr : long
 end</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
       <title>Declaring Fact Metadata</title>
 
       <para>To declare and associate fact metadata, just use the @ symbol for
-      each metadata ID you want to declare. Example: <example>
+      each metadata ID you want to declare. Example:</para>
+      <example>
           <title>Declaring metadata</title>
 
           <programlisting>
 declare StockTick
   @role( event )
 end</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
       <title>Triggering Bean Generation</title>
 
       <para>To activate the dynamic bean generation, just add fields and types
-      to your type declaration: <example>
+      to your type declaration:</para>
+      <example>
           <title>Declaring <code>Person</code></title>
 
           <programlisting>
@@ -403,7 +421,7 @@ declare Person
   name : String
   age : int
 end</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -474,22 +492,25 @@ end</programlisting>
       enumerations or factories provided for each option. For instance, if you
       want to configure the knowledge base for assert behavior "equality" and
       to automatically remove identities from pattern matchings, you would
-      just use the enums: <example>
+      just use the enums:</para>
+      <example>
           <title>Configuring</title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( AssertBehaviorOption.EQUALITY );
 config.setOption( RemoveIdentitiesOption.YES );</programlisting>
-        </example> For options that don't have a predefined constant or can
+        </example>
+      <para> For options that don't have a predefined constant or can
       assume multiple values, a factory method is provided. For instance, to
-      configure the alpha threshold to 5, just use the "get" factory method:
+      configure the alpha threshold to 5, just use the "get" factory method:</para>
       <example>
           <title>Configuring alpha threshold</title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 config.setOption( AlphaThresholdOption.get(5) );</programlisting>
-        </example> As you can see, the same <code>setOption()</code> method is
+        </example>
+      <para>As you can see, the same <code>setOption()</code> method is
       used for the different possible configurations, but they are still type
       safe.</para>
     </section>
@@ -503,7 +524,8 @@ config.setOption( AlphaThresholdOption.get(5) );</programlisting>
       So, Drools now has two accumulate functions for such cases: collectSet
       for collecting sets of values (i.e., with no duplicate values) and
       collectList for collecting lists of values (i.e., allowing duplicate
-      values): <example>
+      values):</para>
+      <example>
           <title>New accumulate functions</title>
 
           <programlisting>
@@ -514,7 +536,7 @@ $names : Set() from accumulate( Person( $n : name, $s : surname ),
 # collect the list of alarm codes from the alarms in the working memory
 $codes : List() from accumulate( Alarm( $c : code, $s : severity ),
                          collectList( $c + $s ) )</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -525,14 +547,15 @@ $codes : List() from accumulate( Alarm( $c : code, $s : severity ),
       the Javabean(tm) spec, now can be annotated so that the engine register
       itself to listen for changes on fact properties. The boolean parameter
       that was used in the insert() method in the Drools 4 API is deprecated
-      and does not exist in the drools-api module. <example>
+      and does not exist in the drools-api module.</para>
+      <example>
           <title>@propertyChangeSupport</title>
 
           <programlisting>
 declare Person
 	@propertyChangeSupport
 end</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -543,12 +566,14 @@ end</programlisting>
       <code>StatelessKnowledgeSession</code> and
       <code>StatefulKnowledgeSession</code> implement this interface Commands
       are created using the <code>CommandFactory</code> and executed using the
-      "execute" method, such as the following insert Command: <example>
+      "execute" method, such as the following insert Command:</para>
+      <example>
           <title>Using <code>CommandFactory</code></title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 ksession.execute( CommandFactory.newInsert( person ) ); </programlisting>
-        </example> Typically though you will want to execute a batch of
+        </example>
+      <para>Typically though you will want to execute a batch of
       commands, this can be achieved via the composite Command
       <code>BatchExecution</code>. <code>BatchExecutionResults</code> is now
       used to handle the results, some commands can specify "out" identifiers
@@ -556,10 +581,11 @@ ksession.execute( CommandFactory.newInsert( person ) ); </programlisting>
       <code>BatchExecutionResult</code>. Handily querries can now be executed
       and results added to the <code>BatchExecutionResult</code>. Further to
       this results are scoped to this execute call and return via the
-      <code>BatchExecutionResults</code>: <example>
+      <code>BatchExecutionResults</code>:</para>
+      <example>
           <title>Using <code>BatchExecutionResult</code></title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
 cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
 cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
@@ -570,13 +596,15 @@ results.getValue( "list1" ); // returns the ArrayList
 results.getValue( "person" ); // returns the inserted fact Person
 results.getValue( "Get People" );// returns the query as a QueryResults instance.
 end</programlisting>
-        </example> The <code>CommandFactory</code> details the supported
+        </example>
+      <para>The <code>CommandFactory</code> details the supported
       commands, all of which can marshalled using XStream and the
       <code>BatchExecutionHelper</code>. This can be combined with the
-      pipeline to automate the scripting of a session. <example>
+      pipeline to automate the scripting of a session.</para>
+      <example>
           <title>Using <code>PipelineFactory</code></title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
 Action assignResult = PipelineFactory.newAssignObjectAsResult();
 assignResult.setReceiver( executeResultHandler );
@@ -588,9 +616,11 @@ Transformer inTransformer = PipelineFactory.newXStreamFromXmlTransformer( BatchE
 inTransformer.setReceiver( batchExecution );
 Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline( ksession );
 pipeline.setReceiver( inTransformer ); </programlisting>
-        </example> Using the above for a rulset that updates the price of a
+        </example>
+      <para>Using the above for a rulset that updates the price of a
       Cheese fact, given the following xml to insert a Cheese instance using
-      an out-identifier: <example>
+      an out-identifier:</para>
+      <example>
           <title>Updating Cheese fact</title>
 
           <programlisting>
@@ -604,8 +634,10 @@ pipeline.setReceiver( inTransformer ); </programlisting>
 &lt;/insert&gt;
 &lt;/batch-execution&gt;
 </programlisting>
-        </example> We then get the following
-      <code>BatchExecutionResults</code>: <example>
+        </example>
+      <para>We then get the following
+      <code>BatchExecutionResults</code>:</para>
+      <example>
           <title>Updating Cheese fact</title>
 
           <programlisting>
@@ -619,7 +651,7 @@ pipeline.setReceiver( inTransformer ); </programlisting>
  &lt;/result&gt;
 &lt;/batch-execution-results&gt;
 </programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -627,10 +659,11 @@ pipeline.setReceiver( inTransformer ); </programlisting>
 
       <para>The <code>MarshallerFactory</code> is used to marshal and
       unmarshal <code>StatefulKnowledgeSessions</code>. At the simplest it can
-      be used as follows: <example>
+      be used as follows:</para>
+      <example>
           <title>Using <code>MarshallerFactory</code></title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 // ksession is the StatefulKnowledgeSession
 // kbase is the KnowledgeBase
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -638,7 +671,8 @@ Marshaller marshaller = MarshallerFactory.newMarshaller( kbase );
 marshaller.marshall( baos, ksession );
 baos.close();
 </programlisting>
-        </example> However with marshalling you need more flexibility when
+        </example>
+      <para>However with marshalling you need more flexibility when
       dealing with referenced user data. To achieve this we have the
       <code>ObjectMarshallingStrategy</code> interface. Two implementations
       are provided, but the user can implement their own. The two supplied are
@@ -653,18 +687,19 @@ baos.close();
       <code>IdentityMarshallingStrategy</code> map to retrieve the instance.
       This means that if you use the <code>IdentityMarshallingStrategy</code>
       it's stateful for the life of the Marshaller instance and will create
-      ids and keep references to all objects that it attempts to marshal.
+      ids and keep references to all objects that it attempts to marshal.</para>
       <example>
           <title>Code to use a
           <code>IdentityMarshallingStrategy</code></title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[] { MarshallerFactory.newIdentityMarshallingStrategy() } );
 marshaller.marshall( baos, ksession );
 baos.close(); 
 </programlisting>
-        </example> For added flexability we can't assume that a single
+        </example>
+      <para>For added flexability we can't assume that a single
       strategy is suitable for this we have added the
       <code>ObjectMarshallingStrategyAcceptor</code> interface that each
       <code>ObjectMarshallingStrategy</code> has. The Marshaller has a chain
@@ -676,10 +711,11 @@ baos.close();
       <code>IdentityMarshallingStrategy</code> is used which has a default
       "*.*" acceptor. But lets say we want to serialise all classes except for
       one given package, where we will use identity lookup, we could do the
-      following: <example>
+      following:</para>
+      <example>
           <title>Using identity lookup</title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 ObjectMarshallingStrategyAcceptor identityAceceptor = MarshallerFactory.newClassFilterAcceptor( new String[] { "org.domain.pkg1.*" } );
 ObjectMarshallingStrategy identityStratetgy = MarshallerFactory.newIdentityMarshallingStrategy( identityAceceptor );
@@ -687,7 +723,7 @@ Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, new ObjectMarsha
 marshaller.marshall( baos, ksession );
 baos.close();
 </programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -707,10 +743,11 @@ baos.close();
       are updated. If new files are found it will construct a new
       KnowledgeBase, instead of updating the existing one, due to the
       "newInstance" set to "true" (however currently only the value of "true"
-      is supported and is hard coded into the engine): <example>
+      is supported and is hard coded into the engine):</para>
+      <example>
           <title>Constructing an agent</title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 // Set the interval on the ResourceChangeScannerService if you are to use it and default of 60s is not desirable.
 ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
 sconf.setProperty( "drools.resource.scanner.interval",
@@ -729,7 +766,8 @@ KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", /
                                                                 aconf );
 kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
 </programlisting>
-        </example> <code>KnowledgeAgents</code> can take a empty
+        </example>
+      <para><code>KnowledgeAgents</code> can take a empty
       <code>KnowledgeBase</code> or a populated one. If a populated
       <code>KnowledgeBase</code> is provided, the <code>KnowledgeAgent</code>
       will iterate <code>KnowledgeBase</code> and subscribe to the
@@ -856,7 +894,8 @@ kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to t
       extensions which has been talked about in detail in this blog posting
       "Drools Extensible Process Definition Language (ePDL) and the Semantic
       Module Framework (SMF)". An example of the XML language, with a DSL
-      extension in red, is shown below. <example>
+      extension in red, is shown below.</para>
+      <example>
           <title>Example of the XML language</title>
 
           <programlisting>
@@ -887,7 +926,7 @@ xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd
 
 &lt;/process&gt;
 </programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -959,12 +998,12 @@ xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd
     <section>
       <title>JPA</title>
 
-      <para>Improved support for persistence (JPA) and transactions (JTA).
+      <para>Improved support for persistence (JPA) and transactions (JTA).</para>
       <example>
           <title>An example on how to use persistence and transactions in
           combination with processes</title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 // create a new JPA-based session and specify the JPA entity manager factory
 Environment env = KnowledgeBaseFactory.newEnvironment();
 env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, Persistence.createEntityManagerFactory( "emf-name" ) );
@@ -983,7 +1022,7 @@ ksession.insert( new Person( "John Doe" ) );
 ksession.startProcess( "org.drools.test.TestProcess" );
 ksession.fireAllRules();
 ut.commit();</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -991,20 +1030,20 @@ ut.commit();</programlisting>
 
       <para>Support direct access to process variables in both MVEL and Java
       in code constraints and actions, so if you have a variable called
-      "person" in your process, you can now describe constraints like:
+      "person" in your process, you can now describe constraints like:</para>
       <example>
           <title>Variable injection example</title>
 
           <programlisting>
     * [Java code constraint] return person.getAge() &gt; 20;
     * [MVEL action] System.out.println(person.name);</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
       <title>Miscellaneous Enhancements</title>
 
-      <para><itemizedlist>
+      <itemizedlist>
           <listitem>
             <para>Process instances can now listen for external events by
             marking the event node property "external" as true. External
@@ -1030,19 +1069,20 @@ ut.commit();</programlisting>
           <listitem>
             <para>The human task component has been extended to support all
             kinds of data for input / output / exceptions during task
-            execution. <example>
+            execution.</para>
+            <example>
                 <title>As a result, the life cycle methods of the task client
                 have been extended to allow content data</title>
 
-                <programlisting>
-          taskClient.addTask(task, contentData, responseHandler)
-          taskClient.complete(taskId, userId, outputData,responseHandler)
-          taskFail.complete(taskId, userId, outputData,responseHandler)
+                <programlisting role="JAVA">
+  taskClient.addTask(task, contentData, responseHandler)
+  taskClient.complete(taskId, userId, outputData,responseHandler)
+  taskFail.complete(taskId, userId, outputData,responseHandler)
 
-          long contentId = task.getTaskData().getDocumentContentId();
-          taskClient.getContent(contentId, responseHandler);
-          ContentData content = responseHandler.getContent();</programlisting>
-              </example></para>
+  long contentId = task.getTaskData().getDocumentContentId();
+  taskClient.getContent(contentId, responseHandler);
+  ContentData content = responseHandler.getContent();</programlisting>
+              </example>
           </listitem>
 
           <listitem>
@@ -1093,7 +1133,7 @@ ut.commit();</programlisting>
             configuration files. For more details, check out the chapter on
             persistence in the Drools Flow documentation.</para>
           </listitem>
-        </itemizedlist></para>
+        </itemizedlist>
     </section>
   </section>
 
@@ -1108,7 +1148,8 @@ ut.commit();</programlisting>
       <title>Event Semantics</title>
 
       <para>Events are (from a rules engine perspective) a special type of
-      fact that has a few special characteristics: <itemizedlist>
+      fact that has a few special characteristics:</para>
+      <itemizedlist>
           <listitem>
             <para>they are immutable</para>
           </listitem>
@@ -1133,14 +1174,15 @@ ut.commit();</programlisting>
           <listitem>
             <para>they may be included in sliding windows for reasoning</para>
           </listitem>
-        </itemizedlist></para>
+        </itemizedlist>
     </section>
 
     <section>
       <title>Event Declaration</title>
 
       <para>Any fact type can assume an event role, and its corresponding
-      event semantics, by simply declaring the metadata for it. <example>
+      event semantics, by simply declaring the metadata for it.</para>
+      <example>
           <title>Both existing and generated beans support event
           semantics:</title>
 
@@ -1157,7 +1199,7 @@ declare Alarm
   type : String
   timestamp : long
 end</programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -1176,7 +1218,7 @@ end</programlisting>
       <example>
           <title>To insert facts into an entry point</title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 WorkingMemoryEntryPoint entry = wm.getWorkingMemoryEntryPoint( "stock stream" );
 entry.insert( ticker );
 </programlisting>
@@ -1197,7 +1239,8 @@ entry.insert( ticker );
       that are point in time occurrences with no duration, and compound
       events, that are events with distinct start and end timestamps.</para>
 
-      <para>The complete list of operators are: <itemizedlist>
+      <para>The complete list of operators are:</para>
+      <itemizedlist>
           <listitem>
             <para>coincides</para>
           </listitem>
@@ -1249,7 +1292,7 @@ entry.insert( ticker );
           <listitem>
             <para>finishedby</para>
           </listitem>
-        </itemizedlist></para>
+        </itemizedlist>
     </section>
 
     <section>
@@ -1273,17 +1316,18 @@ entry.insert( ticker );
       to configure and interact with a session clock. Drools adds support for
       time reasoning and session clock configuration, allowing it to not only
       run real time event processing but also simulations, what-if scenarios
-      and post-processing audit by replaying a scenario. <example>
+      and post-processing audit by replaying a scenario.</para>
+      <example>
           <title>The Clock is specified as part of the SessionConfiguration, a
           new class that is optionally specified at session creation
           time</title>
 
-          <programlisting>
+          <programlisting role="JAVA">
 SessionConfiguration conf = new SessionConfiguration();
 conf.setClockType( ClockType.PSEUDO_CLOCK );
 StatefulSession session = ruleBase.newStatefulSession( conf );
 </programlisting>
-        </example></para>
+        </example>
     </section>
 
     <section>
@@ -1372,7 +1416,8 @@ end
       </listitem>
 
       <listitem>
-        <para>Drools Flow Editor <itemizedlist>
+        <para>Drools Flow Editor</para>
+        <itemizedlist>
             <listitem>
               <para>Process Skins allow you to define how the different
               RuleFlow nodes are visualized. We now support two skins: the
@@ -1390,7 +1435,7 @@ end
               <para>Custom work item editors now signal the process correctly
               that it has been changed</para>
             </listitem>
-          </itemizedlist></para>
+          </itemizedlist>
       </listitem>
     </itemizedlist>
   </section>
