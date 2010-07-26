@@ -117,7 +117,8 @@ Lists
       <listitem> <para> Initialize the .... </para> </listitem>
       ...
     </orderedlist>
-  
+
+* Inside a <listitem>, always use a <para> (or another element)
 
 Indexed terms:
 -------------
