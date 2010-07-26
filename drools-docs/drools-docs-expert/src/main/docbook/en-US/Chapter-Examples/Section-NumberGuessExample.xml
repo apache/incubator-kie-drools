@@ -21,7 +21,7 @@
   <example>
     <title>Creating the Number Guess RuleBase: NumberGuessExample.main() - part 1</title>
 
-        <programlisting>final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        <programlisting role="JAVA">final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.drl",
                                                     ShoppingExample.class ),
               ResourceType.DRL );
@@ -43,7 +43,7 @@ kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );</programlisting>
   <example>
     <title>Starting the RuleFlow: NumberGuessExample.main() - part 2</title>
 
-    <programlisting>final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    <programlisting role="JAVA">final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
 KnowledgeRuntimeLogger logger =
   KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/numberguess");

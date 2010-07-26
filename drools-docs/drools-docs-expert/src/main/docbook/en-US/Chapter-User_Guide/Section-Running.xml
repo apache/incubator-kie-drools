@@ -23,7 +23,7 @@
     <example>
       <title>Creating a new KnowledgeBase</title>
 
-      <programlisting>KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
+      <programlisting role="JAVA">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
     </example>
   </section>
 
@@ -47,7 +47,7 @@
     <example>
       <title>Create a StatefulKnowledgeSession from a KnowledgeBase</title>
 
-      <programlisting>StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+      <programlisting role="JAVA">StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 </programlisting>
     </example>
   </section>
@@ -118,7 +118,7 @@
         for interactions with the <code>WorkingMemory</code> when you wish to
         retract or modify an object.</para>
 
-        <programlisting>Cheese stilton = new Cheese("stilton");
+        <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
 
         <para>As mentioned in the Knowledge Base section, a Working Memory may
@@ -150,7 +150,7 @@ FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
         is done using the <code>FactHandle</code> that was returned by the
         insert call.</para>
 
-        <programlisting>Cheese stilton = new Cheese("stilton");
+        <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );
 ....
 ksession.retract( stiltonHandle );            </programlisting>
@@ -174,7 +174,7 @@ ksession.retract( stiltonHandle );            </programlisting>
         <literal>modify</literal> statement is supported, providing simplified calls to
         the object's setters.</para>
 
-        <programlisting>Cheese stilton = new Cheese("stilton");
+        <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );
 ...
 stilton.setPrice( 100 );
@@ -236,7 +236,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
         <example>
           <title>Simple Query Example</title>
 
-          <programlisting>QueryResults results =
+          <programlisting role="JAVA">QueryResults results =
     ksession.getQueryResults( "my query", new Object[] { "string" } );
 for ( QueryResultsRow row : results ) {
     System.out.println( row.get( "varName" ) );
@@ -283,7 +283,7 @@ for ( QueryResultsRow row : results ) {
         the session use <code>ksession.setGlobal(identifier,
         value)</code>:</para>
 
-        <programlisting>List list = new ArrayList();
+        <programlisting role="JAVA">List list = new ArrayList();
 ksession.setGlobal("list", list);           </programlisting>
 
         <para>If a rule evaluates on a global before you set it you will get a
@@ -335,7 +335,7 @@ ksession.setGlobal("list", list);           </programlisting>
         <para>To use a filter specify it while calling
         <code>fireAllRules()</code>. The following example permits only rules
         ending in the string <code>"Test"</code>. All others will be filtered
-        out. <programlisting>ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
+        out. <programlisting role="JAVA">ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting></para>
       </section>
     </section>
   </section>
@@ -460,7 +460,7 @@ ksession.setGlobal("list", list);           </programlisting>
       this group. It is also always the first group on the stack, given focus
       initially, by default.</para>
 
-      <para><programlisting>ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting></para>
+      <para><programlisting role="JAVA">ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting></para>
     </section>
 
     <section>
@@ -482,7 +482,7 @@ ksession.setGlobal("list", list);           </programlisting>
       and after that rule has fired all the other rules are cancelled from the
       agenda. The <code>clear()</code> method can be called at any time, which
       cancels all of the activations before one has had a chance to fire.
-      <programlisting>ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting></para>
+      <programlisting role="JAVA">ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting></para>
     </section>
 
     <section>
@@ -505,7 +505,7 @@ ksession.setGlobal("list", list);           </programlisting>
       elaboration of the ruleflow diagram reaches the node representing the
       group. Here too, the <code>clear()</code> method can be called at any
       time to cancels all activations still remaining on the Agenda.
-      <programlisting>ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting></para>
+      <programlisting role="JAVA">ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting></para>
     </section>
   </section>
 
@@ -556,7 +556,7 @@ ksession.setGlobal("list", list);           </programlisting>
     <example>
       <title>Adding an AgendaEventListener</title>
 
-      <programlisting>ksession.addEventListener( new DefaultAgendaEventListener() {                            
+      <programlisting role="JAVA">ksession.addEventListener( new DefaultAgendaEventListener() {
    public void afterActivationFired(AfterActivationFiredEvent event) {
        super.afterActivationFired( event );
        System.out.println( event );
@@ -572,7 +572,7 @@ ksession.setGlobal("list", list);           </programlisting>
     <example>
       <title>Creating a new KnowledgeBuilder</title>
 
-      <programlisting>ksession.addEventListener( new DebugWorkingMemoryEventListener() );     </programlisting>
+      <programlisting role="JAVA">ksession.addEventListener( new DebugWorkingMemoryEventListener() );     </programlisting>
     </example>
 
     <para>All emitted events implement the <code>KnowlegeRuntimeEvent</code>
@@ -669,7 +669,7 @@ ksession.setGlobal("list", list);           </programlisting>
     <example>
       <title>FileLogger</title>
 
-      <programlisting>KnowledgeRuntimeLogger logger =
+      <programlisting role="JAVA">KnowledgeRuntimeLogger logger =
   KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "logdir/mylogfile");
 ...
 logger.close();</programlisting>
@@ -714,7 +714,7 @@ logger.close();</programlisting>
       <title>Simple StatelessKnowledgeSession execution with a
       Collection</title>
 
-      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+      <programlisting role="JAVA">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newFileSystemResource( fileName ), ResourceType.DRL );
 if (kbuilder.hasErrors() ) {
     System.out.println( kbuilder.getErrors() );
@@ -732,7 +732,7 @@ if (kbuilder.hasErrors() ) {
       <title>Simple StatelessKnowledgeSession execution with InsertElements
       Command</title>
 
-      <programlisting>ksession.execute( CommandFactory.newInsertElements( collection ) );  </programlisting>
+      <programlisting role="JAVA">ksession.execute( CommandFactory.newInsertElements( collection ) );  </programlisting>
     </example>
 
     <para>If you wanted to insert the collection itself, and the collection's
@@ -762,7 +762,7 @@ if (kbuilder.hasErrors() ) {
         <example>
           <title>Session scoped global</title>
 
-          <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+          <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 // Set a global hbnSession, that can be used for DB interactions in the rules.
 ksession.setGlobal( "hbnSession", hibernateSession );
 // Execute while being able to resolve the "hbnSession" identifier.  
@@ -794,7 +794,7 @@ ksession.execute( collection ); </programlisting>
     <example>
       <title>Out identifiers</title>
 
-      <programlisting>// Set up a list of commands
+      <programlisting role="JAVA">// Set up a list of commands
 List cmds = new ArrayList();
 cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
 cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
@@ -964,7 +964,7 @@ results.getValue( "Get People" );</programlisting>
     <example>
       <title>StatefulKnowledgeSessionPipeline</title>
 
-      <programlisting>Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline( ksession );
+      <programlisting role="JAVA">Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline( ksession );
 pipeline.setReceiver( receiver );</programlisting>
     </example>
 
@@ -981,7 +981,7 @@ pipeline.setReceiver( receiver );</programlisting>
     <example>
       <title>StageExceptionHandler</title>
 
-      <programlisting>Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
+      <programlisting role="JAVA">Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
 transformer.setStageExceptionHandler( new StageExceptionHandler() { .... } );
 </programlisting>
     </example>
@@ -1002,7 +1002,7 @@ transformer.setStageExceptionHandler( new StageExceptionHandler() { .... } );
     <example>
       <title>StageExceptionHandler</title>
 
-      <programlisting>ResultHandler resultHandler = new ResultHandlerImpl();
+      <programlisting role="JAVA">ResultHandler resultHandler = new ResultHandlerImpl();
 pipeline.insert( factHandle, resultHandler );  
 System.out.println( resultHandler );
 ...
@@ -1034,7 +1034,7 @@ public class ResultHandlerImpl implements ResultHandler {
     <example>
       <title>Constructing a pipeline</title>
 
-      <programlisting>// Make the results (here: FactHandles) available to the user 
+      <programlisting role="JAVA">// Make the results (here: FactHandles) available to the user
 Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
 
 // Insert the transformed object into the session
@@ -1070,7 +1070,7 @@ pipeline.insert( ResourceFactory.newClassPathResource( "path/facts.xml", getClas
     <example>
       <title>Using JMS with Pipeline</title>
 
-      <programlisting>// As this is a service, it's more likely that
+      <programlisting role="JAVA">// As this is a service, it's more likely that
 // the results will be logged or sent as a return message.
 Action resultHandlerStage = PipelineFactory.newExecuteResultHandler();
 
@@ -1111,13 +1111,13 @@ messenger.start();
       <para><example>
           <title>XStream FromXML transformer stage</title>
 
-          <programlisting>XStream xstream = new XStream();
+          <programlisting role="JAVA">XStream xstream = new XStream();
 Transformer transformer = PipelineFactory.newXStreamFromXmlTransformer( xstream );
 transformer.setReceiver( nextStage );</programlisting>
         </example> <example>
           <title>XStream ToXML transformer stage</title>
 
-          <programlisting>XStream xstream = new XStream();
+          <programlisting role="JAVA">XStream xstream = new XStream();
 Transformer transformer = PipelineFactory.newXStreamToXmlTransformer( xstream );
 transformer.setReceiver( receiver );</programlisting>
         </example></para>
@@ -1148,7 +1148,7 @@ transformer.setReceiver( receiver );</programlisting>
       <para><example>
           <title>JAXB XSD Generation into the KnowlegeBuilder</title>
 
-          <programlisting>Options xjcOpts = new Options();
+          <programlisting role="JAVA">Options xjcOpts = new Options();
 xjcOpts.setSchemaLanguage( Language.XMLSCHEMA );
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  
@@ -1161,7 +1161,7 @@ String[] classNames =
         </example> <example>
           <title>JAXB From XML transformer stage</title>
 
-          <programlisting>JAXBContext jaxbCtx =
+          <programlisting role="JAVA">JAXBContext jaxbCtx =
   KnowledgeBuilderHelper.newJAXBContext( classNames, kbase );
 Unmarshaller unmarshaller = jaxbCtx.createUnmarshaller();
 Transformer transformer = PipelineFactory.newJaxbFromXmlTransformer( unmarshaller );
@@ -1170,7 +1170,7 @@ transformer.setReceiver( receiver );
         </example> <example>
           <title>JAXB to XML transformer stage</title>
 
-          <programlisting>Marshaller marshaller = jaxbCtx.createMarshaller();
+          <programlisting role="JAVA">Marshaller marshaller = jaxbCtx.createMarshaller();
 Transformer transformer = PipelineFactory.newJaxbToXmlTransformer( marshaller );
 transformer.setReceiver( receiver );</programlisting>
         </example></para>
@@ -1182,14 +1182,14 @@ transformer.setReceiver( receiver );</programlisting>
       <para><example>
           <title>Smooks FromSource transformer stage</title>
 
-          <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+          <programlisting role="JAVA">Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
 Transformer transformer =
   PipelineFactory.newSmooksFromSourceTransformer( smooks, "orderItem" );
 transformer.setReceiver( receiver );</programlisting>
         </example> <example>
           <title>Smooks ToSource transformer stage</title>
 
-          <programlisting>Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+          <programlisting role="JAVA">Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
 Transformer transformer = PipelineFactory.newSmooksToSourceTransformer( smooks );
 transformer.setReceiver( receiver );</programlisting>
         </example></para>
@@ -1209,7 +1209,7 @@ transformer.setReceiver( receiver );</programlisting>
       <example>
         <title>JXLS transformer stage</title>
 
-        <programlisting>XLSReader mainReader =
+        <programlisting role="JAVA">XLSReader mainReader =
   ReaderBuilder.buildFromXML( ResourceFactory.newClassPathResource( "departments.xml", getClass() ).getInputStream() );
 String expr = "[ 'departments' : new java.util.ArrayList()," +
               "  'company' : new org.drools.runtime.pipeline.impl.Company() ]";
@@ -1228,7 +1228,7 @@ Transformer transformer = PipelineFactory.newJxlsTransformer(mainReader, expr );
       <example>
         <title>JMS Messenger stage</title>
 
-        <programlisting>// As this is a service, it's more likely the results will be logged
+        <programlisting role="JAVA">// As this is a service, it's more likely the results will be logged
 // or sent as a return message.
 Action resultHandlerStage = PipelineFactory.newExecuteResultHandler();
 
@@ -1361,7 +1361,7 @@ Service messenger = PipelineFactory.newJmsMessenger( pipeline,
     <example>
       <title>Insert Command</title>
 
-      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 ExecutionResults bresults =
   ksession.execute( CommandFactory.newInsert( new Cheese( "stilton" ), "stilton_id" ) );
 Stilton stilton = bresults.getValue( "stilton_id" );
@@ -1375,7 +1375,7 @@ Stilton stilton = bresults.getValue( "stilton_id" );
     <example>
       <title>InsertElements Command</title>
 
-      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 Command cmd = CommandFactory.newInsertElements( Arrays.asList( Object[] { 
                   new Cheese( "stilton" ),
                   new Cheese( "brie" ),
@@ -1407,7 +1407,7 @@ ExecutionResults bresults = ksession.execute( cmd );
     <example>
       <title>BatchExecution Command</title>
 
-      <programlisting>StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 
 List cmds = new ArrayList();        
 cmds.add( CommandFactory.newInsertObject( new Cheese( "stilton", 1), "stilton") );
@@ -1468,7 +1468,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Pipeline for CommandExecutor</title>
 
-      <programlisting>Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
+      <programlisting role="JAVA">Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
 
 Action assignResult = PipelineFactory.newAssignObjectAsResult();
 assignResult.setReceiver( executeResultHandler );
@@ -1512,7 +1512,7 @@ pipeline.setReceiver( inTransformer );
     <example>
       <title>Simple Pipeline ResultHandler</title>
 
-      <programlisting>public static class ResultHandlerImpl implements ResultHandler {
+      <programlisting role="JAVA">public static class ResultHandlerImpl implements ResultHandler {
     Object object;
 
     public void handleResult(Object object) {
@@ -1529,7 +1529,7 @@ pipeline.setReceiver( inTransformer );
     <example>
       <title>Using a Pipeline</title>
 
-      <programlisting>
+      <programlisting role="JAVA">
 InputStream inXml = ...;
 ResultHandler resultHandler = new ResultHandlerImpl();
 pipeline.insert( inXml, resultHandler );
@@ -1829,7 +1829,7 @@ pipeline.insert( inXml, resultHandler );
     <example>
       <title>Simple Marshaller Example</title>
 
-      <programlisting>// ksession is the StatefulKnowledgeSession
+      <programlisting role="JAVA">// ksession is the StatefulKnowledgeSession
 // kbase is the KnowledgeBase
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 Marshaller marshaller = MarshallerFactory.newMarshaller( kbase );
@@ -1859,7 +1859,7 @@ baos.close();
     <example>
       <title>IdentityMarshallingStrategy</title>
 
-      <programlisting>ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      <programlisting role="JAVA">ByteArrayOutputStream baos = new ByteArrayOutputStream();
 ObjectMarshallingStrategy oms = MarshallerFactory.newIdentityMarshallingStrategy()
 Marshaller marshaller =
   MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[]{ oms } );
@@ -1887,7 +1887,7 @@ baos.close();
     <example>
       <title>IdentityMarshallingStrategy with Acceptor</title>
 
-      <programlisting>ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      <programlisting role="JAVA">ByteArrayOutputStream baos = new ByteArrayOutputStream();
 ObjectMarshallingStrategyAcceptor identityAcceptor =
   MarshallerFactory.newClassFilterAcceptor( new String[] { "org.domain.pkg1.*" } );
 ObjectMarshallingStrategy identityStrategy =
@@ -1918,7 +1918,7 @@ baos.close();
     <example>
       <title>Simple example using transactions</title>
 
-      <programlisting>Environment env = KnowledgeBaseFactory.newEnvironment();
+      <programlisting role="JAVA">Environment env = KnowledgeBaseFactory.newEnvironment();
 env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
          Persistence.createEntityManagerFactory( "emf-name" ) );
 env.set( EnvironmentName.TRANSACTION_MANAGER,
@@ -1948,7 +1948,7 @@ ut.commit();
     <example>
       <title>Loading a StatefulKnowledgeSession</title>
 
-      <programlisting>StatefulKnowledgeSession ksession =
+      <programlisting role="JAVA">StatefulKnowledgeSession ksession =
   JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
 </programlisting>
     </example>
@@ -1986,7 +1986,7 @@ ut.commit();
     <example>
       <title>Configuring JTA DataSource</title>
 
-      <programlisting>PoolingDataSource ds = new PoolingDataSource();
+      <programlisting role="JAVA">PoolingDataSource ds = new PoolingDataSource();
 ds.setUniqueName( "jdbc/BitronixJTADataSource" );
 ds.setClassName( "org.h2.jdbcx.JdbcDataSource" );
 ds.setMaxPoolSize( 3 );

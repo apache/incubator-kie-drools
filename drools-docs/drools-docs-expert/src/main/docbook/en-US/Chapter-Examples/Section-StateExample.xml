@@ -39,7 +39,7 @@
       <example>
         <title>State Class</title>
 
-        <programlisting>public class State {
+        <programlisting role="JAVA">public class State {
     public static final int NOTRUN   = 0;
     public static final int FINISHED = 1;
 
@@ -63,7 +63,7 @@
       <example>
         <title>Salience State: Execution</title>
 
-        <programlisting>State a = new State( "A" );
+        <programlisting role="JAVA">State a = new State( "A" );
 State b = new State( "B" );
 State c = new State( "C" );
 final State d = new State( "D" );
@@ -259,7 +259,7 @@ end</programlisting>
       <example>
         <title>Inserting a Dynamic Fact</title>
   
-        <programlisting>// By setting dynamic to TRUE, Drools will use JavaBean
+        <programlisting role="JAVA">// By setting dynamic to TRUE, Drools will use JavaBean
 // PropertyChangeListeners so you don't have to call modify or update().
 final boolean dynamic = true;
 
@@ -275,7 +275,7 @@ session.insert( fact, dynamic );
       <example>
         <title>Setter Example with PropertyChangeSupport</title>
   
-        <programlisting>public void setState(final int newState) {
+        <programlisting role="JAVA">public void setState(final int newState) {
     int oldState = this.state;
     this.state = newState;
     this.changes.firePropertyChange( "state",

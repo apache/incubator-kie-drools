@@ -738,7 +738,7 @@ end
 
       <para>The code to run this is simple:</para>
 
-      <programlisting>//first we compile the spreadsheet with the template
+      <programlisting role="JAVA">//first we compile the spreadsheet with the template
 //to create a whole lot of rules.
 final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
 //the data we are interested in starts at row 2, column 2 (e.g. B2)
