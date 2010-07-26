@@ -33,18 +33,19 @@ Marking words in a paragraph
 Marking paragraphs
 ------------------
 
-* <caution><para></para></caution>
-
-* <important><para></para></important>
-
-* <note><para></para></note>
-
-* <tip><para></para></tip>
-
-* <warning><para></para></warning>
+* You can encapsulate a paragraph or more in note, tip, etc:
+  <note><para></para></note>
+  <tip><para></para></tip>
+  <caution><para></para></caution>
+  <warning><para></para></warning>
+  <important><para></para></important>
+  Always use one or more <para>'s (or other elements) inside it,
+  never write text directly (which gives visual bugs).
 
 * Use <programlisting> for longer code, commands or log listings:
     <programlisting><![CDATA[public interface Move ...]]></programlisting>
+  Do not use <programlisting> inside <para> as it is a paragraph style
+  (which gives code coloring bugs).
 
 * Use <programlisting role="JAVA"> for java code to get color highlighting.
 
