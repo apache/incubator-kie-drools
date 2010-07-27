@@ -27,6 +27,8 @@ import org.drools.QueryResults;
 import org.drools.SessionConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.base.InternalViewChangedEventListener;
+import org.drools.base.NonCloningQueryViewListener;
+import org.drools.base.StandardQueryViewChangedEventListener;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
@@ -99,6 +101,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         this.agenda = new DefaultAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );
     }
+
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
                                final SessionConfiguration config,
@@ -106,19 +109,18 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                final WorkingMemoryEventSupport workingMemoryEventSupport,
                                final AgendaEventSupport agendaEventSupport,
                                final RuleFlowEventSupport ruleFlowEventSupport) {
-        super( id, 
+        super( id,
                ruleBase,
                ruleBase.newFactHandleFactory(),
                config,
                environment,
                workingMemoryEventSupport,
                agendaEventSupport,
-               ruleFlowEventSupport);
+               ruleFlowEventSupport );
 
         this.agenda = new DefaultAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );
-}
-
+    }
 
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
@@ -167,7 +169,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             this.lock.lock();
             DroolsQuery queryObject = new DroolsQuery( query,
                                                        arguments,
-                                                       (InternalViewChangedEventListener) this.config.getQueryListenerOption().newQueryListenerInstance(),
+                                                       getQueryListenerInstance(),
                                                        false );
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
@@ -198,10 +200,20 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             endOperation();
         }
     }
-    
+
+    private InternalViewChangedEventListener getQueryListenerInstance() {
+        switch ( this.config.getQueryListenerOption() ) {
+            case STANDARD :
+                return new StandardQueryViewChangedEventListener();
+            case LIGHTWEIGHT :
+                return new NonCloningQueryViewListener();
+        }
+        return null;
+    }
+
     public LiveQuery openLiveQuery(final String query,
-                              final Object[] arguments,
-                              final ViewChangedEventListener listener) {
+                                   final Object[] arguments,
+                                   final ViewChangedEventListener listener) {
 
         try {
             startOperation();
@@ -209,7 +221,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             this.lock.lock();
             DroolsQuery queryObject = new DroolsQuery( query,
                                                        arguments,
-                                                       new OpenQueryViewChangedEventListenerAdapter(listener),
+                                                       new OpenQueryViewChangedEventListenerAdapter( listener ),
                                                        true );
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
@@ -222,36 +234,37 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     null,
                     this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                         queryObject ) );
-            
-            return new LiveQueryImpl( this, handle );
+
+            return new LiveQueryImpl( this,
+                                      handle );
         } finally {
             this.lock.unlock();
             this.ruleBase.readUnlock();
             endOperation();
         }
-    }    
+    }
 
     public void closeLiveQuery(final InternalFactHandle factHandle) {
 
-             try {
-                 startOperation();
-                 this.ruleBase.readLock();
-                 this.lock.lock();
+        try {
+            startOperation();
+            this.ruleBase.readLock();
+            this.lock.lock();
 
-                 getEntryPointNode().retractObject( factHandle,
-                                                            null,
-                                                            this.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.getEntryPoint(),
-                                                                                                                            factHandle.getObject() ),
-                                                            this );
-                 getFactHandleFactory().destroyFactHandle( factHandle );
-                 
-             } finally {
-                 this.lock.unlock();
-                 this.ruleBase.readUnlock();
-                 endOperation();
-             }
-         }        
-    
+            getEntryPointNode().retractObject( factHandle,
+                                               null,
+                                               this.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.getEntryPoint(),
+                                                                                                            factHandle.getObject() ),
+                                               this );
+            getFactHandleFactory().destroyFactHandle( factHandle );
+
+        } finally {
+            this.lock.unlock();
+            this.ruleBase.readUnlock();
+            endOperation();
+        }
+    }
+
     public static class WorkingMemoryReteAssertAction
         implements
         WorkingMemoryAction {
