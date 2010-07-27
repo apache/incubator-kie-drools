@@ -16,11 +16,7 @@
 
 package org.drools.base;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.rule.Query;
-import org.drools.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String         name;

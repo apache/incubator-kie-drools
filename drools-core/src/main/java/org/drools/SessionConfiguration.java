@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.builder.conf.AccumulateFunctionOption;
+import org.drools.base.InternalViewChangedEventListener;
+import org.drools.base.StandardQueryViewChangedEventListener;
 import org.drools.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -37,9 +38,11 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.conf.KeepReferenceOption;
 import org.drools.runtime.conf.KnowledgeSessionOption;
 import org.drools.runtime.conf.MultiValueKnowledgeSessionOption;
+import org.drools.runtime.conf.QueryListenerClassOption;
 import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
 import org.drools.runtime.conf.WorkItemHandlerOption;
 import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.rule.QueryViewChangedEventListener;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.mvel2.MVEL;
@@ -76,6 +79,8 @@ public class SessionConfiguration
 
     private ClockType                     clockType;
 
+    private QueryListenerClassOption           queryListener;
+
     private Map<String, WorkItemHandler>  workItemHandlers;
     private ProcessInstanceManagerFactory processInstanceManagerFactory;
     private SignalManagerFactory          processSignalManagerFactory;
@@ -89,14 +94,19 @@ public class SessionConfiguration
         out.writeBoolean( immutable );
         out.writeBoolean( keepReference );
         out.writeObject( clockType );
+        out.writeObject( queryListener.getQueryListenerClass().getName() );
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         chainedProperties = (ChainedProperties) in.readObject();
         immutable = in.readBoolean();
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
+        queryListener = QueryListenerClassOption.get( (Class< ? extends QueryViewChangedEventListener>) Class.forName( (String) in.readObject(),
+                                                                                                                  true,
+                                                                                                                  this.classLoader ) );
     }
 
     /**
@@ -142,6 +152,9 @@ public class SessionConfiguration
 
         setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( ClockTypeOption.PROPERTY_NAME,
                                                                                       "realtime" ) ) );
+
+        setQueryListenerClass( this.chainedProperties.getProperty( QueryListenerClassOption.PROPERTY_NAME,
+                                                                   StandardQueryViewChangedEventListener.class.getName() ) );
     }
 
     public void addProperties(Properties properties) {
@@ -161,6 +174,8 @@ public class SessionConfiguration
             setKeepReference( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             setClockType( ClockType.resolveClockType( StringUtils.isEmpty( value ) ? "realtime" : value ) );
+        } else if ( name.equals( QueryListenerClassOption.PROPERTY_NAME ) ) {
+            setQueryListenerClass( StringUtils.isEmpty( value ) ? StandardQueryViewChangedEventListener.class.getName() : value );
         }
     }
 
@@ -174,6 +189,8 @@ public class SessionConfiguration
             return Boolean.toString( this.keepReference );
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             return this.clockType.toExternalForm();
+        } else if ( name.equals( QueryListenerClassOption.PROPERTY_NAME ) ) {
+            return this.queryListener.getQueryListenerClass().getName();
         }
 
         return null;
@@ -220,6 +237,24 @@ public class SessionConfiguration
         this.clockType = clockType;
     }
 
+    @SuppressWarnings("unchecked")
+    private void setQueryListenerClass(String property) {
+        checkCanChange();
+        try {
+            Class< ? extends InternalViewChangedEventListener> listenerClass = (Class< ? extends InternalViewChangedEventListener>) Class.forName( property,
+                                                                                                                                                   true,
+                                                                                                                                                   this.classLoader );
+            setQueryListenerClass( listenerClass );
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException("Unable to find query listener class : '"+property+"'", e);
+        }
+    }
+
+    private void setQueryListenerClass(Class< ? extends InternalViewChangedEventListener> listenerClass) {
+        checkCanChange();
+        this.queryListener = QueryListenerClassOption.get( listenerClass );
+    }
+    
     public Map<String, WorkItemHandler> getWorkItemHandlers() {
         if ( this.workItemHandlers == null ) {
             initWorkItemHandlers();
@@ -421,6 +456,8 @@ public class SessionConfiguration
             return (T) ClockTypeOption.get( getClockType().toExternalForm() );
         } else if ( KeepReferenceOption.class.equals( option ) ) {
             return (T) (this.keepReference ? KeepReferenceOption.YES : KeepReferenceOption.NO);
+        } else if ( QueryListenerClassOption.class.equals( option ) ) {
+            return (T) this.queryListener;
         }
         return null;
     }
@@ -441,8 +478,10 @@ public class SessionConfiguration
         } else if ( option instanceof KeepReferenceOption ) {
             setKeepReference( ((KeepReferenceOption) option).isKeepReference() );
         } else if ( option instanceof WorkItemHandlerOption ) {
-            getWorkItemHandlers().put( ((WorkItemHandlerOption)option).getName(),
-                                       ((WorkItemHandlerOption)option).getHandler() );
+            getWorkItemHandlers().put( ((WorkItemHandlerOption) option).getName(),
+                                       ((WorkItemHandlerOption) option).getHandler() );
+        } else if ( option instanceof QueryListenerClassOption ) {
+            this.queryListener = (QueryListenerClassOption) option;
         }
     }
 
@@ -452,6 +491,10 @@ public class SessionConfiguration
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+
+    public QueryListenerClassOption getQueryListenerOption() {
+        return this.queryListener;
     }
 
 }

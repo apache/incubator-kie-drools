@@ -16,6 +16,8 @@
 
 package org.drools.runtime.rule.impl;
 
+import java.util.List;
+
 import org.drools.base.InternalViewChangedEventListener;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
@@ -57,6 +59,10 @@ public class OpenQueryViewChangedEventListenerAdapter
                            final InternalWorkingMemory workingMemory) {
         RowAdapter rowAdapter = (RowAdapter) leftTuple.getObject();
         this.viewEventListener.rowUpdated( rowAdapter );
+    }
+
+    public List< ? extends Object> getResults() {
+        throw new UnsupportedOperationException(getClass().getCanonicalName()+" does not support the getResults() method.");
     }
 
 }

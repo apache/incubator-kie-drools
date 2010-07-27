@@ -19,21 +19,19 @@ package org.drools.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Rule;
-import org.drools.rule.Variable;
 import org.drools.spi.PropagationContext;
 
-public class StandardQueryViewChangedEventListener
+public class NonCloningQueryViewListener 
     implements
     InternalViewChangedEventListener {
 
     private List<Object> results;
 
-    public StandardQueryViewChangedEventListener() {
+    public NonCloningQueryViewListener() {
         this.results = new ArrayList<Object>( 250 );
     }
 
@@ -51,34 +49,12 @@ public class StandardQueryViewChangedEventListener
         // Add all the FactHandles except the root DroolQuery object
         while ( entry.getIndex() > 0 ) {
             InternalFactHandle handle = entry.getLastHandle();
-            handles[entry.getIndex()] = new DisconnectedFactHandle( handle.getId(),
-                                                                    handle.getIdentityHashCode(),
-                                                                    handle.getObjectHashCode(),
-                                                                    handle.getRecency(),
-                                                                    handle.getObject() );
+            handles[entry.getIndex()] = handle;
             entry = entry.getParent();
         }
 
-        // Get the Query object
         InternalFactHandle handle = entry.getLastHandle();
-        DroolsQuery query = (DroolsQuery) handle.getObject();
-
-        // Copy of it's arguments for unification variables.
-        Object[] args = query.getElements();
-        Object[] newArgs = new Object[args.length];
-        for ( int i = 0, length = args.length; i < length; i++ ) {
-            if ( args[i] instanceof Variable ) {
-                newArgs[i] = ((Variable) args[i]).getValue();
-            } else {
-                newArgs[i] = args[i];
-            }
-        }
-        handles[entry.getIndex()] = new DisconnectedFactHandle( handle.getId(),
-                                                                handle.getIdentityHashCode(),
-                                                                handle.getObjectHashCode(),
-                                                                handle.getRecency(),
-                                                                new ArrayElements( newArgs ) );
-
+        handles[entry.getIndex()] = handle;
         this.results.add( handles );
     }
     

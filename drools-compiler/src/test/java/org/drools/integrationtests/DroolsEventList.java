@@ -15,13 +15,10 @@ import ca.odell.glazedlists.AbstractEventList;
 public class DroolsEventList extends AbstractEventList<Row> implements ViewChangedEventListener {
     List<Row> data = new ArrayList<Row>();
     
-    
-    @Override
     public Row get(int index) {
         return this.data.get( index );
     }
 
-    @Override
     public int size() {
         return this.data.size();
     }
