@@ -48,7 +48,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Variable;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.QueryListenerClassOption;
+import org.drools.runtime.conf.QueryListenerOption;
 import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Row;
@@ -754,14 +754,14 @@ public class QueryTest extends TestCase {
     }
     
     public void testStandardQueryListener() {
-        runQueryListenerTest( QueryListenerClassOption.get( StandardQueryViewChangedEventListener.class ) );
+        runQueryListenerTest( QueryListenerOption.STANDARD );
     }
     
     public void testNonCloningQueryListener() {
-        runQueryListenerTest( QueryListenerClassOption.get( NonCloningQueryViewListener.class ) );
+        runQueryListenerTest( QueryListenerOption.LIGHTWEIGHT );
     }
     
-    public void runQueryListenerTest( QueryListenerClassOption option ) {
+    public void runQueryListenerTest( QueryListenerOption option ) {
         String str = "";
         str += "package org.drools\n";
         str += "query cheeses(String $type) \n";
@@ -803,7 +803,7 @@ public class QueryTest extends TestCase {
         }
         long end = System.currentTimeMillis();
         
-        //System.out.println("Query time = "+(end-start));
+        System.out.println("Query time = "+(end-start));
     }
 
 }

@@ -21,10 +21,9 @@ import java.util.List;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.QueryViewChangedEventListener;
 import org.drools.spi.PropagationContext;
 
-public interface InternalViewChangedEventListener extends QueryViewChangedEventListener { 
+public interface InternalViewChangedEventListener { 
     public void rowAdded(Rule rule, 
                          LeftTuple tuple,
                          PropagationContext context,
