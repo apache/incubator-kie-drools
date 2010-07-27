@@ -20,11 +20,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.util.List;
 
+import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.SessionConfiguration;
 import org.drools.base.DroolsQuery;
-import org.drools.base.StandardQueryViewChangedEventListener;
+import org.drools.base.InternalViewChangedEventListener;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
@@ -155,6 +157,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                 null );
     }
 
+    @SuppressWarnings("unchecked")
     public QueryResults getQueryResults(final String query,
                                         final Object[] arguments) {
 
@@ -164,7 +167,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             this.lock.lock();
             DroolsQuery queryObject = new DroolsQuery( query,
                                                        arguments,
-                                                       new StandardQueryViewChangedEventListener(),
+                                                       (InternalViewChangedEventListener) this.config.getQueryListenerOption().newQueryListenerInstance(),
                                                        false );
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
@@ -186,7 +189,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                 declarations = queryObject.getQuery().getDeclarations();
             }
 
-            return new QueryResults( ((StandardQueryViewChangedEventListener) queryObject.getQueryResultCollector()).getResults(),
+            return new QueryResults( (List<FactHandle[]>) queryObject.getQueryResultCollector().getResults(),
                                      declarations,
                                      this );
         } finally {

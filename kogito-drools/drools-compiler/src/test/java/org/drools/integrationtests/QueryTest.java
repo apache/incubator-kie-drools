@@ -25,6 +25,8 @@ import org.drools.Worker;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.base.NonCloningQueryViewListener;
+import org.drools.base.StandardQueryViewChangedEventListener;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -44,8 +46,11 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
 import org.drools.rule.Variable;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.QueryListenerClassOption;
 import org.drools.runtime.rule.LiveQuery;
+import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Row;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.FlatQueryResults;
@@ -746,6 +751,59 @@ public class QueryTest extends TestCase {
         assertEquals( 4, added.size() );
         assertEquals( 4, removed.size() );
         assertEquals( 1, updated.size() );           
+    }
+    
+    public void testStandardQueryListener() {
+        runQueryListenerTest( QueryListenerClassOption.get( StandardQueryViewChangedEventListener.class ) );
+    }
+    
+    public void testNonCloningQueryListener() {
+        runQueryListenerTest( QueryListenerClassOption.get( NonCloningQueryViewListener.class ) );
+    }
+    
+    public void runQueryListenerTest( QueryListenerClassOption option ) {
+        String str = "";
+        str += "package org.drools\n";
+        str += "query cheeses(String $type) \n";
+        str += "    $cheese : Cheese(type == $type) \n";
+        str += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( option );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null);
+
+        // insert some data into the session
+        for( int i = 0; i < 10000; i++ ) {
+            ksession.insert( new Cheese( i%2==0 ? "stilton" : "brie") );
+        }
+        
+        // query the session
+        long start = System.currentTimeMillis();
+        List<Cheese> cheeses;
+        for ( int i = 0; i < 100; i++ ) {
+            org.drools.runtime.rule.QueryResults queryResults = ksession.getQueryResults( "cheeses",
+                                                                                          new Object[]{"stilton"} );
+            cheeses = new ArrayList<Cheese>();
+            for ( QueryResultsRow row : queryResults ) {
+                cheeses.add( (Cheese) row.get( "$cheese" ) );
+            }
+            
+            assertEquals( 5000, cheeses.size() );
+        }
+        long end = System.currentTimeMillis();
+        
+        //System.out.println("Query time = "+(end-start));
     }
 
 }

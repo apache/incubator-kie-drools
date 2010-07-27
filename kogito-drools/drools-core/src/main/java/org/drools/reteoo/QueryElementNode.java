@@ -16,6 +16,8 @@
 
 package org.drools.reteoo;
 
+import java.util.List;
+
 import org.drools.base.DroolsQuery;
 import org.drools.base.InternalViewChangedEventListener;
 import org.drools.common.BaseNode;
@@ -218,6 +220,9 @@ public class QueryElementNode extends LeftTupleSource
             //TODO        	
         }        
 
+        public List< ? extends Object> getResults() {
+            throw new UnsupportedOperationException(getClass().getCanonicalName()+" does not support the getResults() method.");
+        }
     }
 
     public short getType() {

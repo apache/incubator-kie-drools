@@ -16,12 +16,15 @@
 
 package org.drools.base;
 
+import java.util.List;
+
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.QueryViewChangedEventListener;
 import org.drools.spi.PropagationContext;
 
-public interface InternalViewChangedEventListener {
+public interface InternalViewChangedEventListener extends QueryViewChangedEventListener { 
     public void rowAdded(Rule rule, 
                          LeftTuple tuple,
                          PropagationContext context,
@@ -35,4 +38,7 @@ public interface InternalViewChangedEventListener {
                            LeftTuple leftTuple,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory);
+    
+    public List<? extends Object> getResults();
+    
 }

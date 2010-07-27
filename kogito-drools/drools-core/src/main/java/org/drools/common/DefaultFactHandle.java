@@ -52,6 +52,7 @@ public class DefaultFactHandle
     private Object                  object;
     private EqualityKey             key;
     private int                     objectHashCode;
+    private transient int           identityHashCode;
     
     public RightTuple              firstRightTuple;
     public RightTuple              lastRightTuple;
@@ -87,19 +88,18 @@ public class DefaultFactHandle
         this.recency = recency;
         this.object = object;
         this.objectHashCode = object.hashCode();
+        setIdentityHashCode();
     }
-    
+
     public DefaultFactHandle(final int id,
                              final int objectHashCode,
                              final long recency) {
         this.id = id;
         this.recency = recency;
         this.objectHashCode = objectHashCode;
+        setIdentityHashCode();
     }
         
-    
-    
-
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------
@@ -124,8 +124,12 @@ public class DefaultFactHandle
     }
     
     public int getIdentityHashCode() {
-        return System.identityHashCode( this.object );
+        return this.identityHashCode;
     }    
+    
+    private void setIdentityHashCode() {
+        this.identityHashCode = System.identityHashCode( this.object );
+    }
     
     protected void setObjectHashCode( int hashCode ) {
         this.objectHashCode = hashCode;
@@ -187,6 +191,7 @@ public class DefaultFactHandle
 
     public void setObject(final Object object) {
         this.object = object;
+        setIdentityHashCode();
     }
 
     /**
@@ -262,6 +267,7 @@ public class DefaultFactHandle
         clone.lastRightTuple = this.lastRightTuple;
         
         clone.objectHashCode = this.objectHashCode;
+        clone.identityHashCode = System.identityHashCode( clone.object );
         return clone;
     }
 
