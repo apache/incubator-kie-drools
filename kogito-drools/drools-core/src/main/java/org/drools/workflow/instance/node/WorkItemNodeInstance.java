@@ -119,9 +119,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 		}
         if (!workItemNode.isWaitForCompletion()) {
             triggerCompleted();
-        } else {
-        	this.workItemId = workItem.getId();
         }
+    	this.workItemId = workItem.getId();
     }
     
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
@@ -187,6 +186,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public void triggerCompleted(WorkItem workItem) {
+    	this.workItem = workItem;
     	WorkItemNode workItemNode = getWorkItemNode();
     	if (workItemNode != null) {
 	        for (Iterator<Map.Entry<String, String>> iterator = getWorkItemNode().getOutMappings().entrySet().iterator(); iterator.hasNext(); ) {
@@ -210,7 +210,6 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 	            }
 	        }
     	}
-    	this.workItemId = -1;
         if (isInversionOfControl()) {
             WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
             workingMemory.update(workingMemory.getFactHandle(this), this);
@@ -220,7 +219,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
     
     public void cancel() {
-    	if (workItemId != -1) {
+    	WorkItem workItem = getWorkItem();
+    	if (workItem != null &&
+    			workItem.getState() != WorkItem.COMPLETED && 
+    			workItem.getState() != WorkItem.ABORTED) {
     		((WorkItemManager) ((ProcessInstance) getProcessInstance())
 				.getWorkingMemory().getWorkItemManager()).internalAbortWorkItem(workItemId);
     	}
