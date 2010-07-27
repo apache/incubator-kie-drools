@@ -32,6 +32,21 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <scope>provided</scope>
       </dependency>
       <dependency>
+         <groupId>javax.xml.bind</groupId>
+         <artifactId>jaxb-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>javax.xml.stream</groupId>
+         <artifactId>stax-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>javax.activation</groupId>
+         <artifactId>activation</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
          <groupId>org.milyn</groupId>
          <artifactId>milyn-smooks-javabean</artifactId>
          <scope>provided</scope>
