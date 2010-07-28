@@ -83,36 +83,33 @@ public class XStreamJSon {
 
         xstream.setMode( XStream.NO_REFERENCES );
 
-        xstream.registerConverter( new JSonFactHandleConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonBatchExecutionResultConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonInsertConverter( xstream.getMapper(),
-                                                            xstream.getReflectionProvider() ) );
-        xstream.registerConverter( new JSonFireAllRulesConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonBatchExecutionCommandConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new CommandsContainerConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonGetObjectConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonRetractConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonModifyConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonSetGlobalConverter( xstream.getMapper(),
-                                                               xstream.getReflectionProvider() ) );
-        xstream.registerConverter( new JSonInsertElementsConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonGetGlobalConverter( xstream.getMapper(),
-                                                               xstream.getReflectionProvider() ) );
-        xstream.registerConverter( new JSonGetObjectsConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonQueryConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonQueryResultsConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new RowItemConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonStartProcessConvert( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonSignalEventConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonCompleteWorkItemConverter( xstream.getMapper() ) );
-        xstream.registerConverter( new JSonAbortWorkItemConverter( xstream.getMapper() ) );
+        xstream.registerConverter( new JSonFactHandleConverter( xstream ) );
+        xstream.registerConverter( new JSonBatchExecutionResultConverter( xstream ) );
+        xstream.registerConverter( new JSonInsertConverter( xstream ) );
+        xstream.registerConverter( new JSonFireAllRulesConverter( xstream ) );
+        xstream.registerConverter( new JSonBatchExecutionCommandConverter( xstream ) );
+        xstream.registerConverter( new CommandsContainerConverter( xstream ) );
+        xstream.registerConverter( new JSonGetObjectConverter( xstream ) );
+        xstream.registerConverter( new JSonRetractConverter( xstream ) );
+        xstream.registerConverter( new JSonModifyConverter( xstream ) );
+        xstream.registerConverter( new JSonSetGlobalConverter( xstream ) );
+        xstream.registerConverter( new JSonInsertElementsConverter( xstream ) );
+        xstream.registerConverter( new JSonGetGlobalConverter( xstream ) );
+        xstream.registerConverter( new JSonGetObjectsConverter( xstream ) );
+        xstream.registerConverter( new JSonQueryConverter( xstream ) );
+        xstream.registerConverter( new JSonQueryResultsConverter( xstream ) );
+        xstream.registerConverter( new RowItemConverter( xstream ) );
+        xstream.registerConverter( new JSonStartProcessConvert( xstream ) );
+        xstream.registerConverter( new JSonSignalEventConverter( xstream ) );
+        xstream.registerConverter( new JSonCompleteWorkItemConverter( xstream ) );
+        xstream.registerConverter( new JSonAbortWorkItemConverter( xstream ) );
 
         return xstream;
     }
 
     public static class CommandsContainerConverter extends AbstractCollectionConverter {
-        public CommandsContainerConverter(Mapper mapper) {
-            super( mapper );
+        public CommandsContainerConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public boolean canConvert(Class type) {
@@ -140,8 +137,8 @@ public class XStreamJSon {
     }
 
     public static class RowItemConverter extends AbstractCollectionConverter {
-        public RowItemConverter(Mapper mapper) {
-            super( mapper );
+        public RowItemConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public boolean canConvert(Class type) {
@@ -228,8 +225,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonBatchExecutionCommandConverter(Mapper mapper) {
-            super( mapper );
+        public JSonBatchExecutionCommandConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -285,10 +282,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonInsertConverter(Mapper mapper,
-                                   ReflectionProvider reflectionProvider) {
-            super( mapper,
-                   reflectionProvider );
+        public JSonInsertConverter(XStream xstream) {
+            super( xstream );
         }
 
         public void marshal(Object object,
@@ -341,8 +336,8 @@ public class XStreamJSon {
     public static class JSonFactHandleConverter extends AbstractCollectionConverter
         implements
         Converter {
-        public JSonFactHandleConverter(Mapper mapper) {
-            super( mapper );
+        public JSonFactHandleConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public boolean canConvert(Class aClass) {
@@ -371,8 +366,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonFireAllRulesConverter(Mapper mapper) {
-            super( mapper );
+        public JSonFireAllRulesConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -387,8 +382,8 @@ public class XStreamJSon {
             }
             
             if ( cmd.getOutIdentifier() != null ) {
-            	writer.startNode( "out-identifier" );
-            	writer.setValue( cmd.getOutIdentifier() );
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
             }
         }
@@ -402,7 +397,7 @@ public class XStreamJSon {
                 if ( "max".equals( reader.getNodeName() ) ) {
                     max = reader.getValue();
                 } else if ( "out-identifier".equals( reader.getNodeName() ) ) {
-                	outIdentifier = reader.getValue();
+                    outIdentifier = reader.getValue();
                 } else {
                     throw new IllegalArgumentException( "fire-all-rules does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
                 }
@@ -417,7 +412,7 @@ public class XStreamJSon {
                 cmd = new FireAllRulesCommand();
             }
             if ( outIdentifier != null ) {
-            	cmd.setOutIdentifier(outIdentifier);
+                cmd.setOutIdentifier(outIdentifier);
             }
             return cmd;
         }
@@ -431,8 +426,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonGetObjectConverter(Mapper mapper) {
-            super( mapper );
+        public JSonGetObjectConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -481,8 +476,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonRetractConverter(Mapper mapper) {
-            super( mapper );
+        public JSonRetractConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -514,8 +509,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonModifyConverter(Mapper mapper) {
-            super( mapper );
+        public JSonModifyConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -576,8 +571,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonInsertElementsConverter(Mapper mapper) {
-            super( mapper );
+        public JSonInsertElementsConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -648,8 +643,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonBatchExecutionResultConverter(Mapper mapper) {
-            super( mapper );
+        public JSonBatchExecutionResultConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -788,11 +783,9 @@ public class XStreamJSon {
         protected Mapper             mapper;
         protected ReflectionProvider reflectionProvider;
 
-        public BaseConverter(Mapper mapper,
-                             ReflectionProvider reflectionProvider) {
-            super();
-            this.mapper = mapper;
-            this.reflectionProvider = reflectionProvider;
+        public BaseConverter(XStream xstream) {
+            this.mapper = xstream.getMapper();
+            this.reflectionProvider = xstream.getReflectionProvider();
         }
 
         protected void writeValue(HierarchicalStreamWriter writer,
@@ -828,10 +821,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonSetGlobalConverter(Mapper mapper,
-                                      ReflectionProvider reflectionProvider) {
-            super( mapper,
-                   reflectionProvider );
+        public JSonSetGlobalConverter(XStream xstream) {
+            super( xstream );
         }
 
         public void marshal(Object object,
@@ -905,10 +896,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonGetGlobalConverter(Mapper mapper,
-                                      ReflectionProvider reflectionProvider) {
-            super( mapper,
-                   reflectionProvider );
+        public JSonGetGlobalConverter(XStream xstream) {
+            super( xstream );
         }
 
         public void marshal(Object object,
@@ -962,8 +951,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonGetObjectsConverter(Mapper mapper) {
-            super( mapper );
+        public JSonGetObjectsConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -1005,8 +994,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonQueryConverter(Mapper mapper) {
-            super( mapper );
+        public JSonQueryConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -1079,8 +1068,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonQueryResultsConverter(Mapper mapper) {
-            super( mapper );
+        public JSonQueryResultsConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -1167,8 +1156,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonStartProcessConvert(Mapper mapper) {
-            super( mapper );
+        public JSonStartProcessConvert(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -1220,8 +1209,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonSignalEventConverter(Mapper mapper) {
-            super( mapper );
+        public JSonSignalEventConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -1297,8 +1286,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonCompleteWorkItemConverter(Mapper mapper) {
-            super( mapper );
+        public JSonCompleteWorkItemConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
@@ -1352,8 +1341,8 @@ public class XStreamJSon {
         implements
         Converter {
 
-        public JSonAbortWorkItemConverter(Mapper mapper) {
-            super( mapper );
+        public JSonAbortWorkItemConverter(XStream xstream) {
+            super( xstream.getMapper() );
         }
 
         public void marshal(Object object,
