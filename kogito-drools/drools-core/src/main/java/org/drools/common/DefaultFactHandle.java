@@ -56,12 +56,14 @@ public class DefaultFactHandle
     private int                     objectHashCode;
     private int                     identityHashCode;
     
-    public RightTuple              firstRightTuple;
-    public RightTuple              lastRightTuple;
+    public RightTuple               firstRightTuple;
+    public RightTuple               lastRightTuple;
     
     public LeftTuple                firstLeftTuple;
     public LeftTuple                lastLeftTuple;
     private WorkingMemoryEntryPoint entryPoint;
+    
+    private boolean                 disconnected;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -76,7 +78,7 @@ public class DefaultFactHandle
         this( id,
               object,
               id,
-              new DisconnectedWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) );
+              null );
     }
 
     /**
@@ -113,6 +115,7 @@ public class DefaultFactHandle
         this.objectHashCode = objectHashCode;
         this.recency = recency;
         this.object = object;
+        this.disconnected = true;
     }    
         
     // ----------------------------------------------------------------------
@@ -142,14 +145,11 @@ public class DefaultFactHandle
         this.lastLeftTuple = null;
         this.lastRightTuple = null;
         this.entryPoint =  (this.entryPoint == null) ? null : new DisconnectedWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+        this.disconnected = true;
     }
     
     public boolean isDisconnected() {
-        if ( this.entryPoint instanceof DisconnectedWorkingMemoryEntryPoint ) {
-            return true;
-        } else {
-            return false;
-        }
+        return disconnected;
     }
 
     public int getObjectHashCode() {
@@ -300,6 +300,7 @@ public class DefaultFactHandle
         
         clone.objectHashCode = this.objectHashCode;
         clone.identityHashCode = System.identityHashCode( clone.object );
+        clone.disconnected = this.disconnected;
         return clone;
     }
 
@@ -332,5 +333,6 @@ public class DefaultFactHandle
         this.objectHashCode = Integer.parseInt( elements[3] );
         this.recency = Long.parseLong( elements[4] );
         this.entryPoint = StringUtils.isEmpty( elements[5] ) ? null : new DisconnectedWorkingMemoryEntryPoint( elements[5].trim() );
+        this.disconnected = true;
     }    
 }
