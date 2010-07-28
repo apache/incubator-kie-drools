@@ -126,6 +126,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         String rule3 = this.createCommonRule("rule3");
@@ -134,6 +135,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(header);
         output.write(rule3);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         // Use the same session for incremental build test
@@ -206,6 +208,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // Delete the file so only rule 2 fires
         f1.delete();
+        System.gc();
         Thread.sleep(3000);
 
         // Use the same session for incremental build test
@@ -220,6 +223,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         //Delete f2 now, no rules should fire
         list.clear();
         f2.delete();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -300,6 +304,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         String rule1v3 = this.createCommonRule("rule1","3");
@@ -308,6 +313,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(header);
         output.write(rule1v3);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         // Use the same session for incremental build test
@@ -323,6 +329,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         //Delete f2 now, rule1 should still fire if the indexing worked properly
         list.clear();
         f2.delete();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -393,6 +400,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         String rule3 = this.createCommonRule("rule3");
@@ -402,6 +410,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(rule1);
         output.write(rule3);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         // Use the same session for incremental build test
@@ -519,6 +528,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
 
@@ -526,6 +536,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(header);
         output.write(rule4);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         // Use the same session for incremental build test
@@ -543,6 +554,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
 
@@ -551,6 +563,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(rule1);
         output.write(rule5);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
 
@@ -624,6 +637,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         String rule3 = header+this.createCommonRule("rule3");
@@ -638,7 +652,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         }
         pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
         writePackage(pkg, pkg1);
-
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -709,6 +723,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         String rule3 = header + this.createCommonRule("rule3");
@@ -723,7 +738,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         }
         pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
         writePackage(pkg, pkg1);
-
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -813,6 +828,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -823,7 +839,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         }
         pkg2 = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
         writePackage(pkg2, pkgF2);
-
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -936,6 +952,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         output = new BufferedWriter(new FileWriter(f2));
@@ -943,6 +960,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(rule3);
         output.write(rule4);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -960,6 +978,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         //removes rule1 from rules3.drl and add a new definition for rule3 in that file
@@ -967,6 +986,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(header);
         output.write(rule3V2);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -982,12 +1002,14 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         //removes rule3 from rules3.drl
         output = new BufferedWriter(new FileWriter(f3));
         output.write(header);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -1002,10 +1024,12 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         //removes rule3 from rules3.drl
         f3.delete();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -1021,6 +1045,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         //adds rules1-V3 definition to rules2.drl
@@ -1030,6 +1055,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(rule3);
         output.write(rule4);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -1098,6 +1124,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         //we are going to add function1 now
@@ -1107,6 +1134,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(function1);
         output.write(rule1);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -1130,6 +1158,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(function1V2);
         output.write(rule1);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -1193,6 +1222,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         //we are going to add the query now
@@ -1201,6 +1231,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(query1);
         output.write(rule1);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -1224,6 +1255,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         //we are going to modify the query definition
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         //we are going to add function1 now
@@ -1237,6 +1269,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(query1V2);
         output.write(rule1);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kbase.newStatefulKnowledgeSession();
@@ -1312,6 +1345,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         output = new BufferedWriter(new FileWriter(f1));
@@ -1321,6 +1355,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.write(ruleJohnPeter);
         output.write(ruleTmp);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         list.clear();
