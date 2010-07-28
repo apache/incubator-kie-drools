@@ -1462,21 +1462,24 @@ public abstract class AbstractWorkingMemory
         try {
             startOperation();
             if( evaluatingActionQueue.compareAndSet( false, true ) ) {
-                if ( !this.actionQueue.isEmpty() ) {
-                    WorkingMemoryAction action = null;
+                try {
+                    if ( !this.actionQueue.isEmpty() ) {
+                        WorkingMemoryAction action = null;
 
-                    while ( (action = actionQueue.poll()) != null ) {
-                        try {
-                            action.execute( this );
-                        } catch ( Exception e ) {
-                            throw new RuntimeDroolsException( "Unexpected exception executing action " + action.toString(),
-                                                              e );
+                        while ( (action = actionQueue.poll()) != null ) {
+                            try {
+                                action.execute( this );
+                            } catch ( Exception e ) {
+                                throw new RuntimeDroolsException( "Unexpected exception executing action " + action.toString(),
+                                                                  e );
+                            }
                         }
                     }
+                } finally {
+                    evaluatingActionQueue.compareAndSet( true, false );
                 }
             }
         } finally {
-            evaluatingActionQueue.compareAndSet( true, false );
             endOperation();
         }
     }
