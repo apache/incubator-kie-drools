@@ -37,6 +37,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.TypeDeclaration;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.FactHandleFactory;
 
 /**
@@ -52,7 +53,8 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
                                                      final Object object,
                                                      final long recency,
                                                      final ObjectTypeConf conf,
-                                                     final InternalWorkingMemory workingMemory) {
+                                                     final InternalWorkingMemory workingMemory,
+                                                     final WorkingMemoryEntryPoint entryPoint) {
         if ( conf != null && conf.isEvent() ) {
             // later we need to centralize the following code snippet in a common method
             // shared by all fact handle factory implementations
@@ -67,11 +69,13 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
                                              object,
                                              recency,
                                              timestamp,
-                                             duration );
+                                             duration,
+                                             entryPoint );
         } else {
             return new Jsr94FactHandle( id,
                                         object,
-                                        recency );
+                                        recency,
+                                        entryPoint );
         }
     }
 

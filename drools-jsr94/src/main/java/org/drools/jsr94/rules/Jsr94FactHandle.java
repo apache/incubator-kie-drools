@@ -60,6 +60,7 @@ package org.drools.jsr94.rules;
 import javax.rules.Handle;
 
 import org.drools.common.DefaultFactHandle;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * The Drools implementation of the <code>Handle</code> interface which provides
@@ -92,9 +93,11 @@ public class Jsr94FactHandle extends DefaultFactHandle
      */
     Jsr94FactHandle(final long id,
                     final Object object,
-                    final long recency) {
+                    final long recency,
+                    final WorkingMemoryEntryPoint entryPoint) {
         super( (int) id,
                object,
-               recency );
+               recency,
+               entryPoint );
     }
 }

@@ -60,6 +60,7 @@ package org.drools.jsr94.rules;
 import javax.rules.Handle;
 
 import org.drools.common.EventFactHandle;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * The Drools implementation of the <code>Handle</code> interface which provides
@@ -81,24 +82,6 @@ public class Jsr94EventFactHandle extends EventFactHandle
     private static final long serialVersionUID = -7338909470403134407L;
 
     /**
-     * Constructs a new <code>Handle</code>.
-     *
-     * @param id A unique <code>Handle</code> id.
-     * @param recency A value indicating the recency of this <code>Handle</code>
-     *        (more recently created <code>Handle</code>s have greater values
-     *         than <code>Handle</code>s created further in the past)
-     *
-     * @see org.drools.conflict.RecencyConflictResolver
-     */
-    Jsr94EventFactHandle(final long id,
-                         final Object object,
-                         final long recency) {
-        super( (int) id,
-               object,
-               recency );
-    }
-
-    /**
      * Creates a new event fact handle.
      * 
      * @param id this event fact handle ID
@@ -111,12 +94,14 @@ public class Jsr94EventFactHandle extends EventFactHandle
                                 final Object object,
                                 final long recency,
                                 final long timestamp,
-                                final long duration) {
+                                final long duration,
+                                final WorkingMemoryEntryPoint entryPoint) {
         super( (int) id,
                object,
                recency,
                timestamp,
-               duration );
+               duration,
+               entryPoint );
     }
 
 }
