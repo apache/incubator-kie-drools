@@ -144,6 +144,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         rule1 = this.createDefaultRule("rule3");
@@ -151,6 +152,7 @@ public class KnowledgeAgentTest extends TestCase {
         output = new BufferedWriter(new FileWriter(f1));
         output.write(rule1);
         output.close();
+        System.gc();
         Thread.sleep(3000);
 
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
@@ -234,6 +236,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         rule1 = this.createDefaultRule("rule3");
@@ -304,6 +307,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         rule1 = this.createDefaultRule("rule3");
@@ -373,6 +377,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         rule1 = this.createDefaultRule("rule3");
@@ -583,6 +588,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         rule1 = this.createDefaultRule("rule3");
@@ -663,6 +669,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         list.clear();
 
+        System.gc();
         Thread.sleep(2000); // give it 2 seconds to detect and build the changes
         String rule3 = this.createDefaultRule("rule3");
         File f3 = fileManager.newFile("rule3.drl");
@@ -741,6 +748,7 @@ public class KnowledgeAgentTest extends TestCase {
 
         // have to sleep here as linux lastModified does not do milliseconds
         // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        System.gc();
         Thread.sleep(2000);
 
         rule1 = this.createDefaultRule("rule3");
