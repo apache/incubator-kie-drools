@@ -24,7 +24,7 @@ import org.drools.Service;
 import com.sun.tools.xjc.Options;
 
 /**
- * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFacotry to "provide" it's concrete implementation.
+ * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFactory to "provide" it's concrete implementation.
  * 
  * This class is not considered stable and may change, the user is protected from this change by using 
  * the Factory api, which is considered stable.
