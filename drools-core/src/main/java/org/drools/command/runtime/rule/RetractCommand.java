@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.DisconnectedFactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -53,7 +53,7 @@ GenericCommand<Object> {
 
 	@XmlAttribute(name="fact-handle", required=true)
 	public void setFactHandleFromString(String factHandleId) {
-		handle = new DisconnectedFactHandle(factHandleId);
+		handle = new DefaultFactHandle(factHandleId);
 	}
 	
     public String getFactHandleFromString() {

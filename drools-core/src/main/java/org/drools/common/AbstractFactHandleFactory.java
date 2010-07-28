@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.FactHandleFactory;
 
 public abstract class AbstractFactHandleFactory
@@ -54,7 +55,8 @@ public abstract class AbstractFactHandleFactory
     */
     public final InternalFactHandle newFactHandle(final Object object,
                                                   final ObjectTypeConf conf,
-                                                  final InternalWorkingMemory workingMemory) {
+                                                  final InternalWorkingMemory workingMemory,
+                                                  final WorkingMemoryEntryPoint wmEntryPoint) {
 // @FIXME make id re-cycling thread safe        
 //        if ( !this.factHandlePool.isEmpty() ) {
 //            return newFactHandle( this.factHandlePool.pop(),
@@ -66,7 +68,8 @@ public abstract class AbstractFactHandleFactory
         return newFactHandle( this.id.incrementAndGet(),
                               object,
                               conf,
-                              workingMemory );
+                              workingMemory,
+                              wmEntryPoint );
     }
 
     /* (non-Javadoc)
@@ -75,12 +78,14 @@ public abstract class AbstractFactHandleFactory
     protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
                                                      final ObjectTypeConf conf,
-                                                     final InternalWorkingMemory workingMemory) {
+                                                     final InternalWorkingMemory workingMemory,
+                                                     final WorkingMemoryEntryPoint wmEntryPoint) {
         return newFactHandle( id,
                               object,
                               this.counter.incrementAndGet(),
                               conf,
-                              workingMemory );
+                              workingMemory,
+                              wmEntryPoint );
     }
 
     /* (non-Javadoc)
@@ -90,7 +95,8 @@ public abstract class AbstractFactHandleFactory
                                                         final Object object,
                                                         final long recency,
                                                         final ObjectTypeConf conf,
-                                                        final InternalWorkingMemory workingMemory);
+                                                        final InternalWorkingMemory workingMemory,
+                                                        final WorkingMemoryEntryPoint wmEntryPoint);
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)

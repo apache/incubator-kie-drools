@@ -48,6 +48,7 @@ import org.drools.base.evaluators.CoincidesEvaluatorDefinition;
 import org.drools.base.evaluators.DuringEvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
@@ -77,17 +78,20 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    1,
-                                                   2 );
+                                                   2,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ));
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    4,
-                                                   3 );
+                                                   3,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      5,
-                                                     2 );
+                                                     2,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                 {drool, "after", foo, Boolean.TRUE}, 
@@ -162,17 +166,20 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    1,
-                                                   2 );
+                                                   2,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    2,
-                                                   2 );
+                                                   2,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      5,
-                                                     3 );
+                                                     3,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                 {foo, "before", drool, Boolean.TRUE}, 
@@ -247,22 +254,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   3 );
+                                                   3,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    2,
-                                                   3 );
+                                                   3,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      2,
-                                                     2 );
+                                                     2,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     1,
-                                                    2 );
+                                                    2,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                 {foo, "coincides", bar, Boolean.TRUE}, 
@@ -309,22 +320,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   10 );
+                                                   10,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    4,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      1,
-                                                     5 );
+                                                     5,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     7,
-                                                    6 );
+                                                    6,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {foo, "during", bar, Boolean.FALSE}, 
@@ -374,22 +389,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   10 );
+                                                   10,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    4,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      1,
-                                                     5 );
+                                                     5,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     7,
-                                                    6 );
+                                                    6,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {bar, "includes", foo, Boolean.FALSE}, 
@@ -439,22 +458,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   10 );
+                                                   10,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    5,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      2,
-                                                     10 );
+                                                     10,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     7,
-                                                    6 );
+                                                    6,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {bar,   "finishes", foo, Boolean.TRUE}, 
@@ -491,22 +514,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   10 );
+                                                   10,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    5,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      2,
-                                                     10 );
+                                                     10,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     7,
-                                                    6 );
+                                                    6,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {foo, "finishedby", bar, Boolean.TRUE}, 
@@ -543,22 +570,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   10 );
+                                                   10,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    2,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      2,
-                                                     10 );
+                                                     10,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     1,
-                                                    4 );
+                                                    4,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {bar,   "starts", foo, Boolean.TRUE}, 
@@ -595,22 +626,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   10 );
+                                                   10,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    2,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      2,
-                                                     10 );
+                                                     10,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     1,
-                                                    6 );
+                                                    6,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {foo, "startedby", bar, Boolean.TRUE}, 
@@ -647,22 +682,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   8 );
+                                                   8,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    10,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      8,
-                                                     5 );
+                                                     5,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     11,
-                                                    4 );
+                                                    4,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "meets", bar, Boolean.TRUE}, 
@@ -695,22 +734,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    10,
-                                                   8 );
+                                                   8,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    2,
-                                                   8 );
+                                                   8,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      5,
-                                                     3 );
+                                                     3,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     4,
-                                                    7 );
+                                                    7,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "metby", bar, Boolean.TRUE}, 
@@ -743,22 +786,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    2,
-                                                   8 );
+                                                   8,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    7,
-                                                   7 );
+                                                   7,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      11,
-                                                     5 );
+                                                     5,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     5,
-                                                    5 );
+                                                    5,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "overlaps", bar, Boolean.TRUE}, 
@@ -805,22 +852,26 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                                                    "foo",
                                                    1,
                                                    7,
-                                                   8 );
+                                                   8,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle bar = new EventFactHandle( 2,
                                                    "bar",
                                                    1,
                                                    2,
-                                                   8 );
+                                                   8,
+                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle drool = new EventFactHandle( 1,
                                                      "drool",
                                                      1,
                                                      11,
-                                                     5 );
+                                                     5,
+                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         EventFactHandle mole = new EventFactHandle( 1,
                                                     "mole",
                                                     1,
                                                     7,
-                                                    3 );
+                                                    3,
+                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "overlappedby", bar, Boolean.TRUE}, 

@@ -129,7 +129,8 @@ public class FromNode extends LeftTupleSource
 
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object,
                                                                                                   null, // set this to null, otherwise it uses the driver fact's entrypoint
-                                                                                                  workingMemory );
+                                                                                                  workingMemory,
+                                                                                                  null );
 
             RightTuple rightTuple = new RightTuple( handle,
                                                     null );
@@ -216,7 +217,8 @@ public class FromNode extends LeftTupleSource
                 // new match, propagate assert
                 final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object,
                                                                                                       null, // set this to null, otherwise it uses the driver fact's entrypoint
-                                                                                                      workingMemory );
+                                                                                                      workingMemory,
+                                                                                                      null );
                 rightTuple = new RightTuple( handle,
                                              null );
             } else {

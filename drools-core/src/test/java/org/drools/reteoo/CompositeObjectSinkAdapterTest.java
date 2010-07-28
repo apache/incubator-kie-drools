@@ -34,6 +34,7 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
+import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -384,7 +385,8 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         InternalFactHandle handle = new ReteooFactHandleFactory().newFactHandle( new Cheese(),
                                                                                  null,
-                                                                                 null );
+                                                                                 null,
+                                                                                 new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
         try {
             ad.propagateAssertObject( handle,
                                       null,

@@ -17,6 +17,7 @@
 package org.drools.common;
 
 import org.drools.FactHandle;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class EventFactHandle extends DefaultFactHandle {
 
@@ -37,30 +38,6 @@ public class EventFactHandle extends DefaultFactHandle {
         this.duration = 0;
     }
 
-    public EventFactHandle(final int id,
-                           final Object object) {
-        super( id,
-               object );
-        this.startTimestamp = 0;
-        this.duration = 0;
-    }
-
-    /**
-     * Construct.
-     *
-     * @param id
-     *            Handle id.
-     */
-    public EventFactHandle(final int id,
-                           final Object object,
-                           final long recency) {
-        super( id,
-               object,
-               recency );
-        this.startTimestamp = 0;
-        this.duration = 0;
-    }
-
     /**
      * Creates a new event fact handle.
      *
@@ -74,10 +51,12 @@ public class EventFactHandle extends DefaultFactHandle {
                            final Object object,
                            final long recency,
                            final long timestamp,
-                           final long duration) {
+                           final long duration,
+                           final WorkingMemoryEntryPoint wmEntryPoint) {
         super( id,
                object,
-               recency );
+               recency,
+               wmEntryPoint );
         this.startTimestamp = timestamp;
         this.duration = duration;
     }
@@ -160,7 +139,8 @@ public class EventFactHandle extends DefaultFactHandle {
                                                       getObject(),
                                                       getRecency(),
                                                       startTimestamp,
-                                                      duration );
+                                                      duration,
+                                                      getEntryPoint() );
         clone.activationsCount = activationsCount;
         clone.expired = expired;
         clone.setEntryPoint( getEntryPoint() );

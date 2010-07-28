@@ -29,6 +29,7 @@ import org.drools.SessionConfiguration;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.MapGlobalResolver;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalStatelessSession;
 import org.drools.common.InternalWorkingMemory;
@@ -115,11 +116,11 @@ public class ReteooStatelessSession
 
             wm.setGlobalResolver( this.globalResolver );
 
-            final InitialFactHandleDummyObject initialFact = new InitialFactHandleDummyObject();
-            final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( initialFact,
-                                                                                                             wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                                                        initialFact ),
-                                                                                                             wm ) );
+            final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
+                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
+                                                                                                                                                  InitialFactImpl.getInstance() ),
+                                                                                       wm,
+                                                                                       wm);
 
             wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
                                                                             false,

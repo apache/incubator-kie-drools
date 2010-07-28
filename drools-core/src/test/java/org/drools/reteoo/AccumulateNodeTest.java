@@ -129,14 +129,16 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                            null,
-                                                                                                           null ),
+                                                                                                           null,
+                                                                                                           workingMemory ),
                                                   null,
                                                   true ),
                                    this.context,
                                    this.workingMemory );
         this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
                                                                                                            null,
-                                                                                                           null ),
+                                                                                                           null,
+                                                                                                           workingMemory ),
                                                   null,
                                                   true ),
                                    this.context,
@@ -164,7 +166,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
     public void testAssertTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                                   null,
-                                                                                                                  null );
+                                                                                                                  null,
+                                                                                                                  workingMemory );
         final LeftTuple tuple0 = new LeftTuple( f0,
                                                 null,
                                                 true );
@@ -184,7 +187,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
         // assert tuple, should add left memory 
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
                                                                                                                   null,
-                                                                                                                  null );
+                                                                                                                  null,
+                                                                                                                  workingMemory );
 
         final LeftTuple tuple1 = new LeftTuple( f1,
                                                 null,
@@ -212,10 +216,12 @@ public class AccumulateNodeTest extends DroolsTestCase {
     public void testAssertTupleWithObjects() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                                   null,
-                                                                                                                  null );
+                                                                                                                  null,
+                                                                                                                  workingMemory );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
                                                                                                                   null,
-                                                                                                                  null );
+                                                                                                                  null,
+                                                                                                                  workingMemory);
 
         final LeftTuple tuple0 = new LeftTuple( f0,
                                                 null,
@@ -268,6 +274,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
      */
     public void testRetractTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                                  null,
                                                                                                                   null,
                                                                                                                   null );
 
@@ -358,8 +365,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                                   null,
+                                                                                                                  null,
                                                                                                                   null );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+                                                                                                                  null,
                                                                                                                   null,
                                                                                                                   null );
 

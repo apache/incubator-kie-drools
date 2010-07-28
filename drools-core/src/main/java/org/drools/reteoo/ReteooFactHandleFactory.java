@@ -24,6 +24,7 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.TypeDeclaration;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.FactHandleFactory;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
@@ -47,7 +48,8 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
                                                      final Object object,
                                                      final long recency,
                                                      final ObjectTypeConf conf,
-                                                     final InternalWorkingMemory workingMemory) {
+                                                     final InternalWorkingMemory workingMemory,
+                                                     final WorkingMemoryEntryPoint wmEntryPoint) {
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp;
@@ -71,11 +73,13 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
                                         object,
                                         recency,
                                         timestamp,
-                                        duration );
+                                        duration,
+                                        wmEntryPoint );
         } else {
             return new DefaultFactHandle( id,
                                           object,
-                                          recency );
+                                          recency,
+                                          wmEntryPoint );
         }
     }
 

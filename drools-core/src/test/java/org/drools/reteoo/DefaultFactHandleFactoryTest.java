@@ -43,21 +43,21 @@ public class DefaultFactHandleFactoryTest extends TestCase {
      */
     public void testNewFactHandle() {
         final ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
-        DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null );
+        DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
         assertEquals( 0,
                       handle.getId() );
         assertEquals( 0,
                       handle.getRecency() );
 
         // issue  new handle
-        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null );
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
         assertEquals( 1,
                       handle.getId() );
         assertEquals( 1,
                       handle.getRecency() );
 
         // issue  new handle, under a different reference so we  can destroy later        
-        final DefaultFactHandle handle2 = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null );
+        final DefaultFactHandle handle2 = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
         assertEquals( 2,
                       handle2.getId() );
         assertEquals( 2,
@@ -69,7 +69,7 @@ public class DefaultFactHandleFactoryTest extends TestCase {
                       handle.getRecency() );
 
         // issue new handle and make sure  recency is still inline
-        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null );
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
         assertEquals( 3,
                       handle.getId() );
         assertEquals( 4,

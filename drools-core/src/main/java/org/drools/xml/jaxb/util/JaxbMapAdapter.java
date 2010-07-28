@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.drools.FactHandle;
-import org.drools.common.DisconnectedFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 
@@ -45,10 +45,10 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<String,Object>> {
 		    
 		    if ( obj instanceof NativeQueryResults ) {
 		        obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
-		    } else if (obj instanceof FactHandle && !(obj instanceof DisconnectedFactHandle)) {
-		        obj = new DisconnectedFactHandle(((FactHandle) obj).toExternalForm());
+		    } else if (obj instanceof FactHandle ) {
+		        obj = ((InternalFactHandle)obj).toExternalForm();
 	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {    
-	                obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
+	            obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
 	        }
 			ret.add(new JaxbPair(entry.getKey(), obj));
 		}

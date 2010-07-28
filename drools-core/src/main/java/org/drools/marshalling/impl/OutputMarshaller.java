@@ -52,6 +52,7 @@ import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.process.instance.timer.TimerInstance;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaNode;
+import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
@@ -342,7 +343,7 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
 
-        ObjectTypeNode initialFactNode = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT ).getObjectTypeNodes().get( new ClassObjectType( InitialFact.class ) );
+        ObjectTypeNode initialFactNode = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT ).getObjectTypeNodes().get( new ClassObjectType( InitialFactImpl.class ) );
 
         // do we write the fact to the objecttypenode memory
         if ( initialFactNode != null ) {

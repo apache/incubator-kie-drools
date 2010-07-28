@@ -125,7 +125,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
                                final FactHandleFactory handleFactory,
-                               final InitialFactHandle initialFactHandle,
+                               final InternalFactHandle initialFactHandle,
                                final long propagationContext,
                                final SessionConfiguration config,
                                final InternalAgenda agenda,
@@ -174,6 +174,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
                                                                                                                                        queryObject ),
+                                                                          this,
                                                                           this );
 
             insert( handle,
@@ -226,6 +227,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
                                                                                                                                        queryObject ),
+                                                                          this,
                                                                           this );
 
             insert( handle,

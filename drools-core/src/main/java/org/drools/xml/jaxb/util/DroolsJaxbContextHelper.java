@@ -38,7 +38,6 @@ import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.DisconnectedFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 
@@ -65,7 +64,6 @@ public class DroolsJaxbContextHelper {
 														ExecutionResultImpl.class.getName(),
 														DefaultFactHandle.class.getName(),
 														JaxbListWrapper.class.getName(),
-														DisconnectedFactHandle.class.getName(),
 														FlatQueryResults.class.getName(),
 														CompleteWorkItemCommand.class.getName(),
 														GetObjectsCommand.class.getName()
