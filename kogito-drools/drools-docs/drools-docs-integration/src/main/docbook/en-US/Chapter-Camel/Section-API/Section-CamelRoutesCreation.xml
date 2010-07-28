@@ -44,8 +44,9 @@
 camelContext.addRoutes(rb);</programlisting>
 
   <para><note>
-       <para>Camel Drools Policy is used to add Drools support in Camel, what it does is to add interceptors into the camel route to create
-       Camel Processors on the fly and modify the internal navigation route.</para>
+      <para>Camel Drools Policy is used to add Drools support in Camel, what
+      it does is to add interceptors into the camel route to create Camel
+      Processors on the fly and modify the internal navigation route.</para>
     </note>In this example we created a simple route with a <link
   xlink:href="http://camel.apache.org/direct.html">Direct Endpoint</link> as
   the input and a Drools Endpoint as the output. A Direct input allow us to
@@ -64,17 +65,28 @@ camelContext.addRoutes(rb);</programlisting>
       <listitem>
         <para>Processing the commands objects directly</para>
 
-        <programlisting>from("direct:test-with-session").to("drools://node/ksession1");</programlisting>
+        <programlisting>RouteBuilder rb = new RouteBuilder() {
+  public void configure() throws Exception {
+    from("direct:test-with-session").to("drools://node/ksession1");
+  }
+};
+camelContext.addRoutes(rb);</programlisting>
       </listitem>
 
       <listitem>
         <para>Processing the commands in a XML representation, using XStream
         or JSON as the marshaller/unmarshaller</para>
 
-        <programlisting>from("direct:test-with-session").policy(new DroolsPolicy()).unmarshal("xstream").to("drools:node/ksession1").marshal("xstream");</programlisting>
+        <programlisting>RouteBuilder rb = new RouteBuilder() {
+  public void configure() throws Exception {
+    from("direct:test-with-session").policy(new DroolsPolicy()).unmarshal("xstream").to("drools:node/ksession1").marshal("xstream");
+  }
+};
+camelContext.addRoutes(rb);</programlisting>
 
         <note>
-           <para>To use JSON just change the unmarshall() and marshall() parameter to “json”</para>
+          <para>To use JSON just change the unmarshall() and marshall()
+          parameter to “json”</para>
         </note>
       </listitem>
 
@@ -89,7 +101,12 @@ Map dataFormats = new HashMap();
 dataFormats.put("custom-xstream",xstreamDataFormat);
 camelContext.setDataFormats(dataFormats);
 
-from("direct:test-no-session-custom").policy(new DroolsPolicy()).unmarshal("custom-xstream").to("drools:node").marshal("custom-xstream");</programlisting>
+RouteBuilder rb = new RouteBuilder() {
+  public void configure() throws Exception {
+    from("direct:test-no-session-custom").policy(new DroolsPolicy()).unmarshal("custom-xstream").to("drools:node").marshal("custom-xstream");
+  }
+};
+camelContext.addRoutes(rb);</programlisting>
       </listitem>
 
       <listitem>
@@ -100,7 +117,12 @@ def.setPrettyPrint(true);
 // Set the package names to be registered by JAXB
 def.setContextPath("org.drools.model:org.drools.pipeline.camel");
 
-from("direct:test-with-session").policy(new DroolsPolicy()).unmarshal(def).to("drools:node/ksession1").marshal(def);</programlisting>
+RouteBuilder rb = new RouteBuilder() {
+  public void configure() throws Exception {
+    from("direct:test-with-session").policy(new DroolsPolicy()).unmarshal(def).to("drools:node/ksession1").marshal(def);
+  }
+};
+camelContext.addRoutes(rb);</programlisting>
       </listitem>
     </itemizedlist>
   </section>
@@ -127,11 +149,14 @@ from("direct:test-with-session").policy(new DroolsPolicy()).unmarshal(def).to("d
     </itemizedlist>
 
     <note>
-       <para>Using spring we can create the same configurations that in the programmatically way.</para>
+      <para>Using spring we can create the same configurations that in the
+      programmatically way.</para>
     </note>
 
     <para><note>
-         <para>As you can see, in all this examples we are using Direct Endpoints as the main entry point, but you can use any others of the available Camel Components.</para>
+        <para>As you can see, in all this examples we are using Direct
+        Endpoints as the main entry point, but you can use any others of the
+        available Camel Components.</para>
       </note></para>
   </section>
 </section>
