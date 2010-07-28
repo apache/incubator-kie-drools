@@ -158,4 +158,8 @@ public class QueryElementFactHandle
         return null;
     }
 
+    public boolean isDisconnected() {
+        return true;
+    }
+
 }

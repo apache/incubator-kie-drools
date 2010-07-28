@@ -29,6 +29,7 @@ import org.drools.FactHandle;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.AssertObject;
 import org.drools.concurrent.AssertObjects;
@@ -87,7 +88,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
                                  final InternalRuleBase ruleBase,
                                  final ExecutorService executorService,
                                  final FactHandleFactory handleFactory,
-                                 final InitialFactHandle initialFactHandle,
+                                 final InternalFactHandle initialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
                                  final InternalAgenda agenda,

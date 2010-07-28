@@ -103,7 +103,6 @@ import org.drools.builder.ResourceType;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
@@ -1780,11 +1779,11 @@ public class MiscTest extends TestCase {
         DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
         DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
 
-        org.drools.runtime.rule.FactHandle key = new DisconnectedFactHandle( helloHandle.toExternalForm() );
+        org.drools.runtime.rule.FactHandle key = new DefaultFactHandle( helloHandle.toExternalForm() );
         assertEquals( "hello",
                       ksession.getObject( key ) );
 
-        key = new DisconnectedFactHandle( goodbyeHandle.toExternalForm() );
+        key = new DefaultFactHandle( goodbyeHandle.toExternalForm() );
         assertEquals( "goodbye",
                       ksession.getObject( key ) );
 

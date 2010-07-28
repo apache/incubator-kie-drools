@@ -133,8 +133,8 @@ public class NamedEntryPoint
 
             handle = this.handleFactory.newFactHandle( object,
                                                        typeConf,
-                                                       wm );
-            handle.setEntryPoint( this );
+                                                       wm,
+                                                       this );
             this.objectStore.addHandle( handle,
                                         object );
             if ( dynamic ) {

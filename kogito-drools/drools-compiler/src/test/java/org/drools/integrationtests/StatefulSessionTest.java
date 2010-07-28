@@ -14,7 +14,6 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
-import org.drools.common.DisconnectedFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.concurrent.Future;
 import org.drools.io.ResourceFactory;

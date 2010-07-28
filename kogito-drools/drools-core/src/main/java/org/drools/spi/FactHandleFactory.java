@@ -20,6 +20,7 @@ import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
@@ -35,7 +36,7 @@ public interface FactHandleFactory {
      * 
      * @return The handle.
      */
-    public InternalFactHandle newFactHandle(Object object, ObjectTypeConf conf, InternalWorkingMemory workingMemory );
+    public InternalFactHandle newFactHandle(Object object, ObjectTypeConf conf, InternalWorkingMemory workingMemory, WorkingMemoryEntryPoint wmEntryPoint );
     
     /**
      * Increases the recency of the FactHandle

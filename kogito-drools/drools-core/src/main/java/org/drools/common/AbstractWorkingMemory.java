@@ -78,8 +78,7 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.InitialFactHandle;
-import org.drools.reteoo.InitialFactHandleDummyObject;
+import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
@@ -289,7 +288,7 @@ public abstract class AbstractWorkingMemory
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
-                                 final InitialFactHandle initialFactHandle,
+                                 final InternalFactHandle initialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
                                  final Environment environment) {
@@ -308,7 +307,7 @@ public abstract class AbstractWorkingMemory
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
-                                 final InitialFactHandle initialFactHandle,
+                                 final InternalFactHandle initialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
                                  final Environment environment,
@@ -347,9 +346,10 @@ public abstract class AbstractWorkingMemory
         this.sequential = conf.isSequential();
 
         if ( initialFactHandle == null ) {
-            this.initialFactHandle = new InitialFactHandle( handleFactory.newFactHandle( new InitialFactHandleDummyObject(),
-                                                                                         null,
-                                                                                         this ) );
+            this.initialFactHandle = handleFactory.newFactHandle( InitialFactImpl.getInstance(),
+                                                                  null,
+                                                                  this,
+                                                                  this);
         } else {
             this.initialFactHandle = initialFactHandle;
         }
@@ -1142,8 +1142,8 @@ public abstract class AbstractWorkingMemory
         InternalFactHandle handle;
         handle = this.handleFactory.newFactHandle( object,
                                                    typeConf,
+                                                   this,
                                                    this );
-        handle.setEntryPoint( this );
         this.objectStore.addHandle( handle,
                                     object );
         return handle;
@@ -1264,7 +1264,7 @@ public abstract class AbstractWorkingMemory
             }
 
             // the handle might have been disconnected, so reconnect if it has
-            if ( factHandle instanceof DisconnectedFactHandle ) {
+            if ( handle.isDisconnected() ) {
                 handle = this.objectStore.reconnect( handle );
             }
 
@@ -1369,7 +1369,7 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.executeQueuedActions();
 
             // the handle might have been disconnected, so reconnect if it has
-            if ( factHandle instanceof DisconnectedFactHandle ) {
+            if ( ((InternalFactHandle)factHandle).isDisconnected() ) {
                 factHandle = this.objectStore.reconnect( factHandle );
             }
 

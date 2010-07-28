@@ -35,6 +35,7 @@ package org.drools.reteoo;
 import junit.framework.TestCase;
 
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 
 public class FactHandleTest extends TestCase {
     /*
@@ -55,7 +56,8 @@ public class FactHandleTest extends TestCase {
     public void testFactHandleImpllonglong() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese",
-                                                            678 );
+                                                            678,
+                                                            new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ));
         assertEquals( 134,
                       f0.getId() );
         assertEquals( 678,

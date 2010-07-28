@@ -137,7 +137,8 @@ public class QueryElementNode extends LeftTupleSource
         InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( queryObject,
                                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
                                                                                                                                                               queryObject ),
-                                                                                        workingMemory );
+                                                                                        workingMemory,
+                                                                                        null );
 
         workingMemory.insert( handle,
                               queryObject,

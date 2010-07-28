@@ -19,7 +19,7 @@ package org.drools.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.DisconnectedFactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
@@ -51,11 +51,12 @@ public class StandardQueryViewChangedEventListener
         // Add all the FactHandles except the root DroolQuery object
         while ( entry.getIndex() > 0 ) {
             InternalFactHandle handle = entry.getLastHandle();
-            handles[entry.getIndex()] = new DisconnectedFactHandle( handle.getId(),
-                                                                    handle.getIdentityHashCode(),
-                                                                    handle.getObjectHashCode(),
-                                                                    handle.getRecency(),
-                                                                    handle.getObject() );
+            handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
+                                                               handle.getEntryPoint().getEntryPointId() ,
+                                                               handle.getIdentityHashCode(),
+                                                               handle.getObjectHashCode(),
+                                                               handle.getRecency(),
+                                                               handle.getObject() );
             entry = entry.getParent();
         }
 
@@ -73,11 +74,12 @@ public class StandardQueryViewChangedEventListener
                 newArgs[i] = args[i];
             }
         }
-        handles[entry.getIndex()] = new DisconnectedFactHandle( handle.getId(),
-                                                                handle.getIdentityHashCode(),
-                                                                handle.getObjectHashCode(),
-                                                                handle.getRecency(),
-                                                                new ArrayElements( newArgs ) );
+        handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
+                                                           handle.getEntryPoint().getEntryPointId(),
+                                                           handle.getIdentityHashCode(),
+                                                           handle.getObjectHashCode(),
+                                                           handle.getRecency(),
+                                                           new ArrayElements( newArgs ) );
 
         this.results.add( handles );
     }

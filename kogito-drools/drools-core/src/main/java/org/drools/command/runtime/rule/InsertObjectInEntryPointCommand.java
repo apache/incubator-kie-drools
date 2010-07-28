@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlElement;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.DisconnectedFactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -59,7 +59,7 @@ public class InsertObjectInEntryPointCommand
         WorkingMemoryEntryPoint ep = ((KnowledgeCommandContext) context).getWorkingMemoryEntryPoint();
         FactHandle factHandle = ep.insert(object);
 
-        DisconnectedFactHandle disconectedHandle = new DisconnectedFactHandle(factHandle.toExternalForm());
+        DefaultFactHandle disconectedHandle = new DefaultFactHandle(factHandle.toExternalForm());
 
         if (outIdentifier != null) {
             if (this.returnObject) {

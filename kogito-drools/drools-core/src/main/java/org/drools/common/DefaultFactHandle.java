@@ -24,8 +24,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.FactHandle;
+import org.drools.core.util.StringUtils;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
+import org.drools.rule.EntryPoint;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
@@ -52,7 +54,7 @@ public class DefaultFactHandle
     private Object                  object;
     private EqualityKey             key;
     private int                     objectHashCode;
-    private transient int           identityHashCode;
+    private int                     identityHashCode;
     
     public RightTuple              firstRightTuple;
     public RightTuple              lastRightTuple;
@@ -70,9 +72,11 @@ public class DefaultFactHandle
 
     public DefaultFactHandle(final int id,
                              final Object object) {
+        // this is only used by tests, left as legacy as so many test rely on it.
         this( id,
               object,
-              id );
+              id,
+              new DisconnectedWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) );
     }
 
     /**
@@ -83,22 +87,33 @@ public class DefaultFactHandle
      */
     public DefaultFactHandle(final int id,
                              final Object object,
-                             final long recency) {
+                             final long recency,
+                             final WorkingMemoryEntryPoint wmEntryPoint) {
         this.id = id;
+        this.entryPoint = wmEntryPoint;
         this.recency = recency;
         this.object = object;
         this.objectHashCode = object.hashCode();
         setIdentityHashCode();
     }
 
-    public DefaultFactHandle(final int id,
-                             final int objectHashCode,
-                             final long recency) {
-        this.id = id;
-        this.recency = recency;
-        this.objectHashCode = objectHashCode;
-        setIdentityHashCode();
+    public DefaultFactHandle(String externalFormat) {
+        createFromExternalFormat( externalFormat );
     }
+
+    public DefaultFactHandle(int id,
+                             String wmEntryPointId,
+                             int identityHashCode,
+                             int objectHashCode,
+                             long recency,
+                             Object object) {
+        this.id = id;
+        this.entryPoint = (wmEntryPointId == null) ? null : new DisconnectedWorkingMemoryEntryPoint( wmEntryPointId );
+        this.identityHashCode = identityHashCode;
+        this.objectHashCode = objectHashCode;
+        this.recency = recency;
+        this.object = object;
+    }    
         
     // ----------------------------------------------------------------------
     // Instance members
@@ -117,6 +132,24 @@ public class DefaultFactHandle
         }
 
         return this.id == ((DefaultFactHandle) object).id;
+    }
+    
+    
+    public void disconnect() {
+        this.key = null;
+        this.firstLeftTuple = null;
+        this.firstRightTuple = null;
+        this.lastLeftTuple = null;
+        this.lastRightTuple = null;
+        this.entryPoint =  (this.entryPoint == null) ? null : new DisconnectedWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+    }
+    
+    public boolean isDisconnected() {
+        if ( this.entryPoint instanceof DisconnectedWorkingMemoryEntryPoint ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int getObjectHashCode() {
@@ -148,7 +181,7 @@ public class DefaultFactHandle
      * @see FactHandle
      */
     public String toExternalForm() {
-        return "0:" + this.id + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency();
+        return "0:" + this.id + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency() + ":" + ((this.entryPoint != null) ? this.entryPoint.getEntryPointId() : "null" );
     }
 
     @XmlAttribute(name="external-form")
@@ -257,8 +290,7 @@ public class DefaultFactHandle
     }
     
     public DefaultFactHandle clone() {
-        DefaultFactHandle clone =  new DefaultFactHandle(this.id, this.object, this.recency);
-        clone.entryPoint = this.entryPoint;
+        DefaultFactHandle clone =  new DefaultFactHandle(this.id, this.object, this.recency, this.entryPoint);
         clone.key = this.key;
         clone.firstLeftTuple = this.firstLeftTuple;
         clone.lastLeftTuple = this.lastLeftTuple;
@@ -288,4 +320,17 @@ public class DefaultFactHandle
     private Object toExternalString() {
         return "[F:"+this.getId()+" first="+System.identityHashCode( firstLeftTuple )+" last="+System.identityHashCode( lastLeftTuple )+" ]";
     }
+    
+    private void createFromExternalFormat(String externalFormat) {
+        String[] elements = externalFormat.split( ":" );
+        if ( elements.length != 6 ) {
+            throw new IllegalArgumentException( "externalFormat did not have enough elements" );
+        }
+        
+        this.id = Integer.parseInt( elements[1] );
+        this.identityHashCode = Integer.parseInt( elements[2] );
+        this.objectHashCode = Integer.parseInt( elements[3] );
+        this.recency = Long.parseLong( elements[4] );
+        this.entryPoint = StringUtils.isEmpty( elements[5] ) ? null : new DisconnectedWorkingMemoryEntryPoint( elements[5].trim() );
+    }    
 }

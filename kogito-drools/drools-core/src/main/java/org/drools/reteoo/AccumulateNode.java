@@ -594,7 +594,8 @@ public class AccumulateNode extends BetaNode {
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result,
                                                                                                   workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
                                                                                                                                                                         result ),
-                                                                                                  workingMemory ); // so far, result is not an event
+                                                                                                  workingMemory,
+                                                                                                  null ); // so far, result is not an event
 
             accctx.result = new RightTuple( handle,
                                             this );

@@ -30,6 +30,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.BatchExecutionCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
@@ -40,8 +41,7 @@ import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ProcessEventListenerWrapper;
 import org.drools.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
-import org.drools.reteoo.InitialFactHandle;
-import org.drools.reteoo.InitialFactHandleDummyObject;
+import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
@@ -130,11 +130,11 @@ public class StatelessKnowledgeSessionImpl
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( this.ruleFlowEventSupport );
 
-            final InitialFactHandleDummyObject initialFact = new InitialFactHandleDummyObject();
-            final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( initialFact,
-                                                                                                             wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                                                        initialFact ),
-                                                                                                             wm ) );
+            final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
+                                                                                        wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
+                                                                                                                                                   InitialFactImpl.getInstance() ),
+                                                                                        wm,
+                                                                                        wm);
 
             wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
                                                                             false,

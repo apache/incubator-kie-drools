@@ -52,7 +52,6 @@ import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
@@ -62,7 +61,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.FlatQueryResults;
-import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.xml.jaxb.util.JaxbListWrapper;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
@@ -97,7 +95,6 @@ public class DroolsJaxbHelperProviderImpl
 														ExecutionResultImpl.class.getName() ,
 														DefaultFactHandle.class.getName(),
 														JaxbListWrapper.class.getName(),
-														DisconnectedFactHandle.class.getName(),
 														FlatQueryResults.class.getName(),
 														CompleteWorkItemCommand.class.getName(),
 														GetObjectsCommand.class.getName()

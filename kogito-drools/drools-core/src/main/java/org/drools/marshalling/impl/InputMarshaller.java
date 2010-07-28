@@ -32,6 +32,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
@@ -55,8 +56,7 @@ import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.InitialFactHandle;
-import org.drools.reteoo.InitialFactHandleDummyObject;
+import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
@@ -74,6 +74,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.FactHandleFactory;
@@ -170,9 +171,11 @@ public class InputMarshaller {
         FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( context.readInt(),
                                                                                  context.readLong() );
 
-        InitialFactHandle initialFactHandle = new InitialFactHandle( new DefaultFactHandle( context.readInt(), //id
-                                                                                            new InitialFactHandleDummyObject(),
-                                                                                            context.readLong() ) ); //recency        
+        InternalFactHandle initialFactHandle = new DefaultFactHandle( context.readInt(), //id
+                                                                      InitialFactImpl.getInstance(),
+                                                                      context.readLong(),
+                                                                      null);
+        
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
@@ -191,6 +194,7 @@ public class InputMarshaller {
                                                                    config,  
                                                                    agenda,
                                                                    environment );
+        initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
 
         // RuleFlowGroups need to reference the session
         for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
@@ -363,16 +367,20 @@ public class InputMarshaller {
         int strategyIndex = context.stream.readInt();
         ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
         Object object = strategy.read( context.stream );
+        
+        WorkingMemoryEntryPoint entryPoint = null;
+        if(context.readBoolean()){
+            String entryPointId = context.readUTF();
+            if(entryPointId != null && !entryPointId.equals("")){
+                entryPoint = context.wm.getEntryPoints().get(entryPointId);
+            } 
+        }        
 
         InternalFactHandle handle = new DefaultFactHandle( id,
                                                            object,
-                                                           recency );
-        if(context.readBoolean()){
-            String  entryPoint = context.readUTF();
-            if(entryPoint != null && !entryPoint.equals("")){
-                handle.setEntryPoint(context.wm.getEntryPoints().get(entryPoint));
-            }
-        }
+                                                           recency,
+                                                           entryPoint );
+
         return handle;
     }
 
@@ -583,7 +591,8 @@ public class InputMarshaller {
                 long recency = stream.readLong();
                 InternalFactHandle handle = new DefaultFactHandle( id,
                                                                    parentLeftTuple,
-                                                                   recency );
+                                                                   recency,
+                                                                   context.wm.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
                 memory.put( parentLeftTuple, handle );
                 
                 readRightTuples( handle, context );

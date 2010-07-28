@@ -46,6 +46,8 @@ public interface InternalFactHandle
 
     public int getObjectHashCode();
     
+    public boolean isDisconnected();
+    
     /**
      * Returns true if this FactHandle represents
      * and Event or false if this FactHandle represents
