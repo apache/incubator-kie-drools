@@ -343,7 +343,7 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
 
-        ObjectTypeNode initialFactNode = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT ).getObjectTypeNodes().get( new ClassObjectType( InitialFactImpl.class ) );
+        ObjectTypeNode initialFactNode = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT ).getObjectTypeNodes().get( new ClassObjectType( InitialFact.class ) );
 
         // do we write the fact to the objecttypenode memory
         if ( initialFactNode != null ) {

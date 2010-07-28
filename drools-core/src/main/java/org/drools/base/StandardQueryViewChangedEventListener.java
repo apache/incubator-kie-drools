@@ -52,7 +52,7 @@ public class StandardQueryViewChangedEventListener
         while ( entry.getIndex() > 0 ) {
             InternalFactHandle handle = entry.getLastHandle();
             handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
-                                                               handle.getEntryPoint().getEntryPointId() ,
+                                                               ( handle.getEntryPoint() != null ) ?  handle.getEntryPoint().getEntryPointId() : null,
                                                                handle.getIdentityHashCode(),
                                                                handle.getObjectHashCode(),
                                                                handle.getRecency(),
