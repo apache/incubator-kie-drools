@@ -112,13 +112,22 @@ public class CompilerIndependenceTest extends TestCase {
         ClassPathResource cpResource = (ClassPathResource)ResourceFactory.newClassPathResource("pkg/mortgages.pkg");
 
         File f = new File(cpResource.getURL().getFile());
-
         assertTrue(f.exists());
         
-        f.setLastModified(System.currentTimeMillis());
+        long t = System.currentTimeMillis() ;
+        int count = 0;
+        boolean success = false;
+        while ( !(success = f.setLastModified(t)) && count < 10 ) {
+            count++;
+            System.gc();            
+            Thread.sleep( 100 );
+        }
+        
+        if ( !success) {
+            fail( "Unable to setLastModified" );
+        }
 
         this.waitUntilKBaseUpdate();
-
         assertEquals(1, kagent.getKnowledgeBase().getKnowledgePackages().size());
 
         kagent.dispose();
