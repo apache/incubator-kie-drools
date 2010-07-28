@@ -67,6 +67,8 @@ public class KnowledgeAgentTest extends TestCase {
         server.start();
 
         this.kbaseUpdated = false;
+        System.gc();
+        Thread.sleep( 300 );
     }
 
     private int getPort() {
