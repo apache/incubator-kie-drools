@@ -94,9 +94,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule2.drl' type='DRL' />";
@@ -175,9 +173,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule2.drl' type='DRL' />";
@@ -271,9 +267,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule2.drl' type='DRL' />";
@@ -368,9 +362,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rules.drl' type='DRL' />";
         xml += "    </add> ";
@@ -482,9 +474,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rules1.drl' type='DRL' />";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rules2.drl' type='DRL' />";
@@ -606,9 +596,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         writePackage(pkg, pkg1);
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg1.pkg' type='PKG' />";
         xml += "    </add> ";
@@ -691,9 +679,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         writePackage(pkg, pkg1);
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg1.pkg' type='PKG' />";
         xml += "    </add> ";
@@ -794,9 +780,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         writePackage(pkg2, pkgF2);
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg1.pkg' type='PKG' />";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/pkg2.pkg' type='PKG' />";
@@ -890,9 +874,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule2.drl' type='DRL' />";
@@ -923,9 +905,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         list.clear();
 
         xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule3.drl' type='DRL' />";
         xml += "    </add> ";
@@ -1099,9 +1079,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
@@ -1194,9 +1172,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
@@ -1313,9 +1289,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends TestCase {
 
 
         String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rules.drl' type='DRL' />";
         xml += "    </add> ";
