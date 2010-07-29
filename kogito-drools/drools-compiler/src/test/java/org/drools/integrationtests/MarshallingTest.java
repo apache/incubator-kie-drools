@@ -1585,9 +1585,9 @@ public class MarshallingTest extends TestCase {
 
         // now remove a cheese, should be no change
         ksession.retract( ksession.getFactHandle( stilton ) );
-//        ksession = getSerialisedStatefulKnowledgeSession( ksession,
-//                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
-//                                                          true );
+        //        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+        //                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                          true );
         ksession.fireAllRules();
         assertEquals( 4,
                       list.size() );
@@ -2250,10 +2250,10 @@ public class MarshallingTest extends TestCase {
             knowledgeBuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SerializableAccumulate.drl" ),
                                   ResourceType.DRL );
 
-            if( knowledgeBuilder.hasErrors() ) {
+            if ( knowledgeBuilder.hasErrors() ) {
                 fail( knowledgeBuilder.getErrors().toString() );
             }
-            
+
             KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
             knowledgeBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
             StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
@@ -2273,7 +2273,7 @@ public class MarshallingTest extends TestCase {
             ksession.insert( t2 );
             ksession.insert( t3 );
             ksession.insert( t4 );
-            
+
             //ksession.fireAllRules();
             Marshaller marshaller = createSerializableMarshaller( knowledgeBase );
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -2292,9 +2292,10 @@ public class MarshallingTest extends TestCase {
 
             // setting the global again, since it is not serialized with the session
             List<List> results = (List<List>) new ArrayList<List>();
-            ksession.setGlobal( "results", results );
+            ksession.setGlobal( "results",
+                                results );
             assertNotNull( results );
-            
+
             ksession.fireAllRules();
             ksession.dispose();
 
@@ -2305,113 +2306,143 @@ public class MarshallingTest extends TestCase {
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail(e.getMessage());
+            fail( e.getMessage() );
         }
     }
-    
+
     public void testJBRULES_1946() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "Sample.drl" ) ),
                       ResourceType.DRL );
-        
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            
-            oos.writeObject(kbase);
+            ObjectOutputStream oos = new ObjectOutputStream( baos );
+
+            oos.writeObject( kbase );
             oos.flush();
             oos.close();
             baos.flush();
             baos.close();
-            
+
             byte[] serializedKb = baos.toByteArray();
-            
-            ByteArrayInputStream bais = new ByteArrayInputStream(serializedKb);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            
+
+            ByteArrayInputStream bais = new ByteArrayInputStream( serializedKb );
+            ObjectInputStream ois = new ObjectInputStream( bais );
+
             KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
-        } catch (OptionalDataException ode) {
+        } catch ( OptionalDataException ode ) {
             ode.printStackTrace();
-            fail("EOF? "+ode.eof);
-        } catch (Exception e) {
+            fail( "EOF? " + ode.eof );
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Unexpected exception: "+e.getMessage());
+            fail( "Unexpected exception: " + e.getMessage() );
         }
     }
 
     public void testJBRULES_1946_2() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "Sample.drl" ) ),
                       ResourceType.DRL );
-        
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DroolsObjectOutputStream oos = new DroolsObjectOutputStream(baos);
-            
-            oos.writeObject(kbase);
+            DroolsObjectOutputStream oos = new DroolsObjectOutputStream( baos );
+
+            oos.writeObject( kbase );
             oos.flush();
             oos.close();
             baos.flush();
             baos.close();
-            
+
             byte[] serializedKb = baos.toByteArray();
-            
-            ByteArrayInputStream bais = new ByteArrayInputStream(serializedKb);
-            DroolsObjectInputStream ois = new DroolsObjectInputStream(bais);
-            
+
+            ByteArrayInputStream bais = new ByteArrayInputStream( serializedKb );
+            DroolsObjectInputStream ois = new DroolsObjectInputStream( bais );
+
             KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
-        } catch (OptionalDataException ode) {
+        } catch ( OptionalDataException ode ) {
             ode.printStackTrace();
-            fail("EOF? "+ode.eof);
-        } catch (Exception e) {
+            fail( "EOF? " + ode.eof );
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Unexpected exception: "+e.getMessage());
+            fail( "Unexpected exception: " + e.getMessage() );
         }
     }
 
     public void testJBRULES_1946_3() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "Sample.drl" ) ),
                       ResourceType.DRL );
-        
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DroolsObjectOutputStream oos = new DroolsObjectOutputStream(baos);
-            
-            oos.writeObject(kbase);
+            DroolsObjectOutputStream oos = new DroolsObjectOutputStream( baos );
+
+            oos.writeObject( kbase );
             oos.flush();
             oos.close();
             baos.flush();
             baos.close();
-            
+
             byte[] serializedKb = baos.toByteArray();
-            
-            ByteArrayInputStream bais = new ByteArrayInputStream(serializedKb);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            
+
+            ByteArrayInputStream bais = new ByteArrayInputStream( serializedKb );
+            ObjectInputStream ois = new ObjectInputStream( bais );
+
             KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
-            fail("Should have raised an IllegalArgumentException since the kbase was serialized with a Drools Stream but deserialized with a regular stream");
-        } catch (IllegalArgumentException ode) {
+            fail( "Should have raised an IllegalArgumentException since the kbase was serialized with a Drools Stream but deserialized with a regular stream" );
+        } catch ( IllegalArgumentException ode ) {
             // success
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Unexpected exception: "+e.getMessage());
+            fail( "Unexpected exception: " + e.getMessage() );
         }
+    }
+
+    public void testJBRULES_2331() throws Exception {
+        String source = "package test.drl\n";
+        source += "rule dummy_rule\n";
+        source += "when\n";
+        source += "eval( false )\n";
+        source += "then\n";
+        source += "end\n";
+        Reader reader = new StringReader( source );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( reader ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
+                                                                              true );
+        
+        assertNotNull( ksession );
+        ksession.dispose();
     }
 
     private Marshaller createSerializableMarshaller(KnowledgeBase knowledgeBase) {
