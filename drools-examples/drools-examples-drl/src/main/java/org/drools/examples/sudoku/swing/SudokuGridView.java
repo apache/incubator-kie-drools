@@ -40,7 +40,7 @@ public class SudokuGridView
    implements SudokuGridListener, ComponentListener
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 510l;
    private SudokuGridModel model;
    private GridLayout gridLayout;
    private JTextField textFields[][];

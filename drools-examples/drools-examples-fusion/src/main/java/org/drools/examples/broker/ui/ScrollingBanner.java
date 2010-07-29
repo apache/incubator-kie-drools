@@ -38,7 +38,7 @@ public class ScrollingBanner extends JComponent
     implements
     Runnable {
 
-    private static final long serialVersionUID = 6898322194579401244L;
+    private static final long serialVersionUID = 510l;
     private static final long SPACE = 10;
 
     private Queue<StockTick>  ticks;

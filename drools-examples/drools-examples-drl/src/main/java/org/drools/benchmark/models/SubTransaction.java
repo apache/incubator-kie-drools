@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 public class SubTransaction extends Security {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
 	
 	protected String[]  transactionSet = null;
     protected ArrayList<PropertyChangeListener> listeners      = new ArrayList<PropertyChangeListener>();
