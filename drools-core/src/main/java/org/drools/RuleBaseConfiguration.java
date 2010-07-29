@@ -234,8 +234,8 @@ public class RuleBaseConfiguration
      * @param properties
      */
     public RuleBaseConfiguration(Properties properties) {
-        init( null,
-              properties );
+        init( properties,
+              null );
     }
 
     /**
@@ -258,9 +258,9 @@ public class RuleBaseConfiguration
      *
      * @param classLoader
      */
-    public RuleBaseConfiguration(ClassLoader classLoader) {
-        init( classLoader,
-              null );
+    public RuleBaseConfiguration(ClassLoader... classLoaders) {
+        init( null,
+              classLoaders );
     }
 
     public void setProperty(String name,
@@ -380,17 +380,17 @@ public class RuleBaseConfiguration
      * @param classLoder
      * @param properties
      */
-    public RuleBaseConfiguration(ClassLoader classLoader,
-                                 Properties properties) {
-        init( classLoader,
-              properties );
+    public RuleBaseConfiguration(Properties properties,
+                                 ClassLoader... classLoaders) {
+        init( properties,
+              classLoader );
     }
 
-    private void init(ClassLoader classLoader,
-                      Properties properties) {
+    private void init(Properties properties,
+                      ClassLoader... classLoaders) {
         this.immutable = false;
 
-        setClassLoader( classLoader );
+        setClassLoader( classLoaders );
 
         this.chainedProperties = new ChainedProperties( "rulebase.conf",
                                                         this.classLoader,
@@ -990,8 +990,8 @@ public class RuleBaseConfiguration
         return classLoader;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
+    public void setClassLoader(ClassLoader... classLoaders) {
+        this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
                                                            getClass(),
                                                            isClassLoaderCacheEnabled() );
     }

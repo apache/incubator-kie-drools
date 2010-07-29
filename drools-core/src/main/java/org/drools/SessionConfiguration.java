@@ -111,8 +111,8 @@ public class SessionConfiguration
      * @param properties
      */
     public SessionConfiguration(Properties properties) {
-        init( null,
-              properties );
+        init( properties,
+              null );
     }
 
     /**
@@ -123,13 +123,13 @@ public class SessionConfiguration
               null );
     }
 
-    public SessionConfiguration(ClassLoader classLoader) {
-        init( classLoader,
-              null );
+    public SessionConfiguration(ClassLoader... classLoader) {
+        init( null,  
+              classLoader );
     }
 
-    private void init(ClassLoader classLoader,
-                      Properties properties) {
+    private void init(Properties properties,
+                      ClassLoader... classLoader) {
         this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
                                                            getClass(),
                                                            false );
