@@ -30,7 +30,7 @@
   <xsd:element name="resource">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:any/>
+        <xsd:any minOccurs="0"/>
         <xsd:element minOccurs="0" ref="change-set:decisiontable-conf"/>
       </xsd:sequence>
       <!-- URL to the resource, can be file based -->
