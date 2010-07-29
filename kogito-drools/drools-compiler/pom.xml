@@ -221,8 +221,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                   <_removeheaders>Ignore-Package</_removeheaders> 
                   <Bundle-SymbolicName>org.drools.compiler;singleton:=true</Bundle-SymbolicName>
                   <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>
-                  <Import-Package>!org.drools.*, *</Import-Package>
-                  <Export-Package>!org.drools.commons.*, !org.drools.lang.*, org.drools.builder.impl, 
+                  <Import-Package>!org.drools.*,
+                  <!-- java compilers are optional: only need one at most -->
+                  org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,
+                   *</Import-Package>
+                  <Export-Package>org.drools.lang.descr,!org.drools.commons.*, !org.drools.lang.*, org.drools.builder.impl,   
                   <!-- add this one manually as BND seems to miss it out -->
                   org.drools.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>
