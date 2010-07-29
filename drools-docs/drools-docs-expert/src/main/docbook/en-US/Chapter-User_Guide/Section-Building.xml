@@ -232,9 +232,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>Simple ChangeSet XML</title>
 
-      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
-            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
-            xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd' &gt;
+      <programlisting>&lt;change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
    &lt;add&gt;
       &lt;resource source='file:/project/myrules.drl' type='DRL' /&gt;
    &lt;/add&gt;
@@ -274,9 +272,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>ChangeSet XML with resource configuration</title>
 
-      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
-             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
-             xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd' &gt;
+      <programlisting> &lt;change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
   &lt;add&gt;
        &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
        &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
@@ -302,9 +298,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>ChangeSet XML which adds a directory's contents</title>
 
-      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
-            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
-            xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd' &gt;
+      <programlisting>&lt;change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
    &lt;add&gt;
       &lt;resource source='file:/projects/myproject/myrules' type='DRL' /&gt;
    &lt;/add&gt;
