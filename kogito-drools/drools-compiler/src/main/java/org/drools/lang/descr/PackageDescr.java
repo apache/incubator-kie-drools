@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -16,6 +14,8 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -31,7 +31,7 @@ public class PackageDescr extends BaseDescr
     /**
      *
      */
-    private static final long          serialVersionUID = 400L;
+    private static final long          serialVersionUID = 510l;
     private String                     namespace;
     private String                     documentation;
 

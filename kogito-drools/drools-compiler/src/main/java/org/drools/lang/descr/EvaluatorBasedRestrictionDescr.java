@@ -25,7 +25,7 @@ package org.drools.lang.descr;
  */
 public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
 
-    private static final long serialVersionUID = -9051550222783766557L;
+    private static final long serialVersionUID = 150l;
 
     private String            evaluator;
     private boolean           negated;

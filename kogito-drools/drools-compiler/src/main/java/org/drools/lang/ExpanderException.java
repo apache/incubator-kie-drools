@@ -1,7 +1,3 @@
-package org.drools.lang;
-
-import org.drools.compiler.DroolsError;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,13 +13,17 @@ import org.drools.compiler.DroolsError;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.lang;
+
+import org.drools.compiler.DroolsError;
+
 
 public class ExpanderException extends DroolsError {
 
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private String            message;
     private int[]             line;

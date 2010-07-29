@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2008 Red Hat
  *
@@ -16,12 +14,14 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class TypeFieldDescr extends BaseDescr {
 
-    private static final long   serialVersionUID = 400L;
+    private static final long   serialVersionUID = 510l;
     private String              fieldName;
     private String              initExpr;
     private PatternDescr        pattern;

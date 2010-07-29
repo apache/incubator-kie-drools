@@ -58,7 +58,7 @@ public class JavaRuleClassBuilder
         final RuleDescr ruleDescr = context.getRuleDescr();
         
         buffer.append( "public class " + StringUtils.ucFirst( ruleDescr.getClassName() ) + " {" + lineSeparator );
-        buffer.append( "    private static final long serialVersionUID = 400L;" + lineSeparator );
+        buffer.append( "    private static final long serialVersionUID = 510l;" + lineSeparator );
 
         for ( int i = 0, size = context.getMethods().size() - 1; i < size; i++ ) {
             buffer.append( context.getMethods().get( i ) + lineSeparator );

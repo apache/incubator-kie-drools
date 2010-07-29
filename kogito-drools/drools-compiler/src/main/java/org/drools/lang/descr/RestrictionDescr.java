@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,6 +14,8 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 /**
  * This represents a literal node in the rule language. This is
  * a constraint on a single field of a pattern. 
@@ -23,6 +23,6 @@ package org.drools.lang.descr;
  */
 public class RestrictionDescr extends BaseDescr {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
 }

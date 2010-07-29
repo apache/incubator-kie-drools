@@ -24,7 +24,7 @@ public static boolean @{methodName}(@foreach{type : declarationTypes, declr : de
 @declare{"accumulateInnerClass"}
 public static class @{className} implements java.io.Serializable {
 
-    private static final long    serialVersionUID = 400L;
+    private static final long    serialVersionUID = 510l;
 
     @if{supportsReverse == "true"}
     private java.util.Map reverseMap = new java.util.HashMap<Integer, ReverseSnapshot>(); 

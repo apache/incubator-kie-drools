@@ -1,8 +1,3 @@
-package org.drools;
-
-import java.io.Serializable;
-import java.util.Date;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -18,6 +13,11 @@ import java.util.Date;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools;
+
+import java.io.Serializable;
+import java.util.Date;
+
 
 public class Cheese
     implements
@@ -28,7 +28,7 @@ public class Cheese
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private String            type;
     private int               price;
     private int               oldPrice;

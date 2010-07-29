@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,11 +14,13 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 public class FieldBindingDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private String               fieldName;
     private String               identifier;
     private FieldConstraintDescr fieldConstraint = null;

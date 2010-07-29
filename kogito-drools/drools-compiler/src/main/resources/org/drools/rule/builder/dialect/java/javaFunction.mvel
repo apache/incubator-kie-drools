@@ -9,7 +9,7 @@ import static @{importEntry};
 @end{}
 
 public class @{className} implements java.io.Externalizable {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
         
     public static @{returnType} @{methodName}(@foreach{type : parameterTypes, name : parameterNames}@{type} @{name}@end{","}) throws Exception {
         @{text}

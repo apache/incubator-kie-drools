@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,6 +14,8 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 public class QueryDescr extends RuleDescr {
     private String[] params;
     private String[] types;
@@ -24,7 +24,7 @@ public class QueryDescr extends RuleDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public QueryDescr(final String name) {
         this( name,

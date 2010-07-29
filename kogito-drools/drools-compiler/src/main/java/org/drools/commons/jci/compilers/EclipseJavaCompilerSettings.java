@@ -79,7 +79,7 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     }
 
     private static Map nativeVersions = new HashMap() {
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 510l;
 	{
     	put("1.1", CompilerOptions_VERSION_1_1);
     	put("1.2", CompilerOptions_VERSION_1_2);

@@ -1,5 +1,3 @@
-package org.drools.lang;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,6 +14,8 @@ package org.drools.lang;
  * limitations under the License.
  */
 
+package org.drools.lang;
+
 import org.antlr.runtime.RecognitionException;
 
 public class GeneralParseException extends RecognitionException {
@@ -23,7 +23,7 @@ public class GeneralParseException extends RecognitionException {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private String            message;
 
     public GeneralParseException(final String message,

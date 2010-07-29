@@ -1,12 +1,3 @@
-package org.drools.testframework;
-
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import org.drools.FactHandle;
-
 /*
 * Copyright 2005 JBoss Inc
 *
@@ -22,6 +13,15 @@ import org.drools.FactHandle;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+package org.drools.testframework;
+
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.FactHandle;
+
 
 public class MockFactHandle
     implements
@@ -29,7 +29,7 @@ public class MockFactHandle
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private int               id;
 
     public MockFactHandle() {

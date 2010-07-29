@@ -1,5 +1,3 @@
-package org.drools.reteoo;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +13,8 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +37,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();
 

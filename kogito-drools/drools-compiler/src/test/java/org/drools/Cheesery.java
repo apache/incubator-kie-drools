@@ -1,5 +1,3 @@
-package org.drools;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class Cheesery
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     public final static int   MAKING_CHEESE    = 0;
     public final static int   SELLING_CHEESE   = 1;
 

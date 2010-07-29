@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.lang.descr;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.lang.descr;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -33,7 +33,7 @@ public class RuleDescr extends BaseDescr
     Dialectable,
     Namespaceable {
 
-    private static final long           serialVersionUID = 400L;
+    private static final long           serialVersionUID = 510l;
     private String                      namespace;
     private String                      name;
     private String                      parentName;

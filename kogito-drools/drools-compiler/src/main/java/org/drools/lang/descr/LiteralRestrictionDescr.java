@@ -1,9 +1,3 @@
-package org.drools.lang.descr;
-
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.util.Locale;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,6 +13,12 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.lang.descr;
+
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.Locale;
+
 
 /**
  * This represents a literal node in the rule language. This is
@@ -31,7 +31,7 @@ public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
     public static final int   TYPE_STRING      = 3;
     public static final int   TYPE_BOOLEAN     = 4;
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private int               type;
 
     public LiteralRestrictionDescr(){

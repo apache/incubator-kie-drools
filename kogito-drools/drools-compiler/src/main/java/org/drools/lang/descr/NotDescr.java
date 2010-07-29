@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +13,8 @@ package org.drools.lang.descr;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.lang.descr;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class NotDescr extends BaseDescr
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private final List        descrs           = new ArrayList( 1 );
 
     public NotDescr() {

@@ -57,7 +57,7 @@ public class JavaProcessClassBuilder
         final ProcessDescr processDescr = context.getProcessDescr();
         
         buffer.append( "public class " + StringUtils.ucFirst( processDescr.getClassName() ) + " {" + lineSeparator );
-        buffer.append( "    private static final long serialVersionUID = 400L;" + lineSeparator );
+        buffer.append( "    private static final long serialVersionUID = 510l;" + lineSeparator );
 
         // @TODO record line numbers for each Action method
         for ( int i = 0, size = context.getMethods().size(); i < size; i++ ) {

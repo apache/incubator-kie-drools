@@ -21,7 +21,7 @@ package org.drools.lang.dsl;
  *
  */
 public class DSLMappingParseException extends Exception {
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public String             message;
     public int                line;

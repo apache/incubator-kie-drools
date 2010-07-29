@@ -31,7 +31,7 @@ public class AccumulateDescr extends PatternSourceDescr
     PatternDestinationDescr,
     MultiPatternDestinationDescr {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private BaseDescr         input;
     private String            initCode;

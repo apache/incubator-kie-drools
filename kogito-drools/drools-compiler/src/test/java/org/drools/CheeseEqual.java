@@ -1,10 +1,3 @@
-package org.drools;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -20,6 +13,13 @@ import java.io.ObjectOutput;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 
 public class CheeseEqual
     implements
@@ -27,7 +27,7 @@ public class CheeseEqual
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     protected String          type;
     protected int             price;
 

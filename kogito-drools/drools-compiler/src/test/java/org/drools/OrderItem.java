@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
  *
  */
 public class OrderItem implements Externalizable {
-    private static final long serialVersionUID = -7287814895557751224L;
+    private static final long serialVersionUID = 510l;
 
     public static final int TYPE_BOOK = 1;
     public static final int TYPE_CD = 2;

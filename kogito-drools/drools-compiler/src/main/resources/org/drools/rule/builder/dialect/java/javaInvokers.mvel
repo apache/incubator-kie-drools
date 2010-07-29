@@ -63,7 +63,7 @@ package @{package};
 
 public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker
 {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
@@ -113,7 +113,7 @@ package @{package};
 
 public class @{invokerClassName} implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker
 {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
@@ -155,7 +155,7 @@ package @{package};
 
 public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker
 {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
     
     // no need for context
     public Object createContext() { return null; }
@@ -203,7 +203,7 @@ import org.drools.core.util.asm.MethodComparator.Tracer;
 import java.util.Collections;
 public class @{invokerClassName} implements org.drools.spi.Accumulator, org.drools.spi.CompiledInvoker
 {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
 
     public java.io.Serializable createContext() {
         return new @{ruleClassName}.@{className}();
@@ -340,7 +340,7 @@ package @{package};
 
 public class @{invokerClassName} implements org.drools.spi.Consequence, org.drools.spi.CompiledInvoker
 {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
 
 	private final String consequenceName = "@{consequenceName}";		
 		    
@@ -387,7 +387,7 @@ package @{package};
 
 public class @{invokerClassName} implements org.drools.spi.Action, org.drools.spi.CompiledInvoker
 {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
 
     public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
                         org.drools.WorkingMemory workingMemory) throws Exception {
@@ -422,7 +422,7 @@ package @{package};
 
 public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
 {
-    private static final long serialVersionUID  = 400L;
+    private static final long serialVersionUID  = 510l;
 
     public Object evaluate(org.drools.WorkingMemory workingMemory, org.drools.spi.ProcessContext processContext) throws Exception {
 
