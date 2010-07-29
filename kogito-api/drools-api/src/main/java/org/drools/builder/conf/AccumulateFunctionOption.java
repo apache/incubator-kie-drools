@@ -25,7 +25,7 @@ import org.drools.runtime.rule.AccumulateFunction;
  */
 public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOption {
 
-    private static final long serialVersionUID = -8461267995706982981L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * The prefix for the property name for accumulate functions

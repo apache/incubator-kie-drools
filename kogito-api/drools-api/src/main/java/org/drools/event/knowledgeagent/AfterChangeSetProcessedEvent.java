@@ -29,7 +29,7 @@ import org.drools.io.Resource;
  */
 public class AfterChangeSetProcessedEvent extends ChangeSetProcessingEvent {
 
-    private static final long serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
     private final List<Resource> addedResources;
     private final Map<Resource, Set<KnowledgeDefinition>> modifiedResourceMappings;
     private final Map<Resource, Set<KnowledgeDefinition>> removedResourceMappings;

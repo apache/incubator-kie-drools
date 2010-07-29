@@ -27,7 +27,7 @@ import org.drools.io.Resource;
  */
 public class AfterResourceProcessedEvent extends ChangeSetProcessingEvent{
 
-    private static final long serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
 
     private final Resource resource;
     private final ResourceType resourceType;
