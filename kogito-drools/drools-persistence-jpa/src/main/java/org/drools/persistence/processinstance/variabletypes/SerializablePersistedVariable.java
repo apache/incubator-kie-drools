@@ -12,7 +12,7 @@ import javax.persistence.Lob;
 @Entity
 public class SerializablePersistedVariable extends VariableInstanceInfo {
 
-	private static final long serialVersionUID = 300L;
+	private static final long serialVersionUID = 510l;
 	
 	@Lob
     private byte[] content;

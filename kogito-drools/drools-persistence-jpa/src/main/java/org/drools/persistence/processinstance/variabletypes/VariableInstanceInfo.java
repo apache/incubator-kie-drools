@@ -25,7 +25,7 @@ import javax.persistence.InheritanceType;
 
 public class VariableInstanceInfo implements Serializable {
 	
-	private static final long serialVersionUID = 300L;
+	private static final long serialVersionUID = 510l;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

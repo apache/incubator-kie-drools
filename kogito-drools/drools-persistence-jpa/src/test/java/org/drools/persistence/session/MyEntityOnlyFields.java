@@ -15,7 +15,7 @@ import javax.persistence.Id;
 public class MyEntityOnlyFields implements Serializable {
 
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
     public Long id;

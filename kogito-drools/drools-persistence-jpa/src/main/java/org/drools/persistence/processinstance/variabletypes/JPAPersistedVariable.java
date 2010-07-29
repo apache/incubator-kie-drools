@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 @Entity
 public class JPAPersistedVariable extends VariableInstanceInfo {
 
-	private static final long serialVersionUID = 300L;
+	private static final long serialVersionUID = 510l;
 
 	@Transient
 	private Object entity;
