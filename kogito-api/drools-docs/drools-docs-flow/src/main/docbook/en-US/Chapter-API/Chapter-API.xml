@@ -7,32 +7,28 @@
 
   <title>Drools Flow API</title>
 
+  <para>The Drools Flow API should be used to (1) create a knowledge base that contains
+  your process definitions, and to (2) create a session to start new process instances,
+  signal existing ones, register listeners, etc.</para>
+
   <section>
     <title>Knowledge Base</title>
 
-    <para>Our knowledge-based API allows you to first create a Knowledge Base
-    that contains all the necessary knowledge.  This includes all the
-    relevant process definitions and other knowledge types like rules.  The
-    following code snippet shows how to create a Knowledge Base consisting of only
-    one process definition, using a Knowledge Builder to add a resource, checking
-    for errors and, finally, creating the Knowledge Base.</para>
+    <para>Our knowledge-based API allows you to first create one Knowledge Base
+    that contains all the necessary knowledge and can be reused across sessions.  This
+    knowledge base includes all your process definitions (and other knowledge types
+    like for example rules).  The following code snippet shows how to create a
+    Knowledge Base consisting of only one process definition, using a Knowledge Builder
+    to add the resource (from the classpath in this case).</para>
 
 <programlisting role="JAVA">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.add(ResourceFactory.newClassPathResource("ruleflow.rf"), ResourceType.DRF);
-KnowledgeBuilderErrors errors = kbuilder.getErrors();
-if (errors.size() > 0) {
-  for (KnowledgeBuilderError error: errors) {
-    System.err.println(error);
-  }
-  throw new IllegalArgumentException("Could not parse knowledge.");
-}
-KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+kbuilder.add(ResourceFactory.newClassPathResource("MyProcess.rf"), ResourceType.DRF);
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 </programlisting>
 
     <para>Note that the knowledge-based API allows users to add different types of
-    resources, such as rules and processes, in almost identical ways into the same
+    resources, such as processes and rules, in almost identical ways into the same
     Knowledge Base.  This enables a user who knows how to use Drools Flow to start
     using Drools Fusion almost instantaneously, and even to integrate these
     different types of Knowledge.</para>
@@ -42,27 +38,27 @@ kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
   <section>
     <title>Session</title>
 
-    <para>Next, you should create a session to interact with the engine.  Again, the
-    API is knowledge-based, supporting different types of Knowledge, with a specific
-    extension for each Knowledge Type.  The following code snippet shows how easy it
-    is to create a session based on the earlier created Knowledge Base, and to start a
-    process.</para>
+    <para>Next, you should create a session to interact with the engine.  The following
+    code snippet shows how easy it is to create a session based on the earlier created
+    Knowledge Base, and to start a process (by id).</para>
 
 <programlisting role="JAVA">
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-ProcessInstance processInstance = ksession.startProcess("com.sample.ruleflow");
+ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
 </programlisting>
 
     <para>The <code>ProcessRuntime</code> interface defines all the session methods
-    for interacting with processes, as shown below.  Consult the Javadocs to get
+    for interacting with processes, as shown below.  Consult the JavaDocs to get
     a detailed explanation for each of the methods.</para>
 
 <programlisting role="JAVA">
 ProcessInstance startProcess(String processId);
 ProcessInstance startProcess(String processId, Map&lt;String, Object&gt; parameters);
 void signalEvent(String type, Object event);
+void signalEvent(String type, Object event, long processInstanceId);
 Collection&lt;ProcessInstance&gt; getProcessInstances();
 ProcessInstance getProcessInstance(long id);
+void abortProcessInstance(long id);
 WorkItemManager getWorkItemManager();
 </programlisting>
 
@@ -71,10 +67,10 @@ WorkItemManager getWorkItemManager();
   <section>
     <title>Events</title>
 
-    <para>Both the Stateful and Stateless Knowledge Session provide methods for
+    <para>Both the stateful and stateless knowledge sessions provide methods for
     registering and removing listeners. <code>ProcessEventListener</code> objects
     can be used to listen to process-related events, like starting or completing
-    a process, and entering and leaving a node.  Below, the different methods of a
+    a process, entering and leaving a node, etc.  Below, the different methods of a
     <code>ProcessEventListener</code> are shown.  An event object provides access
     to related information, like the process instance and node instance linked to
     the event.</para>
@@ -111,8 +107,8 @@ public interface ProcessEventListener {
     </orderedlist>
     </para>
 
-    <para>The <code>KnowledgeRuntimeLoggerFactory</code> let you add a logger to
-    your session, as shown below.  When creating a console logger, the Knowledge Session
+    <para>The <code>KnowledgeRuntimeLoggerFactory</code> lets you add a logger to
+    your session, as shown below.  When creating a console logger, the knowledge session
     for which the logger needs to be created must be passed as an argument. The file
     logger also requires the name of the log file to be created, and the threaded file
     logger requires the interval (in milliseconds) after which the events should be saved.</para>
