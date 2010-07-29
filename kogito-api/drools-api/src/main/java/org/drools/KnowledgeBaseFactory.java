@@ -121,9 +121,9 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeBaseConfiguration.
      */
     public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
-                                                                           ClassLoader classLoader) {
+                                                                           ClassLoader... classLoaders) {
         return getKnowledgeBaseFactoryService().newKnowledgeBaseConfiguration( properties,
-                                                                         classLoader );
+                                                                               classLoaders );
     }
 
     /**
