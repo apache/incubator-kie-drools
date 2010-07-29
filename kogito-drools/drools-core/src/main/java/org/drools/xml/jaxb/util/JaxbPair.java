@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 public class JaxbPair {
 
 	@XmlAttribute(name = "key")
-	private String key;
+	private Object key;
 
 	@XmlElement
 	private Object value;
@@ -34,12 +34,12 @@ public class JaxbPair {
 	public JaxbPair() {
 	}
 
-	public JaxbPair(String key, Object value) {
+	public JaxbPair(Object key, Object value) {
 		this.key = key;
 		this.value = value;
 	}
 
-	public String getKey() {
+	public Object getKey() {
 		return key;
 	}
 

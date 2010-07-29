@@ -662,9 +662,16 @@ public class XStreamJSon {
 
                     writer.startNode( "value" );
                     Object value = result.getValue( identifier );
-                    writeItem( value,
-                               context,
-                               writer );
+                    if ( value instanceof org.drools.runtime.rule.QueryResults ) {
+                        String name = mapper().serializedClass(FlatQueryResults.class);
+                        ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, FlatQueryResults.class);
+                        context.convertAnother(value);
+                        writer.endNode();
+                    } else {
+                        writeItem( value,
+                                   context,
+                                   writer );
+                    }
                     writer.endNode();
 
                     writer.endNode();

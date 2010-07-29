@@ -60,6 +60,7 @@ import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
+import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
@@ -801,9 +802,16 @@ public static class BatchExecutionResultConverter extends AbstractCollectionConv
           writer.addAttribute( "identifier",
                                identifier );
           Object value = result.getValue( identifier );
-          writeItem( value,
-                     context,
-                     writer );
+          if ( value instanceof org.drools.runtime.rule.QueryResults ) {
+              String name = mapper().serializedClass(FlatQueryResults.class);
+              ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, FlatQueryResults.class);
+              context.convertAnother(value);
+              writer.endNode();
+          } else {
+              writeItem( value,
+                         context,
+                         writer );
+          }
           writer.endNode();
       }
 
