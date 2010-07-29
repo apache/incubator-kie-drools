@@ -39,10 +39,10 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
         } else if ( o instanceof Map ){
             Map<Object, Object>  value = ( Map<Object, Object>  ) o;
             if (value == null || value.isEmpty()) {
-                return new JaxbPair[0];
+                return new JaxbStringObjectPair[0];
             }
             
-            List<JaxbPair> ret = new ArrayList<JaxbPair>(value.size());
+            List<JaxbObjectObjectPair> ret = new ArrayList<JaxbObjectObjectPair>(value.size());
             for (Map.Entry<Object, Object> entry : value.entrySet()) {
                 Object obj = entry.getValue();
                 Class<? extends Object> vClass = obj.getClass();
@@ -54,10 +54,10 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                 } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {    
                     obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
                 }
-                ret.add(new JaxbPair(entry.getKey(), obj));
+                ret.add(new JaxbObjectObjectPair((String)entry.getKey(), obj));
             }
             
-            return ret.toArray(new JaxbPair[value.size()]);
+            return ret.toArray(new JaxbObjectObjectPair[value.size()]);
         } else {
             return o;
         }
@@ -68,10 +68,10 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
         if ( o instanceof JaxbListWrapper ) {
             JaxbListWrapper v = ( JaxbListWrapper ) o;
             return Arrays.asList( v.getElements() );
-        } else if (o instanceof JaxbPair[] ) {
-            JaxbPair[] value = ( JaxbPair[] ) o; 
+        } else if (o instanceof JaxbObjectObjectPair[] ) {
+            JaxbObjectObjectPair[] value = ( JaxbObjectObjectPair[] ) o; 
             Map<Object, Object> r = new HashMap<Object, Object>();
-            for( JaxbPair p : value ) {
+            for( JaxbObjectObjectPair p : value ) {
                 if ( p.getValue() instanceof JaxbListWrapper) {
                     r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );
                 } else {

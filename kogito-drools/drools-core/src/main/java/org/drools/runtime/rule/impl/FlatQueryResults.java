@@ -33,16 +33,25 @@ import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
+import org.drools.xml.jaxb.util.JaxbMapAdapter;
 
 @XmlAccessorType( XmlAccessType.FIELD )
 @XmlType(name="query-results")
+@XmlRootElement
 public class FlatQueryResults
     implements
     QueryResults {
-    private Map<String, Integer> identifiers;
-    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
+    
+    
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
+    @XmlElement(name="identifiers")    
+    private Map<String, Integer> identifiers;    
+    
 	@XmlElement(name="results")
+    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)	
     private ArrayList<ArrayList<Object>>           results;
+    
+    
     @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
 	@XmlElement(name="fact-handles")
     private ArrayList<ArrayList<FactHandle>> factHandles;

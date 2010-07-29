@@ -40,7 +40,7 @@ public class SetGlobalCommand
     private String  identifier;
 	
 	@XmlElement
-	//@XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
+	@XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     private Object  object;
 
     @XmlAttribute(name="out-identifier")

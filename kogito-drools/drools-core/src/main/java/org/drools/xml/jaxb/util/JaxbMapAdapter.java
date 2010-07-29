@@ -30,16 +30,16 @@ import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 
 
-public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<Object,Object>> {
+public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<String,Object>> {
 
 	@Override
-	public JaxbPair[] marshal(Map<Object, Object> value) throws Exception {
+	public JaxbStringObjectPair[] marshal(Map<String, Object> value) throws Exception {
 		if (value == null || value.isEmpty()) {
-			return new JaxbPair[0];
+			return new JaxbStringObjectPair[0];
 		}
 		
-		List<JaxbPair> ret = new ArrayList<JaxbPair>(value.size());
-		for (Map.Entry<Object, Object> entry : value.entrySet()) {
+		List<JaxbStringObjectPair> ret = new ArrayList<JaxbStringObjectPair>(value.size());
+		for (Map.Entry<String, Object> entry : value.entrySet()) {
 		    Object obj = entry.getValue();
 		    Class<? extends Object> vClass = obj.getClass();
 		    
@@ -50,16 +50,16 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<Object,Object>> {
 	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {    
 	            obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
 	        }
-			ret.add(new JaxbPair(entry.getKey(), obj));
+			ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
 		}
 		
-		return ret.toArray(new JaxbPair[value.size()]);
+		return ret.toArray(new JaxbStringObjectPair[value.size()]);
 	}
 
 	@Override
-	public Map<Object, Object> unmarshal(JaxbPair[] value) throws Exception {
-		Map<Object, Object> r = new HashMap<Object, Object>();
-		for( JaxbPair p : value ) {
+	public Map<String, Object> unmarshal(JaxbStringObjectPair[] value) throws Exception {
+		Map<String, Object> r = new HashMap<String, Object>();
+		for( JaxbStringObjectPair p : value ) {
 		    if ( p.getValue() instanceof JaxbListWrapper) {
 		        r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );
 		    } else {

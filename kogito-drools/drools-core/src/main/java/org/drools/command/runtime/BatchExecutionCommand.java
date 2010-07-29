@@ -81,7 +81,7 @@ public class BatchExecutionCommand implements GenericCommand<ExecutionResults> {
 	
 	private static final long serialVersionUID = 510l;
 	
-	@XmlAttribute(required=true)
+	@XmlAttribute
 	@XStreamAsAttribute
 	private String lookup;
 

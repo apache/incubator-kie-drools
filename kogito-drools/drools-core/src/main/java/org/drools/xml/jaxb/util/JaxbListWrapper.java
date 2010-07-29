@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name="list")
-public class JaxbListWrapper<T>  {
+public class JaxbListWrapper  {
     
     Object[] elements;
     

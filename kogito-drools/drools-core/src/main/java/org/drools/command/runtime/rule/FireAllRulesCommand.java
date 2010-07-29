@@ -19,6 +19,7 @@ package org.drools.command.runtime.rule;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
@@ -36,6 +37,7 @@ public class FireAllRulesCommand
 	@XmlAttribute
     private int          max          = -1;
     private AgendaFilter agendaFilter = null;
+    
     @XmlAttribute(name="out-identifier")
     private String       outIdentifier;
 
