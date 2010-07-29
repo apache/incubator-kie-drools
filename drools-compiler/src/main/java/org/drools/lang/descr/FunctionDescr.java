@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,6 +14,8 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +28,7 @@ public class FunctionDescr extends BaseDescr
     implements
     Dialectable,
     Namespaceable {
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private String            namespace;
     private final String      name;

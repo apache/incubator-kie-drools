@@ -1,5 +1,3 @@
-package org.drools.lang;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,11 +14,13 @@ package org.drools.lang;
  * limitations under the License.
  */
 
+package org.drools.lang;
+
 import org.drools.RuntimeDroolsException;
 
 public class ParseException extends RuntimeDroolsException {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private int               lineNumber;
 

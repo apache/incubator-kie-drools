@@ -1,7 +1,3 @@
-package org.drools.lang.descr;
-
-import java.util.List;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,6 +13,10 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.lang.descr;
+
+import java.util.List;
+
 
 /**
  * This represents a literal node in the rule language. This is
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class FieldConstraintDescr extends BaseDescr {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private String            fieldName;
     private RestrictionConnectiveDescr restriction     = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
 

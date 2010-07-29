@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2008 Red Hat
  *
@@ -16,6 +14,8 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ import org.drools.rule.Namespaceable;
 
 public class TypeDeclarationDescr extends BaseDescr implements Namespaceable {
 
-    private static final long   serialVersionUID = 400L;
+    private static final long   serialVersionUID = 510l;
     private String              namespace;
     private String              typeName;
     private Map<String, String> metaAttributes;

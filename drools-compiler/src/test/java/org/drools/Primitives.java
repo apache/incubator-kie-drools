@@ -1,8 +1,3 @@
-package org.drools;
-
-import java.io.Serializable;
-import java.util.Arrays;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -18,12 +13,17 @@ import java.util.Arrays;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools;
+
+import java.io.Serializable;
+import java.util.Arrays;
+
 
 public class Primitives
     implements
     Serializable {
 
-    private static final long serialVersionUID = -3006488134941876318L;
+    private static final long serialVersionUID = 510l;
 
     private boolean           booleanPrimitive;
 

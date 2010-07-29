@@ -25,7 +25,7 @@ package org.drools.lang.descr;
  */
 public class EntryPointDescr extends PatternSourceDescr {
 
-    private static final long serialVersionUID = 1765353532342L;
+    private static final long serialVersionUID = 150l;
     
     public EntryPointDescr() {
     }

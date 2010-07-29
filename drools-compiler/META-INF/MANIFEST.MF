@@ -1,6 +1,58 @@
 Manifest-Version: 1.0
+Export-Package: org.drools.lang.descr;version="5.1.0.SNAPSHOT",org.dro
+ ols.builder.impl;uses:="com.sun.tools.xjc,org.drools.compiler";versio
+ n="5.1.0.SNAPSHOT",org.drools.osgi.compiler;uses:="org.osgi.util.trac
+ ker,org.osgi.framework,org.drools.builder.impl,org.drools.compiler";v
+ ersion="5.1.0.SNAPSHOT",org.drools.compiler.xml.rules;uses:="org.droo
+ ls.lang.descr,org.w3c.dom,org.xml.sax,org.antlr.runtime.tree,org.antl
+ r.runtime";version="5.1.0.SNAPSHOT",org.drools.compiler.xml.processes
+ ;uses:="org.drools.compiler.xml,org.w3c.dom,org.xml.sax,javax.xml.tra
+ nsform,javax.xml.transform.stream";version="5.1.0.SNAPSHOT",org.drool
+ s.compiler.xml;uses:="org.drools.compiler.xml.processes,org.drools.co
+ mpiler.xml.rules,org.drools.lang.descr,javax.xml.parsers,org.xml.sax"
+ ;version="5.1.0.SNAPSHOT",org.drools.testframework;version="5.1.0.SNA
+ PSHOT",org.drools.compiler;uses:="org.drools.lang.descr,org.drools.ru
+ le.builder,org.antlr.runtime.tree,org.antlr.runtime,com.sun.tools.xjc
+ ,org.xml.sax,org.drools.runtime.pipeline.impl,org.drools.compiler.xml
+ ,org.drools.process.builder,org.mvel2,org.drools.compiler.xml.process
+ es,javax.xml.parsers";version="5.1.0.SNAPSHOT",org.drools.process.bui
+ lder;uses:="org.drools.lang.descr,org.drools.rule.builder,org.drools.
+ compiler";version="5.1.0.SNAPSHOT",org.drools.reteoo.compiled;uses:="
+ org.drools.rule.builder.dialect.java,org.drools.lang.descr,org.drools
+ .compiler";version="5.1.0.SNAPSHOT",org.drools.semantics.java.parser;
+ version="5.1.0.SNAPSHOT",org.drools.runtime.pipeline.impl;uses:="com.
+ sun.tools.xjc,org.xml.sax,com.sun.codemodel,com.sun.tools.xjc.model,o
+ rg.drools.lang.descr,com.sun.tools.xjc.outline,org.drools.rule.builde
+ r.dialect.java,org.drools.builder.impl,org.drools.compiler,javax.xml.
+ bind";version="5.1.0.SNAPSHOT",org.drools.rule.builder.dialect.java;u
+ ses:="org.mvel2.templates,org.mvel2.integration,org.drools.lang.descr
+ ,org.mvel2.integration.impl,org.drools.rule.builder,org.drools.compil
+ er,org.drools.rule.builder.dialect.mvel,org.mvel2.optimizers,org.mvel
+ 2.compiler,org.drools.rule.builder.dialect.java.parser,org.antlr.runt
+ ime,org.mvel2";version="5.1.0.SNAPSHOT",org.drools.rule.builder.diale
+ ct.mvel;uses:="org.drools.lang.descr,org.drools.rule.builder,org.droo
+ ls.compiler,org.mvel2,org.mvel2.util,org.drools.rule.builder.dialect.
+ java,org.mvel2.ast,org.mvel2.compiler";version="5.1.0.SNAPSHOT",org.d
+ rools.rule.builder.dialect.java.parser;uses:="org.antlr.runtime";vers
+ ion="5.1.0.SNAPSHOT",org.drools.rule.builder;uses:="org.drools.lang.d
+ escr,org.drools.compiler,org.drools.rule.builder.dialect.mvel,org.mve
+ l2,org.mvel2.compiler";version="5.1.0.SNAPSHOT"
+Private-Package: org.drools.commons.jci.problems;version="5.1.0.SNAPSH
+ OT",org.drools.commons.jci.compilers;version="5.1.0.SNAPSHOT",org.dro
+ ols.commons.jci.readers;version="5.1.0.SNAPSHOT",org.drools.commons.j
+ ci.stores;version="5.1.0.SNAPSHOT",org.drools.lang;version="5.1.0.SNA
+ PSHOT",org.drools.lang.dsl;version="5.1.0.SNAPSHOT"
+Tool: Bnd-0.0.357
+Bundle-Name: Drools :: Compiler
+Created-By: 1.6.0_20 (Apple Inc.)
+Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
+Bundle-Vendor: JBoss Inc.
+DynamicImport-Package: *
+Bundle-Version: 5.1.0.SNAPSHOT
+Bnd-LastModified: 1280435101803
 Bundle-Activator: org.drools.osgi.compiler.Activator
-Created-By: 1.5.0_21 (Sun Microsystems Inc.)
+Bundle-ManifestVersion: 2
+Bundle-Description: A rule production system
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: com.sun.codemodel,com.sun.tools.xjc,com.sun.tools.xjc.
  model,com.sun.tools.xjc.outline,javax.xml.bind,javax.xml.parsers,java
@@ -18,58 +70,6 @@ Import-Package: com.sun.codemodel,com.sun.tools.xjc,com.sun.tools.xjc.
  ersion="2.0",org.mvel2.templates;version="2.0",org.mvel2.util;version
  ="2.0",org.osgi.framework;version="1.5",org.osgi.util.tracker;version
  ="1.4",org.w3c.dom,org.xml.sax
-Bnd-LastModified: 1280391691618
-Export-Package: org.drools.lang.descr;version="5.1.0.SNAPSHOT",org.dro
- ols.builder.impl;uses:="org.drools.compiler,com.sun.tools.xjc";versio
- n="5.1.0.SNAPSHOT",org.drools.rule.builder;uses:="org.drools.lang.des
- cr,org.drools.compiler,org.mvel2.compiler,org.mvel2,org.drools.rule.b
- uilder.dialect.mvel";version="5.1.0.SNAPSHOT",org.drools.rule.builder
- .dialect.java.parser;uses:="org.antlr.runtime";version="5.1.0.SNAPSHO
- T",org.drools.semantics.java.parser;version="5.1.0.SNAPSHOT",org.droo
- ls.compiler.xml;uses:="org.drools.compiler.xml.processes,org.drools.c
- ompiler.xml.rules,org.drools.lang.descr,org.xml.sax,javax.xml.parsers
- ";version="5.1.0.SNAPSHOT",org.drools.compiler.xml.processes;uses:="o
- rg.xml.sax,org.w3c.dom,org.drools.compiler.xml,javax.xml.transform.st
- ream,javax.xml.transform";version="5.1.0.SNAPSHOT",org.drools.rule.bu
- ilder.dialect.java;uses:="org.drools.rule.builder,org.mvel2.integrati
- on,org.mvel2.integration.impl,org.mvel2.templates,org.drools.lang.des
- cr,org.mvel2.compiler,org.mvel2.optimizers,org.drools.compiler,org.dr
- ools.rule.builder.dialect.mvel,org.drools.rule.builder.dialect.java.p
- arser,org.antlr.runtime,org.mvel2";version="5.1.0.SNAPSHOT",org.drool
- s.osgi.compiler;uses:="org.osgi.framework,org.osgi.util.tracker,org.d
- rools.compiler,org.drools.builder.impl";version="5.1.0.SNAPSHOT",org.
- drools.compiler;uses:="org.drools.lang.descr,org.drools.rule.builder,
- org.antlr.runtime.tree,org.antlr.runtime,org.drools.compiler.xml,com.
- sun.tools.xjc,org.xml.sax,org.drools.runtime.pipeline.impl,org.mvel2,
- org.drools.process.builder,org.drools.compiler.xml.processes,javax.xm
- l.parsers";version="5.1.0.SNAPSHOT",org.drools.compiler.xml.rules;use
- s:="org.drools.lang.descr,org.xml.sax,org.w3c.dom,org.antlr.runtime.t
- ree,org.antlr.runtime";version="5.1.0.SNAPSHOT",org.drools.process.bu
- ilder;uses:="org.drools.rule.builder,org.drools.compiler,org.drools.l
- ang.descr";version="5.1.0.SNAPSHOT",org.drools.rule.builder.dialect.m
- vel;uses:="org.drools.compiler,org.drools.rule.builder,org.drools.lan
- g.descr,org.mvel2,org.mvel2.compiler,org.mvel2.util,org.drools.rule.b
- uilder.dialect.java,org.mvel2.ast";version="5.1.0.SNAPSHOT",org.drool
- s.testframework;version="5.1.0.SNAPSHOT",org.drools.runtime.pipeline.
- impl;uses:="com.sun.tools.xjc,org.xml.sax,com.sun.codemodel,org.drool
- s.builder.impl,org.drools.lang.descr,com.sun.tools.xjc.model,com.sun.
- tools.xjc.outline,org.drools.rule.builder.dialect.java,org.drools.com
- piler,javax.xml.bind";version="5.1.0.SNAPSHOT",org.drools.reteoo.comp
- iled;uses:="org.drools.compiler,org.drools.lang.descr,org.drools.rule
- .builder.dialect.java";version="5.1.0.SNAPSHOT"
-Bundle-Version: 5.1.0.SNAPSHOT
-Bundle-Name: Drools :: Compiler
-Bundle-Description: A rule production system
-Private-Package: org.drools.commons.jci.readers;version="5.1.0.SNAPSHO
- T",org.drools.lang.dsl;version="5.1.0.SNAPSHOT",org.drools.commons.jc
- i.compilers;version="5.1.0.SNAPSHOT",org.drools.commons.jci.stores;ve
- rsion="5.1.0.SNAPSHOT",org.drools.lang;version="5.1.0.SNAPSHOT",org.d
- rools.commons.jci.problems;version="5.1.0.SNAPSHOT"
-Bundle-DocURL: http://www.jboss.org/
-Bundle-Vendor: JBoss Inc.
-Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.drools.compiler;singleton:=true
-Tool: Bnd-0.0.357
-Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
-DynamicImport-Package: *
+Bundle-DocURL: http://www.jboss.org/
 

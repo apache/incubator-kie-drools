@@ -1,5 +1,3 @@
-package org.drools.lang.descr;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,6 +14,8 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+package org.drools.lang.descr;
+
 /**
  * This represents a qualified identifier, like enums or subfield
  * access in variables like "$p.name". This is a constraint on a single 
@@ -24,7 +24,7 @@ package org.drools.lang.descr;
  */
 public class QualifiedIdentifierRestrictionDescr extends EvaluatorBasedRestrictionDescr {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public QualifiedIdentifierRestrictionDescr(){
     }

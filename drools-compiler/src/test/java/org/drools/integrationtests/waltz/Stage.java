@@ -1,5 +1,3 @@
-package org.drools.integrationtests.waltz;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.integrationtests.waltz;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.integrationtests.waltz;
 
 /**
  * @author Alexander Bagerman
@@ -34,7 +34,7 @@ import java.io.ObjectOutput;
 public class Stage
     implements
     Externalizable {
-    private static final long serialVersionUID      = 400L;
+    private static final long serialVersionUID      = 510l;
 
     final public static int   START                 = 0;
 
