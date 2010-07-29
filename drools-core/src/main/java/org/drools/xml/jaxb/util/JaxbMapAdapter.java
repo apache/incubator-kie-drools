@@ -30,16 +30,16 @@ import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 
 
-public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<String,Object>> {
+public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<Object,Object>> {
 
 	@Override
-	public JaxbPair[] marshal(Map<String, Object> value) throws Exception {
+	public JaxbPair[] marshal(Map<Object, Object> value) throws Exception {
 		if (value == null || value.isEmpty()) {
 			return new JaxbPair[0];
 		}
 		
 		List<JaxbPair> ret = new ArrayList<JaxbPair>(value.size());
-		for (Map.Entry<String, Object> entry : value.entrySet()) {
+		for (Map.Entry<Object, Object> entry : value.entrySet()) {
 		    Object obj = entry.getValue();
 		    Class<? extends Object> vClass = obj.getClass();
 		    
@@ -57,8 +57,8 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbPair[], Map<String,Object>> {
 	}
 
 	@Override
-	public Map<String, Object> unmarshal(JaxbPair[] value) throws Exception {
-		Map<String, Object> r = new HashMap<String, Object>();
+	public Map<Object, Object> unmarshal(JaxbPair[] value) throws Exception {
+		Map<Object, Object> r = new HashMap<Object, Object>();
 		for( JaxbPair p : value ) {
 		    if ( p.getValue() instanceof JaxbListWrapper) {
 		        r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );

@@ -181,7 +181,7 @@ public class DefaultFactHandle
      * @see FactHandle
      */
     public String toExternalForm() {
-        return "0:" + this.id + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency() + ":" + ((this.entryPoint != null) ? this.entryPoint.getEntryPointId() : "null" );
+        return  "0:" + this.id + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency() + ":" + ((this.entryPoint != null) ? this.entryPoint.getEntryPointId() : "null" );
     }
 
     @XmlAttribute(name="external-form")
@@ -332,7 +332,7 @@ public class DefaultFactHandle
         this.identityHashCode = Integer.parseInt( elements[2] );
         this.objectHashCode = Integer.parseInt( elements[3] );
         this.recency = Long.parseLong( elements[4] );
-        this.entryPoint = StringUtils.isEmpty( elements[5] ) ? null : new DisconnectedWorkingMemoryEntryPoint( elements[5].trim() );
+        this.entryPoint = ( StringUtils.isEmpty( elements[5] ) || "null".equals( elements[5].trim() ) ) ? null : new DisconnectedWorkingMemoryEntryPoint( elements[5].trim() );
         this.disconnected = true;
     }    
 }

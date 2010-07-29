@@ -77,8 +77,6 @@ public class XStreamHelper {
                        QueryCommand.class );
         xstream.alias( "query-results",
                        FlatQueryResults.class );
-        xstream.alias( "query-results",
-                       NativeQueryResults.class );
         xstream.alias( "fact-handle",
                        DefaultFactHandle.class );
     }
