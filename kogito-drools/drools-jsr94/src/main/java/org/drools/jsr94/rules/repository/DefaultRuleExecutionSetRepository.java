@@ -34,7 +34,7 @@ public class DefaultRuleExecutionSetRepository
     implements
     RuleExecutionSetRepository
 {
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * Holds the registered <code>RuleExecutionSet</code> objects.
