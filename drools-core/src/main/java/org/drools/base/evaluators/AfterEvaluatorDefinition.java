@@ -210,7 +210,7 @@ public class AfterEvaluatorDefinition
      * Implements the 'after' evaluator itself
      */
     public static class AfterEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -4833205637340977934L;
+        private static final long serialVersionUID = 510l;
 
         private long              initRange;
         private long              finalRange;

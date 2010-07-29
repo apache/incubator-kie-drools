@@ -27,7 +27,7 @@ import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private List<EventFilter> filters = new ArrayList<EventFilter>();
 	private EventTransformer transformer;

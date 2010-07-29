@@ -39,7 +39,7 @@ import org.drools.process.instance.ProcessInstance;
  */
 public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private long id;
     private String processId;

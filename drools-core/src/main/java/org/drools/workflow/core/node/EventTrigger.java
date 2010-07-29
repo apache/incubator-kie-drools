@@ -23,7 +23,7 @@ import org.drools.process.core.event.EventFilter;
 
 public class EventTrigger extends Trigger {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private List<EventFilter> filters = new ArrayList<EventFilter>();
 	

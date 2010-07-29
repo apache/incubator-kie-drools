@@ -64,7 +64,7 @@ public class ReteooBuilder
     /**
      *
      */
-    private static final long           serialVersionUID = 400L;
+    private static final long           serialVersionUID = 510l;
 
     /** The RuleBase */
     private transient InternalRuleBase  ruleBase;
@@ -245,7 +245,7 @@ public class ReteooBuilder
         implements
         Externalizable {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         private Queue<Integer>    recycledIds;
         private int               nextId;

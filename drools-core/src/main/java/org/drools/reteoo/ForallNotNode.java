@@ -45,7 +45,7 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class ForallNotNode extends NotNode {
-    private static final long serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
 
     private ObjectType        baseObjectType   = null;
 

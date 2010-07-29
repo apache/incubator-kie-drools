@@ -23,7 +23,7 @@ import org.drools.runtime.process.ProcessInstance;
  */
 public class RuleFlowCompletedEvent extends ProcessEvent {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public RuleFlowCompletedEvent(final ProcessInstance instance) {
         super( instance );

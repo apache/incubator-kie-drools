@@ -25,7 +25,7 @@ import java.io.Serializable;
  */
 public final class RuleBasePartitionId implements Serializable {
 
-    private static final long serialVersionUID = 6646903702672295085L;
+    private static final long serialVersionUID = 510l;
 
     public static final RuleBasePartitionId MAIN_PARTITION = new RuleBasePartitionId( "P-MAIN" );
 

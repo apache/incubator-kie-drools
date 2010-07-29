@@ -29,7 +29,7 @@ public class DroolsMVELKnowledgeHelper
     VariableResolver,
     Externalizable  {
 
-    private static final long serialVersionUID = 9175428283083361478L;
+    private static final long serialVersionUID = 510l;
     
     private DroolsMVELFactory factory;
     public static final String DROOLS = "drools";

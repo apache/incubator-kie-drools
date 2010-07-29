@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ConcurrentNodeMemories implements NodeMemories {
 
-    private static final long            serialVersionUID = -2032997426288974117L;
+    private static final long            serialVersionUID = 510l;
 
     private AtomicReferenceArray<Object> memories;
 

@@ -194,7 +194,7 @@ public class MeetsEvaluatorDefinition
      * Implements the 'meets' evaluator itself
      */
     public static class MeetsEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = 9091548399308812447L;
+        private static final long serialVersionUID = 510l;
 
         private long              finalRange;
         private String            paramText;

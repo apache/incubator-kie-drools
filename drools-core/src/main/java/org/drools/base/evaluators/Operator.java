@@ -30,7 +30,7 @@ public class Operator
     implements
     Externalizable, org.drools.runtime.rule.Operator {
 
-    private static final long                  serialVersionUID = 400L;
+    private static final long                  serialVersionUID = 510l;
 
     // a static private cache so that pluggable operator can register their implementations
     // it is automatically initialized with common operator implementations

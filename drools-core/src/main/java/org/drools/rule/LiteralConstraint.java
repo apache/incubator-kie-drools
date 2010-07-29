@@ -36,7 +36,7 @@ public class LiteralConstraint
     AcceptsReadAccessor,
     Externalizable {
 
-    private static final long    serialVersionUID = 400L;
+    private static final long    serialVersionUID = 510l;
 
     private InternalReadAccessor readAccesor;
     private LiteralRestriction   restriction;

@@ -27,7 +27,7 @@ import org.drools.process.core.impl.WorkImpl;
 
 public class HumanTaskNode extends WorkItemNode {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
 
     private String swimlane;
     

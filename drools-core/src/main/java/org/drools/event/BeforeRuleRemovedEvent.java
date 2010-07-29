@@ -22,7 +22,7 @@ import org.drools.rule.Rule;
 
 public class BeforeRuleRemovedEvent extends RuleBaseEvent {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public BeforeRuleRemovedEvent(final RuleBase ruleBase,
                                   final Package pkg,

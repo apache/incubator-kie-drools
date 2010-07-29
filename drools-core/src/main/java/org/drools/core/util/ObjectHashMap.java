@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
 
 public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public ObjectHashMap() {
         this( 16,
@@ -151,7 +151,7 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         Entry,
         Externalizable {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         private Object            key;
 

@@ -31,7 +31,7 @@ import org.drools.workflow.instance.NodeInstance;
 
 public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
 	public void handleException(ExceptionHandler handler, String exception, Object params) {
 		

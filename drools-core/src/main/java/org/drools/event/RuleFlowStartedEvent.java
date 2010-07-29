@@ -23,7 +23,7 @@ import org.drools.process.instance.ProcessInstance;
  */
 public class RuleFlowStartedEvent extends ProcessEvent {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public RuleFlowStartedEvent(final ProcessInstance instance) {
         super( instance );

@@ -23,7 +23,7 @@ import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class WorkItemResolverFactory extends ImmutableDefaultFactory {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private WorkItem workItem;
 	

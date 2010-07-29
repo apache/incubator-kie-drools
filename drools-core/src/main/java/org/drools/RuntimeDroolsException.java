@@ -31,7 +31,7 @@ public class RuntimeDroolsException extends RuntimeException {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * @see java.lang.Exception#Exception()

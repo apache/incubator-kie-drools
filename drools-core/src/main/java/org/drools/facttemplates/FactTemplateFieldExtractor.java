@@ -35,7 +35,7 @@ public class FactTemplateFieldExtractor
     Externalizable,
     org.drools.spi.InternalReadAccessor {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private FactTemplate      factTemplate;
     private int               fieldIndex;
 

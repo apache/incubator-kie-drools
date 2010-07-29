@@ -37,7 +37,7 @@ public class VariableRestriction
     AcceptsReadAccessor,
     Restriction {
 
-    private static final long    serialVersionUID = 400L;
+    private static final long    serialVersionUID = 510l;
 
     private Declaration          declaration;
 
@@ -286,7 +286,7 @@ public class VariableRestriction
 
     public static class ObjectVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         public Object             left;
         public Object             right;
 
@@ -346,7 +346,7 @@ public class VariableRestriction
     
     public static class PrimitiveArrayVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         public Object             left;
         public Object             right;
 
@@ -406,7 +406,7 @@ public class VariableRestriction
 
     public static class LongVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         public long               left;
         public long               right;
@@ -467,7 +467,7 @@ public class VariableRestriction
 
     public static class CharVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         public char               left;
         public char               right;
@@ -528,7 +528,7 @@ public class VariableRestriction
 
     public static class DoubleVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         public double             left;
         public double             right;
@@ -589,7 +589,7 @@ public class VariableRestriction
 
     public static class BooleanVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         public boolean            left;
         public boolean            right;
 

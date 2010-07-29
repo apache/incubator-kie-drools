@@ -38,7 +38,7 @@ import org.drools.workflow.instance.NodeInstanceContainer;
 
 public class StateNodeInstance extends CompositeContextNodeInstance implements EventListener {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
     protected StateNode getStateNode() {
         return (StateNode) getNode();

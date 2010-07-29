@@ -25,7 +25,7 @@ public class InvalidRuleException extends RuleConstructionException {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     /** The invalid rule. */
     private Rule              rule;
 

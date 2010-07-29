@@ -25,7 +25,7 @@ import org.drools.runtime.process.ProcessInstance;
  */
 public class ProcessEvent extends EventObject {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public ProcessEvent(final ProcessInstance instance) {
         super( instance );

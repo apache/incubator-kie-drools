@@ -29,7 +29,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
 
     public static final String RULEFLOW_TYPE = "RuleFlow";
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     public RuleFlowProcess() {
         setType(RULEFLOW_TYPE);
@@ -73,7 +73,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
 
     private class WorkflowProcessNodeContainer extends NodeContainerImpl {
         
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         protected void validateAddNode(Node node) {
             super.validateAddNode(node);

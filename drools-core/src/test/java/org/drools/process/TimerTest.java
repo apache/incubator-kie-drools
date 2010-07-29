@@ -45,7 +45,7 @@ public class TimerTest extends TestCase {
         executorService.setCommandExecutor( new CommandExecutor( workingMemory ) );
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance() {
-			private static final long serialVersionUID = 4L;
+			private static final long serialVersionUID = 510l;
 			public void signalEvent(String type, Object event) {
         		if ("timerTriggered".equals(type)) {
         			TimerInstance timer = (TimerInstance) event;

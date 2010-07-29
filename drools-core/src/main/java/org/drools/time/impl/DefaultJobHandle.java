@@ -29,7 +29,7 @@ public class DefaultJobHandle
     implements
     JobHandle {
     
-    private static final long serialVersionUID = 5812005196020575395L;
+    private static final long serialVersionUID = 510l;
     
     private final ScheduledJob     scheduledJob;
 

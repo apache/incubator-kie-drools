@@ -36,7 +36,7 @@ public class LiteralRestriction
     AcceptsReadAccessor,    
     Externalizable {
 
-    private static final long          serialVersionUID     = 400L;
+    private static final long          serialVersionUID     = 510l;
 
     private FieldValue                 field;
 
@@ -166,7 +166,7 @@ public class LiteralRestriction
         implements
         ContextEntry {
 
-        private static final long   serialVersionUID = 2621864784428098347L;
+        private static final long   serialVersionUID = 510l;
         public InternalReadAccessor extractor;
         public Object               object;
         public ContextEntry         next;

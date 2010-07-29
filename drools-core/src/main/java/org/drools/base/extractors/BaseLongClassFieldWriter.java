@@ -24,7 +24,7 @@ import org.drools.base.ValueType;
 
 public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public BaseLongClassFieldWriter(final Class< ? > clazz,
                                     final String fieldName) {

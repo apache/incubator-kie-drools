@@ -309,7 +309,7 @@ public class TypeDeclaration
         implements
         AcceptsReadAccessor,
         Serializable {
-        private static final long serialVersionUID = 1429300982505284833L;
+        private static final long serialVersionUID = 510l;
 
         public void setReadAccessor(InternalReadAccessor readAccessor) {
             setDurationExtractor( readAccessor );
@@ -320,7 +320,7 @@ public class TypeDeclaration
         implements
         AcceptsReadAccessor,
         Serializable {
-        private static final long serialVersionUID = 8656678871125722903L;
+        private static final long serialVersionUID = 510l;
 
         public void setReadAccessor(InternalReadAccessor readAccessor) {
             setTimestampExtractor( readAccessor );

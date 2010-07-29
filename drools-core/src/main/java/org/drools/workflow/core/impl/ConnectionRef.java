@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 public class ConnectionRef implements Serializable {
     
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
 	
 	private String toType;
     private long nodeId;

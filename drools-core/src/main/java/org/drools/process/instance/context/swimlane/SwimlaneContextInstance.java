@@ -24,7 +24,7 @@ import org.drools.process.instance.context.AbstractContextInstance;
 
 public class SwimlaneContextInstance extends AbstractContextInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private Map<String, String> swimlaneActors = new HashMap<String, String>();
 

@@ -45,7 +45,7 @@ public class MVELAccumulatorFunctionExecutor
     Externalizable,
     Accumulator {
 
-    private static final long                          serialVersionUID = 400L;
+    private static final long                          serialVersionUID = 510l;
 
     private final Object                               dummy            = new Object();
 

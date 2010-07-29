@@ -30,7 +30,7 @@ public class InstanceNotEqualsConstraint
     implements
     BetaNodeFieldConstraint {
 
-    private static final long          serialVersionUID = 400L;
+    private static final long          serialVersionUID = 510l;
 
     private static Declaration[] declarations     = new Declaration[0];
 
@@ -123,7 +123,7 @@ public class InstanceNotEqualsConstraint
         implements
         ContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         public Object             left;
         public Object             right;
 

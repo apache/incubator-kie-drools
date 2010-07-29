@@ -24,7 +24,7 @@ import org.drools.spi.Restriction;
 
 public class OrCompositeRestriction extends AbstractCompositeRestriction {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public OrCompositeRestriction() {
     }

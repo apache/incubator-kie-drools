@@ -26,7 +26,7 @@ import org.drools.runtime.process.NodeInstance;
 
 public class ExclusiveGroupInstance extends AbstractContextInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private Map<Long, NodeInstance> nodeInstances = new HashMap<Long, NodeInstance>();
     

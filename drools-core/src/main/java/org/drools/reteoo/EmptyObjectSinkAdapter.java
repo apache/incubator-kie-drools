@@ -28,7 +28,7 @@ import org.drools.spi.PropagationContext;
 
 public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
-    private static final long                   serialVersionUID = -631743913176779720L;
+    private static final long                   serialVersionUID = 510l;
 
     private static final EmptyObjectSinkAdapter INSTANCE = new EmptyObjectSinkAdapter();
 

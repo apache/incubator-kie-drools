@@ -218,7 +218,7 @@ public class IncludesEvaluatorDefinition
      * Implements the 'includes' evaluator itself
      */
     public static class IncludesEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -5947397607962049251L;
+        private static final long serialVersionUID = 510l;
 
         private long              startMinDev, startMaxDev;
         private long              endMinDev, endMaxDev;

@@ -123,7 +123,7 @@ public class RuleBaseConfiguration
     implements
     KnowledgeBaseConfiguration,
     Externalizable {
-    private static final long              serialVersionUID = 400L;
+    private static final long              serialVersionUID = 510l;
 
     private ChainedProperties              chainedProperties;
 
@@ -1010,7 +1010,7 @@ public class RuleBaseConfiguration
     public static class AssertBehaviour
         implements
         Externalizable {
-        private static final long           serialVersionUID = 400L;
+        private static final long           serialVersionUID = 510l;
 
         public static final AssertBehaviour IDENTITY         = new AssertBehaviour( 0 );
         public static final AssertBehaviour EQUALITY         = new AssertBehaviour( 1 );
@@ -1077,7 +1077,7 @@ public class RuleBaseConfiguration
     public static class LogicalOverride
         implements
         Externalizable {
-        private static final long           serialVersionUID = 400L;
+        private static final long           serialVersionUID = 510l;
 
         public static final LogicalOverride PRESERVE         = new LogicalOverride( 0 );
         public static final LogicalOverride DISCARD          = new LogicalOverride( 1 );
@@ -1143,7 +1143,7 @@ public class RuleBaseConfiguration
     public static class SequentialAgenda
         implements
         Externalizable {
-        private static final long            serialVersionUID = 400L;
+        private static final long            serialVersionUID = 510l;
 
         public static final SequentialAgenda SEQUENTIAL       = new SequentialAgenda( 0 );
         public static final SequentialAgenda DYNAMIC          = new SequentialAgenda( 1 );

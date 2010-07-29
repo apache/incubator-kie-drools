@@ -30,7 +30,7 @@ public class DroolsMVELLocalDeclarationVariable
     VariableResolver,
     Externalizable  {
 
-    private static final long serialVersionUID = -8081447010148362496L;
+    private static final long serialVersionUID = 510l;
     
     private Declaration       declaration;
     private DroolsMVELFactory factory;

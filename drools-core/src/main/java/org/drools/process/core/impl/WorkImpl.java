@@ -32,7 +32,7 @@ import org.drools.process.core.Work;
  */
 public class WorkImpl implements Work, Serializable {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private String name;
     private Map<String, Object> parameters = new HashMap<String, Object>();

@@ -30,7 +30,7 @@ public class GetIdCommand
     implements
     GenericCommand<Integer> {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
     
     public GetIdCommand() {

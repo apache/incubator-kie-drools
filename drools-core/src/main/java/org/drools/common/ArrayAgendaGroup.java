@@ -42,7 +42,7 @@ public class ArrayAgendaGroup
     implements
     InternalAgendaGroup {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private String      name;
 

@@ -24,7 +24,7 @@ import org.drools.process.core.context.AbstractContext;
 
 public class ExceptionScope extends AbstractContext {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public static final String EXCEPTION_SCOPE = "ExceptionScope";
     

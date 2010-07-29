@@ -45,7 +45,7 @@ import org.drools.workflow.core.Constraint;
  */
 public class ConstraintImpl implements Constraint, Serializable {
 
-    private static final long  serialVersionUID = 400L;
+    private static final long  serialVersionUID = 510l;
 
     private Map<String, Object> metaData = new HashMap<String, Object>();
 

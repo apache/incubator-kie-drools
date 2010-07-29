@@ -39,7 +39,7 @@ public class FixedDuration
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     /** Duration, in seconds. */
     private long              duration;
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,6 @@
  */
 
 package org.drools.workflow.instance.node;
-
-/*
- * Copyright 2005 JBoss Inc
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,7 +47,7 @@ import org.drools.workflow.instance.impl.NodeInstanceImpl;
  */
 public class CompositeNodeInstance extends StateBasedNodeInstance implements NodeInstanceContainer, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
@@ -273,7 +257,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     public class CompositeNodeStartInstance extends NodeInstanceImpl {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         public CompositeNode.CompositeNodeStart getCompositeNodeStart() {
             return (CompositeNode.CompositeNodeStart) getNode();
@@ -291,7 +275,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     public class CompositeNodeEndInstance extends NodeInstanceImpl {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         public CompositeNode.CompositeNodeEnd getCompositeNodeEnd() {
             return (CompositeNode.CompositeNodeEnd) getNode();

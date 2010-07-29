@@ -196,7 +196,7 @@ import java.util.TreeSet;
  */
 public class CronExpression implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 12423409423L;
+    private static final long serialVersionUID = 510l;
     
     protected static final int SECOND = 0;
     protected static final int MINUTE = 1;

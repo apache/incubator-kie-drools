@@ -66,7 +66,7 @@ public class SessionConfiguration
     implements
     KnowledgeSessionConfiguration,
     Externalizable {
-    private static final long             serialVersionUID = 500L;
+    private static final long             serialVersionUID = 510l;
 
     private ChainedProperties             chainedProperties;
 

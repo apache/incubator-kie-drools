@@ -29,7 +29,7 @@ public class LeftTupleList
     LeftTupleMemory,
     Entry {
 
-    public static final long       serialVersionUID = 400L;
+    public static final long       serialVersionUID = 510l;
     //      private Entry             previous;
     public Entry                   next;
 

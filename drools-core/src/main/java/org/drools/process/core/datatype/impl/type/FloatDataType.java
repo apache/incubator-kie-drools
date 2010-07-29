@@ -31,7 +31,7 @@ public final class FloatDataType
     implements
     DataType {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }

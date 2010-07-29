@@ -30,7 +30,7 @@ import org.drools.workflow.core.Connection;
  */
 public class ConnectionImpl implements Connection, Serializable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private Node from;
     private Node to;

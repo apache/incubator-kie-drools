@@ -29,7 +29,7 @@ import org.drools.spi.PropagationContext;
  *
  */
 public class NotNode extends BetaNode {
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;

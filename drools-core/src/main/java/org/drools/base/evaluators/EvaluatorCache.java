@@ -34,7 +34,7 @@ import org.drools.spi.Evaluator;
  */
 public class EvaluatorCache implements Externalizable {
 
-    private static final long serialVersionUID = 5643974484372543392L;
+    private static final long serialVersionUID = 510l;
     private Map<ValueType, Map<Operator, Evaluator>> evaluators = new HashMap<ValueType, Map<Operator, Evaluator>>();
 
     public EvaluatorCache() {

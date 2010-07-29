@@ -30,7 +30,7 @@ import java.util.Calendar;
  */
 public class TimeMachine implements Externalizable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }

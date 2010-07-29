@@ -22,7 +22,7 @@ public class AgendaGroupPoppedEvent extends AgendaGroupEvent {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public AgendaGroupPoppedEvent(final AgendaGroup agendaGroup) {
         super( agendaGroup );

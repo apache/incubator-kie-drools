@@ -31,7 +31,7 @@ public class ConcurrentRightTupleList
     implements
     RightTupleMemory,
     Entry {
-    private static final long          serialVersionUID = 400L;
+    private static final long          serialVersionUID = 510l;
 
     public AtomicReference<Entry>      previous;
     public AtomicReference<Entry>      next;

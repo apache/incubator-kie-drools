@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class Forall extends ConditionalElement {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     // forall base pattern
     private Pattern            basePattern;

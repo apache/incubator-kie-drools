@@ -51,7 +51,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     //    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
     //                                                                                                      "3" ) );
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     ObjectSinkNodeList        otherSinks;
     ObjectSinkNodeList        hashableSinks;
 
@@ -524,7 +524,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     public static class HashKey
         implements
         Externalizable {
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         private static final byte OBJECT           = 1;
         private static final byte LONG             = 2;
@@ -805,7 +805,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     public static class FieldIndex
         implements
         LinkedListNode {
-        private static final long    serialVersionUID = 400L;
+        private static final long    serialVersionUID = 510l;
         private int                  index;
         private InternalReadAccessor fieldExtactor;
 

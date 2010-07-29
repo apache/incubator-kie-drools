@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
 
 public class ObjectHashSet extends AbstractHashTable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public ObjectHashSet() {
         this( 16,
@@ -157,7 +157,7 @@ public class ObjectHashSet extends AbstractHashTable {
         Entry,
         Externalizable  {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         private Object            value;
 

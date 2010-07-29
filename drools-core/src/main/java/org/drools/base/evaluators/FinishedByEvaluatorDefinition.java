@@ -196,7 +196,7 @@ public class FinishedByEvaluatorDefinition
      * Implements the 'finishedby' evaluator itself
      */
     public static class FinishedByEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -5156972073099070733L;
+        private static final long serialVersionUID = 510l;
 
         private long              endDev;
         private String            paramText;

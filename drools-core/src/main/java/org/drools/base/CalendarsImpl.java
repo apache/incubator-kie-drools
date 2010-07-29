@@ -35,7 +35,7 @@ public class CalendarsImpl
     Calendars,
     Externalizable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private Map<String, Calendar> map;
 

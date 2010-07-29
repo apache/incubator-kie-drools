@@ -50,7 +50,7 @@ public final class QueryTerminalNode extends BaseNode
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public static final short type             = 8;
 

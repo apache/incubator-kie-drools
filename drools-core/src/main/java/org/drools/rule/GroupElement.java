@@ -34,7 +34,7 @@ public class GroupElement extends ConditionalElement
     implements
     Externalizable {
 
-    private static final long serialVersionUID     = 510L;
+    private static final long serialVersionUID     = 510l;
 
     public static final Type  AND                  = Type.AND;
     public static final Type  OR                   = Type.OR;

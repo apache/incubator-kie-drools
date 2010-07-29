@@ -36,7 +36,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
     AcceptsReadAccessor,
     Externalizable {
 
-    private static final long      serialVersionUID = 400L;
+    private static final long      serialVersionUID = 510l;
 
     private InternalReadAccessor   readAccessor;
     private ReturnValueRestriction restriction;

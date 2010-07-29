@@ -204,7 +204,7 @@ public class PseudoClockScheduler
         Callable<Void>,
         Serializable {
 
-        private static final long serialVersionUID = 8274715465776449367L;
+        private static final long serialVersionUID = 510l;
 
         private final Job         job;
         private final Trigger     trigger;

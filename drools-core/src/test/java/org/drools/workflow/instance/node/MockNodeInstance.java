@@ -30,7 +30,7 @@ import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 public class MockNodeInstance extends NodeInstanceImpl {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private Map<String, List<NodeInstance>> triggers = new HashMap<String, List<NodeInstance>>();
     private MockNode mockNode;

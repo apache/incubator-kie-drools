@@ -50,7 +50,7 @@ public class AlphaNode extends ObjectSource
     /**
      *
      */
-    private static final long        serialVersionUID = 400L;
+    private static final long        serialVersionUID = 510l;
 
     /** The <code>FieldConstraint</code> */
     private AlphaNodeFieldConstraint constraint;
@@ -253,7 +253,7 @@ public class AlphaNode extends ObjectSource
     public static class AlphaMemory
         implements
         Externalizable {
-        private static final long serialVersionUID = -5852576405010023458L;
+        private static final long serialVersionUID = 510l;
 
         public ContextEntry       context;
 

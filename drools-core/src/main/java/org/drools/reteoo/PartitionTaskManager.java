@@ -255,7 +255,7 @@ public class PartitionTaskManager {
     }
 
     public static class FactAssertAction extends FactAction {
-        private static final long serialVersionUID = -8478488926430845209L;
+        private static final long serialVersionUID = 510l;
 
         FactAssertAction() {
         }

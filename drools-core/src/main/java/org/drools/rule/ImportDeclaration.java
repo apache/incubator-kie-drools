@@ -28,7 +28,7 @@ import java.io.ObjectOutput;
  */
 public class ImportDeclaration implements Externalizable {
 
-    private static final long serialVersionUID = 6410032114027977766L;
+    private static final long serialVersionUID = 510l;
 
     private String target;
 

@@ -39,7 +39,7 @@ public class MVELAction
     Action,
     MVELCompileable,
     Externalizable {
-    private static final long       serialVersionUID = 400L;
+    private static final long       serialVersionUID = 510l;
     
     private MVELCompilationUnit unit;
     private String id;        

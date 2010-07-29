@@ -235,7 +235,7 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         implements
         ContextEntry {
 
-        private static final long    serialVersionUID = 400L;
+        private static final long    serialVersionUID = 510l;
 
         public ContextEntry[]  alphas;
         public ContextEntry[]  betas;

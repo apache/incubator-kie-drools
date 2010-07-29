@@ -32,7 +32,7 @@ public class AbstractBaseLinkedListNode
     implements
     LinkedListNode {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private LinkedListNode    previous;
 

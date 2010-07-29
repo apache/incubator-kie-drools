@@ -40,7 +40,7 @@ public class ClassObjectTypeConf
     ObjectTypeConf,
     Externalizable {
 
-    private static final long          serialVersionUID = 8218802585428841926L;
+    private static final long          serialVersionUID = 510l;
 
     private Class< ? >                 cls;
     private transient InternalRuleBase ruleBase;

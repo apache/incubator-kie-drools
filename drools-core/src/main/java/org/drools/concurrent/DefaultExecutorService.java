@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 
 public class DefaultExecutorService implements ExecutorService {
 
-    private static final long serialVersionUID = 7860812696865293690L;
+    private static final long serialVersionUID = 510l;
     private Thread thread;
     private CommandExecutor executor;
     private boolean running;

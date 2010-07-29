@@ -28,7 +28,7 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
-    private static final long serialVersionUID = -7049575828126061047L;
+    private static final long serialVersionUID = 510l;
     
     private InternalRuleBase ruleBase;
     private ConcurrentMap<Object, ObjectTypeConf> typeConfMap;

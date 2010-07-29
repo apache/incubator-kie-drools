@@ -25,7 +25,7 @@ public class AgendaGroupEvent extends EventObject {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public AgendaGroupEvent(final AgendaGroup agendaGroup) {
         super( agendaGroup );

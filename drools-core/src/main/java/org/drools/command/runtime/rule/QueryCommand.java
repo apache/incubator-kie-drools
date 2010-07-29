@@ -35,7 +35,7 @@ import org.drools.runtime.rule.QueryResults;
 @XmlAccessorType( XmlAccessType.NONE )
 public class QueryCommand  implements GenericCommand<QueryResults> {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	@XmlAttribute(name = "out-identifier")
     private String outIdentifier;

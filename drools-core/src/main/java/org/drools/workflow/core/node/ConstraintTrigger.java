@@ -21,7 +21,7 @@ import org.drools.workflow.core.impl.ConnectionRef;
 
 public class ConstraintTrigger extends Trigger implements Constrainable {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
 	private String constraint;
 	private String header;

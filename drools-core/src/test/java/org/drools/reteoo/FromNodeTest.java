@@ -367,7 +367,7 @@ public class FromNodeTest extends TestCase {
         implements
         DataProvider {
 
-        private static final long serialVersionUID = -6003158511821491524L;
+        private static final long serialVersionUID = 510l;
 
         private Collection        collection;
 

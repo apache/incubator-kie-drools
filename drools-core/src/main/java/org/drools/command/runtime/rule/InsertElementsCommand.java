@@ -42,7 +42,7 @@ public class InsertElementsCommand
     implements
     GenericCommand<Collection<FactHandle>> {
 
-	private static final long serialVersionUID = 501L;
+	private static final long serialVersionUID = 510l;
 
 	@XmlJavaTypeAdapter(JaxbListAdapter.class)
 	@XmlElement(name="list")

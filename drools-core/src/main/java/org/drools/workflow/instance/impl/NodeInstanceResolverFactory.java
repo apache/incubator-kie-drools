@@ -25,7 +25,7 @@ import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class NodeInstanceResolverFactory extends ImmutableDefaultFactory {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private NodeInstance nodeInstance;
 	

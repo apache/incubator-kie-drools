@@ -30,7 +30,7 @@ import org.drools.workflow.core.NodeContainer;
  */
 public class NodeContainerImpl implements Serializable, NodeContainer {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private Map<Long, Node> nodes;
 

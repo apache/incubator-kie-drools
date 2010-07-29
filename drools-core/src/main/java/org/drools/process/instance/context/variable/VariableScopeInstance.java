@@ -34,7 +34,7 @@ import org.drools.workflow.instance.node.CompositeContextNodeInstance;
  */
 public class VariableScopeInstance extends AbstractContextInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private Map<String, Object> variables = new HashMap<String, Object>();
     private transient String variableIdPrefix = null;

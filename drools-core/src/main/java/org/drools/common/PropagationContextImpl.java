@@ -30,7 +30,7 @@ public class PropagationContextImpl
     implements
     PropagationContext {
 
-    private static final long  serialVersionUID = 8400185220119865618L;
+    private static final long  serialVersionUID = 510l;
 
     private int                type;
 

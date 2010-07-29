@@ -37,7 +37,7 @@ public class EvaluatorRegistry
     implements
     Externalizable {
 
-    private static final long                serialVersionUID = -3047718531857258033L;
+    private static final long                serialVersionUID = 510l;
 
     private Map<String, EvaluatorDefinition> evaluators;
     private ClassLoader                      classloader;

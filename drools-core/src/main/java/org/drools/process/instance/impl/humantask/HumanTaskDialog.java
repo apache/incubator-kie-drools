@@ -50,7 +50,7 @@ import org.drools.runtime.process.WorkItem;
  */
 public class HumanTaskDialog extends JDialog {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private HumanTaskHandler handler;
     private WorkItem workItem;

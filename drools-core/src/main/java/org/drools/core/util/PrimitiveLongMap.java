@@ -34,14 +34,14 @@ public class PrimitiveLongMap
     /**
      *
      */
-    private static final long   serialVersionUID = 400L;
+    private static final long   serialVersionUID = 510l;
 
     private final static Object NULL             = new Serializable() {
 
                                                      /**
                                                       *
                                                       */
-                                                     private static final long serialVersionUID = 400L;
+                                                     private static final long serialVersionUID = 510l;
                                                  };
 
     private int           indexIntervals;
@@ -355,7 +355,7 @@ public class PrimitiveLongMap
         /**
          *
          */
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         private int         pageSize;
         private int         pageId;
         private int         shifts;

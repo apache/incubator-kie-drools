@@ -61,7 +61,7 @@ public class EvalConditionNode extends LeftTupleSource
     /**
     *
     */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     /** The semantic <code>Test</code>. */
     private EvalCondition     condition;
@@ -380,7 +380,7 @@ public class EvalConditionNode extends LeftTupleSource
         implements
         Externalizable {
 
-        private static final long serialVersionUID = -2754669682742843929L;
+        private static final long serialVersionUID = 510l;
 
         public Object             context;
 
