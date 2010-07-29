@@ -38,10 +38,6 @@ public class ClassFieldAccessorCache {
         this.classLoader = classLoader;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
