@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.jsr94.rules;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -32,6 +14,8 @@ package org.drools.jsr94.rules;
  * limitations under the License.
  */
 
+package org.drools.jsr94.rules;
+
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -47,7 +31,7 @@ import org.drools.spi.FactHandleFactory;
  */
 public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
-    private static final long serialVersionUID = 4964273923122006124L;
+    private static final long serialVersionUID = 510l;
 
     protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
