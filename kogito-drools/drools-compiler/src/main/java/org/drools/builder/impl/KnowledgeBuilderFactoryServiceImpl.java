@@ -22,8 +22,8 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         return new PackageBuilderConfiguration();
     }
     
-    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader) {
-        return new PackageBuilderConfiguration(classLoader, properties);
+    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader... classLoaders) {
+        return new PackageBuilderConfiguration(properties, classLoaders);
     }   
     
     public DecisionTableConfiguration newDecisionTableConfiguration() {

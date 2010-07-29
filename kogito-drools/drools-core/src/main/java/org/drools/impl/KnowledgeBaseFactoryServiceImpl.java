@@ -33,8 +33,8 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
         return new RuleBaseConfiguration();
     }
         
-    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader classLoader) {
-        return new RuleBaseConfiguration(classLoader, properties);
+    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader... classLoaders) {
+        return new RuleBaseConfiguration(properties, classLoaders);
     }        
     
     public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration() {

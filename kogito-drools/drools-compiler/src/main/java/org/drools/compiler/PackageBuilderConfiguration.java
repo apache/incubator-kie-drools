@@ -130,9 +130,9 @@ public class PackageBuilderConfiguration
      * Constructor that sets the parent class loader for the package being built/compiled
      * @param classLoader
      */
-    public PackageBuilderConfiguration(ClassLoader classLoader) {
-        init( classLoader,
-              null );
+    public PackageBuilderConfiguration(ClassLoader... classLoaders) {
+        init( null,
+              classLoaders );
     }
 
     /**
@@ -140,8 +140,8 @@ public class PackageBuilderConfiguration
      * @param properties
      */
     public PackageBuilderConfiguration(Properties properties) {
-        init( null,
-              properties );
+        init( properties,
+              null );
     }
 
     /**
@@ -149,10 +149,10 @@ public class PackageBuilderConfiguration
      * @param classLoader
      * @param properties
      */
-    public PackageBuilderConfiguration(ClassLoader classLoader,
-                                       Properties properties) {
-        init( classLoader,
-              properties );
+    public PackageBuilderConfiguration(Properties properties,
+                                       ClassLoader... classLoaders) {
+        init( properties,
+              classLoaders );
     }
 
     public PackageBuilderConfiguration() {
@@ -160,9 +160,9 @@ public class PackageBuilderConfiguration
               null );
     }
 
-    private void init(ClassLoader classLoader,
-                      Properties properties) {
-        setClassLoader( classLoader );
+    private void init(Properties properties,
+                      ClassLoader... classLoaders) {
+        setClassLoader( classLoaders );
 
         this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                         this.classLoader,
@@ -329,8 +329,8 @@ public class PackageBuilderConfiguration
     }
 
     /** Use this to override the classLoader that will be used for the rules. */
-    public void setClassLoader(final ClassLoader classLoader) {
-        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
+    public void setClassLoader(final ClassLoader... classLoaders) {
+        this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
                                                            getClass(),
                                                            isClassLoaderCacheEnabled() );
     }

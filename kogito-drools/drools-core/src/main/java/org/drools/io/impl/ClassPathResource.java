@@ -83,7 +83,7 @@ public class ClassPathResource extends BaseResource
         }
         this.path = path;
         this.clazz = clazz;
-        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
+        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader == null ? null : new ClassLoader[] { classLoader },
                                                            clazz,
                                                            false );
     }
