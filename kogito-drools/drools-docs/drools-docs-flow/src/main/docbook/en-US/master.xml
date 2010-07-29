@@ -33,6 +33,7 @@
   </preface>
 
   <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
+  <xi:include href="Chapter-Installer/Chapter-Installer.xml" />
   <xi:include href="Chapter-GettingStarted/Chapter-GettingStarted.xml" />
   <xi:include href="Chapter-Flow/Chapter-RuleFlow.xml" />
   <xi:include href="Chapter-API/Chapter-API.xml" />
