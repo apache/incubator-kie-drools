@@ -21,25 +21,29 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class JaxbPair {
+@XmlRootElement(name="list")
+public class JaxbStringObjectPair {
 
 	@XmlAttribute(name = "key")
-	private Object key;
+	private String key;
 
 	@XmlElement
+	@XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
 	private Object value;
 
-	public JaxbPair() {
+	public JaxbStringObjectPair() {
 	}
 
-	public JaxbPair(Object key, Object value) {
+	public JaxbStringObjectPair(String key, Object value) {
 		this.key = key;
 		this.value = value;
 	}
 
-	public Object getKey() {
+	public String getKey() {
 		return key;
 	}
 
@@ -72,7 +76,7 @@ public class JaxbPair {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		JaxbPair other = (JaxbPair) obj;
+		JaxbStringObjectPair other = (JaxbStringObjectPair) obj;
 		if (key == null) {
 			if (other.key != null)
 				return false;
