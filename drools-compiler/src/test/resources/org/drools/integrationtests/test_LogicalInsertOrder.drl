@@ -1,0 +1,22 @@
+package org.drools;
+
+rule "Logical insert order 1"
+    salience 10
+	when
+		$p : Person( status == "hungry" )
+	then
+	    modify($p) {
+	        setStatus( "not hungry" )
+	    }
+		insertLogical( "rule 1" );
+end
+
+rule "Logical insert order 2"
+	when
+		$p : Person( status == "thirsty" )
+	then
+		insertLogical( "rule 2" );
+	    modify($p) {
+	        setStatus( "not thursty" )
+	    }
+end
