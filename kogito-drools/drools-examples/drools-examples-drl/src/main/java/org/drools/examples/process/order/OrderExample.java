@@ -52,7 +52,7 @@ import org.drools.runtime.process.WorkItemManager;
 
 public class OrderExample extends JFrame {
 	
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private KnowledgeBase kbase;
 	private StatefulKnowledgeSession ksession;

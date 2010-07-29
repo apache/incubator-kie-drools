@@ -90,7 +90,7 @@ public class PetStore {
      */
     public static class PetStoreUI extends JPanel {
 
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 510l;
 
 		private JTextArea        output;
 
@@ -281,7 +281,7 @@ public class PetStore {
          */
         private class NameRenderer extends DefaultTableCellRenderer {
 
-			private static final long serialVersionUID = 1L;
+			private static final long serialVersionUID = 510l;
 
 			public NameRenderer() {
                 super();
@@ -298,7 +298,7 @@ public class PetStore {
          */
         private class PriceRenderer extends DefaultTableCellRenderer {
 
-			private static final long serialVersionUID = 1L;
+			private static final long serialVersionUID = 510l;
 
 			public PriceRenderer() {
                 super();
@@ -319,7 +319,7 @@ public class PetStore {
      */
     private static class TableModel extends AbstractTableModel {
 
-    	private static final long serialVersionUID = 1L;
+    	private static final long serialVersionUID = 510l;
 
 		private String[]  columnNames = {"Name", "Price"};
 

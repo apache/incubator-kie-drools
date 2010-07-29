@@ -30,7 +30,7 @@ public class Address
     implements
     Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	protected String    title      = null;
     protected String    accountId  = null;

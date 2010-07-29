@@ -28,7 +28,7 @@ public class Hi
     implements
     ConwayPattern {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
     private final boolean[][] grid = {{true, false, false, false, true, false, false, true, true, true, true, true, true, true}, {true, false, false, false, true, false, false, false, false, false, true, false, false, false},
             {true, false, false, false, true, false, false, false, false, false, true, false, false, false}, {true, false, false, false, true, false, false, false, false, false, true, false, false, false},

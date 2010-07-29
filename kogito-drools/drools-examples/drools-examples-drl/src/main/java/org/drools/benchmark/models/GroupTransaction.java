@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 public class GroupTransaction extends Security {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	protected String[]  accountIds    = null;
     protected double    buyPrice;
