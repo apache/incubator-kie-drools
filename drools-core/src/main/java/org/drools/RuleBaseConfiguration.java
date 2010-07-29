@@ -301,7 +301,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
             setRuleBaseUpdateHandler( StringUtils.isEmpty( value ) ? "" : value );
         } else if ( name.equals( "drools.conflictResolver" ) ) {
-            setConflictResolver( RuleBaseConfiguration.determineConflictResolver( StringUtils.isEmpty( value ) ? DepthConflictResolver.class.getName() : value ) );
+            setConflictResolver( determineConflictResolver( StringUtils.isEmpty( value ) ? DepthConflictResolver.class.getName() : value ) );
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
             setAdvancedProcessRuleIntegration( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
@@ -383,7 +383,7 @@ public class RuleBaseConfiguration
     public RuleBaseConfiguration(Properties properties,
                                  ClassLoader... classLoaders) {
         init( properties,
-              classLoader );
+              classLoaders );
     }
 
     private void init(Properties properties,
@@ -443,8 +443,8 @@ public class RuleBaseConfiguration
         setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
                                                                       "" ) );
 
-        setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
-                                                                                                                  "org.drools.conflict.DepthConflictResolver" ) ) );
+        setConflictResolver( determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
+                                                        "org.drools.conflict.DepthConflictResolver" ) ) );
 
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );
@@ -950,30 +950,21 @@ public class RuleBaseConfiguration
         }
     }
 
-    private static ConflictResolver determineConflictResolver(String className) {
+    private ConflictResolver determineConflictResolver(String className) {
         Class clazz = null;
         try {
-            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
+            clazz = this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
-        }
-
-        if ( clazz == null ) {
-            try {
-                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
-            } catch ( ClassNotFoundException e ) {
-            }
-        }
-
-        if ( clazz != null ) {
-            try {
-                return (ConflictResolver) clazz.getMethod( "getInstance",
-                                                           null ).invoke( null,
-                                                                          null );
-            } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to set Conflict Resolver '" + className + "'" );
-            }
-        } else {
             throw new IllegalArgumentException( "conflict Resolver '" + className + "' not found" );
+        }
+
+
+        try {
+            return (ConflictResolver) clazz.getMethod( "getInstance",
+                                                       null ).invoke( null,
+                                                                      null );
+        } catch ( Exception e ) {
+            throw new IllegalArgumentException( "Unable to set Conflict Resolver '" + className + "'" );
         }
     }
 

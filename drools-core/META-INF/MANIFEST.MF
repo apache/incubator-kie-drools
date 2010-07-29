@@ -18,7 +18,7 @@ Import-Package: com.sun.tools.xjc,com.thoughtworks.xstream,com.thought
  g.mvel2.util;version="2.0",org.osgi.framework;version="1.5",org.osgi.
  util.tracker;version="1.4",org.w3c.dom,org.xml.sax,org.xml.sax.helper
  s
-Bnd-LastModified: 1280379205494
+Bnd-LastModified: 1280391657922
 Export-Package: org.drools.reteoo.builder;uses:="org.drools.rule,org.d
  rools.spi,org.drools.reteoo,org.drools.common,org.drools.time,org.dro
  ols,org.drools.base.accumulators,org.drools.base,org.drools.time.impl
