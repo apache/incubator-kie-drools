@@ -10,6 +10,27 @@
   <title>What is New and Noteworthy in Drools 5.1.0</title>
 
   <section>
+    <title>Drools API</title>
+    
+    <para>As in Drools 5.0 it is still possible to configure a <code>KnowledgeBase</code>
+    using configuration, via a xml change set, instead of programmatically. However the change-set namespace
+    is now versioned. This means that the 1.0.0 xsd should now be referenced.
+    </para>
+    <example>
+        <title>Here is a simple version 1.0.0 change set</title>
+
+        <programlisting>
+&lt;change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+  &lt;add&gt;
+      &lt;resource source='classpath:org/domain/someRules.drl' type='DRL' /&gt;
+      &lt;resource source='classpath:org/domain/aFlow.drf' type='DRF' /&gt;
+  &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+      </example>
+  </section>
+    
+  <section>
     <title>Core</title>
 
     <section>
