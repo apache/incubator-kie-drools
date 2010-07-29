@@ -49,7 +49,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     private static final String[] SUPPORTED_IDS = { Operator.LESS.getOperatorString(), Operator.LESS_OR_EQUAL.getOperatorString(),
                                                     Operator.GREATER.getOperatorString(), Operator.GREATER_OR_EQUAL.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
-        private static final long serialVersionUID = 4782368623L;
+        private static final long serialVersionUID = 510l;
         {
             addEvaluator( ValueType.BIG_DECIMAL_TYPE,   Operator.LESS,                BigDecimalLessEvaluator.INSTANCE );
             addEvaluator( ValueType.BIG_DECIMAL_TYPE,   Operator.LESS_OR_EQUAL,       BigDecimalLessOrEqualEvaluator.INSTANCE );

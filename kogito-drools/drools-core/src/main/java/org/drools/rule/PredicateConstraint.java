@@ -51,7 +51,7 @@ public class PredicateConstraint extends MutableTypeConstraint
     /**
      *
      */
-    private static final long          serialVersionUID   = 400L;
+    private static final long          serialVersionUID   = 510l;
 
     private PredicateExpression        expression;
 
@@ -350,7 +350,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         implements
         ContextEntry {
 
-        private static final long    serialVersionUID = 400L;
+        private static final long    serialVersionUID = 510l;
 
         public LeftTuple             leftTuple;
         public Object                rightObject;

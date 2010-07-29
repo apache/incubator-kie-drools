@@ -48,7 +48,7 @@ public class NamedEntryPoint
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[]                addRemovePropertyChangeListenerArgs = new Object[]{this};
 
-    private static final long               serialVersionUID                    = 500;
+    private static final long               serialVersionUID                    = 510l;
 
     protected ObjectStore                   objectStore;
 

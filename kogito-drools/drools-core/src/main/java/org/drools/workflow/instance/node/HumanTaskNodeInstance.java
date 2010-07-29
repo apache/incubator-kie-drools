@@ -24,7 +24,7 @@ import org.drools.workflow.core.node.WorkItemNode;
 
 public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
     
     private transient SwimlaneContextInstance swimlaneContextInstance;
     

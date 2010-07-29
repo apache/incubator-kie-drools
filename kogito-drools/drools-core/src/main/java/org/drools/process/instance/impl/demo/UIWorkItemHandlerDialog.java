@@ -42,7 +42,7 @@ import org.drools.runtime.process.WorkItem;
  */
 public class UIWorkItemHandlerDialog extends JDialog {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private Map<String, Object> results = new HashMap<String, Object>();
     private UIWorkItemHandler handler;

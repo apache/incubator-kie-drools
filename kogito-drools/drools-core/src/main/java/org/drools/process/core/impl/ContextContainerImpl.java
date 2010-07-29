@@ -31,7 +31,7 @@ import org.drools.process.core.ContextContainer;
  */
 public class ContextContainerImpl implements Serializable, ContextContainer {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private Map<String, Context> defaultContexts = new HashMap<String, Context>();
     private Map<String, List<Context>> subContexts = new HashMap<String, List<Context>>();

@@ -80,7 +80,7 @@ public class CollectSetAccumulateFunction
         }
         
         public static class MutableInt implements Serializable {
-            private static final long serialVersionUID = 6106891423456113914L;
+            private static final long serialVersionUID = 510l;
             public int value = 0;
         }
 

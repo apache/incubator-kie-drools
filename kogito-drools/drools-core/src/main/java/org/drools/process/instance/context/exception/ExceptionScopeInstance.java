@@ -22,7 +22,7 @@ import org.drools.process.instance.context.AbstractContextInstance;
 
 public abstract class ExceptionScopeInstance extends AbstractContextInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public String getContextType() {
         return ExceptionScope.EXCEPTION_SCOPE;

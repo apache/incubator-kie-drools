@@ -35,7 +35,7 @@ public class VariableConstraint extends MutableTypeConstraint
     AcceptsReadAccessor,    
     Externalizable {
 
-    private static final long    serialVersionUID = 400L;
+    private static final long    serialVersionUID = 510l;
 
     private InternalReadAccessor fieldExtractor;
     private Restriction  restriction;

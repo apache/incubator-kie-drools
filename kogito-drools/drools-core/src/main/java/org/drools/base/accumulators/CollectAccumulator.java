@@ -41,7 +41,7 @@ public class CollectAccumulator
     Accumulator,
     Externalizable {
 
-    private static final long                          serialVersionUID = 400L;
+    private static final long                          serialVersionUID = 510l;
     private Collect collect;
 
     public CollectAccumulator() {

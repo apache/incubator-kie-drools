@@ -271,7 +271,7 @@ public abstract class AbstractHashTable
         Iterator,
         Externalizable {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         private AbstractHashTable hashTable;
         private Entry[]           table;
@@ -381,7 +381,7 @@ public abstract class AbstractHashTable
         implements
         ObjectComparator {
 
-        private static final long      serialVersionUID = 400L;
+        private static final long      serialVersionUID = 510l;
         public static ObjectComparator INSTANCE         = new InstanceEquals();
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -421,7 +421,7 @@ public abstract class AbstractHashTable
         implements
         ObjectComparator {
 
-        private static final long      serialVersionUID = 400L;
+        private static final long      serialVersionUID = 510l;
         public static ObjectComparator INSTANCE         = new EqualityEquals();
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -464,7 +464,7 @@ public abstract class AbstractHashTable
         implements
         Externalizable {
 
-        private static final long serialVersionUID = 1020010166351582645L;
+        private static final long serialVersionUID = 510l;
 
         InternalReadAccessor      extractor;
         Declaration               declaration;
@@ -532,7 +532,7 @@ public abstract class AbstractHashTable
         implements
         Index {
 
-        private static final long    serialVersionUID = -1022777958435032326L;
+        private static final long    serialVersionUID = 510l;
 
         private InternalReadAccessor extractor;
         private Declaration          declaration;
@@ -637,7 +637,7 @@ public abstract class AbstractHashTable
         implements
         Index {
 
-        private static final long serialVersionUID = 5453765340969897686L;
+        private static final long serialVersionUID = 510l;
 
         private FieldIndex        index0;
         private FieldIndex        index1;
@@ -763,7 +763,7 @@ public abstract class AbstractHashTable
         implements
         Index {
 
-        private static final long serialVersionUID = 7743486670399440233L;
+        private static final long serialVersionUID = 510l;
 
         private FieldIndex        index0;
         private FieldIndex        index1;

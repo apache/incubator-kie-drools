@@ -53,7 +53,7 @@ import org.drools.workflow.core.node.CompositeNode;
  */
 public abstract class NodeImpl implements Node, Serializable, ContextResolver {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
 
 	protected static final NodeImpl[] EMPTY_NODE_ARRAY = new NodeImpl[0];
 

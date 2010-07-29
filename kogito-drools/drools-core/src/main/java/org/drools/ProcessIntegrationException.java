@@ -34,7 +34,7 @@ public class ProcessIntegrationException extends IntegrationException {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     /** The rule. */
     private final    Process    process;
 

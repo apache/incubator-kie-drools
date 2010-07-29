@@ -25,7 +25,7 @@ import org.drools.workflow.core.DroolsAction;
 
 public class DroolsConsequenceAction extends DroolsAction implements Serializable {
 	
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private String dialect = "mvel";
     private String consequence;

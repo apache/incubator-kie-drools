@@ -32,7 +32,7 @@ public class ValueType
     implements
     Externalizable {
 
-    private static final long      serialVersionUID  = 400L;
+    private static final long      serialVersionUID  = 510l;
 
     public static final ValueType  NULL_TYPE         = new ValueType( "null",
                                                                       null,

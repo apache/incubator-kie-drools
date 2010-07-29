@@ -91,7 +91,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * DO NOT CHANGE BELLOW SERIAL_VERSION_ID UNLESS YOU ARE CHANGING DROOLS VERSION
      * SERIAL_VERSION_ID=320 stands for version 3.2.0
      */
-    private static final long serialVersionUID = 500L;
+    private static final long serialVersionUID = 510l;
 
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private transient Rete    rete;

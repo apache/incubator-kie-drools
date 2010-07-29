@@ -196,7 +196,7 @@ public class FinishesEvaluatorDefinition
      * Implements the 'finishes' evaluator itself
      */
     public static class FinishesEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = 6232789044144077522L;
+        private static final long serialVersionUID = 510l;
 
         private long              endDev;
         private String            paramText;

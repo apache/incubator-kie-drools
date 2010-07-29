@@ -49,7 +49,7 @@ import java.util.NoSuchElementException;
 public class LeftTupleSinkNodeList
     implements
     Externalizable {
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private LeftTupleSinkNode firstNode;
     private LeftTupleSinkNode lastNode;

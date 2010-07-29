@@ -151,7 +151,7 @@ public class JDKTimerService
         implements
         JobHandle {
 
-        private static final long serialVersionUID = 6607880828232839927L;
+        private static final long serialVersionUID = 510l;
         
         private ScheduledFuture<Void> future;
 

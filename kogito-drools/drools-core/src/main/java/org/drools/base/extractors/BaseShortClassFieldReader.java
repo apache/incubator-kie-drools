@@ -25,7 +25,7 @@ import org.drools.common.InternalWorkingMemory;
 
 public abstract class BaseShortClassFieldReader extends BaseClassFieldReader {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public BaseShortClassFieldReader(final Class clazz,
                                         final String fieldName) {

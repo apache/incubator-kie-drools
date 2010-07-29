@@ -62,7 +62,7 @@ public class RuleTerminalNode extends BaseNode
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     /** The rule to invoke upon match. */
     private Rule              rule;

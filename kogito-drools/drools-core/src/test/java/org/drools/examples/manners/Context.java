@@ -28,7 +28,7 @@ public class Context
     /**
      *
      */
-    private static final long    serialVersionUID = 400L;
+    private static final long    serialVersionUID = 510l;
     public static final int      START_UP         = 0;
     public static final int      ASSIGN_SEATS     = 1;
     public static final int      MAKE_PATH        = 2;

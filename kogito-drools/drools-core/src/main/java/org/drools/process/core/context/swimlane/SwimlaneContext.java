@@ -26,7 +26,7 @@ import org.drools.process.core.context.AbstractContext;
 
 public class SwimlaneContext extends AbstractContext {
 	
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public static final String SWIMLANE_SCOPE = "SwimlaneScope";
     

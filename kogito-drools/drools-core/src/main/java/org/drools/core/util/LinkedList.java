@@ -48,7 +48,7 @@ import java.util.NoSuchElementException;
 public class LinkedList
     implements
     Externalizable {
-    private static final long  serialVersionUID = 400L;
+    private static final long  serialVersionUID = 510l;
 
     private LinkedListNode     firstNode;
     private LinkedListNode     lastNode;

@@ -22,7 +22,7 @@ import org.drools.workflow.core.DroolsAction;
 
 public class ActionExceptionHandler implements ExceptionHandler, Serializable {
 	
-	private static final long serialVersionUID = 400L;
+	private static final long serialVersionUID = 510l;
 	
 	private String faultVariable;
 	private DroolsAction action;

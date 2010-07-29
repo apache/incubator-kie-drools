@@ -26,7 +26,7 @@ public class RegisterChannelCommand
     implements
     GenericCommand<Object> {
 
-    private static final long serialVersionUID = 9105151811053790544L;
+    private static final long serialVersionUID = 510l;
 
     private String  name;
     private Channel channel;

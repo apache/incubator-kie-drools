@@ -43,7 +43,7 @@ import org.drools.spi.PropagationContext;
  */
 public class TruthMaintenanceSystem {
 
-    private static final long     serialVersionUID = 400L;
+    private static final long     serialVersionUID = 510l;
 
     private AbstractWorkingMemory workingMemory;
 

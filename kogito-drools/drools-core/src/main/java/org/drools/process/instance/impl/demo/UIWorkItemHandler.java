@@ -50,7 +50,7 @@ import org.drools.runtime.process.WorkItemManager;
  */
 public class UIWorkItemHandler extends JFrame implements WorkItemHandler {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private Map<WorkItem, WorkItemManager> workItems = new HashMap<WorkItem, WorkItemManager>();
     private JList workItemsList;

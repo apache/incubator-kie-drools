@@ -29,7 +29,7 @@ import org.drools.process.core.datatype.DataType;
  */
 public final class UndefinedDataType implements DataType {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private static UndefinedDataType instance;
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

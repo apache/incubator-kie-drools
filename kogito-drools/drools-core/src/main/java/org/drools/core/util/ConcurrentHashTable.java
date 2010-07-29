@@ -48,7 +48,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 
 public class ConcurrentHashTable {
-    private static final long serialVersionUID          = 7249069246763182397L;
+    private static final long serialVersionUID          = 510l;
 
     /*
      * The basic strategy is to subdivide the table among Segments,
@@ -195,7 +195,7 @@ public class ConcurrentHashTable {
          * count field are marked in code comments.
          */
 
-        private static final long           serialVersionUID = 2249069246763182397L;
+        private static final long           serialVersionUID = 510l;
 
         /**
          * The number of elements in this segment's region.

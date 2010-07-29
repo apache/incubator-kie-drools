@@ -195,7 +195,7 @@ public class StartedByEvaluatorDefinition
      * Implements the 'startedby' evaluator itself
      */
     public static class StartedByEvaluator extends BaseEvaluator {
-		private static final long serialVersionUID = -2655549435451501420L;
+		private static final long serialVersionUID = 510l;
 
 		private long                  startDev;
         private String            paramText;

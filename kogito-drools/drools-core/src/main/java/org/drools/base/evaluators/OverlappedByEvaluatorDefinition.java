@@ -203,7 +203,7 @@ public class OverlappedByEvaluatorDefinition
      * Implements the 'overlappedby' evaluator itself
      */
     public static class OverlappedByEvaluator extends BaseEvaluator {
-		private static final long serialVersionUID = -2768899194494247889L;
+		private static final long serialVersionUID = 510l;
 
 		private long                  minDev, maxDev;
         private String                paramText;

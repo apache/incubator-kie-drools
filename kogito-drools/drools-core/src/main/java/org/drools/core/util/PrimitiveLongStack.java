@@ -27,7 +27,7 @@ public class PrimitiveLongStack
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private int         tableSize;
     private int               currentPageId;
     private Page              currentPage;
@@ -98,7 +98,7 @@ public class PrimitiveLongStack
         /**
          *
          */
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         private int         pageId;
         private Page              nextSibling;
         private Page              previousSibling;

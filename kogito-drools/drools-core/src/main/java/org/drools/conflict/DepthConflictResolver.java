@@ -30,7 +30,7 @@ public class DepthConflictResolver
     /**
      *
      */
-    private static final long                 serialVersionUID = 400L;
+    private static final long                 serialVersionUID = 510l;
     public static final DepthConflictResolver INSTANCE         = new DepthConflictResolver();
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

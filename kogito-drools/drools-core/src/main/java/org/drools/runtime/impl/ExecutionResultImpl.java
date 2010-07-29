@@ -34,7 +34,7 @@ import org.drools.xml.jaxb.util.JaxbMapAdapter;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ExecutionResultImpl implements ExecutionResults, Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
 	@XmlElement(name="results")

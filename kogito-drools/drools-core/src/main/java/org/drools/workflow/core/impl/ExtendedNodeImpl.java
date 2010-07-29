@@ -30,7 +30,7 @@ public class ExtendedNodeImpl extends NodeImpl {
 	private static final String[] EVENT_TYPES =
 		new String[] { EVENT_NODE_ENTER, EVENT_NODE_EXIT };
 	
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private Map<String, List<DroolsAction>> actions =
 		new HashMap<String, List<DroolsAction>>();

@@ -47,7 +47,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     private static final String[] SUPPORTED_IDS = { Operator.EQUAL.getOperatorString(), Operator.NOT_EQUAL.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         {
             addEvaluator( ValueType.ARRAY_TYPE,         Operator.EQUAL,         ArrayEqualEvaluator.INSTANCE );
             addEvaluator( ValueType.ARRAY_TYPE,         Operator.NOT_EQUAL,     ArrayNotEqualEvaluator.INSTANCE );

@@ -46,7 +46,7 @@ public class MVELCompilationUnit
     Externalizable,
     Cloneable {
 
-    private static final long serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
 
     private String                          name;
     

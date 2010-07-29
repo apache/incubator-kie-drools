@@ -24,7 +24,7 @@ public class FactException extends RuntimeDroolsException {
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * @see java.lang.Exception#Exception()

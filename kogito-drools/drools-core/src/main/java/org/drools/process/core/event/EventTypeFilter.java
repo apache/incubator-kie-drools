@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 public class EventTypeFilter implements EventFilter, Serializable {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private String type;
 	

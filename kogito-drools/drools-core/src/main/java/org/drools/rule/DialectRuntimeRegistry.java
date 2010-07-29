@@ -30,7 +30,7 @@ public class DialectRuntimeRegistry
     Externalizable {
     private Map<String, DialectRuntimeData> dialects;
 
-    private static final long serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
 
     private Map                             lineMappings;
 

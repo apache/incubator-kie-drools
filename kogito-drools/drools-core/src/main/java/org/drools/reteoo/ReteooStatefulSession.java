@@ -53,7 +53,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     StatefulSession,
     Externalizable { 
 
-    private static final long         serialVersionUID = -5360554247241558374L;
+    private static final long         serialVersionUID = 510l;
     private transient ExecutorService executor;
 
     private transient List            ruleBaseListeners;

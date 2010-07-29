@@ -21,7 +21,7 @@ import org.drools.rule.Package;
 
 public class AfterPackageRemovedEvent extends RuleBaseEvent {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public AfterPackageRemovedEvent(final RuleBase ruleBase,
                                     final Package pkg) {

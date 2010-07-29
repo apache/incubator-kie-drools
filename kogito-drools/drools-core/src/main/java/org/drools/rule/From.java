@@ -33,7 +33,7 @@ public class From extends ConditionalElement
     Wireable,
     PatternSource {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private DataProvider      dataProvider;      
 

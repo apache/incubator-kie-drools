@@ -45,7 +45,7 @@ public class ReturnValueRestriction
     AcceptsReadAccessor,
     Wireable {
 
-    private static final long            serialVersionUID       = 400L;
+    private static final long            serialVersionUID       = 510l;
 
     private ReturnValueExpression        expression;
 
@@ -356,7 +356,7 @@ public class ReturnValueRestriction
         implements
         ContextEntry {
 
-        private static final long    serialVersionUID = 400L;
+        private static final long    serialVersionUID = 510l;
 
         public ReadAccessor          fieldExtractor;
         public InternalFactHandle    handle;

@@ -38,7 +38,7 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long                    serialVersionUID = 400L;
+    private static final long                    serialVersionUID = 510l;
     /** Singleton instance. */
     private static final RecencyConflictResolver INSTANCE         = new RecencyConflictResolver();
 

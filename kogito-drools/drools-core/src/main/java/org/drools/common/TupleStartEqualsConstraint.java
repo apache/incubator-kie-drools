@@ -51,7 +51,7 @@ public class TupleStartEqualsConstraint
     implements
     BetaNodeFieldConstraint {
 
-    private static final long                       serialVersionUID = 400L;
+    private static final long                       serialVersionUID = 510l;
 
     private Declaration[]                     declarations     = new Declaration[0];
 
@@ -124,7 +124,7 @@ public class TupleStartEqualsConstraint
         implements
         ContextEntry {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         public LeftTuple          left;
         public LeftTuple          right;

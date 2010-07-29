@@ -29,7 +29,7 @@ public class RightTupleList
     implements
     RightTupleMemory,
     Entry {
-    private static final long      serialVersionUID = 400L;
+    private static final long      serialVersionUID = 510l;
 
     public Entry                   previous;
     public Entry                   next;

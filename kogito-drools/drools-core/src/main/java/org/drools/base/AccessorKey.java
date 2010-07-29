@@ -27,7 +27,7 @@ import java.io.ObjectOutput;
 public class AccessorKey
     implements
     Externalizable {
-    private static final long serialVersionUID = 400;
+    private static final long serialVersionUID = 510l;
 
     private String            className;
     private String            fieldName;

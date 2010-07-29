@@ -25,7 +25,7 @@ import org.drools.process.core.context.variable.Mappable;
 
 public class Trigger implements Mappable, Serializable {
 	
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private Map<String, String> inMapping = new HashMap<String, String>();
 

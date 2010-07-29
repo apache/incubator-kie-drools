@@ -204,7 +204,7 @@ public class OverlapsEvaluatorDefinition
      * Implements the 'overlaps' evaluator itself
      */
     public static class OverlapsEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -5108524288774833244L;
+        private static final long serialVersionUID = 510l;
 
         private long              minDev, maxDev;
         private String            paramText;

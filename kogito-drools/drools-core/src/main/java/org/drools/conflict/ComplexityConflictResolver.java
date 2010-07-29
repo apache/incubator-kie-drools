@@ -40,7 +40,7 @@ public class ComplexityConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long                       serialVersionUID = 400L;
+    private static final long                       serialVersionUID = 510l;
     /** Singleton instance. */
     private static final ComplexityConflictResolver INSTANCE         = new ComplexityConflictResolver();
 

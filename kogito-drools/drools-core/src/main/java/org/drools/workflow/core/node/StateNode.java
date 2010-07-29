@@ -25,7 +25,7 @@ import org.drools.workflow.core.impl.ConnectionRef;
 
 public class StateNode extends CompositeContextNode implements Constrainable {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
     private Map<ConnectionRef, Constraint> constraints = new HashMap<ConnectionRef, Constraint>();
    

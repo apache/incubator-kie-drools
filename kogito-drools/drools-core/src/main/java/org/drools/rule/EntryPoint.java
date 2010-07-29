@@ -41,7 +41,7 @@ public class EntryPoint extends ConditionalElement
 
     public static final EntryPoint DEFAULT = new EntryPoint("DEFAULT");
 
-    private static final long serialVersionUID = 1435985794248365232L;
+    private static final long serialVersionUID = 510l;
 
     private String entryPointId;
 

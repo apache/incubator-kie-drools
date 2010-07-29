@@ -34,7 +34,7 @@ import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	public ExtendedNodeImpl getExtendedNode() {
 		return (ExtendedNodeImpl) getNode();

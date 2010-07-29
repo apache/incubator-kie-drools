@@ -32,7 +32,7 @@ import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
 
 public class MVELPredicateExpression implements PredicateExpression, MVELCompileable, Externalizable {
-    private static final long       serialVersionUID = 400L;
+    private static final long       serialVersionUID = 510l;
     
     private MVELCompilationUnit unit;
     private String id;

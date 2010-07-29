@@ -41,7 +41,7 @@ public class GlobalExtractor
     AcceptsClassObjectType,
     InternalReadAccessor {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private String            identifier;
     private ObjectType        objectType;
 

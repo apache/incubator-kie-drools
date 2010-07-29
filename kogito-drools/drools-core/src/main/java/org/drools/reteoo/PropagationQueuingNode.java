@@ -46,7 +46,7 @@ public class PropagationQueuingNode extends ObjectSource
     ObjectSinkNode,
     NodeMemory {
 
-    private static final long serialVersionUID        = -615639068150958767L;
+    private static final long serialVersionUID        = 510l;
 
     // should we make this one configurable?
     private static final int  PROPAGATION_SLICE_LIMIT = 1000;

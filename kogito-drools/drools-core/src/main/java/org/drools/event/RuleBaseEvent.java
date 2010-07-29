@@ -24,7 +24,7 @@ import org.drools.rule.Rule;
 
 public class RuleBaseEvent extends EventObject {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private final RuleBase    ruleBase;
     private final Package     pkg;
     private final Rule        rule;

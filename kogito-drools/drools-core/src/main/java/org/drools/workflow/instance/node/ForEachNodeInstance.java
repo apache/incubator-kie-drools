@@ -56,7 +56,7 @@ import org.mvel2.MVEL;
  */
 public class ForEachNodeInstance extends CompositeNodeInstance {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
     
     public ForEachNode getForEachNode() {
         return (ForEachNode) getNode();
@@ -86,7 +86,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
     
     public class ForEachSplitNodeInstance extends NodeInstanceImpl {
 
-        private static final long serialVersionUID = 4L;
+        private static final long serialVersionUID = 510l;
         
         public ForEachSplitNode getForEachSplitNode() {
             return (ForEachSplitNode) getNode();
@@ -155,7 +155,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
     
     public class ForEachJoinNodeInstance extends NodeInstanceImpl {
 
-        private static final long serialVersionUID = 4L;
+        private static final long serialVersionUID = 510l;
         
         public ForEachJoinNode getForEachJoinNode() {
             return (ForEachJoinNode) getNode();

@@ -36,7 +36,7 @@ public class FactTemplateTypeConf
     ObjectTypeConf,
     Externalizable {
 
-    private static final long serialVersionUID = 4493660262148247467L;
+    private static final long serialVersionUID = 510l;
 
     private FactTemplate      factTemplate;
     private ObjectTypeNode    concreteObjectTypeNode;

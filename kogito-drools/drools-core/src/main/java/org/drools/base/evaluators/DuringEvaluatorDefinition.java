@@ -217,7 +217,7 @@ public class DuringEvaluatorDefinition
      * Implements the 'during' evaluator itself
      */
     public static class DuringEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -5856043346192967722L;
+        private static final long serialVersionUID = 510l;
 
         private long              startMinDev, startMaxDev;
         private long              endMinDev, endMaxDev;

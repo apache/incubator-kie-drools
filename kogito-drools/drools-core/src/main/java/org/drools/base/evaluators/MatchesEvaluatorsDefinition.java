@@ -43,7 +43,7 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
     private static final String[] SUPPORTED_IDS = { MATCHES.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
-        private static final long serialVersionUID = 4782368623L;
+        private static final long serialVersionUID = 510l;
         {
             addEvaluator( ValueType.STRING_TYPE,        MATCHES,         StringMatchesEvaluator.INSTANCE );
             addEvaluator( ValueType.STRING_TYPE,        NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );

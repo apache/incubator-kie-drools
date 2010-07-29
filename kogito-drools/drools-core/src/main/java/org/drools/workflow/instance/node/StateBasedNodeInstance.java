@@ -35,7 +35,7 @@ import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 
 public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {
 	
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
 	private List<Long> timerInstances;
 

@@ -32,7 +32,7 @@ import org.drools.process.core.datatype.DataType;
  */
 public class ListDataType extends ObjectDataType implements TypeObject {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private DataType dataType;
     

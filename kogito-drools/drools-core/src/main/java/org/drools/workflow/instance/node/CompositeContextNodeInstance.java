@@ -34,7 +34,7 @@ import org.drools.workflow.core.node.CompositeContextNode;
 
 public class CompositeContextNodeInstance extends CompositeNodeInstance implements ContextInstanceContainer, ContextableInstance {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();

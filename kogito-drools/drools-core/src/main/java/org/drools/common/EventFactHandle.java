@@ -21,7 +21,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class EventFactHandle extends DefaultFactHandle {
 
-    private static final long serialVersionUID = 5997141759543399455L;
+    private static final long serialVersionUID = 510l;
 
     private long              startTimestamp;
     private long              duration;

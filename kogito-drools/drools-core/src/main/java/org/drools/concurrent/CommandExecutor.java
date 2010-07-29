@@ -36,7 +36,7 @@ import org.drools.WorkingMemory;
  */
 public class CommandExecutor implements Runnable, Externalizable {
 
-    private static final long serialVersionUID = 5924295088331461167L;
+    private static final long serialVersionUID = 510l;
     
     private WorkingMemory workingMemory;
     private BlockingQueue queue;

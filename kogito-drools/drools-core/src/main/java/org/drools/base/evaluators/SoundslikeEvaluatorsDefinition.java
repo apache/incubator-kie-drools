@@ -44,7 +44,7 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
     private static final String[] SUPPORTED_IDS = { SOUNDSLIKE.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
-        private static final long serialVersionUID = 4782368623L;
+        private static final long serialVersionUID = 510l;
         {
             addEvaluator( ValueType.STRING_TYPE,        SOUNDSLIKE,         StringSoundsLikeEvaluator.INSTANCE );
             addEvaluator( ValueType.STRING_TYPE,        NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
@@ -127,7 +127,7 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
      */
     public static class StringSoundsLikeEvaluator extends BaseEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringSoundsLikeEvaluator();
 
         public StringSoundsLikeEvaluator() {
@@ -184,7 +184,7 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
     public static class StringNotSoundsLikeEvaluator extends BaseEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringNotSoundsLikeEvaluator();
 
         public StringNotSoundsLikeEvaluator() {

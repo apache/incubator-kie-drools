@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.XStream;
  */
 public class ObjectDataType implements DataType {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
 
     private String className;
     

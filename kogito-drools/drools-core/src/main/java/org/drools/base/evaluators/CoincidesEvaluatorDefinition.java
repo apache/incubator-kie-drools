@@ -199,7 +199,7 @@ public class CoincidesEvaluatorDefinition
      * Implements the 'coincides' evaluator itself
      */
     public static class CoincidesEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = 6031520837249122183L;
+        private static final long serialVersionUID = 510l;
 
         private long              startDev;
         private long              endDev;

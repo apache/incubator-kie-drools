@@ -36,7 +36,7 @@ public class InsertObjectCommand
     implements
     GenericCommand<FactHandle> {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	@XmlElement
 	private Object  object;

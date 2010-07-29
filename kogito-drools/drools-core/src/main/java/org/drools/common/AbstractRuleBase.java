@@ -962,7 +962,7 @@ abstract public class AbstractRuleBase
     public static class ReloadPackageCompilationData
         implements
         RuleBaseAction {
-        private static final long           serialVersionUID = 1L;
+        private static final long           serialVersionUID = 510l;
         private Set<DialectRuntimeRegistry> set;
 
         public void readExternal(ObjectInput in) throws IOException,

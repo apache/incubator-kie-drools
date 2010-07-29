@@ -82,7 +82,7 @@ public class DefaultAgenda
     /**
      * 
      */
-    private static final long                                   serialVersionUID = 400L;
+    private static final long                                   serialVersionUID = 510l;
 
     /** Working memory of this Agenda. */
     private InternalWorkingMemory                               workingMemory;

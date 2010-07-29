@@ -26,7 +26,7 @@ import org.mvel2.integration.VariableResolver;
 
 public class DroolsMVELShadowFactory extends DroolsMVELFactory {
 
-    private static final long   serialVersionUID = 400L;
+    private static final long   serialVersionUID = 510l;
 
     private Set<String>         shadowVariables;
     private Map<String, Object> shadowValues;

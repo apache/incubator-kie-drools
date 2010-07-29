@@ -31,7 +31,7 @@ import org.drools.type.DateFormats;
  */
 public class DateUtils {
 
-	private static final long serialVersionUID = 400L;
+	private static final long serialVersionUID = 510l;
 	private static final String DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
 	private static final String DATE_FORMAT_MASK = getDateFormatMask();
 	private static final String DEFAULT_COUNTRY = Locale.getDefault()

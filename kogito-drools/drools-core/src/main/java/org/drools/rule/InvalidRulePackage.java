@@ -25,7 +25,7 @@ package org.drools.rule;
  */
 public class InvalidRulePackage extends RuntimeException {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public InvalidRulePackage(final String summary) {
         super( summary );

@@ -38,7 +38,7 @@ import org.mvel2.compiler.ExpressionCompiler;
  */
 public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 
-    private static final long  serialVersionUID = 400L;
+    private static final long  serialVersionUID = 510l;
 
     private CompiledExpression mvelExpression   = null;
     private Map                extractors       = null;

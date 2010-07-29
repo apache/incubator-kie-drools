@@ -196,7 +196,7 @@ public class StartsEvaluatorDefinition
      * Implements the 'starts' evaluator itself
      */
     public static class StartsEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = 5622952247746290865L;
+        private static final long serialVersionUID = 510l;
 
         private long              startDev;
         private String            paramText;

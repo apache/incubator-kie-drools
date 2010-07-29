@@ -46,7 +46,7 @@ public class FromNode extends LeftTupleSource
     /**
      *
      */
-    private static final long          serialVersionUID = 400L;
+    private static final long          serialVersionUID = 510l;
 
     private DataProvider               dataProvider;
     private LeftTupleSource            tupleSource;
@@ -482,7 +482,7 @@ public class FromNode extends LeftTupleSource
     public static class FromMemory
         implements
         Serializable {
-        private static final long serialVersionUID = -5802345705144095216L;
+        private static final long serialVersionUID = 510l;
 
         public BetaMemory         betaMemory;
         public Object             providerContext;

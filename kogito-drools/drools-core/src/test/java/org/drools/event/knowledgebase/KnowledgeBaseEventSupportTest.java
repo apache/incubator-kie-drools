@@ -96,7 +96,7 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
         rule1.addPattern( pattern );
 
         rule1.setConsequence( new Consequence() {
-            private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {
@@ -130,7 +130,7 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
         rule2.addPattern( pattern2 );
 
         rule2.setConsequence( new Consequence() {
-            private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {

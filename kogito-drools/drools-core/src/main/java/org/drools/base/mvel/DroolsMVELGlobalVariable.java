@@ -28,7 +28,7 @@ public class DroolsMVELGlobalVariable
     VariableResolver,
     Externalizable {
 
-    private static final long serialVersionUID = -2480015657934353449L;
+    private static final long serialVersionUID = 510l;
     
     private String            name;
     private Class             knownType;

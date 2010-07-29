@@ -35,7 +35,7 @@ import org.drools.workflow.core.impl.NodeImpl;
  */
 public class CompositeNode extends StateBasedNode implements NodeContainer, EventNodeInterface {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private org.drools.workflow.core.NodeContainer nodeContainer;
     private Map<String, CompositeNode.NodeAndType> inConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
@@ -348,7 +348,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 
     public class NodeAndType implements Serializable {
 
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 510l;
 		
 		private long nodeId;
         private String type;
@@ -408,7 +408,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     
     public class CompositeNodeStart extends NodeImpl {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         
         private long inNodeId;
         private transient Node inNode;
@@ -441,7 +441,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     
     public class CompositeNodeEnd extends NodeImpl {
 
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
         
         private long outNodeId;
         private transient Node outNode;

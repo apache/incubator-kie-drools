@@ -48,7 +48,7 @@ public class RuleFlowGroupImpl
     implements
     InternalRuleFlowGroup {
 
-    private static final long           serialVersionUID = 400L;
+    private static final long           serialVersionUID = 510l;
 
     private InternalWorkingMemory       workingMemory;
     private String                      name;
@@ -271,7 +271,7 @@ public class RuleFlowGroupImpl
         implements
         WorkingMemoryAction {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
 
         private InternalRuleFlowGroup ruleFlowGroup;
 

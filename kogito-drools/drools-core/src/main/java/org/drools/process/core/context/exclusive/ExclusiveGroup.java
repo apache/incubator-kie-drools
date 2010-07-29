@@ -21,7 +21,7 @@ import org.drools.process.core.context.AbstractContext;
 
 public class ExclusiveGroup extends AbstractContext {
 	
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public static final String EXCLUSIVE_GROUP = "ExclusiveGroup";
     

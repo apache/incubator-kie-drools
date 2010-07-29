@@ -20,7 +20,7 @@ import org.drools.RuleBase;
 
 public class AfterRuleBaseLockedEvent extends RuleBaseEvent {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public AfterRuleBaseLockedEvent(final RuleBase ruleBase) {
         super( ruleBase );

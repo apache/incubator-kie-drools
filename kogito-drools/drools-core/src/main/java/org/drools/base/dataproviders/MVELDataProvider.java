@@ -43,7 +43,7 @@ public class MVELDataProvider
     MVELCompileable,
     Externalizable {
 
-    private static final long       serialVersionUID = 1901006343031798173L;
+    private static final long       serialVersionUID = 510l;
 
     private MVELCompilationUnit     unit;
     private String                  id;

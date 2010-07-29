@@ -194,7 +194,7 @@ public class MetByEvaluatorDefinition
      * Implements the 'metby' evaluator itself
      */
     public static class MetByEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = 7907908401657594347L;
+        private static final long serialVersionUID = 510l;
 
         private long              finalRange;
         private String            paramText;

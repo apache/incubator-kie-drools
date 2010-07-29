@@ -50,7 +50,7 @@ import org.drools.spi.PropagationContext;
  */
 public class AccumulateNode extends BetaNode {
 
-    private static final long          serialVersionUID = 400L;
+    private static final long          serialVersionUID = 510l;
 
     private boolean                    unwrapRightObject;
     private Accumulate                 accumulate;
@@ -978,7 +978,7 @@ public class AccumulateNode extends BetaNode {
     public static class AccumulateMemory
         implements
         Externalizable {
-        private static final long serialVersionUID = 400L;
+        private static final long serialVersionUID = 510l;
 
         public Object             workingMemoryContext;
         public BetaMemory         betaMemory;

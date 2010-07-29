@@ -46,7 +46,7 @@ public class MVELAccumulator
     Accumulator,
     Externalizable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     MVELCompilationUnit       initUnit;
     MVELCompilationUnit       actionUnit;
@@ -275,7 +275,7 @@ public class MVELAccumulator
         implements
         Serializable {
 
-        private static final long                      serialVersionUID = -308602705153011537L;
+        private static final long                      serialVersionUID = 510l;
 
         public final Map                               variables;
         public final Map<Integer, Map<String, Object>> shadow;

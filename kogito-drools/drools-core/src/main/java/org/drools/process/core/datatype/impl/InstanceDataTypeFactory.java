@@ -26,7 +26,7 @@ import org.drools.process.core.datatype.DataTypeFactory;
  */
 public class InstanceDataTypeFactory implements DataTypeFactory {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private Class<?> dataTypeClass;
     private DataType instance;

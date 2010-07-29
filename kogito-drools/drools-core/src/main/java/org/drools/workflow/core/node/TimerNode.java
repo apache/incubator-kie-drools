@@ -22,7 +22,7 @@ import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 public class TimerNode extends ExtendedNodeImpl {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private Timer timer;
     

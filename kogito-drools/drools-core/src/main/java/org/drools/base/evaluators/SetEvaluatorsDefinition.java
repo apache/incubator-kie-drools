@@ -58,7 +58,7 @@ public class SetEvaluatorsDefinition
 
     private static final String[] SUPPORTED_IDS = {CONTAINS.getOperatorString(), EXCLUDES.getOperatorString(), MEMBEROF.getOperatorString()};
     private EvaluatorCache        evaluators    = new EvaluatorCache() {
-                                                    private static final long serialVersionUID = 4782368623L;
+                                                    private static final long serialVersionUID = 510l;
                                                     {
                                                         addEvaluator( ValueType.ARRAY_TYPE,
                                                                       CONTAINS,
@@ -320,7 +320,7 @@ public class SetEvaluatorsDefinition
      */
     public static class ArrayContainsEvaluator extends BaseEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ArrayContainsEvaluator();
 
         public ArrayContainsEvaluator() {
@@ -392,7 +392,7 @@ public class SetEvaluatorsDefinition
         /**
          *
          */
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ArrayExcludesEvaluator();
 
         public ArrayExcludesEvaluator() {
@@ -473,7 +473,7 @@ public class SetEvaluatorsDefinition
 
     public static abstract class BaseMemberOfEvaluator extends BaseEvaluator {
 
-        private static final long serialVersionUID = 2017803222427893249L;
+        private static final long serialVersionUID = 510l;
 
         public BaseMemberOfEvaluator() {
             super( null,
@@ -584,7 +584,7 @@ public class SetEvaluatorsDefinition
 
     public static abstract class BaseNotMemberOfEvaluator extends BaseEvaluator {
 
-        private static final long serialVersionUID = -8730331781980886901L;
+        private static final long serialVersionUID = 510l;
 
         public BaseNotMemberOfEvaluator(ValueType type,
                                         Operator operator) {
@@ -690,7 +690,7 @@ public class SetEvaluatorsDefinition
 
     public static class BigDecimalMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigDecimalMemberOfEvaluator();
 
         public BigDecimalMemberOfEvaluator() {
@@ -705,7 +705,7 @@ public class SetEvaluatorsDefinition
 
     public static class BigDecimalNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigDecimalNotMemberOfEvaluator();
 
         public BigDecimalNotMemberOfEvaluator() {
@@ -720,7 +720,7 @@ public class SetEvaluatorsDefinition
 
     public static class BigIntegerMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigIntegerMemberOfEvaluator();
 
         public BigIntegerMemberOfEvaluator() {
@@ -737,7 +737,7 @@ public class SetEvaluatorsDefinition
         /**
          *
          */
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigIntegerNotMemberOfEvaluator();
 
         public BigIntegerNotMemberOfEvaluator() {
@@ -752,7 +752,7 @@ public class SetEvaluatorsDefinition
 
     public static class BooleanMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BooleanMemberOfEvaluator();
 
         public BooleanMemberOfEvaluator() {
@@ -767,7 +767,7 @@ public class SetEvaluatorsDefinition
 
     public static class BooleanNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BooleanNotMemberOfEvaluator();
 
         public BooleanNotMemberOfEvaluator() {
@@ -782,7 +782,7 @@ public class SetEvaluatorsDefinition
 
     public static class ByteMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ByteMemberOfEvaluator();
 
         public ByteMemberOfEvaluator() {
@@ -797,7 +797,7 @@ public class SetEvaluatorsDefinition
 
     public static class ByteNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ByteNotMemberOfEvaluator();
 
         public ByteNotMemberOfEvaluator() {
@@ -812,7 +812,7 @@ public class SetEvaluatorsDefinition
 
     public static class CharacterMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new CharacterMemberOfEvaluator();
 
         public CharacterMemberOfEvaluator() {
@@ -827,7 +827,7 @@ public class SetEvaluatorsDefinition
 
     public static class CharacterNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new CharacterNotMemberOfEvaluator();
 
         public CharacterNotMemberOfEvaluator() {
@@ -842,7 +842,7 @@ public class SetEvaluatorsDefinition
 
     public static class DateMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DateMemberOfEvaluator();
 
         public DateMemberOfEvaluator() {
@@ -857,7 +857,7 @@ public class SetEvaluatorsDefinition
 
     public static class DateNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DateNotMemberOfEvaluator();
 
         public DateNotMemberOfEvaluator() {
@@ -872,7 +872,7 @@ public class SetEvaluatorsDefinition
 
     public static class DoubleMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DoubleMemberOfEvaluator();
 
         public DoubleMemberOfEvaluator() {
@@ -887,7 +887,7 @@ public class SetEvaluatorsDefinition
 
     public static class DoubleNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new DoubleNotMemberOfEvaluator();
 
         public DoubleNotMemberOfEvaluator() {
@@ -902,7 +902,7 @@ public class SetEvaluatorsDefinition
 
     public static class FloatMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new FloatMemberOfEvaluator();
 
         public FloatMemberOfEvaluator() {
@@ -917,7 +917,7 @@ public class SetEvaluatorsDefinition
 
     public static class FloatNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new FloatNotMemberOfEvaluator();
 
         public FloatNotMemberOfEvaluator() {
@@ -932,7 +932,7 @@ public class SetEvaluatorsDefinition
 
     public static class IntegerMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new IntegerMemberOfEvaluator();
 
         public IntegerMemberOfEvaluator() {
@@ -947,7 +947,7 @@ public class SetEvaluatorsDefinition
 
     public static class IntegerNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new IntegerNotMemberOfEvaluator();
 
         public IntegerNotMemberOfEvaluator() {
@@ -962,7 +962,7 @@ public class SetEvaluatorsDefinition
 
     public static class LongMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new LongMemberOfEvaluator();
 
         public LongMemberOfEvaluator() {
@@ -977,7 +977,7 @@ public class SetEvaluatorsDefinition
 
     public static class LongNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new LongNotMemberOfEvaluator();
 
         public LongNotMemberOfEvaluator() {
@@ -994,7 +994,7 @@ public class SetEvaluatorsDefinition
         /**
          *
          */
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectContainsEvaluator();
 
         public ObjectContainsEvaluator() {
@@ -1051,7 +1051,7 @@ public class SetEvaluatorsDefinition
         /**
          *
          */
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectExcludesEvaluator();
 
         public ObjectExcludesEvaluator() {
@@ -1106,7 +1106,7 @@ public class SetEvaluatorsDefinition
 
     public static class ObjectMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectMemberOfEvaluator();
 
         public ObjectMemberOfEvaluator() {
@@ -1121,7 +1121,7 @@ public class SetEvaluatorsDefinition
 
     public static class ObjectNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectNotMemberOfEvaluator();
 
         public ObjectNotMemberOfEvaluator() {
@@ -1136,7 +1136,7 @@ public class SetEvaluatorsDefinition
 
     public static class ShortMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ShortMemberOfEvaluator();
 
         public ShortMemberOfEvaluator() {
@@ -1151,7 +1151,7 @@ public class SetEvaluatorsDefinition
 
     public static class ShortNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ShortNotMemberOfEvaluator();
 
         public ShortNotMemberOfEvaluator() {
@@ -1166,7 +1166,7 @@ public class SetEvaluatorsDefinition
 
     public static class StringMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringMemberOfEvaluator();
 
         public StringMemberOfEvaluator() {
@@ -1181,7 +1181,7 @@ public class SetEvaluatorsDefinition
 
     public static class StringNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 400L;
+        private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringNotMemberOfEvaluator();
 
         public StringNotMemberOfEvaluator() {

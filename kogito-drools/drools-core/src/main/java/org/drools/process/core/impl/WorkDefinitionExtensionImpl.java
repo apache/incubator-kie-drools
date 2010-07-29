@@ -24,7 +24,7 @@ import org.drools.process.core.WorkDefinitionExtension;
  */
 public class WorkDefinitionExtensionImpl extends WorkDefinitionImpl implements WorkDefinitionExtension {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private String displayName;
     private String explanationText;

@@ -38,7 +38,7 @@ import org.drools.runtime.process.WorkItemHandler;
  */
 public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private long workItemCounter;
 	private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();

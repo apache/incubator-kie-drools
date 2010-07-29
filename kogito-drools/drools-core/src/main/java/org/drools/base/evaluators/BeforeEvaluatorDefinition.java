@@ -206,7 +206,7 @@ public class BeforeEvaluatorDefinition
      * Implements the 'before' evaluator itself
      */
     public static class BeforeEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -4778826341073034320L;
+        private static final long serialVersionUID = 510l;
 
         private long              initRange;
         private long              finalRange;

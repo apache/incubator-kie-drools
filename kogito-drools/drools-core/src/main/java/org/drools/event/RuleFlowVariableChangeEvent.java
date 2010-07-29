@@ -39,7 +39,7 @@ import org.drools.runtime.process.ProcessInstance;
  */
 public class RuleFlowVariableChangeEvent extends ProcessEvent {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private String variableId;
 	private String variableInstanceId;

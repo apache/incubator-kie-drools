@@ -35,7 +35,7 @@ import org.drools.spi.BetaNodeFieldConstraint;
  */
 public class OrConstraint extends AbstractCompositeConstraint {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public OrConstraint() {
     }

@@ -27,7 +27,7 @@ import java.io.ObjectOutput;
  */
 public class LinkedListEntry extends AbstractBaseLinkedListNode {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     private Object            object;
 
     public LinkedListEntry() {

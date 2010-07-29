@@ -40,7 +40,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class AbstractEventSupport<E extends EventListener> implements Externalizable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private List<E> listeners = new CopyOnWriteArrayList<E>();
 

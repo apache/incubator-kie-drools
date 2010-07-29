@@ -25,7 +25,7 @@ public class GetChannelsCommand
     implements
     GenericCommand<Object> {
 
-    private static final long serialVersionUID = -758966367778702633L;
+    private static final long serialVersionUID = 510l;
     
     public GetChannelsCommand() {
     }
