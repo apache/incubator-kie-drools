@@ -18,18 +18,22 @@ package org.drools.examples;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.examples.templates.Cheese;
 import org.drools.examples.templates.Person;
+import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * This shows off a very simple rule template where the data provider is a spreadsheet.
@@ -39,60 +43,78 @@ import org.drools.examples.templates.Person;
 public class SimpleRuleTemplateExample {
     public static void main(String[] args) throws Exception {
         SimpleRuleTemplateExample launcher = new SimpleRuleTemplateExample();
-        launcher.executeExample();        
+        launcher.executeExample();
     }
 
     private void executeExample() throws Exception {
-        
-        //first we compile the spreadsheet with the template
-        //to create a whole lot of rules.
-        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        //the data we are interested in starts at row 2, column 2 (e.g. B2)
-        final String drl = converter.compile(getSpreadsheetStream(), getRulesStream(), 2, 2);
 
-        //Uncomment to see rules
-        //System.out.println( drl );
-        //BUILD RULEBASE
-        final RuleBase rb = buildRuleBase(drl);
+        //BUILD THE KBASE
+        final KnowledgeBase kbase = this.buildKBase();
 
-        WorkingMemory wm = rb.newStatefulSession();
-        
+        //GET A KSESSION
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         //now create some test data
-        wm.insert( new Cheese( "stilton",
+        ksession.insert( new Cheese( "stilton",
                                42 ) );
-        wm.insert( new Person( "michael",
+        ksession.insert( new Person( "michael",
                                "stilton",
                                42 ) );
         final List<String> list = new ArrayList<String>();
-        wm.setGlobal( "list",
+        ksession.setGlobal( "list",
                       list );
-        
-        wm.fireAllRules();
-        
+
+        ksession.fireAllRules();
+
         System.out.println(list);
-        
+
+        ksession.dispose();
     }
 
-    /** Build the rule base from the generated DRL */
-    private RuleBase buildRuleBase(String... drls) throws DroolsParserException, IOException, Exception {
-        //now we build the rule package and rulebase, as if they are normal rules
-        PackageBuilder builder = new PackageBuilder();
-        for ( String drl : drls ) {
-            builder.addPackageFromDrl( new StringReader( drl ) );
+     /**
+     * Creates a new kbase containing the rules generated from the xls file and
+     * the template.
+     * @return
+     * @throws IOException
+     */
+    private KnowledgeBase buildKBase() throws IOException {
+        //first we compile the decision table into a whole lot of rules.
+        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+
+        //the data we are interested in starts at row 2, column 2 (e.g. B2)
+        String drl = converter.compile(getSpreadsheetStream(), getRulesStream(), 2, 2);
+
+        //compile the drl
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
+
+        //compilation errors?
+        if (kbuilder.hasErrors()) {
+            System.out.println("Error compiling resources:");
+            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
+            while (errors.hasNext()) {
+                System.out.println("\t" + errors.next().getMessage());
+            }
+            throw new IllegalStateException("Error compiling resources");
         }
-        
-        //add the package to a rulebase (deploy the rule package).
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        return ruleBase;
+
+        //Uncomment to see the rules
+        //System.out.println(drl);
+
+        //BUILD KBASE
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        return kbase;
+
     }
 
-    private InputStream getSpreadsheetStream() {
-        return this.getClass().getResourceAsStream("ExampleCheese.xls");
+    private InputStream getSpreadsheetStream() throws IOException {
+        return ResourceFactory.newClassPathResource("org/drools/examples/ExampleCheese.xls").getInputStream();
     }
-    
-    private InputStream getRulesStream() {
-        return this.getClass().getResourceAsStream("Cheese.drt");
+
+    private InputStream getRulesStream() throws IOException {
+        return ResourceFactory.newClassPathResource("org/drools/examples/Cheese.drt").getInputStream();
     }
-    
+
 }

@@ -47,7 +47,7 @@ public class PricingRuleDTExample {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "ExamplePolicyPricing.xls",
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/examples/ExamplePolicyPricing.xls",
                                                             getClass() ),
                       ResourceType.DTABLE,
                       dtableconfiguration );

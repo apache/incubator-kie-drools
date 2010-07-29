@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.examples;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
-import org.drools.decisiontable.InputType;
 import org.drools.examples.decisiontable.Driver;
 import org.drools.examples.decisiontable.Policy;
-import org.drools.template.parser.DataListener;
-import org.drools.template.parser.TemplateDataListener;
+import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * This shows off a rule template where the data provider is a spreadsheet.
@@ -42,78 +40,96 @@ import org.drools.template.parser.TemplateDataListener;
  * Note that even though they  use the same spreadsheet, this example is just
  * concerned with the data cells and does not use any of the Decision Table data.
  * 
- * This example is also using unstable/experimental apis - as it is not using drools-api.
  * @author Steve
  *
  */
 public class PricingRuleTemplateExample {
+
     public static void main(String[] args) throws Exception {
         PricingRuleTemplateExample launcher = new PricingRuleTemplateExample();
-        launcher.executeExample();        
+        launcher.executeExample();
     }
 
     private int executeExample() throws Exception {
-        
-        //first we compile the decision table into a whole lot of rules.
-        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final List<DataListener> listeners = new ArrayList<DataListener>();
-        TemplateDataListener l1 = new TemplateDataListener(10, 3, getBasePricingRulesStream());
-        listeners.add(l1);
-        TemplateDataListener l2 = new TemplateDataListener(30, 3, getPromotionalPricingRulesStream());
-        listeners.add(l2);
-        converter.compile(getSpreadsheetStream(), InputType.XLS, listeners);
 
-        String baseRules = l1.renderDRL();
-        //Uncomment to see the base pricing rules
-        //System.out.println(baseRules);
-        String promotionalRules = l2.renderDRL();
-        //Uncomment to see the promotional pricing rules
-        //System.out.println(promotionalRules);
-        //BUILD RULEBASE
-        final RuleBase rb = buildRuleBase(baseRules, promotionalRules);
+        //BUILD THE KBASE
+        KnowledgeBase kbase = this.buildKBase();
 
-        WorkingMemory wm = rb.newStatefulSession();
-        
+        //GET A KSESSION
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         //now create some test data
         Driver driver = new Driver();
         Policy policy = new Policy();
-        
-        wm.insert(driver);
-        wm.insert(policy);
-        
-        wm.fireAllRules();
-        
+
+        ksession.insert(driver);
+        ksession.insert(policy);
+
+        ksession.fireAllRules();
+
         System.out.println("BASE PRICE IS: " + policy.getBasePrice());
-        System.out.println("DISCOUNT IS: " + policy.getDiscountPercent( ));
-        
+        System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
+
+
+        ksession.dispose();
+
         return policy.getBasePrice();
+
     }
 
-    /** Build the rule base from the generated DRL */
-    private RuleBase buildRuleBase(String... drls) throws DroolsParserException, IOException, Exception {
-        //now we build the rule package and rulebase, as if they are normal rules
-        PackageBuilder builder = new PackageBuilder();
-        for ( String drl : drls ) {
-            builder.addPackageFromDrl( new StringReader( drl ) );
+    /**
+     * Creates a new kbase containing the rules generated from the xls file and
+     * the templates.
+     * @return
+     * @throws IOException
+     */
+    private KnowledgeBase buildKBase() throws IOException {
+        //first we compile the decision table into a whole lot of rules.
+        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+
+        //the data we are interested in starts at row 10, column 3
+        String basePricingDRL = converter.compile(getSpreadsheetStream(), getBasePricingRulesStream(), 10, 3);
+        //the data we are interested in starts at row 30, column 3
+        String promotionalPricingDRL = converter.compile(getSpreadsheetStream(), getPromotionalPricingRulesStream(), 30, 3);
+
+        //compile the drls
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ByteArrayResource(basePricingDRL.getBytes()), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(promotionalPricingDRL.getBytes()), ResourceType.DRL);
+
+        //compilation errors?
+        if (kbuilder.hasErrors()) {
+            System.out.println("Error compiling resources:");
+            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
+            while (errors.hasNext()) {
+                System.out.println("\t" + errors.next().getMessage());
+            }
+            throw new IllegalStateException("Error compiling resources");
         }
-        
-        //add the package to a rulebase (deploy the rule package).
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        return ruleBase;
-    }
-
-    private InputStream getSpreadsheetStream() {
-        return this.getClass().getResourceAsStream("ExamplePolicyPricing.xls");
-    }
-    
-    private InputStream getBasePricingRulesStream() {
-        return this.getClass().getResourceAsStream("BasePricing.drt");
-    }
-    
-    private InputStream getPromotionalPricingRulesStream() {
-        return this.getClass().getResourceAsStream("PromotionalPricing.drt");
-    }
 
 
+        //Uncomment to see the base pricing rules
+        //System.out.println(basePricingDRL);
+        //Uncomment to see the promotional pricing rules
+        //System.out.println(promotionalPricingDRL);
+
+        //BUILD KBASE
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        return kbase;
+
+    }
+
+    private InputStream getSpreadsheetStream() throws IOException {
+        return ResourceFactory.newClassPathResource("org/drools/examples/ExamplePolicyPricing.xls").getInputStream();
+    }
+
+    private InputStream getBasePricingRulesStream() throws IOException {
+        return ResourceFactory.newClassPathResource("org/drools/examples/BasePricing.drt").getInputStream();
+    }
+
+    private InputStream getPromotionalPricingRulesStream() throws IOException {
+        return ResourceFactory.newClassPathResource("org/drools/examples/PromotionalPricing.drt").getInputStream();
+    }
 }
