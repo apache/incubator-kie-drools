@@ -100,7 +100,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                <instructions>
                   <Bundle-SymbolicName>org.drools.api;singleton:=true</Bundle-SymbolicName>
                   <_removeheaders>Ignore-Package</_removeheaders>
-                  <Import-Package>!org.drools.*,*;resolution:=optional</Import-Package>
+                  <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>                  
                   <Export-Package>org.drools.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>
                   <Bundle-Activator>org.drools.osgi.api.Activator</Bundle-Activator>
