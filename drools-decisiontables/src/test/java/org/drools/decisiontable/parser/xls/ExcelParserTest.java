@@ -122,6 +122,11 @@ public class ExcelParserTest extends TestCase {
 			return false;
 		}
 
+        public jxl.CellFeatures getCellFeatures() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
     
     static class MockRange implements Range {
