@@ -44,7 +44,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder() {
-        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder();
+        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder();
     }
 
     /**
@@ -53,16 +53,16 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder( conf );
+        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder( conf );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
-        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder( kbase );
+        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder( kbase );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
                                                        KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilder( kbase,
+        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder( kbase,
                                                                   conf );
     }
 
@@ -72,7 +72,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilderConfiguration.
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
-        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilderConfiguration();
+        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilderConfiguration();
     }
 
     /**
@@ -82,9 +82,9 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilderConfiguration.
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
-                                                                                 ClassLoader classLoader) {
-        return getKnowledgeBuilderPerviceFactory().newKnowledgeBuilderConfiguration( properties,
-                                                                               classLoader );
+                                                                                 ClassLoader... classLoaders) {
+        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilderConfiguration( properties,
+                                                                                     classLoaders );
     }
 
     /**
@@ -107,12 +107,12 @@ public class KnowledgeBuilderFactory {
      * @return
      */
     public static DecisionTableConfiguration newDecisionTableConfiguration() {
-        return getKnowledgeBuilderPerviceFactory().newDecisionTableConfiguration();
+        return getKnowledgeBuilderServiceFactory().newDecisionTableConfiguration();
     }
 
     public static JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
                                                          String systemId) {
-        return getKnowledgeBuilderPerviceFactory().newJaxbConfiguration(xjcOpts,
+        return getKnowledgeBuilderServiceFactory().newJaxbConfiguration(xjcOpts,
                                                                         systemId);
     }    
     
@@ -120,7 +120,7 @@ public class KnowledgeBuilderFactory {
         KnowledgeBuilderFactory.factoryService = serviceFactory;
     }
 
-    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderPerviceFactory() {
+    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderServiceFactory() {
         if ( factoryService == null ) {
             loadServiceFactory();
         }

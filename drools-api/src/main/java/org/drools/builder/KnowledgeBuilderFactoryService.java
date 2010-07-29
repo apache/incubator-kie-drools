@@ -48,7 +48,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      */
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
-                                                                          ClassLoader classLoader);
+                                                                          ClassLoader... classLoader);
 
     /**
      * DecisionTables need to take a configuration of the InputType and XLS based

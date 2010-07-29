@@ -17,7 +17,7 @@
 package org.drools.util;
 
 public class ClassLoaderUtil {
-    public static CompositeClassLoader getClassLoader(final ClassLoader classLoader,
+    public static CompositeClassLoader getClassLoader(final ClassLoader[] classLoaders,
                                                       final Class< ? > cls,
                                                       final boolean enableCache) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -26,9 +26,13 @@ public class ClassLoaderUtil {
 
         CompositeClassLoader cl = new CompositeClassLoader( null );
 
-        if ( classLoader != null ) {
-            // the user specified classloader
-            cl.addClassLoader( classLoader );
+        if ( classLoaders != null && classLoaders.length > 0) {
+            // the user specified classloaders
+            for (ClassLoader classLoader : classLoaders ) {
+                if ( classLoader != null ) {
+                    cl.addClassLoader( classLoader );
+                }
+            }
         }
 
         if ( currentClassLoader != null ) {

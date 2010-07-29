@@ -49,7 +49,7 @@ public interface KnowledgeBaseFactoryService extends Service {
      *     The KnowledgeBaseConfiguration
      */
     public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
-                                                                    ClassLoader classLoader);
+                                                                    ClassLoader... classLoader);
 
     /**
      * Instantiate and return a new KnowledgeSessionConfiguration
