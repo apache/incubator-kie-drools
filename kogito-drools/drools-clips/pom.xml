@@ -6,7 +6,7 @@
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
     <version>5.1.0.SNAPSHOT</version>
-  </parent>${project.version}
+  </parent>
 
   <artifactId>drools-clips</artifactId>
   <packaging>jar</packaging>
