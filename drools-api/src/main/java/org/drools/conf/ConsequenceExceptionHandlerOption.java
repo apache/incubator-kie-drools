@@ -25,7 +25,7 @@ import org.drools.runtime.rule.ConsequenceExceptionHandler;
  */
 public class ConsequenceExceptionHandlerOption implements SingleValueKnowledgeBaseOption {
 
-    private static final long serialVersionUID = -8461267995706982981L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * The property name for consequence exception handler configuration

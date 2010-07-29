@@ -24,7 +24,7 @@ package org.drools.conf;
  */
 public class CompositeKeyDepthOption implements SingleValueKnowledgeBaseOption {
 
-    private static final long serialVersionUID = -8461267995706982981L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * The property name for the default DIALECT

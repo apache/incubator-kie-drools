@@ -24,7 +24,7 @@ package org.drools.runtime.conf;
  */
 public class ClockTypeOption implements SingleValueKnowledgeSessionOption {
 
-    private static final long serialVersionUID = -8461267995706982981L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * The property name for the clock type configuration

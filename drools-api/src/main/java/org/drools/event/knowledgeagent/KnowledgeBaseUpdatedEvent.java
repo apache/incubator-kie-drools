@@ -25,7 +25,7 @@ import org.drools.KnowledgeBase;
  */
 public class KnowledgeBaseUpdatedEvent extends EventObject{
 
-    private static final long serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
 
 
     public KnowledgeBaseUpdatedEvent(KnowledgeBase kbase) {

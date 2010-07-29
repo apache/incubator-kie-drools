@@ -24,7 +24,7 @@ import org.drools.ChangeSet;
  */
 public class BeforeChangeSetProcessedEvent extends ChangeSetProcessingEvent{
 
-    private static final long serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
 
     public BeforeChangeSetProcessedEvent(ChangeSet changeSet) {
         super(changeSet);

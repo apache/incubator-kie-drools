@@ -28,7 +28,7 @@ import org.drools.runtime.rule.EvaluatorDefinition;
  */
 public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
 
-    private static final long serialVersionUID = -8461267995706982981L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * The prefix for the property name for evaluators

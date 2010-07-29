@@ -25,7 +25,7 @@ import org.drools.runtime.process.WorkItemHandler;
  */
 public class WorkItemHandlerOption implements MultiValueKnowledgeSessionOption {
 
-    private static final long serialVersionUID = -8461267995706982981L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * The prefix for the property name for work item handlers
