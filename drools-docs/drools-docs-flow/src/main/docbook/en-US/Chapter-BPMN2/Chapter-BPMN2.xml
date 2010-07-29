@@ -5,11 +5,20 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
-  <title>Business Process Model and Notation (BPMN)</title>
+  <title>Business Process Model and Notation (BPMN 2.0)</title>
 
-  <para>The Business Process Model and Notation (BPMN) 2.0 specification is steadily moving forward on its way to become a great standard, and we are adopting it for our process modeling in Drools Flow.  BPMN 2.0 not only defines a standard on how to graphically represent a business process (like BPMN 1.1), but now also includes execution semantics for the elements defined, and an XML format on how to store (and share) process definitions.</para>
+  <para>The Business Process Model and Notation (BPMN) 2.0 specification is steadily moving forward on its way to become a great standard,
+  and we are adopting it for our process modeling in Drools Flow.  BPMN 2.0 not only defines a standard on how to graphically represent
+  a business process (like BPMN 1.1), but now also includes execution semantics for the elements defined, and an XML format on how to 
+  store (and share) process definitions.</para>
 
-  <para>In a first fase, we are migrating our custom Drools Flow XML format to the BPMN 2.0 XML, as defined in the specification.  The following list gives an overview of the various elements that can already be expressed (and executed) using the BPMN 2.0 XML format:</para>
+  <para>Drools Flow allows you to execute processes defined using the BPMN 2.0 XML format, just the same way as it allows you to execute
+  processes using the custom RuleFlow format.  That means that you can use the same API, engine and components like Guvnor and the gwt-console,
+  to execute and manage your BPMN 2.0 processes.</para>
+
+  <para>We do yet implement all node types and attributes as defined in the BPMN 2.0 specification, but we already support a very significant
+  subset, which includes all common node types.  The following list gives an overview of the various elements that can already be
+  executed using the BPMN 2.0 XML format:</para>
 
   <itemizedlist>
     <listitem><emphasis>Flow objects</emphasis>
@@ -94,13 +103,11 @@
              targetNamespace="http://www.jboss.org/drools"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
-             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:tns="http://www.jboss.org/drools"&gt;
-
-  &lt;itemDefinition id="_employeeItem" structureRef="java.lang.Object" /&gt;
 
   &lt;process processType="Private" isExecutable="true" id="com.sample.evaluation" name="Evaluation Process" &gt;
 
@@ -285,7 +292,9 @@
       &lt;/potentialOwner&gt;
     &lt;/userTask&gt;
     &lt;parallelGateway id="_6" name="Converge" g:x="603" g:y="55" g:width="49" g:height="49" gatewayDirection="Converging" /&gt;
-    &lt;endEvent id="_7" name="EndProcess" g:x="690" g:y="56" g:width="48" g:height="48" /&gt;
+    &lt;endEvent id="_7" name="EndProcess" g:x="690" g:y="56" g:width="48" g:height="48" &gt;
+      &lt;terminateEventDefinition/&gt;
+    &lt;/endEvent&gt;
 
     &lt;!-- connections --&gt;
     &lt;sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" /&gt;
@@ -299,6 +308,29 @@
   &lt;/process&gt;
 
 &lt;/definitions&gt;</programlisting>
+
+  <para>To create your own process using BPMN 2.0 format, you can
+      <itemizedlist>
+        <listitem>
+          <para>Create a new Flow file using the Drools Eclipse plugin wizard and in the last page of the wizard,
+          make sure you select Drools 5.1 code compatibility.  This will create a new process using the BPMN XML
+          format instead of the old RuleFlow format.  Note however that this is not a real BPMN 2.0 editor, as it
+          still uses different attributes.  It does however save the process using valid BPMN 2.0 syntax.  Also note
+          that the editor does not yet support all node types and attributes that are already supported in the
+          execution engine.</para>
+        </listitem>
+        <listitem>
+          <para>Oryx is an open-source web-based editor that supports the BPMN 2.0 format.  We have embedded it into
+          Guvnor for BPMN 2.0 process visualization and editing.  You could use the Oryx editor (either standalone or
+          integrated) to create / edit BPMN 2.0 processes and then export them to BPMN 2.0 format so they can be executed.
+          Be aware however that Oryx is still using the BPMN 2.0 beta 1 format and that their implementation is currently
+          incomplete (especially the import / export functionality).</para>
+        </listitem>
+        <listitem>
+          <para>You can always manually create your BPMN 2.0 process files by writing the XML directly.</para>
+        </listitem>
+      </itemizedlist>
+  </para>
 
   <para>The following code fragment shows you how to load a BPMN process into your knowledge base ...</para>
 
@@ -321,7 +353,30 @@ Map&lt;String, Object&gt; params = new HashMap&lt;String, Object&gt;();
 params.put("employee", "krisv");
 ksession.startProcess("com.sample.evaluation", params);</programlisting>
 
-  <para>In more detail, the following table gives an overview of which features of the Drools Flow language have already been ported to the BPMN 2.0 XML format. A green check mark means that the functionality can be expressed using the features defined in the BPMN 2.0 specification.  Sometimes however, the specification does not specify how some (of the more advanced) features can be expressed using BPMN 2.0 syntax.  Luckily, the XML Schema is extensible, so in those cases we extend the BPMN 2.0 specification with additional attributes and/or elements so that these features can be stored in XML as well.  Custom extensions to the BPMN 2.0 format are shown using an orange check mark.  As shown in the table below, most of the basic BPMN 2.0 nodes are already supported.</para>
+  <section>
+    <title>Current limitations</title>
+
+  <para>Since the BPMN 2.0 specification is still being finalized, the BPMN 2.0 execution is still an experimental feature.  It uses the
+  same execution engine and constructs as the RuleFlow format however (it's just another XML serialization format).  Therefore, all features
+  and components that are available using the RuleFlow format also work for BPMN 2.0 processes.  You simply have to use the right ResourceType
+  when adding BPMN 2.0 processes to your knowledge base.  Since the specification hasn't been finalized yet, it is possible that the XSD that defines the format might still change (slightly)
+  due to updates of the specification, so keep this in mind if you decide to start using the BPMN 2.0 format.</para>
+
+  <para>The use of a specification should give you a lot of advantages, as it allows you to share your processes across tools and possibly even
+  engines as the specification defines the exact format (and even execution semantics) for each of the elements.  At this point however, it is likely
+  that different tools are using different intermediate versions of the specification.  We believe that this issue will automatically resolve itself
+  over time once the specification is finalized and everyone is using the same version of the specification, but until then, you can encounter
+  compatibility issues related to this problem.  Please be a little patient with this.</para>
+
+  <para>Finally, the BPMN 2.0 specification defines a lot of node types and attributes, but nevertheless it is not possible to express everything
+  using the constructs offered by the BPMN 2.0 specification only.  However, the specification is designed to allow additional node types, attributes,
+  etc.  While we try to limit the use of custom extensions to a minimum, we sometimes have to define custom attributes to express features that we
+  believe are important but cannot be expressed as core BPMN 2.0 syntax.  The following table gives an overview of which features of the RuleFlow
+  language have already been ported to the BPMN 2.0 XML format. A green check mark means that the functionality can be expressed using the features
+  defined in the BPMN 2.0 specification.  In those cases where we extend the BPMN 2.0 specification with additional attributes and/or elements, we show
+  these using an orange check mark.  As shown in the table below, most of the basic BPMN 2.0 nodes are already supported.  We decided to not yet
+  implement some of the features that cannot be expressed in BPMN 2.0 by default, like for example the on-entry / on-exit actions or the state node.
+  We will decide later whether we want to support these features for BPMN 2.0 processes in the future, and how.</para>
 
   <table>
     <title>Keywords</title>
@@ -1114,5 +1169,7 @@ ksession.startProcess("com.sample.evaluation", params);</programlisting>
       </tbody>
     </tgroup>
   </table>
+
+  </section>
 
 </chapter>
