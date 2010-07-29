@@ -22,6 +22,12 @@
   <section>
     <title>Installation</title>
 
+    <para>The easiest way to get started with the console is probably to use the installer.
+    This will download, install and configure all the necessary components to get the console running,
+    including Guvnor, a human task service, etc.  Check out the chapter on the installer for
+    more information.  If you want to manually install the console, you can continue reading
+    here.</para>
+
     <para>You need to have an application server installed.  This chapter assumes
     you are using the JBoss AS version 4.2.3.GA, but other versions or other
     application servers should be possible as well.</para>
@@ -162,18 +168,23 @@ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=256m"</programlisting>
     <para>Drools Guvnor allows you to manage all your business knowledge in a (logically)
     centralized location.   This includes all your process definitions, business rules, etc.
     The process management console automatically retrieves all the processes from the latest
-    snapshot of the "default" package on Guvnor.  To find out how to get processes on the
+    snapshot of the "defaultPackage" package on Guvnor.  To find out how to get processes on the
     Guvnor repository (for example manually uploading them, or using the Eclipse Guvnor
     synchronization), check out the Guvnor documentation.  After deploying Guvnor to your
     application server, navigate to the following URL to open up Guvnor (replace the host 
     and/or port depending on how the application server is configured):
     <ulink url="http://localhost:8080/drools-guvnor">http://localhost:8080/drools-guvnor</ulink></para>
 
-    <para>The following screenshot shows an example where the "default" package contains one
+    <para>The following screenshot shows an example where the "defaultPackage" package contains one
     "Evaluation" process.  After adding the necessary process definitions, make sure to build
     the package, so that the built package can be downloaded by the web console.</para>
 
     <mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-Console/Guvnor.PNG"/></imageobject></mediaobject>
+
+    <para>It is important that you make sure that (1) you add your processes to the package with the
+    name "defaultPackage", otherwise your processes won't show up in the console, and (2) that your
+    processes also define "defaultPackage" as the package of the process.  Guvnor does not allow a process
+    to be built if it is not put in the same package as it defines.</para>
 
   </section>
 

@@ -309,22 +309,12 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClassPathResource("MyProcess.rf"),
               ResourceType.DRF );</programlisting>
       <para>After adding all your knowledge to the builder (you can add more
-      than one process, and even rules), you should probably check whether the
-      process (and rules) have been parsed correctly and write out any errors
+      than one process, and even rules), you can create a new knowledge base
       like this:</para>
       <programlisting role="JAVA">
-KnowledgeBuilderErrors errors = kbuilder.getErrors();
-if (errors.size() > 0) {
-    for (KnowledgeBuilderError error: errors) {
-        System.err.println(error);
-    }
-    throw new IllegalArgumentException("Could not parse knowledge.");
-}</programlisting>
-      <para>Next, you need to create the Knowledge Base that contains all the necessary
-      processes (and rules) like this:</para>
-      <programlisting role="JAVA">
-KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());</programlisting>
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();</programlisting>
+      <para>Note that this will throw an exception if the knowledge base contains
+      errors (because it could not parse your processes correctly).</para>
       </listitem>
 
       <listitem><para><emphasis>Starting a process</emphasis>: Processes are
@@ -352,7 +342,8 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
       are then copied to the newly created process instance as top-level variables
       of the process.</para>
 
-      <para>You can also start a process from within a rule consequence, using</para>
+      <para>You can also start a process from within a rule consequence, or from
+      inside a process action, using the predefined kcontext parameter:</para>
       <programlisting role="JAVA">
 kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlisting>
       </listitem>
@@ -443,7 +434,7 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
 
       <!-- START -->
       <listitem>
-        <para><emphasis role="strong">Start</emphasis>: The start of the ruleflow.
+        <para><emphasis role="strong">Start Event</emphasis>: The start of the ruleflow.
         A ruleflow should have exactly one start node, which cannot have
         incoming connections and should have one outgoing connection.  Whenever a
         RuleFlow process is started, execution will start at this node and 
@@ -463,14 +454,19 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             triggers that can be used to automatically start the process.  Examples are a
             "constraint" trigger that automatically starts the process if a given rule or
             constraint is satisfied, or an "event" trigger that automatically starts the
-            process if a specific event is signalled.</para>
+            process if a specific event is signalled.  Note that it currently not possibly
+            to specify this in the graphical editor.  You should manually update the process
+            XML for now.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
           </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- END -->
       <listitem>
-        <para><emphasis role="strong">End</emphasis>: The end of the ruleflow.  A ruleflow
+        <para><emphasis role="strong">End Event</emphasis>: The end of the ruleflow.  A ruleflow
         should have one or more End nodes.  The End node should have one incoming
         connection and cannot have outgoing connections.  It contains the following
         properties:</para>
@@ -489,12 +485,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             ruleflow are cancelled. Non-terminating End nodes are simply ends for
             some path, while other parallel paths still continue.</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- RULESET -->
       <listitem>
-        <para><emphasis role="strong">RuleFlowGroup</emphasis>: Represents a set
+        <para><emphasis role="strong">Rule Task (or RuleFlowGroup)</emphasis>: Represents a set
         of rules that need to be evaluated.  The rules are evaluated when the node
         is reached.  A RuleFlowGroup node should have one incoming connection and
         one outgoing connection.  Rules can become part of a specific ruleflow group
@@ -528,12 +527,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
             for details.</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- SPLIT -->
       <listitem>
-        <para><emphasis role="strong">Split</emphasis>: Allows you to create branches
+        <para><emphasis role="strong">Diverging Gateway (or Split)</emphasis>: Allows you to create branches
         in your ruleflow.  A Split node should have one incoming connection and two or
         more outgoing connections.  There are three types of Split nodes currently
         supported:
@@ -583,12 +585,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
           <listitem><para><emphasis>Constraints</emphasis>: The constraints linked
             to each of the outgoing connections (in case of an (X)OR split).</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- JOIN -->
       <listitem>
-        <para><emphasis role="strong">Join</emphasis>: Allows you to synchronize
+        <para><emphasis role="strong">Converging Gateway (or Join)</emphasis>: Allows you to synchronize
           multiple branches.  A join node should have two or more incoming connections
           and one outgoing connection.  There are four types of splits currently supported:
           <itemizedlist>
@@ -635,24 +640,30 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             <para><emphasis>n</emphasis>: The number of incoming connections to
             wait for (in case of a n-of-m join).</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- EVENT WAIT -->
       <listitem>
-        <para><emphasis role="strong">EventWait</emphasis>
-        (or <emphasis role="strong">Milestone</emphasis>):
-        Represents a wait state.  An EventWait should have one incoming connection
-        and one outgoing connection.  It specifies a constraint which defines how
-        long the process should wait in this state before continuing.  For example,
-        a constraint in an order entry application might specify that the process
-        should wait until no more errors are found in the given order.  Constraints
-        are specified using the same syntax as the left-hand side of a rule.   When
-        a Wait node is reached in the ruleflow, the engine will check the associated
-        constraint.  If the constraint evaluates to true directly, the flow will
-        continue imediately.  Otherwise, the flow will continue if the constraint
-        is satisfied later on, for example when a fact is inserted, updated or
-        removed from the working memory.  It contains the following properties:</para>
+        <para><emphasis role="strong">State</emphasis>:
+        Represents a wait state.  A state should have one incoming connection
+        and one or more outgoing connections.  For each of the outgoing connections,
+        a rule constraint can be specified which defines how long the process should wait
+        in this state before continuing.  For example, a constraint in an order entry
+        application might specify that the process should wait until no more errors are
+        found in the given order.  Constraints are specified using the same syntax as
+        the left-hand side of a rule.   When a state is reached in the ruleflow, the
+        engine will check the associated constraints.  If one of the constraint evaluates
+        to true directly, the flow will continue imediately.  Otherwise, the flow will
+        continue if one of the constraints is satisfied later on, for example when a fact
+        is inserted, updated or removed from the working memory.  A state can also be
+        signaled manually to make it progress to the next state, using
+        ksession.signalEvent("signal", "name") where "name" should either be the name of
+        the constraint for the connection that should be selected, or the name of the node
+        that should be moved to.  A state contains the following properties:</para>
         <itemizedlist>
           <listitem>
             <para><emphasis>Id</emphasis>: The id of the node (which is unique within
@@ -662,15 +673,28 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             <para><emphasis>Name</emphasis>: The display name of the node.</para>
           </listitem>
           <listitem>
-            <para><emphasis>Constraint</emphasis>: Defines when the process can 
-            leave this state and continue.</para>
+            <para><emphasis>Constraints</emphasis>: Defines when the process can 
+            leave this state and continue for each of the outgoing connections.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timers</emphasis>: Timers that are linked to this node.
+            See section
+            <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
+            for details.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are 
+            executed upon entry or exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
           </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- SUBPROCESS -->
       <listitem>
-        <para><emphasis role="strong">SubFlow</emphasis>: represents the invocation
+        <para><emphasis role="strong">Reusable Sub-Process (or SubFlow)</emphasis>: represents the invocation
         of another process from within this process.  A sub-process node should
         have one incoming connection and one outgoing connection.  When a SubFlow
         node is reached in the ruleflow, the engine will start the process with the
@@ -719,12 +743,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
             for details.</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- ACTION -->
       <listitem>
-        <para><emphasis role="strong">Action</emphasis>: represents an action that
+        <para><emphasis role="strong">Script Task (or Action)</emphasis>: represents an action that
         should be executed in this ruleflow.  An Action node should have one incoming
         connection and one outgoing connection.  The associated action specifies what
         should be executed, the dialect used for coding the action (i.e., Java or MVEL),
@@ -732,7 +759,7 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
         variable <code>drools</code> referring to a <code>KnowledgeHelper</code> object
         (which can, for example,
         be used to retrieve the Working Memory by calling 
-        <code>drools.getWorkingMemory()</code>), and the variable <code>context</code>
+        <code>drools.getWorkingMemory()</code>), and the variable <code>kcontext</code>
         that references the <code>ProcessContext</code> object (which can,
         for example, be used to access the current <code>ProcessInstance</code> or
         <code>NodeInstance</code>, and to get and set variables). When an Action node
@@ -750,12 +777,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             <para><emphasis>Action</emphasis>: The action associated with this 
             action node.</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- TIMER -->
       <listitem>
-        <para><emphasis role="strong">Timer</emphasis>: represents a timer that can
+        <para><emphasis role="strong">Timer Event</emphasis>: represents a timer that can
         trigger one or multiple times after a given period of time.  A Timer node
         should have one incoming connection and one outgoing connection.  The timer
         delay specifies how long (in milliseconds) the timer should wait before
@@ -784,12 +814,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             between two subsequent triggers.  If the period is 0, the timer should
             only be triggered once.</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- FAULT -->
       <listitem>
-        <para><emphasis role="strong">Fault</emphasis>: A Fault node can be used
+        <para><emphasis role="strong">Error Event (or Fault)</emphasis>: A Fault node can be used
         to signal an exceptional condition in the process.  It should
         have one incoming connection and no outgoing connections.  When a Fault
         node is reached in the ruleflow, it will throw a fault with the given name.
@@ -815,12 +848,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             that contains the data associated with this fault.  This data is also
             passed on to the exception handler (if one is found).</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- EVENT -->
       <listitem>
-        <para><emphasis role="strong">Event</emphasis>: An Event node can be used
+        <para><emphasis role="strong">(Message) Event</emphasis>: An Event node can be used
         to respond to internal or external events during the execution of the process.
         An Event node should have no incoming connections and one outgoing
         connection.  It specifies the type of event that is expected.  Whenever
@@ -852,12 +888,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             to external events that are signalled to the process engine directly,
             using <code>workingMemory.signalEvent(String type, Object event)</code>.</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- HUMAN TASK -->
       <listitem>
-        <para><emphasis role="strong">Human Task</emphasis>: Processes can also
+        <para><emphasis role="strong">User Task (or Human Task)</emphasis>: Processes can also
         involve tasks that need to be executed by human actors.  A Human Task node
         represents an atomic task to be executed by a human actor.  It
         should have one incoming connection and one outgoing connection.
@@ -935,12 +974,15 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
             for details.</para>
           </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
       <!-- COMPOSITE -->
       <listitem>
-        <para><emphasis role="strong">Composite</emphasis>: A Composite node is 
+        <para><emphasis role="strong">Sub-Process (or Composite)</emphasis>: A Composite node is 
         a node that can contain other nodes so that it acts as a node container.
         This allows not only the embedding of a part of the flow within such
         a Composite node, but also the definition of additional variables and
@@ -984,7 +1026,7 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
 
       <!-- FOR EACH -->
       <listitem>
-        <para><emphasis role="strong">ForEach</emphasis>: A ForEach node is a
+        <para><emphasis role="strong">Multiple Instance (or ForEach)</emphasis>: A ForEach node is a
         special kind of composite node that allows you to execute the contained
         flow multiple times, once for each element in a collection.  A ForEach
         node should have one incoming connection and one outgoing connection. A
@@ -1029,7 +1071,7 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
 
       <!-- WORK ITEMS -->
       <listitem>
-        <para><emphasis role="strong">WorkItem</emphasis>: Represents an (abstract)
+        <para><emphasis role="strong">WorkItem (or Service Task)</emphasis>: Represents an (abstract)
         unit of work that should be executed in this process.  All work that is
         executed outside the process engine should be represented (in a declarative
         way) using a WorkItem node.  Different types of work items are predefined, e.g.,
@@ -1104,6 +1146,9 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
             simply be the name of a variable (in which case it resolves
             to the value of the variable), but more advanced MVEL expressions
             are possible as well, e.g., <code>#{person.name.firstname}</code>.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>MetaData</emphasis>: Metadata related to this node.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -1182,7 +1227,7 @@ kcontext.getKnowledgeRuntime().insert( new Person(...) );</programlisting>
 
     <para>Constraints can be used in various locations in your processes,
     for example in a Split node using OR or XOR decisions, or as a
-    constraint for an EventWait. Drools Flow supports two types of constraints:</para>
+    constraint for a State node. Drools Flow supports two types of constraints:</para>
       <itemizedlist>
         <listitem><para><emphasis>Code constraints</emphasis> are boolean expressions,
         evaluated directly whenever they are reached. We currently support two
@@ -1429,37 +1474,6 @@ context.getProcessInstance().signalEvent("FaultType", context.getVariable("Fault
         automatically cancelled.</para></listitem>
       </itemizedlist>
 
-    <para>By default, the Drools engine is a passive component, meaning that
-    it will start processing only if you tell it to. Typically, you first
-    insert the necessary data and then tell the engine to start processing.
-    In passive mode, a timer that has been triggered will be put on the
-    action queue.  This means that it will either be executed automatically
-    if the engine is still running, or it will become delayed until the engine
-    is told to start executing by the user (by calling
-    <code>fireAllRules()</code>).</para>
-
-    <para>When using timers, it does usually make sense to let the Drools
-    engine operate as an active component, so that it will execute actions
-    whenever they become available, without the need to wait until the user
-    tells it to resume execution.  Thus, a timer would become effective as
-    soon as it triggers. To make the engine fire all actions continuously,
-    you must call the method <code>fireUntilHalt()</code>, whereupon the
-    engine operates until <code>halt()</code> is called. Note that you should call
-    <code>fireUntilHalt()</code> in a separate thread as it will only
-    return if the engine has been halted, either by the user or some some
-    logic calling <code>halt()</code> on the session.  The following
-    code snippet shows how to do this.</para>
-
-    <programlisting role="JAVA">
-new Thread(new Runnable() {
-  public void run() {
-    ksession.fireUntilHalt();
-  }
-}).start();
-
-// starting a new process instance
-ksession.startProcess("...");
-// any timer that triggers will now be executed automatically</programlisting>
   </section>
   
   <section>
@@ -1601,6 +1615,12 @@ then
 end</programlisting>
 
     <para>This rule belongs to the ruleflow-group called "group1".</para>
+
+    <para>Rules that are executing as part of a ruleflow-group that is triggered
+    by a process, can also access the process context in the rule consequence.
+    Through the process context, the process instance or node instance that triggered
+    the ruleflow-group can be accessed, or variables could be set or retrieved, e.g.</para>
+    <programlisting role="JAVA">drools.getContext(ProcessContext.class).getProcessInstance()</programlisting>
   </section>
 
   <section>
