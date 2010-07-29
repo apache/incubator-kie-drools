@@ -1,23 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_21 (Sun Microsystems Inc.)
+Export-Package: org.drools.template.model;version="5.1.0.SNAPSHOT",org
+ .drools.template.objects;uses:="org.drools.template,org.drools.templa
+ te.parser";version="5.1.0.SNAPSHOT",org.drools.template.parser;uses:=
+ "org.mvel2.templates,org.drools.template.model";version="5.1.0.SNAPSH
+ OT",org.drools.template.jdbc;uses:="org.drools.template.parser";versi
+ on="5.1.0.SNAPSHOT",org.drools.template;uses:="org.drools.template.pa
+ rser,org.drools.template.objects";version="5.1.0.SNAPSHOT"
+Tool: Bnd-0.0.357
+Bundle-Name: Drools :: Templates
+Created-By: 1.6.0_20 (Apple Inc.)
+Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
+Bundle-Vendor: JBoss Inc.
+DynamicImport-Package: org.drools.*
+Bundle-Version: 5.1.0.SNAPSHOT
+Bnd-LastModified: 1280433605828
+Bundle-ManifestVersion: 2
+Bundle-Description: A rule production system
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: org.mvel2.templates;version="2.0"
-Bnd-LastModified: 1280379287940
-Export-Package: org.drools.template.jdbc;uses:="org.drools.template.pa
- rser";version="5.1.0.SNAPSHOT",org.drools.template;uses:="org.drools.
- template.parser,org.drools.template.objects";version="5.1.0.SNAPSHOT"
- ,org.drools.template.parser;uses:="org.mvel2.templates,org.drools.tem
- plate.model";version="5.1.0.SNAPSHOT",org.drools.template.objects;use
- s:="org.drools.template,org.drools.template.parser";version="5.1.0.SN
- APSHOT",org.drools.template.model;version="5.1.0.SNAPSHOT"
-Bundle-Version: 5.1.0.SNAPSHOT
-Bundle-Name: Drools :: Templates
-Bundle-Description: A rule production system
-Bundle-DocURL: http://www.jboss.org/
-Bundle-Vendor: JBoss Inc.
-Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.drools.templates;singleton:=true
-Tool: Bnd-0.0.357
-Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT"
-DynamicImport-Package: org.drools.*
+Bundle-DocURL: http://www.jboss.org/
 
