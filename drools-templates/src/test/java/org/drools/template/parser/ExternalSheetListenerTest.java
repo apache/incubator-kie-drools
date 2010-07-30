@@ -110,7 +110,7 @@ public class ExternalSheetListenerTest extends TestCase {
 
 		public StatefulSession newStatefulSession() {
 			return new StatefulSession() {
-                private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 510l;
 
                 public void addEventListener(WorkingMemoryEventListener arg0) {
 

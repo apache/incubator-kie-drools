@@ -18,7 +18,7 @@ package org.drools.template.parser;
 
 public class DecisionTableParseException extends RuntimeException {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public DecisionTableParseException(final String message) {
         super( message );
