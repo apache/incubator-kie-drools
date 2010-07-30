@@ -37,7 +37,7 @@ public class ScopesAgendaFilter
 
     public final static Collection<String> ALL_SCOPES                        = new ArrayList<String>() {
 
-                                                                                 private static final long serialVersionUID = 4428467530400926541L;
+                                                                                 private static final long serialVersionUID = 510l;
 
                                                                                  {
                                                                                      add( VERIFYING_SCOPE_DECISION_TABLE );

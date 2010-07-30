@@ -34,7 +34,7 @@ public class SubRule extends RuleComponent
     implements
     Serializable,
     Possibility {
-    private static final long  serialVersionUID = 8871361928380977116L;
+    private static final long  serialVersionUID = 510l;
 
     private Set<RuleComponent> items            = new HashSet<RuleComponent>();
 

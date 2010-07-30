@@ -30,7 +30,7 @@ public class SubPattern extends PatternComponent
     implements
     Possibility {
 
-    private static final long     serialVersionUID = 8871361928380977116L;
+    private static final long     serialVersionUID = 510l;
 
     private final Pattern         pattern;
 

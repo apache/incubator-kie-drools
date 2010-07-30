@@ -25,7 +25,7 @@ import java.io.Serializable;
 public class PatternOperatorDescr extends PatternComponent
     implements
     Serializable {
-    private static final long serialVersionUID = 8393994152436331910L;
+    private static final long serialVersionUID = 510l;
 
     private OperatorDescrType type;
 

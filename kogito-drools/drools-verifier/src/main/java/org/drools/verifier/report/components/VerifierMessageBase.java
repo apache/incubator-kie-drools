@@ -29,7 +29,7 @@ abstract public class VerifierMessageBase
     implements
     Serializable,
     Comparable<VerifierMessageBase> {
-    private static final long   serialVersionUID = 9190003495068712452L;
+    private static final long   serialVersionUID = 510l;
 
     private static int          index            = 0;
 

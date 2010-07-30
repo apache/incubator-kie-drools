@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class VerifierRangeCheckMessage extends VerifierMessageBase {
-    private static final long        serialVersionUID = -2403507929285633672L;
+    private static final long        serialVersionUID = 510l;
 
     private Collection<MissingRange> causes;
 
