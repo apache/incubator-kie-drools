@@ -30,7 +30,7 @@ import org.drools.builder.ResourceType;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
 import org.drools.command.impl.GenericCommand;
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -115,7 +115,7 @@ public class StatelessSessionTest extends TestCase {
         
         StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
         GenericCommand cmd = ( GenericCommand ) CommandFactory.newInsert( stilton, "outStilton" );
-        BatchExecutionCommand batch = new BatchExecutionCommand(  Arrays.asList( new GenericCommand<?>[] { cmd } ) );
+        BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList( new GenericCommand<?>[] { cmd } ) );
         
         ExecutionResults result = ( ExecutionResults ) ksession.execute( batch );
         stilton = ( Cheese ) result.getValue( "outStilton" );

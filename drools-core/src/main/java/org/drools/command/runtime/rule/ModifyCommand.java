@@ -35,8 +35,10 @@ import org.drools.command.Setter;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.xml.jaxb.util.JaxbListAdapter;
 import org.drools.xml.jaxb.util.JaxbListWrapper;
 import org.mvel2.MVEL;
@@ -71,11 +73,13 @@ public class ModifyCommand
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        Object object = ksession.getObject( this.handle );
+        WorkingMemoryEntryPoint wmep = ksession.getWorkingMemoryEntryPoint( ((InternalFactHandle)handle).getEntryPoint().getEntryPointId() );
+        
+        Object object = wmep.getObject( this.handle );
         MVEL.eval( getMvelExpr(),
                    object );
 
-        ksession.update( handle,
+        wmep.update( handle,
                         object );
         return object;
     }

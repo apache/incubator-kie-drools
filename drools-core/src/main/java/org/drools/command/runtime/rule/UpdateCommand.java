@@ -19,6 +19,7 @@ package org.drools.command.runtime.rule;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -29,6 +30,7 @@ public class UpdateCommand
 
     private FactHandle handle;
     private Object     object;
+    private String     entryPoint;
 
     public UpdateCommand(FactHandle handle,
                          Object object) {
@@ -39,9 +41,19 @@ public class UpdateCommand
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        ksession.update( handle,
+        ksession.getWorkingMemoryEntryPoint( ((InternalFactHandle)handle).getEntryPoint().getEntryPointId() ).update( handle,
                         object );
         return null;
+    }
+    
+    
+
+    public String getEntryPoint() {
+        return entryPoint;
+    }
+
+    public void setEntryPoint(String entryPoint) {
+        this.entryPoint = entryPoint;
     }
 
     public String toString() {

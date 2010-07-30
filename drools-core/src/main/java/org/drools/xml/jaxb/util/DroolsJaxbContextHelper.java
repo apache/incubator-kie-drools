@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -47,7 +47,7 @@ import org.drools.runtime.rule.impl.FlatQueryResults;
  */
 public class DroolsJaxbContextHelper {
 
-	public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommand.class.getName(),
+	public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommandImpl.class.getName(),
 														SetGlobalCommand.class.getName(),
 														GetGlobalCommand.class.getName(),
 														FireAllRulesCommand.class.getName(),
@@ -60,7 +60,7 @@ public class DroolsJaxbContextHelper {
 														AbortWorkItemCommand.class.getName(),
 														SignalEventCommand.class.getName(),
 														StartProcessCommand.class.getName(),
-														BatchExecutionCommand.class.getName(),
+														BatchExecutionCommandImpl.class.getName(),
 														ExecutionResultImpl.class.getName(),
 														DefaultFactHandle.class.getName(),
 														JaxbListWrapper.class.getName(),

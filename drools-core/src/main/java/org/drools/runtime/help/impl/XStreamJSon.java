@@ -27,7 +27,7 @@ import org.drools.command.Command;
 import org.drools.command.CommandFactory;
 import org.drools.command.Setter;
 import org.drools.command.impl.GenericCommand;
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -43,6 +43,7 @@ import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.common.DefaultFactHandle;
+import org.drools.core.util.StringUtils;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.FactHandle;
@@ -232,7 +233,7 @@ public class XStreamJSon {
         public void marshal(Object object,
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
-            BatchExecutionCommand cmds = (BatchExecutionCommand) object;
+            BatchExecutionCommandImpl cmds = (BatchExecutionCommandImpl) object;
             if ( cmds.getLookup() != null ) {
                 writer.startNode( "lookup" );
                 writer.setValue( cmds.getLookup() );
@@ -269,12 +270,12 @@ public class XStreamJSon {
                 }
                 reader.moveUp();
             }
-            return new BatchExecutionCommand( list,
+            return new BatchExecutionCommandImpl( list,
                                               lookup );
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals( BatchExecutionCommand.class );
+            return clazz.equals( BatchExecutionCommandImpl.class );
         }
     }
 
@@ -299,6 +300,12 @@ public class XStreamJSon {
                 writer.setValue( Boolean.toString( cmd.isReturnObject() ) );
                 writer.endNode();
             }
+            
+            if ( !StringUtils.isEmpty( cmd.getEntryPoint() ) ) {
+                writer.startNode( "entry-point" );
+                writer.setValue(  cmd.getEntryPoint() );
+                writer.endNode();
+            }
             writeValue( writer,
                         context,
                         "object",
@@ -320,6 +327,8 @@ public class XStreamJSon {
                                               context,
                                               cmd.getObject(),
                                               "object" ) );
+                } else if ( "entry-point".equals( nodeName ) ) {
+                    cmd.setEntryPoint( reader.getValue() );
                 }
                 reader.moveUp();
 
@@ -590,6 +599,11 @@ public class XStreamJSon {
                 writer.endNode();
 
             }
+            if ( !StringUtils.isEmpty( cmd.getEntryPoint() ) ) {
+                writer.startNode( "entry-point" );
+                writer.setValue(  cmd.getEntryPoint() );
+                writer.endNode();
+            }            
 
             for ( Object element : cmd.getObjects() ) {
                 writeItem( new ObjectsObjectContainer( element ),
@@ -603,6 +617,7 @@ public class XStreamJSon {
             List objects = new ArrayList();
             String outIdentifier = null;
             String returnObjects = null;
+            String entryPoint = null;
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
@@ -619,6 +634,8 @@ public class XStreamJSon {
                     outIdentifier = reader.getValue();
                 } else if ( "return-objects".equals( nodeName ) ) {
                     returnObjects = reader.getValue();
+                } else if ( "entry-point".equals( nodeName ) ) {
+                    entryPoint = reader.getValue();
                 } else {
                     throw new IllegalArgumentException( "insert-elements does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
                 }
@@ -630,6 +647,9 @@ public class XStreamJSon {
                 if ( outIdentifier != null ) {
                     cmd.setReturnObject( Boolean.parseBoolean( returnObjects ) );
                 }
+            }
+            if ( entryPoint != null ) {
+                cmd.setEntryPoint( entryPoint );
             }
             return cmd;
         }

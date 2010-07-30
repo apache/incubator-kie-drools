@@ -36,7 +36,7 @@ import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.help.DroolsJaxbHelperProvider;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -78,7 +78,7 @@ public class DroolsJaxbHelperProviderImpl
     implements
     DroolsJaxbHelperProvider {
 	
-	public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommand.class.getName(),
+	public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommandImpl.class.getName(),
 													   SetGlobalCommand.class.getName(),
 													   GetGlobalCommand.class.getName(),
 													   FireAllRulesCommand.class.getName(),
@@ -91,7 +91,7 @@ public class DroolsJaxbHelperProviderImpl
 														AbortWorkItemCommand.class.getName(),
 														SignalEventCommand.class.getName(),
 														StartProcessCommand.class.getName(),
-														BatchExecutionCommand.class.getName(),
+														BatchExecutionCommandImpl.class.getName(),
 														ExecutionResultImpl.class.getName() ,
 														DefaultFactHandle.class.getName(),
 														JaxbListWrapper.class.getName(),
