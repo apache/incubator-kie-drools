@@ -30,7 +30,7 @@ import org.drools.xml.changeset.ResourceHandler;
 public class ChangeSetSemanticModule  extends DefaultSemanticModule implements SemanticModule {
 
     public ChangeSetSemanticModule() {
-        super( "http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd" );
+        super( "http://drools.org/drools-5.0/change-set" );
 
         addHandler( "change-set",
                     new ChangeSetHandler() );

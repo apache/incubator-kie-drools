@@ -95,7 +95,9 @@ public class KnowledgeAgentDSLTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:" + this.getPort() + "/rules.drl' type='DSLR' />";
         xml += "        <resource source='http://localhost:" + this.getPort() + "/myExpander.dsl' type='DSL' />";
@@ -247,7 +249,9 @@ public class KnowledgeAgentDSLTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='http://localhost:" + this.getPort() + "/rules.drl' type='DSLR' />";
         xml += "        <resource source='http://localhost:" + this.getPort() + "/myExpander.dsl' type='DSL' />";

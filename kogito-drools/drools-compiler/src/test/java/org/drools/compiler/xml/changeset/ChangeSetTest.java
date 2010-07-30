@@ -49,7 +49,9 @@ public class ChangeSetTest extends TestCase {
 
         String str = "";
         str += "<change-set ";
-        str += "xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        str += "xmlns='http://drools.org/drools-5.0/change-set' ";
+        str += "xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' ";
+        str += "xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         str += "    <add> ";
         str += "        <resource source='http://www.domain.com/test.drl' type='DRL' />";
         str += "        <resource source='http://www.domain.com/test.xls' type='DTABLE' >";
@@ -109,7 +111,9 @@ public class ChangeSetTest extends TestCase {
 
         String str = "";
         str += "<change-set ";
-        str += "xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' > ";
+        str += "xmlns='http://drools.org/drools-5.0/change-set' ";
+        str += "xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' ";
+        str += "xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         str += "    <add> ";
         str += "        <resource source='http://localhost:8081/jboss-brms/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST' type='PKG' basicAuthentication='enabled' username='admin' password='pwd'/>";
         str += "    </add> ";        
