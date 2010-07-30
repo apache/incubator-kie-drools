@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
             elementFormDefault="qualified" 
-            targetNamespace="http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd" 
+            targetNamespace="http://drools.org/drools-5.0/change-set" 
             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
-            xmlns:change-set="http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd">
+            xmlns:change-set="http://drools.org/drools-5.0/change-set">
   <xsd:import namespace="http://www.w3.org/2001/XMLSchema-instance"/>
   <xsd:element name="change-set">
     <xsd:complexType>
