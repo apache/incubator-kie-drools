@@ -738,16 +738,16 @@ end
 
       <para>The code to run this is simple:</para>
 
-      <programlisting role="JAVA">// First we compile the spreadsheet with the template
-// to create a whole lot of rules.
-final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-// The data we are interested in starts at row 2, column 2 (e.g. B2)
-final String drl = converter.compile(getSpreadsheetStream(), getRulesStream(), 2, 2);
-</programlisting>
+      <programlisting role="JAVA">DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
-      <para>We create an ExternalSpreadsheetCompiler object and use it to merge the spreadsheet with the rules. The two
-      integer parameters indicate the column and row where the data actually starts - in our case column 2, row 2 (i.e.
-      B2).</para>
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+kbuilder.add( ResourceFactory.newClassPathResource( getSpreadsheetName(),
+                                                    getClass() ),
+              ResourceType.DTABLE,
+              dtableconfiguration );
+</programlisting>
     </section>
   </section>
 </section>
