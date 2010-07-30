@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -49,7 +50,10 @@ public class InsertObjectCommand
 
 	@XmlAttribute(name="return-object")
     private boolean returnObject = true;
-    
+	
+	@XmlAttribute(name="entry-point")
+    private String entryPoint;
+	
     public InsertObjectCommand() {
         
     }
@@ -66,7 +70,13 @@ public class InsertObjectCommand
 
 	public FactHandle execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        FactHandle factHandle = ksession.insert( object );
+        
+        FactHandle factHandle;
+        if ( StringUtils.isEmpty( this.entryPoint ) ) { 
+            factHandle = ksession.insert( object );
+        } else {
+            factHandle = ksession.getWorkingMemoryEntryPoint( this.entryPoint ).insert( object );
+        }
         
         ReteooWorkingMemory session = ((StatefulKnowledgeSessionImpl)ksession).session;
 
@@ -107,9 +117,19 @@ public class InsertObjectCommand
     public void setReturnObject(boolean returnObject) {
         this.returnObject = returnObject;
     }
+    
+    
+
+    public String getEntryPoint() {
+        return entryPoint;
+    }
+
+    public void setEntryPoint(String entryPoint) {
+        this.entryPoint = entryPoint;
+    }
 
     public String toString() {
-        return "session.insert(" + object + ");";
+        return "session.entryPoints(" + ((this.entryPoint == null ) ? "DEFAULT" : this.entryPoint) + ").insert(" + object + ");";
     }
     
 //    private Object readResolve() throws ObjectStreamException {

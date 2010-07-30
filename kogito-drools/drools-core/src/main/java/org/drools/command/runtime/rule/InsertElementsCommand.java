@@ -31,9 +31,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.xml.jaxb.util.JaxbListAdapter;
 import org.drools.xml.jaxb.util.JaxbListWrapper;
 
@@ -46,19 +48,22 @@ public class InsertElementsCommand
 
 	@XmlJavaTypeAdapter(JaxbListAdapter.class)
 	@XmlElement(name="list")
-	public List<Object> objects;
+	public Collection<Object> objects;
 
     @XmlAttribute
     private String  outIdentifier;
 
     @XmlAttribute(name="return-objects")
     private boolean returnObject = true;
+    
+    @XmlAttribute(name="entry-point")
+    private String entryPoint;    
 
     public InsertElementsCommand() {
         this.objects = new ArrayList<Object>();
     }
 
-    public InsertElementsCommand(List<Object> objects) {
+    public InsertElementsCommand(Collection<Object> objects) {
         this.objects = objects;
     }
 
@@ -67,7 +72,7 @@ public class InsertElementsCommand
 		this.outIdentifier = outIdentifier;
 	}
 
-	public List<Object> getObjects() {
+	public Collection<Object> getObjects() {
         return this.objects;
     }
 
@@ -78,6 +83,15 @@ public class InsertElementsCommand
     public Collection<FactHandle> execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         List<FactHandle> handles = new ArrayList<FactHandle>();
+        
+        WorkingMemoryEntryPoint wmep;
+        if ( StringUtils.isEmpty( this.entryPoint ) ) {
+            wmep = ksession;
+        } else {
+            wmep = ksession.getWorkingMemoryEntryPoint( this.entryPoint );
+        }
+        
+        
         for ( Object object : objects ) {
             handles.add( ksession.insert( object ) );
         }
@@ -107,6 +121,14 @@ public class InsertElementsCommand
 
     public void setReturnObject(boolean returnObject) {
         this.returnObject = returnObject;
+    }
+
+    public String getEntryPoint() {
+        return entryPoint;
+    }
+
+    public void setEntryPoint(String entryPoint) {
+        this.entryPoint = entryPoint;
     }
 
     public String toString() {

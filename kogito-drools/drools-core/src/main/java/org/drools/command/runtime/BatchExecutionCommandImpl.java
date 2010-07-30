@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.drools.command.BatchExecutionCommand;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -77,7 +78,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XmlRootElement(name="batch-execution")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "batch-execution", propOrder = {"lookup", "commands"})
-public class BatchExecutionCommand implements GenericCommand<ExecutionResults> {
+public class BatchExecutionCommandImpl implements BatchExecutionCommand {
 	
 	private static final long serialVersionUID = 510l;
 	
@@ -85,14 +86,14 @@ public class BatchExecutionCommand implements GenericCommand<ExecutionResults> {
 	@XStreamAsAttribute
 	private String lookup;
 
-	public BatchExecutionCommand(){
+	public BatchExecutionCommandImpl(){
 	}
 	
-	public BatchExecutionCommand( List<GenericCommand<?>> commands ) {
+	public BatchExecutionCommandImpl( List<GenericCommand<?>> commands ) {
 		this.commands = commands;
 	}
 	
-	public BatchExecutionCommand( List<GenericCommand<?>> commands, String lookup ) {
+	public BatchExecutionCommandImpl( List<GenericCommand<?>> commands, String lookup ) {
 		this.commands = commands;
 		this.lookup = lookup;
 	}

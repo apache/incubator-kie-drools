@@ -28,7 +28,7 @@ import org.drools.command.Command;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -257,8 +257,8 @@ public class StatelessKnowledgeSessionImpl
             boolean autoFireAllRules = true;
             if ( command instanceof FireAllRulesCommand ) {
                 autoFireAllRules = false;
-            } else if ( command instanceof BatchExecutionCommand ) {
-                for ( Command nestedCmd : ((BatchExecutionCommand) command).getCommands() ) {
+            } else if ( command instanceof BatchExecutionCommandImpl ) {
+                for ( Command nestedCmd : ((BatchExecutionCommandImpl) command).getCommands() ) {
                     if ( nestedCmd instanceof FireAllRulesCommand ) {
                         autoFireAllRules = false;
                         break; 
@@ -268,7 +268,7 @@ public class StatelessKnowledgeSessionImpl
             if ( autoFireAllRules ) {
                 ksession.fireAllRules( );
             }
-            if ( command instanceof BatchExecutionCommand) {
+            if ( command instanceof BatchExecutionCommandImpl) {
                 ExecutionResults result = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
                 return (T) result;                
             } else {

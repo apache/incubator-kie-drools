@@ -29,7 +29,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.command.Command;
 import org.drools.command.CommandFactory;
 import org.drools.command.Setter;
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -71,8 +71,8 @@ public class XStreamXML {
     public static XStream newXStreamMarshaller(XStream xstream) {
         XStreamHelper.setAliases( xstream );
         
-        xstream.processAnnotations( BatchExecutionCommand.class );
-        xstream.addImplicitCollection( BatchExecutionCommand.class,
+        xstream.processAnnotations( BatchExecutionCommandImpl.class );
+        xstream.addImplicitCollection( BatchExecutionCommandImpl.class,
                                        "commands" );
         
         xstream.registerConverter( new InsertConverter( xstream ) );
@@ -115,6 +115,9 @@ public class XStreamXML {
 
           writer.addAttribute( "return-object",
                                Boolean.toString( cmd.isReturnObject() ) );
+          
+          writer.addAttribute( "entry-point",
+                               cmd.getEntryPoint() );          
 
       }
       writeItem( cmd.getObject(),
@@ -126,6 +129,7 @@ public class XStreamXML {
                           UnmarshallingContext context) {
       String identifierOut = reader.getAttribute( "out-identifier" );
       String returnObject = reader.getAttribute( "return-object" );
+      String entryPoint = reader.getAttribute( "entry-point" );
 
       reader.moveDown();
       Object object = readItem( reader,
@@ -138,6 +142,9 @@ public class XStreamXML {
           if ( returnObject != null ) {
               cmd.setReturnObject( Boolean.parseBoolean( returnObject ) );
           }
+      }
+      if ( entryPoint != null ) {
+          cmd.setEntryPoint( entryPoint );
       }
       return cmd;
   }
@@ -276,6 +283,10 @@ public static class InsertElementsConverter extends AbstractCollectionConverter
 
           writer.addAttribute( "return-objects",
                                Boolean.toString( cmd.isReturnObject() ) );
+          
+          
+          writer.addAttribute( "entry-point",
+                               cmd.getEntryPoint() );          
 
       }
 
@@ -290,6 +301,7 @@ public static class InsertElementsConverter extends AbstractCollectionConverter
                           UnmarshallingContext context) {
       String identifierOut = reader.getAttribute( "out-identifier" );
       String returnObject = reader.getAttribute( "return-objects" );
+      String entryPoint = reader.getAttribute( "entry-point" );
 
       List objects = new ArrayList();
       while ( reader.hasMoreChildren() ) {
@@ -308,6 +320,9 @@ public static class InsertElementsConverter extends AbstractCollectionConverter
               cmd.setReturnObject( Boolean.parseBoolean( returnObject ) );
           }
       }
+      if ( entryPoint != null ) {
+          cmd.setEntryPoint( entryPoint );
+      }      
       return cmd;
   }
 

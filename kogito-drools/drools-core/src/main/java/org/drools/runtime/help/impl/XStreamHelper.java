@@ -16,7 +16,7 @@
 
 package org.drools.runtime.help.impl;
 
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -42,7 +42,7 @@ import com.thoughtworks.xstream.XStream;
 public class XStreamHelper {
     public static void setAliases(XStream xstream) {
         xstream.alias( "batch-execution",
-                       BatchExecutionCommand.class );
+                       BatchExecutionCommandImpl.class );
         xstream.alias( "insert",
                        InsertObjectCommand.class );
         xstream.alias( "modify",

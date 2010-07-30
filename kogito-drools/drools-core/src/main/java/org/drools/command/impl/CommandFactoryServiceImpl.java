@@ -16,14 +16,16 @@
 
 package org.drools.command.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.command.BatchExecutionCommand;
 import org.drools.command.Command;
-import org.drools.command.CommandFactoryProvider;
+import org.drools.command.CommandFactoryService;
 import org.drools.command.Setter;
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
@@ -33,6 +35,7 @@ import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
 import org.drools.command.runtime.rule.GetObjectsCommand;
+import org.drools.command.runtime.rule.InsertElementsCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
@@ -41,7 +44,7 @@ import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 
-public class CommandFactoryProviderImpl implements CommandFactoryProvider {
+public class CommandFactoryServiceImpl implements CommandFactoryService {
 
 	public Command newGetGlobal(String identifier) {
 		return new GetGlobalCommand(identifier);
@@ -53,19 +56,26 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return cmd;
 	}
 
-	public Command newInsertElements(Iterable objects) {
-//		TODO: FIX THIS
-//		return new InsertElementsCommand(objects);
-		return null;
+	public Command newInsertElements(Collection objects) {
+	    return new InsertElementsCommand(objects);
 	}
+	
+    public Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint) {
+        InsertElementsCommand cmd = new InsertElementsCommand(objects);
+        cmd.setEntryPoint( entryPoint );
+        cmd.setOutIdentifier( outIdentifier );
+        cmd.setReturnObject( returnObject );
+        return cmd;
+    }	
 
 	public Command newInsert(Object object) {
 		return new InsertObjectCommand(object);
 	}
 
-	public Command newInsert(Object object, String outIdentifier) {
+	public Command newInsert(Object object, String outIdentifier, String entryPoint) {
 		InsertObjectCommand cmd = new InsertObjectCommand(object);
 		cmd.setOutIdentifier(outIdentifier);
+		cmd.setEntryPoint( entryPoint );
 		return cmd;
 	}
 	
@@ -162,7 +172,7 @@ public class CommandFactoryProviderImpl implements CommandFactoryProvider {
 		return new QueryCommand(identifier, name, arguments);
 	}
 
-	public Command newBatchExecution(List<? extends Command> commands) {
-		return new BatchExecutionCommand((List<GenericCommand<?>>) commands);
+	public BatchExecutionCommand newBatchExecution(List<? extends Command> commands, String lookup) {
+		return new BatchExecutionCommandImpl((List<GenericCommand<?>>) commands, lookup);
 	}
 }

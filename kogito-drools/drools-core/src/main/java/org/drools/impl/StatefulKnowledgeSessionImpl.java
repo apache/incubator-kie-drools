@@ -32,7 +32,7 @@ import org.drools.command.Context;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.command.runtime.BatchExecutionCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -865,7 +865,7 @@ public class StatefulKnowledgeSessionImpl
 
     public <T> T execute(Context context,
                          Command<T> command) {
-        if ( !( command instanceof BatchExecutionCommand ) ) {
+        if ( !( command instanceof BatchExecutionCommandImpl ) ) {
             return (T) ((GenericCommand) command).execute( new KnowledgeCommandContext( context,
                                                                              null,
                                                                              this.kbase,
