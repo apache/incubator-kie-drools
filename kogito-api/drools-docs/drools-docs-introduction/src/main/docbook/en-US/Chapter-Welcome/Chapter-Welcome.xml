@@ -28,32 +28,46 @@
   workflow with Drools Flow but also adding event processing with Drools
   Fusion, creating a more holistic approach to software development. Where the
   term holistic is used for emphasizing the importance of the whole and the
-  interdependence of its parts. Drools 5.0 is the launch of what we call the
-  Business Logic integration Platform (BLiP) .</para>
+  interdependence of its parts.</para>
 
-  <para>Drools 5.0 is now split into 4 modules, each with their own manual -
-  Guvnor, Expert, Fusion and Flow. Guvnor is our web based governance system,
-  traditionally referred to in the rules world as a BRMS. We decided to move
-  away from the BRMS term to a play on governance as it's not rules specific.
-  Expert is the traditional rules engine. Fusion is the event processing side,
-  it's a play on data/sensor fusion terminology. Finally there is Flow which
-  is our workflow module</para>
+  <para>Drools 5.0 is now split into 5 modules, each with their own manual -
+  Guvnor (BRMS/BPMS), Expert (Rules), Fusion (CEP), Flow (Process/Workflow)
+  and Planner. Guvnor is our web based governance system, traditionally
+  referred to in the rules world as a BRMS. We decided to move away from the
+  BRMS term to a play on governance as it's not rules specific. Expert is the
+  traditional rules engine. Fusion is the event processing side, it's a play
+  on data/sensor fusion terminology. Flow is our workflow module, Kris
+  Verlaenen leads this and has done some amazing work; he's currently moving
+  flow to be incorporated into jBPM 5. The fith module called Planner,
+  authored by Geoffrey De Smet, solves allocation and scheduling type problem
+  and while still in the early stage of development is showing a lot of
+  promise. We hope to add Semantics for 2011, based around description logc,
+  and that is being work on as part of the next generaion Drools
+  designs.</para>
 
-  <itemizedlist>
-    <listitem>
-      <para>Drools Guvnor (BRMS/BPMS)</para>
-    </listitem>
+  <para>I've been working in the rules field now for around 7 years and I
+  finally feel like I'm getting to grips with things and ideas are starting to
+  gel and the real innovation is starting to happen. To me It feels like we
+  actually know what we are doing now, compared to the past where there was a
+  lot of wild guessing and exploration. I've been working hard on the next
+  generation Drools Expert design document with Edson Tirelli and Davide
+  Sottara. I invite you to read the document and get involved, <link
+  xlink:href="http://community.jboss.org/wiki/DroolsLanguageEnhancements">http://community.jboss.org/wiki/DroolsLanguageEnhancements</link>.
+  The document takes things to the next level pushing Drools forward as a
+  hybrid engine, not just a capable production rule system, but also melding
+  in logic programming (prolog) with functional programming and description
+  logic along with a host of other ideas for a more expressive and modern
+  feeling language. </para>
 
-    <listitem>
-      <para>Drools Expert (rule engine),</para>
-    </listitem>
+  <para>I hope you can feel the passion that my team and I have while working
+  on Drools, and that some of it rubs off on you during your
+  adventures.</para>
 
-    <listitem>
-      <para>Drools Flow (process/workflow)</para>
-    </listitem>
+  <para><emphasis role="bold">Mark </emphasis></para>
 
-    <listitem>
-      <para>Drools Fusion (cep/temporal reasoning)</para>
-    </listitem>
-  </itemizedlist>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/Chapter-Welcome/mark.png"></imagedata>
+    </imageobject>
+  </mediaobject>
 </chapter>
