@@ -4,11 +4,11 @@
   <parent>
 		<artifactId>drools</artifactId>
 		<groupId>org.drools</groupId>
-		<version>5.1.0</version>
+		<version>5.2.0.M1</version>
   </parent>
   <artifactId>drools-assistant</artifactId>
   <packaging>jar</packaging>
-  <version>5.1.0</version>
+  <version>5.2.0.M1</version>
   <name>Drools :: Assistant</name>
   <dependencies>
   	<dependency>
