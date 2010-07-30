@@ -36,6 +36,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.xml.jaxb.util.JaxbCollectionAdapter;
 import org.drools.xml.jaxb.util.JaxbListAdapter;
 import org.drools.xml.jaxb.util.JaxbListWrapper;
 
@@ -46,7 +47,7 @@ public class InsertElementsCommand
 
 	private static final long serialVersionUID = 510l;
 
-	@XmlJavaTypeAdapter(JaxbListAdapter.class)
+	@XmlJavaTypeAdapter(JaxbCollectionAdapter.class)
 	@XmlElement(name="list")
 	public Collection<Object> objects;
 
