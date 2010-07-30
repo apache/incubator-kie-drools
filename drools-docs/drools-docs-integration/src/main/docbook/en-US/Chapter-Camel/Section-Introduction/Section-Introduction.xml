@@ -7,75 +7,114 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Introduction</title>
+  <title>Camel</title>
 
-  <para>The Apache Camel integration allows us to interact with a Drools
-  Stateless or Stateful session through a pipeline. It simply works by
-  transforming XML commands into executable commands and executing them. The
-  advantage of this integration is that Apache Camel makes possible the
-  implemention of more advanced enterprise integration patterns, which is an
-  improvement of drools pipeline.</para>
+  <para>Camel provides a light weight bus framework for geting information
+  into and out of Drools.</para>
 
-  <para></para>
+  <para>Drools introduces two elements to make easy integration.</para>
 
-  <para>This integration with Drools allows us to add any of the current Camel
-  components. Using the <link
-  xlink:href="http://camel.apache.org/components.html">Apache
-  Components</link> you can, receive commands from several entry points and
-  send the execution result to another entry point. To name a few, JMS
-  queue/Atom Feed/Mina connection/a Mail/etc. As you can see, this brings a
-  more powerful interoperability mechanism to integrate your application with
-  Drools.</para>
+  <itemizedlist>
+    <listitem>
+      <para>Drools Policy</para>
 
-  <para>Actually Drools is using Camel 2.4.0 that allows a more strong
-  internal integration between them.</para>
+      <para>Augments any JAXB or XStream data loaders. For JAXB it adds drools
+      related paths ot the contextpath, for XStream it adds custom converters
+      and aliases for Drools classes. It also handles setting the ClassLoader
+      to the targetted ksession.</para>
+    </listitem>
 
-  <section>
-    <title>Architecture</title>
+    <listitem>
+      <para>Drools Endpoint</para>
 
-    <para>&lt;insert architecture graphic here&gt;</para>
+      <para>Executes the payload against the specified drools session</para>
+    </listitem>
+  </itemizedlist>
 
-    <para></para>
-  </section>
+  <para>Drools can be configured like any norma camel component, but notice
+  the policy that wraps the drools related segments. This will route all
+  payloads to ksession1</para>
 
-  <section>
-    <title>Introduction to drools-grid</title>
+  <example>
+    <title>Drools EndPoint configured with the CXFRS producer</title>
 
-    <para>Introduction to drools-grid Camel integration is coupled with
-    another drools module called: drools-grid. This module allow us to
-    interact with Drools sessions independent of the JVM location. At the
-    moment we can use two implementations:</para>
+    <programlisting>&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
 
-    <table>
-      <title>drools-grid implementations</title>
+&lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;  
+   &lt;route&gt;
+      &lt;from uri="cxfrs://bean://rsServer"/&gt;
+         &lt;policy ref="droolsPolicy"&gt;
+            &lt;unmarshal ref="xstream" /&gt;       
+            &lt;to uri="drools:node1/ksession1" /&gt;
+            &lt;marshal ref="xstream" /&gt;
+       &lt;/policy&gt;
+    &lt;/route&gt;</programlisting>
+  </example>
 
-      <tgroup cols="2">
-        <tbody>
-          <row>
-            <entry>Local</entry>
+  <para>It is possible to not specify the session in the drools endpoint uri,
+  and instead "multiplex" based on an attribute or header. In this example the
+  policy will check either the header field "DroolsLookup" for the named
+  session to execute and if that isn't specified it'll check the "lookup"
+  attribute on the incoming payload. It then attempts to "lookup" the session
+  fron the execution-node context and execute against it.</para>
 
-            <entry>Used when the drools sessions and clients are in the same
-            JVM</entry>
-          </row>
+  <example>
+    <title>Drools EndPoint configured with the CXFRS producer</title>
 
-          <row>
-            <entry>Remote</entry>
+    <programlisting>&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
 
-            <entry>Used when you have drools sessions on a remote JVM.
-            Currently, the only implementation is based on Apache Mina.
-            HornetQ support will be added in the next release</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </table>
+&lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;  
+   &lt;route&gt;
+      &lt;from uri="cxfrs://bean://rsServer"/&gt;
+         &lt;policy ref="droolsPolicy"&gt;
+            &lt;unmarshal ref="xstream" /&gt;       
+            &lt;to uri="drools:node1" /&gt;
+            &lt;marshal ref="xstream" /&gt;
+       &lt;/policy&gt;
+    &lt;/route&gt;</programlisting>
+  </example>
 
-    <para></para>
+  <example>
+    <title>Java Code to execute against Route from a Spring and Camel
+    Context</title>
 
-    <para>Drools Grid is embedded inside the Drools Camel component, so don't
-    worry about further implementation information because this is hidden by
-    Drools. With this information we can start to configure our Camel
-    Context.</para>
+    <programlisting>public class MyTest extends CamelSpringTestSupport {
+    
+    @Override
+    protected AbstractXmlApplicationContext createApplicationContext() {        
+        return new ClassPathXmlApplicationContext("org/drools/camel/component/CxfRsSpring.xml");
+    }  
 
-    <para></para>
-  </section>
+    public void test1() throws Exception {
+        String cmd = "";
+        cmd += "&lt;batch-execution lookup=\"ksession1\"&gt;\n";
+        cmd += "  &lt;insert out-identifier=\"salaboy\"&gt;\n";
+        cmd += "      &lt;org.drools.pipeline.camel.Person&gt;\n";
+        cmd += "         &lt;name&gt;salaboy&lt;/name&gt;\n";
+        cmd += "      &lt;/org.drools.pipeline.camel.Person&gt;\n";
+        cmd += "   &lt;/insert&gt;\n";
+        cmd += "   &lt;fire-all-rules/&gt;\n";
+        cmd += "&lt;/batch-execution&gt;\n";
+                
+        Object object = this.context.createProducerTemplate().requestBody("direct://client", cmd);
+        System.out.println( object ); 
+    }    </programlisting>
+  </example>
+
+  <para>The following urls show sample script examples for jaxb, xstream and
+  json marshalling using:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/jaxb.mvt?r=HEAD</para>
+    </listitem>
+
+    <listitem>
+      <para>http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/jaxb.mvt?r=HEAD</para>
+    </listitem>
+
+    <listitem>
+      <para>http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/xstream.mvt?r=HEAD</para>
+    </listitem>
+  </itemizedlist>
 </section>
