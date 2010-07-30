@@ -590,12 +590,16 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
              * If the ruleBase is sequential, after rebuilding or incremental
              * update, do an ordering of the ReteooBuilder
              */
+            // FIXME: this same code exists in ReteooRuleBase#newStatelessSession()
             InternalRuleBase ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase;
-            synchronized (ruleBase.getPackagesMap()) {
-                if (ruleBase.getConfiguration().isSequential()) {
+            ruleBase.lock(); // XXX: readlock might be enough, no idea what order() does.
+            try {
+                if ( ruleBase.getConfiguration().isSequential() ) {
                     ruleBase.getReteooBuilder().order();
                 }
-            }
+            } finally {
+                ruleBase.unlock();
+            }            
         }
         this.eventSupport.fireKnowledgeBaseUpdated(this.kbase);
         this.listener.debug("KnowledgeAgent finished rebuilding KnowledgeBase using ChangeSet");

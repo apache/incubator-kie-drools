@@ -88,10 +88,14 @@ public class StatelessKnowledgeSessionImpl
         this.environment = EnvironmentFactory.newEnvironment();
 
         if ( this.ruleBase != null ) {
-            synchronized ( this.ruleBase.getPackagesMap() ) {
+            // FIXME: this same code exists in ReteooRuleBase#newStatelessSession()
+            this.ruleBase.lock();
+            try {
                 if ( ruleBase.getConfiguration().isSequential() ) {
                     this.ruleBase.getReteooBuilder().order();
                 }
+            } finally {
+                this.ruleBase.unlock();
             }
         }
     }
@@ -113,7 +117,8 @@ public class StatelessKnowledgeSessionImpl
             // if we have an agent always get the rulebase from there
             this.ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) this.kagent.getKnowledgeBase()).ruleBase;
         }
-        synchronized ( this.ruleBase.getPackagesMap() ) {
+        this.ruleBase.readLock();
+        try {
             ReteooWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                               this.ruleBase,
                                                               (SessionConfiguration) this.conf,
@@ -142,6 +147,8 @@ public class StatelessKnowledgeSessionImpl
                                                                             null,
                                                                             null ) );
             return ksession;
+        } finally {
+            this.ruleBase.readUnlock();
         }
     }
 

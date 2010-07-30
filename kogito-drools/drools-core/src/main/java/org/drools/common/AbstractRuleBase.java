@@ -22,7 +22,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,8 +29,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
-import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -73,49 +75,49 @@ abstract public class AbstractRuleBase
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    private String                                     id;
+    private String                                        id;
 
-    private int                                        workingMemoryCounter;
+    private AtomicInteger                                 workingMemoryCounter = new AtomicInteger(0);
 
-    private RuleBaseConfiguration                      config;
+    private RuleBaseConfiguration                         config;
 
-    protected Map<String, Package>                     pkgs;
+    protected Map<String, Package>                        pkgs;
 
-    private Map                                        processes;
+    private Map                                           processes;
 
-    private Map                                        agendaGroupRuleTotals;
+    private Map                                           agendaGroupRuleTotals;
 
-    private transient DroolsCompositeClassLoader       rootClassLoader;
+    private transient DroolsCompositeClassLoader          rootClassLoader;
 
     /**
      * The fact handle factory.
      */
-    private FactHandleFactory                          factHandleFactory;
+    private FactHandleFactory                             factHandleFactory;
 
-    private transient Map<String, Class< ? >>          globals;
+    private transient Map<String, Class< ? >>             globals;
 
-    private ReloadPackageCompilationData               reloadPackageCompilationData = null;
+    private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<DialectRuntimeRegistry>();
 
-    private RuleBaseEventSupport                       eventSupport                 = new RuleBaseEventSupport( this );
+    private RuleBaseEventSupport                          eventSupport                 = new RuleBaseEventSupport( this );
 
-    private transient ObjectHashSet                    statefulSessions;
+    private transient ObjectHashSet                       statefulSessions;
 
     // lock for entire rulebase, used for dynamic updates
-    private final ReentrantReadWriteLock               lock                         = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock                  lock                         = new ReentrantReadWriteLock();
 
     /**
      * This lock is used when adding to, or reading the <field>statefulSessions</field>
      */
-    private final ReentrantLock                        statefulSessionLock          = new ReentrantLock();
+    private final ReentrantLock                           statefulSessionLock          = new ReentrantLock();
 
-    private int                                        additionsSinceLock;
-    private int                                        removalsSinceLock;
+    private int                                           additionsSinceLock;
+    private int                                           removalsSinceLock;
 
-    private transient Map<Class< ? >, TypeDeclaration> classTypeDeclaration;
+    private transient Map<Class< ? >, TypeDeclaration>    classTypeDeclaration;
 
-    private List<RuleBasePartitionId>                  partitionIDs;
+    private List<RuleBasePartitionId>                     partitionIDs;
 
-    private ClassFieldAccessorCache                    classFieldAccessorCache;
+    private ClassFieldAccessorCache                       classFieldAccessorCache;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
@@ -125,12 +127,12 @@ abstract public class AbstractRuleBase
 
     }
 
-    public synchronized int nextWorkingMemoryCounter() {
-        return this.workingMemoryCounter++;
+    public int nextWorkingMemoryCounter() {
+        return this.workingMemoryCounter.getAndIncrement();
     }
 
-    public synchronized long getWorkingMemoryCounter() {
-        return this.workingMemoryCounter;
+    public int getWorkingMemoryCounter() {
+        return this.workingMemoryCounter.get();
     }
 
     /**
@@ -159,7 +161,7 @@ abstract public class AbstractRuleBase
         this.statefulSessions = new ObjectHashSet();
 
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
-        this.partitionIDs = new ArrayList<RuleBasePartitionId>();
+        this.partitionIDs = new CopyOnWriteArrayList<RuleBasePartitionId>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
     }
@@ -207,7 +209,7 @@ abstract public class AbstractRuleBase
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
         droolsStream.writeObject( this.id );
-        droolsStream.writeInt( this.workingMemoryCounter );
+        droolsStream.writeInt( this.workingMemoryCounter.get() );
         droolsStream.writeObject( this.processes );
         droolsStream.writeObject( this.agendaGroupRuleTotals );
         droolsStream.writeUTF( this.factHandleFactory.getClass().getName() );
@@ -271,7 +273,7 @@ abstract public class AbstractRuleBase
 
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.id = (String) droolsStream.readObject();
-        this.workingMemoryCounter = droolsStream.readInt();
+        this.workingMemoryCounter.set( droolsStream.readInt() );
 
         this.processes = (Map) droolsStream.readObject();
         this.agendaGroupRuleTotals = (Map) droolsStream.readObject();
@@ -330,6 +332,7 @@ abstract public class AbstractRuleBase
      * @throws ClassNotFoundException
      */
     private void populateTypeDeclarationMaps() throws ClassNotFoundException {
+        // FIXME: readLock
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
         for ( Package pkg : this.pkgs.values() ) {
             for ( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
@@ -390,13 +393,21 @@ abstract public class AbstractRuleBase
     }
 
     public Process[] getProcesses() {
-        return (Process[]) this.processes.values().toArray( new Process[this.processes.size()] );
+        synchronized ( this.pkgs ) {
+            return (Process[]) this.processes.values().toArray( new Process[this.processes.size()] );
+        }
     }
 
     public Package[] getPackages() {
-        return this.pkgs.values().toArray( new Package[this.pkgs.size()] );
+        readLock();
+        try {
+            return this.pkgs.values().toArray( new Package[this.pkgs.size()] );
+        } finally {
+            readUnlock();
+        }
     }
 
+    // FIXME: this returns the live map!
     public Map<String, Package> getPackagesMap() {
         return this.pkgs;
     }
@@ -418,17 +429,30 @@ abstract public class AbstractRuleBase
     }
 
     public void lock() {
-        this.additionsSinceLock = 0;
-        this.removalsSinceLock = 0;
-        this.eventSupport.fireBeforeRuleBaseLocked();
+        // The lock is reentrant, so we need additional magic here to skip
+        // notifications for locked if this thread already has locked it.
+        boolean firstLock = !this.lock.isWriteLockedByCurrentThread();
+        if ( firstLock ) {
+            this.eventSupport.fireBeforeRuleBaseLocked();
+        }
+        // Always lock to increase the counter
         this.lock.writeLock().lock();
-        this.eventSupport.fireAfterRuleBaseLocked();
+        if ( firstLock ) {
+            this.additionsSinceLock = 0;
+            this.removalsSinceLock = 0;
+            this.eventSupport.fireAfterRuleBaseLocked();
+        }        
     }
 
     public void unlock() {
-        this.eventSupport.fireBeforeRuleBaseUnlocked();
+        boolean lastUnlock = this.lock.getWriteHoldCount() == 1;
+        if ( lastUnlock ) {
+            this.eventSupport.fireBeforeRuleBaseUnlocked();
+        }
         this.lock.writeLock().unlock();
-        this.eventSupport.fireAfterRuleBaseUnlocked();
+        if ( lastUnlock ) {
+            this.eventSupport.fireAfterRuleBaseUnlocked();
+        }
     }
 
     public void readLock() {
@@ -448,8 +472,8 @@ abstract public class AbstractRuleBase
      * @param newPkg The package to add.
      */
     public void addPackages(final Collection<Package> newPkgs) {
+        lock();
         try {
-            lock();
             // we need to merge all byte[] first, so that the root classloader can resolve classes
             for ( Package newPkg : newPkgs ) {
                 newPkg.checkValidity();
@@ -524,11 +548,11 @@ abstract public class AbstractRuleBase
 
                 // add the flows to the RuleBase
                 if ( newPkg.getRuleFlows() != null ) {
-                    final Map flows = newPkg.getRuleFlows();
-                    for ( final Object object : flows.entrySet() ) {
-                        final Entry flow = (Entry) object;
-                        this.processes.put( flow.getKey(),
-                                            flow.getValue() );
+                    final Map<String, org.drools.definition.process.Process> flows = newPkg.getRuleFlows();
+                    for ( org.drools.definition.process.Process process : flows.values() ) {
+                        // XXX: is this cast safe?
+                        // XXX: we could take the lock inside addProcess() out, but OTOH: this is what the VM is supposed to do ...
+                        addProcess( (Process) process );
                     }
                 }
 
@@ -611,13 +635,6 @@ abstract public class AbstractRuleBase
                 pkg.addProcess( flow );
             }
         }
-
-        //        // this handles re-wiring any dirty Packages, it's done lazily to allow incremental 
-        //        // additions without incurring the repeated cost.
-        //        if ( this.reloadPackageCompilationData == null ) {
-        //            this.reloadPackageCompilationData = new ReloadPackageCompilationData();
-        //        }
-        //        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
     private static class TypeDeclarationCandidate {
@@ -634,7 +651,7 @@ abstract public class AbstractRuleBase
             candidate = checkInterfaces( clazz,
                                          candidate,
                                          1 );
-            if( candidate != null ) {
+            if ( candidate != null ) {
                 typeDeclaration = candidate.candidate;
             }
         }
@@ -694,7 +711,8 @@ abstract public class AbstractRuleBase
 
     public void addRule(final Package pkg,
                         final Rule rule) throws InvalidPatternException {
-        synchronized ( this.pkgs ) {
+        lock();
+        try {
             this.eventSupport.fireBeforeRuleAdded( pkg,
                                                    rule );
             //        if ( !rule.isValid() ) {
@@ -703,14 +721,22 @@ abstract public class AbstractRuleBase
             addRule( rule );
             this.eventSupport.fireAfterRuleAdded( pkg,
                                                   rule );
+        } finally {
+            unlock();
         }
     }
 
+    /**
+     * This method is called with the rulebase lock held.
+     *
+     * @param rule
+     * @throws InvalidPatternException
+     */    
     protected abstract void addRule(final Rule rule) throws InvalidPatternException;
 
     public void removePackage(final String packageName) {
+        lock();
         try {
-            lock();
             final Package pkg = this.pkgs.get( packageName );
             if ( pkg == null ) {
                 throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
@@ -727,16 +753,14 @@ abstract public class AbstractRuleBase
             }
 
             // getting the list of referenced globals
-            final Set referencedGlobals = new HashSet();
-            for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
-                final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
+            final Set<String> referencedGlobals = new HashSet<String>();
+            for ( Package pkgref : this.pkgs.values() ) {
                 if ( pkgref != pkg ) {
                     referencedGlobals.addAll( pkgref.getGlobals().keySet() );
                 }
             }
             // removing globals declared inside the package that are not shared
-            for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
-                final String globalName = (String) it.next();
+            for ( String globalName : pkg.getGlobals().keySet() ) {
                 if ( !referencedGlobals.contains( globalName ) ) {
                     this.globals.remove( globalName );
                 }
@@ -759,16 +783,17 @@ abstract public class AbstractRuleBase
             unlock();
         }
     }
-    
+
     public void removeQuery(final String packageName,
-                           final String ruleName) {
-        removeRule(packageName, ruleName);
+                            final String ruleName) {
+        removeRule( packageName,
+                    ruleName );
     }
 
     public void removeRule(final String packageName,
                            final String ruleName) {
+        lock();
         try {
-            lock();
             final Package pkg = this.pkgs.get( packageName );
             if ( pkg == null ) {
                 throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
@@ -784,19 +809,23 @@ abstract public class AbstractRuleBase
             removeRule( pkg,
                         rule );
             pkg.removeRule( rule );
-            if ( this.reloadPackageCompilationData == null ) {
-                this.reloadPackageCompilationData = new ReloadPackageCompilationData();
-            }
-            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
+            addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
         } finally {
             unlock();
         }
     }
 
+    /**
+     * Notify listeners and sub-classes about imminent removal of a rule from a package.
+     *
+     * @param pkg
+     * @param rule
+     */
+    // FIXME: removeRule(String, String) and removeRule(Package, Rule) do totally different things!
     public void removeRule(final Package pkg,
                            final Rule rule) {
+        lock();
         try {
-            lock();
             this.eventSupport.fireBeforeRuleRemoved( pkg,
                                                      rule );
             removeRule( rule );
@@ -807,60 +836,103 @@ abstract public class AbstractRuleBase
         }
     }
 
+    /**
+     * Handle rule removal.
+     *
+     * This method is intended for sub-classes, and called after the 
+     * {@link RuleBaseEventListener#beforeRuleRemoved(org.drools.event.BeforeRuleRemovedEvent) before-rule-removed} 
+     * event is fired, and before the rule is physically removed from the package.
+     *
+     * This method is called with the rulebase lock held.
+     * @param rule
+     */
     protected abstract void removeRule(Rule rule);
 
     public void removeFunction(final String packageName,
                                final String functionName) {
-        synchronized ( this.pkgs ) {
+        lock();
+        try {
             final Package pkg = this.pkgs.get( packageName );
             if ( pkg == null ) {
                 throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
             }
 
-            this.eventSupport.fireBeforeFunctionRemoved( pkg,
-                                                         functionName );
-
             if ( !pkg.getFunctions().containsKey( functionName ) ) {
                 throw new IllegalArgumentException( "function name '" + packageName + "' does not exist in the Package '" + packageName + "'." );
             }
 
+            removeFunction( pkg,
+                            functionName );
             pkg.removeFunction( functionName );
 
-            if ( this.reloadPackageCompilationData == null ) {
-                this.reloadPackageCompilationData = new ReloadPackageCompilationData();
-            }
-            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
-
-            this.eventSupport.fireAfterFunctionRemoved( pkg,
-                                                        functionName );
+            addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
+        } finally {
+            unlock();
         }
     }
 
+    /**
+     * Handle function removal.
+     *
+     * This method is intended for sub-classes, and called after the 
+     * {@link RuleBaseEventListener#beforeFunctionRemoved(org.drools.event.BeforeFunctionRemovedEvent) before-function-removed} 
+     * event is fired, and before the function is physically removed from the package.
+     *
+     * This method is called with the rulebase lock held.
+     * @param rule
+     */
+    protected /* abstract */ void removeFunction( String functionName ) {
+        // Nothing in default.
+    }
+
+    /**
+     * Notify listeners and sub-classes about imminent removal of a function from a package.
+     *
+     * This method is called with the rulebase lock held.
+     * @param pkg
+     * @param rule
+     */
+    private void removeFunction (final Package pkg,
+                                 final String functionName) {
+        this.eventSupport.fireBeforeFunctionRemoved( pkg,
+                                                     functionName );
+        removeFunction(functionName);
+        this.eventSupport.fireAfterFunctionRemoved( pkg,
+                                                    functionName );
+    }
+    
     public void addProcess(final Process process) {
-        synchronized ( this.pkgs ) {
+        // XXX: could use a synchronized(processes) here.
+        lock();
+        try {
             this.processes.put( process.getId(),
                                 process );
+        } finally {
+            unlock();
         }
 
     }
 
     public void removeProcess(final String id) {
-        synchronized ( this.pkgs ) {
+        lock();
+        try {
             this.processes.remove( id );
+        } finally {
+            unlock();
         }
     }
 
     public Process getProcess(final String id) {
-        Process process;
-        synchronized ( this.pkgs ) {
-            process = (Process) this.processes.get( id );
+        readLock();
+        try {
+            return (Process) this.processes.get( id );
+        } finally {
+            readUnlock();
         }
-        return process;
     }
 
     public void addStatefulSession(final StatefulSession statefulSession) {
         statefulSessionLock.lock();
-
         try {
             this.statefulSessions.add( statefulSession );
         } finally {
@@ -870,7 +942,12 @@ abstract public class AbstractRuleBase
     }
 
     public Package getPackage(final String name) {
-        return this.pkgs.get( name );
+        readLock();
+        try {
+            return this.pkgs.get( name );
+        } finally {
+            readUnlock();
+        }
     }
 
     public StatefulSession[] getStatefulSessions() {
@@ -904,11 +981,9 @@ abstract public class AbstractRuleBase
     }
 
     public void executeQueuedActions() {
-        synchronized ( this.pkgs ) {
-            if ( this.reloadPackageCompilationData != null ) {
-                this.reloadPackageCompilationData.execute( this );
-                this.reloadPackageCompilationData = null;
-            }
+        DialectRuntimeRegistry registry;
+        while ( (registry = reloadPackageCompilationData.poll()) != null ) {
+            registry.onBeforeExecute();
         }
     }
 
@@ -922,7 +997,8 @@ abstract public class AbstractRuleBase
     }
 
     public List<RuleBasePartitionId> getPartitionIds() {
-        return this.partitionIDs;
+        // this returns an unmodifiable CopyOnWriteArrayList, so should be safe for concurrency
+        return Collections.unmodifiableList( this.partitionIDs );
     }
 
     public void addEventListener(final RuleBaseEventListener listener) {
@@ -940,52 +1016,37 @@ abstract public class AbstractRuleBase
         return this.eventSupport.getEventListeners();
     }
 
-    public boolean isEvent(Class clazz) {
-        for ( Package pkg : this.pkgs.values() ) {
-            if ( pkg.isEvent( clazz ) ) {
-                return true;
+    public boolean isEvent(Class<?> clazz) {
+        readLock();
+        try {
+            for ( Package pkg : this.pkgs.values() ) {
+                if ( pkg.isEvent( clazz ) ) {
+                    return true;
+                }
             }
+            return false;
+        } finally {
+            readUnlock();
         }
-        return false;
     }
 
     public FactType getFactType(final String name) {
-        for ( Package pkg : this.pkgs.values() ) {
-            FactType type = pkg.getFactType( name );
-            if ( type != null ) {
-                return type;
+        readLock();
+        try {
+            for ( Package pkg : this.pkgs.values() ) {
+                FactType type = pkg.getFactType( name );
+                if ( type != null ) {
+                    return type;
+                }
             }
+            return null;
+        } finally {
+            readUnlock();
         }
-        return null;
     }
 
-    public static class ReloadPackageCompilationData
-        implements
-        RuleBaseAction {
-        private static final long           serialVersionUID = 510l;
-        private Set<DialectRuntimeRegistry> set;
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            set = (Set<DialectRuntimeRegistry>) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( set );
-        }
-
-        public void addDialectDatas(final DialectRuntimeRegistry registry) {
-            if ( this.set == null ) {
-                this.set = new HashSet<DialectRuntimeRegistry>();
-            }
-            if ( !this.set.contains( registry ) ) this.set.add( registry );
-        }
-
-        public void execute(final InternalRuleBase ruleBase) {
-            for ( final DialectRuntimeRegistry registry : this.set ) {
-                registry.onBeforeExecute();
-            }
-        }
+    private void addReloadDialectDatas(DialectRuntimeRegistry registry) {
+        this.reloadPackageCompilationData.offer( registry );
     }
 
     public static interface RuleBaseAction

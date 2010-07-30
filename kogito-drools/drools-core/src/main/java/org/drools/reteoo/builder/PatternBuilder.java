@@ -25,6 +25,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.InstanceNotEqualsConstraint;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.AlphaNode;
@@ -226,13 +227,15 @@ public class PatternBuilder
 
     public static ObjectTypeNode attachObjectTypeNode(BuildContext context,
                                                       ObjectType objectType) {
-        synchronized ( context.getRuleBase().getPackagesMap() ) {
+        final InternalRuleBase ruleBase = context.getRuleBase();
+        ruleBase.readLock();
+        try {
             InternalWorkingMemory[] wms = context.getWorkingMemories();
 
-            EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( context.getCurrentEntryPoint() );
+            EntryPointNode epn = ruleBase.getRete().getEntryPointNode( context.getCurrentEntryPoint() );
             if ( epn == null ) {
                 epn = new EntryPointNode( context.getNextId(),
-                                          context.getRuleBase().getRete(),
+                                          ruleBase.getRete(),
                                           context );
                 if ( wms.length > 0 ) {
                     epn.attach( wms );
@@ -257,6 +260,8 @@ public class PatternBuilder
             }
 
             return otn;
+        } finally {
+            ruleBase.readUnlock();
         }
     }
 
