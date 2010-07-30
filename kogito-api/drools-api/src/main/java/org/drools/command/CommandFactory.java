@@ -16,6 +16,7 @@
 
 package org.drools.command;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -36,9 +37,10 @@ import org.drools.runtime.rule.FactHandle;
  *`
  *
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>  
+ * @BETA
  */
 public class CommandFactory {
-    private static volatile CommandFactoryProvider provider;
+    private static volatile CommandFactoryService provider;
 
     /**
      * Inserts a new instance
@@ -58,20 +60,58 @@ public class CommandFactory {
      * @return
      */
     public static Command newInsert(Object object,
-                                          String outIdentifier) {
+                                    String outIdentifier) {
         return getCommandFactoryProvider().newInsert( object,
-                                                      outIdentifier );
+                                                      outIdentifier,
+                                                      null );
     }
-
+    
     /**
-     * Iterate and insert each of the elements of the Iterable, typically a Collection.
+     * Inserts a new instance but references via the outIdentifier, which is returned as part of the ExecutionResults
+     * The outIdentifier can be null.
+     * The entryPoint, which can also be null, specifies the entrypoint the object is inserted into.
      * 
-     * @param iterable
+     * @param object
+     * @param outIdentifier
+     * @param entryPoint
      * @return
      */
-    public static Command newInsertElements(Iterable objects) {
+    public static Command newInsert(Object object,
+                                    String outIdentifier,
+                                    String entryPoint ) {
+        return getCommandFactoryProvider().newInsert( object,
+                                                      outIdentifier,
+                                                      entryPoint );
+    }    
+
+    /**
+     * Iterate and insert each of the elements of the Collection.
+     * 
+    * 
+     * @param objects
+     *    The objects to insert
+     * @return
+     */
+    public static Command newInsertElements(Collection objects) {
         return getCommandFactoryProvider().newInsertElements( objects );
     }
+    
+    /**
+     * Iterate and insert each of the elements of the Collection.
+     * 
+     * @param objects
+     *    The objects to insert
+     * @param outIdentifier
+     *    Identifier to lookup the returned objects
+     * @param returnObject
+     *    boolean to specify whether the inserted Collection is part of the ExecutionResults
+     * @param entryPoint
+     *    Optional EntryPoint for the insertions
+     * @return
+     */
+    public Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint) {
+        return getCommandFactoryProvider().newInsertElements( objects, outIdentifier, returnObject, entryPoint );
+    }    
 
     public static Command newRetract(FactHandle factHandle) {
         return getCommandFactoryProvider().newRetract( factHandle );
@@ -275,15 +315,24 @@ public class CommandFactory {
      * @param commands
      * @return
      */
-    public static Command newBatchExecution(List< ? extends Command> commands) {
-        return getCommandFactoryProvider().newBatchExecution( commands );
+    public static BatchExecutionCommand newBatchExecution(List< ? extends Command> commands) {
+        return getCommandFactoryProvider().newBatchExecution( commands, null );
     }
+    
+    /**
+     * 
+     * @return
+     */
+    public static BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup ) {
+        return getCommandFactoryProvider().newBatchExecution( commands,
+                                                              lookup);
+    }    
 
-    private static synchronized void setCommandFactoryProvider(CommandFactoryProvider provider) {
+    private static synchronized void setCommandFactoryProvider(CommandFactoryService provider) {
         CommandFactory.provider = provider;
     }
 
-    private static synchronized CommandFactoryProvider getCommandFactoryProvider() {
+    private static synchronized CommandFactoryService getCommandFactoryProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -292,7 +341,7 @@ public class CommandFactory {
 
     private static void loadProvider() {
         try {
-            Class<CommandFactoryProvider> cls = (Class<CommandFactoryProvider>) Class.forName( "org.drools.command.impl.CommandFactoryProviderImpl" );
+            Class<CommandFactoryService> cls = (Class<CommandFactoryService>) Class.forName( "org.drools.command.impl.CommandFactoryServiceImpl" );
             setCommandFactoryProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
             throw new RuntimeException( "Provider org.drools.command.impl.CommandFactoryProviderImpl could not be set.",
