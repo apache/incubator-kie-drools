@@ -28,6 +28,7 @@ public interface CommandFactoryService {
 
     Command newInsert(Object object,
                       String outIdentifier,
+                      boolean returnObject,
                       String entryPoint);
 
     Command newInsertElements(Collection objects);
