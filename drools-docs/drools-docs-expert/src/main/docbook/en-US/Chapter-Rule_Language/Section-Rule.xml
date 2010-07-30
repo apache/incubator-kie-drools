@@ -245,7 +245,85 @@ end</programlisting>
     when ...
 </programlisting>
     </example>
-  </section>
+    <section>
+      <title>Timers and Calendars</title>
+
+      <para>Rule's now suport both interval and cron based timers, which
+      replace the now deprecated duration attribute.</para>
+
+      <example>
+        <title>Sample timer attribute uses</title>
+
+        <programlisting language="java">timer ( int: &lt;initial delay&gt; &lt;repeat interval&gt;? )
+timer ( int: 30s )
+timer ( int: 30s 5m )
+ 
+timer ( cron: &lt;cron expression&gt; )
+timer ( cron:* 0/15 * * * ? )</programlisting>
+      </example>
+
+      <para>Interval "int:" timers follow the JDK semantics for initial delay
+      optionally followed by a repeat interval. Cron "cron:" timers follow
+      standard cron expressions:</para>
+
+      <example>
+        <title>A Cron Example</title>
+
+        <programlisting language="java">rule "Send SMS every 15 minutes"
+    timer (cron:* 0/15 * * * ?)
+when
+    $a : Alarm( on == true )
+then
+    channels[ "sms" ].insert( new Sms( $a.mobileNumber, "The alarm is still on" );
+end</programlisting>
+      </example>
+
+      <para>Calendars can now controll when rules can fire. The Calendar api
+      is modelled on <link
+      xlink:href="http://www.quartz-scheduler.org/">Quartz
+      http://www.quartz-scheduler.org/</link> :</para>
+
+      <example>
+        <title>Adapting a Quartz Calendar</title>
+
+        <programlisting language="java">Calendar weekDayCal = QuartzHelper.quartzCalendarAdapter(org.quartz.Calendar quartzCal)</programlisting>
+      </example>
+
+      <para>Calendars are registered with the StatefulKnowledgeSession:</para>
+
+      <example>
+        <title>Registering a Calendar</title>
+
+        <programlisting language="java">ksession.getCalendars().set( "week day", weekDayCal );</programlisting>
+      </example>
+
+      <para>They can be used in conjunction with normal rules and rules
+      including timers. The rule calendar attribute can have one or more comma
+      calendar names.</para>
+
+      <example>
+        <title>Using Calendars and Timers together</title>
+
+        <programlisting language="java">rule "weekdays are high priority"
+   calendars "weekday"
+   timer (int:0 1h)
+when 
+    Alarm()
+then
+    send( "priority high - we have an alarm” );
+end 
+
+rule "weekend are low priority"
+   calendars "weekend"
+   timer (int:0 4h)
+when 
+    Alarm()
+then
+    send( "priority low - we have an alarm” );
+end</programlisting>
+      </example>
+   </section>
+   </section>
 
   <section id="RuleLanguage-ConditionalElements">
     <title>Left Hand Side (when) Conditional Elements</title>
