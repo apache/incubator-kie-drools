@@ -72,10 +72,11 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
 		return new InsertObjectCommand(object);
 	}
 
-	public Command newInsert(Object object, String outIdentifier, String entryPoint) {
+	public Command newInsert(Object object, String outIdentifier, boolean returnObject, String entryPoint) {
 		InsertObjectCommand cmd = new InsertObjectCommand(object);
 		cmd.setOutIdentifier(outIdentifier);
 		cmd.setEntryPoint( entryPoint );
+		cmd.setReturnObject( returnObject );
 		return cmd;
 	}
 	
