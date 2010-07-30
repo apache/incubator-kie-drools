@@ -23,7 +23,9 @@
     it is not inferred from the file name extension. Here is a simple example
     that points to a http location for some rules.</para>
 
-    <programlisting> &lt;change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+    <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
    &lt;add&gt;
        &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
    &lt;/add&gt;
@@ -46,7 +48,9 @@ if ( kbuilder.hasErrors() ) {
     rules from a http URL location, and an Excel decision table from the
     classpath.</para>
 
-    <programlisting> &lt;change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+    <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
    &lt;add&gt;
        &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
        &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
@@ -60,7 +64,9 @@ if ( kbuilder.hasErrors() ) {
     that directory. It is expected that all the files are of the specified
     type, since type is not yet inferred from the file name extensions.</para>
 
-    <programlisting> &lt;change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+    <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
    &lt;add&gt;
        &lt;resource source='file://myfolder/' type='DRL' /&gt;
    &lt;/add&gt;
