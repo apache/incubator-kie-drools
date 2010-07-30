@@ -38,10 +38,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -319,7 +318,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                               boolean keepReference) {
         StatefulSession session = null;
         try {
-            synchronized ( this.pkgs ) {
+            readLock();
+            try {
                 // first unwrap the byte[]
                 ObjectInputStream ois = new ObjectInputStream( stream );
     
@@ -343,6 +343,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 }
     
                 bais.close();
+            } finally {
+                readUnlock();
             }
 
         } catch ( Exception e ) {
@@ -377,15 +379,15 @@ public class ReteooRuleBase extends AbstractRuleBase {
         if ( this.getConfig().isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
-        ReteooStatefulSession session  ;
 
-        synchronized ( this.pkgs ) {
-            ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.getConfig().getExecutorService() );
-            session = new ReteooStatefulSession( id,
-                                                 this,
-                                                 executor,
-                                                 sessionConfig,
-                                                 environment );
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.getConfig().getExecutorService() );
+        readLock();
+        try {
+            ReteooStatefulSession session = new ReteooStatefulSession( id,
+                                                                       this,
+                                                                       executor,
+                                                                       sessionConfig,
+                                                                       environment );
 
             executor.setCommandExecutor( new CommandExecutor( session ) );
 
@@ -403,9 +405,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                                                                  true,
                                                                                  null,
                                                                                  null ) );
+            return session;
+        } finally {
+            readUnlock();
         }
-
-        return session;
     }
 
     public StatelessSession newStatelessSession() {
@@ -420,12 +423,12 @@ public class ReteooRuleBase extends AbstractRuleBase {
         }
     }
 
-    protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
+    protected void addRule(final Rule rule) throws InvalidPatternException {
         // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
         this.reteooBuilder.addRule( rule );
     }
 
-    protected synchronized void removeRule(final Rule rule) {
+    protected void removeRule(final Rule rule) {
         this.reteooBuilder.removeRule( rule );
     }
 
@@ -446,11 +449,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
 
     public void addPackage(final Package newPkg) {
-        List<Package> list = new ArrayList<Package>();
-        list.add( newPkg );
-        super.addPackages( list );
-        if ( this.getConfig().isSequential() ) {
-            this.reteooBuilder.setOrdered( false );
-        }
+        addPackages( Collections.singleton( newPkg ) );
     }
 }

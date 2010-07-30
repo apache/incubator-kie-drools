@@ -105,7 +105,8 @@ public class ReteooStatelessSession
     }
 
     public InternalWorkingMemory newWorkingMemory() {
-        synchronized ( this.ruleBase.getPackagesMap() ) {
+        this.ruleBase.readLock();
+        try {
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                                 this.ruleBase,
                                                                 this.sessionConf,
@@ -128,6 +129,8 @@ public class ReteooStatelessSession
                                                                             null,
                                                                             null ) );
             return wm;
+        } finally {
+            this.ruleBase.readUnlock();
         }
     }
     

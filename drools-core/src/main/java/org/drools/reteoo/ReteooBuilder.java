@@ -113,7 +113,7 @@ public class ReteooBuilder
      *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
-    void addRule(final Rule rule) throws InvalidPatternException {
+    synchronized void addRule(final Rule rule) throws InvalidPatternException {
         final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule,
                                                                        this.ruleBase,
                                                                        this.idGenerator );
@@ -130,7 +130,7 @@ public class ReteooBuilder
         this.ordered = ordered;
     }
 
-    public void order() {
+    public synchronized void order() {
         if ( ordered ) {
             // we should only do this on first call, its expected the RuleBase should not change afterwards.
             return;
@@ -220,11 +220,11 @@ public class ReteooBuilder
 
     }
 
-    public BaseNode[] getTerminalNodes(final Rule rule) {
+    public synchronized BaseNode[] getTerminalNodes(final Rule rule) {
         return this.rules.get( rule );
     }
 
-    public void removeRule(final Rule rule) {
+    public synchronized void removeRule(final Rule rule) {
         // reset working memories for potential propagation
         InternalWorkingMemory[] workingMemories = this.ruleBase.getWorkingMemories();
 
@@ -270,12 +270,12 @@ public class ReteooBuilder
             out.writeInt( nextId );
         }
 
-        public int getNextId() {
+        public synchronized int getNextId() {
             Integer id = this.recycledIds.poll();
             return ( id == null ) ? this.nextId++ : id.intValue();
         }
 
-        public void releaseId(int id) {
+        public synchronized void releaseId(int id) {
             this.recycledIds.add( id );
         }
 
