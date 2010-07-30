@@ -26,7 +26,7 @@ public class Pattern extends RuleComponent
     implements
     Cause {
 
-    private static final long     serialVersionUID = 5852308145251025423L;
+    private static final long     serialVersionUID = 510l;
 
     private String                objectTypePath;
     private String                name;

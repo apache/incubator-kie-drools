@@ -25,7 +25,7 @@ import org.drools.lang.descr.BaseDescr;
  * @author trikkola
  */
 public class UnknownDescriptionException extends Exception {
-    private static final long serialVersionUID = 6636873223159735829L;
+    private static final long serialVersionUID = 510l;
 
     final BaseDescr           descr;
 

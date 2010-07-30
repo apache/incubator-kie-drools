@@ -39,7 +39,7 @@ import com.google.common.collect.TreeMultimap;
 class VerifierReportImpl
     implements
     VerifierReport {
-    private static final long                       serialVersionUID               = -6207688526236713721L;
+    private static final long                       serialVersionUID               = 510l;
 
     private Map<String, Gap>                        gapsById                       = new TreeMap<String, Gap>();
     private Multimap<String, Gap>                   gapsByFieldId                  = new TreeMultimap<String, Gap>();

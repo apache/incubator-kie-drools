@@ -26,7 +26,7 @@ import java.util.Map;
  * @author Toni Rikkola
  */
 public class VerifierMessage extends VerifierMessageBase {
-    private static final long         serialVersionUID = 9190003495068712452L;
+    private static final long         serialVersionUID = 510l;
 
     protected final Collection<Cause> causes;
 

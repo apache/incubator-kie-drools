@@ -17,7 +17,7 @@
 package org.drools.verifier.components;
 
 public class EnumField extends Field {
-    private static final long serialVersionUID = 7617431515074762479L;
+    private static final long serialVersionUID = 510l;
 
     @Override
     public String toString() {

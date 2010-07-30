@@ -31,7 +31,7 @@ import org.drools.verifier.data.VerifierComponent;
 public class ObjectType extends VerifierComponent
     implements
     Serializable {
-    private static final long   serialVersionUID = -783733402566313623L;
+    private static final long   serialVersionUID = 510l;
 
     private int                 offset           = 0;
 
