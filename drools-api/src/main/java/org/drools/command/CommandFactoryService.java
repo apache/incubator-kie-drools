@@ -16,19 +16,23 @@
 
 package org.drools.command;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 
-public interface CommandFactoryProvider {
+public interface CommandFactoryService {
     Command newInsert(Object object);
 
     Command newInsert(Object object,
-                      String outIdentifier);
+                      String outIdentifier,
+                      String entryPoint);
 
-    Command newInsertElements(Iterable iterable);
+    Command newInsertElements(Collection objects);
+    
+    Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint);
 
     Command newRetract(FactHandle factHandle);
 
@@ -86,7 +90,7 @@ public interface CommandFactoryProvider {
                      String name,
                      Object[] arguments);
 
-    Command newBatchExecution(List< ? extends Command> commands);
+    BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup);
 
     Command newAbortWorkItem(long workItemId);
 
