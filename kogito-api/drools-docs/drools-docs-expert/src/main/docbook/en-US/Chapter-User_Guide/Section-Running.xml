@@ -1645,4 +1645,49 @@ ds.init();
 </programlisting>
     </example>
   </section>
+
+  <section>
+    <title>Drools Clips</title>
+
+    <para>Drools Clips is an alpha level research project to provide a Clips
+    like front end ot Drools.</para>
+
+    <para>Deftemplates are working, the knowledge base handles multiple name
+    spaces and you can attach the knoweldge base to the session for interative
+    building, to provide a more "shell" like environment suitable for Clips.
+    </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>deftemplate</para>
+      </listitem>
+
+      <listitem>
+        <para>defrule</para>
+      </listitem>
+
+      <listitem>
+        <para>deffunction</para>
+      </listitem>
+
+      <listitem>
+        <para>and/or/not/exists/test conditional elements</para>
+      </listitem>
+
+      <listitem>
+        <para>Literal, Variable, Return Value and Predicate field
+        constarints</para>
+      </listitem>
+    </itemizedlist>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-User_Guide/clips-shell.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+
+    <para>This project is very early stages and in need of love. If you want
+    to help, open up eclipse import api, core, compiler and clips and you
+    should be good to go. The unit tests should be self explanatory.</para>
+  </section>
 </section>

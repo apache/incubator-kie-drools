@@ -7,10 +7,10 @@
   <title>Apache Camel Integration</title>
 
   <xi:include href="Section-Introduction/Section-Introduction.xml" />
-  <xi:include href="Section-API/Section-CreatingOurCamelContext.xml" />
+  <!--xi:include href="Section-API/Section-CreatingOurCamelContext.xml" />
   <xi:include href="Section-API/Section-RegisteringKnowledgeSession.xml" />
   <xi:include href="Section-API/Section-CamelRoutesCreation.xml" />
   <xi:include href="Section-API/Section-CreatingDroolsCommands.xml" />
-  <xi:include href="Section-API/Section-SendingMessagesExchanges.xml" />
+  <xi:include href="Section-API/Section-SendingMessagesExchanges.xml" /-->
 
 </chapter>
