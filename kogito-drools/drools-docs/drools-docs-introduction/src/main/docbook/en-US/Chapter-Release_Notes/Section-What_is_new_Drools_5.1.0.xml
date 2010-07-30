@@ -1236,4 +1236,17 @@ etc </programlisting>
       view.</para>
     </section>
   </section>
+  <section>
+    <title>Known Issues</title>
+
+    <section>
+      <title>Multithread mode</title>
+
+      <para>There is a known issue with the experimental multi-thread
+      execution mode as described in the following JIRA.</para>
+
+      <para><link
+      xlink:href="???">https://jira.jboss.org/browse/JBRULES-2125</link></para>
+    </section>
+  </section>
 </section>
