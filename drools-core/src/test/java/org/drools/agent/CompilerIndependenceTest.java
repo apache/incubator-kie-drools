@@ -39,7 +39,7 @@ import org.drools.io.impl.ResourceChangeScannerImpl;
 
 public class CompilerIndependenceTest extends TestCase {
 
-    public void fixmeTest() {
+    public void testFixme() {
         
     }
 // FIXME
