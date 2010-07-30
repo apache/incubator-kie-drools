@@ -9,10 +9,63 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Configuration</title>
 
-  <para>Inside the war file you will found a few XML configuration files. The
-  most importants are knowledge-services.xml and camel-server.xml that we'll
-  see in depth in the next sections. The other file, beans.xml only includes
-  these two files.</para>
+  <para>Inside the war file you will find a few XML configuration
+  files.</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>breans.xml</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Skeleton xml that imports knowledge-services.xml and
+          camel-server.xml</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>camel-server.xml</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Configures CXF endpoints with Camel Routes</para>
+        </listitem>
+
+        <listitem>
+          <para>Came Routes pipeline messages to various configured knowledge
+          services</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>knowledge-services.xml</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Various Knowege Bases and Sessions</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>camel-client.xml</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Sample camel client showing how to send and receive a
+          message</para>
+        </listitem>
+
+        <listitem>
+          <para>Used by "out of the box" test.jsp</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para></para>
 
   <section>
     <title>REST/Camel Services configuration</title>
@@ -37,10 +90,16 @@
 &lt;import resource="classpath:META-INF/cxf/cxf-servlet.xml" /&gt;
 
   &lt;!--
+   !   If you are running on JBoss you will need to copy a camel-jboss.jar into the lib and set this classloader configuration 
+   !  http://camel.apache.org/camel-jboss.html
+   !   &lt;bean id="jbossResolver" class="org.apache.camel.jboss.JBossPackageScanClassResolver"/&gt;
+   --&gt;
+
+  &lt;!--
    !   Define the server end point.
    !   Copy and paste this element, changing id and the address, to expose services on different urls.
    !   Different Camel routes can handle different end point paths.
-    --&gt;
+   --&gt;
   &lt;cxf:rsServer id="rsServer"  
                 address="/kservice/rest"
                 serviceClass="org.drools.jax.rs.CommandExecutorImpl"&gt;
@@ -153,6 +212,91 @@
 
       <para>Both parameters are configured in knowledge-services.xml
       file.</para>
+    </section>
+
+    <section>
+      <title>Knowledge Services configuration</title>
+
+      <para>The next step is create the Knowledge Sessions that you are going
+      to use.</para>
+
+      <programlisting>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:drools="http://drools.org/schema/drools-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd"&gt;
+
+   &lt;drools:execution-node id="node1" /&gt;
+
+   &lt;drools:kbase id="kbase1" node="node1"&gt;
+      &lt;drools:resources&gt;
+         &lt;drools:resource  type="XSD" source="classpath:model.xsd"/&gt;
+         &lt;drools:resource  type="DRL" source="classpath:test.drl"/&gt;
+      &lt;/drools:resources&gt;
+   &lt;/drools:kbase&gt;
+
+   &lt;drools:ksession id="ksession1" type="stateless" kbase="kbase1" node="node1"/&gt;
+&lt;/beans&gt;
+</programlisting>
+
+      <para>The execution-node is a context or registered kbases and
+      ksessions, here kbase1 and ksession1 are planed in the node1 context.
+      The kbase itself concists of tow knoeldge defiitions, a drl and an xsd.
+      The Spring documentaiton contains a lot more information on configuring
+      these knowledge services.</para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Test</title>
+
+      <para>With drools-server war unzipped you should be able to see a
+      test.jsp and run it. This example just executes a simple "echo" type
+      application. It sends a message to the rule server that pre-appends the
+      word "echo" to the front and sends it back. By default the message is
+      "Hello World", different messages can be passed using the url parameter
+      msg - test.jsp?msg="My Custom Message".</para>
+
+      <para>Under the hood the jsp invokes the Test.java class, this then
+      calls out to Camel which is where the meet happens. The camel-client.xml
+      defines the client with just a few lines of xml:</para>
+
+      <programlisting>&lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;     
+   &lt;route&gt;
+      &lt;from uri="direct://kservice"/&gt;
+      &lt;policy ref="droolsPolicy"&gt;
+         &lt;to uri="cxfrs://http://localhost:8080/drools-server-app/kservice/rest"/&gt;
+      &lt;/policy&gt;
+   &lt;/route&gt;         
+ &lt;/camelContext&gt;
+</programlisting>
+
+      <para>"direct://kservice" is just a named hook, allowing java to grab a
+      reference and push data into it. In this example the data is already in
+      xml, so we don't need to add any DataFormat's to do the marshalling. The
+      DroolsPolicy adds some smarts to the route and you'll see it used on the
+      server side too. If JAXB or XStream were used, it would inject custom
+      paths and converters, it can also set the classloader too on the server
+      side, on the client side it automatically unwrapes the Response
+      object.</para>
+
+      <para>The rule itself can be found here: test.drl. Notice the type
+      Message is declared part of the drl and is thus not present on the
+      Classpath.</para>
+
+      <programlisting>declare Message
+   text : String
+end
+    
+  
+rule "echo" dialect "mvel"
+when
+   $m : Message();
+then
+   $m.text = "echo:" + $m.text;
+end
+</programlisting>
     </section>
   </section>
 </section>

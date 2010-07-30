@@ -240,7 +240,7 @@
               </listitem>
 
               <listitem>
-                <para>multithread </para>
+                <para>multithread</para>
 
                 <itemizedlist>
                   <listitem>
@@ -314,7 +314,7 @@
               </listitem>
 
               <listitem>
-                <para>assert-behavior </para>
+                <para>assert-behavior</para>
 
                 <itemizedlist>
                   <listitem>
@@ -394,10 +394,23 @@
 &lt;drools:ksession id="ksession2" type="stateful" kbase="kbase1"/&gt;
 
 &lt;drools:ksession id="ksession3" type="stateful" kbase="kbase2&gt;
+
+   &lt;drools:batch&gt;
+      &lt;drools:insert-object ref="person" /&gt;
+
+      &lt;drools:set-global identifier="list1"&gt;
+          &lt;bean class="java.util.ArrayList" /&gt;
+      &lt;/drools:set-global&gt;
+
+      &lt;drools:startProcess process-id="start fire"&gt; 
+
+   &lt;/drools:batch&gt;
+
    &lt;drools:configurations&gt;
      &lt;drools:keep-reference enabled="false" /&gt;
      &lt;drools:clock-type type="PSEUDO"  /&gt;
    &lt;/drools:configurations&gt;
+
 &lt;/drools:ksession&gt;
 </programlisting>
           </example>
@@ -462,6 +475,102 @@
                         <para>implementation = String</para>
                       </listitem>
                     </itemizedlist>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </itemizedlist>
+          </figure>
+
+          <figure>
+            <title>Initialization Batch Commands</title>
+
+            <itemizedlist>
+              <listitem>
+                <para>insert-object</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>ref = String (optional)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Anonymous bean</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+
+              <listitem>
+                <para>set-global</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>identifier = String (required)</para>
+                  </listitem>
+                </itemizedlist>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>reg = String (optiona)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Anonymous bean</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+
+              <listitem>
+                <para>fire-all-rules</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>max : n</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+
+              <listitem>
+                <para>fire-until-halt</para>
+              </listitem>
+
+              <listitem>
+                <para>start-process</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>parameter</para>
+
+                    <itemizedlist>
+                      <listitem>
+                        <para>identifier = String (required)</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>ref = String (optional)</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>Anonymous bean</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+
+              <listitem>
+                <para>signal-event</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>ref = String (optional)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>event-type = String (required)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>process-instance-id =n (optional)</para>
                   </listitem>
                 </itemizedlist>
               </listitem>
