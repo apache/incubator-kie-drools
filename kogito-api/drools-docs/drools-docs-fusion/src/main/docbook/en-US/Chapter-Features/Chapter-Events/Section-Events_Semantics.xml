@@ -22,11 +22,11 @@
       of the object model, because one of the most common usecases for rules
       is event data enrichment.</para>
 
-      <tip>
+      <note>
         <para>As a best practice, the application is allowed to populate
         un-populated event attributes (to enrich the event with infered data),
         but already populated attributes should never be changed.</para>
-      </tip>
+      </note>
     </listitem>
 
     <listitem>
@@ -60,10 +60,10 @@
   semantics: <emphasis role="bold">point-in-time</emphasis> events and
   <emphasis role="bold">interval-based</emphasis> events. </para>
 
-  <tip>
+  <note>
     <para>A simplistic way to understand the unitification of the semantics is
     to consider a <emphasis>point-in-time</emphasis> event as an
     <emphasis>interval-based</emphasis> event whose <emphasis>duration is
     zero</emphasis>.</para>
-  </tip>
+  </note>
 </section>
