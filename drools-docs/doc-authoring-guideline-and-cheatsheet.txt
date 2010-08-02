@@ -6,8 +6,8 @@ External documentation
 
 JBoss Documentation Guide: http://jboss.org/pressgang/jdg.html (a must read from chapter 6: Structure guidelines)
 JDocBook plugin: http://docs.jboss.org/docbook/userguide/html_single/index.html
-DocBook: http://www.docbook.org/tdg5/en/html/docbook.html
-         http://www.sagehill.net/docbookxsl/
+DocBook: http://www.sagehill.net/docbookxsl/
+ http://www.docbook.org/tdg5/en/html/docbook.html        
 
 Marking words in a paragraph
 ----------------------------
