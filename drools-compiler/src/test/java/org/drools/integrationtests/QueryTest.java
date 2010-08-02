@@ -627,8 +627,8 @@ public class QueryTest extends TestCase {
         str += "package org.drools.test  \n";
         str += "import org.drools.Cheese \n";
         str += "query cheeses(String $type1, String $type2) \n";
-        str += "    stilton : Cheese(type == $type1, $price : price) \n";
-        str += "    cheddar : Cheese(type == $type2, price == stilton.price) \n";
+        str += "    stilton : Cheese(type == $type1, $sprice : price) \n";
+        str += "    cheddar : Cheese(type == $type2, $cprice : price == stilton.price) \n";
         str += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -665,36 +665,65 @@ public class QueryTest extends TestCase {
         ksession.insert( cheddar2 );
         org.drools.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
         
-        final List updated = new ArrayList();
-        final List removed = new ArrayList();
-        final List added = new ArrayList();
+        final List<Object[]> updated = new ArrayList<Object[]>();
+        final List<Object[]> removed = new ArrayList<Object[]>();
+        final List<Object[]> added = new ArrayList<Object[]>();
         
         ViewChangedEventListener listener = new ViewChangedEventListener() {            
             public void rowUpdated(Row row) {
-                updated.add( row.get( "$price" ) );
+                Object[] array = new Object[6];
+                array[0] = row.get("stilton");
+                array[1] = row.get("cheddar");
+                array[2] = row.get("$sprice");
+                array[3] = row.get("$cprice");
+                array[4] = row.get("$type1");
+                array[5] = row.get("$type2");
+                updated.add( array );
             }
             
             public void rowRemoved(Row row) {
-                removed.add( row.get( "$price" ) );
+                Object[] array = new Object[6];
+                array[0] = row.get("stilton");
+                array[1] = row.get("cheddar");
+                array[2] = row.get("$sprice");
+                array[3] = row.get("$cprice");
+                array[4] = row.get("$type1");
+                array[5] = row.get("$type2");
+                removed.add( array );
             }
             
             public void rowAdded(Row row) {
-                added.add( row.get( "$price" ) );
+                Object[] array = new Object[6];
+                array[0] = row.get("stilton");
+                array[1] = row.get("cheddar");
+                array[2] = row.get("$sprice");
+                array[3] = row.get("$cprice");
+                array[4] = row.get("$type1");
+                array[5] = row.get("$type2");
+                added.add( array );
             }
         };        
         
         // Open the LiveQuery
-        LiveQuery query = ksession.openLiveQuery( "cheeses", new Object[] { "cheddar", "stilton" } , listener );
+        LiveQuery query = ksession.openLiveQuery( "cheeses", new Object[] { "stilton", "cheddar" } , listener );
         
         // Assert that on opening we have three rows added
         assertEquals( 3, added.size() );
         assertEquals( 0, removed.size() );
         assertEquals( 0, updated.size() );
         
+        // Assert that the identifiers where retrievable
+        assertSame(stilton1, added.get( 0 )[0] );
+        assertSame(cheddar1, added.get( 0 )[1] );
+        assertEquals(1, added.get( 0 )[2] );
+        assertEquals(1, added.get( 0 )[3] );
+        assertEquals("stilton", added.get( 0 )[4] );
+        assertEquals("cheddar", added.get( 0 )[5] );
+        
         // And that we have correct values from those rows
-        assertEquals( 1, added.get( 0 ) );
-        assertEquals( 2, added.get( 1 ) );
-        assertEquals( 3, added.get( 2 ) );
+        assertEquals( 1, added.get( 0 )[3] );
+        assertEquals( 2, added.get( 1 )[3] );
+        assertEquals( 3, added.get( 2 )[3] );
         
         // Do an update that causes a match to become untrue, thus triggering a removed
         cheddar3.setPrice( 4 );
@@ -704,7 +733,7 @@ public class QueryTest extends TestCase {
         assertEquals( 1, removed.size() );
         assertEquals( 0, updated.size() );
         
-        assertEquals( 4, removed.get( 0 ) );
+        assertEquals( 4, removed.get( 0 )[3] );
                 
         // Now make that partial true again, and thus another added
         cheddar3.setPrice( 3 );
@@ -715,7 +744,7 @@ public class QueryTest extends TestCase {
         assertEquals( 1, removed.size() );
         assertEquals( 0, updated.size() );  
         
-        assertEquals( 3, added.get( 3 ) );        
+        assertEquals( 3, added.get( 3 )[3] );        
         
         // check a standard update
         cheddar3.setOldPrice( 0 );
@@ -725,7 +754,7 @@ public class QueryTest extends TestCase {
         assertEquals( 1, removed.size() );
         assertEquals( 1, updated.size() );         
         
-        assertEquals( 3, updated.get( 0 ) );      
+        assertEquals( 3, updated.get( 0 )[3] );      
         
         // Check a standard retract
         ksession.retract( s1Fh );
@@ -734,7 +763,7 @@ public class QueryTest extends TestCase {
         assertEquals( 2, removed.size() );
         assertEquals( 1, updated.size() );    
         
-        assertEquals( 1, removed.get( 1 ) );          
+        assertEquals( 1, removed.get( 1 )[3] );          
         
         // Close the query, we should get removed events for each row
         query.close();
@@ -743,8 +772,8 @@ public class QueryTest extends TestCase {
         assertEquals( 4, removed.size() );
         assertEquals( 1, updated.size() );         
      
-        assertEquals( 2, removed.get( 2 ) );
-        assertEquals( 3, removed.get( 3 ) );
+        assertEquals( 2, removed.get( 2 )[3] );
+        assertEquals( 3, removed.get( 3 )[3] );
         
         // Check that updates no longer have any impact.
         ksession.update(  c3Fh, cheddar3 ); 
