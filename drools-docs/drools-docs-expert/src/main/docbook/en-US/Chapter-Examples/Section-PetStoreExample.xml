@@ -80,7 +80,7 @@ including callbacks from within the rules
       <example>
         <title>Creating the PetStore RuleBase in PetStore.main</title>
 
-        <programlisting role="JAVA"><![CDATA[KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        <programlisting language="java"><![CDATA[KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
 kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
                                                     PetStore.class ),
@@ -119,7 +119,7 @@ ui.createAndShowGUI();
       <example>
         <title>Firing the Rules - extract from CheckoutCallBack.checkout()</title>
 
-        <programlisting role="JAVA"><![CDATA[public String checkout(JFrame frame, List<Product> items) {
+        <programlisting language="java"><![CDATA[public String checkout(JFrame frame, List<Product> items) {
     Order order = new Order();
 
     // Iterate through list and add to cart
@@ -184,7 +184,7 @@ ui.createAndShowGUI();
       <example>
         <title>Package, Imports, Globals and Dialect: extract from PetStore.drl</title>
 
-        <programlisting role="JAVA">package org.drools.examples
+        <programlisting language="java">package org.drools.examples
 
 import org.drools.WorkingMemory
 import org.drools.examples.PetStore.Order
@@ -216,7 +216,7 @@ global javax.swing.JTextArea textArea</programlisting>
       <example>
         <title>Java Functions in the Rules: extract from PetStore.drl</title>
 
-        <programlisting role="JAVA"><![CDATA[function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
+        <programlisting language="java"><![CDATA[function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
     Object[] options = {"Yes",
                         "No"};
                             

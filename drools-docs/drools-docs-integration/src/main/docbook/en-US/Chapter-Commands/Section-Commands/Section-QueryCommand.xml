@@ -66,7 +66,7 @@
 
     <listitem>
       <para>Command creation</para>
-      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
+      <programlisting language="java">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 QueryCommand queryCommand = new QueryCommand();
 queryCommand.setName("persons");

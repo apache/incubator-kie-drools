@@ -55,7 +55,7 @@
 
     <listitem>
       <para>Command creation</para>
-      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
+      <programlisting language="java">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 CompleteWorkItemCommand completeWorkItemCommand = new CompleteWorkItemCommand();
 completeWorkItemCommand.setWorkItemId(1001);

@@ -92,19 +92,19 @@
         <listitem>
           <para>XStream</para>
 
-          <programlisting role="JAVA">String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting>
+          <programlisting language="java">String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);</programlisting>
         </listitem>
 
         <listitem>
           <para>JSON</para>
 
-          <programlisting role="JAVA">String xml = BatchExecutionHelper.newJSonMarshaller().toXML(command);</programlisting>
+          <programlisting language="java">String xml = BatchExecutionHelper.newJSonMarshaller().toXML(command);</programlisting>
         </listitem>
 
         <listitem>
           <para>JAXB</para>
 
-          <programlisting role="JAVA">Marshaller marshaller = jaxbContext.createMarshaller();
+          <programlisting language="java">Marshaller marshaller = jaxbContext.createMarshaller();
 StringWriter xml = new StringWriter();
 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 marshaller.marshal(command, xml);</programlisting>

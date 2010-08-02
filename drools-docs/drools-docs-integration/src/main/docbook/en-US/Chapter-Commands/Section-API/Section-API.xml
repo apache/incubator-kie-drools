@@ -102,7 +102,7 @@
 
       <para></para>
 
-      <programlisting role="JAVA">Options xjcOpts = new Options();
+      <programlisting language="java">Options xjcOpts = new Options();
 xjcOpts.setSchemaLanguage(Language.XMLSCHEMA);
 JaxbConfiguration jaxbConfiguration = KnowledgeBuilderFactory.newJaxbConfiguration( xjcOpts, "xsd" );
 kbuilder.add(ResourceFactory.newClassPathResource("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);
@@ -135,7 +135,7 @@ JAXBContext jaxbContext = KnowledgeBuilderHelper.newJAXBContext(classesName.toAr
 
       <para></para>
 
-      <programlisting role="JAVA">List&lt;String&gt; classNames = new ArrayList&lt;String&gt;();
+      <programlisting language="java">List&lt;String&gt; classNames = new ArrayList&lt;String&gt;();
 classNames.add("org.drools.test.Person");
 JAXBContext jaxbContext = DroolsJaxbContextHelper.createDroolsJaxbContext(classNames, null);
 Marshaller marshaller = jaxbContext.createMarshaller();</programlisting>

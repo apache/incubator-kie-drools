@@ -21,7 +21,7 @@
     Knowledge Base consisting of only one process definition, using a Knowledge Builder
     to add the resource (from the classpath in this case).</para>
 
-<programlisting role="JAVA">
+<programlisting language="java">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add(ResourceFactory.newClassPathResource("MyProcess.rf"), ResourceType.DRF);
 KnowledgeBase kbase = kbuilder.newKnowledgeBase();
@@ -42,7 +42,7 @@ KnowledgeBase kbase = kbuilder.newKnowledgeBase();
     code snippet shows how easy it is to create a session based on the earlier created
     Knowledge Base, and to start a process (by id).</para>
 
-<programlisting role="JAVA">
+<programlisting language="java">
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
 </programlisting>
@@ -51,7 +51,7 @@ ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
     for interacting with processes, as shown below.  Consult the JavaDocs to get
     a detailed explanation for each of the methods.</para>
 
-<programlisting role="JAVA">
+<programlisting language="java">
 ProcessInstance startProcess(String processId);
 ProcessInstance startProcess(String processId, Map&lt;String, Object&gt; parameters);
 void signalEvent(String type, Object event);
@@ -75,7 +75,7 @@ WorkItemManager getWorkItemManager();
     to related information, like the process instance and node instance linked to
     the event.</para>
 
-<programlisting role="JAVA">
+<programlisting language="java">
 public interface ProcessEventListener {
 
   void beforeProcessStarted( ProcessStartedEvent event );
@@ -113,7 +113,7 @@ public interface ProcessEventListener {
     logger also requires the name of the log file to be created, and the threaded file
     logger requires the interval (in milliseconds) after which the events should be saved.</para>
 
-<programlisting role="JAVA">
+<programlisting language="java">
 KnowledgeRuntimeLogger logger =
     KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "test" );
 // add invocations to the process engine here,
