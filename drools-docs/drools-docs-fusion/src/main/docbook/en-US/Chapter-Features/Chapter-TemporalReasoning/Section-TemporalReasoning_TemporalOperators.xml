@@ -48,12 +48,12 @@
       </listitem>
     </itemizedlist>
 
-    <tip>
+    <note>
       <para>It is possible to define negative distances for this operator.
       Example: </para>
 
       <programlisting>$eventA : EventA( this after[ -3m30s, -2m ] $eventB ) </programlisting>
-    </tip>
+    </note>
 
     <note>
       <para>If the first value is greater than the second value, the engine
@@ -105,12 +105,12 @@ $eventA : EventA( this after[ -2m, -3m30s ] $eventB ) </programlisting>
       </listitem>
     </itemizedlist>
 
-    <tip>
+    <note>
       <para>It is possible to define negative distances for this operator.
       Example: </para>
 
       <programlisting>$eventA : EventA( this before[ -3m30s, -2m ] $eventB ) </programlisting>
-    </tip>
+    </note>
 
     <note>
       <para>If the first value is greater than the second value, the engine
