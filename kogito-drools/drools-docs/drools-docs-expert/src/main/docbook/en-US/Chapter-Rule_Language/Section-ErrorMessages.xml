@@ -129,12 +129,12 @@
         </listitem>
       </itemizedlist>
 
-      <tip>
+      <note>
         <para>Usually the Line and Column information are accurate, but in
         some cases (like unclosed quotes), the parser generates a 0:-1
         position. In this case you should check whether you didn't forget to close
         quotes, apostrophes or parentheses.</para>
-      </tip>
+      </note>
     </section>
 
     <section>
@@ -163,10 +163,10 @@
       <para>To fix this problem, it is necessary to complete the rule
       statement.</para>
 
-      <tip>
+      <note>
         <para>Usually when you get a 0:-1 position, it means that parser
         reached the end of source.</para>
-      </tip>
+      </note>
 
       <para>The following code generates more than one error message:</para>
 
@@ -204,11 +204,11 @@
       <para>Note that the second problem is related to the first. To fix it,
       just replace the commas (",") by AND operator ("&amp;&amp;").</para>
 
-      <tip>
+      <note>
         <para>In some situations you can get more than one error message. Try to
         fix one by one, starting at the first one. Some error messages are
         generated merely as consequences of other errors.</para>
-      </tip>
+      </note>
     </section>
 
     <section>
@@ -249,10 +249,10 @@
       <para>The <emphasis role="bold">fdsfdsfds</emphasis> text is invalid and
       the parser couldn’t identify it as the soft keyword "rule".</para>
 
-      <tip>
+      <note>
         <para>This error is very similar to 102: Mismatched input, but usually
         involves soft keywords.</para>
-      </tip>
+      </note>
     </section>
 
     <section>
