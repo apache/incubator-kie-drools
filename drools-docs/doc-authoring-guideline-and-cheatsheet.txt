@@ -3,6 +3,8 @@ Drools Documentation Authoring Guideline and Cheat Sheet
 
 External documentation
 ----------------------
+
+JBoss Documentation Guide: http://jboss.org/pressgang/jdg.html (a must read from chapter 6: Structure guidelines)
 JDocBook plugin: http://docs.jboss.org/docbook/userguide/html_single/index.html
 DocBook: http://www.docbook.org/tdg5/en/html/docbook.html
          http://www.sagehill.net/docbookxsl/
@@ -33,14 +35,13 @@ Marking words in a paragraph
 Marking paragraphs
 ------------------
 
-* You can encapsulate a paragraph or more in note, tip, etc:
+* You can encapsulate a paragraph or more in note, warning, etc:
   <note><para></para></note>
-  <tip><para></para></tip>
-  <caution><para></para></caution>
   <warning><para></para></warning>
   <important><para></para></important>
   Always use one or more <para>'s (or other elements) inside it,
   never write text directly (which gives visual bugs).
+  Note: the JBoss Documentation Guide disallow the use of <caution> and <tip>
 
 * Use <programlisting> for longer code, commands or log listings:
     <programlisting><![CDATA[public interface Move ...]]></programlisting>
