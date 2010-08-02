@@ -37,7 +37,7 @@ DISCOUNT IS: 20     </programlisting>
       The rules are loaded, the facts inserted and a Stateless Session is
       created. What is different is how the rules are added.</para>
 
-      <programlisting role="JAVA">DecisionTableConfiguration dtableconfiguration =
+      <programlisting language="java">DecisionTableConfiguration dtableconfiguration =
     KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 

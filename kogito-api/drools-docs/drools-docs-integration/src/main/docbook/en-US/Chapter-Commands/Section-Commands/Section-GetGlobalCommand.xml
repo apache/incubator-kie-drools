@@ -57,7 +57,7 @@
 
     <listitem>
       <para>Command creation</para>
-      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
+      <programlisting language="java">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 GetGlobalCommand getGlobalCommand = new GetGlobalCommand();
 getGlobalCommand.setIdentifier("helper");

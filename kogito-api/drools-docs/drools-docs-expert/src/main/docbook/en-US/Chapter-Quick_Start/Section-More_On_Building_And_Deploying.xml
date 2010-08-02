@@ -35,7 +35,7 @@
     <para>To use the above XML, the code is almost identical as before, except
     we change the resource type to <code>CHANGE_SET</code>.</para>
 
-    <programlisting role="JAVA">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClasspathResource( "myChangeSet.xml", getClass() ),
               ResourceType.CHANGE_SET );
 if ( kbuilder.hasErrors() ) {
@@ -85,7 +85,7 @@ if ( kbuilder.hasErrors() ) {
     regular polling. We hope to add push-based updates and rebuilds in future
     versions.</para>
 
-    <programlisting role="JAVA">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+    <programlisting language="java">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
 kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
 KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
 
@@ -103,7 +103,7 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
     </para>
 
     <para>For polling to occur, the polling and notifier services must be started:</para>
-<programlisting role="JAVA">ResourceFactory.getResourceChangeNotifierService().start();
+<programlisting language="java">ResourceFactory.getResourceChangeNotifierService().start();
 ResourceFactory.getResourceChangeScannerService().start();</programlisting>
 
 
@@ -137,7 +137,7 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
         serve also when not using incremental change set processing (see the
         section bellow). When the kbase is recreated its configuration is
         reused, so the classloader is maintained.</para>
-<programlisting role="JAVA">KnowledgeBaseConfiguration kbaseConfig =
+<programlisting language="java">KnowledgeBaseConfiguration kbaseConfig =
     KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, customClassLoader);
 KnowledgeBase kbase =
     KnowledgeBaseFactory.newKnowledgeBase(kbaseConfig); //kbase with custom classloader
@@ -175,7 +175,7 @@ KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
             The following code snippet creates a new Knowledge Agent with its
             "newInstace" property set to false
         </para>
-            <programlisting role="JAVA">KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+            <programlisting language="java">KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
 aconf.setProperty("drools.agent.newInstance", "false");
 KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("test agent", null, aconf);
             </programlisting>

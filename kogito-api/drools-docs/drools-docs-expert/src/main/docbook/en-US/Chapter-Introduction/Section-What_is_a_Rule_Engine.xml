@@ -68,7 +68,7 @@
     structure using First Order Logic for reasoning over knowledge
     representation.</para>
 
-    <programlisting role="JAVA">when
+    <programlisting language="java">when
     &lt;conditions&gt;
 then
     &lt;actions&gt;;</programlisting>

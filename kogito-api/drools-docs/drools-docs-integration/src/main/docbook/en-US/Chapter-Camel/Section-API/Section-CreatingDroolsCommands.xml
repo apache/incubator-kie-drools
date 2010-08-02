@@ -13,7 +13,7 @@
 
   <para></para>
 
-  <programlisting role="JAVA">BatchExecutionCommand cmd = new BatchExecutionCommand();
+  <programlisting language="java">BatchExecutionCommand cmd = new BatchExecutionCommand();
 cmd.setLookup("ksession1");
 cmd.getCommands().add(new InsertObjectCommand(new Person("lucaz", 25), "person1"));
 cmd.getCommands().add(new InsertObjectCommand(new Person("hadrian", 25), "person2"));

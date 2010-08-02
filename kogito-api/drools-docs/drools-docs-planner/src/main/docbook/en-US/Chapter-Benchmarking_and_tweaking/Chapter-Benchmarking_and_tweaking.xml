@@ -24,14 +24,14 @@
     <para>You can build a <literal>Benchmarker</literal> instance with the<literal>XmlSolverBenchmarker</literal>.
     Configure it with a benchmarker configuration xml file:</para>
 
-    <programlisting role="JAVA">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
+    <programlisting language="java">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
     benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
     benchmarker.benchmark();
     benchmarker.writeResults(resultFile);</programlisting>
 
     <para>A basic benchmarker configuration file looks something like this:</para>
 
-    <programlisting role="XML">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solverBenchmarkSuite&gt;
     &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
 
@@ -120,7 +120,7 @@
     <para>To configure graph and CSV output of the best score over time, just add a
     <literal>solverStatisticType</literal> line:</para>
 
-    <programlisting role="XML">&lt;solverBenchmarkSuite&gt;
+    <programlisting language="xml">&lt;solverBenchmarkSuite&gt;
     &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
     &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
     ...

@@ -67,7 +67,7 @@
     <example>
         <title>A Typical example to load a rule resource</title>
 
-        <programlisting role="JAVA">
+        <programlisting language="java">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
             ResourceType.DRL );
@@ -92,7 +92,7 @@ ksession.dispose();</programlisting>
         <code>ResourceType</code> is changed, in accordance with the
         <code>Resource</code> type</title>
 
-        <programlisting role="JAVA">
+        <programlisting language="java">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
             ResourceType.DRF );
@@ -116,7 +116,7 @@ ksession.dispose();
         now consistent with no need to pre generate the DRL with the
         spreadsheet compiler</title>
 
-        <programlisting role="JAVA">
+        <programlisting language="java">
 DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
 dtconf.setInputType( DecisionTableInputType.XLS );
 dtconf.setWorksheetName( "Tables_2" );
@@ -144,7 +144,7 @@ xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-5.0.xsd' &
     <example>
         <title>And it is added just like any other ResourceType</title>
 
-        <programlisting role="JAVA">
+        <programlisting language="java">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
             ResourceType.ChangeSet );
@@ -159,7 +159,7 @@ kbuilder.add( ResourceFactory.newUrlResource( url ),
         <title>These services currently are not started by default, to start
         them do the following</title>
 
-        <programlisting role="JAVA">
+        <programlisting language="java">
 ResourceFactory.getResourceChangeNotifierService().start();
 ResourceFactory.getResourceChangeScannerService().start();
 </programlisting>
@@ -339,7 +339,7 @@ ResourceFactory.getResourceChangeScannerService().start();
       <example>
           <title>Getting multiple packages</title>
 
-          <programlisting role="JAVA">Package[] packages = pkgBuilder.getPackages();</programlisting>
+          <programlisting language="java">Package[] packages = pkgBuilder.getPackages();</programlisting>
         </example>
     </section>
 
@@ -357,7 +357,7 @@ ResourceFactory.getResourceChangeScannerService().start();
           <title>Attaching <code>RuleBase</code> to
           <code>PackageBuilder</code></title>
 
-          <programlisting role="JAVA">RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+          <programlisting language="java">RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 PackageBuilder pkgBuilder = new PackageBuilder( ruleBase, null );</programlisting>
         </example>
     </section>
@@ -496,7 +496,7 @@ end</programlisting>
       <example>
           <title>Configuring</title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( AssertBehaviorOption.EQUALITY );
 config.setOption( RemoveIdentitiesOption.YES );</programlisting>
@@ -507,7 +507,7 @@ config.setOption( RemoveIdentitiesOption.YES );</programlisting>
       <example>
           <title>Configuring alpha threshold</title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 config.setOption( AlphaThresholdOption.get(5) );</programlisting>
         </example>
       <para>As you can see, the same <code>setOption()</code> method is
@@ -570,7 +570,7 @@ end</programlisting>
       <example>
           <title>Using <code>CommandFactory</code></title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 ksession.execute( CommandFactory.newInsert( person ) ); </programlisting>
         </example>
       <para>Typically though you will want to execute a batch of
@@ -585,7 +585,7 @@ ksession.execute( CommandFactory.newInsert( person ) ); </programlisting>
       <example>
           <title>Using <code>BatchExecutionResult</code></title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
 cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
 cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
@@ -604,7 +604,7 @@ end</programlisting>
       <example>
           <title>Using <code>PipelineFactory</code></title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
 Action assignResult = PipelineFactory.newAssignObjectAsResult();
 assignResult.setReceiver( executeResultHandler );
@@ -663,7 +663,7 @@ pipeline.setReceiver( inTransformer ); </programlisting>
       <example>
           <title>Using <code>MarshallerFactory</code></title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 // ksession is the StatefulKnowledgeSession
 // kbase is the KnowledgeBase
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -692,7 +692,7 @@ baos.close();
           <title>Code to use a
           <code>IdentityMarshallingStrategy</code></title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[] { MarshallerFactory.newIdentityMarshallingStrategy() } );
 marshaller.marshall( baos, ksession );
@@ -715,7 +715,7 @@ baos.close();
       <example>
           <title>Using identity lookup</title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 ObjectMarshallingStrategyAcceptor identityAceceptor = MarshallerFactory.newClassFilterAcceptor( new String[] { "org.domain.pkg1.*" } );
 ObjectMarshallingStrategy identityStratetgy = MarshallerFactory.newIdentityMarshallingStrategy( identityAceceptor );
@@ -747,7 +747,7 @@ baos.close();
       <example>
           <title>Constructing an agent</title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 // Set the interval on the ResourceChangeScannerService if you are to use it and default of 60s is not desirable.
 ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
 sconf.setProperty( "drools.resource.scanner.interval",
@@ -1003,7 +1003,7 @@ xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd
           <title>An example on how to use persistence and transactions in
           combination with processes</title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 // create a new JPA-based session and specify the JPA entity manager factory
 Environment env = KnowledgeBaseFactory.newEnvironment();
 env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, Persistence.createEntityManagerFactory( "emf-name" ) );
@@ -1074,7 +1074,7 @@ ut.commit();</programlisting>
                 <title>As a result, the life cycle methods of the task client
                 have been extended to allow content data</title>
 
-                <programlisting role="JAVA">
+                <programlisting language="java">
   taskClient.addTask(task, contentData, responseHandler)
   taskClient.complete(taskId, userId, outputData,responseHandler)
   taskFail.complete(taskId, userId, outputData,responseHandler)
@@ -1218,7 +1218,7 @@ end</programlisting>
       <example>
           <title>To insert facts into an entry point</title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 WorkingMemoryEntryPoint entry = wm.getWorkingMemoryEntryPoint( "stock stream" );
 entry.insert( ticker );
 </programlisting>
@@ -1322,7 +1322,7 @@ entry.insert( ticker );
           new class that is optionally specified at session creation
           time</title>
 
-          <programlisting role="JAVA">
+          <programlisting language="java">
 SessionConfiguration conf = new SessionConfiguration();
 conf.setClockType( ClockType.PSEUDO_CLOCK );
 StatefulSession session = ruleBase.newStatefulSession( conf );

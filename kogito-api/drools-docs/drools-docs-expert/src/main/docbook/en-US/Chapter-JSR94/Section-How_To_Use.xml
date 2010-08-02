@@ -22,7 +22,7 @@
     <example>
         <title>Automatic RuleServiceProvider Registration</title>
 
-        <programlisting role="JAVA">// RuleServiceProviderImpl is registered to "http://drools.org/"
+        <programlisting language="java">// RuleServiceProviderImpl is registered to "http://drools.org/"
 // via a static initialization block
 Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
 
@@ -52,7 +52,7 @@ RuleServiceProvider ruleServiceProvider =
       <title>Registering a LocalRuleExecutionSet with the RuleAdministrator
       API</title>
 
-      <programlisting role="JAVA">// Get the RuleAdministration
+      <programlisting language="java">// Get the RuleAdministration
 RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
 LocalRuleExecutionSetProvider ruleExecutionSetProvider =
   ruleAdministrator.getLocalRuleExecutionSetProvider( null );
@@ -80,7 +80,7 @@ RuleExecutionSet ruleExecutionSet =
     <example>
       <title>Specifying a DSL when registering a LocalRuleExecutionSet</title>
 
-      <programlisting role="JAVA">// Get the RuleAdministration
+      <programlisting language="java">// Get the RuleAdministration
 RuleAdministration ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
 LocalRuleExecutionSetProvider ruleExecutionSetProvider =
   ruleAdministrator.getLocalRuleExecutionSetProvider( null );
@@ -109,7 +109,7 @@ RuleExecutionSet ruleExecutionSet =
     <example>
       <title>Register the RuleExecutionSet</title>
 
-      <programlisting role="JAVA">// Register the RuleExecutionSet with the RuleAdministrator
+      <programlisting language="java">// Register the RuleExecutionSet with the RuleAdministrator
 String uri = ruleExecutionSet.getName();
 ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</programlisting>
     </example>
@@ -124,7 +124,7 @@ ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</progra
     <example>
       <title>Getting the RuleRuntime</title>
 
-      <programlisting role="JAVA">RuleRuntime ruleRuntime = ruleServiceProvider.getRuleRuntime();</programlisting>
+      <programlisting language="java">RuleRuntime ruleRuntime = ruleServiceProvider.getRuleRuntime();</programlisting>
     </example>
 
     <para>To create a rule session you must use one of the two RuleRuntime
@@ -139,7 +139,7 @@ ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</progra
     <example>
       <title>Stateful Rule</title>
 
-      <programlisting role="JAVA">(StatefulRuleSession) session =
+      <programlisting language="java">(StatefulRuleSession) session =
   ruleRuntime.createRuleSession( uri,
                                  null,
                                  RuleRuntime.STATEFUL_SESSION_TYPE );
@@ -154,7 +154,7 @@ session.executeRules();</programlisting>
     <example>
       <title>Stateless</title>
 
-      <programlisting role="JAVA">(StatelessRuleSession) session =
+      <programlisting language="java">(StatelessRuleSession) session =
   ruleRuntime.createRuleSession( uri,
                                  null,
                                  RuleRuntime.STATELESS_SESSION_TYPE );
@@ -176,7 +176,7 @@ results = session.executeRules( list );</programlisting>
       the execution. In the following example the results are collected in a
       java.util.List which is used as global:</para>
 
-      <programlisting role="JAVA">java.util.List globalList = new java.util.ArrayList( );
+      <programlisting language="java">java.util.List globalList = new java.util.ArrayList( );
 java.util.Map map = new java.util.HashMap( );
 map.put( "list", globalList ); 
 //Open a stateless Session

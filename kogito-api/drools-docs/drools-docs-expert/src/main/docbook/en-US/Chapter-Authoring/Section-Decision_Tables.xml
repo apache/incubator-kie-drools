@@ -738,7 +738,7 @@ end
 
       <para>The code to run this is simple:</para>
 
-      <programlisting role="JAVA">DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+      <programlisting language="java">DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
 dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

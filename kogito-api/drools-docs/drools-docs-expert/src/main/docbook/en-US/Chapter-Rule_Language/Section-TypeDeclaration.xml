@@ -108,7 +108,7 @@
         <title>generated Java class for the previous Person fact type
         declaration</title>
 
-        <programlisting role="JAVA">public class Person implements Serializable {
+        <programlisting language="java">public class Person implements Serializable {
     private String name;
     private java.util.Date dateOfBirth;
     private Address address;
