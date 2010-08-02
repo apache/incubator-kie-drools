@@ -103,7 +103,7 @@
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>
         <artifactId>maven-jdocbook-plugin</artifactId>
-        <!-- TODO Upgrade to 2.3.0 after switch to new jboss repository-->
+        <!-- TODO Upgrade to 2.3.0 after fix for https://jira.jboss.org/browse/MPJDOCBOOK-59 -->
         <version>2.2.3</version>
         <extensions>true</extensions>
         <!-- executions>
@@ -192,6 +192,16 @@
             <!-- TODO Probably obsolete after the upgrade to maven-jdocbook-plugin 2.3.0 -->
             <docbookVersion>1.72.0</docbookVersion>
             <!-- <localeSeparator>-</localeSeparator> -->
+    				<!--<transformerParameters>-->
+    				  <!--<property>-->
+    					  <!--<name>javax.xml.parsers.DocumentBuilderFactory</name>-->
+    						<!--<value>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</value>-->
+    					<!--</property>-->
+    					<!--<property>-->
+    						<!--<name>javax.xml.parsers.SAXParserFactory</name>-->
+    						<!--<value>org.apache.xerces.jaxp.SAXParserFactoryImpl</value>-->
+    					<!--</property>-->
+    				<!--</transformerParameters>-->
           </options>
         </configuration>
       </plugin>
