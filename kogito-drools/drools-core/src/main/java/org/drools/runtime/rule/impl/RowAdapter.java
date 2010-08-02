@@ -36,43 +36,43 @@ public class RowAdapter implements Row {
 	}
 	
     private InternalFactHandle getFactHandle(Declaration declr) {
-        return this.factHandles[  declr.getPattern().getOffset() ]; // -1 because we shifted the array left
-                                                                       // when removing the query object
+        return this.factHandles[  declr.getPattern().getOffset() ]; 
     }  	
 
 	public Object get(String identifier) {
 		if ( factHandles == null ) {
-			this.factHandles = this.leftTuple.getFactHandles();
+			this.factHandles = this.leftTuple.toFactHandles();
 		}
 		Declaration declr = this.rule.getDeclaration( identifier );
+		if ( declr == null ) {
+		    throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound varirable for this query" );
+		}
 		InternalFactHandle factHandle = getFactHandle( declr );
 		return declr.getValue( null, factHandle.getObject() );
 	}
 
-	public Object get(int i) {
-		if ( factHandles == null ) {
-			this.factHandles = this.leftTuple.getFactHandles();
-		}
-		return this.factHandles[ i + 1].getObject();
-	}
-
 	public FactHandle getFactHandle(String identifier) {
 		if ( factHandles == null ) {
-			this.factHandles = this.leftTuple.getFactHandles();
+			this.factHandles = this.leftTuple.toFactHandles();
 		}
-		return null;
+        Declaration declr = this.rule.getDeclaration( identifier );
+        if ( declr == null ) {
+            throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound varirable for this query" );
+        }
+        InternalFactHandle factHandle = getFactHandle( declr );		
+		return factHandle;
 	}
 
 	public FactHandle getFactHandle(int i) {
 		if ( factHandles == null ) {
-			this.factHandles = this.leftTuple.getFactHandles();
+			this.factHandles = this.leftTuple.toFactHandles();
 		}
 		return null;
 	}
 
 	public int size() {
 		if ( factHandles == null ) {
-			this.factHandles = this.leftTuple.getFactHandles();
+			this.factHandles = this.leftTuple.toFactHandles();
 		}
 		return 0;
 	}
