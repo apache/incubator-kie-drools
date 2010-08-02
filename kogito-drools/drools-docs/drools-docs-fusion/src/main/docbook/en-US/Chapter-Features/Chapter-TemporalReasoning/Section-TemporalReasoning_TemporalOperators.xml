@@ -164,10 +164,10 @@ $eventA : EventA( this before[ -2m, -3m30s ] $eventB ) </programlisting>
     <programlisting>abs( $eventA.startTimestamp - $eventB.startTimestamp ) &lt;= 15s &amp;&amp; 
 abs( $eventA.endTimestamp - $eventB.endTimestamp ) &lt;= 10s </programlisting>
 
-    <caution>
+    <warning>
       <para>It makes no sense to use negative interval values for the
       parameters and the engine will raise an error if that happens.</para>
-    </caution>
+    </warning>
   </section>
 
   <section>
@@ -271,10 +271,10 @@ $eventA.endTimestamp == $eventB.endTimestamp </programlisting>
     <programlisting>$eventB.startTimestamp &lt; $eventA.startTimestamp &amp;&amp; 
 abs( $eventA.endTimestamp - $eventB.endTimestamp ) &lt;= 5s </programlisting>
 
-    <caution>
+    <warning>
       <para>It makes no sense to use a negative interval value for the
       parameter and the engine will raise an exception if that happens.</para>
-    </caution>
+    </warning>
   </section>
 
   <section>
@@ -309,10 +309,10 @@ $eventA.endTimestamp == $eventB.endTimestamp </programlisting>
     <programlisting>$eventA.startTimestamp &lt; $eventB.startTimestamp &amp;&amp; 
 abs( $eventA.endTimestamp - $eventB.endTimestamp ) &lt;= 5s </programlisting>
 
-    <caution>
+    <warning>
       <para>It makes no sense to use a negative interval value for the
       parameter and the engine will raise an exception if that happens.</para>
-    </caution>
+    </warning>
   </section>
 
   <section>
@@ -414,10 +414,10 @@ abs( $eventA.endTimestamp - $eventB.endTimestamp ) &lt;= 5s </programlisting>
 
     <programlisting>abs( $eventB.startTimestamp - $eventA.endTimestamp) &lt;= 5s </programlisting>
 
-    <caution>
+    <warning>
       <para>It makes no sense to use a negative interval value for the
       parameter and the engine will raise an exception if that happens.</para>
-    </caution>
+    </warning>
   </section>
 
   <section>
@@ -449,10 +449,10 @@ abs( $eventA.endTimestamp - $eventB.endTimestamp ) &lt;= 5s </programlisting>
 
     <programlisting>abs( $eventA.startTimestamp - $eventB.endTimestamp) &lt;= 5s </programlisting>
 
-    <caution>
+    <warning>
       <para>It makes no sense to use a negative interval value for the
       parameter and the engine will raise an exception if that happens.</para>
-    </caution>
+    </warning>
   </section>
 
   <section>
@@ -590,10 +590,10 @@ $eventA.endTimestamp &lt; $eventB.endTimestamp </programlisting>
     <programlisting>abs( $eventA.startTimestamp - $eventB.startTimestamp ) &lt;= 5s &amp;&amp; 
 $eventA.endTimestamp &lt; $eventB.endTimestamp </programlisting>
 
-    <caution>
+    <warning>
       <para>It makes no sense to use a negative interval value for the
       parameter and the engine will raise an exception if that happens.</para>
-    </caution>
+    </warning>
   </section>
 
   <section>
@@ -626,9 +626,9 @@ $eventA.endTimestamp &gt; $eventB.endTimestamp </programlisting>
     <programlisting>abs( $eventA.startTimestamp - $eventB.startTimestamp ) &lt;= 5s &amp;&amp; 
 $eventA.endTimestamp &gt; $eventB.endTimestamp </programlisting>
 
-    <caution>
+    <warning>
       <para>It makes no sense to use a negative interval value for the
       parameter and the engine will raise an exception if that happens.</para>
-    </caution>
+    </warning>
   </section>
 </section>
