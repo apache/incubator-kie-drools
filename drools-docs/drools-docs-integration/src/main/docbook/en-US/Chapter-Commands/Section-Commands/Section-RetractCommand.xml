@@ -54,7 +54,7 @@
         <listitem>
           <para>Create the Fact Handle from a string</para>
 
-          <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
+          <programlisting language="java">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 RetractCommand retractCommand = new RetractCommand();
 retractCommand.setFactHandleFromString("123:234:345:456:567");
@@ -65,7 +65,7 @@ command.getCommands().add(retractCommand);</programlisting>
           <para>Set the Fact Handle that you received when the object was
           inserted</para>
 
-          <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
+          <programlisting language="java">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 RetractCommand retractCommand = new RetractCommand(factHandle);
 command.getCommands().add(retractCommand);</programlisting>

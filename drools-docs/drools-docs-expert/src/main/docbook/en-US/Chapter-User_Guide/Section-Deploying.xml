@@ -78,7 +78,7 @@
     <example>
       <title>Creating a new KnowledgeBase</title>
 
-      <programlisting role="JAVA">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
+      <programlisting language="java">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
     </example>
 
     <para>If a custom class loader was used with the <code>KnowledgeBuilder</code> to
@@ -89,7 +89,7 @@
     <example>
       <title>Creating a new KnowledgeBase with a custom ClassLoader</title>
 
-      <programlisting role="JAVA">KnowledgeBaseConfiguration kbaseConf =
+      <programlisting language="java">KnowledgeBaseConfiguration kbaseConf =
     KnowledgeBaseFactory.createKnowledgeBaseConfiguration( null, cl );
 KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );</programlisting>
     </example>
@@ -106,7 +106,7 @@ KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );</progr
     <example>
       <title>Add KnowledgePackages to a KnowledgeBase</title>
 
-      <programlisting role="JAVA">Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
+      <programlisting language="java">Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 
 KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 kbase.addKnowledgePackages( kpkgs );</programlisting>
@@ -133,7 +133,7 @@ kbase.addKnowledgePackages( kpkgs );</programlisting>
     <example>
       <title>Writing the KnowledgePackage to an OutputStream</title>
 
-      <programlisting role="JAVA">ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( fileName ) );
+      <programlisting language="java">ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( fileName ) );
 out.writeObject( kpkgs );
 out.close();
 </programlisting>
@@ -142,7 +142,7 @@ out.close();
     <example>
       <title>Reading the KnowledgePackage from an InputStream</title>
 
-      <programlisting role="JAVA">ObjectInputStream in = new ObjectInputStream( new FileInputStream( fileName ) );
+      <programlisting language="java">ObjectInputStream in = new ObjectInputStream( new FileInputStream( fileName ) );
 // The input stream might contain an individual
 // package or a collection.
 @SuppressWarnings( "unchecked" )
@@ -210,7 +210,7 @@ kbase.addKnowledgePackages( kpkgs );
     <example>
       <title>Creating the KnowledgeAgent</title>
 
-      <programlisting role="JAVA">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+      <programlisting language="java">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
 </programlisting>
     </example>
 
@@ -240,7 +240,7 @@ kbase.addKnowledgePackages( kpkgs );
     <example>
       <title>Writing the KnowledgePackage to an OutputStream</title>
 
-      <programlisting role="JAVA">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+      <programlisting language="java">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
 kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
 KnowledgeBase kbase = kagent.getKnowledgeBase();
 </programlisting>
@@ -253,7 +253,7 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();
     <example>
       <title>Starting the Scanning and Notification Services</title>
 
-      <programlisting role="JAVA">ResourceFactory.getResourceChangeNotifierService().start();
+      <programlisting language="java">ResourceFactory.getResourceChangeNotifierService().start();
 ResourceFactory.getResourceChangeScannerService().start();
 </programlisting>
     </example>
@@ -267,7 +267,7 @@ ResourceFactory.getResourceChangeScannerService().start();
     <example>
       <title>Changing the Scanning Intervals</title>
 
-      <programlisting role="JAVA">ResourceChangeScannerConfiguration sconf =
+      <programlisting language="java">ResourceChangeScannerConfiguration sconf =
     ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
 // Set the disk scanning interval to 30s, default is 60s.
 sconf.setProperty( "drools.resource.scanner.interval", "30" ); 
@@ -293,7 +293,7 @@ ResourceFactory.getResourceChangeScannerService().configure( sconf );
     <example>
       <title>Using an existing KnowledgeBase</title>
 
-      <programlisting role="JAVA">KnowledgeBaseConfiguration kbaseConf =
+      <programlisting language="java">KnowledgeBaseConfiguration kbaseConf =
     KnowledgeBaseFactory.createKnowledgeBaseConfiguration( null, cl );
 KnowledgeBase kbase KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
 // Populate kbase with resources here.
@@ -343,7 +343,7 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();
     <example>
       <title>Change the Scanning Behavior</title>
 
-      <programlisting role="JAVA">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+      <programlisting language="java">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
 KnowledgeAgentConfiguration kaconf =
     KnowledgeAgentFactory.newKnowledgeAgentConfiguation();

@@ -155,7 +155,7 @@
         <title>Example 1</title>
 
       <para>This is a simple example of a basic process with a ruleset node only:</para>
-      <programlisting role="JAVA">
+      <programlisting language="java">
 RuleFlowProcessFactory factory =
     RuleFlowProcessFactory.createProcess("org.drools.HelloWorldRuleSet");
 factory
@@ -209,7 +209,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         <title>Example 2</title>
 
       <para>This example is using Split and Join nodes:</para>
-        <programlisting role="JAVA">
+        <programlisting language="java">
 RuleFlowProcessFactory factory =
     RuleFlowProcessFactory.createProcess("org.drools.HelloWorldJoinSplit");
 factory
@@ -247,7 +247,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         <title>Example 3</title>
 
       <para>Now we show a more complex example with a ForEach node, where we have nested nodes:</para>
-      <programlisting role="JAVA">
+      <programlisting language="java">
 RuleFlowProcessFactory factory =
     RuleFlowProcessFactory.createProcess("org.drools.HelloWorldForeach");
 factory
@@ -304,14 +304,14 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
       have a valid process, you can add the process to the Knowledge Base. Note
       that this is almost identical to adding rules to the Knowledge Base, except
       for the type of knowledge added:</para>
-      <programlisting role="JAVA">
+      <programlisting language="java">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClassPathResource("MyProcess.rf"),
               ResourceType.DRF );</programlisting>
       <para>After adding all your knowledge to the builder (you can add more
       than one process, and even rules), you can create a new knowledge base
       like this:</para>
-      <programlisting role="JAVA">
+      <programlisting language="java">
 KnowledgeBase kbase = kbuilder.newKnowledgeBase();</programlisting>
       <para>Note that this will throw an exception if the knowledge base contains
       errors (because it could not parse your processes correctly).</para>
@@ -324,7 +324,7 @@ KnowledgeBase kbase = kbuilder.newKnowledgeBase();</programlisting>
       to start each of these.  To activate a particular process, you will need
       to start it by calling the <code>startProcess</code> method on your session.
       For example:</para>
-      <programlisting role="JAVA">
+      <programlisting language="java">
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 ksession.startProcess("com.sample.MyProcess");</programlisting>
       <para>The parameter of the <code>startProcess</code> method represents the id
@@ -344,7 +344,7 @@ ksession.startProcess("com.sample.MyProcess");</programlisting>
 
       <para>You can also start a process from within a rule consequence, or from
       inside a process action, using the predefined kcontext parameter:</para>
-      <programlisting role="JAVA">
+      <programlisting language="java">
 kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlisting>
       </listitem>
 
@@ -1192,11 +1192,11 @@ kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlis
         </listitem>
         <listitem><para>Actions can access variables directly, simply by using the
         name of the variable as a parameter name.</para>
-          <programlisting role="JAVA">
+          <programlisting language="java">
 // call method on the process variable "person"
 person.setAge(10);</programlisting>
         <para>Changing the value of a variable can be done through the Knowledge Context:</para>
-          <programlisting role="JAVA">
+          <programlisting language="java">
 kcontext.setVariable(variableName, value);</programlisting>
         </listitem>
         <listitem><para>WorkItem and SubFlow nodes can pass the value of parameters
@@ -1217,7 +1217,7 @@ kcontext.setVariable(variableName, value);</programlisting>
     globally defined variables that are considered immutable with regard
     to rule evaluation, and data in the Knowledge Session.  The Knowledge Session
     can be accessed in actions using the Knowledge Context:</para>
-    <programlisting role="JAVA">
+    <programlisting language="java">
 kcontext.getKnowledgeRuntime().insert( new Person(...) );</programlisting>
 
   </section>
@@ -1236,7 +1236,7 @@ kcontext.getKnowledgeRuntime().insert( new Person(...) );</programlisting>
         to the globals and variables defined in the process.  Here is an example
         of a valid Java code constraint, <code>person</code> being a variable
         in the process:</para>
-          <programlisting role="JAVA">
+          <programlisting language="java">
 return person.getAge() > 20;</programlisting>
         <para>A similar example of a valid MVEL code constraint is:</para>
           <programlisting>
@@ -1293,14 +1293,14 @@ Person( name == ( processInstance.getVariable("name") ) )
         <listitem><para>Getting the current node instance (if applicable).  The node
         instance could be queried for data, such as its name and type.  You can
         also cancel the current node instance.</para>
-        <programlisting role="JAVA">
+        <programlisting language="java">
 NodeInstance node = context.getNodeInstance();
 String name = node.getNodeName();</programlisting>
         </listitem>
         <listitem><para>Getting the current process instance.  A process instance
         can be queried for data (name, id, processId, etc.), aborted or
         signalled an internal event.</para>
-        <programlisting role="JAVA">
+        <programlisting language="java">
 WorkflowProcessInstance proc = context.getProcessInstance();
 proc.signalEvent( type, eventObject );</programlisting>
         </listitem>
@@ -1363,11 +1363,11 @@ System.out.println( person.name );
         action node, or an on-entry or on-exit action of some node) can signal the
         occurence of an internal event to the surrounding process instance, using code
         like the following:</para>
-        <programlisting role="JAVA">
+        <programlisting language="java">
 context.getProcessInstance().signalEvent(type, eventData);</programlisting></listitem>
         <listitem><para>External event: A process instance can be notified of an event
         from outside using code such as:</para>
-        <programlisting role="JAVA">
+        <programlisting language="java">
 processInstance.signalEvent(type, eventData);</programlisting></listitem>
         <listitem><para>External event using event correlation: Instead of notifying a
         process instance directly, it is also possible to have the engine
@@ -1377,7 +1377,7 @@ processInstance.signalEvent(type, eventData);</programlisting></listitem>
         listening to external events of some type is notified whenever such
         an event occurs. To signal such an event to the process engine, write
         code such as:</para>
-        <programlisting role="JAVA">
+        <programlisting language="java">
 workingMemory.signalEvent(type, eventData);</programlisting></listitem>
       </itemizedlist>
 
@@ -1434,7 +1434,7 @@ workingMemory.signalEvent(type, eventData);</programlisting></listitem>
     needed to react to the given fault cannot be expressed in one action.
     It is therefore recommended to have the exception handler signal an
     event of a specific type (in this case "Fault") using</para>
-    <programlisting role="JAVA">
+    <programlisting language="java">
 context.getProcessInstance().signalEvent("FaultType", context.getVariable("FaultVariable");</programlisting>
 
   </section>
@@ -1552,7 +1552,7 @@ context.getProcessInstance().signalEvent("FaultType", context.getVariable("Fault
     is simply the new node id in the node container (so no unique node id here, simply the new
     node id).  The following code snippet shows a simple example.</para>
 
-    <programlisting role="JAVA">
+    <programlisting language="java">
 // create the session and start the process "com.sample.ruleflow"
 KnowledgeBuilder kbuilder = ...
 StatefulKnowledgeSession ksession = ...
@@ -1620,7 +1620,7 @@ end</programlisting>
     by a process, can also access the process context in the rule consequence.
     Through the process context, the process instance or node instance that triggered
     the ruleflow-group can be accessed, or variables could be set or retrieved, e.g.</para>
-    <programlisting role="JAVA">drools.getContext(ProcessContext.class).getProcessInstance()</programlisting>
+    <programlisting language="java">drools.getContext(ProcessContext.class).getProcessInstance()</programlisting>
   </section>
 
   <section>

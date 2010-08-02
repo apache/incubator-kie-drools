@@ -10,5 +10,5 @@
   into the ExecutionNode all the KnowledgeSessions that you are going to
   use.</para>
 
-  <programlisting role="JAVA">node.get(DirectoryLookupFactoryService.class).register("ksession1", ksession);    </programlisting>
+  <programlisting language="java">node.get(DirectoryLookupFactoryService.class).register("ksession1", ksession);    </programlisting>
 </section>

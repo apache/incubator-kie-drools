@@ -278,7 +278,7 @@
 
     </para>
 
-    <programlisting role="JAVA">BRXMLPersitence read = BRXMLPersitence.getInstance();
+    <programlisting language="java">BRXMLPersitence read = BRXMLPersitence.getInstance();
 BRDRLPersistence write = BRDRLPersistence.getInstance();
 String brl = ... read from the .brl file as needed...
 String outputDRL = write.marshall(read.unmarshal(brl));
@@ -409,7 +409,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       created when executing the rules engine. To create an audit log, use the
       following code:</para>
 
-      <programlisting role="JAVA">    WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+      <programlisting language="java">    WorkingMemory workingMemory = ruleBase.newWorkingMemory();
     // create a new Working Memory Logger, that logs to file.
     WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
     // an event.log file is created in the log dir (which must exist)

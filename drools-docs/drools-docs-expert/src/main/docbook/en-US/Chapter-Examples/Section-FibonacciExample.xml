@@ -31,7 +31,7 @@
     <example>
       <title>Fibonacci Class</title>
 
-      <programlisting role="JAVA">public static class Fibonacci {
+      <programlisting language="java">public static class Fibonacci {
     private int  sequence;
     private long value;
 
@@ -97,7 +97,7 @@ recurse for 2
     <example>
       <title>Fibonacci Example: Execution</title>
 
-      <programlisting role="JAVA">ksession.insert( new Fibonacci( 50 ) );
+      <programlisting language="java">ksession.insert( new Fibonacci( 50 ) );
 ksession.fireAllRules();</programlisting>
     </example>
 

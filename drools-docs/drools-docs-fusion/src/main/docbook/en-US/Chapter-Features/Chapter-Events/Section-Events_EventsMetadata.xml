@@ -18,7 +18,7 @@
   <example>
     <title>the VoiceCall fact class</title>
 
-    <programlisting role="JAVA">/**
+    <programlisting language="java">/**
  * A class that represents a voice call in 
  * a Telecom domain model
  */

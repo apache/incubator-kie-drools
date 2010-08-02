@@ -16,7 +16,7 @@
         <title>setting the maximum number of threads for rule evaluation to
         5</title>
 
-        <programlisting role="JAVA">KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        <programlisting language="java">KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 config.setOption( MaxThreadsOption.get(5) );
 </programlisting>
       </example>

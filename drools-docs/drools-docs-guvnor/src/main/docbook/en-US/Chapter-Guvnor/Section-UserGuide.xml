@@ -1064,7 +1064,7 @@
         Fact.field name as shown above), and the value is a java.util.List of
         Strings.</para>
 
-        <programlisting role="JAVA">
+        <programlisting language="java">
 public class SampleDataSource2 {
 
   public Map&lt;String&gt;, List&lt;String&gt;&gt; loadData() {
@@ -1083,7 +1083,7 @@ public class SampleDataSource2 {
 
         <para>And in the enumeration in the brms, you put:</para>
 
-        <programlisting role="JAVA">=(new SampleDataSource2()).loadData()
+        <programlisting language="java">=(new SampleDataSource2()).loadData()
 </programlisting>
 
         <para>The "=" tells it to load the data by executing your code.</para>
@@ -1505,7 +1505,7 @@ public class SampleDataSource2 {
     <para>These fact models can be used like normal fact objects, however the
     way you create them is different (as they are not on your applications
     classpath). To create these objects, they are available from the RuleBase
-    instance. <programlisting role="JAVA">
+    instance. <programlisting language="java">
           // Retrieve the generated fact type
         FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
 
@@ -1775,7 +1775,7 @@ public class SampleDataSource2 {
       If the change set specifies a resource that is a directory it's contents
       will be scanned for changes too.</para>
 
-      <programlisting role="JAVA">
+      <programlisting language="java">
  KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
  kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
  KnowledgeBase kbase = kagent.getKnowledgeBase();
@@ -1786,7 +1786,7 @@ public class SampleDataSource2 {
       "drools.agent.scanDirectories", by default any specified directories are
       scanned for new additions, it is possible to disable this.</para>
 
-      <programlisting role="JAVA">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+      <programlisting language="java">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
  KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
  kaconf.setProperty( "drools.agent.scanDirectories",
@@ -1810,7 +1810,7 @@ public class SampleDataSource2 {
       started, the same is for notification. This can be done via the
       ResourceFactory.</para>
 
-      <programlisting role="JAVA">ResourceFactory.getResourceChangeNotifierService().start();
+      <programlisting language="java">ResourceFactory.getResourceChangeNotifierService().start();
 ResourceFactory.getResourceChangeScannerService().start();</programlisting>
 
       <para>Following shows the deployment screen of Guvnor, which provides

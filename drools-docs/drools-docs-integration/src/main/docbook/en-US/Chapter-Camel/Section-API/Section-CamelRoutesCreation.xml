@@ -36,7 +36,7 @@
   <para>Now that you know how define a drools endpoint, you can create your
   routes and add them to the Camel Context</para>
 
-  <programlisting role="JAVA">RouteBuilder rb = new RouteBuilder() {
+  <programlisting language="java">RouteBuilder rb = new RouteBuilder() {
    public void configure() throws Exception {
       from("direct:test-with-session").policy(new DroolsPolicy()).unmarshal("xstream").to("drools:node/ksession1").marshal("xstream");
    }

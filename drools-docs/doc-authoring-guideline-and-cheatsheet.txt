@@ -48,9 +48,9 @@ Marking paragraphs
   Do not use <programlisting> inside <para> as it is a paragraph style
   (which gives code coloring bugs).
 
-* Use <programlisting role="JAVA"> for java code to get color highlighting.
+* Use <programlisting language="java"> for java code to get color highlighting.
 
-* Use <programlisting role="XML"> for XML code to get color highlighting.
+* Use <programlisting language="xml"> for XML code to get color highlighting.
 
 * Use <example> with <programlisting> for example code:
     <example>

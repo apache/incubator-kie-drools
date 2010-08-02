@@ -32,14 +32,14 @@
       <example>
           <title>Drools 3.0.x: Working Memory Creation</title>
 
-          <programlisting role="JAVA">WorkingMemory wm = rulebase.newWorkingMemory();</programlisting>
+          <programlisting language="java">WorkingMemory wm = rulebase.newWorkingMemory();</programlisting>
         </example>
       <para>In Drools 4.0.x it must be changed to:</para>
 
       <example>
           <title>Drools 4.0.x: Stateful Rule Session Creation</title>
 
-          <programlisting role="JAVA">StatefulSession wm = rulebase.newStatefulSession();</programlisting>
+          <programlisting language="java">StatefulSession wm = rulebase.newStatefulSession();</programlisting>
         </example>
       <para>The StatefulSession object has the same behavior as the
       Drools 3.0.x WorkingMemory (it even extends the WorkingMemory

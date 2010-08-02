@@ -77,7 +77,7 @@
     <listitem>
       <para>Command creation</para>
 
-      <programlisting role="JAVA">List&lt;Command&gt; cmds = ArrayList&lt;Command&gt;();
+      <programlisting language="java">List&lt;Command&gt; cmds = ArrayList&lt;Command&gt;();
 
 Command insertObjectCommand = CommandFactory.newInsert(new Person("john", 25), "john", false, null);
 cmds.add( insertObjectCommand );
