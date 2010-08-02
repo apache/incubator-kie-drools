@@ -110,7 +110,7 @@
 
     <para>Each of your move types will be an implementation of the <literal>Move</literal> interface:</para>
 
-    <programlisting role="JAVA">public interface Move {
+    <programlisting language="java">public interface Move {
 
     boolean isMoveDoable(EvaluationHandler evaluationHandler);
 
@@ -123,7 +123,7 @@
     <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
     different row:</para>
 
-    <programlisting role="JAVA">public class YChangeMove implements Move {
+    <programlisting language="java">public class YChangeMove implements Move {
 
     private Queen queen;
     private int toY;
@@ -143,7 +143,7 @@
     <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
     facts:</para>
 
-    <programlisting role="JAVA">    public void doMove(WorkingMemory workingMemory) {
+    <programlisting language="java">    public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
         queen.setY(toY);
         workingMemory.update(queenHandle, queen); // after changes are made
@@ -171,7 +171,7 @@
     <para>In the n queens example, a move which moves the queen from its current row to the same row isn't
     doable:</para>
 
-    <programlisting role="JAVA">    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    <programlisting language="java">    public boolean isMoveDoable(WorkingMemory workingMemory) {
         int fromY = queen.getY();
         return fromY != toY;
     }</programlisting>
@@ -184,7 +184,7 @@
     C0</emphasis>. An undo move can be created from a move, but only before the move has been done on the current
     solution.</para>
 
-    <programlisting role="JAVA">    public Move createUndoMove(WorkingMemory workingMemory) {
+    <programlisting language="java">    public Move createUndoMove(WorkingMemory workingMemory) {
         return new YChangeMove(queen, queen.getY());
     }</programlisting>
 
@@ -197,7 +197,7 @@
     <para>A move must implement the <literal>equals()</literal> and <literal>hashcode()</literal> methods. 2 moves which
     make the same change on a solution, must be equal.</para>
 
-    <programlisting role="JAVA">    public boolean equals(Object o) {
+    <programlisting language="java">    public boolean equals(Object o) {
         if (this == o) {
             return true;
         } else if (o instanceof YChangeMove) {
@@ -226,7 +226,7 @@
     <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read Drools
     Planner's logging more easily:</para>
 
-    <programlisting role="JAVA">    public String toString() {
+    <programlisting language="java">    public String toString() {
         return queen + " =&gt; " + toY;
     }</programlisting>
 
@@ -271,7 +271,7 @@
 
     <para>Move generation currently happens with a <literal>MoveFactory</literal>:</para>
 
-    <programlisting role="JAVA">public class NQueensMoveFactory extends CachedMoveListMoveFactory {
+    <programlisting language="java">public class NQueensMoveFactory extends CachedMoveListMoveFactory {
 
     public List&lt;Move&gt; createMoveList(Solution solution) {
         NQueens nQueens = (NQueens) solution;
@@ -442,14 +442,14 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
       <para>A selector is currently based on a <literal>MoveFactory</literal>.</para>
 
-      <programlisting role="XML">  &lt;selector&gt;
+      <programlisting language="xml">  &lt;selector&gt;
     &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
   &lt;/selector&gt;</programlisting>
 
       <para>You're not obligated to generate the same set of moves at each step. It's generally a good idea to use
       several selectors, mixing fine grained moves and course grained moves:</para>
 
-      <programlisting role="XML">  &lt;selector&gt;
+      <programlisting language="xml">  &lt;selector&gt;
     &lt;selector&gt;
       &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;
@@ -485,7 +485,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             recommend this type of tabu because it tends to give the best results and requires little or no
             tweaking.</para>
 
-            <programlisting role="XML">    &lt;acceptor&gt;
+            <programlisting language="xml">    &lt;acceptor&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
@@ -494,7 +494,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It does not accept a move equal to one of
             those steps.</para>
 
-            <programlisting role="XML">    &lt;acceptor&gt;
+            <programlisting language="xml">    &lt;acceptor&gt;
         &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
@@ -502,7 +502,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
           <listitem>
             <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
 
-            <programlisting role="XML">    &lt;acceptor&gt;
+            <programlisting language="xml">    &lt;acceptor&gt;
         &lt;completeUndoMoveTabuSize&gt;7&lt;/completeUndoMoveTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
@@ -511,14 +511,14 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             <para><emphasis>Property tabu</emphasis> makes a property of recent steps tabu. For example, it can make the
             queen tabu, so that a recently moved queen can't be moved.</para>
 
-            <programlisting role="XML">    &lt;acceptor&gt;
+            <programlisting language="xml">    &lt;acceptor&gt;
         &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
             <para>To use property tabu, your moves must implement the <literal>TabuPropertyEnabled</literal> interface,
             for example:</para>
 
-            <programlisting role="JAVA">public class YChangeMove implements Move, TabuPropertyEnabled {
+            <programlisting language="java">public class YChangeMove implements Move, TabuPropertyEnabled {
 
     private Queen queen;
     private int toY;
@@ -533,12 +533,12 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
             <para>You can also make multiple properties tabu (with OR or AND semantics):</para>
 
-            <programlisting role="JAVA">    public List&lt;? extends Object&gt; getTabuPropertyList() {
+            <programlisting language="java">    public List&lt;? extends Object&gt; getTabuPropertyList() {
         // tabu with other moves that contain the same leftExam OR the same rightExam
         return Arrays.asList(leftExam, rightExam);
     }</programlisting>
 
-            <programlisting role="JAVA">    public List&lt;? extends Object&gt; getTabuPropertyList() {
+            <programlisting language="java">    public List&lt;? extends Object&gt; getTabuPropertyList() {
         // tabu with other moves that contain the same exam AND the same toPeriod (but not necessary the same toRoom)
         return Collections.singletonList(Arrays.asList(exam, toPeriod));
     }</programlisting>
@@ -547,7 +547,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
         <para>You can even combine tabu types:</para>
 
-        <programlisting role="XML">    &lt;acceptor&gt;
+        <programlisting language="xml">    &lt;acceptor&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
         &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
@@ -574,7 +574,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
         <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
         single move can cause. Use the <literal>Benchmarker</literal> to tweak the value.</para>
 
-        <programlisting role="XML">    &lt;acceptor&gt;
+        <programlisting language="xml">    &lt;acceptor&gt;
       &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
@@ -588,7 +588,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
         <para>You can even combine it with a tabu acceptor at the same time. Use a lower tabu size than in a pure tabu
         search configuration.</para>
 
-        <programlisting role="XML">    &lt;acceptor&gt;
+        <programlisting language="xml">    &lt;acceptor&gt;
       &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
       &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
     &lt;/acceptor&gt;
@@ -623,7 +623,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             have be evaluated during each step. By default it is positive infinity, so all accepted moves are evaluated
             at every step.</para>
 
-            <programlisting role="XML">  &lt;forager&gt;
+            <programlisting language="xml">  &lt;forager&gt;
     &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
   &lt;/forager&gt;</programlisting>
           </listitem>
@@ -645,7 +645,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             <para><literal>NEVER</literal>: A move is never picked early: all accepted moves are evaluated that the
             selection allows. This is the default.</para>
 
-            <programlisting role="XML">    &lt;forager&gt;
+            <programlisting language="xml">    &lt;forager&gt;
         &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
           </listitem>
@@ -654,7 +654,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             <para><literal>FIRST_BEST_SCORE_IMPROVING</literal>: Pick the first accepted move that improves the best
             score. If none improve the best score, it behaves exactly like the pickEarlyType NEVER.</para>
 
-            <programlisting role="XML">    &lt;forager&gt;
+            <programlisting language="xml">    &lt;forager&gt;
         &lt;pickEarlyType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
           </listitem>
@@ -664,7 +664,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
             last step score. If none improve the last step score, it behaves exactly like the pickEarlyType
             NEVER.</para>
 
-            <programlisting role="XML">    &lt;forager&gt;
+            <programlisting language="xml">    &lt;forager&gt;
         &lt;pickEarlyType&gt;FIRST_LAST_STEP_SCORE_IMPROVING&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
           </listitem>
@@ -684,7 +684,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     <para>You can listen to solver events, including when the best solution changes during solving, by adding a
     <literal>SolverEventListener</literal> to the <literal>Solver</literal>:</para>
 
-    <programlisting role="JAVA">public interface Solver {
+    <programlisting language="java">public interface Solver {
 
     // ...
 
@@ -715,13 +715,13 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
       <para>Terminates when an amount of time has been reached:</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;maximumMinutesSpend&gt;2&lt;/maximumMinutesSpend&gt;
     &lt;/termination&gt;</programlisting>
 
       <para>or</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;maximumHoursSpend&gt;1&lt;/maximumHoursSpend&gt;
     &lt;/termination&gt;</programlisting>
 
@@ -739,7 +739,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
       <para>Terminates when an amount of steps has been reached:</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;maximumStepCount&gt;100&lt;/maximumStepCount&gt;
     &lt;/termination&gt;</programlisting>
     </section>
@@ -750,14 +750,14 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       <para>Terminates when a certain score has been reached. You can use this Termination if you know the perfect
       score, for example for 4 queens:</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;scoreAttained&gt;0&lt;/scoreAttained&gt;
     &lt;/termination&gt;</programlisting>
 
       <para>You can also use this Termination to terminate once it reaches a feasible solution. For a solver problem
       with hard and soft constraints, it could look like this:</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;scoreAttained&gt;0hard/-5000soft&lt;/scoreAttained&gt;
     &lt;/termination&gt;</programlisting>
     </section>
@@ -767,7 +767,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
 
       <para>Terminates when the best score hasn't improved in a number of steps:</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;maximumUnimprovedStepCount&gt;100&lt;/maximumUnimprovedStepCount&gt;
     &lt;/termination&gt;</programlisting>
 
@@ -782,7 +782,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       <para>Terminations can be combined, for example: terminate after 100 steps or if a score of 0 has been
       reached:</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;terminationCompositionStyle&gt;OR&lt;/terminationCompositionStyle&gt;
         &lt;maximumStepCount&gt;100&lt;/maximumStepCount&gt;
         &lt;scoreAttained&gt;0&lt;/scoreAttained&gt;
@@ -791,7 +791,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       <para>Alternatively you can use AND, for example: terminate after reaching a feasible score of at least -100 and
       no improvements in 5 steps:</para>
 
-      <programlisting role="XML">    &lt;termination&gt;
+      <programlisting language="xml">    &lt;termination&gt;
         &lt;terminationCompositionStyle&gt;AND&lt;/terminationCompositionStyle&gt;
         &lt;maximumUnimprovedStepCount&gt;5&lt;/maximumUnimprovedStepCount&gt;
         &lt;scoreAttained&gt;-100&lt;/scoreAttained&gt;
@@ -808,7 +808,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
       a server restart. That cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
       and if it will occur. Therefor the <literal>Solver</literal> interface has these 2 thread-safe methods:</para>
 
-      <programlisting role="JAVA">public interface Solver {
+      <programlisting language="java">public interface Solver {
 
     // ...
 
@@ -834,7 +834,7 @@ INFO  New score (-3) is better then last best score (-6). Updating best solution
     (see <literal>AllMovesOfOneExamSelector</literal>), extend the <literal>SelectorConfig</literal> class (see
     <literal>AllMovesOfOneExamSelectorConfig</literal>) and configure it in the configuration XML:</para>
 
-    <programlisting role="XML">    &lt;selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/&gt;</programlisting>
+    <programlisting language="xml">    &lt;selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/&gt;</programlisting>
 
     <para>If you build a better implementation that's not domain specific, consider adding it as a patch in our issue
     tracker and we'll take it along in future refactors and optimize it.</para>

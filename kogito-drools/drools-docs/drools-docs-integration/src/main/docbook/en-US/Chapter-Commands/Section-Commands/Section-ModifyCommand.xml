@@ -57,7 +57,7 @@
 
     <listitem>
       <para>Command creation</para>
-      <programlisting role="JAVA">BatchExecutionCommand command = new BatchExecutionCommand();
+      <programlisting language="java">BatchExecutionCommand command = new BatchExecutionCommand();
 command.setLookup("ksession1");
 ModifyCommand modifyCommand = new ModifyCommand();
 modifyCommand.setFactHandleFromString("123:234:345:456:567");

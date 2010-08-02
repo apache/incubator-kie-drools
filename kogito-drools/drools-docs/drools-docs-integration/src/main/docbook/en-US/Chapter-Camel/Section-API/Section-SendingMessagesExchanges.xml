@@ -13,12 +13,12 @@
   <link
   xlink:href="http://camel.apache.org/producertemplate.html">ProducerTemplate</link></para>
 
-  <programlisting role="JAVA">ProducerTemplate template = camelContext.createProducerTemplate();</programlisting>
+  <programlisting language="java">ProducerTemplate template = camelContext.createProducerTemplate();</programlisting>
 
   <para>After you have a template, you can start to send message exchange to
   your route:</para>
 
-  <programlisting role="JAVA">String xml = "&lt;xml&gt;example&lt;/xml&gt;";
+  <programlisting language="java">String xml = "&lt;xml&gt;example&lt;/xml&gt;";
 template.requestBody("direct:with-session-xstream", xml);</programlisting>
 
   <para></para>
@@ -93,7 +93,7 @@ ExecutionResults response = (ExecutionResults) template.requestBody("direct:test
         <para>Here we are adding our XSD model definition to our
         KnowledgeBuilder as a resource</para>
 
-        <programlisting role="JAVA">Options xjcOpts = new Options();
+        <programlisting language="java">Options xjcOpts = new Options();
 xjcOpts.setSchemaLanguage( Language.XMLSCHEMA );
 JaxbConfiguration jaxbConfiguration = KnowledgeBuilderFactory.newJaxbConfiguration( xjcOpts, "xsd" );
 kbuilder.add( ResourceFactory.newClassPathResource("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);</programlisting>
@@ -103,7 +103,7 @@ kbuilder.add( ResourceFactory.newClassPathResource("person.xsd", getClass()), Re
         the Drools Expert documentation. Finally, we are going to create the
         JAXBContext</para>
 
-        <programlisting role="JAVA">JAXBContext jaxbContext = null;
+        <programlisting language="java">JAXBContext jaxbContext = null;
 JaxbDataFormat def = new JaxbDataFormat();
 def.setPrettyPrint(true);
 // Set the package names to be registered by JAXB
@@ -128,7 +128,7 @@ try {
       <listitem>
         <para>BatchExecutionCommand marshalling</para>
 
-        <programlisting role="JAVA">StringWriter xmlReq = new StringWriter();
+        <programlisting language="java">StringWriter xmlReq = new StringWriter();
 Marshaller marshaller = jaxbContext.createMarshaller();
 marshaller.setProperty("jaxb.formatted.output", true);
 marshaller.marshal(batchExecutionCommand, xmlReq);</programlisting>
@@ -137,7 +137,7 @@ marshaller.marshal(batchExecutionCommand, xmlReq);</programlisting>
       <listitem>
         <para>Sending the commands through the ProducerTemplate</para>
 
-        <programlisting role="JAVA">String xml = xmlReq.toString();
+        <programlisting language="java">String xml = xmlReq.toString();
 byte[] xmlOutput = (byte[]) template.requestBodyAndHeader("direct:test-with-session", xmlReq.toString());</programlisting>
       </listitem>
 
@@ -148,7 +148,7 @@ byte[] xmlOutput = (byte[]) template.requestBodyAndHeader("direct:test-with-sess
         <para>And the final step is to convert the XML output to an
         ExecutionResults instance</para>
 
-        <programlisting role="JAVA">ExecutionResults resp = (ExecutionResults) jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(xmlOutput));</programlisting>
+        <programlisting language="java">ExecutionResults resp = (ExecutionResults) jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(xmlOutput));</programlisting>
       </listitem>
     </orderedlist>
 

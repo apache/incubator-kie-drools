@@ -236,7 +236,7 @@
       (org.drools.process.workitem.wsht.WSHumanTaskHandler in the 
       drools-process-task module) so you can easily link this
       work item handler like this:</para>
-      <programlisting role="JAVA">
+      <programlisting language="java">
   StatefulKnowledgeSession session = ...;
   session.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());</programlisting>
       <para>By default, this handler will connect to the human task management component
@@ -256,7 +256,7 @@
       the implementation of the following methods for interacting with Human
       Tasks:</para>
 
-      <programlisting role="JAVA">
+      <programlisting language="java">
 public void start( long taskId, String userId, TaskOperationResponseHandler responseHandler )
 public void stop( long taskId, String userId, TaskOperationResponseHandler responseHandler )
 public void release( long taskId, String userId, TaskOperationResponseHandler responseHandler )
@@ -301,7 +301,7 @@ public void complete( long taskId, String userId, ContentData outputData,
       implement the correct action. A creation of one of this messages will be
       like this:</para>
 
-      <programlisting role="JAVA">
+      <programlisting language="java">
 public void complete(long taskId,
                      String userId,
                      ContentData outputData,
@@ -345,7 +345,7 @@ public void complete(long taskId,
       start it as a separate service as well.  To start the task server, you 
       can use the following code fragment:</para>
 
-      <programlisting role="JAVA">
+      <programlisting language="java">
 EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.drools.task");
 taskService = new TaskService(emf);
 MinaTaskServer server = new MinaTaskServer( taskService );

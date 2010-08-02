@@ -70,7 +70,7 @@ end
   <example>
       <title>Inserting facts into an entry point</title>
 
-      <programlisting role="JAVA">// create your rulebase and your session as usual
+      <programlisting language="java">// create your rulebase and your session as usual
 StatefulKnowledgeSession session = ...
 
 // get a reference to the entry point

@@ -220,7 +220,7 @@
 
     <para>Every build-in solver implemented in Drools Planner implements the <literal>Solver</literal> interface:</para>
 
-    <programlisting role="JAVA">public interface Solver {
+    <programlisting language="java">public interface Solver {
 
     void setStartingSolution(Solution solution);
 
@@ -244,13 +244,13 @@
     <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>. Configure
     it with a solver configuration XML file:</para>
 
-    <programlisting role="JAVA">    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
+    <programlisting language="java">    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
     configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
     Solver solver = configurer.buildSolver();</programlisting>
 
     <para>A basic solver configuration file looks something like this:</para>
 
-    <programlisting role="XML">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;localSearchSolver&gt;
     &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;scoreDefinition&gt;
@@ -290,7 +290,7 @@
 
       <para>You can set the environment mode in the solver configuration XML file:</para>
 
-      <programlisting role="XML">&lt;localSearchSolver&gt;
+      <programlisting language="xml">&lt;localSearchSolver&gt;
     &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
     ...
 &lt;/localSearchSolver&gt;</programlisting>
@@ -348,7 +348,7 @@
 
     <para>You need to implement the <literal>Solution</literal> interface:</para>
 
-    <programlisting role="JAVA">public interface Solution {
+    <programlisting language="java">public interface Solution {
 
     Score getScore();
     void setScore(Score score);
@@ -361,7 +361,7 @@
 
     <para>For example, an NQueens instance just holds a list of all its queens:</para>
 
-    <programlisting role="JAVA">public class NQueens implements Solution {
+    <programlisting language="java">public class NQueens implements Solution {
 
     private List&lt;Queen&gt; queenList;
 
@@ -377,7 +377,7 @@
       is usually typed to the specific <literal>Score</literal> implementation you use. For example, NQueens uses a
       <literal>SimpleScore</literal>:</para>
 
-      <programlisting role="JAVA">    private SimpleScore score;
+      <programlisting language="java">    private SimpleScore score;
 
     public SimpleScore getScore() {
         return score;
@@ -395,7 +395,7 @@
       memory. Those facts can be used by the score rules. For example, <literal>NQueens</literal> just returns all
       <literal>Queen</literal> instances.</para>
 
-      <programlisting role="JAVA">    public Collection&lt;? extends Object&gt; getFacts() {
+      <programlisting language="java">    public Collection&lt;? extends Object&gt; getFacts() {
         return queenList;
     }</programlisting>
     </section>
@@ -407,7 +407,7 @@
       encounter a new best solution. The <literal>NQueens</literal> implementation just clones all
       <literal>Queen</literal> instances:</para>
 
-      <programlisting role="JAVA">    public NQueens cloneSolution() {
+      <programlisting language="java">    public NQueens cloneSolution() {
         NQueens clone = new NQueens();
         List&lt;Queen&gt; clonedQueenList = new ArrayList&lt;Queen&gt;(queenList.size());
         for (Queen queen : queenList) {
@@ -423,7 +423,7 @@
       example the lectures are cloned, but teachers, courses, timeslots, periods, rooms, ... are not cloned because only
       a lecture's appointed period or room changes during solving:</para>
 
-      <programlisting role="JAVA">    /**
+      <programlisting language="java">    /**
      * Clone will only deep copy the {@link #lectureList}.
      */
     public CurriculumCourseSchedule cloneSolution() {
@@ -454,7 +454,7 @@
 
     <para>First, you will need to make a starting solution and set that on the solver:</para>
 
-    <programlisting role="JAVA">solver.setStartingSolution(startingSolution);</programlisting>
+    <programlisting language="java">solver.setStartingSolution(startingSolution);</programlisting>
 
     <section>
       <title>A simple filler algorithm</title>
@@ -474,7 +474,7 @@
 
       <para>Here's how we generate it:</para>
 
-      <programlisting role="JAVA">    private NQueens createNQueens(int n) {
+      <programlisting language="java">    private NQueens createNQueens(int n) {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
@@ -525,7 +525,7 @@
       initializer to give the real solver a serious head start. You can do this by implementing the
       <literal>StartingSolutionInitializer</literal> interface:</para>
 
-      <programlisting role="JAVA">public interface StartingSolutionInitializer extends SolverAware {
+      <programlisting language="java">public interface StartingSolutionInitializer extends SolverAware {
 
     boolean isSolutionInitialized(Solution solution);
 
@@ -541,7 +541,7 @@
       <para>Here's an example on how you add the <literal>StartingSolutionInitializer</literal> to the
       configuration:</para>
 
-      <programlisting role="XML">&lt;localSearchSolver&gt;
+      <programlisting language="xml">&lt;localSearchSolver&gt;
     ...
     &lt;startingSolutionInitializerClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/startingSolutionInitializerClass&gt;
     ...
@@ -554,7 +554,7 @@
 
     <para>Solving a problem is quite easy once you have a solver and the starting solution:</para>
 
-    <programlisting role="JAVA">    solver.setStartingSolution(startingSolution);
+    <programlisting language="java">    solver.setStartingSolution(startingSolution);
     solver.solve();
     Solution bestSolution = solver.getBestSolution();</programlisting>
 

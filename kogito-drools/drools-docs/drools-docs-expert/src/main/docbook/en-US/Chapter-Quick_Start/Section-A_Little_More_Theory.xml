@@ -17,7 +17,7 @@
     like a rule expert and the answer to that is obvious, but let's summarize
     the differences nonetheless.</para>
 
-    <programlisting role="JAVA">public void helloWorld(Person person) {
+    <programlisting language="java">public void helloWorld(Person person) {
     if ( person.getName().equals( "Chuck" ) ) {
         System.out.println( "Hello Chuck" );
     }
@@ -139,7 +139,7 @@ room:bedroom sprinkler:bedroom</programlisting>
     what is actually going on under the hood. Three classes will be used, as
     shown below.</para>
 
-    <programlisting role="JAVA">public class CashFlow {
+    <programlisting language="java">public class CashFlow {
     private Date   date;
     private double amount;
     private int    type;

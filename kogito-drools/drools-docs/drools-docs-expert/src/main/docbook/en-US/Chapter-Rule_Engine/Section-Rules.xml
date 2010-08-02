@@ -142,7 +142,7 @@
     </indexterm>
     Rule Set. A Package declares imports, global variables, functions and rules.</para>
 
-    <programlisting role="JAVA">
+    <programlisting language="java">
 <![CDATA[
 package com.sample
 
@@ -185,7 +185,7 @@ end
 
     <para>The example above is analogous to :</para>
 
-    <programlisting role="JAVA">
+    <programlisting language="java">
 <![CDATA[
 public void cheddarCheese(Cheese cheese) {
   if ( cheese.getType().equals("cheddar") {
@@ -257,18 +257,18 @@ public void cheddarCheese(Cheese cheese) {
     propositional statements connected with a single disjunctive
     connective.</para>
 
-    <programlisting role="JAVA">person.getEyeColor().equals("blue") || person.getEyeColor().equals("green")</programlisting>
+    <programlisting language="java">person.getEyeColor().equals("blue") || person.getEyeColor().equals("green")</programlisting>
 
     <para>This can be expressed using a disjunctive Conditional Element
     connective which actually results in the generation of two rules, to
     represent the two possible logic outcomes.</para>
 
-    <programlisting role="JAVA">Person( eyeColour == "blue" ) || Person( eyeColor == "green" )</programlisting>
+    <programlisting language="java">Person( eyeColour == "blue" ) || Person( eyeColor == "green" )</programlisting>
 
     <para>Disjunctive field constraints connectives could also be used and
     would not result in multiple rules.</para>
 
-    <programlisting role="JAVA">Person( eyeColour == "blue"||"green" )</programlisting>
+    <programlisting language="java">Person( eyeColour == "blue"||"green" )</programlisting>
 
     <para>Propositional Logic is not Turing complete, limiting the problems
     you can define, because it cannot express criteria for the structure of
@@ -289,13 +289,13 @@ public void cheddarCheese(Cheese cheese) {
     40" open proposition to check for the existence of a Module that is true
     for the specified criteria.</para>
 
-    <programlisting role="JAVA">public class Student {
+    <programlisting language="java">public class Student {
     private String       name;
     private List&amp;lt;Module&amp;gt; modules;
     ...
     }</programlisting>
 
-    <programlisting role="JAVA">    
+    <programlisting language="java">
     public class Module {
     private String  name;
     private Student student;
@@ -308,7 +308,7 @@ public void cheddarCheese(Cheese cheese) {
     things, to iterate data structures to check for existence. The following
     should return a List of students who have failed the semester.</para>
 
-    <programlisting role="JAVA">    
+    <programlisting language="java">
     List failedStudents = new ArrayList();
     
     for ( Student student: students ) {
@@ -344,7 +344,7 @@ where exists (
 
     <para></para>
 
-    <programlisting role="JAVA">
+    <programlisting language="java">
     rule "Failed_Students"
     when
     	$s : Student()

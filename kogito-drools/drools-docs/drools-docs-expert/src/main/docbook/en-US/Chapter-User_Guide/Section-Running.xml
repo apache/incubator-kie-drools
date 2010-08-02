@@ -26,7 +26,7 @@
     <example>
       <title>Creating a new KnowledgeBase</title>
 
-      <programlisting role="JAVA">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
+      <programlisting language="java">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
     </example>
   </section>
 
@@ -50,7 +50,7 @@
     <example>
       <title>Create a StatefulKnowledgeSession from a KnowledgeBase</title>
 
-      <programlisting role="JAVA">StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+      <programlisting language="java">StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 </programlisting>
     </example>
   </section>
@@ -121,7 +121,7 @@
         for interactions with the <code>WorkingMemory</code> when you wish to
         retract or modify an object.</para>
 
-        <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
+        <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
 
         <para>As mentioned in the Knowledge Base section, a Working Memory may
@@ -153,7 +153,7 @@ FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
         is done using the <code>FactHandle</code> that was returned by the
         insert call.</para>
 
-        <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
+        <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );
 ....
 ksession.retract( stiltonHandle );            </programlisting>
@@ -177,7 +177,7 @@ ksession.retract( stiltonHandle );            </programlisting>
         <literal>modify</literal> statement is supported, providing simplified
         calls to the object's setters.</para>
 
-        <programlisting role="JAVA">Cheese stilton = new Cheese("stilton");
+        <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );
 ...
 stilton.setPrice( 100 );
@@ -239,7 +239,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
         <example>
           <title>Simple Query Example</title>
 
-          <programlisting role="JAVA">QueryResults results =
+          <programlisting language="java">QueryResults results =
     ksession.getQueryResults( "my query", new Object[] { "string" } );
 for ( QueryResultsRow row : results ) {
     System.out.println( row.get( "varName" ) );
@@ -337,7 +337,7 @@ query.dispose() // make sure you call dispose when you want the query to close</
         the session use <code>ksession.setGlobal(identifier,
         value)</code>:</para>
 
-        <programlisting role="JAVA">List list = new ArrayList();
+        <programlisting language="java">List list = new ArrayList();
 ksession.setGlobal("list", list);           </programlisting>
 
         <para>If a rule evaluates on a global before you set it you will get a
@@ -391,7 +391,7 @@ ksession.setGlobal("list", list);           </programlisting>
         ending in the string <code>"Test"</code>. All others will be filtered
         out.</para>
 
-        <programlisting role="JAVA">ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting>
+        <programlisting language="java">ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );</programlisting>
       </section>
     </section>
   </section>
@@ -516,7 +516,7 @@ ksession.setGlobal("list", list);           </programlisting>
       this group. It is also always the first group on the stack, given focus
       initially, by default.</para>
 
-      <programlisting role="JAVA">ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting>
+      <programlisting language="java">ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting>
     </section>
 
     <section>
@@ -540,7 +540,7 @@ ksession.setGlobal("list", list);           </programlisting>
       cancels all of the activations before one has had a chance to
       fire.</para>
 
-      <programlisting role="JAVA">ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting>
+      <programlisting language="java">ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting>
     </section>
 
     <section>
@@ -564,7 +564,7 @@ ksession.setGlobal("list", list);           </programlisting>
       group. Here too, the <code>clear()</code> method can be called at any
       time to cancels all activations still remaining on the Agenda.</para>
 
-      <programlisting role="JAVA">ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting>
+      <programlisting language="java">ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting>
     </section>
   </section>
 
@@ -615,7 +615,7 @@ ksession.setGlobal("list", list);           </programlisting>
     <example>
       <title>Adding an AgendaEventListener</title>
 
-      <programlisting role="JAVA">ksession.addEventListener( new DefaultAgendaEventListener() {
+      <programlisting language="java">ksession.addEventListener( new DefaultAgendaEventListener() {
    public void afterActivationFired(AfterActivationFiredEvent event) {
        super.afterActivationFired( event );
        System.out.println( event );
@@ -631,7 +631,7 @@ ksession.setGlobal("list", list);           </programlisting>
     <example>
       <title>Creating a new KnowledgeBuilder</title>
 
-      <programlisting role="JAVA">ksession.addEventListener( new DebugWorkingMemoryEventListener() );     </programlisting>
+      <programlisting language="java">ksession.addEventListener( new DebugWorkingMemoryEventListener() );     </programlisting>
     </example>
 
     <para>All emitted events implement the <code>KnowlegeRuntimeEvent</code>
@@ -728,7 +728,7 @@ ksession.setGlobal("list", list);           </programlisting>
     <example>
       <title>FileLogger</title>
 
-      <programlisting role="JAVA">KnowledgeRuntimeLogger logger =
+      <programlisting language="java">KnowledgeRuntimeLogger logger =
   KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "logdir/mylogfile");
 ...
 logger.close();</programlisting>
@@ -773,7 +773,7 @@ logger.close();</programlisting>
       <title>Simple StatelessKnowledgeSession execution with a
       Collection</title>
 
-      <programlisting role="JAVA">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+      <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newFileSystemResource( fileName ), ResourceType.DRL );
 if (kbuilder.hasErrors() ) {
     System.out.println( kbuilder.getErrors() );
@@ -791,7 +791,7 @@ if (kbuilder.hasErrors() ) {
       <title>Simple StatelessKnowledgeSession execution with InsertElements
       Command</title>
 
-      <programlisting role="JAVA">ksession.execute( CommandFactory.newInsertElements( collection ) );  </programlisting>
+      <programlisting language="java">ksession.execute( CommandFactory.newInsertElements( collection ) );  </programlisting>
     </example>
 
     <para>If you wanted to insert the collection itself, and the collection's
@@ -821,7 +821,7 @@ if (kbuilder.hasErrors() ) {
         <example>
           <title>Session scoped global</title>
 
-          <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+          <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 // Set a global hbnSession, that can be used for DB interactions in the rules.
 ksession.setGlobal( "hbnSession", hibernateSession );
 // Execute while being able to resolve the "hbnSession" identifier.  
@@ -853,7 +853,7 @@ ksession.execute( collection ); </programlisting>
     <example>
       <title>Out identifiers</title>
 
-      <programlisting role="JAVA">// Set up a list of commands
+      <programlisting language="java">// Set up a list of commands
 List cmds = new ArrayList();
 cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
 cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
@@ -1073,7 +1073,7 @@ results.getValue( "Get People" );</programlisting>
     <example>
       <title>Insert Command</title>
 
-      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 ExecutionResults bresults =
   ksession.execute( CommandFactory.newInsert( new Cheese( "stilton" ), "stilton_id" ) );
 Stilton stilton = bresults.getValue( "stilton_id" );
@@ -1087,7 +1087,7 @@ Stilton stilton = bresults.getValue( "stilton_id" );
     <example>
       <title>InsertElements Command</title>
 
-      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 Command cmd = CommandFactory.newInsertElements( Arrays.asList( Object[] { 
                   new Cheese( "stilton" ),
                   new Cheese( "brie" ),
@@ -1119,7 +1119,7 @@ ExecutionResults bresults = ksession.execute( cmd );
     <example>
       <title>BatchExecution Command</title>
 
-      <programlisting role="JAVA">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+      <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 
 List cmds = new ArrayList();        
 cmds.add( CommandFactory.newInsertObject( new Cheese( "stilton", 1), "stilton") );
@@ -1465,7 +1465,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Simple Marshaller Example</title>
 
-      <programlisting role="JAVA">// ksession is the StatefulKnowledgeSession
+      <programlisting language="java">// ksession is the StatefulKnowledgeSession
 // kbase is the KnowledgeBase
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 Marshaller marshaller = MarshallerFactory.newMarshaller( kbase );
@@ -1495,7 +1495,7 @@ baos.close();
     <example>
       <title>IdentityMarshallingStrategy</title>
 
-      <programlisting role="JAVA">ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      <programlisting language="java">ByteArrayOutputStream baos = new ByteArrayOutputStream();
 ObjectMarshallingStrategy oms = MarshallerFactory.newIdentityMarshallingStrategy()
 Marshaller marshaller =
   MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[]{ oms } );
@@ -1523,7 +1523,7 @@ baos.close();
     <example>
       <title>IdentityMarshallingStrategy with Acceptor</title>
 
-      <programlisting role="JAVA">ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      <programlisting language="java">ByteArrayOutputStream baos = new ByteArrayOutputStream();
 ObjectMarshallingStrategyAcceptor identityAcceptor =
   MarshallerFactory.newClassFilterAcceptor( new String[] { "org.domain.pkg1.*" } );
 ObjectMarshallingStrategy identityStrategy =
@@ -1554,7 +1554,7 @@ baos.close();
     <example>
       <title>Simple example using transactions</title>
 
-      <programlisting role="JAVA">Environment env = KnowledgeBaseFactory.newEnvironment();
+      <programlisting language="java">Environment env = KnowledgeBaseFactory.newEnvironment();
 env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
          Persistence.createEntityManagerFactory( "emf-name" ) );
 env.set( EnvironmentName.TRANSACTION_MANAGER,
@@ -1584,7 +1584,7 @@ ut.commit();
     <example>
       <title>Loading a StatefulKnowledgeSession</title>
 
-      <programlisting role="JAVA">StatefulKnowledgeSession ksession =
+      <programlisting language="java">StatefulKnowledgeSession ksession =
   JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
 </programlisting>
     </example>
@@ -1622,7 +1622,7 @@ ut.commit();
     <example>
       <title>Configuring JTA DataSource</title>
 
-      <programlisting role="JAVA">PoolingDataSource ds = new PoolingDataSource();
+      <programlisting language="java">PoolingDataSource ds = new PoolingDataSource();
 ds.setUniqueName( "jdbc/BitronixJTADataSource" );
 ds.setClassName( "org.h2.jdbcx.JdbcDataSource" );
 ds.setMaxPoolSize( 3 );

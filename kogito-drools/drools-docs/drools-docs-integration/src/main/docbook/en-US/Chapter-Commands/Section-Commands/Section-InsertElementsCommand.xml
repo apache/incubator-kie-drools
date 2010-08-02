@@ -78,7 +78,7 @@
     <listitem>
       <para>Command creation</para>
 
-      <programlisting role="JAVA">List&lt;Command&gt; cmds = ArrayList&lt;Command&gt;();
+      <programlisting language="java">List&lt;Command&gt; cmds = ArrayList&lt;Command&gt;();
 
 List&lt;Object&gt; objects = new ArrayList&lt;Object&gt;();
 objects.add(new Person("john", 25));
