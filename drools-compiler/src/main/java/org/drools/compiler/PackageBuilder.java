@@ -44,7 +44,6 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.builder.help.DroolsJaxbHelperProvider;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.xml.XmlPackageReader;
@@ -841,18 +840,21 @@ public class PackageBuilder {
 
     private PackageRegistry newPackage(final PackageDescr packageDescr) {
         Package pkg;
-        if ( this.ruleBase != null && this.ruleBase.getPackage( packageDescr.getName() ) != null ) {
-            // there is a rulebase and it already defines this package so use it.
-            pkg = this.ruleBase.getPackage( packageDescr.getName() );
-        } else {
-            // define a new package
+        if ( this.ruleBase == null || ( pkg = this.ruleBase.getPackage( packageDescr.getName() ) ) == null ) {
+            // there is no rulebase or it does not define this package so define it
             pkg = new Package( packageDescr.getName() );
             pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( this.rootClassLoader ) );
 
             // if there is a rulebase then add the package.
             if ( this.ruleBase != null ) {
-                this.ruleBase.addPackage( pkg );
-                pkg = this.ruleBase.getPackage( packageDescr.getName() );
+                // Must lock here, otherwise the assumption about addPackage/getPackage behavior below might be violated
+                this.ruleBase.lock();
+                try {
+                    this.ruleBase.addPackage( pkg );
+                    pkg = this.ruleBase.getPackage( packageDescr.getName() );
+                } finally {
+                    this.ruleBase.unlock();
+                }
             } else {
                 // the RuleBase will also initialise the 
                 pkg.getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
@@ -1142,11 +1144,12 @@ public class PackageBuilder {
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
 
+        Package pkg = pkgRegistry.getPackage();
         DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
         RuleBuildContext context = new RuleBuildContext( this,
                                                          ruleDescr,
                                                          ctr,
-                                                         pkgRegistry.getPackage(),
+                                                         pkg,
                                                          ctr.getDialect( pkgRegistry.getDialect() ) );
         this.ruleBuilder.build( context );
 
@@ -1159,13 +1162,19 @@ public class PackageBuilder {
         context.getDialect().addRule( context );
 
         if ( this.ruleBase != null ) {
-            if ( pkgRegistry.getPackage().getRule( ruleDescr.getName() ) != null ) {
-                this.ruleBase.removeRule( pkgRegistry.getPackage(),
-                                          pkgRegistry.getPackage().getRule( ruleDescr.getName() ) );
+            if ( pkg.getRule( ruleDescr.getName() ) != null ) {
+                this.ruleBase.lock();
+                try {
+                    // XXX: this one notifies listeners
+                    this.ruleBase.removeRule( pkg,
+                                              pkg.getRule( ruleDescr.getName() ) );
+                } finally {
+                    this.ruleBase.unlock();
+                }
             }
         }
 
-        pkgRegistry.getPackage().addRule( context.getRule() );
+        pkg.addRule( context.getRule() );
     }
 
     /**

@@ -171,9 +171,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                                        arguments,
                                                        getQueryListenerInstance(),
                                                        false );
+            ObjectTypeConf objectTypeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                                queryObject );
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
-                                                                          this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                       queryObject ),
+                                                                          objectTypeConf,
                                                                           this,
                                                                           this );
 
@@ -181,8 +182,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     queryObject,
                     null,
                     null,
-                    this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                        queryObject ) );
+                    objectTypeConf );
 
             this.handleFactory.destroyFactHandle( handle );
 
