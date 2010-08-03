@@ -20,13 +20,7 @@ import java.util.Map;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
-import org.drools.spi.Tuple;
-
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 public class QueryResult {
 

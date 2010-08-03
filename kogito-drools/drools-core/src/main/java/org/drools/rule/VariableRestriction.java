@@ -41,9 +41,9 @@ public class VariableRestriction
 
     private Declaration          declaration;
 
-    private Declaration[]  requiredDeclarations;
+    private Declaration[]        requiredDeclarations;
 
-    private Evaluator      evaluator;
+    private Evaluator            evaluator;
 
     private InternalReadAccessor readAccessor;
 
@@ -60,13 +60,14 @@ public class VariableRestriction
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(declaration);
-        out.writeObject(requiredDeclarations);
-        out.writeObject(evaluator);
-        out.writeObject(readAccessor);
+        out.writeObject( declaration );
+        out.writeObject( requiredDeclarations );
+        out.writeObject( evaluator );
+        out.writeObject( readAccessor );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
         declaration = (Declaration) in.readObject();
         requiredDeclarations = (Declaration[]) in.readObject();
         evaluator = (Evaluator) in.readObject();
@@ -75,8 +76,8 @@ public class VariableRestriction
 
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.readAccessor = readAccessor;
-    }    
-    
+    }
+
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
@@ -96,7 +97,7 @@ public class VariableRestriction
     public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
-                             final ContextEntry context ) {
+                             final ContextEntry context) {
         return this.evaluator.evaluate( workingMemory,
                                         this.readAccessor,
                                         this.evaluator.prepareLeftObject( handle ),
@@ -117,11 +118,11 @@ public class VariableRestriction
                                                    (VariableContextEntry) context,
                                                    this.evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
     }
-    
+
     public boolean isTemporal() {
         return this.evaluator.isTemporal();
     }
-    
+
     public Interval getInterval() {
         return this.evaluator.getInterval();
     }
@@ -219,28 +220,29 @@ public class VariableRestriction
             this.evaluator = evaluator;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            workingMemory   = (InternalWorkingMemory)in.readObject();
-            extractor       = (InternalReadAccessor)in.readObject();
-            evaluator       = (Evaluator)in.readObject();
-            object          = in.readObject();
-            declaration     = (Declaration)in.readObject();
-            reteTuple       = (LeftTuple)in.readObject();
-            entry           = (ContextEntry)in.readObject();
-            leftNull        = in.readBoolean();
-            rightNull       = in.readBoolean();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            workingMemory = (InternalWorkingMemory) in.readObject();
+            extractor = (InternalReadAccessor) in.readObject();
+            evaluator = (Evaluator) in.readObject();
+            object = in.readObject();
+            declaration = (Declaration) in.readObject();
+            reteTuple = (LeftTuple) in.readObject();
+            entry = (ContextEntry) in.readObject();
+            leftNull = in.readBoolean();
+            rightNull = in.readBoolean();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(workingMemory);
-            out.writeObject(extractor);
-            out.writeObject(evaluator);
-            out.writeObject(object);
-            out.writeObject(declaration);
-            out.writeObject(reteTuple);
-            out.writeObject(entry);
-            out.writeBoolean(leftNull);
-            out.writeBoolean(rightNull);
+            out.writeObject( workingMemory );
+            out.writeObject( extractor );
+            out.writeObject( evaluator );
+            out.writeObject( object );
+            out.writeObject( declaration );
+            out.writeObject( reteTuple );
+            out.writeObject( entry );
+            out.writeBoolean( leftNull );
+            out.writeBoolean( rightNull );
         }
 
         public ContextEntry getNext() {
@@ -301,16 +303,17 @@ public class VariableRestriction
                    evaluator );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            left    = in.readObject();
-            right   = in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            left = in.readObject();
+            right = in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeObject(left);
-            out.writeObject(right);
+            super.writeExternal( out );
+            out.writeObject( left );
+            out.writeObject( right );
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -343,7 +346,7 @@ public class VariableRestriction
             this.object = null;
         }
     }
-    
+
     public static class PrimitiveArrayVariableContextEntry extends VariableContextEntry {
 
         private static final long serialVersionUID = 510l;
@@ -354,23 +357,24 @@ public class VariableRestriction
         }
 
         public PrimitiveArrayVariableContextEntry(final InternalReadAccessor extractor,
-                                          final Declaration declaration,
-                                          final Evaluator evaluator) {
+                                                  final Declaration declaration,
+                                                  final Evaluator evaluator) {
             super( extractor,
                    declaration,
                    evaluator );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            left    = in.readObject();
-            right   = in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            left = in.readObject();
+            right = in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeObject(left);
-            out.writeObject(right);
+            super.writeExternal( out );
+            out.writeObject( left );
+            out.writeObject( right );
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -402,7 +406,7 @@ public class VariableRestriction
             this.right = null;
             this.object = null;
         }
-    }    
+    }
 
     public static class LongVariableContextEntry extends VariableContextEntry {
 
@@ -422,16 +426,17 @@ public class VariableRestriction
                    evaluator );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            left    = in.readLong();
-            right   = in.readLong();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            left = in.readLong();
+            right = in.readLong();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeLong(left);
-            out.writeLong(right);
+            super.writeExternal( out );
+            out.writeLong( left );
+            out.writeLong( right );
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -483,16 +488,17 @@ public class VariableRestriction
                    evaluator );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            left    = in.readChar();
-            right   = in.readChar();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            left = in.readChar();
+            right = in.readChar();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeChar(left);
-            out.writeChar(right);
+            super.writeExternal( out );
+            out.writeChar( left );
+            out.writeChar( right );
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -544,16 +550,17 @@ public class VariableRestriction
                    evaluator );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            left    = in.readDouble();
-            right   = in.readDouble();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            left = in.readDouble();
+            right = in.readDouble();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeDouble(left);
-            out.writeDouble(right);
+            super.writeExternal( out );
+            out.writeDouble( left );
+            out.writeDouble( right );
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -604,16 +611,17 @@ public class VariableRestriction
                    evaluator );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            left    = in.readBoolean();
-            right   = in.readBoolean();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            left = in.readBoolean();
+            right = in.readBoolean();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeBoolean(left);
-            out.writeBoolean(right);
+            super.writeExternal( out );
+            out.writeBoolean( left );
+            out.writeBoolean( right );
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,

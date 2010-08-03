@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.InsertedObject;
@@ -25,8 +27,6 @@ import org.drools.Worker;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.base.NonCloningQueryViewListener;
-import org.drools.base.StandardQueryViewChangedEventListener;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -55,8 +55,6 @@ import org.drools.runtime.rule.Row;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ObjectType;
-
-import junit.framework.TestCase;
 
 public class QueryTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -818,7 +816,6 @@ public class QueryTest extends TestCase {
         }
         
         // query the session
-        long start = System.currentTimeMillis();
         List<Cheese> cheeses;
         for ( int i = 0; i < 100; i++ ) {
             org.drools.runtime.rule.QueryResults queryResults = ksession.getQueryResults( "cheeses",
@@ -830,9 +827,7 @@ public class QueryTest extends TestCase {
             
             assertEquals( 5000, cheeses.size() );
         }
-        long end = System.currentTimeMillis();
         
-        System.out.println("Query time = "+(end-start));
     }
 
 }

@@ -816,11 +816,12 @@ public class PatternBuilder
         Restriction restriction = new VariableRestriction( extractor,
                                                            declaration,
                                                            evaluator );
-        
-        if ( declaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) )  {
-            // declaration is query argument, so allow for unification.
-            restriction = new UnificationRestriction( ( VariableRestriction ) restriction );
-        }
+
+        // TODO: FIXME: Implement proper support for Unifications
+//        if ( declaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) )  {
+//            // declaration is query argument, so allow for unification.
+//            restriction = new UnificationRestriction( ( VariableRestriction ) restriction );
+//        }
 
         return restriction;
     }
