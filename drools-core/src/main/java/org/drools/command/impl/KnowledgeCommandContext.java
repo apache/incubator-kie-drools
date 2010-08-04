@@ -103,4 +103,8 @@ public class KnowledgeCommandContext
                      value );
     }
 
+    public void remove(String name) {
+        context.remove(name);
+    }
+
 }
