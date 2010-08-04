@@ -865,13 +865,6 @@ public class StatefulKnowledgeSessionImpl
 
     public <T> T execute(Context context,
                          Command<T> command) {
-        if ( !(command instanceof BatchExecutionCommandImpl) ) {
-            return (T) ((GenericCommand) command).execute( new KnowledgeCommandContext( context,
-                                                                                        null,
-                                                                                        this.kbase,
-                                                                                        this,
-                                                                                        null ) );
-        }
 
         ExecutionResultImpl results = null;
         if ( context != null ) {
@@ -881,6 +874,16 @@ public class StatefulKnowledgeSessionImpl
         if ( results == null ) {
             results = new ExecutionResultImpl();
         }
+
+        if ( !(command instanceof BatchExecutionCommandImpl) ) {
+            return (T) ((GenericCommand) command).execute( new KnowledgeCommandContext( context,
+                                                                                        null,
+                                                                                        this.kbase,
+                                                                                        this,
+                                                                                        results ) );
+        }
+
+        
 
         try {
             session.startBatchExecution( results );
