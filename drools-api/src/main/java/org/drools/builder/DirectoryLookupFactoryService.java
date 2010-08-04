@@ -25,6 +25,7 @@ import org.drools.runtime.CommandExecutor;
  */
 public interface DirectoryLookupFactoryService {
     public void register(String key, CommandExecutor value);
+    public void unregister(String key);
     public CommandExecutor lookup(String key);
-    public Map<String, Map<String, String>> getDirectoryMap();
+    public Map<String, String> getDirectoryMap();
 }

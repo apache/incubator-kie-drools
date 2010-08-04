@@ -230,6 +230,10 @@ public class CommandFactory {
         return getCommandFactoryProvider().newFireAllRules( max );
     }
 
+    public static Command newFireAllRules(String outidentifier) {
+        return getCommandFactoryProvider().newFireAllRules( outidentifier );
+    }
+
     /**
      * Start a process
      * 
