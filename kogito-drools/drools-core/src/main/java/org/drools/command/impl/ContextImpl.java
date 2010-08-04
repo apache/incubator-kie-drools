@@ -80,4 +80,8 @@ public class ContextImpl
         return this.depth;
     }
 
+    public void remove(String name) {
+        context.remove(name);
+    }
+
 }

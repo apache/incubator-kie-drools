@@ -131,6 +131,10 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
 	    return new FireAllRulesCommand(max);
 	}
 
+        public Command newFireAllRules(String outidentifier) {
+	    return new FireAllRulesCommand(outidentifier);
+	}
+
 	public Command newStartProcess(String processId) {
 		StartProcessCommand startProcess = new StartProcessCommand();
 		startProcess.setProcessId(processId);
