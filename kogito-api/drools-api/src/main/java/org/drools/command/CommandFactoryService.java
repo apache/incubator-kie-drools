@@ -47,6 +47,8 @@ public interface CommandFactoryService {
 
     Command newFireAllRules(int max);
 
+    Command newFireAllRules(String outidentifier);
+
     Command newGetObject(FactHandle factHandle);
 
     Command newGetObjects();
@@ -94,5 +96,7 @@ public interface CommandFactoryService {
     BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup);
 
     Command newAbortWorkItem(long workItemId);
+
+
 
 }
