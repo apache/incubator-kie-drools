@@ -345,33 +345,33 @@ public class ExistsNode extends BetaNode {
                     break;
                 }
             }
-
-            if ( leftTuple.getBlocker() == null ) {
-                // not blocked
-                memory.getLeftTupleMemory().add( leftTuple ); // add to memory so other fact handles can attempt to match                    
-
-                if ( leftTuple.firstChild != null ) {
-                    // with previous children, retract
-                    this.sink.propagateRetractLeftTuple( leftTuple,
-                                                         context,
-                                                         workingMemory );
-                }
-                // with no previous children. do nothing.
-            } else if ( leftTuple.firstChild == null ) {
-                // blocked, with no previous children, assert
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    context,
-                                                    workingMemory,
-                                                    true );
-            } else {
-                // blocked, with previous children, modify
-                this.sink.propagateModifyChildLeftTuple( leftTuple,
-                                                         context,
-                                                         workingMemory,
-                                                         true );
-            }
         }
 
+        if ( leftTuple.getBlocker() == null ) {
+            // not blocked
+            memory.getLeftTupleMemory().add( leftTuple ); // add to memory so other fact handles can attempt to match                    
+
+            if ( leftTuple.firstChild != null ) {
+                // with previous children, retract
+                this.sink.propagateRetractLeftTuple( leftTuple,
+                                                     context,
+                                                     workingMemory );
+            }
+            // with no previous children. do nothing.
+        } else if ( leftTuple.firstChild == null ) {
+            // blocked, with no previous children, assert
+            this.sink.propagateAssertLeftTuple( leftTuple,
+                                                context,
+                                                workingMemory,
+                                                true );
+        } else {
+            // blocked, with previous children, modify
+            this.sink.propagateModifyChildLeftTuple( leftTuple,
+                                                     context,
+                                                     workingMemory,
+                                                     true );
+        }
+        
         this.constraints.resetTuple( memory.getContext() );
     }
 

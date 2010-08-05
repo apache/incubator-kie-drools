@@ -13,7 +13,7 @@ Setup
 	     p1, 0, org.drools.Person, age;
 	ExistsNode:
 	    not1, lian1, otnRight1;
-	    age, ==, p1;
+	    org.drools.Person, age, ==, p1;
 	JoinNode:
 	    join2, not1, otnRight2;
 	    age, ==, p1;

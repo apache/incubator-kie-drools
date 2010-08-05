@@ -17,6 +17,7 @@
 package org.drools.reteoo.test.dsl;
 
 import java.beans.IntrospectionException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,9 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.BehaviorManager;
 import org.drools.rule.Declaration;
+import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.mockito.Mockito;
 
 public class ExistsNodeStep
     implements
@@ -53,28 +56,37 @@ public class ExistsNodeStep
 
             LeftTupleSource leftTupleSource;
             if ( "mock".equals( leftInput ) ) {
-                leftTupleSource = new MockTupleSource( buildContext.getNextId() );
+                leftTupleSource = Mockito.mock( LeftTupleSource.class );
             } else {
                 leftTupleSource = (LeftTupleSource) context.get( leftInput );
             }
 
             ObjectSource rightObjectSource;
             if ( "mock".equals( rightInput ) ) {
-                rightObjectSource = new MockObjectSource( buildContext.getNextId() );
+                rightObjectSource = Mockito.mock( ObjectSource.class );
             } else {
                 rightObjectSource = (ObjectSource) context.get( rightInput );
             }
 
             a = args.get( 1 );
-            String fieldName = a[0].trim();
-            String operator = a[1].trim();
-            String var = a[2].trim();
+            String type = a[0].trim();
+            String fieldName = a[1].trim();
+            String operator = a[2].trim();
+            String var = a[3].trim();
 
+            Pattern rightSidePattern = null;
+            try {
+                rightSidePattern = reteTesterHelper.getPattern( 1,
+                                                                type );
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Not possible to process arguments: "+Arrays.toString( a ));
+            }
+            
             Declaration declr = (Declaration) context.get( var );
 
             BetaNodeFieldConstraint betaConstraint;
             try {
-                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( declr.getPattern(),
+                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( rightSidePattern,
                                                                                    fieldName,
                                                                                    declr,
                                                                                    operator );

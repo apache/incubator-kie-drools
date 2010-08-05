@@ -1,0 +1,43 @@
+TestCase "Exists node modify test 2"
+
+import org.drools.Cheese;
+import org.drools.Person;
+
+Setup
+	Binding:
+	    $likes, 0, Person, likes;
+	ExistsNode:
+	    exists, mock, mock;
+	    Cheese, type, ==, $likes;
+	LeftTupleSink:
+	    sink, exists;
+	Facts:
+	    new Person('darth', 35, "brie"),     // h0     
+	    new Person('bobba', 36, 'stilton'),  // h1
+	    new Cheese('brie', 10),              // h2
+	    new Cheese('brie', 12),              // h3
+	    new Cheese('stilton', 15),           // h4
+	    new Cheese('brie', 12);              // h5
+
+Test "exists node test 1 left, 1 right and modify"	     
+	assert:
+	    exists, [[h0]];
+	exists:
+	    leftMemory, [[h0]]; 
+	    rightMemory, [];
+    assert:	    
+	    exists, [h2];
+	exists:
+	    leftMemory, []; // h0 was blocked by h2, so it was removed from the node memory 
+	    rightMemory, [h2];    
+    sink:
+	    verify, assertLeft, count, 1;
+	    verify, assertLeft, tuple0, isTuple( [h0] );
+	    verify, modifyLeft, count, 0;
+	modify:
+	    exists, [[h0]];
+    sink:
+	    verify, assertLeft, count, 1; // still 1
+	    verify, modifyLeft, count, 1; // modify was propagated
+	    verify, modifyLeft, tuple0, isTuple( [h0] );
+	    
