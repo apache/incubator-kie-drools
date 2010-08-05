@@ -55,16 +55,21 @@ public class RuleImpl implements org.drools.definition.rule.Rule, Query {
     public Map<String, Object> getMetaData() {
         return this.rule.getMetaData();
     }
-    
-    @Override
-    public boolean equals(Object obj) {
-        return this.rule.equals( obj );
-    }
-    
-    @Override
+
     public int hashCode() {
-        return this.rule.hashCode();
+        return ((rule == null) ? 37 : rule.hashCode());
     }
-	
+
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        RuleImpl other = (RuleImpl) obj;
+        if ( rule == null ) {
+            if ( other.rule != null ) return false;
+        } else if ( !rule.equals( other.rule ) ) return false;
+        return true;
+    }
+    
 	
 }
