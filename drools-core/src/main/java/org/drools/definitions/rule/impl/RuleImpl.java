@@ -55,6 +55,16 @@ public class RuleImpl implements org.drools.definition.rule.Rule, Query {
     public Map<String, Object> getMetaData() {
         return this.rule.getMetaData();
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        return this.rule.equals( obj );
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.rule.hashCode();
+    }
 	
 	
 }
