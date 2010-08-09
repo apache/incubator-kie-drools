@@ -163,8 +163,7 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
     default one in <filename>drools-persistence-jpa.jar</filename>.  Refer to
     the JPA and Hibernate documentation for more information on how to do this.</para>
 
-    <programlisting>
-&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;persistence
   version="1.0"
   xsi:schemaLocation=

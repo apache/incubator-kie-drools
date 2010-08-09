@@ -54,7 +54,7 @@
           <primary>XML Rule</primary>
         </indexterm></title>
 
-      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 
 &lt;package name="com.sample"
          xmlns="http://drools.org/drools-4.0"
@@ -224,7 +224,7 @@
     <example>
       <title>Detail of rule element</title>
 
-      <programlisting>&lt;rule name="simple_rule"&gt;
+      <programlisting language="xml">&lt;rule name="simple_rule"&gt;
 &lt;rule-attribute name="salience" value="10" /&gt;
 &lt;rule-attribute name="no-loop" value="true" /&gt;
 &lt;rule-attribute name="agenda-group" value="agenda-group" /&gt;

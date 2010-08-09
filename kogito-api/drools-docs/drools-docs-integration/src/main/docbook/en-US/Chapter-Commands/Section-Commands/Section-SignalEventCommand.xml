@@ -79,7 +79,7 @@ command.getCommands().add(signalEventCommand);</programlisting>
         <listitem>
           <para>XStream</para>
 
-          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting language="xml">&lt;batch-execution lookup="ksession1"&gt;
   &lt;signal-event process-instance-id="1001" event-type="start"&gt;
     &lt;org.drools.pipeline.camel.Person&gt;
       &lt;name&gt;john&lt;/name&gt;
@@ -100,7 +100,7 @@ command.getCommands().add(signalEventCommand);</programlisting>
         <listitem>
           <para>JAXB</para>
 
-          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;signal-event event-type="start" process-instance-id="1001"&gt;
         &lt;event xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;

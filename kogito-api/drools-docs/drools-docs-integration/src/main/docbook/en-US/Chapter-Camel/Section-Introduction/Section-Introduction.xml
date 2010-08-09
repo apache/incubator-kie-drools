@@ -38,7 +38,7 @@
   <example>
     <title>Drools EndPoint configured with the CXFRS producer</title>
 
-    <programlisting>&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
+    <programlisting language="xml">&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
 
 &lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;  
    &lt;route&gt;
@@ -61,7 +61,7 @@
   <example>
     <title>Drools EndPoint configured with the CXFRS producer</title>
 
-    <programlisting>&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
+    <programlisting language="xml">&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
 
 &lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;  
    &lt;route&gt;

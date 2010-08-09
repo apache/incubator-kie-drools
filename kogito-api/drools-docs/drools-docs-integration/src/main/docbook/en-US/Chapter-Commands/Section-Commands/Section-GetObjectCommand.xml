@@ -74,7 +74,7 @@ command.getCommands().add(getObjectCommand);</programlisting>
         <listitem>
           <para>XStream</para>
 
-          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting language="xml">&lt;batch-execution lookup="ksession1"&gt;
   &lt;get-object fact-handle="0:234:345:456:567" out-identifier="john"/&gt;
 &lt;/batch-execution&gt;</programlisting>
 
@@ -93,7 +93,7 @@ command.getCommands().add(getObjectCommand);</programlisting>
         <listitem>
           <para>JAXB</para>
 
-          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;get-object out-identifier="john" fact-handle="0:234:345:456:567"/&gt;
 &lt;/batch-execution&gt;</programlisting>

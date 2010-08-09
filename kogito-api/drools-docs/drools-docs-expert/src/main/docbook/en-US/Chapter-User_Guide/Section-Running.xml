@@ -1144,7 +1144,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Simple BatchExecution XML</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;insert out-identifier='outStilton'&gt;
       &lt;org.drools.Cheese&gt;
          &lt;type&gt;stilton&lt;/type&gt;
@@ -1159,7 +1159,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Simple ExecutionResults XML</title>
 
-      <programlisting>&lt;execution-results&gt;
+      <programlisting language="xml">&lt;execution-results&gt;
    &lt;result identifier='outStilton'&gt;
       &lt;org.drools.Cheese&gt;
          &lt;type&gt;stilton&lt;/type&gt;
@@ -1177,7 +1177,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>BatchExecution Marshalled to XML</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
   &lt;insert out-identifier="stilton"&gt;
     &lt;org.drools.Cheese&gt;
       &lt;type&gt;stilton&lt;/type&gt;
@@ -1201,7 +1201,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>ExecutionResults Marshalled to XML</title>
 
-      <programlisting>&lt;execution-results&gt;
+      <programlisting language="xml">&lt;execution-results&gt;
   &lt;result identifier="stilton"&gt;
     &lt;org.drools.Cheese&gt;
       &lt;type&gt;stilton&lt;/type&gt;
@@ -1251,7 +1251,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Root XML element</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
 ...
 &lt;/batch-execution&gt;
 </programlisting>
@@ -1266,7 +1266,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Insert</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;insert&gt;
       ...&lt;!-- any user object --&gt;
    &lt;/insert&gt;
@@ -1281,7 +1281,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Insert with Out Identifier Command</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;insert out-identifier='userVar'&gt;
       ...
    &lt;/insert&gt;
@@ -1297,7 +1297,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Insert Elements command</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;insert-elements&gt;
       &lt;org.domain.UserClass&gt;
          ...
@@ -1319,7 +1319,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Insert Elements command</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;set-global identifier='userVar'&gt;
       &lt;org.domain.UserClass&gt;
          ...
@@ -1341,7 +1341,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Set Global Command</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;set-global identifier='userVar1' out='true'&gt;
       &lt;org.domain.UserClass&gt;
          ...
@@ -1365,7 +1365,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Get Global Command</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;get-global identifier='userVar1' /&gt;
    &lt;get-global identifier='userVar2' out-identifier='alternativeUserVar2'/&gt;
 &lt;/batch-execution&gt;
@@ -1383,7 +1383,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Query Command</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;query out-identifier='cheeses' name='cheeses'/&gt;
    &lt;query out-identifier='cheeses2' name='cheesesWithParams'&gt;
       &lt;string&gt;stilton&lt;/string&gt;
@@ -1400,7 +1400,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Start Process Command</title>
 
-      <programlisting>&lt;batch-execution&gt;
+      <programlisting language="xml">&lt;batch-execution&gt;
    &lt;startProcess processId='org.drools.actions'&gt;
       &lt;parameter identifier='person'&gt;
          &lt;org.drools.TestVariable&gt;
@@ -1415,7 +1415,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Signal Event Command</title>
 
-      <programlisting>&lt;signal-event process-instance-id='1' event-type='MyEvent'&gt;
+      <programlisting language="xml">&lt;signal-event process-instance-id='1' event-type='MyEvent'&gt;
    &lt;string&gt;MyValue&lt;/string&gt;
 &lt;/signal-event&gt;
 </programlisting>
@@ -1424,7 +1424,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Complete Work Item Command</title>
 
-      <programlisting>&lt;complete-work-item id='" + workItem.getId() + "' &gt;
+      <programlisting language="xml">&lt;complete-work-item id='" + workItem.getId() + "' &gt;
    &lt;result identifier='Result'&gt;
       &lt;string&gt;SomeOtherString&lt;/string&gt;
    &lt;/result&gt;
@@ -1435,7 +1435,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     <example>
       <title>Abort Work Item Command</title>
 
-      <programlisting>&lt;abort-work-item id='21' /&gt;
+      <programlisting language="xml">&lt;abort-work-item id='21' /&gt;
 </programlisting>
     </example>
 
@@ -1595,7 +1595,7 @@ ut.commit();
     <example>
       <title>Configuring JPA</title>
 
-      <programlisting>&lt;persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA"&gt;
+      <programlisting language="xml">&lt;persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA"&gt;
    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
    &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;       
    &lt;class&gt;org.drools.persistence.session.SessionInfo&lt;/class&gt;

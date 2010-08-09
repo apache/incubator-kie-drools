@@ -130,8 +130,7 @@ kbuilder.add( ResourceFactory.newUrlResource( "file://IntegrationExampleTest.xls
     <example>
         <title>Here is a simple change set</title>
 
-        <programlisting>
-&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+        <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
 xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
 xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-5.0.xsd' &gt;
   &lt;add&gt;
@@ -623,8 +622,7 @@ pipeline.setReceiver( inTransformer ); </programlisting>
       <example>
           <title>Updating Cheese fact</title>
 
-          <programlisting>
-&lt;batch-execution&gt;
+          <programlisting language="xml">&lt;batch-execution&gt;
 &lt;insert out-identifier='outStilton'&gt;
   &lt;org.drools.Cheese&gt;
     &lt;type&gt;stilton&lt;/type&gt;
@@ -640,8 +638,7 @@ pipeline.setReceiver( inTransformer ); </programlisting>
       <example>
           <title>Updating Cheese fact</title>
 
-          <programlisting>
-&lt;batch-execution-results&gt;
+          <programlisting language="xml">&lt;batch-execution-results&gt;
  &lt;result identifier='outStilton'&gt;
    &lt;org.drools.Cheese&gt;
      &lt;type&gt;stilton&lt;/type&gt;
@@ -898,8 +895,7 @@ kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to t
       <example>
           <title>Example of the XML language</title>
 
-          <programlisting>
-&lt;process  name="process name" id="process name" package-name="org.domain"
+          <programlisting language="xml">&lt;process  name="process name" id="process name" package-name="org.domain"
 xmlns="http://drools.org/drools-4.0/process"
 xmlns:mydsl="http://domain/org/mydsl"
 xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"

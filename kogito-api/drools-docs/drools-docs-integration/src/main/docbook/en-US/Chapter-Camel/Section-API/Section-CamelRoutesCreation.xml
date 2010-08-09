@@ -134,7 +134,7 @@ camelContext.addRoutes(rb);</programlisting>
       <listitem>
         <para>Simple configuration with XStream</para>
 
-        <para><programlisting>&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
+        <para><programlisting language="xml">&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
   &lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;
   &lt;route&gt;
     &lt;from uri="direct:entryPoint"/&gt;
