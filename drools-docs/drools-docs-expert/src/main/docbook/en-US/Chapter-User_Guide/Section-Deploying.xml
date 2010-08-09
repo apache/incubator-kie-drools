@@ -321,7 +321,7 @@ KnowledgeBase kbase = kagent.getKnowledgeBase();
     <example>
       <title>ChangeSet XML which adds a directories contents</title>
 
-      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
             xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd' &gt;
    &lt;add&gt;

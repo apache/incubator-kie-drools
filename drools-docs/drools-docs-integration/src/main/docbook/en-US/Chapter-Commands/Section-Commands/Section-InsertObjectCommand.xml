@@ -95,7 +95,7 @@ BatchExecutionCommand command = CommandFactory.createBatchExecution(cmds, "ksess
         <listitem>
           <para>XStream</para>
 
-          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting language="xml">&lt;batch-execution lookup="ksession1"&gt;
   &lt;insert out-identifier="john" entry-point="my stream" return-object="false"&gt;
     &lt;org.drools.test.Person&gt;
       &lt;name&gt;john&lt;/name&gt;
@@ -119,7 +119,7 @@ BatchExecutionCommand command = CommandFactory.createBatchExecution(cmds, "ksess
         <listitem>
           <para>JAXB</para>
 
-          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;insert out-identifier="john" entry-point="my stream" &gt;
         &lt;object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;

@@ -76,7 +76,7 @@ command.getCommands().add(modifyCommand);</programlisting>
         <listitem>
           <para>XStream</para>
 
-          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting language="xml">&lt;batch-execution lookup="ksession1"&gt;
   &lt;modify fact-handle="0:234:345:456:567"&gt;
     &lt;set accessor="age" value="30"/&gt;
   &lt;/modify&gt;
@@ -94,7 +94,7 @@ command.getCommands().add(modifyCommand);</programlisting>
         <listitem>
           <para>JAXB</para>
 
-          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;modify fact-handle="0:234:345:456:567"&gt;
         &lt;set value="30" accessor="age"/&gt;
