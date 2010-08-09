@@ -106,19 +106,6 @@
         <!-- TODO Upgrade to 2.3.0 after fix for https://jira.jboss.org/browse/MPJDOCBOOK-59 -->
         <version>2.2.3</version>
         <extensions>true</extensions>
-        <!-- executions>
-          <execution -->
-        <!--
-          here we are attaching the translate goal so that the
-          translations are processed before compilation so that the
-          translated XML is also transformed during generation
-        -->
-            <!-- phase>process-resources</phase>
-            <goals>
-              <goal>translate</goal>
-            </goals>
-          </execution>
-        </executions -->
 
         <dependencies>
           <!-- TODO JBRULES-2581 replace these 2 dependencies ... -->
@@ -165,9 +152,7 @@
               <include>images/</include>
             </includes>
             <!--<excludes>-->
-              <!--<exclude>*.xml</exclude>-->
               <!--<exclude>**/*.xml</exclude>-->
-              <!--<exclude>*.html</exclude>-->
               <!--<exclude>**/*.html</exclude>-->
             <!--</excludes>-->
           </imageResource>
@@ -205,16 +190,6 @@
             <!-- TODO Probably obsolete after the upgrade to maven-jdocbook-plugin 2.3.0 -->
             <docbookVersion>1.72.0</docbookVersion>
             <!-- <localeSeparator>-</localeSeparator> -->
-    				<!--<transformerParameters>-->
-    				  <!--<property>-->
-    					  <!--<name>javax.xml.parsers.DocumentBuilderFactory</name>-->
-    						<!--<value>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</value>-->
-    					<!--</property>-->
-    					<!--<property>-->
-    						<!--<name>javax.xml.parsers.SAXParserFactory</name>-->
-    						<!--<value>org.apache.xerces.jaxp.SAXParserFactoryImpl</value>-->
-    					<!--</property>-->
-    				<!--</transformerParameters>-->
           </options>
         </configuration>
       </plugin>
