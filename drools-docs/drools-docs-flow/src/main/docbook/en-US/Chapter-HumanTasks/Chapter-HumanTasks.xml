@@ -359,8 +359,7 @@ thread.start();</programlisting>
       following fragment shows for example how to use the task management component
       with hibernate and an in-memory H2 database:</para>
 
-      <programlisting>
-&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;persistence
     version="1.0"
     xsi:schemaLocation=

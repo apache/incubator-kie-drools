@@ -74,7 +74,7 @@
     through drools-server. You can modify this configuration in
     camel-server.xml file.</para>
 
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:cxf="http://camel.apache.org/schema/cxf"
@@ -145,7 +145,7 @@
       <para>Also a JAX-RS Provider is provided to determine if the message
       transported can be processed in this service endpoint.</para>
 
-      <programlisting>&lt;cxf:rsServer id="rsServer"
+      <programlisting language="xml">&lt;cxf:rsServer id="rsServer"
                address="/kservice/rest"
                serviceClass="org.drools.jax.rs.CommandExecutorImpl"&gt;
   &lt;cxf:providers&gt;
@@ -174,7 +174,7 @@
       <para>But you don’t need to know more internal details, only instantiate
       this bean:</para>
 
-      <programlisting>&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;</programlisting>
+      <programlisting language="xml">&lt;bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;</programlisting>
 
       <para>The next is create the camel route that will have the
       responsibility to execute the commands sent through JAX-RS. Basically we
@@ -183,7 +183,7 @@
       or ProcessorDefinitions. As you can see, we set XStream as the
       marshaller/unmarshaller and the drools execution route definition</para>
 
-      <programlisting>&lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;
+      <programlisting language="xml">&lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;
   &lt;route&gt;
     &lt;from uri="cxfrs://bean://rsServer"/&gt;
     &lt;policy ref="droolsPolicy"&gt;
@@ -196,7 +196,7 @@
 
       <para>The drools endpoint creation has the next arguments</para>
 
-      <para><programlisting>&lt;to uri="drools:{1}/{2}" /&gt;</programlisting></para>
+      <para><programlisting language="xml">&lt;to uri="drools:{1}/{2}" /&gt;</programlisting></para>
 
       <orderedlist>
         <listitem>
@@ -220,7 +220,7 @@
       <para>The next step is create the Knowledge Sessions that you are going
       to use.</para>
 
-      <programlisting>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+      <programlisting language="xml">&lt;beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:drools="http://drools.org/schema/drools-spring"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
@@ -262,7 +262,7 @@
       calls out to Camel which is where the meet happens. The camel-client.xml
       defines the client with just a few lines of xml:</para>
 
-      <programlisting>&lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;     
+      <programlisting language="xml">&lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;
    &lt;route&gt;
       &lt;from uri="direct://kservice"/&gt;
       &lt;policy ref="droolsPolicy"&gt;

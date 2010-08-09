@@ -19,8 +19,7 @@
     <example>
         <title>Here is a simple version 1.0.0 change set</title>
 
-         <programlisting>
-&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+         <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
 xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
 xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-5.0.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
   &lt;add&gt;
