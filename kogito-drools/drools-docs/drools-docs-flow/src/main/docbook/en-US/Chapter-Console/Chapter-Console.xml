@@ -54,8 +54,7 @@
       for another JPA data source is possible as well of course), and copy it to your
       application server deploy directory:</para>
 
-      <programlisting>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;datasources&gt;
   &lt;local-tx-datasource&gt;
     &lt;jndi-name&gt;jdbc/testDS1&lt;/jndi-name&gt;
@@ -84,8 +83,7 @@
       database in that case.  Change the connection url in the hibernate.cfg.xml
       to this:</para>
 
-      <programlisting>
-&lt;property name="connection.url"&gt;jdbc:h2:tcp://localhost/~/test&lt;/property&gt;</programlisting>
+      <programlisting language="xml">&lt;property name="connection.url"&gt;jdbc:h2:tcp://localhost/~/test&lt;/property&gt;</programlisting>
 
       <para>In this case, you should also make sure you have the H2 database running in
       server mode when running the application - for example by executing the org.h2.tools.Server
@@ -321,10 +319,10 @@ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=256m"</programlisting>
   We use freemarker templates to dynamically create forms. To create a form for a
   specific process definition, create a freemarker template with the name 
   {processId}.ftl.  The template itself should use HTML
-  code to model the form.  For example, the form to start the evalution process shown
+  code to model the form.  For example, the form to start the evaluation process shown
   above is defined in the com.sample.evaluation.ftl file:</para>
 
-  <programlisting>
+  <programlisting language="html">
 &lt;html&gt;
 &lt;body&gt;
 &lt;h2&gt;Start Performance Evaluation&lt;/h2&gt;
@@ -346,7 +344,7 @@ Please fill in your username: &lt;input type="text" name="employee" /&gt;&lt;/BR
   shown earlier uses the task parameter to access the description of the task and show that
   in the task form:</para>
 
-  <programlisting>
+  <programlisting language="html">
 &lt;html&gt;
 &lt;body&gt;
 &lt;h2&gt;Employee evaluation&lt;/h2&gt;

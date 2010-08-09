@@ -101,8 +101,7 @@
       sequence of a Start node, an Action node that prints "Hello World" to the console,
       and an End node.</para>
 
-<programlisting>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"

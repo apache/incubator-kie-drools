@@ -90,7 +90,7 @@ command.getCommands().add(setGlobalCommand);</programlisting>
         <listitem>
           <para>XStream</para>
 
-          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting language="xml">&lt;batch-execution lookup="ksession1"&gt;
   &lt;set-global identifier="helper" out-identifier="output"&gt;
     &lt;org.drools.test.Person&gt;
       &lt;name&gt;kyle&lt;/name&gt;
@@ -110,7 +110,7 @@ command.getCommands().add(setGlobalCommand);</programlisting>
         <listitem>
           <para>JAXB</para>
 
-          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;set-global out="true" out-identifier="output" identifier="helper"&gt;
         &lt;object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;

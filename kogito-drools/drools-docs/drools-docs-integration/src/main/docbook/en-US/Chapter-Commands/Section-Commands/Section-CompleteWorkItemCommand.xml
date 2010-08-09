@@ -71,7 +71,7 @@ command.getCommands().add(completeWorkItemCommand);</programlisting>
         <listitem>
           <para>XStream</para>
 
-          <programlisting>&lt;batch-execution lookup="ksession1"&gt;
+          <programlisting language="xml">&lt;batch-execution lookup="ksession1"&gt;
   &lt;complete-work-item id="1001"/&gt;
 &lt;/batch-execution&gt;</programlisting>
 
@@ -89,7 +89,7 @@ command.getCommands().add(completeWorkItemCommand);</programlisting>
         <listitem>
           <para>JAXB</para>
 
-          <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+          <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;batch-execution lookup="ksession1"&gt;
     &lt;complete-work-item id="1001"/&gt;
 &lt;/batch-execution&gt;</programlisting>

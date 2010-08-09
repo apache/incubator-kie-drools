@@ -118,7 +118,7 @@
     <para>Eclipse refreshing plug-ins in features and sites seems to not work,
     so what is best is to manually edit the site.xml project and the
     feature.xml. To do this, open the site.xml file in the drools-ide-update
-    project, it should look something like this:</para> <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    project, it should look something like this:</para> <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;site&gt;
    &lt;!- change both the jar and the version number, make sure the new features jar is named
         the same as what you put in -&gt;
@@ -135,7 +135,7 @@
     <para>Go into the /feature directory, and unzip the feature jar to get to
     the feature.xml. (the feature jar really just contains the feature.xml).
     Open the feature.xml, and it should look like:</para>
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;feature
   id="org.drools.ide"
   label="Drools Rule Workbench"

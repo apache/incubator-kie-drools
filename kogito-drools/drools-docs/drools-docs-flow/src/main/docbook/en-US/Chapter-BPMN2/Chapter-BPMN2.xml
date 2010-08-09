@@ -97,8 +97,7 @@
   it execuble, including all the parameters for each of the tasks present, hence the
   large process definition):</para>
 
-  <programlisting>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+  <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
 &lt;definitions id="Definition"
              targetNamespace="http://www.jboss.org/drools"
              typeLanguage="http://www.java.com/javaTypes"

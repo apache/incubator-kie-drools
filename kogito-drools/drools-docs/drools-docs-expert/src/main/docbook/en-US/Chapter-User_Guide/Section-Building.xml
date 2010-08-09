@@ -162,7 +162,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>XML Schema for ChangeSet XML (not normative)</title>
 
-      <programlisting>&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      <programlisting language="xml">&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns="http://drools.org/drools-5.0/change-set"
            targetNamespace="http://drools.org/drools-5.0/change-set"&gt;
 
@@ -232,7 +232,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>Simple ChangeSet XML</title>
 
-      <programlisting> &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
              xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
              xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
    &lt;add&gt;
@@ -274,7 +274,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>ChangeSet XML with resource configuration</title>
 
-      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
              xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
              xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
   &lt;add&gt;
@@ -302,7 +302,7 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
     <example>
       <title>ChangeSet XML which adds a directory's contents</title>
 
-      <programlisting>&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
             xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
    &lt;add&gt;

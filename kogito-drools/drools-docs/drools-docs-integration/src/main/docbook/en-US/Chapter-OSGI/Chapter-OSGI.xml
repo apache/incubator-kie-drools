@@ -83,7 +83,7 @@
   <example>
     <title>Osgi Declarative Services</title>
 
-    <programlisting>&lt;scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0"&gt;
+    <programlisting language="xml">&lt;scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0"&gt;
 &lt;implementation class="testosgi.TestComponent"/&gt;
  
 &lt;reference bind="setKnowledgeBaseFactoryService"
