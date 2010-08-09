@@ -121,17 +121,30 @@
         </executions -->
 
         <dependencies>
+          <!-- TODO JBRULES-2581 replace these 2 dependencies ... -->
+          <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jbossorg-docbook-xslt</artifactId>
+            <version>1.1.0</version>
+          </dependency>
           <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossorg-jdocbook-style</artifactId>
             <version>1.1.0</version>
             <type>jdocbook-style</type>
           </dependency>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jbossorg-docbook-xslt</artifactId>
-            <version>1.1.0</version>
-          </dependency>
+          <!-- TODO ... with these 2 dependencies -->
+          <!--<dependency>-->
+            <!--<groupId>org.jboss</groupId>-->
+            <!--<artifactId>jbossorg-docbook-xslt-ns</artifactId>-->
+            <!--<version>1.1.1-SNAPSHOT</version>-->
+          <!--</dependency>-->
+          <!--<dependency>-->
+            <!--<groupId>org.jboss</groupId>-->
+            <!--<artifactId>jbossorg-jdocbook-style</artifactId>-->
+            <!--<version>1.1.1-SNAPSHOT</version>-->
+            <!--<type>jdocbook-style</type>-->
+          <!--</dependency>-->
         </dependencies>
 
         <configuration>
