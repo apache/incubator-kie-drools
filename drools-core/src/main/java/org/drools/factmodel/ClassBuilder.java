@@ -35,7 +35,11 @@ package org.drools.factmodel;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.drools.definition.type.FactField;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.Label;
@@ -170,6 +174,24 @@ public class ClassBuilder {
         this.buildDefaultConstructor( cw,
                                       classDef );
 
+        // Building constructor with all fields
+        this.buildConstructorWithFields( cw,
+                                         classDef,
+                                         classDef.getFieldsDefinitions() );
+
+        // Building constructor with key fields only
+        List<FieldDefinition> keys = new LinkedList<FieldDefinition>();
+        for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
+            if ( fieldDef.isKey() ) {
+                keys.add( fieldDef );
+            }
+        }
+        if ( !keys.isEmpty() ) {
+            this.buildConstructorWithFields( cw,
+                                             classDef,
+                                             keys );
+        }
+
         // Building methods
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
             this.buildGetMethod( cw,
@@ -202,8 +224,8 @@ public class ClassBuilder {
     private void buildClassHeader(ClassWriter cw,
                                   ClassDefinition classDef) {
         String[] original = classDef.getInterfaces();
-        String[] interfaces = new String[ original.length ];
-        for( int i = 0; i < original.length; i++ ) {
+        String[] interfaces = new String[original.length];
+        for ( int i = 0; i < original.length; i++ ) {
             interfaces[i] = getInternalType( original[i] );
         }
         // Building class header
@@ -275,6 +297,94 @@ public class ClassBuilder {
                                        l0,
                                        l1,
                                        0 );
+            }
+            mv.visitMaxs( 0,
+                          0 );
+            mv.visitEnd();
+        }
+    }
+
+    /**
+     * Creates a constructor that takes and assigns values to all 
+     * fields in the order they are declared.
+     *
+     * @param cw
+     * @param classDef
+     */
+    private void buildConstructorWithFields(ClassWriter cw,
+                                            ClassDefinition classDef,
+                                            Collection<FieldDefinition> fieldDefs) {
+        MethodVisitor mv;
+        // Building  constructor
+        {
+            Type[] params = new Type[fieldDefs.size()];
+            int index = 0;
+            for ( FieldDefinition field : fieldDefs ) {
+                params[index++] = Type.getType( getTypeDescriptor( field.getTypeName() ) );
+            }
+
+            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                 "<init>",
+                                 Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                           params ),
+                                 null,
+                                 null );
+            mv.visitCode();
+            Label l0 = null;
+            if ( this.debug ) {
+                l0 = new Label();
+                mv.visitLabel( l0 );
+            }
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+                                Type.getInternalName( Object.class ),
+                                "<init>",
+                                Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                          new Type[]{} ) );
+
+            index = 1; // local vars start at 1, as 0 is "this"
+            for ( FieldDefinition field : fieldDefs ) {
+                if ( this.debug ) {
+                    Label l11 = new Label();
+                    mv.visitLabel( l11 );
+                }
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitVarInsn( Type.getType( getTypeDescriptor( field.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
+                                 index++ );
+                if ( field.getTypeName().equals( "long" ) || field.getTypeName().equals( "double" ) ) {
+                    // long and double variables use 2 words on the variables table
+                    index++;
+                }
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                   getInternalType( classDef.getClassName() ),
+                                   field.getName(),
+                                   getTypeDescriptor( field.getTypeName() ) );
+
+            }
+
+            mv.visitInsn( Opcodes.RETURN );
+            Label l1 = null;
+            if ( this.debug ) {
+                l1 = new Label();
+                mv.visitLabel( l1 );
+                mv.visitLocalVariable( "this",
+                                       getTypeDescriptor( classDef.getClassName() ),
+                                       null,
+                                       l0,
+                                       l1,
+                                       0 );
+                for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
+                    Label l11 = new Label();
+                    mv.visitLabel( l11 );
+                    mv.visitLocalVariable( field.getName(),
+                                           getTypeDescriptor( field.getTypeName() ),
+                                           null,
+                                           l0,
+                                           l1,
+                                           0 );
+                }
             }
             mv.visitMaxs( 0,
                           0 );
@@ -824,11 +934,12 @@ public class ClassBuilder {
                                    getTypeDescriptor( field.getTypeName() ) );
 
                 if ( isPrimitive( field.getTypeName() ) ) {
+                    String type = field.getTypeName().matches( "(byte|short)" ) ? "int" : field.getTypeName();
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                                         Type.getInternalName( StringBuilder.class ),
                                         "append",
                                         Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                                                  new Type[]{Type.getType( getTypeDescriptor( field.getTypeName() ) )} ) );
+                                                                  new Type[]{Type.getType( getTypeDescriptor( type ) )} ) );
                 } else {
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                                         Type.getInternalName( StringBuilder.class ),
