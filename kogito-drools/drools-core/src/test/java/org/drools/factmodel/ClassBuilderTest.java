@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -67,11 +68,11 @@ public class ClassBuilderTest extends TestCase {
 
             Class clazz = builder.buildAndLoadClass( classDef );
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                        intDef.getName(),
-                                                        classLoader ) );
+                                                            intDef.getName(),
+                                                            classLoader ) );
             stringDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                           stringDef.getName(),
-                                                           classLoader ) );
+                                                               stringDef.getName(),
+                                                               classLoader ) );
 
             byte[] data = builder.buildClass( classDef );
 
@@ -161,26 +162,26 @@ public class ClassBuilderTest extends TestCase {
 
             Class clazz = builder.buildAndLoadClass( classDef );
             long1Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                          long1Def.getName(),
-                                                          classLoader ) );
+                                                              long1Def.getName(),
+                                                              classLoader ) );
             long2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                          long2Def.getName(),
-                                                          classLoader ) );
+                                                              long2Def.getName(),
+                                                              classLoader ) );
             doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                           doubleDef.getName(),
-                                                           classLoader ) );
+                                                               doubleDef.getName(),
+                                                               classLoader ) );
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                        intDef.getName(),
-                                                        classLoader ) );
+                                                            intDef.getName(),
+                                                            classLoader ) );
             strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                        strDef.getName(),
-                                                        classLoader ) );
+                                                            strDef.getName(),
+                                                            classLoader ) );
             dateDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                         dateDef.getName(),
-                                                         classLoader ) );
+                                                             dateDef.getName(),
+                                                             classLoader ) );
             str2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                         str2Def.getName(),
-                                                         classLoader ) );
+                                                             str2Def.getName(),
+                                                             classLoader ) );
 
             Object x = clazz.newInstance();
             Object y = clazz.newInstance();
@@ -271,11 +272,11 @@ public class ClassBuilderTest extends TestCase {
 
             Class clazz = builder.buildAndLoadClass( classDef );
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                        intDef.getName(),
-                                                        classLoader ) );
+                                                            intDef.getName(),
+                                                            classLoader ) );
             strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                        strDef.getName(),
-                                                        classLoader ) );
+                                                            strDef.getName(),
+                                                            classLoader ) );
 
             Object x = clazz.newInstance();
 
@@ -334,26 +335,26 @@ public class ClassBuilderTest extends TestCase {
 
             Class clazz = builder.buildAndLoadClass( classDef );
             long1Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                          long1Def.getName(),
-                                                          classLoader ) );
+                                                              long1Def.getName(),
+                                                              classLoader ) );
             long2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                          long2Def.getName(),
-                                                          classLoader ) );
+                                                              long2Def.getName(),
+                                                              classLoader ) );
             doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                           doubleDef.getName(),
-                                                           classLoader ) );
+                                                               doubleDef.getName(),
+                                                               classLoader ) );
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                        intDef.getName(),
-                                                        classLoader ) );
+                                                            intDef.getName(),
+                                                            classLoader ) );
             strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                        strDef.getName(),
-                                                        classLoader ) );
+                                                            strDef.getName(),
+                                                            classLoader ) );
             dateDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                         dateDef.getName(),
-                                                         classLoader ) );
+                                                             dateDef.getName(),
+                                                             classLoader ) );
             str2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                         str2Def.getName(),
-                                                         classLoader ) );
+                                                             str2Def.getName(),
+                                                             classLoader ) );
 
             Object x = clazz.newInstance();
 
@@ -389,4 +390,114 @@ public class ClassBuilderTest extends TestCase {
 
     }
 
+    public void testConstructorWithFields() {
+        try {
+            ClassBuilder builder = new ClassBuilder();
+
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass5",
+                                                            null,
+                                                            new String[]{} );
+
+            String[] types = new String[]{"byte", "short", "int", "long", "float", "double", "char", "java.lang.String", "boolean"};
+            FieldDefinition[] fields = new FieldDefinition[types.length];
+            for ( int i = 0; i < types.length; i++ ) {
+                String attrName = types[i].substring( types[i].lastIndexOf( '.' ) + 1 );
+                attrName = attrName.substring( 0,
+                                               1 ).toLowerCase() + attrName.substring( 1 ) + "Attr";
+                fields[i] = new FieldDefinition( attrName, // attr name
+                                                 types[i], // attr type
+                                                 i % 2 == 0 ); // half of them are key
+                classDef.addField( fields[i] );
+            }
+
+            Class< ? > clazz = builder.buildAndLoadClass( classDef );
+
+            for ( FieldDefinition field : fields ) {
+                field.setReadWriteAccessor( store.getAccessor( clazz,
+                                                               field.getName(),
+                                                               classLoader ) );
+            }
+
+            Constructor< ? >[] cons = clazz.getConstructors();
+
+            Assert.assertEquals( 3,
+                                 cons.length );
+            for ( Constructor< ? > c : cons ) {
+                Class< ? >[] ptypes = c.getParameterTypes();
+                if ( ptypes.length == 0 ) {
+                    // default constructor
+                } else if ( ptypes.length == fields.length ) {
+                    // constructor with fields
+                    for ( int i = 0; i < ptypes.length; i++ ) {
+                        if ( !ptypes[i].equals( fields[i].getType() ) ) {
+                            Assert.fail( "Wrong parameter in constructor. index=" + i + " expected=" + fields[i].getType() + " found=" + ptypes[i] );
+                        }
+                    }
+
+                    // test actual invocation
+                    Object instance = c.newInstance( (byte) 1,
+                                                     (short) 2,
+                                                     3,
+                                                     4l,
+                                                     5.0f,
+                                                     6.0d,
+                                                     'a',
+                                                     "xyz",
+                                                     true );
+
+                    assertEquals( (byte) 1,
+                                  fields[0].getValue( instance ) );
+                    assertEquals( (short) 2,
+                                  fields[1].getValue( instance ) );
+                    assertEquals( 3,
+                                  fields[2].getValue( instance ) );
+                    assertEquals( 4l,
+                                  fields[3].getValue( instance ) );
+                    assertEquals( 5.0f,
+                                  fields[4].getValue( instance ) );
+                    assertEquals( 6.0d,
+                                  fields[5].getValue( instance ) );
+                    assertEquals( 'a',
+                                  fields[6].getValue( instance ) );
+                    assertEquals( "xyz",
+                                  fields[7].getValue( instance ) );
+                    assertEquals( true,
+                                  fields[8].getValue( instance ) );
+                } else if ( ptypes.length == ( fields.length / 2 +1 ) ) { // as defined in the beginning of the test
+                    // constructor with key fields
+                    int i = 0;
+                    for ( FieldDefinition field : fields ) {
+                        if ( field.isKey() && !ptypes[i++].equals( field.getType() ) ) {
+                            Assert.fail( "Wrong parameter in constructor. index=" + i + " expected=" + field.getType() + " found=" + ptypes[i] );
+                        }
+                    }
+                    // test actual invocation
+                    Object instance = c.newInstance( (byte) 1,
+                                                     3,
+                                                     5.0f,
+                                                     'a',
+                                                     true );
+
+                    assertEquals( (byte) 1,
+                                  fields[0].getValue( instance ) );
+                    assertEquals( 3,
+                                  fields[2].getValue( instance ) );
+                    assertEquals( 5.0f,
+                                  fields[4].getValue( instance ) );
+                    assertEquals( 'a',
+                                  fields[6].getValue( instance ) );
+                    assertEquals( true,
+                                  fields[8].getValue( instance ) );
+                    
+                } else {
+                    Assert.fail( "Unexpected constructor: " + c.toString() );
+                }
+            }
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            Assert.fail( "Unexpected Exception: " + e.getMessage() );
+        }
+
+    }
 }
