@@ -40,7 +40,7 @@ public class JDKTimerService
     TimerService,
     SessionClock {
     
-    private ScheduledThreadPoolExecutor scheduler;
+    protected ScheduledThreadPoolExecutor scheduler;
 
     public JDKTimerService() {
         this( 1 );
@@ -72,11 +72,11 @@ public class JDKTimerService
         Date date = trigger.nextFireTime();
 
         if ( date != null ) {
-            JDKCallableJob callableJob = new JDKCallableJob( job,
-                                                             ctx,
-                                                             trigger,
-                                                             jobHandle,
-                                                             this.scheduler );
+        	Callable<Void> callableJob = createCallableJob( job,
+                                                            ctx,
+                                                            trigger,
+                                                            jobHandle,
+                                                            this.scheduler );
             ScheduledFuture future = schedule( date,
                                                callableJob,
                                                this.scheduler );
@@ -87,13 +87,25 @@ public class JDKTimerService
             return null;
         }
     }
+    
+    protected Callable<Void> createCallableJob(Job job,
+									           JobContext ctx,
+									           Trigger trigger,
+									           JDKJobHandle handle,
+									           ScheduledThreadPoolExecutor scheduler) {
+    	return new JDKCallableJob( job,
+					               ctx,
+					               trigger,
+					               handle,
+					               this.scheduler );
+    }
 
     public boolean removeJob(JobHandle jobHandle) {
         return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
     }
 
     private static ScheduledFuture schedule(Date date,
-                                            JDKCallableJob callableJob,
+    		                                Callable<Void> callableJob,
                                             ScheduledThreadPoolExecutor scheduler) {
         long then = date.getTime();
         long now = System.currentTimeMillis();

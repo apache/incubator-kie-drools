@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 
 import org.drools.ClockType;
+import org.drools.SessionConfiguration;
 import org.drools.time.TimerServiceFactory;
 import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
@@ -31,7 +32,9 @@ import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
 
 public class CronJobTest extends TestCase {
     public void testCronTriggerJob() throws Exception {
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) TimerServiceFactory.getTimerService( ClockType.PSEUDO_CLOCK ); 
+    	SessionConfiguration config = new SessionConfiguration();
+    	config.setClockType(ClockType.PSEUDO_CLOCK);
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) TimerServiceFactory.getTimerService( config ); 
         
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         Date date = df.parse( "2009-01-01T00:00:00.000-0000" );

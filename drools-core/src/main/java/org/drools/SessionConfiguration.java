@@ -40,6 +40,7 @@ import org.drools.runtime.conf.QueryListenerOption;
 import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
 import org.drools.runtime.conf.WorkItemHandlerOption;
 import org.drools.runtime.process.WorkItemHandler;
+import org.drools.time.TimerService;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.mvel2.MVEL;
@@ -83,6 +84,7 @@ public class SessionConfiguration
     private SignalManagerFactory          processSignalManagerFactory;
     private WorkItemManagerFactory        workItemManagerFactory;
     private CommandService                commandService;
+    private TimerService 				  timerService;
 
     private transient ClassLoader         classLoader;
 
@@ -436,6 +438,43 @@ public class SessionConfiguration
             throw new IllegalArgumentException( "Command service '" + className + "' not found" );
         }
     }
+
+	public TimerService newTimerService() {
+		String className = this.chainedProperties.getProperty(
+			"drools.timerService",
+			"org.drools.time.impl.JDKTimerService");
+		if (className == null) {
+			return null;
+		}
+
+		Class<TimerService> clazz = null;
+		try {
+			clazz = (Class<TimerService>) Thread.currentThread()
+					.getContextClassLoader().loadClass(className);
+		} catch (ClassNotFoundException e) {
+		}
+
+		if (clazz == null) {
+			try {
+				clazz = (Class<TimerService>) SessionConfiguration.class
+					.getClassLoader().loadClass(className);
+			} catch (ClassNotFoundException e) {
+			}
+		}
+
+		if (clazz != null) {
+			try {
+				return clazz.newInstance();
+			} catch (Exception e) {
+				throw new IllegalArgumentException(
+					"Unable to instantiate timer service '" + className
+							+ "'", e);
+			}
+		} else {
+			throw new IllegalArgumentException("Timer service '" + className
+					+ "' not found");
+		}
+	}
 
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeSessionOption> T getOption(Class<T> option) {

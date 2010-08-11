@@ -367,7 +367,7 @@ public abstract class AbstractWorkingMemory
         this.processInstanceManager = config.getProcessInstanceManagerFactory().createProcessInstanceManager( this );
         this.timeMachine = new TimeMachine();
 
-        TimerService timerService = TimerServiceFactory.getTimerService( this.config.getClockType() );
+        TimerService timerService = TimerServiceFactory.getTimerService( this.config );
         this.timerManager = new TimerManager( this,
                                               timerService );
         this.signalManager = config.getSignalManagerFactory().createSignalManager( this );
