@@ -19,7 +19,6 @@ import org.drools.common.AbstractWorkingMemory.EndOperationListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.processinstance.JPAProcessInstanceManager;
-import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -107,7 +106,8 @@ public class SingleSessionCommandService
                                                      this.ksession,
                                                      null );
 
-        ((JPASignalManager) ((StatefulKnowledgeSessionImpl) ksession).session.getSignalManager()).setCommandService( this );
+        ((JpaJDKTimerService) ((StatefulKnowledgeSessionImpl) ksession).session.getTimerService()).setCommandService( this );
+        
         this.marshallingHelper = new JPASessionMarshallingHelper( this.ksession,
                                                                   conf );
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
@@ -201,7 +201,7 @@ public class SingleSessionCommandService
 
         ((StatefulKnowledgeSessionImpl) this.ksession).session.setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
 
-        ((JPASignalManager) ((StatefulKnowledgeSessionImpl) ksession).session.getSignalManager()).setCommandService( this );
+        ((JpaJDKTimerService) ((StatefulKnowledgeSessionImpl) ksession).session.getTimerService()).setCommandService( this );
         
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed

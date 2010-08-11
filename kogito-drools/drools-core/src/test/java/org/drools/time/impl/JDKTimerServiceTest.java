@@ -19,18 +19,15 @@ package org.drools.time.impl;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
 import org.drools.ClockType;
+import org.drools.SessionConfiguration;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -41,7 +38,9 @@ import org.drools.time.Trigger;
 public class JDKTimerServiceTest extends TestCase {
     
     public void testSingleExecutionJob() throws Exception {
-        TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK ); 
+    	SessionConfiguration config = new SessionConfiguration();
+    	config.setClockType(ClockType.REALTIME_CLOCK);
+        TimerService timeService = TimerServiceFactory.getTimerService( config ); 
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -51,7 +50,9 @@ public class JDKTimerServiceTest extends TestCase {
     }    
     
     public void testRepeatedExecutionJob() throws Exception {
-        TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK ); 
+    	SessionConfiguration config = new SessionConfiguration();
+    	config.setClockType(ClockType.REALTIME_CLOCK);
+        TimerService timeService = TimerServiceFactory.getTimerService( config ); 
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -62,7 +63,9 @@ public class JDKTimerServiceTest extends TestCase {
         
     
 	public void testRepeatedExecutionJobWithRemove() throws Exception {
-	    TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK );
+    	SessionConfiguration config = new SessionConfiguration();
+    	config.setClockType(ClockType.REALTIME_CLOCK);
+        TimerService timeService = TimerServiceFactory.getTimerService( config ); 
 		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
 		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
 		ctx.setLimit( 3 );

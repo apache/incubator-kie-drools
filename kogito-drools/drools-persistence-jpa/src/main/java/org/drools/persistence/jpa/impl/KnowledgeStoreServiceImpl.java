@@ -12,6 +12,7 @@ import org.drools.persistence.jpa.KnowledgeStoreService;
 import org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory;
 import org.drools.persistence.processinstance.JPASignalManagerFactory;
 import org.drools.persistence.processinstance.JPAWorkItemManagerFactory;
+import org.drools.persistence.session.JpaJDKTimerService;
 import org.drools.persistence.session.SingleSessionCommandService;
 import org.drools.process.instance.ProcessInstanceManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
@@ -20,6 +21,7 @@ import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.time.TimerService;
 
 public class KnowledgeStoreServiceImpl
     implements
@@ -29,6 +31,7 @@ public class KnowledgeStoreServiceImpl
     private Class< ? extends ProcessInstanceManagerFactory> processInstanceManagerFactoryClass;
     private Class< ? extends WorkItemManagerFactory>        workItemManagerFactoryClass;
     private Class< ? extends SignalManagerFactory>          processSignalManagerFactoryClass;
+    private Class< ? extends TimerService>                  timerServiceClass;
 
     private Properties                                      configProps = new Properties();
 
@@ -41,6 +44,7 @@ public class KnowledgeStoreServiceImpl
         setProcessInstanceManagerFactoryClass( JPAProcessInstanceManagerFactory.class );
         setWorkItemManagerFactoryClass( JPAWorkItemManagerFactory.class );
         setProcessSignalManagerFactoryClass( JPASignalManagerFactory.class );
+        setTimerServiceClass( JpaJDKTimerService.class );
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
@@ -157,6 +161,18 @@ public class KnowledgeStoreServiceImpl
 
     public Class< ? extends CommandExecutor> getCommandServiceClass() {
         return commandServiceClass;
+    }
+
+    public void setTimerServiceClass(Class< ? extends TimerService> timerServiceClass) {
+        if ( timerServiceClass != null ) {
+            this.timerServiceClass = timerServiceClass;
+            configProps.put( "drools.timerService",
+            		         timerServiceClass.getName() );
+        }
+    }
+
+    public Class< ? extends TimerService> getTimerServiceClass() {
+        return timerServiceClass;
     }
 
     public void setProcessInstanceManagerFactoryClass(Class< ? extends ProcessInstanceManagerFactory> processInstanceManagerFactoryClass) {
