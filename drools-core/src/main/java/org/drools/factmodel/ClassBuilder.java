@@ -186,7 +186,7 @@ public class ClassBuilder {
                 keys.add( fieldDef );
             }
         }
-        if ( !keys.isEmpty() ) {
+        if ( !keys.isEmpty() && keys.size() != classDef.getFieldsDefinitions().size() ) {
             this.buildConstructorWithFields( cw,
                                              classDef,
                                              keys );
