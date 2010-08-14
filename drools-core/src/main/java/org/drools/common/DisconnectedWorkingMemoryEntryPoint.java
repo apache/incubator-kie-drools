@@ -1,12 +1,13 @@
 package org.drools.common;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
-public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint {
+public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Serializable {
     
     private String id;
     
