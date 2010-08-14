@@ -16,6 +16,7 @@
 
 package org.drools.common;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,7 +28,6 @@ import org.drools.FactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.drools.rule.EntryPoint;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
@@ -39,7 +39,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 @XmlAccessorType(XmlAccessType.NONE)
 public class DefaultFactHandle
     implements
-    InternalFactHandle {
+    InternalFactHandle, Serializable {
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------

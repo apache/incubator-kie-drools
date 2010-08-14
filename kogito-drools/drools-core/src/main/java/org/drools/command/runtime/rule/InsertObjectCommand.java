@@ -16,7 +16,6 @@
 
 package org.drools.command.runtime.rule;
 
-import java.io.ObjectStreamException;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,6 +26,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.common.DefaultFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -53,6 +53,8 @@ public class InsertObjectCommand
 	
 	@XmlAttribute(name="entry-point")
     private String entryPoint;
+      	@XmlAttribute(name="disconnected")
+    private boolean disconnected = false;
 	
     public InsertObjectCommand() {
         
@@ -60,6 +62,11 @@ public class InsertObjectCommand
     
     public InsertObjectCommand(Object object) {
         this.object = object;
+    }
+
+    public InsertObjectCommand(Object object, boolean disconnected) {
+        this.object = object;
+        this.disconnected = disconnected;
     }
 
     public InsertObjectCommand(Object object, String outIdentifier) {
@@ -88,7 +95,9 @@ public class InsertObjectCommand
             session.getExecutionResult().getFactHandles().put( this.outIdentifier,
                                                          factHandle );
         }
-
+        if ( disconnected ){
+            ((DefaultFactHandle)factHandle).disconnect();
+        }
         return factHandle;
     }
     
