@@ -120,6 +120,8 @@ public class NamedEntryPoint
         }
 
         try {
+            this.ruleBase.readLock();
+            this.lock.lock();
             this.wm.startOperation();
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
@@ -140,21 +142,15 @@ public class NamedEntryPoint
             if ( dynamic ) {
                 addPropertyChangeListener( object );
             }
-            try {
-                this.ruleBase.readLock();
-                this.lock.lock();
-                insert( handle,
-                        object,
-                        rule,
-                        activation );
-
-            } finally {
-                this.ruleBase.readUnlock();
-                this.lock.unlock();
-            }
+            insert( handle,
+                    object,
+                    rule,
+                    activation );
             return handle;
         } finally {
             this.wm.endOperation();
+            this.ruleBase.readUnlock();
+            this.lock.unlock();
         }
     }
 
