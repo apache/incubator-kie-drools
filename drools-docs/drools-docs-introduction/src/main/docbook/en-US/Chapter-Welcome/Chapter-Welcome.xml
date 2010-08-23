@@ -57,17 +57,15 @@
   hybrid engine, not just a capable production rule system, but also melding
   in logic programming (prolog) with functional programming and description
   logic along with a host of other ideas for a more expressive and modern
-  feeling language. </para>
+  feeling language.</para>
 
   <para>I hope you can feel the passion that my team and I have while working
   on Drools, and that some of it rubs off on you during your
   adventures.</para>
 
-  <para><emphasis role="bold">Mark </emphasis></para>
-
   <mediaobject>
     <imageobject>
-      <imagedata fileref="images/Chapter-Welcome/mark.png"></imagedata>
+      <imagedata align="left" fileref="images/Chapter-Welcome/mark.png"></imagedata>
     </imageobject>
   </mediaobject>
 </chapter>
