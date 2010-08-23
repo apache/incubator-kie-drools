@@ -168,7 +168,7 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
     }
 
 
-    public void visitKnowledgeDefinitionn(final KnowledgeDefinition oldDefinition){
+    public void visitKnowledgeDefinition(final KnowledgeDefinition oldDefinition){
         listener.debug("BinaryResourceDiffProducerImpl: Couldn't handle "+oldDefinition+". We must leave it in the new Package.");
     }
 
