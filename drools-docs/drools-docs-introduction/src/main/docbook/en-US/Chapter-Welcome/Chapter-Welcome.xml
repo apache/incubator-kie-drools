@@ -65,7 +65,7 @@
 
   <mediaobject>
     <imageobject>
-      <imagedata align="left" fileref="images/Chapter-Welcome/mark.png"></imagedata>
+      <imagedata fileref="images/Chapter-Welcome/mark.png"></imagedata>
     </imageobject>
   </mediaobject>
 </chapter>
