@@ -141,6 +141,18 @@ end</programlisting>
 	    negative or positive. Salience is a form of priority where
 	    rules with higher salience values are given higher priority
 	    when ordered in the Activation queue.</para>
+	    <para>Drools also supports dynamic salience where you can use andexpression involving bound variables.</para>
+          
+          <example>
+    		<title>Dynamic Salience</title>
+    		<programlisting>rule "Fire in rank order 1,2,.."
+  				salience( -$rank )
+  				when
+        			Element( $rank : rank,... ) 
+    			then
+        			...
+				end</programlisting>
+		  </example> 
 	</listitem>
       </varlistentry>
 	
